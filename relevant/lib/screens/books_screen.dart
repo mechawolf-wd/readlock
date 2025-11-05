@@ -1,7 +1,10 @@
+/// Screen that displays the books library and reading materials section
+library;
+
 import 'package:flutter/material.dart';
 import 'package:relevant/constants/app_constants.dart';
-import 'package:relevant/widgets/bottom_navigation_widget.dart';
 
+/// @Class: Books screen for library and reading materials
 class BooksScreen extends StatefulWidget {
   const BooksScreen({super.key});
 
@@ -12,23 +15,11 @@ class BooksScreen extends StatefulWidget {
 class BooksScreenState extends State<BooksScreen> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: appBar(context),
-      body: body(),
-      bottomNavigationBar: bottomNavigation(),
-    );
+    return Scaffold(body: mainBody());
   }
 
-  // @Widget: App bar
-  AppBar appBar(BuildContext context) {
-    return AppBar(
-      backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-      title: const Text(AppConstants.BOOKS_TITLE),
-    );
-  }
-
-  // @Widget: Main body content
-  Widget body() {
+  /// @Widget: Main content area for book library and reading materials
+  Widget mainBody() {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -37,36 +28,11 @@ class BooksScreenState extends State<BooksScreen> {
     );
   }
 
-  // @Widget: Welcome text
+  /// @Widget: Welcoming message introducing the books section
   Widget welcomeText() {
     return const Text(
       AppConstants.BOOKS_WELCOME_MESSAGE,
       style: TextStyle(fontSize: AppConstants.WELCOME_TEXT_SIZE),
     );
-  }
-
-  // @Widget: Bottom navigation
-  Widget bottomNavigation() {
-    return BottomNavigationWidget(
-      currentIndex: AppConstants.BOOKS_INDEX,
-      onTap: handleNavigationTap,
-    );
-  }
-
-  void handleNavigationTap(int index) {
-    final bool shouldNavigateToWorld =
-        index == AppConstants.WORLD_INDEX;
-    final bool shouldNavigateToProfile =
-        index == AppConstants.PROFILE_INDEX;
-
-    if (shouldNavigateToWorld) {
-      Navigator.pushReplacementNamed(context, AppConstants.WORLD_ROUTE);
-    } else if (shouldNavigateToProfile) {
-      Navigator.pushReplacementNamed(
-        context,
-        AppConstants.PROFILE_ROUTE,
-      );
-    }
-    // Already on Books screen if index == AppConstants.BOOKS_INDEX
   }
 }
