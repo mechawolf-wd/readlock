@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:relevant/course_screens/models/course_model.dart';
 import 'package:relevant/course_screens/widgets/course/course_card_widget.dart';
+import 'package:relevant/utility_widgets/utility_widgets.dart';
 
 class CourseSliderWidget extends StatefulWidget {
   final List<Course> courses;
@@ -37,8 +38,8 @@ class CourseSliderWidgetState extends State<CourseSliderWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
+    return Div.column(
+      [
         SizedBox(
           height: 180,
           child: PageView.builder(
@@ -52,9 +53,12 @@ class CourseSliderWidgetState extends State<CourseSliderWidget> {
             scrollDirection: Axis.vertical,
             itemBuilder: (context, courseIndex) {
               final Course course = widget.courses[courseIndex];
-              
+
               return Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 8,
+                  vertical: 8,
+                ),
                 child: CourseCardWidget(
                   course: course,
                   onTap: () => widget.onCourseSelected(course),
@@ -63,26 +67,27 @@ class CourseSliderWidgetState extends State<CourseSliderWidget> {
             },
           ),
         ),
-        
-        const SizedBox(height: 16),
-        
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
+
+        const Spacing.height(16),
+
+        Div.row(
+          [
             for (int i = 0; i < widget.courses.length; i++)
               Container(
                 margin: const EdgeInsets.symmetric(horizontal: 4),
                 width: i == currentIndex ? 20 : 8,
                 height: 8,
                 decoration: BoxDecoration(
-                  color: i == currentIndex ? Colors.blue : Colors.grey[400],
+                  color: i == currentIndex
+                      ? Colors.blue
+                      : Colors.grey[400],
                   borderRadius: BorderRadius.circular(4),
                 ),
               ),
           ],
+          mainAxisAlignment: MainAxisAlignment.center,
         ),
       ],
     );
   }
-
 }

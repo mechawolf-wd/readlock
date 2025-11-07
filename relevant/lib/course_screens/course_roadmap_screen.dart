@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:relevant/course_screens/models/course_model.dart';
 import 'package:relevant/course_screens/course_detail_screen.dart';
+import 'package:relevant/utility_widgets/utility_widgets.dart';
 
 class CourseRoadmapScreen extends StatefulWidget {
   final Course course;
@@ -20,7 +21,6 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.course.title),
         actions: [
           TextButton(
             onPressed: startCourse,
@@ -30,26 +30,8 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              widget.course.description,
-              style: const TextStyle(fontSize: 16),
-            ),
-            
-            const SizedBox(height: 24),
-            
-            const Text(
-              'Sections',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            
-            const SizedBox(height: 16),
-            
+        child: Div.column(
+          [
             Expanded(
               child: ListView.builder(
                 itemCount: widget.course.sections.length,
@@ -59,7 +41,9 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
                     margin: const EdgeInsets.only(bottom: 12),
                     child: ListTile(
                       title: Text(section.title),
-                      subtitle: Text('${section.content.length} lessons'),
+                      subtitle: Text(
+                        '${section.content.length} lessons',
+                      ),
                       trailing: const Icon(Icons.arrow_forward_ios),
                       onTap: () => handleNodeTap(sectionIndex, 0),
                     ),
@@ -68,6 +52,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
               ),
             ),
           ],
+          crossAxisAlignment: CrossAxisAlignment.start,
         ),
       ),
     );

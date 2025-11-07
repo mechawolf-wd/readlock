@@ -3,6 +3,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:relevant/course_screens/models/course_model.dart';
+import 'package:relevant/utility_widgets/utility_widgets.dart';
 
 class QuestionContentWidget extends StatefulWidget {
   final QuestionContent content;
@@ -29,31 +30,27 @@ class QuestionContentWidgetState extends State<QuestionContentWidget> {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(24),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
+      child: Div.column(
+        [
           QuestionTitle(),
 
-          const SizedBox(height: 24),
+          const Spacing.height(24),
 
           ScenarioContextSection(),
 
-          const SizedBox(height: 20),
+          const Spacing.height(20),
 
           QuestionText(),
 
-          const SizedBox(height: 32),
+          const Spacing.height(32),
 
           OptionsList(),
 
-          const SizedBox(height: 20),
+          const Spacing.height(20),
 
           ExplanationSection(),
-
-          const SizedBox(height: 20),
-
-          FollowUpPromptsSection(),
         ],
+        crossAxisAlignment: CrossAxisAlignment.start,
       ),
     );
   }
@@ -61,30 +58,31 @@ class QuestionContentWidgetState extends State<QuestionContentWidget> {
   Widget QuestionTitle() {
     return Text(
       widget.content.title,
-      style: const TextStyle(
-        fontSize: 28,
-        fontWeight: FontWeight.bold,
-      ),
+      style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
     );
   }
 
   Widget QuestionText() {
     return Text(
       widget.content.question,
-      style: const TextStyle(
-        fontSize: 20,
-        fontWeight: FontWeight.w600,
-      ),
+      style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
     );
   }
 
   Widget OptionsList() {
-    return Column(
-      children: [
-        for (int optionIndex = 0; optionIndex < widget.content.options.length; optionIndex++)
+    return Div.column(
+      [
+        for (
+          int optionIndex = 0;
+          optionIndex < widget.content.options.length;
+          optionIndex++
+        )
           Container(
             margin: const EdgeInsets.only(bottom: 12),
-            child: OptionButton(optionIndex, widget.content.options[optionIndex]),
+            child: OptionButton(
+              optionIndex,
+              widget.content.options[optionIndex],
+            ),
           ),
       ],
     );
@@ -92,16 +90,18 @@ class QuestionContentWidgetState extends State<QuestionContentWidget> {
 
   Widget OptionButton(int optionIndex, QuestionOption option) {
     final bool isSelected = selectedAnswerIndex == optionIndex;
-    final bool isCorrect = widget.content.correctAnswerIndices.contains(optionIndex);
+    final bool isCorrect = widget.content.correctAnswerIndices.contains(
+      optionIndex,
+    );
     final bool shouldShowFeedback = hasAnswered && isSelected;
 
     const Color textColor = Colors.white;
-    
+
     final Color buttonColor = shouldShowFeedback
         ? (isCorrect ? Colors.green[600]! : Colors.red[600]!)
         : isSelected
-            ? Colors.blue[600]!
-            : Colors.grey[700]!;
+        ? Colors.blue[600]!
+        : Colors.grey[700]!;
 
     return SizedBox(
       width: double.infinity,
@@ -112,27 +112,29 @@ class QuestionContentWidgetState extends State<QuestionContentWidget> {
           foregroundColor: textColor,
           padding: const EdgeInsets.all(16),
         ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
+        child: Div.row(
+          [
             if (shouldShowFeedback)
               Icon(
                 isCorrect ? Icons.check_circle : Icons.cancel,
                 color: textColor,
               ),
 
-            if (shouldShowFeedback) const SizedBox(width: 12),
+            if (shouldShowFeedback) const Spacing.width(12),
 
             Expanded(
               child: Text(
                 option.text,
                 style: TextStyle(
-                  fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+                  fontWeight: isSelected
+                      ? FontWeight.w600
+                      : FontWeight.normal,
                   color: textColor,
                 ),
               ),
             ),
           ],
+          mainAxisAlignment: MainAxisAlignment.start,
         ),
       ),
     );
@@ -140,115 +142,80 @@ class QuestionContentWidgetState extends State<QuestionContentWidget> {
 
   Widget ExplanationSection() {
     final bool shouldShowExplanation = hasAnswered;
-    
+
     if (!shouldShowExplanation) {
-      return const SizedBox(height: 0);
+      return const Spacing.height(0);
     }
 
-    return Container(
+    return Div.column(
+      [
+        Text(
+          widget.content.explanation,
+          style: const TextStyle(fontSize: 16, height: 1.0),
+        ),
+      ],
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: Colors.grey[800],
         borderRadius: BorderRadius.circular(8),
       ),
-      child: Text(
-        widget.content.explanation,
-        style: const TextStyle(
-          fontSize: 16,
-          height: 1.5,
-        ),
-      ),
     );
   }
 
   Widget ScenarioContextSection() {
-    final bool hasScenarioContext = widget.content.scenarioContext != null;
-    
+    final bool hasScenarioContext =
+        widget.content.scenarioContext != null;
+
     if (!hasScenarioContext) {
-      return const SizedBox(height: 0);
+      return const Spacing.height(0);
     }
 
-    return Container(
+    return Div.column(
+      [
+        Div.row(
+          [
+            Icon(Icons.theater_comedy, color: Colors.purple[400]),
+
+            const Spacing.width(8),
+
+            Text(
+              'Scenario',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Colors.purple[400],
+              ),
+            ),
+          ],
+        ),
+
+        const Spacing.height(12),
+
+        Text(
+          widget.content.scenarioContext ?? '',
+          style: const TextStyle(fontSize: 16, height: 1.0),
+        ),
+      ],
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: Colors.purple[900]?.withValues(alpha: 0.3),
         borderRadius: BorderRadius.circular(8),
         border: Border.all(color: Colors.purple[600]!),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Icon(
-                Icons.theater_comedy,
-                color: Colors.purple[400],
-              ),
-
-              const SizedBox(width: 8),
-
-              Text(
-                'Scenario',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.purple[400],
-                ),
-              ),
-            ],
-          ),
-
-          const SizedBox(height: 12),
-
-          Text(
-            widget.content.scenarioContext ?? '',
-            style: const TextStyle(
-              fontSize: 16,
-              height: 1.5,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-
-  Widget FollowUpPromptsSection() {
-    final bool hasFollowUpPrompts = widget.content.followUpPrompts != null;
-    final bool shouldShowPrompts = hasAnswered && hasFollowUpPrompts;
-    
-    if (!shouldShowPrompts) {
-      return const SizedBox(height: 0);
-    }
-
-    return Container(
-      padding: const EdgeInsets.all(20),
-      child: Column(
-        children: [
-          for (final String prompt in widget.content.followUpPrompts ?? [])
-            Container(
-              margin: const EdgeInsets.only(bottom: 8),
-              child: Text(
-                prompt,
-                style: const TextStyle(
-                  fontSize: 16,
-                  height: 1.4,
-                ),
-              ),
-            ),
-        ],
-      ),
+      crossAxisAlignment: CrossAxisAlignment.start,
     );
   }
 
   void selectAnswer(int optionIndex) {
     final bool canSelectAnswer = !hasAnswered;
-    
+
     if (!canSelectAnswer) {
       return;
     }
 
-    final bool isCorrect = widget.content.correctAnswerIndices.contains(optionIndex);
+    final bool isCorrect = widget.content.correctAnswerIndices.contains(
+      optionIndex,
+    );
 
     setState(() {
       selectedAnswerIndex = optionIndex;
@@ -257,5 +224,4 @@ class QuestionContentWidgetState extends State<QuestionContentWidget> {
 
     widget.onAnswerSelected(optionIndex, isCorrect);
   }
-
 }

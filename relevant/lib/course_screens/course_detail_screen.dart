@@ -31,7 +31,9 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
     currentSectionIndex = widget.initialSectionIndex;
     currentContentIndex = widget.initialContentIndex;
 
-    pageController = PageController();
+    pageController = PageController(
+      initialPage: currentContentIndex,
+    );
   }
 
   @override
@@ -57,6 +59,7 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
 
     return PageView.builder(
       controller: pageController,
+      scrollDirection: Axis.vertical,
       itemCount: allContent.length,
       onPageChanged: handlePageChanged,
       itemBuilder: (context, contentIndex) {
@@ -89,9 +92,6 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
 
   Widget NavigationControls() {
     final List<CourseContent> allContent = getAllContent();
-    final bool isFirstContent = currentContentIndex == 0;
-    final bool isLastContent =
-        currentContentIndex >= allContent.length - 1;
 
     return Container(
       padding: const EdgeInsets.all(16),
@@ -105,61 +105,15 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
           ),
         ],
       ),
-      child: Row(
-        children: [
-          PreviousButton(isFirstContent),
-          
-          const SizedBox(width: 16),
-          
-          ProgressIndicator(allContent.length),
-          
-          const SizedBox(width: 16),
-          
-          NextButton(isLastContent),
-        ],
-      ),
-    );
-  }
-
-  Widget PreviousButton(bool isDisabled) {
-    return Flexible(
-      child: ElevatedButton(
-        onPressed: isDisabled ? null : goToPreviousContent,
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.grey[300],
-          foregroundColor: Colors.black,
-        ),
-        child: const Icon(Icons.arrow_back_ios, size: 20),
-      ),
+      child: ProgressIndicator(allContent.length),
     );
   }
 
   Widget ProgressIndicator(int totalContent) {
-    return Flexible(
-      flex: 2,
-      child: LinearProgressIndicator(
-        value: (currentContentIndex + 1) / totalContent,
-        backgroundColor: Colors.grey[300],
-        valueColor: AlwaysStoppedAnimation<Color>(getCourseColor()),
-      ),
-    );
-  }
-
-  Widget NextButton(bool isDisabled) {
-    return Flexible(
-      child: ElevatedButton(
-        onPressed: isDisabled ? completeCourse : goToNextContent,
-        style: ElevatedButton.styleFrom(
-          backgroundColor: isDisabled
-              ? Colors.green
-              : getCourseColor(),
-          foregroundColor: Colors.white,
-        ),
-        child: Icon(
-          isDisabled ? Icons.check : Icons.arrow_forward_ios,
-          size: 20,
-        ),
-      ),
+    return LinearProgressIndicator(
+      value: (currentContentIndex + 1) / totalContent,
+      backgroundColor: Colors.grey[300],
+      valueColor: AlwaysStoppedAnimation<Color>(getCourseColor()),
     );
   }
 
@@ -179,38 +133,6 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
     });
   }
 
-  void goToPreviousContent() {
-    if (currentContentIndex > 0) {
-      pageController.previousPage(
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeInOut,
-      );
-    }
-  }
-
-  void goToNextContent() {
-    final List<CourseContent> allContent = getAllContent();
-
-    if (currentContentIndex < allContent.length - 1) {
-      pageController.nextPage(
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeInOut,
-      );
-    }
-  }
-
-  void completeCourse() {
-    Navigator.of(context).pop();
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          'Course completed: ${widget.course.title}!',
-        ),
-        backgroundColor: getCourseColor(),
-      ),
-    );
-  }
 
   void handleQuestionAnswer(int selectedIndex, bool isCorrect) {
     // Future implementation for tracking progress and answers

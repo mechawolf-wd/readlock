@@ -76,11 +76,13 @@ class ProgressiveTextWidgetState extends State<ProgressiveTextWidget> {
       return;
     }
 
-    setState(() {
-      isRevealingCurrentSentence = true;
-      currentCharacterIndex = 0;
-      revealedText = '';
-    });
+    if (mounted) {
+      setState(() {
+        isRevealingCurrentSentence = true;
+        currentCharacterIndex = 0;
+        revealedText = '';
+      });
+    }
 
     for (
       int characterIndex = 0;
@@ -93,28 +95,32 @@ class ProgressiveTextWidgetState extends State<ProgressiveTextWidget> {
         break;
       }
 
-      setState(() {
-        currentCharacterIndex = characterIndex;
-        revealedText = currentSentenceText.substring(
-          0,
-          characterIndex + 1,
-        );
-      });
+      if (mounted) {
+        setState(() {
+          currentCharacterIndex = characterIndex;
+          revealedText = currentSentenceText.substring(
+            0,
+            characterIndex + 1,
+          );
+        });
+      }
 
       // Delay between characters (10ms)
       await Future.delayed(const Duration(milliseconds: 10));
     }
 
-    setState(() {
-      isRevealingCurrentSentence = false;
-    });
+    if (mounted) {
+      setState(() {
+        isRevealingCurrentSentence = false;
+      });
+    }
   }
 
   void revealNextSentence() {
     final bool hasNextSentence =
         currentSentenceIndex < sentences.length - 1;
 
-    if (hasNextSentence) {
+    if (hasNextSentence && mounted) {
       setState(() {
         currentSentenceIndex++;
       });
@@ -125,17 +131,22 @@ class ProgressiveTextWidgetState extends State<ProgressiveTextWidget> {
   }
 
   void revealAll() {
-    setState(() {
-      isRevealingCurrentSentence = false;
-      currentSentenceIndex = sentences.length - 1;
-      initializeCurrentSentence();
-      currentCharacterIndex = currentSentenceText.length - 1;
-      revealedText = currentSentenceText;
-    });
+    if (mounted) {
+      setState(() {
+        isRevealingCurrentSentence = false;
+        currentSentenceIndex = sentences.length - 1;
+
+        initializeCurrentSentence();
+
+        currentCharacterIndex = currentSentenceText.length - 1;
+        revealedText = currentSentenceText;
+      });
+    }
   }
 
   @override
   void dispose() {
+    isRevealingCurrentSentence = false;
     super.dispose();
   }
 
@@ -170,7 +181,6 @@ class ProgressiveTextWidgetState extends State<ProgressiveTextWidget> {
     final List<Widget> sentenceWidgets = [];
 
     // Show all completed sentences (blurred)
-
     for (
       int sentenceIndex = 0;
       sentenceIndex < currentSentenceIndex;
@@ -180,11 +190,11 @@ class ProgressiveTextWidgetState extends State<ProgressiveTextWidget> {
         [
           Text(
             '${sentences[sentenceIndex]}.',
-            style: const TextStyle(fontSize: 16, height: 1.6),
+            style: const TextStyle(fontSize: 16, height: 1.5),
           ),
         ],
         padding: const EdgeInsets.only(bottom: 8),
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: 'start',
       );
 
       // Apply blur to completed sentences
@@ -204,24 +214,21 @@ class ProgressiveTextWidgetState extends State<ProgressiveTextWidget> {
       sentenceWidgets.add(CurrentSentence());
     }
 
-    return Div.column(
-      sentenceWidgets,
-      crossAxisAlignment: CrossAxisAlignment.start,
-    );
+    return Div.column(sentenceWidgets, crossAxisAlignment: 'start');
   }
 
   Widget CurrentSentence() {
     final bool hasText = revealedText.isNotEmpty;
 
     if (!hasText) {
-      return Spacing.height(0);
+      return const Spacing.height(0);
     }
 
     return Div.column(
       [
         Text(
           '$revealedText.',
-          style: const TextStyle(fontSize: 16, height: 1.6),
+          style: const TextStyle(fontSize: 16, height: 1.5),
           textAlign: TextAlign.start,
         ),
       ],

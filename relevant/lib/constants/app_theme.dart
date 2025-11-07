@@ -102,13 +102,13 @@ class AppTheme {
     fontSize: 18,
     fontWeight: FontWeight.w500,
     color: textPrimary,
-    height: 1.5,
+    height: 1.0,
   );
 
   static final TextStyle bodyMedium = GoogleFonts.crimsonText(
     fontSize: 16,
     color: textPrimary,
-    height: 1.4,
+    height: 1.0,
   );
 
   static final TextStyle bodySmall = GoogleFonts.crimsonText(

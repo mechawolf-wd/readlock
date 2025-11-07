@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:relevant/course_screens/models/course_model.dart';
+import 'package:relevant/utility_widgets/utility_widgets.dart';
 
 class CourseCardWidget extends StatelessWidget {
   final Course course;
@@ -15,42 +16,26 @@ class CourseCardWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
-      child: Container(
+      child: Div.column(
+        [
+          Text(
+            course.description,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+          ),
+
+          const Spacing.height(12),
+
+          const LinearProgressIndicator(value: 0.0),
+        ],
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: Colors.grey[800],
           borderRadius: BorderRadius.circular(8),
           border: Border.all(color: Colors.grey[700]!),
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              course.title,
-              style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            
-            const SizedBox(height: 8),
-            
-            Text(
-              course.description,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-            ),
-            
-            const SizedBox(height: 12),
-            
-            LinearProgressIndicator(
-              value: 0.0,
-            ),
-          ],
-        ),
+        crossAxisAlignment: CrossAxisAlignment.start,
       ),
     );
   }
-
 }
