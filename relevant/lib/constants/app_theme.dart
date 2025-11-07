@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-/// @Class: Centralized theme and design system
 class AppTheme {
   // Dark theme colors
   static const Color primaryBlue = Color(0xFF4A90E2);
@@ -258,7 +257,6 @@ class AppTheme {
     ),
   ];
 
-  /// @Method: Get course color scheme
   static ColorScheme getCourseColorScheme(CourseThemeColor color) {
     switch (color) {
       case CourseThemeColor.blue: {
@@ -282,7 +280,6 @@ class AppTheme {
     }
   }
 
-  /// @Method: Get question option colors
   static QuestionOptionColors getQuestionOptionColors({
     required bool isSelected,
     required bool shouldShowFeedback,
@@ -313,7 +310,6 @@ class AppTheme {
     }
   }
 
-  /// @Method: Get container decoration
   static BoxDecoration getContainerDecoration({
     required Color backgroundColor,
     required Color borderColor,
@@ -326,7 +322,6 @@ class AppTheme {
     );
   }
 
-  /// @Method: Get card shadow decoration
   static BoxDecoration getCardShadowDecoration({
     double borderRadius = radiusLarge,
   }) {
@@ -342,7 +337,6 @@ class AppTheme {
     );
   }
 
-  /// @Method: Get elevated button style
   static ButtonStyle getElevatedButtonStyle({
     required Color backgroundColor,
     required Color foregroundColor,
@@ -359,7 +353,6 @@ class AppTheme {
   }
 }
 
-/// @Class: Question option color pair
 class QuestionOptionColors {
   final Color backgroundColor;
   final Color textColor;
@@ -370,10 +363,8 @@ class QuestionOptionColors {
   });
 }
 
-// @Enum: Course theme colors
 enum CourseThemeColor { blue, green, purple }
 
-/// @Class: Content background styles
 class ContentBackgroundStyles {
   // Question container
   static BoxDecoration get questionContainer =>
@@ -418,7 +409,6 @@ class ContentBackgroundStyles {
       );
 }
 
-/// @Class: Icon configurations
 class AppIcons {
   static const IconData psychology = Icons.psychology;
   static const IconData lightbulbOutline = Icons.lightbulb_outline;
@@ -429,7 +419,6 @@ class AppIcons {
   static const IconData theater = Icons.theater_comedy;
   static const IconData questionMarkCircle = Icons.help_outline;
 
-  /// @Widget: Utility method to create an icon with specified color and size
   static Widget GetColoredIcon(
     IconData icon,
     Color color, {

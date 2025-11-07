@@ -1,12 +1,6 @@
-// Progressive Text Widget
-//
-// This file contains the ProgressiveTextWidget that animates text reveal
-// character by character with typewriter effect. Used for creating engaging
-// text animations in story content and other narrative elements.
-
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:relevant/constants/app_theme.dart';
+import 'package:relevant/utility_widgets/utility_widgets.dart';
 
 class ProgressiveTextWidget extends StatefulWidget {
   final String text;
@@ -35,7 +29,6 @@ class ProgressiveTextWidgetState extends State<ProgressiveTextWidget> {
   int currentCharacterIndex = 0;
   String revealedText = '';
 
-  /// @Method: Initialize widget state and prepare sentences for reveal
   @override
   void initState() {
     super.initState();
@@ -43,19 +36,17 @@ class ProgressiveTextWidgetState extends State<ProgressiveTextWidget> {
     sentences = splitIntoSentences(widget.text);
 
     final bool hasSentences = sentences.isNotEmpty;
-    
+
     if (hasSentences) {
       initializeCurrentSentence();
     }
 
     // Always start revealing the first sentence immediately
-    
     if (hasSentences) {
       startCurrentSentenceReveal();
     }
   }
 
-  /// @Method: Split text into sentences while preserving structure
   List<String> splitIntoSentences(String text) {
     final List<String> rawSentences = text
         .split(RegExp(r'[.!?]+'))
@@ -66,11 +57,10 @@ class ProgressiveTextWidgetState extends State<ProgressiveTextWidget> {
     return rawSentences;
   }
 
-  /// @Method: Initialize the current sentence for character-by-character reveal
   void initializeCurrentSentence() {
     final bool hasCurrentSentence =
         currentSentenceIndex < sentences.length;
-        
+
     if (hasCurrentSentence) {
       currentSentenceText = sentences[currentSentenceIndex];
       currentCharacterIndex = 0;
@@ -78,7 +68,6 @@ class ProgressiveTextWidgetState extends State<ProgressiveTextWidget> {
     }
   }
 
-  /// @Method: Start revealing the current sentence character by character
   void startCurrentSentenceReveal() async {
     final bool canReveal =
         !isRevealingCurrentSentence && currentSentenceText.isNotEmpty;
@@ -93,21 +82,23 @@ class ProgressiveTextWidgetState extends State<ProgressiveTextWidget> {
       revealedText = '';
     });
 
-    
     for (
       int characterIndex = 0;
       characterIndex < currentSentenceText.length && mounted;
       characterIndex++
     ) {
       final bool shouldContinue = mounted && isRevealingCurrentSentence;
-      
+
       if (!shouldContinue) {
         break;
       }
 
       setState(() {
         currentCharacterIndex = characterIndex;
-        revealedText = currentSentenceText.substring(0, characterIndex + 1);
+        revealedText = currentSentenceText.substring(
+          0,
+          characterIndex + 1,
+        );
       });
 
       // Delay between characters (10ms)
@@ -119,7 +110,6 @@ class ProgressiveTextWidgetState extends State<ProgressiveTextWidget> {
     });
   }
 
-  /// @Method: Move to next sentence and start revealing it
   void revealNextSentence() {
     final bool hasNextSentence =
         currentSentenceIndex < sentences.length - 1;
@@ -134,7 +124,6 @@ class ProgressiveTextWidgetState extends State<ProgressiveTextWidget> {
     }
   }
 
-  /// @Method: Reveal all remaining text instantly
   void revealAll() {
     setState(() {
       isRevealingCurrentSentence = false;
@@ -145,7 +134,6 @@ class ProgressiveTextWidgetState extends State<ProgressiveTextWidget> {
     });
   }
 
-  /// @Method: Clean up resources
   @override
   void dispose() {
     super.dispose();
@@ -158,17 +146,16 @@ class ProgressiveTextWidgetState extends State<ProgressiveTextWidget> {
       child: GestureDetector(
         onTap: handleTap,
         behavior: HitTestBehavior.translucent,
-        child: Container(
-          width: double.infinity,
-          constraints: const BoxConstraints(minHeight: 200.0),
-          padding: const EdgeInsets.all(AppTheme.spacingXL),
-          child: RevealedText(),
+        child: Div.column(
+          [RevealedText()],
+          width: 'full',
+          padding: 20,
+          crossAxisAlignment: 'start',
         ),
       ),
     );
   }
 
-  /// @Method: Handle tap/click to reveal next sentence
   void handleTap() {
     final bool canRevealNext =
         !isRevealingCurrentSentence &&
@@ -179,23 +166,25 @@ class ProgressiveTextWidgetState extends State<ProgressiveTextWidget> {
     }
   }
 
-  /// @Widget: Text content showing completed sentences and current revealing sentence
   Widget RevealedText() {
     final List<Widget> sentenceWidgets = [];
 
     // Show all completed sentences (blurred)
-    
+
     for (
       int sentenceIndex = 0;
       sentenceIndex < currentSentenceIndex;
       sentenceIndex++
     ) {
-      Widget sentenceWidget = Padding(
-        padding: const EdgeInsets.only(bottom: AppTheme.spacingS),
-        child: Text(
-          '${sentences[sentenceIndex]}.',
-          style: AppTheme.bodyMedium.copyWith(height: 1.6),
-        ),
+      Widget sentenceWidget = Div.column(
+        [
+          Text(
+            '${sentences[sentenceIndex]}.',
+            style: const TextStyle(fontSize: 16, height: 1.6),
+          ),
+        ],
+        padding: const EdgeInsets.only(bottom: 8),
+        crossAxisAlignment: CrossAxisAlignment.start,
       );
 
       // Apply blur to completed sentences
@@ -210,31 +199,34 @@ class ProgressiveTextWidgetState extends State<ProgressiveTextWidget> {
     // Show current sentence being revealed word by word
     final bool hasCurrentSentence =
         currentSentenceIndex < sentences.length;
-        
+
     if (hasCurrentSentence) {
-      sentenceWidgets.add(buildCurrentSentence());
+      sentenceWidgets.add(CurrentSentence());
     }
 
-    return Column(
+    return Div.column(
+      sentenceWidgets,
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: sentenceWidgets,
     );
   }
 
-  /// @Widget: Build the current sentence with character-by-character reveal
-  Widget buildCurrentSentence() {
+  Widget CurrentSentence() {
     final bool hasText = revealedText.isNotEmpty;
-    
+
     if (!hasText) {
-      return const SizedBox.shrink();
+      return Spacing.height(0);
     }
 
-    return Padding(
-      padding: const EdgeInsets.only(bottom: AppTheme.spacingS),
-      child: Text(
-        '$revealedText.',
-        style: AppTheme.bodyMedium.copyWith(height: 1.6),
-      ),
+    return Div.column(
+      [
+        Text(
+          '$revealedText.',
+          style: const TextStyle(fontSize: 16, height: 1.6),
+          textAlign: TextAlign.start,
+        ),
+      ],
+      padding: const EdgeInsets.only(bottom: 8),
+      crossAxisAlignment: 'start',
     );
   }
 }

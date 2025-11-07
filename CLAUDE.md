@@ -43,12 +43,9 @@
 final UserStore userStore = context.watch<UserStore>();
 ```
 
-22. Use Div utility widget from utility_widgets.dart for containers instead of Container widget directly unless there is a specific need for Container
+23. Use Div (Div.row or Div.column) utility widget from utility_widgets.dart for containers instead of Container widget directly unless there is a specific need for Container
+24. Use Spacing utility (Spacing.height or Spacing.width) widget from utility_widgets.dart for spacing instead of SizedBox widget directly unless there is a specific need for SizedBox
 
 ## Documentation & Comments
 
 1. From time to time use single line comments to explain non-obvious code sections
-2. Add simple single line documentation comments for all methods and give them "/// @Method: " prefix but do not add this type of comment to flutter's build methods; same goes for createState methods
-3. Prepend methods returning widgets with "/// @Widget: " comment
-4. Prepend classes with "/// @Class: " comment but flutter state classes should not have this comment
-5. Prepend enumerations with "/// @Enum: " comment

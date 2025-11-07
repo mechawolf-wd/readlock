@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:relevant/constants/app_constants.dart';
-import 'package:relevant/constants/app_theme.dart';
 import 'package:relevant/course_screens/models/course_model.dart';
-import 'package:relevant/course_screens/widgets/layout/course_roadmap_widget.dart';
 import 'package:relevant/course_screens/course_detail_screen.dart';
 
 class CourseRoadmapScreen extends StatefulWidget {
@@ -23,37 +20,67 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(AppConstants.COURSE_OVERVIEW),
-        backgroundColor: AppTheme.white,
-        foregroundColor: AppTheme.primaryDeepPurple,
-        elevation: 0,
+        title: Text(widget.course.title),
         actions: [
           TextButton(
             onPressed: startCourse,
-            child: const Text(AppConstants.START_BUTTON_TEXT),
+            child: const Text('Start'),
           ),
         ],
       ),
-      body: CourseRoadmapWidget(
-        course: widget.course,
-        currentSectionIndex: currentSectionIndex,
-        currentContentIndex: currentContentIndex,
-        onNodeTap: handleNodeTap,
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              widget.course.description,
+              style: const TextStyle(fontSize: 16),
+            ),
+            
+            const SizedBox(height: 24),
+            
+            const Text(
+              'Sections',
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            
+            const SizedBox(height: 16),
+            
+            Expanded(
+              child: ListView.builder(
+                itemCount: widget.course.sections.length,
+                itemBuilder: (context, sectionIndex) {
+                  final section = widget.course.sections[sectionIndex];
+                  return Card(
+                    margin: const EdgeInsets.only(bottom: 12),
+                    child: ListTile(
+                      title: Text(section.title),
+                      subtitle: Text('${section.content.length} lessons'),
+                      trailing: const Icon(Icons.arrow_forward_ios),
+                      onTap: () => handleNodeTap(sectionIndex, 0),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
 
-  /// @Method: Handle tapping on a roadmap node
   void handleNodeTap(int sectionIndex, int contentIndex) {
     navigateToCourseContent(sectionIndex, contentIndex);
   }
 
-  /// @Method: Start the course from the beginning
   void startCourse() {
     navigateToCourseContent(0, 0);
   }
 
-  /// @Method: Navigate to specific course content
   void navigateToCourseContent(int sectionIndex, int contentIndex) {
     Navigator.of(context).pushReplacement(
       MaterialPageRoute(
