@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:relevant/course_screens/models/course_model.dart';
 import 'package:relevant/course_screens/widgets/text_content_widget.dart';
 import 'package:relevant/course_screens/widgets/question_content_widget.dart';
+import 'package:relevant/course_screens/widgets/intro_content_widget.dart';
+import 'package:relevant/course_screens/widgets/outro_content_widget.dart';
+import 'package:relevant/course_screens/widgets/design_examples_showcase.dart';
 
 class CourseDetailScreen extends StatefulWidget {
   final Course course;
@@ -78,13 +81,19 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
   }
 
   Widget BuildContentWidget(CourseContent content) {
-    if (content is TextContent) {
+    if (content is IntroContent) {
+      return IntroContentWidget(content: content);
+    } else if (content is TextContent) {
       return TextContentWidget(content: content);
     } else if (content is QuestionContent) {
       return QuestionContentWidget(
         content: content,
         onAnswerSelected: handleQuestionAnswer,
       );
+    } else if (content is OutroContent) {
+      return OutroContentWidget(content: content);
+    } else if (content is DesignExamplesShowcaseContent) {
+      return const DesignExamplesShowcase();
     }
 
     return EmptyStateMessage();
@@ -95,12 +104,12 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
 
     return Container(
       padding: const EdgeInsets.all(16),
-      decoration: const BoxDecoration(
-        color: Colors.white,
+      decoration: BoxDecoration(
+        color: Colors.grey[900],
         boxShadow: [
           BoxShadow(
-            color: Colors.grey,
-            offset: Offset(0, -1),
+            color: Colors.black.withValues(alpha: 0.3),
+            offset: const Offset(0, -1),
             blurRadius: 4,
           ),
         ],
@@ -110,10 +119,14 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
   }
 
   Widget ProgressIndicator(int totalContent) {
-    return LinearProgressIndicator(
-      value: (currentContentIndex + 1) / totalContent,
-      backgroundColor: Colors.grey[300],
-      valueColor: AlwaysStoppedAnimation<Color>(getCourseColor()),
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(8),
+      child: LinearProgressIndicator(
+        value: (currentContentIndex + 1) / totalContent,
+        backgroundColor: Colors.grey[700],
+        valueColor: AlwaysStoppedAnimation<Color>(getCourseColor()),
+        minHeight: 8,
+      ),
     );
   }
 

@@ -30,28 +30,19 @@ class QuestionContentWidgetState extends State<QuestionContentWidget> {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(24),
-      child: Div.column(
-        [
-          QuestionTitle(),
+      child: Div.column([
+        QuestionTitle(),
 
-          const Spacing.height(24),
+        QuestionText(),
 
-          ScenarioContextSection(),
+        const Spacing.height(32),
 
-          const Spacing.height(20),
+        OptionsList(),
 
-          QuestionText(),
+        const Spacing.height(20),
 
-          const Spacing.height(32),
-
-          OptionsList(),
-
-          const Spacing.height(20),
-
-          ExplanationSection(),
-        ],
-        crossAxisAlignment: CrossAxisAlignment.start,
-      ),
+        ExplanationSection(),
+      ], crossAxisAlignment: CrossAxisAlignment.start),
     );
   }
 
@@ -65,27 +56,25 @@ class QuestionContentWidgetState extends State<QuestionContentWidget> {
   Widget QuestionText() {
     return Text(
       widget.content.question,
-      style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+      style: const TextStyle(fontSize: 20),
     );
   }
 
   Widget OptionsList() {
-    return Div.column(
-      [
-        for (
-          int optionIndex = 0;
-          optionIndex < widget.content.options.length;
-          optionIndex++
-        )
-          Container(
-            margin: const EdgeInsets.only(bottom: 12),
-            child: OptionButton(
-              optionIndex,
-              widget.content.options[optionIndex],
-            ),
+    return Div.column([
+      for (
+        int optionIndex = 0;
+        optionIndex < widget.content.options.length;
+        optionIndex++
+      )
+        Container(
+          margin: const EdgeInsets.only(bottom: 12),
+          child: OptionButton(
+            optionIndex,
+            widget.content.options[optionIndex],
           ),
-      ],
-    );
+        ),
+    ]);
   }
 
   Widget OptionButton(int optionIndex, QuestionOption option) {
@@ -112,30 +101,27 @@ class QuestionContentWidgetState extends State<QuestionContentWidget> {
           foregroundColor: textColor,
           padding: const EdgeInsets.all(16),
         ),
-        child: Div.row(
-          [
-            if (shouldShowFeedback)
-              Icon(
-                isCorrect ? Icons.check_circle : Icons.cancel,
+        child: Div.row([
+          if (shouldShowFeedback)
+            Icon(
+              isCorrect ? Icons.check_circle : Icons.cancel,
+              color: textColor,
+            ),
+
+          if (shouldShowFeedback) const Spacing.width(12),
+
+          Expanded(
+            child: Text(
+              option.text,
+              style: TextStyle(
+                fontWeight: isSelected
+                    ? FontWeight.w600
+                    : FontWeight.normal,
                 color: textColor,
               ),
-
-            if (shouldShowFeedback) const Spacing.width(12),
-
-            Expanded(
-              child: Text(
-                option.text,
-                style: TextStyle(
-                  fontWeight: isSelected
-                      ? FontWeight.w600
-                      : FontWeight.normal,
-                  color: textColor,
-                ),
-              ),
             ),
-          ],
-          mainAxisAlignment: MainAxisAlignment.start,
-        ),
+          ),
+        ], mainAxisAlignment: MainAxisAlignment.start),
       ),
     );
   }
@@ -159,50 +145,6 @@ class QuestionContentWidgetState extends State<QuestionContentWidget> {
         color: Colors.grey[800],
         borderRadius: BorderRadius.circular(8),
       ),
-    );
-  }
-
-  Widget ScenarioContextSection() {
-    final bool hasScenarioContext =
-        widget.content.scenarioContext != null;
-
-    if (!hasScenarioContext) {
-      return const Spacing.height(0);
-    }
-
-    return Div.column(
-      [
-        Div.row(
-          [
-            Icon(Icons.theater_comedy, color: Colors.purple[400]),
-
-            const Spacing.width(8),
-
-            Text(
-              'Scenario',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: Colors.purple[400],
-              ),
-            ),
-          ],
-        ),
-
-        const Spacing.height(12),
-
-        Text(
-          widget.content.scenarioContext ?? '',
-          style: const TextStyle(fontSize: 16, height: 1.0),
-        ),
-      ],
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: Colors.purple[900]?.withValues(alpha: 0.3),
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: Colors.purple[600]!),
-      ),
-      crossAxisAlignment: CrossAxisAlignment.start,
     );
   }
 

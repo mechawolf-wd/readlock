@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:relevant/screens/world_screen.dart';
-import 'package:relevant/screens/books_screen.dart';
-import 'package:relevant/screens/profile_screen.dart';
+import 'package:relevant/course_screens/course_roadmap_screen.dart';
+import 'package:relevant/course_screens/data/course_data.dart';
 
 void main() {
   runApp(const RelevantApp());
@@ -14,9 +13,9 @@ class RelevantApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Relevant',
+      title: 'Design Course',
       theme: appTheme(),
-      home: const MainNavigationScreen(),
+      home: const CourseRoadmapScreen(course: designOfEverydayThingsCourse),
       debugShowCheckedModeBanner: false,
     );
   }
@@ -34,76 +33,3 @@ class RelevantApp extends StatelessWidget {
   }
 }
 
-class MainNavigationScreen extends StatefulWidget {
-  const MainNavigationScreen({super.key});
-
-  @override
-  State<MainNavigationScreen> createState() =>
-      MainNavigationScreenState();
-}
-
-class MainNavigationScreenState extends State<MainNavigationScreen> {
-  int currentIndex = 0;
-  late PageController pageController;
-
-  @override
-  void initState() {
-    super.initState();
-    pageController = PageController(initialPage: currentIndex);
-  }
-
-  @override
-  void dispose() {
-    pageController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: PageView(
-        controller: pageController,
-        onPageChanged: handlePageChanged,
-        children: const [WorldScreen(), BooksScreen(), ProfileScreen()],
-      ),
-      bottomNavigationBar: NavigationBar(),
-    );
-  }
-
-  void handleNavigationTap(int navigationIndex) {
-    pageController.animateToPage(
-      navigationIndex,
-      duration: const Duration(milliseconds: 300),
-      curve: Curves.easeInOut,
-    );
-  }
-
-  void handlePageChanged(int pageIndex) {
-    setState(() {
-      currentIndex = pageIndex;
-    });
-  }
-
-  Widget NavigationBar() {
-    return BottomNavigationBar(
-      currentIndex: currentIndex,
-      onTap: handleNavigationTap,
-      items: const [
-        BottomNavigationBarItem(
-          icon: Icon(Icons.public),
-          label: 'World',
-        ),
-
-        BottomNavigationBarItem(
-          icon: Icon(Icons.book),
-          label: 'Books',
-        ),
-
-        BottomNavigationBarItem(
-          icon: Icon(Icons.person),
-          label: 'Profile',
-        ),
-      ],
-    );
-  }
-}

@@ -1,7 +1,7 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide Typography;
 import 'package:relevant/course_screens/models/course_model.dart';
-import 'package:relevant/course_screens/widgets/progressive_text_widget.dart';
-import 'package:relevant/utility_widgets/utility_widgets.dart';
+import 'package:relevant/utility_widgets/text_animation/progressive_text.dart';
+import 'package:relevant/constants/typography.dart';
 
 class TextContentWidget extends StatelessWidget {
   final TextContent content;
@@ -12,9 +12,10 @@ class TextContentWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(24),
-      child: Div.column(
-        [ProgressiveTextWidget(text: content.text)],
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: ProgressiveText(
+        textSegments: content.textSegments,
+        textStyle: Typography.bodyMediumStyle,
+        characterDelay: const Duration(milliseconds: 15),
       ),
     );
   }

@@ -29,6 +29,7 @@ class Constants {
 
   // Spacing values
   static const double WELCOME_COURSES_SPACING = 32.0;
+  static const double COURSE_SECTION_PADDING = 24;
 
   // Text styles
   static const double TITLE_FONT_SIZE = 32.0;

@@ -36,13 +36,42 @@ abstract class CourseContent {
   const CourseContent({required this.id, required this.title});
 }
 
+class IntroContent extends CourseContent {
+  final List<String> introTextSegments;
+
+  const IntroContent({
+    required super.id,
+    required super.title,
+    required this.introTextSegments,
+  });
+}
+
 class TextContent extends CourseContent {
-  final String text;
+  final List<String> textSegments;
+  final String? text;
 
   const TextContent({
     required super.id,
     required super.title,
-    required this.text,
+    required this.textSegments,
+    this.text,
+  });
+}
+
+class OutroContent extends CourseContent {
+  final List<String> outroTextSegments;
+
+  const OutroContent({
+    required super.id,
+    required super.title,
+    required this.outroTextSegments,
+  });
+}
+
+class DesignExamplesShowcaseContent extends CourseContent {
+  const DesignExamplesShowcaseContent({
+    required super.id,
+    required super.title,
   });
 }
 
