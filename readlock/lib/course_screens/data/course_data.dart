@@ -1,0 +1,212 @@
+import 'package:relevant/course_screens/models/course_model.dart';
+
+const Course designOfEverydayThingsCourse = Course(
+  id: 'design_everyday_things',
+  title: 'The Design of Everyday Things',
+  description: 'Based on Don Norman\'s classic book',
+  coverImagePath: 'assets/images/design_course.png',
+  color: 'green',
+  sections: [
+    CourseSection(
+      id: 'design_course',
+      title: 'The Design of Everyday Things',
+      content: [
+        IntroContent(
+          id: 'design_intro',
+          title: 'Doors, Faucets, and Frustration',
+          introTextSegments: [
+            'Why do simple things confuse us?',
+            'It\'s not your fault when designs fail.',
+            'Good design should be invisible.',
+            'Bad design blames the user.'
+          ],
+        ),
+        // 3 Stories
+        TextContent(
+          id: 'story_1',
+          title: 'Story 1',
+          textSegments: [
+            'Sarah approaches the hotel door.',
+            'Glass panel with a vertical metal plate.',
+            'The plate looks like a handle.',
+            'Her brain screams "pull this!"',
+            'What choice did evolution give her?',
+            'She grabs and pulls. Nothing.',
+            'Confused, she pushes. The door opens.',
+            'This is a Norman door.',
+            'It gives the wrong signal.'
+          ],
+        ),
+        TextContent(
+          id: 'story_2',
+          title: 'Story 2',
+          textSegments: [
+            'David faces the bathroom faucet.',
+            'Two identical handles side by side.',
+            'Hot or cold? Left or right?',
+            'Which way do you turn for hot water?',
+            'There are no labels, no indicators.',
+            'He turns the left handle clockwise.',
+            'Ice cold water blasts his hands.',
+            'The mapping was backwards.',
+            'Why should he have to guess?'
+          ],
+        ),
+        TextContent(
+          id: 'story_3',
+          title: 'Story 3',
+          textSegments: [
+            'Maria sits in front of the stove.',
+            'Four burners, four control knobs.',
+            'But which knob controls which burner?',
+            'The knobs are arranged in a straight line.',
+            'How does that map to a square grid?',
+            'She turns the leftmost knob.',
+            'The back-right burner ignites.',
+            'This violates natural mapping.',
+            'The control should match the layout.'
+          ],
+        ),
+        // 1 Easy Question
+        QuestionContent(
+          id: 'basic_question',
+          title: 'Common Sense Check',
+          question: 'When you see a door with a handle, what does your brain assume?',
+          options: [
+            QuestionOption(text: 'You should pull it'),
+            QuestionOption(text: 'You should push it'),
+            QuestionOption(text: 'You should knock first'),
+          ],
+          correctAnswerIndices: [0],
+          explanation: 'Handles naturally suggest pulling because they\'re designed to be gripped. This is called an "affordance" - when an object\'s appearance suggests how to use it.',
+        ),
+        // 3 Clarifications
+        TextContent(
+          id: 'clarification_1',
+          title: 'Clarification 1',
+          textSegments: [
+            'Norman identified seven principles of good design.',
+            'First: Affordances.',
+            'An affordance is a relationship between object and user.',
+            'A handle affords grasping and pulling.',
+            'A flat plate affords pushing.',
+            'When affordances are clear, you know what to do.',
+            'When they\'re unclear, you guess and fail.'
+          ],
+        ),
+        TextContent(
+          id: 'clarification_2',
+          title: 'Clarification 2',
+          textSegments: [
+            'Second principle: Feedback.',
+            'Every action needs a reaction.',
+            'Press a button, see a light.',
+            'Turn a knob, feel resistance.',
+            'Without feedback, you operate blindly.',
+            'Good feedback is immediate and informative.',
+            'Poor feedback leaves you wondering.'
+          ],
+        ),
+        TextContent(
+          id: 'clarification_3',
+          title: 'Clarification 3',
+          textSegments: [
+            'Third principle: Natural mapping.',
+            'Controls should relate to their effects.',
+            'Steering wheels map rotation to direction.',
+            'Light switches map position to rooms.',
+            'When mapping is natural, learning is instant.',
+            'When it\'s arbitrary, you need a manual.',
+            'Good mapping follows spatial relationships.'
+          ],
+        ),
+        // 2 Humorous Questions
+        QuestionContent(
+          id: 'humor_question_1',
+          title: 'The USB Mystery',
+          question: 'Why does a USB cable never fit on the first try?',
+          options: [
+            QuestionOption(text: 'The USB exists in quantum superposition'),
+            QuestionOption(text: 'Poor visual design makes orientation unclear'),
+          ],
+          correctAnswerIndices: [1],
+          explanation: 'While quantum superposition sounds cool, the real problem is that USB connectors look almost identical from both sides. Good design would make the correct orientation obvious at first glance.',
+        ),
+        QuestionContent(
+          id: 'humor_question_2',
+          title: 'The Microwave Paradox',
+          question: 'Why can you launch a space shuttle but not figure out your hotel microwave?',
+          options: [
+            QuestionOption(text: 'Space shuttles have better user manuals'),
+            QuestionOption(text: 'Microwaves prioritize features over usability'),
+          ],
+          correctAnswerIndices: [1],
+          explanation: 'Space shuttles are designed for trained astronauts. Hotel microwaves should be designed for tired travelers who just want to heat their leftovers. Complexity without purpose is bad design.',
+        ),
+        // 3 Real Life Examples
+        TextContent(
+          id: 'example_1',
+          title: 'Example 1',
+          textSegments: [
+            'The Three Mile Island nuclear accident.',
+            'March 28, 1979.',
+            'A cooling pump failed.',
+            'The control room had hundreds of indicators.',
+            'Critical information was buried in the noise.',
+            'Operators couldn\'t see the real problem.',
+            'Poor visibility led to near-catastrophe.',
+            'Norman uses this as his prime example.'
+          ],
+        ),
+        TextContent(
+          id: 'example_2',
+          title: 'Example 2',
+          textSegments: [
+            'Consider a simple teapot.',
+            'The spout shows where liquid comes out.',
+            'The handle shows where to grip.',
+            'The lid suggests where to fill.',
+            'Every part has a clear affordance.',
+            'No instruction manual needed.',
+            'This is what good design looks like.',
+            'It\'s been perfected over centuries.'
+          ],
+        ),
+        TextContent(
+          id: 'example_3',
+          title: 'Example 3',
+          textSegments: [
+            'Computer keyboards follow typewriter layout.',
+            'QWERTY was designed to slow typists down.',
+            'Why do we still use this today?',
+            'Because changing established conventions is hard.',
+            'Even bad design becomes standard.',
+            'Sometimes compatibility trumps optimization.',
+            'Legacy constraints shape modern design.',
+            'History haunts our interfaces.'
+          ],
+        ),
+        OutroContent(
+          id: 'design_conclusion',
+          title: 'Your New Burden',
+          outroTextSegments: [
+            'You can\'t unsee what you\'ve learned.',
+            'Every bad door will now annoy you.',
+            'Every confusing interface will frustrate you.',
+            'This knowledge is both a gift and a curse.',
+            'Use it to make the world slightly less stupid.'
+          ],
+        ),
+        DesignExamplesShowcaseContent(
+          id: 'design_examples',
+          title: 'Good vs Bad Design Examples',
+        ),
+      ],
+    ),
+  ],
+);
+
+// Backwards compatibility
+class CourseData {
+  static const List<Course> availableCourses = [designOfEverydayThingsCourse];
+}
