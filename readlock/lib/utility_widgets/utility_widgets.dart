@@ -569,7 +569,6 @@ class Div extends StatelessWidget {
       case 'brown':
         return Colors.brown;
       case 'grey':
-      case 'gray':
         return Colors.grey;
       case 'black':
         return Colors.black;

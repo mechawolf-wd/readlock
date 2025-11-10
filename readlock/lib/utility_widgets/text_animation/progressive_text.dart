@@ -190,20 +190,16 @@ class ProgressiveTextState extends State<ProgressiveText> {
     }
 
     // Here the column must take availabel height in order to full screen having the handleTap function attached to it
-    return Div.column(
-      [
-        MouseRegion(
-          cursor: SystemMouseCursors.click,
-          child: GestureDetector(
-            onTap: handleTap,
-            behavior: HitTestBehavior.translucent,
-            child: content,
-          ),
+    return Div.column([
+      MouseRegion(
+        cursor: SystemMouseCursors.click,
+        child: GestureDetector(
+          onTap: handleTap,
+          behavior: HitTestBehavior.translucent,
+          child: content,
         ),
-      ],
-      crossAxisAlignment: 'start',
-      debugBorder: true,
-    );
+      ),
+    ], crossAxisAlignment: 'start');
   }
 
   Widget revealedTextDisplay() {

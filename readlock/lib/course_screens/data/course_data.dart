@@ -18,7 +18,7 @@ const Course designOfEverydayThingsCourse = Course(
             'Why do simple things confuse us?',
             'It\'s not your fault when designs fail.',
             'Good design should be invisible.',
-            'Bad design blames the user.'
+            'Bad design blames the user.',
           ],
         ),
         // 3 Stories
@@ -34,7 +34,7 @@ const Course designOfEverydayThingsCourse = Course(
             'She grabs and pulls. Nothing.',
             'Confused, she pushes. The door opens.',
             'This is a Norman door.',
-            'It gives the wrong signal.'
+            'It gives the wrong signal.',
           ],
         ),
         TextContent(
@@ -49,7 +49,7 @@ const Course designOfEverydayThingsCourse = Course(
             'He turns the left handle clockwise.',
             'Ice cold water blasts his hands.',
             'The mapping was backwards.',
-            'Why should he have to guess?'
+            'Why should he have to guess?',
           ],
         ),
         TextContent(
@@ -64,21 +64,23 @@ const Course designOfEverydayThingsCourse = Course(
             'She turns the leftmost knob.',
             'The back-right burner ignites.',
             'This violates natural mapping.',
-            'The control should match the layout.'
+            'The control should match the layout.',
           ],
         ),
         // 1 Easy Question
         QuestionContent(
           id: 'basic_question',
           title: 'Common Sense Check',
-          question: 'When you see a door with a handle, what does your brain assume?',
+          question:
+              'When you see a door with a handle, what does your brain assume?',
           options: [
             QuestionOption(text: 'You should pull it'),
             QuestionOption(text: 'You should push it'),
             QuestionOption(text: 'You should knock first'),
           ],
           correctAnswerIndices: [0],
-          explanation: 'Handles naturally suggest pulling because they\'re designed to be gripped. This is called an "affordance" - when an object\'s appearance suggests how to use it.',
+          explanation:
+              'Handles naturally suggest pulling because they\'re designed to be gripped. This is called an "affordance" - when an object\'s appearance suggests how to use it.',
         ),
         // 3 Clarifications
         TextContent(
@@ -91,7 +93,7 @@ const Course designOfEverydayThingsCourse = Course(
             'A handle affords grasping and pulling.',
             'A flat plate affords pushing.',
             'When affordances are clear, you know what to do.',
-            'When they\'re unclear, you guess and fail.'
+            'When they\'re unclear, you guess and fail.',
           ],
         ),
         TextContent(
@@ -104,7 +106,7 @@ const Course designOfEverydayThingsCourse = Course(
             'Turn a knob, feel resistance.',
             'Without feedback, you operate blindly.',
             'Good feedback is immediate and informative.',
-            'Poor feedback leaves you wondering.'
+            'Poor feedback leaves you wondering.',
           ],
         ),
         TextContent(
@@ -117,7 +119,7 @@ const Course designOfEverydayThingsCourse = Course(
             'Light switches map position to rooms.',
             'When mapping is natural, learning is instant.',
             'When it\'s arbitrary, you need a manual.',
-            'Good mapping follows spatial relationships.'
+            'Good mapping follows spatial relationships.',
           ],
         ),
         // 2 Humorous Questions
@@ -126,22 +128,33 @@ const Course designOfEverydayThingsCourse = Course(
           title: 'The USB Mystery',
           question: 'Why does a USB cable never fit on the first try?',
           options: [
-            QuestionOption(text: 'The USB exists in quantum superposition'),
-            QuestionOption(text: 'Poor visual design makes orientation unclear'),
+            QuestionOption(
+              text: 'The USB exists in quantum superposition',
+            ),
+            QuestionOption(
+              text: 'Poor visual design makes orientation unclear',
+            ),
           ],
           correctAnswerIndices: [1],
-          explanation: 'While quantum superposition sounds cool, the real problem is that USB connectors look almost identical from both sides. Good design would make the correct orientation obvious at first glance.',
+          explanation:
+              'While quantum superposition sounds cool, the real problem is that USB connectors look almost identical from both sides. Good design would make the correct orientation obvious at first glance.',
         ),
         QuestionContent(
           id: 'humor_question_2',
           title: 'The Microwave Paradox',
-          question: 'Why can you launch a space shuttle but not figure out your hotel microwave?',
+          question:
+              'Why can you launch a space shuttle but not figure out your hotel microwave?',
           options: [
-            QuestionOption(text: 'Space shuttles have better user manuals'),
-            QuestionOption(text: 'Microwaves prioritize features over usability'),
+            QuestionOption(
+              text: 'Space shuttles have better user manuals',
+            ),
+            QuestionOption(
+              text: 'Microwaves prioritize features over usability',
+            ),
           ],
           correctAnswerIndices: [1],
-          explanation: 'Space shuttles are designed for trained astronauts. Hotel microwaves should be designed for tired travelers who just want to heat their leftovers. Complexity without purpose is bad design.',
+          explanation:
+              'Space shuttles are designed for trained astronauts. Hotel microwaves should be designed for tired travelers who just want to heat their leftovers. Complexity without purpose is bad design.',
         ),
         // 3 Real Life Examples
         TextContent(
@@ -155,7 +168,7 @@ const Course designOfEverydayThingsCourse = Course(
             'Critical information was buried in the noise.',
             'Operators couldn\'t see the real problem.',
             'Poor visibility led to near-catastrophe.',
-            'Norman uses this as his prime example.'
+            'Norman uses this as his prime example.',
           ],
         ),
         TextContent(
@@ -169,7 +182,7 @@ const Course designOfEverydayThingsCourse = Course(
             'Every part has a clear affordance.',
             'No instruction manual needed.',
             'This is what good design looks like.',
-            'It\'s been perfected over centuries.'
+            'It\'s been perfected over centuries.',
           ],
         ),
         TextContent(
@@ -183,7 +196,7 @@ const Course designOfEverydayThingsCourse = Course(
             'Even bad design becomes standard.',
             'Sometimes compatibility trumps optimization.',
             'Legacy constraints shape modern design.',
-            'History haunts our interfaces.'
+            'History haunts our interfaces.',
           ],
         ),
         OutroContent(
@@ -194,7 +207,7 @@ const Course designOfEverydayThingsCourse = Course(
             'Every bad door will now annoy you.',
             'Every confusing interface will frustrate you.',
             'This knowledge is both a gift and a curse.',
-            'Use it to make the world slightly less stupid.'
+            'Use it to make the world slightly less stupid.',
           ],
         ),
         DesignExamplesShowcaseContent(
@@ -208,5 +221,7 @@ const Course designOfEverydayThingsCourse = Course(
 
 // Backwards compatibility
 class CourseData {
-  static const List<Course> availableCourses = [designOfEverydayThingsCourse];
+  static const List<Course> availableCourses = [
+    designOfEverydayThingsCourse,
+  ];
 }

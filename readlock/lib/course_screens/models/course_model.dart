@@ -1,4 +1,3 @@
-
 class Course {
   final String id;
   final String title;
@@ -111,4 +110,3 @@ class QuestionContent extends CourseContent {
   int get correctAnswerIndex =>
       correctAnswerIndices.isNotEmpty ? correctAnswerIndices.first : -1;
 }
-
