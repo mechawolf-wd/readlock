@@ -2,6 +2,7 @@ import 'package:flutter/material.dart' hide Typography;
 import 'package:relevant/course_screens/models/course_model.dart';
 import 'package:relevant/utility_widgets/text_animation/progressive_text.dart';
 import 'package:relevant/constants/typography.dart';
+import 'package:relevant/constants/app_theme.dart';
 
 class TextContentWidget extends StatelessWidget {
   final TextContent content;
@@ -10,12 +11,15 @@ class TextContentWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(24),
-      child: ProgressiveText(
-        textSegments: content.textSegments,
-        textStyle: Typography.bodyMediumStyle,
-        characterDelay: const Duration(milliseconds: 15),
+    return Container(
+      color: AppTheme.backgroundDark,
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.all(24),
+        child: ProgressiveText(
+          textSegments: content.textSegments,
+          textStyle: Typography.bodyMediumStyle,
+          characterDelay: const Duration(milliseconds: 15),
+        ),
       ),
     );
   }

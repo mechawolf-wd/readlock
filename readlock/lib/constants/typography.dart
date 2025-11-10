@@ -38,7 +38,7 @@ class Typography {
   );
 
   static final TextStyle bodyMediumStyle = GoogleFonts.crimsonText(
-    fontSize: 16,
+    fontSize: 20,
     color: TEXT_PRIMARY,
     height: 1.4,
   );

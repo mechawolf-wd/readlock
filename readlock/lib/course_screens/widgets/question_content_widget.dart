@@ -6,6 +6,7 @@ import 'package:relevant/constants/app_constants.dart';
 import 'package:relevant/course_screens/models/course_model.dart';
 import 'package:relevant/utility_widgets/utility_widgets.dart';
 import 'package:relevant/constants/typography.dart';
+import 'package:relevant/constants/app_theme.dart';
 
 class QuestionContentWidget extends StatefulWidget {
   static const double QUESTION_SECTION_SPACING = 24.0;
@@ -35,24 +36,27 @@ class QuestionContentWidgetState extends State<QuestionContentWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.all(Constants.COURSE_SECTION_PADDING),
-        child: Div.column([
-          QuestionText(),
+    return Container(
+      color: AppTheme.backgroundDark,
+      child: Center(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(Constants.COURSE_SECTION_PADDING),
+          child: Div.column([
+            QuestionText(),
 
-          const Spacing.height(
-            QuestionContentWidget.QUESTION_SECTION_SPACING,
-          ),
+            const Spacing.height(
+              QuestionContentWidget.QUESTION_SECTION_SPACING,
+            ),
 
-          OptionsList(),
+            OptionsList(),
 
-          const Spacing.height(
-            QuestionContentWidget.QUESTION_SECTION_SPACING,
-          ),
+            const Spacing.height(
+              QuestionContentWidget.QUESTION_SECTION_SPACING,
+            ),
 
-          ExplanationSection(),
-        ], crossAxisAlignment: CrossAxisAlignment.start),
+            ExplanationSection(),
+          ], crossAxisAlignment: CrossAxisAlignment.start),
+        ),
       ),
     );
   }

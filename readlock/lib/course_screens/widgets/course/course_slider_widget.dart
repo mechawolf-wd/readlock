@@ -38,56 +38,49 @@ class CourseSliderWidgetState extends State<CourseSliderWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Div.column(
-      [
-        SizedBox(
-          height: 180,
-          child: PageView.builder(
-            controller: pageController,
-            onPageChanged: (pageIndex) {
-              setState(() {
-                currentIndex = pageIndex;
-              });
-            },
-            itemCount: widget.courses.length,
-            scrollDirection: Axis.vertical,
-            itemBuilder: (context, courseIndex) {
-              final Course course = widget.courses[courseIndex];
+    return Div.column([
+      SizedBox(
+        height: 180,
+        child: PageView.builder(
+          controller: pageController,
+          onPageChanged: (pageIndex) {
+            setState(() {
+              currentIndex = pageIndex;
+            });
+          },
+          itemCount: widget.courses.length,
+          scrollDirection: Axis.vertical,
+          itemBuilder: (context, courseIndex) {
+            final Course course = widget.courses[courseIndex];
 
-              return Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 8,
-                  vertical: 8,
-                ),
-                child: CourseCardWidget(
-                  course: course,
-                  onTap: () => widget.onCourseSelected(course),
-                ),
-              );
-            },
-          ),
-        ),
-
-        const Spacing.height(16),
-
-        Div.row(
-          [
-            for (int i = 0; i < widget.courses.length; i++)
-              Container(
-                margin: const EdgeInsets.symmetric(horizontal: 4),
-                width: i == currentIndex ? 20 : 8,
-                height: 8,
-                decoration: BoxDecoration(
-                  color: i == currentIndex
-                      ? Colors.blue
-                      : Colors.grey[400],
-                  borderRadius: BorderRadius.circular(4),
-                ),
+            return Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 8,
+                vertical: 8,
               ),
-          ],
-          mainAxisAlignment: MainAxisAlignment.center,
+              child: CourseCardWidget(
+                course: course,
+                onTap: () => widget.onCourseSelected(course),
+              ),
+            );
+          },
         ),
-      ],
-    );
+      ),
+
+      const Spacing.height(16),
+
+      Div.row([
+        for (int i = 0; i < widget.courses.length; i++)
+          Container(
+            margin: const EdgeInsets.symmetric(horizontal: 4),
+            width: i == currentIndex ? 20 : 8,
+            height: 8,
+            decoration: BoxDecoration(
+              color: i == currentIndex ? Colors.blue : Colors.grey[400],
+              borderRadius: BorderRadius.circular(4),
+            ),
+          ),
+      ], mainAxisAlignment: MainAxisAlignment.center),
+    ]);
   }
 }

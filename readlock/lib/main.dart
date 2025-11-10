@@ -15,7 +15,9 @@ class RelevantApp extends StatelessWidget {
     return MaterialApp(
       title: 'Design Course',
       theme: appTheme(),
-      home: const CourseRoadmapScreen(course: designOfEverydayThingsCourse),
+      home: const CourseRoadmapScreen(
+        course: designOfEverydayThingsCourse,
+      ),
       debugShowCheckedModeBanner: false,
     );
   }
@@ -28,8 +30,9 @@ class RelevantApp extends StatelessWidget {
       ),
       scaffoldBackgroundColor: Colors.grey[900],
       useMaterial3: true,
-      textTheme: GoogleFonts.crimsonTextTextTheme(ThemeData.dark().textTheme),
+      textTheme: GoogleFonts.crimsonTextTextTheme(
+        ThemeData.dark().textTheme,
+      ),
     );
   }
 }
-

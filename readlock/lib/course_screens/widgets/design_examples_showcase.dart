@@ -5,6 +5,7 @@ import 'package:flutter/material.dart' hide Typography;
 import 'package:relevant/constants/typography.dart';
 import 'package:relevant/utility_widgets/text_animation/progressive_text.dart';
 import 'package:relevant/utility_widgets/utility_widgets.dart';
+import 'package:relevant/constants/app_theme.dart';
 
 class DesignExamplesShowcase extends StatefulWidget {
   const DesignExamplesShowcase({super.key});
@@ -84,22 +85,25 @@ class DesignExamplesShowcaseState extends State<DesignExamplesShowcase> {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: double.infinity,
-      child: PageView.builder(
-        scrollDirection: Axis.horizontal,
-        itemCount: examples.length,
-        onPageChanged: (index) {
-          setState(() {
-            currentExampleIndex = index;
-          });
-        },
-        itemBuilder: (context, index) {
-          return Padding(
-            padding: const EdgeInsets.all(24),
-            child: ExampleCard(examples[index]),
-          );
-        },
+    return Container(
+      color: AppTheme.backgroundDark,
+      child: SizedBox(
+        height: double.infinity,
+        child: PageView.builder(
+          scrollDirection: Axis.horizontal,
+          itemCount: examples.length,
+          onPageChanged: (index) {
+            setState(() {
+              currentExampleIndex = index;
+            });
+          },
+          itemBuilder: (context, index) {
+            return Padding(
+              padding: const EdgeInsets.all(24),
+              child: ExampleCard(examples[index]),
+            );
+          },
+        ),
       ),
     );
   }

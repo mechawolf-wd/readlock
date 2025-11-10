@@ -5,6 +5,7 @@ import 'package:relevant/course_screens/widgets/question_content_widget.dart';
 import 'package:relevant/course_screens/widgets/intro_content_widget.dart';
 import 'package:relevant/course_screens/widgets/outro_content_widget.dart';
 import 'package:relevant/course_screens/widgets/design_examples_showcase.dart';
+import 'package:relevant/constants/app_theme.dart';
 
 class CourseDetailScreen extends StatefulWidget {
   final Course course;
@@ -34,9 +35,7 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
     currentSectionIndex = widget.initialSectionIndex;
     currentContentIndex = widget.initialContentIndex;
 
-    pageController = PageController(
-      initialPage: currentContentIndex,
-    );
+    pageController = PageController(initialPage: currentContentIndex);
   }
 
   @override
@@ -47,9 +46,12 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Body(),
-      bottomNavigationBar: NavigationControls(),
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: AppTheme.backgroundDark,
+        body: Body(),
+        bottomNavigationBar: NavigationControls(),
+      ),
     );
   }
 
@@ -104,16 +106,6 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
 
     return Container(
       padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.grey[900],
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.3),
-            offset: const Offset(0, -1),
-            blurRadius: 4,
-          ),
-        ],
-      ),
       child: ProgressIndicator(allContent.length),
     );
   }
@@ -123,9 +115,9 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
       borderRadius: BorderRadius.circular(8),
       child: LinearProgressIndicator(
         value: (currentContentIndex + 1) / totalContent,
-        backgroundColor: Colors.grey[700],
+        backgroundColor: AppTheme.backgroundLight,
         valueColor: AlwaysStoppedAnimation<Color>(getCourseColor()),
-        minHeight: 8,
+        minHeight: 12,
       ),
     );
   }
@@ -145,7 +137,6 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
       currentContentIndex = contentIndex;
     });
   }
-
 
   void handleQuestionAnswer(int selectedIndex, bool isCorrect) {
     // Future implementation for tracking progress and answers
