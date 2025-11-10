@@ -1,7 +1,7 @@
 // Widget that displays concluding content for course sections
 import 'package:flutter/material.dart' hide Typography;
 import 'package:relevant/course_screens/models/course_model.dart';
-import 'package:relevant/utility_widgets/layout/layout_widgets.dart';
+import 'package:relevant/utility_widgets/utility_widgets.dart';
 import 'package:relevant/constants/typography.dart';
 import 'package:relevant/utility_widgets/text_animation/text_animation.dart';
 

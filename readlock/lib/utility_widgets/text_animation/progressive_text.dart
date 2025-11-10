@@ -3,7 +3,7 @@
 
 import 'package:flutter/material.dart' hide Typography;
 import 'package:relevant/constants/typography.dart';
-import 'package:relevant/utility_widgets/layout/layout_widgets.dart';
+import 'package:relevant/utility_widgets/utility_widgets.dart';
 import 'package:relevant/utility_widgets/visual_effects/blur_overlay.dart';
 
 class ProgressiveText extends StatefulWidget {

@@ -4,7 +4,7 @@
 import 'package:flutter/material.dart' hide Typography;
 import 'package:relevant/constants/typography.dart';
 import 'package:relevant/utility_widgets/text_animation/progressive_text.dart';
-import 'package:relevant/utility_widgets/layout/layout_widgets.dart';
+import 'package:relevant/utility_widgets/utility_widgets.dart';
 
 class DesignExamplesShowcase extends StatefulWidget {
   const DesignExamplesShowcase({super.key});
