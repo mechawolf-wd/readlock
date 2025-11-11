@@ -80,7 +80,7 @@ const Course designOfEverydayThingsCourse = Course(
           ],
           correctAnswerIndices: [0],
           explanation:
-              'Handles naturally suggest pulling because they\'re designed to be gripped. This is called an "affordance" - when an object\'s appearance suggests how to use it.',
+              'Handles suggest pulling. This is called an "affordance."',
         ),
         // 3 Clarifications
         TextContent(
@@ -137,7 +137,7 @@ const Course designOfEverydayThingsCourse = Course(
           ],
           correctAnswerIndices: [1],
           explanation:
-              'While quantum superposition sounds cool, the real problem is that USB connectors look almost identical from both sides. Good design would make the correct orientation obvious at first glance.',
+              'USB connectors look identical from both sides. Good design makes orientation obvious.',
         ),
         QuestionContent(
           id: 'humor_question_2',
@@ -154,7 +154,19 @@ const Course designOfEverydayThingsCourse = Course(
           ],
           correctAnswerIndices: [1],
           explanation:
-              'Space shuttles are designed for trained astronauts. Hotel microwaves should be designed for tired travelers who just want to heat their leftovers. Complexity without purpose is bad design.',
+              'Microwaves prioritize features over simple usability. Complexity without purpose is bad design.',
+        ),
+        ReflectionContent(
+          id: 'reflection_1',
+          title: 'Design in Your Life',
+          emoji: '🤔',
+          prompt: 'Think about a recent time when you struggled with a poorly designed object or interface. What made it confusing?',
+          thinkingPoints: [
+            'What did you expect to happen vs. what actually happened?',
+            'Were there visual cues that led you astray?',
+            'How would you redesign it to be more intuitive?',
+            'Who might be most affected by this poor design?',
+          ],
         ),
         // 3 Real Life Examples
         TextContent(

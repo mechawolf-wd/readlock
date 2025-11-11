@@ -15,33 +15,41 @@ class OutroContentWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       color: AppTheme.backgroundDark,
-      child: Center(
-        child: Container(
-          margin: const EdgeInsets.all(24),
-          padding: const EdgeInsets.all(20),
-          decoration: BoxDecoration(
-            color: Colors.green.withValues(alpha: 0.1),
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(
-              color: Colors.green.withValues(alpha: 0.3),
-            ),
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
+      padding: const EdgeInsets.all(24),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
             children: [
-              Typography.headingMedium(content.title),
+              const Icon(
+                Icons.check_circle,
+                color: AppTheme.primaryGreen,
+                size: 24,
+              ),
 
-              const Spacing.height(16),
+              const Spacing.width(12),
 
-              ProgressiveText(
-                textSegments: content.outroTextSegments,
-                textStyle: Typography.bodyMediumStyle,
-                characterDelay: const Duration(milliseconds: 15),
+              Expanded(
+                child: Text(
+                  content.title,
+                  style: Typography.bodyLargeStyle.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
+                  textAlign: TextAlign.left,
+                ),
               ),
             ],
           ),
-        ),
+
+          const Spacing.height(20),
+
+          ProgressiveText(
+            textSegments: content.outroTextSegments,
+            textStyle: Typography.bodyLargeStyle,
+            characterDelay: const Duration(milliseconds: 15),
+            crossAxisAlignment: CrossAxisAlignment.start,
+          ),
+        ],
       ),
     );
   }

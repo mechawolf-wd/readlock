@@ -7,6 +7,9 @@ import 'package:relevant/utility_widgets/utility_widgets.dart';
 import 'package:relevant/utility_widgets/visual_effects/blur_overlay.dart';
 
 class ProgressiveText extends StatefulWidget {
+  static const double DEFAULT_BOTTOM_SPACING = 8.0;
+  static const Duration AUTO_REVEAL_DELAY = Duration(milliseconds: 300);
+  
   final List<String> textSegments;
   final Duration characterDelay;
   final bool autoReveal;
@@ -39,21 +42,21 @@ class ProgressiveText extends StatefulWidget {
 }
 
 class ProgressiveTextState extends State<ProgressiveText> {
-  late List<String> sentences;
-  int currentSentenceIndex = 0;
+  late List<String> textSentences;
+  int currentSentenceNumber = 0;
   bool isRevealingCurrentSentence = false;
 
   String currentSentenceText = '';
-  int currentCharacterIndex = 0;
+  int currentCharacterPosition = 0;
   String revealedText = '';
 
   @override
   void initState() {
     super.initState();
 
-    sentences = widget.textSegments;
+    textSentences = widget.textSegments;
 
-    final bool hasSentences = sentences.isNotEmpty;
+    final bool hasSentences = textSentences.isNotEmpty;
 
     if (hasSentences) {
       initializeCurrentSentence();
@@ -63,11 +66,11 @@ class ProgressiveTextState extends State<ProgressiveText> {
 
   void initializeCurrentSentence() {
     final bool hasCurrentSentence =
-        currentSentenceIndex < sentences.length;
+        currentSentenceNumber < textSentences.length;
 
     if (hasCurrentSentence) {
-      currentSentenceText = sentences[currentSentenceIndex];
-      currentCharacterIndex = 0;
+      currentSentenceText = textSentences[currentSentenceNumber];
+      currentCharacterPosition = 0;
       revealedText = '';
     }
   }
@@ -83,7 +86,7 @@ class ProgressiveTextState extends State<ProgressiveText> {
     if (mounted) {
       setState(() {
         isRevealingCurrentSentence = true;
-        currentCharacterIndex = 0;
+        currentCharacterPosition = 0;
         revealedText = '';
       });
     }
@@ -101,7 +104,7 @@ class ProgressiveTextState extends State<ProgressiveText> {
 
       if (mounted) {
         setState(() {
-          currentCharacterIndex = characterIndex;
+          currentCharacterPosition = characterIndex;
           revealedText = currentSentenceText.substring(
             0,
             characterIndex + 1,
@@ -119,10 +122,10 @@ class ProgressiveTextState extends State<ProgressiveText> {
 
       if (widget.autoReveal) {
         final bool hasNextSentence =
-            currentSentenceIndex < sentences.length - 1;
+            currentSentenceNumber < textSentences.length - 1;
 
         if (hasNextSentence) {
-          await Future.delayed(const Duration(milliseconds: 300));
+          await Future.delayed(ProgressiveText.AUTO_REVEAL_DELAY);
           revealNextSentence();
         }
       }
@@ -131,11 +134,11 @@ class ProgressiveTextState extends State<ProgressiveText> {
 
   void revealNextSentence() {
     final bool hasNextSentence =
-        currentSentenceIndex < sentences.length - 1;
+        currentSentenceNumber < textSentences.length - 1;
 
     if (hasNextSentence && mounted) {
       setState(() {
-        currentSentenceIndex++;
+        currentSentenceNumber++;
       });
 
       initializeCurrentSentence();
@@ -147,11 +150,11 @@ class ProgressiveTextState extends State<ProgressiveText> {
     if (mounted) {
       setState(() {
         isRevealingCurrentSentence = false;
-        currentSentenceIndex = sentences.length - 1;
+        currentSentenceNumber = textSentences.length - 1;
 
         initializeCurrentSentence();
 
-        currentCharacterIndex = currentSentenceText.length - 1;
+        currentCharacterPosition = currentSentenceText.length - 1;
         revealedText = currentSentenceText;
       });
     }
@@ -165,7 +168,7 @@ class ProgressiveTextState extends State<ProgressiveText> {
 
     final bool canRevealNext =
         !isRevealingCurrentSentence &&
-        currentSentenceIndex < sentences.length - 1;
+        currentSentenceNumber < textSentences.length - 1;
 
     if (canRevealNext) {
       revealNextSentence();
@@ -182,14 +185,13 @@ class ProgressiveTextState extends State<ProgressiveText> {
   Widget build(BuildContext context) {
     final Widget content = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: [revealedTextDisplay()],
+      children: [RevealedTextDisplay()],
     );
 
     if (!widget.showClickableArea) {
       return content;
     }
 
-    // Here the column must take availabel height in order to full screen having the handleTap function attached to it
     return Div.column([
       MouseRegion(
         cursor: SystemMouseCursors.click,
@@ -202,21 +204,21 @@ class ProgressiveTextState extends State<ProgressiveText> {
     ], crossAxisAlignment: 'start');
   }
 
-  Widget revealedTextDisplay() {
+  Widget RevealedTextDisplay() {
     final List<Widget> sentenceWidgets = [];
 
     for (
-      int sentenceIndex = 0;
-      sentenceIndex < currentSentenceIndex;
-      sentenceIndex++
+      int sentenceItemIndex = 0;
+      sentenceItemIndex < currentSentenceNumber;
+      sentenceItemIndex++
     ) {
       Widget sentenceWidget = Padding(
-        padding: const EdgeInsets.only(bottom: 8),
+        padding: const EdgeInsets.only(bottom: ProgressiveText.DEFAULT_BOTTOM_SPACING),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              sentences[sentenceIndex],
+              textSentences[sentenceItemIndex],
               style: widget.textStyle ?? Typography.bodyMediumStyle,
             ),
           ],
@@ -235,10 +237,10 @@ class ProgressiveTextState extends State<ProgressiveText> {
     }
 
     final bool hasCurrentSentence =
-        currentSentenceIndex < sentences.length;
+        currentSentenceNumber < textSentences.length;
 
     if (hasCurrentSentence) {
-      sentenceWidgets.add(currentSentenceDisplay());
+      sentenceWidgets.add(CurrentSentenceDisplay());
     }
 
     return Column(
@@ -247,7 +249,7 @@ class ProgressiveTextState extends State<ProgressiveText> {
     );
   }
 
-  Widget currentSentenceDisplay() {
+  Widget CurrentSentenceDisplay() {
     final bool hasText = revealedText.isNotEmpty;
 
     if (!hasText) {

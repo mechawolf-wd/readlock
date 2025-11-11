@@ -7,6 +7,7 @@ import 'package:relevant/course_screens/models/course_model.dart';
 import 'package:relevant/utility_widgets/utility_widgets.dart';
 import 'package:relevant/constants/typography.dart';
 import 'package:relevant/constants/app_theme.dart';
+import 'package:relevant/utility_widgets/text_animation/progressive_text.dart';
 
 class QuestionContentWidget extends StatefulWidget {
   static const double QUESTION_SECTION_SPACING = 24.0;
@@ -40,7 +41,9 @@ class QuestionContentWidgetState extends State<QuestionContentWidget> {
       color: AppTheme.backgroundDark,
       child: Center(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(Constants.COURSE_SECTION_PADDING),
+          padding: const EdgeInsets.all(
+            Constants.COURSE_SECTION_PADDING,
+          ),
           child: Div.column([
             QuestionText(),
 
@@ -62,7 +65,12 @@ class QuestionContentWidgetState extends State<QuestionContentWidget> {
   }
 
   Widget QuestionText() {
-    return Typography.headingMedium(widget.content.question);
+    return Text(
+      widget.content.question,
+      style: Typography.bodyLargeStyle.copyWith(
+        fontWeight: FontWeight.w500,
+      ),
+    );
   }
 
   Widget OptionsList() {
@@ -78,7 +86,9 @@ class QuestionContentWidgetState extends State<QuestionContentWidget> {
             widget.content.options[optionIndex],
           ),
 
-          const Spacing.height(QuestionContentWidget.OPTION_BUTTON_SPACING),
+          const Spacing.height(
+            QuestionContentWidget.OPTION_BUTTON_SPACING,
+          ),
         ]),
     ]);
   }
@@ -88,45 +98,92 @@ class QuestionContentWidgetState extends State<QuestionContentWidget> {
     final bool isCorrect = widget.content.correctAnswerIndices.contains(
       optionIndex,
     );
-    final bool shouldShowFeedback = hasAnswered && isSelected;
+    final bool shouldShowFeedback = hasAnswered && (isSelected || isCorrect);
 
-    const Color textColor = Colors.white;
-    final Color buttonColor = getButtonColor(
-      shouldShowFeedback,
-      isCorrect,
-      isSelected,
-    );
+    Color themeColor;
+    Color backgroundColor;
+    Color textColor;
 
-    return SizedBox(
+    if (shouldShowFeedback) {
+      if (isCorrect) {
+        themeColor = AppTheme.primaryGreen;
+        backgroundColor = AppTheme.backgroundLight;
+        textColor = AppTheme.textPrimary;
+      } else if (isSelected && !isCorrect) {
+        // Gentle orange for wrong answers instead of harsh red
+        themeColor = const Color(0xFFFF9800); // Orange
+        backgroundColor = AppTheme.backgroundLight;
+        textColor = AppTheme.textPrimary;
+      } else {
+        // Unselected options
+        themeColor = AppTheme.textPrimary.withValues(alpha: 0.2);
+        backgroundColor = AppTheme.backgroundLight;
+        textColor = AppTheme.textPrimary;
+      }
+    } else if (isSelected) {
+      themeColor = AppTheme.primaryBlue;
+      backgroundColor = AppTheme.backgroundLight;
+      textColor = AppTheme.textPrimary;
+    } else {
+      themeColor = AppTheme.textPrimary.withValues(alpha: 0.2);
+      backgroundColor = AppTheme.backgroundLight;
+      textColor = AppTheme.textPrimary;
+    }
+
+    return Container(
       width: double.infinity,
-      child: ElevatedButton(
-        onPressed: hasAnswered ? null : () => selectAnswer(optionIndex),
-        style: ElevatedButton.styleFrom(
-          backgroundColor: buttonColor,
-          foregroundColor: textColor,
-          padding: const EdgeInsets.all(
-            QuestionContentWidget.BUTTON_PADDING,
+      decoration: BoxDecoration(
+        color: backgroundColor,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: themeColor, width: 2),
+        boxShadow: isSelected
+            ? [
+                BoxShadow(
+                  color: themeColor.withValues(alpha: 0.1),
+                  blurRadius: 4,
+                  offset: const Offset(0, 2),
+                ),
+              ]
+            : [],
+      ),
+      child: InkWell(
+        onTap: hasAnswered ? null : () => selectAnswer(optionIndex),
+        borderRadius: BorderRadius.circular(12),
+        child: Padding(
+          padding: const EdgeInsets.all(12),
+          child: Row(
+            children: [
+              if (shouldShowFeedback) ...[
+                Container(
+                  padding: const EdgeInsets.all(4),
+                  decoration: BoxDecoration(
+                    color: themeColor.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: Icon(
+                    getFeedbackIcon(isCorrect),
+                    color: themeColor,
+                    size: 18,
+                  ),
+                ),
+                const Spacing.width(12),
+              ],
+
+              Expanded(
+                child: Text(
+                  option.text,
+                  style: Typography.bodyLargeStyle.copyWith(
+                    fontSize: 14,
+                    fontWeight: isSelected
+                        ? FontWeight.w500
+                        : FontWeight.normal,
+                    color: textColor,
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
-        child: Div.row([
-          if (shouldShowFeedback)
-            Icon(getFeedbackIcon(isCorrect), color: textColor),
-
-          if (shouldShowFeedback)
-            const Spacing.width(
-              QuestionContentWidget.OPTION_BUTTON_SPACING - 4,
-            ),
-
-          Expanded(
-            child: Text(
-              option.text,
-              style: TextStyle(
-                fontWeight: getTextWeight(isSelected),
-                color: textColor,
-              ),
-            ),
-          ),
-        ], mainAxisAlignment: MainAxisAlignment.start),
       ),
     );
   }
@@ -139,8 +196,15 @@ class QuestionContentWidgetState extends State<QuestionContentWidget> {
     }
 
     return Div.column([
-      Typography.bodyMedium(widget.content.explanation),
-    ], padding: QuestionContentWidget.EXPLANATION_PADDING);
+      ProgressiveText(
+        textSegments: [widget.content.explanation],
+        textStyle: Typography.bodyLargeStyle.copyWith(
+          fontSize: 14,
+        ),
+        characterDelay: const Duration(milliseconds: 10),
+        crossAxisAlignment: CrossAxisAlignment.start,
+      ),
+    ]);
   }
 
   Color getButtonColor(

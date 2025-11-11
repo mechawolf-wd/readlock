@@ -74,6 +74,20 @@ class DesignExamplesShowcaseContent extends CourseContent {
   });
 }
 
+class ReflectionContent extends CourseContent {
+  final String prompt;
+  final List<String> thinkingPoints;
+  final String? emoji;
+
+  const ReflectionContent({
+    required super.id,
+    required super.title,
+    required this.prompt,
+    required this.thinkingPoints,
+    this.emoji,
+  });
+}
+
 enum QuestionType { multipleChoice, trueOrFalse, scenario, reflection }
 
 class QuestionOption {

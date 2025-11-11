@@ -9,50 +9,31 @@ class Typography {
   static const Color TEXT_TERTIARY = Color(0xFF808080);
 
   // Typography styles
-  static final TextStyle headingLargeStyle = GoogleFonts.crimsonText(
-    fontSize: 32,
+  static final TextStyle headingLargeStyle = GoogleFonts.merriweather(
+    fontSize: 28,
     fontWeight: FontWeight.bold,
-    color: TEXT_PRIMARY,
-    height: 1.2,
-  );
-
-  static final TextStyle headingMediumStyle = GoogleFonts.crimsonText(
-    fontSize: 24,
-    fontWeight: FontWeight.w600,
-    color: TEXT_PRIMARY,
-    height: 1.3,
-  );
-
-  static final TextStyle headingSmallStyle = GoogleFonts.crimsonText(
-    fontSize: 20,
-    fontWeight: FontWeight.w500,
     color: TEXT_PRIMARY,
     height: 1.4,
   );
 
-  static final TextStyle bodyLargeStyle = GoogleFonts.crimsonText(
-    fontSize: 18,
-    fontWeight: FontWeight.w500,
+  static final TextStyle headingMediumStyle = GoogleFonts.merriweather(
+    fontSize: 20,
+    fontWeight: FontWeight.w600,
     color: TEXT_PRIMARY,
     height: 1.5,
   );
 
-  static final TextStyle bodyMediumStyle = GoogleFonts.crimsonText(
-    fontSize: 20,
+  static final TextStyle bodyLargeStyle = GoogleFonts.merriweather(
+    fontSize: 16,
+    fontWeight: FontWeight.w500,
     color: TEXT_PRIMARY,
-    height: 1.4,
+    height: 1.6,
   );
 
-  static final TextStyle bodySmallStyle = GoogleFonts.crimsonText(
-    fontSize: 14,
-    color: TEXT_SECONDARY,
-    height: 1.3,
-  );
-
-  static final TextStyle captionTextStyle = GoogleFonts.crimsonText(
-    fontSize: 12,
-    color: TEXT_TERTIARY,
-    height: 1.2,
+  static final TextStyle bodyMediumStyle = GoogleFonts.merriweather(
+    fontSize: 16,
+    color: TEXT_PRIMARY,
+    height: 1.6,
   );
 
   // Text widget methods
@@ -76,27 +57,11 @@ class Typography {
     );
   }
 
-  static Text headingSmall(String content, {TextAlign? textAlign}) {
-    return Text(
-      content,
-      style: headingSmallStyle,
-      textAlign: textAlign,
-    );
-  }
-
   static Text bodyLarge(String content, {TextAlign? textAlign}) {
     return Text(content, style: bodyLargeStyle, textAlign: textAlign);
   }
 
   static Text bodyMedium(String content, {TextAlign? textAlign}) {
     return Text(content, style: bodyMediumStyle, textAlign: textAlign);
-  }
-
-  static Text bodySmall(String content, {TextAlign? textAlign}) {
-    return Text(content, style: bodySmallStyle, textAlign: textAlign);
-  }
-
-  static Text captionText(String content, {TextAlign? textAlign}) {
-    return Text(content, style: captionTextStyle, textAlign: textAlign);
   }
 }

@@ -5,6 +5,7 @@ import 'package:relevant/course_screens/widgets/question_content_widget.dart';
 import 'package:relevant/course_screens/widgets/intro_content_widget.dart';
 import 'package:relevant/course_screens/widgets/outro_content_widget.dart';
 import 'package:relevant/course_screens/widgets/design_examples_showcase.dart';
+import 'package:relevant/course_screens/widgets/reflection_content_widget.dart';
 import 'package:relevant/constants/app_theme.dart';
 
 class CourseDetailScreen extends StatefulWidget {
@@ -50,7 +51,7 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
       child: Scaffold(
         backgroundColor: AppTheme.backgroundDark,
         body: Body(),
-        bottomNavigationBar: NavigationControls(),
+        bottomNavigationBar: BottomProgressBar(),
       ),
     );
   }
@@ -96,16 +97,23 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
       return OutroContentWidget(content: content);
     } else if (content is DesignExamplesShowcaseContent) {
       return const DesignExamplesShowcase();
+    } else if (content is ReflectionContent) {
+      return ReflectionContentWidget(content: content);
     }
 
     return EmptyStateMessage();
   }
 
-  Widget NavigationControls() {
+  Widget BottomProgressBar() {
     final List<CourseContent> allContent = getAllContent();
 
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.only(
+        left: 24,
+        right: 24,
+        bottom: 16,
+        top: 16,
+      ),
       child: ProgressIndicator(allContent.length),
     );
   }
