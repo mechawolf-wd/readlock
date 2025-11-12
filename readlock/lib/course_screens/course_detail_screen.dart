@@ -1,3 +1,5 @@
+// Course detail screen displaying individual course content with navigation
+// Supports various content types including text, questions, intro/outro, and design examples
 import 'package:flutter/material.dart';
 import 'package:relevant/course_screens/models/course_model.dart';
 import 'package:relevant/course_screens/widgets/text_content_widget.dart';
@@ -7,6 +9,12 @@ import 'package:relevant/course_screens/widgets/outro_content_widget.dart';
 import 'package:relevant/course_screens/widgets/design_examples_showcase.dart';
 import 'package:relevant/course_screens/widgets/reflection_content_widget.dart';
 import 'package:relevant/constants/app_theme.dart';
+
+const String NO_CONTENT_AVAILABLE_MESSAGE =
+    'No content available for this course';
+const String COLOR_BLUE = 'blue';
+const String COLOR_GREEN = 'green';
+const String COLOR_PURPLE = 'purple';
 
 class CourseDetailScreen extends StatefulWidget {
   final Course course;
@@ -50,17 +58,17 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
     return SafeArea(
       child: Scaffold(
         backgroundColor: AppTheme.backgroundDark,
-        body: Body(),
-        bottomNavigationBar: BottomProgressBar(),
+        body: CourseBody(),
+        bottomNavigationBar: ProgressBarSection(),
       ),
     );
   }
 
-  Widget Body() {
+  Widget CourseBody() {
     final List<CourseContent> allContent = getAllContent();
 
     if (allContent.isEmpty) {
-      return EmptyStateMessage();
+      return EmptyContentMessage();
     }
 
     return PageView.builder(
@@ -68,43 +76,51 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
       scrollDirection: Axis.vertical,
       itemCount: allContent.length,
       onPageChanged: handlePageChanged,
-      itemBuilder: (context, contentIndex) {
-        return BuildContentWidget(allContent[contentIndex]);
+      itemBuilder: (context, contentItemIndex) {
+        return ContentWidget(allContent[contentItemIndex]);
       },
     );
   }
 
-  Widget EmptyStateMessage() {
+  Widget EmptyContentMessage() {
     return const Center(
       child: Text(
-        'No content available for this course',
+        NO_CONTENT_AVAILABLE_MESSAGE,
         style: TextStyle(fontSize: 18),
       ),
     );
   }
 
-  Widget BuildContentWidget(CourseContent content) {
-    if (content is IntroContent) {
+  Widget ContentWidget(CourseContent content) {
+    final bool isIntroContent = content is IntroContent;
+    final bool isTextContent = content is TextContent;
+    final bool isQuestionContent = content is QuestionContent;
+    final bool isOutroContent = content is OutroContent;
+    final bool isDesignExamplesContent =
+        content is DesignExamplesShowcaseContent;
+    final bool isReflectionContent = content is ReflectionContent;
+
+    if (isIntroContent) {
       return IntroContentWidget(content: content);
-    } else if (content is TextContent) {
+    } else if (isTextContent) {
       return TextContentWidget(content: content);
-    } else if (content is QuestionContent) {
+    } else if (isQuestionContent) {
       return QuestionContentWidget(
         content: content,
         onAnswerSelected: handleQuestionAnswer,
       );
-    } else if (content is OutroContent) {
+    } else if (isOutroContent) {
       return OutroContentWidget(content: content);
-    } else if (content is DesignExamplesShowcaseContent) {
+    } else if (isDesignExamplesContent) {
       return const DesignExamplesShowcase();
-    } else if (content is ReflectionContent) {
+    } else if (isReflectionContent) {
       return ReflectionContentWidget(content: content);
     }
 
-    return EmptyStateMessage();
+    return EmptyContentMessage();
   }
 
-  Widget BottomProgressBar() {
+  Widget ProgressBarSection() {
     final List<CourseContent> allContent = getAllContent();
 
     return Container(
@@ -114,11 +130,11 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
         bottom: 16,
         top: 16,
       ),
-      child: ProgressIndicator(allContent.length),
+      child: ProgressBar(allContent.length),
     );
   }
 
-  Widget ProgressIndicator(int totalContent) {
+  Widget ProgressBar(int totalContent) {
     return ClipRRect(
       borderRadius: BorderRadius.circular(8),
       child: LinearProgressIndicator(
@@ -140,9 +156,9 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
     return allContent;
   }
 
-  void handlePageChanged(int contentIndex) {
+  void handlePageChanged(int contentItemIndex) {
     setState(() {
-      currentContentIndex = contentIndex;
+      currentContentIndex = contentItemIndex;
     });
   }
 
@@ -152,14 +168,22 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
 
   Color getCourseColor() {
     switch (widget.course.color) {
-      case 'blue':
-        return Colors.blue;
-      case 'green':
-        return Colors.green;
-      case 'purple':
-        return Colors.purple;
+      case COLOR_BLUE:
+        {
+          return Colors.blue;
+        }
+      case COLOR_GREEN:
+        {
+          return Colors.green;
+        }
+      case COLOR_PURPLE:
+        {
+          return Colors.purple;
+        }
       default:
-        return Colors.blue;
+        {
+          return Colors.blue;
+        }
     }
   }
 }

@@ -25,3 +25,4 @@
 21. Name providers like stores eg. userStore, productStore, and so on.
 22. Use Div (Div.row or Div.column) utility widget from utility_widgets.dart for containers instead of Container widget directly unless there is a specific need for Container
 23. Use Spacing utility (Spacing.height or Spacing.width) widget from utility_widgets.dart for spacing instead of SizedBox widget directly unless there is a specific need for SizedBox
+24. Use typography.dart for text.

@@ -160,7 +160,8 @@ const Course designOfEverydayThingsCourse = Course(
           id: 'reflection_1',
           title: 'Design in Your Life',
           emoji: '🤔',
-          prompt: 'Think about a recent time when you struggled with a poorly designed object or interface. What made it confusing?',
+          prompt:
+              'Think about a recent time when you struggled with a poorly designed object or interface. What made it confusing?',
           thinkingPoints: [
             'What did you expect to happen vs. what actually happened?',
             'Were there visual cues that led you astray?',

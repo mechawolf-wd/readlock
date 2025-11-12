@@ -1,8 +1,13 @@
+// Course roadmap screen displaying a list of course sections
+// Allows navigation to course content and starting the course from the beginning
 import 'package:flutter/material.dart';
 import 'package:relevant/course_screens/models/course_model.dart';
 import 'package:relevant/course_screens/course_detail_screen.dart';
 import 'package:relevant/utility_widgets/utility_widgets.dart';
 import 'package:relevant/constants/app_theme.dart';
+
+const String START_BUTTON_TEXT = 'Start';
+const String LESSONS_SUFFIX_TEXT = ' lessons';
 
 class CourseRoadmapScreen extends StatefulWidget {
   final Course course;
@@ -27,7 +32,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
         actions: [
           TextButton(
             onPressed: startCourse,
-            child: const Text('Start'),
+            child: const Text(START_BUTTON_TEXT),
           ),
         ],
       ),
@@ -37,15 +42,19 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
           Expanded(
             child: ListView.builder(
               itemCount: widget.course.sections.length,
-              itemBuilder: (context, sectionIndex) {
-                final section = widget.course.sections[sectionIndex];
+              itemBuilder: (context, sectionItemIndex) {
+                final section =
+                    widget.course.sections[sectionItemIndex];
+
                 return Card(
                   margin: const EdgeInsets.only(bottom: 12),
                   child: ListTile(
                     title: Text(section.title),
-                    subtitle: Text('${section.content.length} lessons'),
+                    subtitle: Text(
+                      '${section.content.length}$LESSONS_SUFFIX_TEXT',
+                    ),
                     trailing: const Icon(Icons.arrow_forward_ios),
-                    onTap: () => handleNodeTap(sectionIndex, 0),
+                    onTap: () => handleNodeTap(sectionItemIndex, 0),
                   ),
                 );
               },

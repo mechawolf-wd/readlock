@@ -21,106 +21,28 @@ class AppTheme {
   static const Color greyBackground = Color(0xFF3D3D3D);
   static const Color white = Color(0xFF2D2D2D); // Dark card color
 
-  // Extended color palette
-  static final Color grey300 =
-      Colors.grey[300] ?? const Color(0xFFE0E0E0);
-  static final Color grey400 =
-      Colors.grey[400] ?? const Color(0xFFBDBDBD);
-  static final Color grey600 =
-      Colors.grey[600] ?? const Color(0xFF757575);
-  static final Color grey700 =
-      Colors.grey[700] ?? const Color(0xFF616161);
-
-  static final Color blue600 =
-      Colors.blue[600] ?? const Color(0xFF1E88E5);
-  static final Color green600 =
-      Colors.green[600] ?? const Color(0xFF43A047);
-  static final Color green800 =
-      Colors.green[800] ?? const Color(0xFF2E7D32);
-  static final Color red800 =
-      Colors.red[800] ?? const Color(0xFFC62828);
-  static final Color orange600 =
-      Colors.orange[600] ?? const Color(0xFFFB8C00);
-  static final Color purple600 =
-      Colors.purple[600] ?? const Color(0xFF8E24AA);
-
-  static final Color brown50 = const Color(0xFFFDF5E6);
-  static final Color brown200 = const Color(0xFFDEB887);
-  static final Color brown400 = const Color(0xFFCD853F);
-  static final Color brown600 = const Color(0xFFB8860B);
-
-  static final Color amber50 =
-      Colors.amber[50] ?? const Color(0xFFFFF8E1);
-  static final Color amber200 =
-      Colors.amber[200] ?? const Color(0xFFFFE082);
-  static final Color amber700 =
-      Colors.amber[700] ?? const Color(0xFFFFA000);
-
-  // Extended color variants
-  static final Color grey50 =
-      Colors.grey[50] ?? const Color(0xFFFAFAFA);
-  static final Color grey100 =
-      Colors.grey[100] ?? const Color(0xFFF5F5F5);
-  static final Color blue50 =
-      Colors.blue[50] ?? const Color(0xFFE3F2FD);
-  static final Color blue100 =
-      Colors.blue[100] ?? const Color(0xFFBBDEFB);
-  static final Color blue200 =
-      Colors.blue[200] ?? const Color(0xFF90CAF9);
-  static final Color blue800 =
-      Colors.blue[800] ?? const Color(0xFF1565C0);
-  static final Color green100 =
-      Colors.green[100] ?? const Color(0xFFC8E6C9);
-  static final Color red100 =
-      Colors.red[100] ?? const Color(0xFFFFCDD2);
-
+  // Status colors
   static const Color successColor = Colors.green;
   static const Color errorColor = Colors.red;
   static const Color warningColor = Colors.orange;
   static const Color infoColor = Colors.blue;
 
-  // Typography with serif fonts
-  static final TextStyle headingLarge = GoogleFonts.crimsonText(
-    fontSize: 28,
-    fontWeight: FontWeight.bold,
-    color: textPrimary,
-  );
-
-  static final TextStyle headingMedium = GoogleFonts.crimsonText(
-    fontSize: 24,
-    fontWeight: FontWeight.bold,
-    color: textPrimary,
-  );
-
-  static final TextStyle headingSmall = GoogleFonts.crimsonText(
-    fontSize: 20,
-    fontWeight: FontWeight.w500,
-    color: textPrimary,
-  );
-
-  static final TextStyle bodyLarge = GoogleFonts.crimsonText(
-    fontSize: 18,
-    fontWeight: FontWeight.w500,
-    color: textPrimary,
-    height: 1.0,
-  );
-
-  static final TextStyle bodyMedium = GoogleFonts.crimsonText(
-    fontSize: 16,
-    color: textPrimary,
-    height: 1.0,
-  );
-
-  static final TextStyle bodySmall = GoogleFonts.crimsonText(
-    fontSize: 14,
-    color: textPrimary,
-  );
-
-  static final TextStyle captionText = GoogleFonts.crimsonText(
-    fontSize: 12,
-    color: textPrimary,
-    fontWeight: FontWeight.bold,
-  );
+  // Essential extended colors for content widgets
+  static final Color grey300 = Colors.grey[300] ?? const Color(0xFFE0E0E0);
+  static final Color grey400 = Colors.grey[400] ?? const Color(0xFFBDBDBD);
+  static final Color grey600 = Colors.grey[600] ?? const Color(0xFF757575);
+  static final Color blue50 = Colors.blue[50] ?? const Color(0xFFE3F2FD);
+  static final Color blue100 = Colors.blue[100] ?? const Color(0xFFBBDEFB);
+  static final Color blue200 = Colors.blue[200] ?? const Color(0xFF90CAF9);
+  static final Color blue600 = Colors.blue[600] ?? const Color(0xFF1E88E5);
+  static final Color green600 = Colors.green[600] ?? const Color(0xFF43A047);
+  static final Color green800 = Colors.green[800] ?? const Color(0xFF2E7D32);
+  static final Color brown50 = const Color(0xFFFDF5E6);
+  static final Color brown200 = const Color(0xFFDEB887);
+  static final Color amber50 = Colors.amber[50] ?? const Color(0xFFFFF8E1);
+  static final Color amber200 = Colors.amber[200] ?? const Color(0xFFFFE082);
+  static final Color amber700 = Colors.amber[700] ?? const Color(0xFFFFA000);
+  static final Color grey50 = Colors.grey[50] ?? const Color(0xFFFAFAFA);
 
   // Spacing
   static const double spacingXS = 4.0;
@@ -149,51 +71,27 @@ class AppTheme {
   static const double alphaDark = 0.8;
   static const double alphaOpaque = 0.9;
 
-  // Color variants with alpha transparency
-  static Color get primaryBlueLight =>
-      primaryBlue.withValues(alpha: alphaLight);
-  static Color get primaryGreenLight =>
-      primaryGreen.withValues(alpha: alphaLight);
-  static Color get primaryGreenVeryLight =>
-      primaryGreen.withValues(alpha: alphaVeryLight);
-  static Color get primaryGreenMedium =>
-      primaryGreen.withValues(alpha: alphaMedium);
-  static Color get primaryGreenHeavy =>
-      primaryGreen.withValues(alpha: alphaHeavy);
-  static Color get primaryAmberLight =>
-      primaryAmber.withValues(alpha: alphaLight);
-  static Color get primaryAmberVeryLight =>
-      primaryAmber.withValues(alpha: alphaVeryLight);
-  static Color get primaryAmberMedium =>
-      primaryAmber.withValues(alpha: alphaMedium);
-  static Color get primaryDeepPurpleVeryLight =>
-      primaryDeepPurple.withValues(alpha: alphaVeryLight);
+  // Essential color variants with alpha transparency (used in widgets)
   static Color get primaryDeepPurpleLight =>
       primaryDeepPurple.withValues(alpha: alphaLight);
   static Color get primaryBrownVeryLight =>
       primaryBrown.withValues(alpha: alphaVeryLight);
-  static Color get grey600Medium =>
-      grey600.withValues(alpha: alphaMedium);
-  static Color get whiteHeavy =>
-      Colors.white.withValues(alpha: alphaHeavy);
-  static Color get whiteOpaque =>
-      Colors.white.withValues(alpha: alphaOpaque);
-  static Color get whiteDark =>
-      Colors.white.withValues(alpha: alphaDark);
-  static Color get primaryBrownHeavy =>
-      primaryBrown.withValues(alpha: alphaHeavy);
-  static Color get primaryDeepPurpleHeavy =>
-      primaryDeepPurple.withValues(alpha: alphaHeavy);
   static Color get backgroundDarkDark =>
       backgroundDark.withValues(alpha: alphaDark);
   static Color get backgroundLightHeavy =>
       backgroundLight.withValues(alpha: alphaHeavy);
-  static Color get primaryBrownLight =>
-      primaryBrown.withValues(alpha: alphaLight);
   static Color get primaryBrownMedium =>
       primaryBrown.withValues(alpha: alphaMedium);
   static Color get primaryDeepPurpleMedium =>
       primaryDeepPurple.withValues(alpha: alphaMedium);
+  static Color get primaryDeepPurpleHeavy =>
+      primaryDeepPurple.withValues(alpha: alphaHeavy);
+  static Color get primaryBrownLight =>
+      primaryBrown.withValues(alpha: alphaLight);
+  static Color get primaryDeepPurpleVeryLight =>
+      primaryDeepPurple.withValues(alpha: alphaVeryLight);
+  static Color get primaryBrownHeavy =>
+      primaryBrown.withValues(alpha: alphaHeavy);
   static Color get blue600Medium =>
       blue600.withValues(alpha: alphaMedium);
   static Color get green600Heavy =>
@@ -204,10 +102,41 @@ class AppTheme {
       brown200.withValues(alpha: alphaHeavy);
   static Color get blue200Heavy =>
       blue200.withValues(alpha: alphaHeavy);
-  static Color get amber200Heavy =>
-      amber200.withValues(alpha: alphaHeavy);
   static Color get grey300Heavy =>
       grey300.withValues(alpha: alphaHeavy);
+
+  // Typography styles (import from typography.dart)
+  static TextStyle get headingLarge => GoogleFonts.merriweather(
+        fontSize: 28,
+        fontWeight: FontWeight.bold,
+        color: textPrimary,
+        height: 1.4,
+      );
+
+  static TextStyle get headingSmall => GoogleFonts.merriweather(
+        fontSize: 20,
+        fontWeight: FontWeight.w600,
+        color: textPrimary,
+        height: 1.5,
+      );
+
+  static TextStyle get bodyMedium => GoogleFonts.merriweather(
+        fontSize: 16,
+        color: textPrimary,
+        height: 1.6,
+      );
+
+  static TextStyle get bodySmall => GoogleFonts.merriweather(
+        fontSize: 14,
+        color: textSecondary,
+        height: 1.5,
+      );
+
+  static TextStyle get captionText => GoogleFonts.merriweather(
+        fontSize: 12,
+        color: textSecondary,
+        height: 1.4,
+      );
 
   // Shadow opacity constants
   static const double shadowLight = 0.08;
@@ -259,24 +188,27 @@ class AppTheme {
 
   static ColorScheme getCourseColorScheme(CourseThemeColor color) {
     switch (color) {
-      case CourseThemeColor.blue: {
-        return ColorScheme.fromSeed(
-          seedColor: primaryBlue,
-          brightness: Brightness.dark,
-        );
-      }
-      case CourseThemeColor.green: {
-        return ColorScheme.fromSeed(
-          seedColor: primaryGreen,
-          brightness: Brightness.dark,
-        );
-      }
-      case CourseThemeColor.purple: {
-        return ColorScheme.fromSeed(
-          seedColor: primaryBrown,
-          brightness: Brightness.dark,
-        );
-      }
+      case CourseThemeColor.blue:
+        {
+          return ColorScheme.fromSeed(
+            seedColor: primaryBlue,
+            brightness: Brightness.dark,
+          );
+        }
+      case CourseThemeColor.green:
+        {
+          return ColorScheme.fromSeed(
+            seedColor: primaryGreen,
+            brightness: Brightness.dark,
+          );
+        }
+      case CourseThemeColor.purple:
+        {
+          return ColorScheme.fromSeed(
+            seedColor: primaryBrown,
+            brightness: Brightness.dark,
+          );
+        }
     }
   }
 

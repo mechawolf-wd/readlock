@@ -34,7 +34,7 @@ class CourseRoadmapWidget extends StatelessWidget {
           child: Div.column([
             CourseProgressHeader(),
 
-            Spacing.height(AppTheme.spacingXXXL),
+            const Spacing.height(AppTheme.spacingXXXL),
 
             FlowingRoadmapPath(),
           ], crossAxisAlignment: CrossAxisAlignment.start),
@@ -72,7 +72,7 @@ class CourseRoadmapWidget extends StatelessWidget {
                 size: 32,
               ),
 
-              Spacing.width(AppTheme.spacingL),
+              const Spacing.width(AppTheme.spacingL),
 
               Expanded(
                 child: Div.column([
@@ -93,7 +93,7 @@ class CourseRoadmapWidget extends StatelessWidget {
               ),
             ]),
 
-            Spacing.height(AppTheme.spacingXXL),
+            const Spacing.height(AppTheme.spacingXXL),
 
             Stack(
               children: [
@@ -123,7 +123,7 @@ class CourseRoadmapWidget extends StatelessWidget {
               ],
             ),
 
-            Spacing.height(AppTheme.spacingL),
+            const Spacing.height(AppTheme.spacingL),
 
             Div.row([
               Text(
@@ -197,7 +197,7 @@ class CourseRoadmapWidget extends StatelessWidget {
         sectionIndex: sectionIndex,
       ),
 
-      Spacing.height(AppTheme.spacingXXL),
+      const Spacing.height(AppTheme.spacingXXL),
 
       FlowingContentPath(section: section, sectionIndex: sectionIndex),
     ], margin: const EdgeInsets.symmetric(vertical: AppTheme.spacingL));
@@ -266,7 +266,7 @@ class CourseRoadmapWidget extends StatelessWidget {
                   size: 32,
                 ),
 
-                Spacing.height(4),
+                const Spacing.height(4),
 
                 Text(
                   '$nodeNumber',
@@ -307,7 +307,7 @@ class CourseRoadmapWidget extends StatelessWidget {
           ],
         ),
 
-        Spacing.height(AppTheme.spacingM),
+        const Spacing.height(AppTheme.spacingM),
 
         Div.row(
           [
@@ -396,7 +396,7 @@ class CourseRoadmapWidget extends StatelessWidget {
           ),
         ),
 
-        Spacing.width(AppTheme.spacingL),
+        const Spacing.width(AppTheme.spacingL),
 
         Text(
           title,
