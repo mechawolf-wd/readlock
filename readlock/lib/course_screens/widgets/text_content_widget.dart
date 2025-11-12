@@ -12,13 +12,17 @@ class TextContentWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      height: double.infinity,
       color: AppTheme.backgroundDark,
       child: SingleChildScrollView(
         padding: const EdgeInsets.all(24),
-        child: ProgressiveText(
-          textSegments: content.textSegments,
-          textStyle: Typography.bodyMediumStyle,
-          characterDelay: const Duration(milliseconds: 15),
+        child: SizedBox(
+          height: MediaQuery.of(context).size.height - 48,
+          child: ProgressiveText(
+            textSegments: content.textSegments,
+            textStyle: Typography.bodyMediumStyle,
+            characterDelay: const Duration(milliseconds: 15),
+          ),
         ),
       ),
     );
