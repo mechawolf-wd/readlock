@@ -25,24 +25,38 @@ class AppTheme {
   static const Color successColor = Colors.green;
   static const Color errorColor = Colors.red;
   static const Color warningColor = Colors.orange;
+  static const Color warningColorGentle = Color(0xFFFF9800);
   static const Color infoColor = Colors.blue;
 
   // Essential extended colors for content widgets
-  static final Color grey300 = Colors.grey[300] ?? const Color(0xFFE0E0E0);
-  static final Color grey400 = Colors.grey[400] ?? const Color(0xFFBDBDBD);
-  static final Color grey600 = Colors.grey[600] ?? const Color(0xFF757575);
-  static final Color blue50 = Colors.blue[50] ?? const Color(0xFFE3F2FD);
-  static final Color blue100 = Colors.blue[100] ?? const Color(0xFFBBDEFB);
-  static final Color blue200 = Colors.blue[200] ?? const Color(0xFF90CAF9);
-  static final Color blue600 = Colors.blue[600] ?? const Color(0xFF1E88E5);
-  static final Color green600 = Colors.green[600] ?? const Color(0xFF43A047);
-  static final Color green800 = Colors.green[800] ?? const Color(0xFF2E7D32);
+  static final Color grey300 =
+      Colors.grey[300] ?? const Color(0xFFE0E0E0);
+  static final Color grey400 =
+      Colors.grey[400] ?? const Color(0xFFBDBDBD);
+  static final Color grey600 =
+      Colors.grey[600] ?? const Color(0xFF757575);
+  static final Color blue50 =
+      Colors.blue[50] ?? const Color(0xFFE3F2FD);
+  static final Color blue100 =
+      Colors.blue[100] ?? const Color(0xFFBBDEFB);
+  static final Color blue200 =
+      Colors.blue[200] ?? const Color(0xFF90CAF9);
+  static final Color blue600 =
+      Colors.blue[600] ?? const Color(0xFF1E88E5);
+  static final Color green600 =
+      Colors.green[600] ?? const Color(0xFF43A047);
+  static final Color green800 =
+      Colors.green[800] ?? const Color(0xFF2E7D32);
   static final Color brown50 = const Color(0xFFFDF5E6);
   static final Color brown200 = const Color(0xFFDEB887);
-  static final Color amber50 = Colors.amber[50] ?? const Color(0xFFFFF8E1);
-  static final Color amber200 = Colors.amber[200] ?? const Color(0xFFFFE082);
-  static final Color amber700 = Colors.amber[700] ?? const Color(0xFFFFA000);
-  static final Color grey50 = Colors.grey[50] ?? const Color(0xFFFAFAFA);
+  static final Color amber50 =
+      Colors.amber[50] ?? const Color(0xFFFFF8E1);
+  static final Color amber200 =
+      Colors.amber[200] ?? const Color(0xFFFFE082);
+  static final Color amber700 =
+      Colors.amber[700] ?? const Color(0xFFFFA000);
+  static final Color grey50 =
+      Colors.grey[50] ?? const Color(0xFFFAFAFA);
 
   // Spacing
   static const double spacingXS = 4.0;
@@ -57,6 +71,23 @@ class AppTheme {
   static const double radiusSmall = 8.0;
   static const double radiusMedium = 12.0;
   static const double radiusLarge = 16.0;
+
+  // Card specific properties
+  static const double cardBorderRadius = 8.0;
+  static const double cardPadding = 16.0;
+  static const double cardMarginBottom = 12.0;
+  static final Color cardBackgroundColor =
+      Colors.grey[800] ?? const Color(0xFF424242);
+  static final Color cardBorderColor =
+      Colors.grey[700] ?? const Color(0xFF616161);
+  static const double cardBorderWidth = 1.0;
+
+  // Content padding
+  static const double contentPadding = 24.0;
+  static const double contentPaddingSmall = 20.0;
+  static const double contentPaddingMedium = 12.0;
+  static const double contentPaddingTiny = 4.0;
+  static const double contentPaddingSmaller = 8.0;
 
   // Elevations
   static const double elevationLow = 2.0;
@@ -107,36 +138,36 @@ class AppTheme {
 
   // Typography styles (import from typography.dart)
   static TextStyle get headingLarge => GoogleFonts.merriweather(
-        fontSize: 28,
-        fontWeight: FontWeight.bold,
-        color: textPrimary,
-        height: 1.4,
-      );
+    fontSize: 28,
+    fontWeight: FontWeight.bold,
+    color: textPrimary,
+    height: 1.4,
+  );
 
   static TextStyle get headingSmall => GoogleFonts.merriweather(
-        fontSize: 20,
-        fontWeight: FontWeight.w600,
-        color: textPrimary,
-        height: 1.5,
-      );
+    fontSize: 20,
+    fontWeight: FontWeight.w600,
+    color: textPrimary,
+    height: 1.5,
+  );
 
   static TextStyle get bodyMedium => GoogleFonts.merriweather(
-        fontSize: 16,
-        color: textPrimary,
-        height: 1.6,
-      );
+    fontSize: 16,
+    color: textPrimary,
+    height: 1.6,
+  );
 
   static TextStyle get bodySmall => GoogleFonts.merriweather(
-        fontSize: 14,
-        color: textSecondary,
-        height: 1.5,
-      );
+    fontSize: 14,
+    color: textSecondary,
+    height: 1.5,
+  );
 
   static TextStyle get captionText => GoogleFonts.merriweather(
-        fontSize: 12,
-        color: textSecondary,
-        height: 1.4,
-      );
+    fontSize: 12,
+    color: textSecondary,
+    height: 1.4,
+  );
 
   // Shadow opacity constants
   static const double shadowLight = 0.08;
@@ -283,6 +314,44 @@ class AppTheme {
       ),
     );
   }
+
+  static BoxDecoration getCardDecoration() {
+    return BoxDecoration(
+      color: cardBackgroundColor,
+      borderRadius: BorderRadius.circular(cardBorderRadius),
+      border: Border.all(color: cardBorderColor),
+    );
+  }
+
+  static EdgeInsets get cardPaddingInsets =>
+      const EdgeInsets.all(cardPadding);
+
+  static EdgeInsets get cardMarginInsets =>
+      const EdgeInsets.only(bottom: cardMarginBottom);
+
+  static EdgeInsets get screenPaddingInsets =>
+      const EdgeInsets.all(cardPadding);
+
+  static EdgeInsets get contentPaddingInsets =>
+      const EdgeInsets.all(contentPadding);
+
+  static EdgeInsets get contentPaddingSmallInsets =>
+      const EdgeInsets.all(contentPaddingSmall);
+
+  static EdgeInsets get contentPaddingMediumInsets =>
+      const EdgeInsets.all(contentPaddingMedium);
+
+  static EdgeInsets get contentPaddingTinyInsets =>
+      const EdgeInsets.all(contentPaddingTiny);
+
+  static EdgeInsets get contentPaddingSmallerInsets =>
+      const EdgeInsets.all(contentPaddingSmaller);
+
+  static EdgeInsets get contentPaddingVerticalInsets =>
+      const EdgeInsets.symmetric(vertical: contentPadding);
+
+  static EdgeInsets get contentPaddingHorizontalInsets =>
+      const EdgeInsets.symmetric(horizontal: contentPadding);
 }
 
 class QuestionOptionColors {

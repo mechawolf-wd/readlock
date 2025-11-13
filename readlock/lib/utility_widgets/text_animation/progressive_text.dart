@@ -9,7 +9,7 @@ import 'package:relevant/utility_widgets/visual_effects/blur_overlay.dart';
 class ProgressiveText extends StatefulWidget {
   static const double DEFAULT_BOTTOM_SPACING = 8.0;
   static const Duration AUTO_REVEAL_DELAY = Duration(milliseconds: 300);
-  
+
   final List<String> textSegments;
   final Duration characterDelay;
   final bool autoReveal;
@@ -213,7 +213,9 @@ class ProgressiveTextState extends State<ProgressiveText> {
       sentenceItemIndex++
     ) {
       Widget sentenceWidget = Padding(
-        padding: const EdgeInsets.only(bottom: ProgressiveText.DEFAULT_BOTTOM_SPACING),
+        padding: const EdgeInsets.only(
+          bottom: ProgressiveText.DEFAULT_BOTTOM_SPACING,
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

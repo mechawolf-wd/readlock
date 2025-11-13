@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:relevant/course_screens/course_roadmap_screen.dart';
-import 'package:relevant/course_screens/data/course_data.dart';
+import 'package:relevant/main_navigation.dart';
 
 void main() {
   runApp(const RelevantApp());
@@ -15,9 +14,7 @@ class RelevantApp extends StatelessWidget {
     return MaterialApp(
       title: 'Design Course',
       theme: appTheme(),
-      home: const CourseRoadmapScreen(
-        course: designOfEverydayThingsCourse,
-      ),
+      home: const MainNavigation(),
       debugShowCheckedModeBanner: false,
     );
   }

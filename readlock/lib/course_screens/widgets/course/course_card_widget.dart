@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:relevant/course_screens/models/course_model.dart';
 import 'package:relevant/utility_widgets/utility_widgets.dart';
+import 'package:relevant/constants/app_theme.dart';
 
 class CourseCardWidget extends StatelessWidget {
   final Course course;
@@ -28,12 +29,8 @@ class CourseCardWidget extends StatelessWidget {
 
           const LinearProgressIndicator(value: 0.0),
         ],
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: Colors.grey[800],
-          borderRadius: BorderRadius.circular(8),
-          border: Border.all(color: Colors.grey[700]!),
-        ),
+        padding: AppTheme.cardPaddingInsets,
+        decoration: AppTheme.getCardDecoration(),
         crossAxisAlignment: CrossAxisAlignment.start,
       ),
     );

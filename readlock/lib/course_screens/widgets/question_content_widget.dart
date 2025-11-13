@@ -39,27 +39,27 @@ class QuestionContentWidgetState extends State<QuestionContentWidget> {
   Widget build(BuildContext context) {
     return Container(
       color: AppTheme.backgroundDark,
+      padding: const EdgeInsets.all(
+        Constants.COURSE_SECTION_PADDING,
+      ),
       child: Center(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(
-            Constants.COURSE_SECTION_PADDING,
+        child: Div.column([
+          QuestionText(),
+
+          const Spacing.height(
+            QuestionContentWidget.QUESTION_SECTION_SPACING,
           ),
-          child: Div.column([
-            QuestionText(),
 
-            const Spacing.height(
-              QuestionContentWidget.QUESTION_SECTION_SPACING,
-            ),
+          OptionsList(),
 
-            OptionsList(),
+          const Spacing.height(
+            QuestionContentWidget.QUESTION_SECTION_SPACING,
+          ),
 
-            const Spacing.height(
-              QuestionContentWidget.QUESTION_SECTION_SPACING,
-            ),
-
-            ExplanationSection(),
-          ], crossAxisAlignment: CrossAxisAlignment.start),
-        ),
+          ExplanationSection(),
+        ], 
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.center),
       ),
     );
   }
@@ -111,7 +111,7 @@ class QuestionContentWidgetState extends State<QuestionContentWidget> {
         textColor = AppTheme.textPrimary;
       } else if (isSelected && !isCorrect) {
         // Gentle orange for wrong answers instead of harsh red
-        themeColor = const Color(0xFFFF9800); // Orange
+        themeColor = AppTheme.warningColorGentle;
         backgroundColor = AppTheme.backgroundLight;
         textColor = AppTheme.textPrimary;
       } else {
@@ -150,12 +150,12 @@ class QuestionContentWidgetState extends State<QuestionContentWidget> {
         onTap: hasAnswered ? null : () => selectAnswer(optionIndex),
         borderRadius: BorderRadius.circular(12),
         child: Padding(
-          padding: const EdgeInsets.all(12),
+          padding: AppTheme.contentPaddingMediumInsets,
           child: Row(
             children: [
               if (shouldShowFeedback) ...[
                 Container(
-                  padding: const EdgeInsets.all(4),
+                  padding: AppTheme.contentPaddingTinyInsets,
                   decoration: BoxDecoration(
                     color: themeColor.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(4),

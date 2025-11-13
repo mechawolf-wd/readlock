@@ -1,0 +1,242 @@
+// Factory class for creating course content widgets from JSON data
+// Provides wrapper widgets that convert JSON data to proper model objects
+
+import 'package:flutter/material.dart';
+import 'package:relevant/constants/typography.dart' as app_typography;
+import 'package:relevant/utility_widgets/utility_widgets.dart';
+import 'package:relevant/course_screens/models/course_model.dart';
+import 'package:relevant/course_screens/widgets/intro_content_widget.dart';
+import 'package:relevant/course_screens/widgets/text_content_widget.dart';
+import 'package:relevant/course_screens/widgets/question_content_widget.dart';
+import 'package:relevant/course_screens/widgets/outro_content_widget.dart';
+import 'package:relevant/course_screens/widgets/design_examples_showcase.dart';
+import 'package:relevant/course_screens/widgets/reflection_content_widget.dart';
+
+const String UNKNOWN_CONTENT_TYPE_MESSAGE = 'Unknown content type: ';
+
+class JsonContentWidgetFactory {
+  static Widget createContentWidget(Map<String, dynamic> contentData) {
+    final String entityType = contentData['entityType'] ?? '';
+
+    switch (entityType) {
+      case 'intro-content':
+        {
+          return JsonIntroContentWidget(contentData: contentData);
+        }
+      case 'text-content':
+        {
+          return JsonTextContentWidget(contentData: contentData);
+        }
+      case 'question-content':
+        {
+          return JsonQuestionContentWidget(contentData: contentData);
+        }
+      case 'outro-content':
+        {
+          return JsonOutroContentWidget(contentData: contentData);
+        }
+      case 'design-examples-showcase-content':
+        {
+          return JsonDesignExamplesShowcaseWidget(
+            contentData: contentData,
+          );
+        }
+      case 'reflection-content':
+        {
+          return JsonReflectionContentWidget(contentData: contentData);
+        }
+      default:
+        {
+          return UnknownContentWidget(entityType: entityType);
+        }
+    }
+  }
+}
+
+class UnknownContentWidget extends StatelessWidget {
+  final String entityType;
+
+  const UnknownContentWidget({super.key, required this.entityType});
+
+  @override
+  Widget build(BuildContext context) {
+    return Div.column(
+      [
+        app_typography.Typography.text(
+          '$UNKNOWN_CONTENT_TYPE_MESSAGE$entityType',
+          textAlign: TextAlign.center,
+        ),
+      ],
+      mainAxisAlignment: 'center',
+      crossAxisAlignment: 'center',
+    );
+  }
+}
+
+// Wrapper widgets that convert JSON data to the expected format
+class JsonIntroContentWidget extends StatelessWidget {
+  final Map<String, dynamic> contentData;
+
+  const JsonIntroContentWidget({super.key, required this.contentData});
+
+  @override
+  Widget build(BuildContext context) {
+    final introContent = IntroContent(
+      id: contentData['id'] ?? '',
+      title: contentData['title'] ?? '',
+      introTextSegments: List<String>.from(
+        contentData['introTextSegments'] ?? [],
+      ),
+    );
+
+    return IntroContentWidget(content: introContent);
+  }
+}
+
+class JsonTextContentWidget extends StatelessWidget {
+  final Map<String, dynamic> contentData;
+
+  const JsonTextContentWidget({super.key, required this.contentData});
+
+  @override
+  Widget build(BuildContext context) {
+    final textContent = TextContent(
+      id: contentData['id'] ?? '',
+      title: contentData['title'] ?? '',
+      textSegments: List<String>.from(
+        contentData['textSegments'] ?? [],
+      ),
+      text: contentData['text'],
+    );
+
+    return TextContentWidget(content: textContent);
+  }
+}
+
+class JsonQuestionContentWidget extends StatelessWidget {
+  final Map<String, dynamic> contentData;
+
+  const JsonQuestionContentWidget({
+    super.key,
+    required this.contentData,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final List<Map<String, dynamic>> optionsData =
+        List<Map<String, dynamic>>.from(contentData['options'] ?? []);
+
+    final questionContent = QuestionContent(
+      id: contentData['id'] ?? '',
+      title: contentData['title'] ?? '',
+      question: contentData['question'] ?? '',
+      options: optionsData
+          .map(
+            (option) => QuestionOption(
+              text: option['text'] ?? '',
+              emoji: option['emoji'],
+              hint: option['hint'],
+            ),
+          )
+          .toList(),
+      correctAnswerIndices: List<int>.from(
+        contentData['correctAnswerIndices'] ?? [],
+      ),
+      explanation: contentData['explanation'] ?? '',
+      type: _parseQuestionType(contentData['type']),
+      scenarioContext: contentData['scenarioContext'],
+      followUpPrompts: contentData['followUpPrompts'] != null
+          ? List<String>.from(contentData['followUpPrompts'])
+          : null,
+    );
+
+    void onAnswerSelectedCallback(int index, bool isCorrect) {}
+
+    return QuestionContentWidget(
+      content: questionContent,
+      onAnswerSelected: onAnswerSelectedCallback,
+    );
+  }
+
+  QuestionType _parseQuestionType(String? type) {
+    final bool isMultipleChoiceType = type == 'multipleChoice';
+    final bool isTrueOrFalseType = type == 'trueOrFalse';
+    final bool isScenarioType = type == 'scenario';
+    final bool isReflectionType = type == 'reflection';
+
+    if (isMultipleChoiceType) {
+      return QuestionType.multipleChoice;
+    }
+
+    if (isTrueOrFalseType) {
+      return QuestionType.trueOrFalse;
+    }
+
+    if (isScenarioType) {
+      return QuestionType.scenario;
+    }
+
+    if (isReflectionType) {
+      return QuestionType.reflection;
+    }
+
+    return QuestionType.multipleChoice;
+  }
+}
+
+class JsonOutroContentWidget extends StatelessWidget {
+  final Map<String, dynamic> contentData;
+
+  const JsonOutroContentWidget({super.key, required this.contentData});
+
+  @override
+  Widget build(BuildContext context) {
+    final outroContent = OutroContent(
+      id: contentData['id'] ?? '',
+      title: contentData['title'] ?? '',
+      outroTextSegments: List<String>.from(
+        contentData['outroTextSegments'] ?? [],
+      ),
+    );
+
+    return OutroContentWidget(content: outroContent);
+  }
+}
+
+class JsonDesignExamplesShowcaseWidget extends StatelessWidget {
+  final Map<String, dynamic> contentData;
+
+  const JsonDesignExamplesShowcaseWidget({
+    super.key,
+    required this.contentData,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return const DesignExamplesShowcase();
+  }
+}
+
+class JsonReflectionContentWidget extends StatelessWidget {
+  final Map<String, dynamic> contentData;
+
+  const JsonReflectionContentWidget({
+    super.key,
+    required this.contentData,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final reflectionContent = ReflectionContent(
+      id: contentData['id'] ?? '',
+      title: contentData['title'] ?? '',
+      prompt: contentData['prompt'] ?? '',
+      thinkingPoints: List<String>.from(
+        contentData['thinkingPoints'] ?? [],
+      ),
+      emoji: contentData['emoji'] ?? '🤔',
+    );
+
+    return ReflectionContentWidget(content: reflectionContent);
+  }
+}

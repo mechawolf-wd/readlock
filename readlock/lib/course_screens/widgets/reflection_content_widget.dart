@@ -15,7 +15,7 @@ class ReflectionContentWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       color: AppTheme.backgroundDark,
-      padding: const EdgeInsets.all(24),
+      padding: AppTheme.contentPaddingInsets,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -56,7 +56,7 @@ class ReflectionContentWidget extends StatelessWidget {
           // Thinking points
           Container(
             width: double.infinity,
-            padding: const EdgeInsets.all(20),
+            padding: AppTheme.contentPaddingSmallInsets,
             decoration: BoxDecoration(
               color: AppTheme.backgroundLight,
               borderRadius: BorderRadius.circular(12),

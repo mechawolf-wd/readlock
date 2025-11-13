@@ -1,29 +1,26 @@
 // Course detail screen displaying individual course content with navigation
 // Supports various content types including text, questions, intro/outro, and design examples
 import 'package:flutter/material.dart';
-import 'package:relevant/course_screens/models/course_model.dart';
-import 'package:relevant/course_screens/widgets/text_content_widget.dart';
-import 'package:relevant/course_screens/widgets/question_content_widget.dart';
-import 'package:relevant/course_screens/widgets/intro_content_widget.dart';
-import 'package:relevant/course_screens/widgets/outro_content_widget.dart';
-import 'package:relevant/course_screens/widgets/design_examples_showcase.dart';
-import 'package:relevant/course_screens/widgets/reflection_content_widget.dart';
+import 'package:relevant/course_screens/widgets/json_content_widget_factory.dart';
+import 'package:relevant/course_screens/data/course_data.dart';
+import 'package:relevant/course_screens/widgets/box_progress_indicator.dart';
 import 'package:relevant/constants/app_theme.dart';
 
 const String NO_CONTENT_AVAILABLE_MESSAGE =
     'No content available for this course';
+const String ERROR_LOADING_COURSE_DATA = 'Error loading course data';
 const String COLOR_BLUE = 'blue';
 const String COLOR_GREEN = 'green';
 const String COLOR_PURPLE = 'purple';
 
 class CourseDetailScreen extends StatefulWidget {
-  final Course course;
+  final String courseId;
   final int initialSectionIndex;
   final int initialContentIndex;
 
   const CourseDetailScreen({
     super.key,
-    required this.course,
+    required this.courseId,
     this.initialSectionIndex = 0,
     this.initialContentIndex = 0,
   });
@@ -36,6 +33,10 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
   late PageController pageController;
   late int currentContentIndex;
   late int currentSectionIndex;
+  
+  List<Map<String, dynamic>> allContent = [];
+  Map<String, dynamic>? courseData;
+  bool isLoading = true;
 
   @override
   void initState() {
@@ -45,6 +46,23 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
     currentContentIndex = widget.initialContentIndex;
 
     pageController = PageController(initialPage: currentContentIndex);
+    loadCourseData();
+  }
+
+  Future<void> loadCourseData() async {
+    try {
+      courseData = await CourseData.getCourseById(widget.courseId);
+      if (courseData != null) {
+        allContent = await getAllContent();
+      }
+    } catch (e) {
+      // Handle error
+      print('$ERROR_LOADING_COURSE_DATA: $e');
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 
   @override
@@ -55,6 +73,13 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
+    if (isLoading) {
+      return const Scaffold(
+        backgroundColor: AppTheme.backgroundDark,
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
+
     return SafeArea(
       child: Scaffold(
         backgroundColor: AppTheme.backgroundDark,
@@ -65,8 +90,6 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
   }
 
   Widget CourseBody() {
-    final List<CourseContent> allContent = getAllContent();
-
     if (allContent.isEmpty) {
       return EmptyContentMessage();
     }
@@ -91,38 +114,11 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
     );
   }
 
-  Widget ContentWidget(CourseContent content) {
-    final bool isIntroContent = content is IntroContent;
-    final bool isTextContent = content is TextContent;
-    final bool isQuestionContent = content is QuestionContent;
-    final bool isOutroContent = content is OutroContent;
-    final bool isDesignExamplesContent =
-        content is DesignExamplesShowcaseContent;
-    final bool isReflectionContent = content is ReflectionContent;
-
-    if (isIntroContent) {
-      return IntroContentWidget(content: content);
-    } else if (isTextContent) {
-      return TextContentWidget(content: content);
-    } else if (isQuestionContent) {
-      return QuestionContentWidget(
-        content: content,
-        onAnswerSelected: handleQuestionAnswer,
-      );
-    } else if (isOutroContent) {
-      return OutroContentWidget(content: content);
-    } else if (isDesignExamplesContent) {
-      return const DesignExamplesShowcase();
-    } else if (isReflectionContent) {
-      return ReflectionContentWidget(content: content);
-    }
-
-    return EmptyContentMessage();
+  Widget ContentWidget(Map<String, dynamic> content) {
+    return JsonContentWidgetFactory.createContentWidget(content);
   }
 
   Widget ProgressBarSection() {
-    final List<CourseContent> allContent = getAllContent();
-
     return Container(
       padding: const EdgeInsets.only(
         left: 24,
@@ -130,29 +126,28 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
         bottom: 16,
         top: 16,
       ),
-      child: ProgressBar(allContent.length),
-    );
-  }
-
-  Widget ProgressBar(int totalContent) {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(8),
-      child: LinearProgressIndicator(
-        value: (currentContentIndex + 1) / totalContent,
-        backgroundColor: AppTheme.backgroundLight,
-        valueColor: AlwaysStoppedAnimation<Color>(getCourseColor()),
-        minHeight: 12,
+      child: BoxProgressIndicator(
+        totalBoxes: allContent.length,
+        currentIndex: currentContentIndex,
+        activeColor: getCourseColor(),
       ),
     );
   }
 
-  List<CourseContent> getAllContent() {
-    final List<CourseContent> allContent = [];
 
-    for (final CourseSection section in widget.course.sections) {
-      allContent.addAll(section.content);
+  Future<List<Map<String, dynamic>>> getAllContent() async {
+    if (courseData == null) {
+      return [];
     }
-
+    
+    final List<Map<String, dynamic>> allContent = [];
+    final sections = List<Map<String, dynamic>>.from(courseData!['sections'] ?? []);
+    
+    for (final section in sections) {
+      final content = List<Map<String, dynamic>>.from(section['content'] ?? []);
+      allContent.addAll(content);
+    }
+    
     return allContent;
   }
 
@@ -167,7 +162,8 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
   }
 
   Color getCourseColor() {
-    switch (widget.course.color) {
+    final String courseColor = courseData?['color'] ?? 'green';
+    switch (courseColor) {
       case COLOR_BLUE:
         {
           return Colors.blue;

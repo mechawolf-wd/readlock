@@ -86,7 +86,7 @@ class DesignExamplesShowcaseState
   Widget build(BuildContext context) {
     return Container(
       color: AppTheme.backgroundDark,
-      padding: const EdgeInsets.symmetric(vertical: 24),
+      padding: AppTheme.contentPaddingVerticalInsets,
       child: Column(
         children: [
           PageIndicator(),
@@ -104,7 +104,7 @@ class DesignExamplesShowcaseState
               },
               itemBuilder: (context, index) {
                 return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  padding: AppTheme.contentPaddingHorizontalInsets,
                   child: ExampleCard(examples[index]),
                 );
               },
@@ -142,7 +142,7 @@ class DesignExamplesShowcaseState
 
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(24),
+      padding: AppTheme.contentPaddingInsets,
       decoration: BoxDecoration(
         color: AppTheme.backgroundLight,
         borderRadius: BorderRadius.circular(16),
@@ -151,52 +151,50 @@ class DesignExamplesShowcaseState
           width: 2,
         ),
       ),
-      child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: themeColor.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Icon(
-                    example.isGoodDesign
-                        ? Icons.check_circle
-                        : Icons.cancel,
-                    color: themeColor,
-                    size: 24,
-                  ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Row(
+            children: [
+              Container(
+                padding: AppTheme.contentPaddingSmallerInsets,
+                decoration: BoxDecoration(
+                  color: themeColor.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(8),
                 ),
-
-                const Spacing.width(12),
-
-                Expanded(
-                  child: Text(
-                    example.title,
-                    style: Typography.bodyLargeStyle.copyWith(
-                      fontWeight: FontWeight.w600,
-                    ),
-                    textAlign: TextAlign.left,
-                  ),
+                child: Icon(
+                  example.isGoodDesign
+                      ? Icons.check_circle
+                      : Icons.cancel,
+                  color: themeColor,
+                  size: 24,
                 ),
-              ],
-            ),
+              ),
 
-            const Spacing.height(20),
+              const Spacing.width(12),
 
-            ProgressiveText(
-              textSegments: example.textSegments,
-              textStyle: Typography.bodyLargeStyle,
-              characterDelay: const Duration(milliseconds: 15),
-              crossAxisAlignment: CrossAxisAlignment.start,
-            ),
-          ],
-        ),
+              Expanded(
+                child: Text(
+                  example.title,
+                  style: Typography.bodyLargeStyle.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
+                  textAlign: TextAlign.left,
+                ),
+              ),
+            ],
+          ),
+
+          const Spacing.height(20),
+
+          ProgressiveText(
+            textSegments: example.textSegments,
+            textStyle: Typography.bodyLargeStyle,
+            characterDelay: const Duration(milliseconds: 15),
+            crossAxisAlignment: CrossAxisAlignment.start,
+          ),
+        ],
       ),
     );
   }

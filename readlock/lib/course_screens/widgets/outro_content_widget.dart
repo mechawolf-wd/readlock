@@ -15,7 +15,7 @@ class OutroContentWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       color: AppTheme.backgroundDark,
-      padding: const EdgeInsets.all(24),
+      padding: AppTheme.contentPaddingInsets,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
