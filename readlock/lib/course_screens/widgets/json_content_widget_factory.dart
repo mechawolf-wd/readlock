@@ -18,6 +18,15 @@ import 'package:relevant/course_screens/widgets/estimate_percentage_widget.dart'
 
 const String UNKNOWN_CONTENT_TYPE_MESSAGE = 'Unknown content type: ';
 
+// Question type constants
+const String QUESTION_TYPE_MULTIPLE_CHOICE = 'multiple-choice';
+const String QUESTION_TYPE_TRUE_OR_FALSE = 'true-or-false';
+const String QUESTION_TYPE_SCENARIO = 'scenario';
+const String QUESTION_TYPE_REFLECTION = 'reflection';
+const String QUESTION_TYPE_FILL_GAP = 'fill-gap';
+const String QUESTION_TYPE_INCORRECT_STATEMENT = 'incorrect-statement';
+const String QUESTION_TYPE_ESTIMATE_PERCENTAGE = 'estimate-percentage';
+
 class JsonContentWidgetFactory {
   static Widget createContentWidget(Map<String, dynamic> contentData) {
     final String entityType = contentData['entityType'] ?? '';
@@ -197,31 +206,31 @@ class JsonQuestionContentWidget extends StatelessWidget {
 
   QuestionType _parseQuestionType(String? type) {
     switch (type) {
-      case 'multipleChoice':
+      case QUESTION_TYPE_MULTIPLE_CHOICE:
         {
           return QuestionType.multipleChoice;
         }
-      case 'trueOrFalse':
+      case QUESTION_TYPE_TRUE_OR_FALSE:
         {
           return QuestionType.trueOrFalse;
         }
-      case 'scenario':
+      case QUESTION_TYPE_SCENARIO:
         {
           return QuestionType.scenario;
         }
-      case 'reflection':
+      case QUESTION_TYPE_REFLECTION:
         {
           return QuestionType.reflection;
         }
-      case 'fillGap':
+      case QUESTION_TYPE_FILL_GAP:
         {
           return QuestionType.fillGap;
         }
-      case 'incorrectStatement':
+      case QUESTION_TYPE_INCORRECT_STATEMENT:
         {
           return QuestionType.incorrectStatement;
         }
-      case 'estimatePercentage':
+      case QUESTION_TYPE_ESTIMATE_PERCENTAGE:
         {
           return QuestionType.estimatePercentage;
         }

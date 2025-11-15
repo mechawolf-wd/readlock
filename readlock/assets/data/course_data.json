@@ -90,7 +90,7 @@
                 0
               ],
               "explanation": "Handles suggest pulling. This is called an \"affordance.\"",
-              "type": "multipleChoice"
+              "type": "multiple-choice"
             },
             {
               "entityType": "text-content",
@@ -145,7 +145,7 @@
                 1
               ],
               "explanation": "USB connectors look identical from both sides. Good design makes orientation obvious.",
-              "type": "multipleChoice"
+              "type": "multiple-choice"
             },
             {
               "entityType": "text-content",
@@ -168,7 +168,7 @@
                 82
               ],
               "explanation": "FAA studies revealed that 82% of pilot errors were actually design-induced errors. Poor placement of controls, confusing displays, and non-intuitive interfaces led to mistakes that were blamed on pilots but were really design failures.",
-              "type": "estimatePercentage"
+              "type": "estimate-percentage"
             },
             {
               "entityType": "question-content",
@@ -187,7 +187,7 @@
                 1
               ],
               "explanation": "Microwaves prioritize features over simple usability. Complexity without purpose is bad design.",
-              "type": "multipleChoice"
+              "type": "multiple-choice"
             },
             {
               "entityType": "question-content",
@@ -199,7 +199,7 @@
                 47
               ],
               "explanation": "Nearly half (47%) of hotel guests struggled with unfamiliar shower controls. Each hotel has different designs with no standardization - some pull, some push, some twist, and the hot/cold directions vary. This lack of consistency forces users to experiment every time.",
-              "type": "estimatePercentage"
+              "type": "estimate-percentage"
             },
             {
               "entityType": "text-content",
@@ -230,7 +230,7 @@
                 1
               ],
               "explanation": "Good design should be intuitive and self-explanatory. If it needs a manual, the design has failed to communicate its function clearly.",
-              "type": "trueOrFalse"
+              "type": "true-or-false"
             },
             {
               "entityType": "question-content",
@@ -242,7 +242,7 @@
                 67
               ],
               "explanation": "Studies show that 67% of fatal medical device errors stem from poor interface design, not mechanical failure. Confusing displays, similar-looking controls, and poor feedback mechanisms lead to dosing errors and misread vital signs that can be deadly.",
-              "type": "estimatePercentage"
+              "type": "estimate-percentage"
             },
             {
               "entityType": "text-content",
@@ -279,7 +279,7 @@
                 2
               ],
               "explanation": "Good design makes things visible and provides clear feedback. Visibility helps users understand what actions are possible, and feedback confirms that their actions had an effect.",
-              "type": "fillGap"
+              "type": "fill-gap"
             },
             {
               "entityType": "question-content",
@@ -291,7 +291,7 @@
                 73
               ],
               "explanation": "Norman's study found that 73% of people initially pulled doors that were meant to be pushed when the door had a vertical handle. This demonstrates how powerful affordances are in shaping our behavior - handles strongly suggest pulling, regardless of signage.",
-              "type": "estimatePercentage"
+              "type": "estimate-percentage"
             },
             {
               "entityType": "question-content",
@@ -303,7 +303,7 @@
                 89
               ],
               "explanation": "Studies show that 89% of smartphone users utilize less than 30% of available features. This isn't because users are incapable - it's because feature discovery is poor, interfaces are complex, and many functions are buried in confusing menus.",
-              "type": "estimatePercentage"
+              "type": "estimate-percentage"
             },
             {
               "entityType": "text-content",
@@ -385,7 +385,7 @@
                 42
               ],
               "explanation": "Companies that applied human-centered design principles saw an average 42% increase in user satisfaction scores. This translated directly to reduced support calls, fewer returns, and increased brand loyalty - proving that good design is good business.",
-              "type": "estimatePercentage"
+              "type": "estimate-percentage"
             },
             {
               "entityType": "outro-content",
