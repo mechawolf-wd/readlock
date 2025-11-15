@@ -88,7 +88,15 @@ class ReflectionContent extends CourseContent {
   });
 }
 
-enum QuestionType { multipleChoice, trueOrFalse, scenario, reflection }
+enum QuestionType {
+  multipleChoice,
+  trueOrFalse,
+  scenario,
+  reflection,
+  fillGap,
+  incorrectStatement,
+  estimatePercentage,
+}
 
 class QuestionOption {
   final String text;

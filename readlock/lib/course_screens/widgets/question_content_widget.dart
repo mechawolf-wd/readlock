@@ -17,7 +17,7 @@ class QuestionContentWidget extends StatefulWidget {
 
   final QuestionContent content;
   final void Function(int selectedIndex, bool isCorrect)
-  onAnswerSelected;
+      onAnswerSelected;
 
   const QuestionContentWidget({
     super.key,
@@ -26,8 +26,7 @@ class QuestionContentWidget extends StatefulWidget {
   });
 
   @override
-  State<QuestionContentWidget> createState() =>
-      QuestionContentWidgetState();
+  State<QuestionContentWidget> createState() => QuestionContentWidgetState();
 }
 
 class QuestionContentWidgetState extends State<QuestionContentWidget> {
@@ -39,32 +38,32 @@ class QuestionContentWidgetState extends State<QuestionContentWidget> {
   Widget build(BuildContext context) {
     return Container(
       color: AppTheme.backgroundDark,
-      padding: const EdgeInsets.all(
-        Constants.COURSE_SECTION_PADDING,
-      ),
+      padding: const EdgeInsets.all(Constants.COURSE_SECTION_PADDING),
       child: Center(
-        child: Div.column([
-          QuestionText(),
+        child: Div.column(
+          [
+            questionText(),
 
-          const Spacing.height(
-            QuestionContentWidget.QUESTION_SECTION_SPACING,
-          ),
+            const Spacing.height(
+              QuestionContentWidget.QUESTION_SECTION_SPACING,
+            ),
 
-          OptionsList(),
+            optionsList(),
 
-          const Spacing.height(
-            QuestionContentWidget.QUESTION_SECTION_SPACING,
-          ),
+            const Spacing.height(
+              QuestionContentWidget.QUESTION_SECTION_SPACING,
+            ),
 
-          ExplanationSection(),
-        ], 
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.center),
+            explanationSection(),
+          ],
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center,
+        ),
       ),
     );
   }
 
-  Widget QuestionText() {
+  Widget questionText() {
     return Text(
       widget.content.question,
       style: Typography.bodyLargeStyle.copyWith(
@@ -73,7 +72,7 @@ class QuestionContentWidgetState extends State<QuestionContentWidget> {
     );
   }
 
-  Widget OptionsList() {
+  Widget optionsList() {
     return Div.column([
       for (
         int optionIndex = 0;
@@ -81,7 +80,7 @@ class QuestionContentWidgetState extends State<QuestionContentWidget> {
         optionIndex++
       )
         Div.column([
-          OptionButton(
+          optionButton(
             optionIndex,
             widget.content.options[optionIndex],
           ),
@@ -93,34 +92,23 @@ class QuestionContentWidgetState extends State<QuestionContentWidget> {
     ]);
   }
 
-  Widget OptionButton(int optionIndex, QuestionOption option) {
+  Widget optionButton(int optionIndex, QuestionOption option) {
     final bool isSelected = selectedAnswerIndex == optionIndex;
-    final bool isCorrect = widget.content.correctAnswerIndices.contains(
+    final bool isCorrectAnswer = widget.content.correctAnswerIndices.contains(
       optionIndex,
     );
-    final bool shouldShowFeedback = hasAnswered && (isSelected || isCorrect);
+    final bool isCorrectAndAnswered =
+        hasAnswered && isCorrectAnswer && isSelected;
 
     Color themeColor;
     Color backgroundColor;
     Color textColor;
 
-    if (shouldShowFeedback) {
-      if (isCorrect) {
-        themeColor = AppTheme.primaryGreen;
-        backgroundColor = AppTheme.backgroundLight;
-        textColor = AppTheme.textPrimary;
-      } else if (isSelected && !isCorrect) {
-        // Gentle orange for wrong answers instead of harsh red
-        themeColor = AppTheme.warningColorGentle;
-        backgroundColor = AppTheme.backgroundLight;
-        textColor = AppTheme.textPrimary;
-      } else {
-        // Unselected options
-        themeColor = AppTheme.textPrimary.withValues(alpha: 0.2);
-        backgroundColor = AppTheme.backgroundLight;
-        textColor = AppTheme.textPrimary;
-      }
-    } else if (isSelected) {
+    if (isCorrectAndAnswered) {
+      themeColor = AppTheme.primaryGreen;
+      backgroundColor = AppTheme.backgroundLight;
+      textColor = AppTheme.textPrimary;
+    } else if (isSelected && !hasAnswered) {
       themeColor = AppTheme.primaryBlue;
       backgroundColor = AppTheme.backgroundLight;
       textColor = AppTheme.textPrimary;
@@ -130,21 +118,12 @@ class QuestionContentWidgetState extends State<QuestionContentWidget> {
       textColor = AppTheme.textPrimary;
     }
 
-    return Container(
+    final Widget optionContainer = Container(
       width: double.infinity,
       decoration: BoxDecoration(
         color: backgroundColor,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: themeColor, width: 2),
-        boxShadow: isSelected
-            ? [
-                BoxShadow(
-                  color: themeColor.withValues(alpha: 0.1),
-                  blurRadius: 4,
-                  offset: const Offset(0, 2),
-                ),
-              ]
-            : [],
       ),
       child: InkWell(
         onTap: hasAnswered ? null : () => selectAnswer(optionIndex),
@@ -153,7 +132,7 @@ class QuestionContentWidgetState extends State<QuestionContentWidget> {
           padding: AppTheme.contentPaddingMediumInsets,
           child: Row(
             children: [
-              if (shouldShowFeedback) ...[
+              if (isCorrectAndAnswered) ...[
                 Container(
                   padding: AppTheme.contentPaddingTinyInsets,
                   decoration: BoxDecoration(
@@ -161,7 +140,7 @@ class QuestionContentWidgetState extends State<QuestionContentWidget> {
                     borderRadius: BorderRadius.circular(4),
                   ),
                   child: Icon(
-                    getFeedbackIcon(isCorrect),
+                    Icons.check_circle,
                     color: themeColor,
                     size: 18,
                   ),
@@ -186,79 +165,100 @@ class QuestionContentWidgetState extends State<QuestionContentWidget> {
         ),
       ),
     );
+
+    return optionContainer;
   }
 
-  Widget ExplanationSection() {
+  Widget explanationSection() {
     final bool shouldShowExplanation = hasAnswered;
 
     if (!shouldShowExplanation) {
       return const Spacing.height(0);
     }
 
-    return Div.column([
-      ProgressiveText(
-        textSegments: [widget.content.explanation],
-        textStyle: Typography.bodyLargeStyle.copyWith(
-          fontSize: 14,
-        ),
-        characterDelay: const Duration(milliseconds: 10),
-        crossAxisAlignment: CrossAxisAlignment.start,
+    return ProgressiveText(
+      textSegments: [widget.content.explanation],
+      textStyle: Typography.bodyLargeStyle.copyWith(
+        fontSize: 14,
+        height: 1.5,
       ),
-    ]);
-  }
-
-  Color getButtonColor(
-    bool shouldShowFeedback,
-    bool isCorrect,
-    bool isSelected,
-  ) {
-    if (shouldShowFeedback) {
-      if (isCorrect) {
-        return Colors.green[600]!;
-      } else {
-        return Colors.red[600]!;
-      }
-    }
-
-    if (isSelected) {
-      return Colors.blue[600]!;
-    } else {
-      return Colors.grey[700]!;
-    }
-  }
-
-  IconData getFeedbackIcon(bool isCorrect) {
-    if (isCorrect) {
-      return Icons.check_circle;
-    } else {
-      return Icons.question_mark;
-    }
-  }
-
-  FontWeight getTextWeight(bool isSelected) {
-    if (isSelected) {
-      return FontWeight.w600;
-    } else {
-      return FontWeight.normal;
-    }
+    );
   }
 
   void selectAnswer(int optionIndex) {
-    final bool canSelectAnswer = !hasAnswered;
-
-    if (!canSelectAnswer) {
-      return;
-    }
-
-    final bool isCorrect = widget.content.correctAnswerIndices.contains(
+    final bool isCorrectAnswer = widget.content.correctAnswerIndices.contains(
       optionIndex,
     );
 
-    setState(() {
-      selectedAnswerIndex = optionIndex;
-      hasAnswered = true;
-    });
+    if (!isCorrectAnswer && !hasAnswered) {
+      // Wrong answer - show snackbar
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Icon(Icons.close, color: Colors.white, size: 16),
+              const Spacing.width(8),
+              Text(
+                'Not quite right',
+                style: Typography.bodyLargeStyle.copyWith(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
+          ),
+          backgroundColor: Colors.orange.shade600,
+          duration: const Duration(milliseconds: 1500),
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
+          ),
+          margin: const EdgeInsets.all(16),
+        ),
+      );
+      return;
+    }
 
-    widget.onAnswerSelected(optionIndex, isCorrect);
+    if (isCorrectAnswer && !hasAnswered) {
+      // Correct answer - mark as answered and show green
+      setState(() {
+        selectedAnswerIndex = optionIndex;
+        hasAnswered = true;
+      });
+
+      // Show XP snackbar after a short delay
+      Future.delayed(const Duration(milliseconds: 300), () {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(Icons.star, color: Colors.white, size: 16),
+                  const Spacing.width(8),
+                  Text(
+                    '+5 XP',
+                    style: Typography.bodyLargeStyle.copyWith(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
+              ),
+              backgroundColor: Colors.green.shade600,
+              duration: const Duration(seconds: 2),
+              behavior: SnackBarBehavior.floating,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+              margin: const EdgeInsets.all(16),
+            ),
+          );
+        }
+      });
+
+      widget.onAnswerSelected(optionIndex, isCorrectAnswer);
+    }
   }
 }

@@ -11,6 +11,10 @@ import 'package:relevant/course_screens/widgets/question_content_widget.dart';
 import 'package:relevant/course_screens/widgets/outro_content_widget.dart';
 import 'package:relevant/course_screens/widgets/design_examples_showcase.dart';
 import 'package:relevant/course_screens/widgets/reflection_content_widget.dart';
+import 'package:relevant/course_screens/widgets/true_false_question_widget.dart';
+import 'package:relevant/course_screens/widgets/fill_gap_question_widget.dart';
+import 'package:relevant/course_screens/widgets/incorrect_statement_widget.dart';
+import 'package:relevant/course_screens/widgets/estimate_percentage_widget.dart';
 
 const String UNKNOWN_CONTENT_TYPE_MESSAGE = 'Unknown content type: ';
 
@@ -152,35 +156,80 @@ class JsonQuestionContentWidget extends StatelessWidget {
 
     void onAnswerSelectedCallback(int index, bool isCorrect) {}
 
-    return QuestionContentWidget(
-      content: questionContent,
-      onAnswerSelected: onAnswerSelectedCallback,
-    );
+    switch (questionContent.type) {
+      case QuestionType.trueOrFalse:
+        {
+          return TrueFalseQuestionWidget(
+            content: questionContent,
+            onAnswerSelected: onAnswerSelectedCallback,
+          );
+        }
+      case QuestionType.fillGap:
+        {
+          return FillGapQuestionWidget(
+            content: questionContent,
+            onAnswerSelected: onAnswerSelectedCallback,
+          );
+        }
+      case QuestionType.incorrectStatement:
+        {
+          return IncorrectStatementWidget(
+            content: questionContent,
+            onAnswerSelected: onAnswerSelectedCallback,
+          );
+        }
+      case QuestionType.estimatePercentage:
+        {
+          return EstimatePercentageWidget(
+            content: questionContent,
+            onAnswerSelected: onAnswerSelectedCallback,
+          );
+        }
+      default:
+        {
+          return QuestionContentWidget(
+            content: questionContent,
+            onAnswerSelected: onAnswerSelectedCallback,
+          );
+        }
+    }
   }
 
   QuestionType _parseQuestionType(String? type) {
-    final bool isMultipleChoiceType = type == 'multipleChoice';
-    final bool isTrueOrFalseType = type == 'trueOrFalse';
-    final bool isScenarioType = type == 'scenario';
-    final bool isReflectionType = type == 'reflection';
-
-    if (isMultipleChoiceType) {
-      return QuestionType.multipleChoice;
+    switch (type) {
+      case 'multipleChoice':
+        {
+          return QuestionType.multipleChoice;
+        }
+      case 'trueOrFalse':
+        {
+          return QuestionType.trueOrFalse;
+        }
+      case 'scenario':
+        {
+          return QuestionType.scenario;
+        }
+      case 'reflection':
+        {
+          return QuestionType.reflection;
+        }
+      case 'fillGap':
+        {
+          return QuestionType.fillGap;
+        }
+      case 'incorrectStatement':
+        {
+          return QuestionType.incorrectStatement;
+        }
+      case 'estimatePercentage':
+        {
+          return QuestionType.estimatePercentage;
+        }
+      default:
+        {
+          return QuestionType.multipleChoice;
+        }
     }
-
-    if (isTrueOrFalseType) {
-      return QuestionType.trueOrFalse;
-    }
-
-    if (isScenarioType) {
-      return QuestionType.scenario;
-    }
-
-    if (isReflectionType) {
-      return QuestionType.reflection;
-    }
-
-    return QuestionType.multipleChoice;
   }
 }
 

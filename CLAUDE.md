@@ -27,3 +27,6 @@
 23. Use Spacing utility (Spacing.height or Spacing.width) widget from utility_widgets.dart for spacing instead of SizedBox widget directly unless there is a specific need for SizedBox
 24. Use typography.dart for text.
 25. Use a new line character between sibling widgets in lists of widgets.
+26. Prefix widgets with 'const' keyword that would need it.
+27. Do not overengineer widgets before inspection.
+28. Use 4 pixel rule for spacing values.

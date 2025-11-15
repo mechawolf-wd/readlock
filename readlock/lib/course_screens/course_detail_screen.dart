@@ -3,7 +3,6 @@
 import 'package:flutter/material.dart';
 import 'package:relevant/course_screens/widgets/json_content_widget_factory.dart';
 import 'package:relevant/course_screens/data/course_data.dart';
-import 'package:relevant/course_screens/widgets/box_progress_indicator.dart';
 import 'package:relevant/constants/app_theme.dart';
 
 const String NO_CONTENT_AVAILABLE_MESSAGE =
@@ -119,6 +118,10 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
   }
 
   Widget ProgressBarSection() {
+    final double progress = allContent.isNotEmpty 
+        ? (currentContentIndex + 1) / allContent.length 
+        : 0.0;
+    
     return Container(
       padding: const EdgeInsets.only(
         left: 24,
@@ -126,10 +129,11 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
         bottom: 16,
         top: 16,
       ),
-      child: BoxProgressIndicator(
-        totalBoxes: allContent.length,
-        currentIndex: currentContentIndex,
-        activeColor: getCourseColor(),
+      child: LinearProgressIndicator(
+        value: progress,
+        backgroundColor: AppTheme.backgroundLight,
+        valueColor: AlwaysStoppedAnimation<Color>(getCourseColor()),
+        minHeight: 4,
       ),
     );
   }

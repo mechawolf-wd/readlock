@@ -5,7 +5,6 @@ import 'package:relevant/course_screens/course_detail_screen.dart';
 import 'package:relevant/course_screens/data/course_data.dart';
 import 'package:relevant/utility_widgets/utility_widgets.dart';
 import 'package:relevant/constants/app_theme.dart';
-import 'package:relevant/screens/profile_screen.dart';
 
 const String START_BUTTON_TEXT = 'Start';
 const String LESSONS_SUFFIX_TEXT = ' lessons';
@@ -62,23 +61,6 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
       backgroundColor: AppTheme.backgroundDark,
       appBar: AppBar(
         backgroundColor: AppTheme.backgroundDark,
-        actions: [
-          IconButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const ProfileScreen(),
-                ),
-              );
-            },
-            icon: const Icon(Icons.person),
-          ),
-          TextButton(
-            onPressed: startCourse,
-            child: const Text(START_BUTTON_TEXT),
-          ),
-        ],
       ),
       body: Padding(
         padding: AppTheme.screenPaddingInsets,

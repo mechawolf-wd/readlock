@@ -1,5 +1,8 @@
 // Widget that displays reflective prompts for deeper thinking
+// Encourages users to pause and think about design concepts
+
 import 'package:flutter/material.dart' hide Typography;
+import 'package:relevant/constants/app_constants.dart';
 import 'package:relevant/course_screens/models/course_model.dart';
 import 'package:relevant/utility_widgets/utility_widgets.dart';
 import 'package:relevant/constants/typography.dart';
@@ -15,112 +18,82 @@ class ReflectionContentWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       color: AppTheme.backgroundDark,
-      padding: AppTheme.contentPaddingInsets,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Header with emoji and title
-          Row(
-            children: [
-              Text(
-                content.emoji ?? '💭',
-                style: const TextStyle(fontSize: 24),
-              ),
+      padding: const EdgeInsets.all(Constants.COURSE_SECTION_PADDING),
+      child: Center(
+        child: Div.column(
+          [
+            ReflectionPrompt(),
 
-              const Spacing.width(12),
+            const Spacing.height(24),
 
-              Expanded(
-                child: Text(
-                  content.title,
-                  style: Typography.bodyLargeStyle.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
-                  textAlign: TextAlign.left,
-                ),
-              ),
-            ],
+            ThinkingPointsSection(),
+          ],
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center,
+        ),
+      ),
+    );
+  }
+
+  Widget ReflectionPrompt() {
+    return ProgressiveText(
+      textSegments: [content.prompt],
+      textStyle: Typography.bodyLargeStyle.copyWith(
+        fontSize: 16,
+        fontWeight: FontWeight.w500,
+        height: 1.5,
+      ),
+    );
+  }
+
+  Widget ThinkingPointsSection() {
+    return Div.column(
+      [
+        Text(
+          'Think about:',
+          style: Typography.bodyLargeStyle.copyWith(
+            fontWeight: FontWeight.w500,
+            fontSize: 14,
+            color: AppTheme.textPrimary.withValues(alpha: 0.7),
           ),
+        ),
 
-          const Spacing.height(20),
+        const Spacing.height(12),
 
-          // Main prompt
-          ProgressiveText(
-            textSegments: [content.prompt],
-            textStyle: Typography.bodyLargeStyle,
-            characterDelay: const Duration(milliseconds: 15),
-            crossAxisAlignment: CrossAxisAlignment.start,
-          ),
+        for (final String point in content.thinkingPoints)
+          ThinkingPointItem(point: point),
+      ],
+      crossAxisAlignment: CrossAxisAlignment.start,
+    );
+  }
 
-          const Spacing.height(24),
-
-          // Thinking points
-          Container(
-            width: double.infinity,
-            padding: AppTheme.contentPaddingSmallInsets,
-            decoration: BoxDecoration(
-              color: AppTheme.backgroundLight,
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(
-                color: AppTheme.primaryBlue.withValues(alpha: 0.3),
-                width: 2,
-              ),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Think about:',
-                  style: Typography.bodyLargeStyle.copyWith(
-                    fontWeight: FontWeight.w500,
-                    color: AppTheme.primaryBlue,
-                  ),
-                ),
-
-                const Spacing.height(12),
-
-                ...content.thinkingPoints.map(
-                  (point) => Padding(
-                    padding: const EdgeInsets.only(bottom: 8),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          '• ',
-                          style: Typography.bodyMediumStyle.copyWith(
-                            color: AppTheme.primaryBlue,
-                            fontSize: 14,
-                          ),
-                        ),
-                        Expanded(
-                          child: Text(
-                            point,
-                            style: Typography.bodyMediumStyle.copyWith(
-                              fontSize: 14,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
+  Widget ThinkingPointItem({required String point}) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Div.row(
+        [
+          Text(
+            '•',
+            style: Typography.bodyMediumStyle.copyWith(
+              fontSize: 14,
+              color: AppTheme.textPrimary.withValues(alpha: 0.5),
             ),
           ),
 
-          const Spacing.height(20),
+          const Spacing.width(8),
 
-          // Encouragement text
-          Center(
+          Expanded(
             child: Text(
-              'Take a moment to reflect...',
+              point,
               style: Typography.bodyMediumStyle.copyWith(
-                fontStyle: FontStyle.italic,
-                color: AppTheme.textSecondary,
                 fontSize: 14,
+                height: 1.4,
+                color: AppTheme.textPrimary.withValues(alpha: 0.8),
               ),
             ),
           ),
         ],
+        crossAxisAlignment: CrossAxisAlignment.start,
       ),
     );
   }

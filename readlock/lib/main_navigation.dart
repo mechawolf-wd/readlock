@@ -20,7 +20,7 @@ class MainNavigationState extends State<MainNavigation> {
 
   final List<Widget> screens = [
     const CourseRoadmapScreen(
-      courseId: 'design_everyday_things',
+      courseId: 'design-everyday-things',
     ),
     const ProfileScreen(),
   ];
