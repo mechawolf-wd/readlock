@@ -224,20 +224,9 @@ class TrueFalseQuestionWidgetState
   }
 
   Widget ExplanationSection() {
-    if (!hasAnswered) {
-      return const Spacing.height(0);
-    }
-
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: AppTheme.backgroundLight,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: AppTheme.textPrimary.withValues(alpha: 0.1),
-        ),
-      ),
-      child: Div.column([
+    return RenderIf.condition(
+      hasAnswered,
+      Div.column([
         Div.row([
           Icon(
             Icons.lightbulb_outline,
@@ -266,7 +255,12 @@ class TrueFalseQuestionWidgetState
             height: 1.5,
           ),
         ),
-      ], crossAxisAlignment: CrossAxisAlignment.start),
+      ], 
+      crossAxisAlignment: CrossAxisAlignment.start,
+      padding: 16,
+      color: AppTheme.backgroundLight,
+      radius: 12,
+    ),
     );
   }
 

@@ -1,8 +1,8 @@
 // Factory class for creating course content widgets from JSON data
 // Provides wrapper widgets that convert JSON data to proper model objects
 
-import 'package:flutter/material.dart';
-import 'package:relevant/constants/typography.dart' as app_typography;
+import 'package:flutter/material.dart' hide Typography;
+import 'package:relevant/constants/typography.dart';
 import 'package:relevant/utility_widgets/utility_widgets.dart';
 import 'package:relevant/course_screens/models/course_model.dart';
 import 'package:relevant/course_screens/widgets/intro_content_widget.dart';
@@ -75,7 +75,7 @@ class UnknownContentWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Div.column(
       [
-        app_typography.Typography.text(
+        Typography.text(
           '$UNKNOWN_CONTENT_TYPE_MESSAGE$entityType',
           textAlign: TextAlign.center,
         ),

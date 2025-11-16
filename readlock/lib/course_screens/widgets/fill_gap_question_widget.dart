@@ -47,9 +47,9 @@ class FillGapQuestionWidgetState extends State<FillGapQuestionWidget>
 
   void initializeGaps() {
     final int numberOfGaps = countGapsInQuestion();
-    for (int gapIndex = 0; gapIndex < numberOfGaps; gapIndex++) {
-      selectedOptionsForGaps[gapIndex] = null;
-    }
+    selectedOptionsForGaps = Map.fromEntries(
+      List.generate(numberOfGaps, (index) => MapEntry(index, null)),
+    );
   }
 
   int countGapsInQuestion() {
@@ -93,34 +93,31 @@ class FillGapQuestionWidgetState extends State<FillGapQuestionWidget>
 
   Widget QuestionWithGaps() {
     final List<String> questionParts = widget.content.question.split('___');
-    final List<Widget> questionWidgets = [];
-
-    for (int partIndex = 0; partIndex < questionParts.length; partIndex++) {
-      if (questionParts[partIndex].isNotEmpty) {
-        questionWidgets.add(
-          Text(
-            questionParts[partIndex],
-            style: Typography.bodyLargeStyle.copyWith(
-              fontSize: 16,
-              height: 1.5,
-            ),
-          ),
-        );
-      }
-
-      if (partIndex < questionParts.length - 1) {
-        questionWidgets.add(
-          GapWidget(gapIndex: partIndex),
-        );
-      }
-    }
-
+    
     return Wrap(
       alignment: WrapAlignment.center,
       crossAxisAlignment: WrapCrossAlignment.center,
       spacing: 8,
       runSpacing: 12,
-      children: questionWidgets,
+      children: [
+        ...questionParts.asMap().entries.expand((entry) {
+          final int index = entry.key;
+          final String part = entry.value;
+          
+          return [
+            if (part.isNotEmpty)
+              Text(
+                part,
+                style: Typography.bodyLargeStyle.copyWith(
+                  fontSize: 16,
+                  height: 1.5,
+                ),
+              ),
+            if (index < questionParts.length - 1)
+              GapWidget(gapIndex: index),
+          ];
+        }),
+      ],
     );
   }
 
@@ -222,12 +219,10 @@ class FillGapQuestionWidgetState extends State<FillGapQuestionWidget>
         Wrap(
           spacing: FILL_GAP_OPTION_SPACING,
           runSpacing: FILL_GAP_OPTION_SPACING,
-          children: [
-            for (int optionIndex = 0;
-                optionIndex < widget.content.options.length;
-                optionIndex++)
-              OptionChip(optionIndex: optionIndex),
-          ],
+          children: List.generate(
+            widget.content.options.length,
+            (optionIndex) => OptionChip(optionIndex: optionIndex),
+          ),
         ),
       ],
     );
@@ -309,22 +304,11 @@ class FillGapQuestionWidgetState extends State<FillGapQuestionWidget>
   }
 
   Widget ExplanationSection() {
-    if (!hasAnswered) {
-      return const Spacing.height(0);
-    }
-
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: AppTheme.backgroundLight,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: AppTheme.textPrimary.withValues(alpha: 0.1),
-        ),
-      ),
-      child: Div.column(
-        [
-          Div.row(
+    return RenderIf.condition(
+      hasAnswered,
+      Div.column(
+      [
+        Div.row(
             [
               Icon(
                 Icons.lightbulb_outline,
@@ -355,7 +339,10 @@ class FillGapQuestionWidgetState extends State<FillGapQuestionWidget>
             ),
           ),
         ],
-      ),
+      padding: 16,
+      color: AppTheme.backgroundLight,
+      radius: 12,
+    ),
     );
   }
 
@@ -374,12 +361,10 @@ class FillGapQuestionWidgetState extends State<FillGapQuestionWidget>
   }
 
   int? findFirstEmptyGap() {
-    for (final MapEntry<int, int?> entry in selectedOptionsForGaps.entries) {
-      if (entry.value == null) {
-        return entry.key;
-      }
-    }
-    return null;
+    return selectedOptionsForGaps.entries
+        .where((entry) => entry.value == null)
+        .map((entry) => entry.key)
+        .firstOrNull;
   }
 
   void clearGapSelection(int gapIndex) {

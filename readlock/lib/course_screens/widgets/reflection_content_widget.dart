@@ -47,54 +47,49 @@ class ReflectionContentWidget extends StatelessWidget {
   }
 
   Widget ThinkingPointsSection() {
-    return Div.column(
-      [
-        Text(
-          'Think about:',
-          style: Typography.bodyLargeStyle.copyWith(
-            fontWeight: FontWeight.w500,
-            fontSize: 14,
-            color: AppTheme.textPrimary.withValues(alpha: 0.7),
-          ),
+    return Div.column([
+      Text(
+        'Think about:',
+        style: Typography.bodyLargeStyle.copyWith(
+          fontWeight: FontWeight.w500,
+          fontSize: 14,
+          color: AppTheme.textPrimary.withValues(alpha: 0.7),
         ),
+      ),
 
-        const Spacing.height(12),
+      const Spacing.height(12),
 
-        for (final String point in content.thinkingPoints)
-          ThinkingPointItem(point: point),
-      ],
-      crossAxisAlignment: CrossAxisAlignment.start,
-    );
+      ...content.thinkingPoints.map(
+        (point) => ThinkingPointItem(point: point),
+      ),
+    ], crossAxisAlignment: CrossAxisAlignment.start);
   }
 
   Widget ThinkingPointItem({required String point}) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
-      child: Div.row(
-        [
-          Text(
-            '•',
+      child: Div.row([
+        Text(
+          '•',
+          style: Typography.bodyMediumStyle.copyWith(
+            fontSize: 14,
+            color: AppTheme.textPrimary.withValues(alpha: 0.5),
+          ),
+        ),
+
+        const Spacing.width(8),
+
+        Expanded(
+          child: Text(
+            point,
             style: Typography.bodyMediumStyle.copyWith(
               fontSize: 14,
-              color: AppTheme.textPrimary.withValues(alpha: 0.5),
+              height: 1.4,
+              color: AppTheme.textPrimary.withValues(alpha: 0.8),
             ),
           ),
-
-          const Spacing.width(8),
-
-          Expanded(
-            child: Text(
-              point,
-              style: Typography.bodyMediumStyle.copyWith(
-                fontSize: 14,
-                height: 1.4,
-                color: AppTheme.textPrimary.withValues(alpha: 0.8),
-              ),
-            ),
-          ),
-        ],
-        crossAxisAlignment: CrossAxisAlignment.start,
-      ),
+        ),
+      ], crossAxisAlignment: CrossAxisAlignment.start),
     );
   }
 }

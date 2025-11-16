@@ -74,21 +74,18 @@ class QuestionContentWidgetState extends State<QuestionContentWidget> {
 
   Widget optionsList() {
     return Div.column([
-      for (
-        int optionIndex = 0;
-        optionIndex < widget.content.options.length;
-        optionIndex++
-      )
-        Div.column([
-          optionButton(
-            optionIndex,
-            widget.content.options[optionIndex],
-          ),
+      ...widget.content.options.asMap().entries.map((entry) {
+        final int optionIndex = entry.key;
+        final QuestionOption option = entry.value;
+        
+        return Div.column([
+          optionButton(optionIndex, option),
 
           const Spacing.height(
             QuestionContentWidget.OPTION_BUTTON_SPACING,
           ),
-        ]),
+        ]);
+      }),
     ]);
   }
 
@@ -132,21 +129,24 @@ class QuestionContentWidgetState extends State<QuestionContentWidget> {
           padding: AppTheme.contentPaddingMediumInsets,
           child: Row(
             children: [
-              if (isCorrectAndAnswered) ...[
-                Container(
-                  padding: AppTheme.contentPaddingTinyInsets,
-                  decoration: BoxDecoration(
-                    color: themeColor.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(4),
+              RenderIf.condition(
+                isCorrectAndAnswered,
+                Row(children: [
+                  Container(
+                    padding: AppTheme.contentPaddingTinyInsets,
+                    decoration: BoxDecoration(
+                      color: themeColor.withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                    child: Icon(
+                      Icons.check_circle,
+                      color: themeColor,
+                      size: 18,
+                    ),
                   ),
-                  child: Icon(
-                    Icons.check_circle,
-                    color: themeColor,
-                    size: 18,
-                  ),
-                ),
-                const Spacing.width(12),
-              ],
+                  const Spacing.width(12),
+                ]),
+              ),
 
               Expanded(
                 child: Text(
@@ -170,17 +170,14 @@ class QuestionContentWidgetState extends State<QuestionContentWidget> {
   }
 
   Widget explanationSection() {
-    final bool shouldShowExplanation = hasAnswered;
-
-    if (!shouldShowExplanation) {
-      return const Spacing.height(0);
-    }
-
-    return ProgressiveText(
-      textSegments: [widget.content.explanation],
-      textStyle: Typography.bodyLargeStyle.copyWith(
-        fontSize: 14,
-        height: 1.5,
+    return RenderIf.condition(
+      hasAnswered,
+      ProgressiveText(
+        textSegments: [widget.content.explanation],
+        textStyle: Typography.bodyLargeStyle.copyWith(
+          fontSize: 14,
+          height: 1.5,
+        ),
       ),
     );
   }
@@ -191,25 +188,40 @@ class QuestionContentWidgetState extends State<QuestionContentWidget> {
     );
 
     if (!isCorrectAnswer && !hasAnswered) {
-      // Wrong answer - show snackbar
+      // Wrong answer - show helpful guidance
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Row(
+          content: Column(
             mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Icon(Icons.close, color: Colors.white, size: 16),
-              const Spacing.width(8),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(Icons.lightbulb_outline, color: Colors.white, size: 16),
+                  const Spacing.width(8),
+                  Text(
+                    'Think again',
+                    style: Typography.bodyLargeStyle.copyWith(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
+              ),
+              const Spacing.height(4),
               Text(
-                'Not quite right',
-                style: Typography.bodyLargeStyle.copyWith(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w500,
+                'Consider the key concepts from this section. The correct answer relates to the main principle discussed.',
+                style: Typography.bodyMediumStyle.copyWith(
+                  color: Colors.white.withValues(alpha: 0.9),
+                  fontSize: 12,
+                  height: 1.3,
                 ),
               ),
             ],
           ),
           backgroundColor: Colors.orange.shade600,
-          duration: const Duration(milliseconds: 1500),
+          duration: const Duration(milliseconds: 3000),
           behavior: SnackBarBehavior.floating,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8),

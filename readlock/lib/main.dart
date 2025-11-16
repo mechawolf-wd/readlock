@@ -27,7 +27,7 @@ class RelevantApp extends StatelessWidget {
       ),
       scaffoldBackgroundColor: Colors.grey[900],
       useMaterial3: true,
-      textTheme: GoogleFonts.crimsonTextTextTheme(
+      textTheme: GoogleFonts.dmSansTextTheme(
         ThemeData.dark().textTheme,
       ),
     );

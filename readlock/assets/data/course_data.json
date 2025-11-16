@@ -16,10 +16,11 @@
               "id": "design_intro",
               "title": "Doors, Faucets, and Frustration",
               "introTextSegments": [
-                "Why do simple things confuse us?",
-                "It's not your fault when designs fail.",
-                "Good design should be invisible.",
-                "Bad design blames the user."
+                "Every day, you interact with hundreds of designed objects—from door handles to coffee machines to the very device you're reading this on. Most function so seamlessly that they become invisible extensions of your intent.",
+                "Yet it's the failures that linger in memory: the hotel door whose gleaming handle suggests pulling while demanding a push, or those shower controls that seem engineered by someone who has never experienced the sharp betrayal of unexpectedly scalding water.",
+                "These aren't merely accidents of poor craftsmanship; they represent a fundamental disconnect between the designer's mental model and the user's intuitive expectations.",
+                "For decades, Don Norman has dissected this curious phenomenon—why intelligent people find themselves baffled by objects designed, ostensibly, for their use. His work reveals the intricate psychology woven into every interface we encounter.",
+                "What emerges isn't a treatise on aesthetic improvement, but rather a profound exploration of how the human mind interprets and navigates the designed world—and how we might design with that understanding in mind."
               ]
             },
             {

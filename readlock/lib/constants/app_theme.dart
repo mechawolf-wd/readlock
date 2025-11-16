@@ -89,10 +89,6 @@ class AppTheme {
   static const double contentPaddingTiny = 4.0;
   static const double contentPaddingSmaller = 8.0;
 
-  // Elevations
-  static const double elevationLow = 2.0;
-  static const double elevationMedium = 4.0;
-  static const double elevationHigh = 10.0;
 
   // Alpha transparency constants
   static const double alphaVeryLight = 0.05;
@@ -169,53 +165,6 @@ class AppTheme {
     height: 1.4,
   );
 
-  // Shadow opacity constants
-  static const double shadowLight = 0.08;
-  static const double shadowMedium = 0.1;
-  static const double shadowHeavy = 0.12;
-  static const double shadowDark = 0.15;
-  static const double shadowVeryDark = 0.2;
-
-  // BoxShadow presets
-  static List<BoxShadow> get lightShadow => [
-    BoxShadow(
-      color: Colors.black.withValues(alpha: shadowMedium),
-      blurRadius: 6,
-      offset: const Offset(0, 2),
-    ),
-  ];
-
-  static List<BoxShadow> get mediumShadow => [
-    BoxShadow(
-      color: Colors.black.withValues(alpha: shadowDark),
-      blurRadius: 8,
-      offset: const Offset(0, 4),
-    ),
-  ];
-
-  static List<BoxShadow> get heavyShadow => [
-    BoxShadow(
-      color: Colors.black.withValues(alpha: shadowVeryDark),
-      blurRadius: 10,
-      offset: const Offset(0, 6),
-    ),
-  ];
-
-  static List<BoxShadow> get cardShadow => [
-    BoxShadow(
-      color: Colors.black.withValues(alpha: shadowLight),
-      blurRadius: 12,
-      offset: const Offset(0, 4),
-    ),
-  ];
-
-  static List<BoxShadow> get elevatedShadow => [
-    BoxShadow(
-      color: Colors.black.withValues(alpha: shadowHeavy),
-      blurRadius: 16,
-      offset: const Offset(0, 8),
-    ),
-  ];
 
   static ColorScheme getCourseColorScheme(CourseThemeColor color) {
     switch (color) {
@@ -285,20 +234,6 @@ class AppTheme {
     );
   }
 
-  static BoxDecoration getCardShadowDecoration({
-    double borderRadius = radiusLarge,
-  }) {
-    return BoxDecoration(
-      borderRadius: BorderRadius.circular(borderRadius),
-      boxShadow: [
-        BoxShadow(
-          color: AppTheme.shadowColor.withValues(alpha: shadowMedium),
-          blurRadius: elevationHigh,
-          offset: const Offset(0, 4),
-        ),
-      ],
-    );
-  }
 
   static ButtonStyle getElevatedButtonStyle({
     required Color backgroundColor,

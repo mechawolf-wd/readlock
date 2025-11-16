@@ -83,17 +83,16 @@ class IncorrectStatementWidgetState
 
   Widget StatementsList() {
     return Div.column([
-      for (
-        int statementIndex = 0;
-        statementIndex < widget.content.options.length;
-        statementIndex++
-      )
-        Div.column([
+      ...widget.content.options.asMap().entries.map((entry) {
+        final int statementIndex = entry.key;
+        
+        return Div.column([
           StatementItem(statementIndex: statementIndex),
 
           if (statementIndex < widget.content.options.length - 1)
             const Spacing.height(STATEMENT_ITEM_SPACING),
-        ]),
+        ]);
+      }),
     ]);
   }
 
@@ -141,17 +140,19 @@ class IncorrectStatementWidgetState
             border: Border.all(color: borderColor, width: 2),
           ),
           child: Div.row([
-            if (hasAnswered && feedbackIcon != null) ...[
-              Icon(
-                feedbackIcon,
-                color: isIncorrectStatement
-                    ? AppTheme.primaryGreen
-                    : AppTheme.textPrimary.withValues(alpha: 0.4),
-                size: 20,
-              ),
-
-              const Spacing.width(12),
-            ],
+            RenderIf.condition(
+              hasAnswered && feedbackIcon != null,
+              Div.row([
+                Icon(
+                  feedbackIcon!,
+                  color: isIncorrectStatement
+                      ? AppTheme.primaryGreen
+                      : AppTheme.textPrimary.withValues(alpha: 0.4),
+                  size: 20,
+                ),
+                const Spacing.width(12),
+              ]),
+            ),
 
             Expanded(
               child: Text(

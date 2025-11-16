@@ -18,10 +18,6 @@ class IntroContentWidget extends StatelessWidget {
       color: AppTheme.backgroundDark,
       child: Div.column(
         [
-          Typography.headingMedium(content.title),
-
-          const Spacing.height(16),
-
           ProgressiveText(
             textSegments: content.introTextSegments,
             textStyle: Typography.bodyMediumStyle,

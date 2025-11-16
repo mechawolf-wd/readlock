@@ -82,15 +82,15 @@ class EstimatePercentageWidgetState extends State<EstimatePercentageWidget>
 
             SubmitButton(),
 
-            if (hasSubmitted) ...[
-              const Spacing.height(ESTIMATE_SECTION_SPACING),
-
-              ResultSection(),
-
-              const Spacing.height(ESTIMATE_SECTION_SPACING),
-
-              ExplanationSection(),
-            ],
+            RenderIf.condition(
+              hasSubmitted,
+              Column(children: [
+                const Spacing.height(ESTIMATE_SECTION_SPACING),
+                ResultSection(),
+                const Spacing.height(ESTIMATE_SECTION_SPACING),
+                ExplanationSection(),
+              ]),
+            ),
           ],
           crossAxisAlignment: CrossAxisAlignment.stretch,
           mainAxisAlignment: MainAxisAlignment.center,
@@ -215,34 +215,29 @@ class EstimatePercentageWidgetState extends State<EstimatePercentageWidget>
   }
 
   Widget SubmitButton() {
-    if (hasSubmitted) {
-      return const SizedBox.shrink();
-    }
-
-    return Material(
-      elevation: 2,
+    return RenderIf.condition(
+      !hasSubmitted,
+      InkWell(
+      onTap: submitEstimate,
       borderRadius: BorderRadius.circular(12),
-      color: AppTheme.primaryBlue,
-      child: InkWell(
-        onTap: submitEstimate,
-        borderRadius: BorderRadius.circular(12),
-        child: Container(
-          height: 48,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: Center(
-            child: Text(
-              'Submit Estimate',
-              style: Typography.bodyLargeStyle.copyWith(
-                color: Colors.white,
-                fontWeight: FontWeight.w600,
-                fontSize: 16,
-              ),
+      child: Container(
+        height: 48,
+        decoration: BoxDecoration(
+          color: AppTheme.primaryBlue,
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Center(
+          child: Text(
+            'Submit Estimate',
+            style: Typography.bodyLargeStyle.copyWith(
+              color: Colors.white,
+              fontWeight: FontWeight.w600,
+              fontSize: 16,
             ),
           ),
         ),
       ),
+    ),
     );
   }
 
@@ -281,7 +276,7 @@ class EstimatePercentageWidgetState extends State<EstimatePercentageWidget>
                 const Spacing.width(8),
 
                 Text(
-                  isClose ? 'Great estimate!' : 'Not quite!',
+                  isClose ? 'Great estimate!' : 'Keep practicing!',
                   style: Typography.bodyLargeStyle.copyWith(
                     fontWeight: FontWeight.w600,
                     fontSize: 14,
@@ -294,6 +289,23 @@ class EstimatePercentageWidgetState extends State<EstimatePercentageWidget>
             ),
 
             const Spacing.height(12),
+
+            RenderIf.condition(
+              !isClose,
+              Padding(
+                padding: const EdgeInsets.only(bottom: 8),
+                child: Text(
+                  difference > 30 
+                      ? 'Tip: Consider the context and real-world factors that might influence this statistic.'
+                      : 'Close! Think about the specific details mentioned in the text.',
+                  style: Typography.bodyMediumStyle.copyWith(
+                    fontSize: 12,
+                    color: Colors.orange.shade600,
+                    fontStyle: FontStyle.italic,
+                  ),
+                ),
+              ),
+            ),
 
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,

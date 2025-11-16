@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:relevant/course_screens/widgets/json_content_widget_factory.dart';
 import 'package:relevant/course_screens/data/course_data.dart';
 import 'package:relevant/constants/app_theme.dart';
+import 'package:relevant/utility_widgets/utility_widgets.dart';
+import 'package:relevant/main_navigation.dart';
 
 const String NO_CONTENT_AVAILABLE_MESSAGE =
     'No content available for this course';
@@ -72,28 +74,31 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if (isLoading) {
-      return const Scaffold(
+    return RenderIf.condition(
+      isLoading,
+      const Scaffold(
         backgroundColor: AppTheme.backgroundDark,
         body: Center(child: CircularProgressIndicator()),
-      );
-    }
-
-    return SafeArea(
+      ),
+      SafeArea(
       child: Scaffold(
         backgroundColor: AppTheme.backgroundDark,
-        body: CourseBody(),
-        bottomNavigationBar: ProgressBarSection(),
+        body: Column(
+          children: [
+            TopProgressBar(),
+            Expanded(child: CourseBody()),
+          ],
+        ),
       ),
+    ),
     );
   }
 
   Widget CourseBody() {
-    if (allContent.isEmpty) {
-      return EmptyContentMessage();
-    }
-
-    return PageView.builder(
+    return RenderIf.condition(
+      allContent.isEmpty,
+      EmptyContentMessage(),
+      PageView.builder(
       controller: pageController,
       scrollDirection: Axis.vertical,
       itemCount: allContent.length,
@@ -101,6 +106,7 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
       itemBuilder: (context, contentItemIndex) {
         return ContentWidget(allContent[contentItemIndex]);
       },
+    ),
     );
   }
 
@@ -117,23 +123,44 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
     return JsonContentWidgetFactory.createContentWidget(content);
   }
 
-  Widget ProgressBarSection() {
+  Widget TopProgressBar() {
     final double progress = allContent.isNotEmpty 
         ? (currentContentIndex + 1) / allContent.length 
         : 0.0;
     
     return Container(
-      padding: const EdgeInsets.only(
-        left: 24,
-        right: 24,
-        bottom: 16,
-        top: 16,
-      ),
-      child: LinearProgressIndicator(
-        value: progress,
-        backgroundColor: AppTheme.backgroundLight,
-        valueColor: AlwaysStoppedAnimation<Color>(getCourseColor()),
-        minHeight: 4,
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      child: Row(
+        children: [
+          GestureDetector(
+            onTap: () {
+              Navigator.of(context).pushReplacement(
+                MaterialPageRoute(
+                  builder: (context) => const MainNavigation(),
+                ),
+              );
+            },
+            child: const Icon(
+              Icons.arrow_back,
+              color: Colors.white,
+              size: 24,
+            ),
+          ),
+          
+          const SizedBox(width: 12),
+          
+          Expanded(
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(4),
+              child: LinearProgressIndicator(
+                value: progress,
+                backgroundColor: AppTheme.backgroundLight,
+                valueColor: AlwaysStoppedAnimation<Color>(getCourseColor()),
+                minHeight: 8,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -144,15 +171,11 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
       return [];
     }
     
-    final List<Map<String, dynamic>> allContent = [];
     final sections = List<Map<String, dynamic>>.from(courseData!['sections'] ?? []);
     
-    for (final section in sections) {
-      final content = List<Map<String, dynamic>>.from(section['content'] ?? []);
-      allContent.addAll(content);
-    }
-    
-    return allContent;
+    return sections
+        .expand((section) => List<Map<String, dynamic>>.from(section['content'] ?? []))
+        .toList();
   }
 
   void handlePageChanged(int contentItemIndex) {
@@ -186,4 +209,5 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
         }
     }
   }
+
 }

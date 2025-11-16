@@ -91,11 +91,8 @@ class ProgressiveTextState extends State<ProgressiveText> {
       });
     }
 
-    for (
-      int characterIndex = 0;
-      characterIndex < currentSentenceText.length && mounted;
-      characterIndex++
-    ) {
+    int characterIndex = 0;
+    while (characterIndex < currentSentenceText.length && mounted) {
       final bool shouldContinue = mounted && isRevealingCurrentSentence;
 
       if (!shouldContinue) {
@@ -113,6 +110,7 @@ class ProgressiveTextState extends State<ProgressiveText> {
       }
 
       await Future.delayed(widget.characterDelay);
+      characterIndex++;
     }
 
     if (mounted) {
@@ -205,38 +203,35 @@ class ProgressiveTextState extends State<ProgressiveText> {
   }
 
   Widget RevealedTextDisplay() {
-    final List<Widget> sentenceWidgets = [];
-
-    for (
-      int sentenceItemIndex = 0;
-      sentenceItemIndex < currentSentenceNumber;
-      sentenceItemIndex++
-    ) {
-      Widget sentenceWidget = Padding(
-        padding: const EdgeInsets.only(
-          bottom: ProgressiveText.DEFAULT_BOTTOM_SPACING,
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              textSentences[sentenceItemIndex],
-              style: widget.textStyle ?? Typography.bodyMediumStyle,
-            ),
-          ],
-        ),
-      );
-
-      if (widget.enableBlurOnCompleted) {
-        sentenceWidget = BlurOverlay(
-          blurSigma: widget.blurSigma,
-          opacity: widget.completedOpacity,
-          child: sentenceWidget,
+    final List<Widget> sentenceWidgets = List.generate(
+      currentSentenceNumber,
+      (sentenceItemIndex) {
+        Widget sentenceWidget = Padding(
+          padding: const EdgeInsets.only(
+            bottom: ProgressiveText.DEFAULT_BOTTOM_SPACING,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                textSentences[sentenceItemIndex],
+                style: widget.textStyle ?? Typography.bodyMediumStyle,
+              ),
+            ],
+          ),
         );
-      }
 
-      sentenceWidgets.add(sentenceWidget);
-    }
+        if (widget.enableBlurOnCompleted) {
+          sentenceWidget = BlurOverlay(
+            blurSigma: widget.blurSigma,
+            opacity: widget.completedOpacity,
+            child: sentenceWidget,
+          );
+        }
+
+        return sentenceWidget;
+      },
+    );
 
     final bool hasCurrentSentence =
         currentSentenceNumber < textSentences.length;

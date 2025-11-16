@@ -638,3 +638,24 @@ class Spacing extends StatelessWidget {
     }
   }
 }
+
+class RenderIf {
+  /// Conditionally renders a widget based on a boolean condition
+  /// 
+  /// If condition is true, returns `ifTrue` widget
+  /// If condition is false, returns `ifFalse` widget (or SizedBox.shrink() if not provided)
+  /// 
+  /// Examples:
+  /// ```dart
+  /// RenderIf.condition(isLoggedIn, Text('Welcome back!'))
+  /// RenderIf.condition(hasError, ErrorWidget(), Text('All good!'))
+  /// RenderIf.condition(items.isNotEmpty, ItemsList())
+  /// ```
+  static Widget condition(bool condition, Widget ifTrue, [Widget? ifFalse]) {
+    if (condition) {
+      return ifTrue;
+    } else {
+      return ifFalse ?? const SizedBox.shrink();
+    }
+  }
+}

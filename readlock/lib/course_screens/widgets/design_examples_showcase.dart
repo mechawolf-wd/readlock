@@ -120,8 +120,8 @@ class DesignExamplesShowcaseState
       mainAxisAlignment: MainAxisAlignment.center,
       children: List.generate(
         examples.length,
-        (index) => Container(
-          margin: const EdgeInsets.symmetric(horizontal: 4),
+        (index) => Div.emptyColumn(
+          margin: const [0, 4],
           width: 8,
           height: 8,
           decoration: BoxDecoration(
@@ -140,21 +140,8 @@ class DesignExamplesShowcaseState
         ? AppTheme.primaryGreen
         : AppTheme.errorColor;
 
-    return Container(
-      width: double.infinity,
-      padding: AppTheme.contentPaddingInsets,
-      decoration: BoxDecoration(
-        color: AppTheme.backgroundLight,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: themeColor.withValues(alpha: 0.3),
-          width: 2,
-        ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
+    return Div.column(
+      [
           Row(
             children: [
               Container(
@@ -194,8 +181,12 @@ class DesignExamplesShowcaseState
             characterDelay: const Duration(milliseconds: 15),
             crossAxisAlignment: CrossAxisAlignment.start,
           ),
-        ],
-      ),
+      ],
+      crossAxisAlignment: CrossAxisAlignment.start,
+      width: double.infinity,
+      padding: AppTheme.contentPaddingInsets,
+      color: AppTheme.backgroundLight,
+      radius: 16,
     );
   }
 }

@@ -9,7 +9,9 @@ class CourseData {
     return JsonCourseDataService.getCourseById(courseId);
   }
 
-  static Future<List<Map<String, dynamic>>> getCourseSections(String courseId) {
+  static Future<List<Map<String, dynamic>>> getCourseSections(
+    String courseId,
+  ) {
     return JsonCourseDataService.getCourseSections(courseId);
   }
 
@@ -25,7 +27,11 @@ class CourseData {
     String sectionId,
     String contentId,
   ) {
-    return JsonCourseDataService.getContentItem(courseId, sectionId, contentId);
+    return JsonCourseDataService.getContentItem(
+      courseId,
+      sectionId,
+      contentId,
+    );
   }
 
   static void clearCache() {

@@ -1,284 +1,1632 @@
-// Profile screen with Lottie animation showcase
-// Demonstrates integration of Lottie animations for enhanced user experience
+// Duolingo-inspired gamified profile screen
+// Showcases mockups of engaging learning patterns adapted for book reading
 
-import 'package:flutter/material.dart';
-import 'package:lottie/lottie.dart';
-import 'package:relevant/constants/typography.dart' as app_typography;
+import 'package:flutter/material.dart' hide Typography;
+import 'package:relevant/constants/typography.dart';
 import 'package:relevant/utility_widgets/utility_widgets.dart';
+import 'package:relevant/constants/app_theme.dart';
 
-const IconData PROFILE_IMAGE_PLACEHOLDER_ICON = Icons.person;
-const String USER_NAME_TEXT = 'John Doe';
-const String USER_EMAIL_TEXT = 'john.doe@example.com';
-const String USER_BIO_TEXT = 'Design enthusiast | UX/UI Explorer';
-const String PROFILE_STATS_COURSES_LABEL = 'Courses';
-const String PROFILE_STATS_COMPLETED_LABEL = 'Completed';
-const String PROFILE_STATS_HOURS_LABEL = 'Hours';
-const String PROFILE_STATS_COURSES_VALUE = '12';
-const String PROFILE_STATS_COMPLETED_VALUE = '8';
-const String PROFILE_STATS_HOURS_VALUE = '156';
-const String ACHIEVEMENTS_SECTION_TITLE = 'Recent Achievements';
-const String SETTINGS_BUTTON_TEXT = 'Settings';
-const String LOGOUT_BUTTON_TEXT = 'Logout';
+const String PROFILE_GREETING = 'Welcome back, Alex!';
+const String DAILY_GOAL_LABEL = 'Daily Goal';
+const String WEEKLY_CHALLENGE_LABEL = 'Weekly Challenge';
+const String KNOWLEDGE_MASTERY_LABEL = 'Knowledge Mastery';
+const String ACHIEVEMENT_GALLERY_LABEL = 'Achievement Gallery';
+const String READING_LEAGUE_LABEL = 'Reading League';
+const String CONCEPT_STRENGTH_LABEL = 'Concept Strength';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.grey[900],
-      appBar: ProfileAppBar(),
-      body: SafeArea(
+    return Container(
+      color: AppTheme.backgroundDark,
+      child: SafeArea(
         child: SingleChildScrollView(
+          padding: const EdgeInsets.all(20),
           child: Div.column([
-            ProfileHeaderSection(),
-            Spacing.height(24),
-            ProfileStatsSection(),
-            Spacing.height(24),
-            LottieAnimationShowcase(),
-            Spacing.height(24),
-            AchievementsSection(),
-            Spacing.height(24),
-            ProfileActionsSection(),
-            Spacing.height(32),
-          ], padding: 16),
+            DuolingoProfileHeader(),
+            
+            const Spacing.height(24),
+            
+            EnhancedStreakCard(),
+            
+            const Spacing.height(20),
+            
+            DailyGoalCard(),
+            
+            const Spacing.height(20),
+            
+            KnowledgeMasteryCard(),
+            
+            const Spacing.height(20),
+            
+            ConceptStrengthMeter(),
+            
+            const Spacing.height(20),
+            
+            AchievementGallery(),
+            
+            const Spacing.height(20),
+            
+            ReadingLeagueCard(),
+            
+            const Spacing.height(20),
+            
+            WeeklyChallengeCard(),
+          ], crossAxisAlignment: CrossAxisAlignment.stretch),
         ),
       ),
     );
   }
-
-  PreferredSizeWidget ProfileAppBar() {
-    return AppBar(
-      backgroundColor: Colors.grey[850],
-      elevation: 0,
-      title: app_typography.Typography.headingMedium(
-        'Profile',
-        textAlign: TextAlign.center,
-      ),
-      centerTitle: true,
-    );
-  }
 }
 
-class ProfileHeaderSection extends StatelessWidget {
-  const ProfileHeaderSection({super.key});
+class DuolingoProfileHeader extends StatelessWidget {
+  const DuolingoProfileHeader({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Div.column([
-      ProfileAvatar(),
-      Spacing.height(16),
-      app_typography.Typography.headingLarge(
-        USER_NAME_TEXT,
-        textAlign: TextAlign.center,
-      ),
-      Spacing.height(8),
-      app_typography.Typography.bodyMedium(
-        USER_EMAIL_TEXT,
-        textAlign: TextAlign.center,
-      ),
-      Spacing.height(8),
-      app_typography.Typography.bodyLarge(
-        USER_BIO_TEXT,
-        textAlign: TextAlign.center,
-      ),
-    ], crossAxisAlignment: 'center');
-  }
-
-  Widget ProfileAvatar() {
-    return Div.emptyColumn(
-      width: 120,
-      height: 120,
+    return Container(
+      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: Colors.blue.withValues(alpha: 0.2),
-        border: Border.all(color: Colors.blue, width: 3),
+        gradient: const LinearGradient(
+          colors: [Color(0xFF58CC02), Color(0xFF89E219)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(20),
       ),
-      mainAxisAlignment: 'center',
-      crossAxisAlignment: 'center',
+      child: Div.column([
+        Div.row([
+          Container(
+            width: 64,
+            height: 64,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(32),
+              color: Colors.white,
+              border: Border.all(color: Colors.white, width: 3),
+            ),
+            child: const Icon(
+              Icons.person,
+              color: Color(0xFF58CC02),
+              size: 32,
+            ),
+          ),
+
+          const Spacing.width(16),
+
+          Expanded(
+            child: Div.column([
+              Text(
+                PROFILE_GREETING,
+                style: Typography.bodyLargeStyle.copyWith(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+
+              const Spacing.height(4),
+
+              Text(
+                'Level 12 Knowledge Seeker',
+                style: Typography.bodyMediumStyle.copyWith(
+                  color: Colors.white.withValues(alpha: 0.9),
+                  fontSize: 14,
+                ),
+              ),
+            ], crossAxisAlignment: CrossAxisAlignment.start),
+          ),
+
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            decoration: BoxDecoration(
+              color: Colors.white.withValues(alpha: 0.2),
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(color: Colors.white.withValues(alpha: 0.3)),
+            ),
+            child: Div.row([
+              const Icon(
+                Icons.local_fire_department,
+                color: Colors.white,
+                size: 18,
+              ),
+
+              const Spacing.width(6),
+
+              Text(
+                '23 day streak',
+                style: Typography.bodyMediumStyle.copyWith(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 12,
+                ),
+              ),
+            ]),
+          ),
+        ], crossAxisAlignment: CrossAxisAlignment.center),
+
+        const Spacing.height(16),
+
+        Div.row([
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            decoration: BoxDecoration(
+              color: Colors.white.withValues(alpha: 0.15),
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: Div.row([
+              const Icon(
+                Icons.star,
+                color: Colors.white,
+                size: 16,
+              ),
+
+              const Spacing.width(4),
+
+              Text(
+                '2,847 XP',
+                style: Typography.bodyMediumStyle.copyWith(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 12,
+                ),
+              ),
+            ]),
+          ),
+
+          const Spacing.width(12),
+
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            decoration: BoxDecoration(
+              color: Colors.white.withValues(alpha: 0.15),
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: Div.row([
+              const Icon(
+                Icons.emoji_events,
+                color: Colors.white,
+                size: 16,
+              ),
+
+              const Spacing.width(4),
+
+              Text(
+                '47 badges',
+                style: Typography.bodyMediumStyle.copyWith(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 12,
+                ),
+              ),
+            ]),
+          ),
+
+          const Spacing.width(12),
+
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            decoration: BoxDecoration(
+              color: Colors.white.withValues(alpha: 0.15),
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: Div.row([
+              const Icon(
+                Icons.school,
+                color: Colors.white,
+                size: 16,
+              ),
+
+              const Spacing.width(4),
+
+              Text(
+                '12 books',
+                style: Typography.bodyMediumStyle.copyWith(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 12,
+                ),
+              ),
+            ]),
+          ),
+        ]),
+      ]),
     );
   }
 }
 
-class ProfileStatsSection extends StatelessWidget {
-  const ProfileStatsSection({super.key});
+class EnhancedStreakCard extends StatelessWidget {
+  const EnhancedStreakCard({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Div.row([
-      StatItem(
-        label: PROFILE_STATS_COURSES_LABEL,
-        value: PROFILE_STATS_COURSES_VALUE,
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: AppTheme.backgroundLight,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: const Color(0xFFFF9600).withValues(alpha: 0.3),
+          width: 2,
+        ),
       ),
-      StatItem(
-        label: PROFILE_STATS_COMPLETED_LABEL,
-        value: PROFILE_STATS_COMPLETED_VALUE,
-      ),
-      StatItem(
-        label: PROFILE_STATS_HOURS_LABEL,
-        value: PROFILE_STATS_HOURS_VALUE,
-      ),
-    ], mainAxisAlignment: 'spaceEvenly');
-  }
+      child: Div.column([
+        Div.row([
+          Container(
+            width: 48,
+            height: 48,
+            decoration: BoxDecoration(
+              color: const Color(0xFFFF9600),
+              borderRadius: BorderRadius.circular(24),
+            ),
+            child: const Icon(
+              Icons.local_fire_department,
+              color: Colors.white,
+              size: 28,
+            ),
+          ),
 
-  Widget StatItem({required String label, required String value}) {
-    return Div.column([
-      app_typography.Typography.headingLarge(
-        value,
-        textAlign: TextAlign.center,
-      ),
+          const Spacing.width(16),
 
-      const Spacing.height(4),
+          Expanded(
+            child: Div.column([
+              Text(
+                '23 Day Streak!',
+                style: Typography.bodyLargeStyle.copyWith(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                  color: const Color(0xFFFF9600),
+                ),
+              ),
 
-      app_typography.Typography.bodyMedium(
-        label,
-        textAlign: TextAlign.center,
-      ),
-    ], crossAxisAlignment: 'center');
+              const Spacing.height(4),
+
+              Text(
+                '+85 XP earned today',
+                style: Typography.bodyMediumStyle.copyWith(
+                  color: AppTheme.primaryGreen,
+                  fontWeight: FontWeight.w500,
+                  fontSize: 13,
+                ),
+              ),
+            ], crossAxisAlignment: CrossAxisAlignment.start),
+          ),
+
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+            decoration: BoxDecoration(
+              color: const Color(0xFFFF9600).withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Text(
+              'PERFECT!',
+              style: Typography.bodyMediumStyle.copyWith(
+                color: const Color(0xFFFF9600),
+                fontWeight: FontWeight.bold,
+                fontSize: 10,
+                letterSpacing: 1,
+              ),
+            ),
+          ),
+        ]),
+
+        const Spacing.height(20),
+
+        Div.row([
+          ...List.generate(7, (dayIndex) {
+            final bool isCompleted = dayIndex < 6;
+            final bool isToday = dayIndex == 6;
+            final bool isFuture = dayIndex > 6;
+            
+            return Expanded(
+              child: Container(
+                height: 40,
+                margin: const EdgeInsets.symmetric(horizontal: 2),
+                decoration: BoxDecoration(
+                  color: isCompleted
+                      ? const Color(0xFFFF9600)
+                      : isToday
+                          ? const Color(0xFFFF9600)
+                          : AppTheme.textPrimary.withValues(alpha: 0.05),
+                  borderRadius: BorderRadius.circular(8),
+                  border: isToday 
+                      ? Border.all(color: const Color(0xFFFF9600), width: 2)
+                      : null,
+                ),
+                child: Div.column([
+                  const Spacing.height(4),
+                  Text(
+                    ['M', 'T', 'W', 'T', 'F', 'S', 'S'][dayIndex],
+                    style: Typography.bodyMediumStyle.copyWith(
+                      fontSize: 10,
+                      fontWeight: FontWeight.w600,
+                      color: isCompleted || isToday
+                          ? Colors.white
+                          : AppTheme.textPrimary.withValues(alpha: 0.4),
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const Spacing.height(2),
+                  Icon(
+                    isCompleted
+                        ? Icons.local_fire_department
+                        : isToday
+                            ? Icons.local_fire_department
+                            : Icons.circle_outlined,
+                    color: isCompleted || isToday
+                        ? Colors.white
+                        : AppTheme.textPrimary.withValues(alpha: 0.3),
+                    size: 14,
+                  ),
+                ], mainAxisAlignment: MainAxisAlignment.center),
+              ),
+            );
+          }),
+        ]),
+
+        const Spacing.height(16),
+
+        Text(
+          'You\'re in the top 10% of readers this week! 🎉',
+          style: Typography.bodyMediumStyle.copyWith(
+            color: AppTheme.textPrimary.withValues(alpha: 0.8),
+            fontWeight: FontWeight.w500,
+            fontSize: 13,
+          ),
+          textAlign: TextAlign.center,
+        ),
+      ]),
+    );
   }
 }
 
-class LottieAnimationShowcase extends StatelessWidget {
-  const LottieAnimationShowcase({super.key});
+class DailyGoalCard extends StatelessWidget {
+  const DailyGoalCard({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Div.column(
-      [
-        app_typography.Typography.headingMedium(
-          'Learning Journey',
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          colors: [Color(0xFF1CB0F6), Color(0xFF00B4D8)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Div.column([
+        Div.row([
+          const Icon(
+            Icons.flag,
+            color: Colors.white,
+            size: 24,
+          ),
+
+          const Spacing.width(12),
+
+          Text(
+            DAILY_GOAL_LABEL,
+            style: Typography.bodyLargeStyle.copyWith(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 16,
+            ),
+          ),
+
+          const Spacer(),
+
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+            decoration: BoxDecoration(
+              color: Colors.white.withValues(alpha: 0.2),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Text(
+              '85/100 XP',
+              style: Typography.bodyMediumStyle.copyWith(
+                color: Colors.white,
+                fontWeight: FontWeight.w600,
+                fontSize: 12,
+              ),
+            ),
+          ),
+        ]),
+
+        const Spacing.height(16),
+
+        Container(
+          height: 12,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(6),
+            color: Colors.white.withValues(alpha: 0.3),
+          ),
+          child: FractionallySizedBox(
+            alignment: Alignment.centerLeft,
+            widthFactor: 0.85,
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(6),
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ),
+
+        const Spacing.height(12),
+
+        Text(
+          '15 XP to go! You\'re almost there 💪',
+          style: Typography.bodyMediumStyle.copyWith(
+            color: Colors.white.withValues(alpha: 0.9),
+            fontSize: 13,
+          ),
+          textAlign: TextAlign.center,
+        ),
+      ]),
+    );
+  }
+}
+
+class KnowledgeMasteryCard extends StatelessWidget {
+  const KnowledgeMasteryCard({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: AppTheme.backgroundLight,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: Colors.purple.withValues(alpha: 0.2),
+        ),
+      ),
+      child: Div.column([
+        Div.row([
+          Container(
+            width: 44,
+            height: 44,
+            decoration: BoxDecoration(
+              color: Colors.purple,
+              borderRadius: BorderRadius.circular(22),
+            ),
+            child: const Icon(
+              Icons.psychology,
+              color: Colors.white,
+              size: 24,
+            ),
+          ),
+
+          const Spacing.width(16),
+
+          Expanded(
+            child: Div.column([
+              Text(
+                KNOWLEDGE_MASTERY_LABEL,
+                style: Typography.bodyLargeStyle.copyWith(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 16,
+                ),
+              ),
+
+              const Spacing.height(4),
+
+              Text(
+                'You\'ve mastered 73% of Design Principles',
+                style: Typography.bodyMediumStyle.copyWith(
+                  color: AppTheme.textPrimary.withValues(alpha: 0.7),
+                  fontSize: 13,
+                ),
+              ),
+            ], crossAxisAlignment: CrossAxisAlignment.start),
+          ),
+        ]),
+
+        const Spacing.height(20),
+
+        Div.row([
+          Expanded(
+            child: Div.column([
+              Text(
+                'Design Thinking',
+                style: Typography.bodyMediumStyle.copyWith(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              const Spacing.height(4),
+              Container(
+                height: 6,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(3),
+                  color: AppTheme.textPrimary.withValues(alpha: 0.1),
+                ),
+                child: FractionallySizedBox(
+                  alignment: Alignment.centerLeft,
+                  widthFactor: 0.9,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(3),
+                      color: AppTheme.primaryGreen,
+                    ),
+                  ),
+                ),
+              ),
+              const Spacing.height(2),
+              Text(
+                'Mastered',
+                style: Typography.bodyMediumStyle.copyWith(
+                  fontSize: 10,
+                  color: AppTheme.primaryGreen,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ]),
+          ),
+
+          const Spacing.width(16),
+
+          Expanded(
+            child: Div.column([
+              Text(
+                'User Research',
+                style: Typography.bodyMediumStyle.copyWith(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              const Spacing.height(4),
+              Container(
+                height: 6,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(3),
+                  color: AppTheme.textPrimary.withValues(alpha: 0.1),
+                ),
+                child: FractionallySizedBox(
+                  alignment: Alignment.centerLeft,
+                  widthFactor: 0.6,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(3),
+                      color: Colors.orange,
+                    ),
+                  ),
+                ),
+              ),
+              const Spacing.height(2),
+              Text(
+                'Learning',
+                style: Typography.bodyMediumStyle.copyWith(
+                  fontSize: 10,
+                  color: Colors.orange,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ]),
+          ),
+
+          const Spacing.width(16),
+
+          Expanded(
+            child: Div.column([
+              Text(
+                'Psychology',
+                style: Typography.bodyMediumStyle.copyWith(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              const Spacing.height(4),
+              Container(
+                height: 6,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(3),
+                  color: AppTheme.textPrimary.withValues(alpha: 0.1),
+                ),
+                child: FractionallySizedBox(
+                  alignment: Alignment.centerLeft,
+                  widthFactor: 0.3,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(3),
+                      color: Colors.red,
+                    ),
+                  ),
+                ),
+              ),
+              const Spacing.height(2),
+              Text(
+                'Beginner',
+                style: Typography.bodyMediumStyle.copyWith(
+                  fontSize: 10,
+                  color: Colors.red,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ]),
+          ),
+        ]),
+      ]),
+    );
+  }
+}
+
+class ConceptStrengthMeter extends StatelessWidget {
+  const ConceptStrengthMeter({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: AppTheme.backgroundLight,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: AppTheme.primaryBlue.withValues(alpha: 0.2),
+        ),
+      ),
+      child: Div.column([
+        Div.row([
+          const Icon(
+            Icons.trending_up,
+            color: AppTheme.primaryBlue,
+            size: 24,
+          ),
+
+          const Spacing.width(12),
+
+          Text(
+            CONCEPT_STRENGTH_LABEL,
+            style: Typography.bodyLargeStyle.copyWith(
+              fontWeight: FontWeight.w600,
+              fontSize: 16,
+            ),
+          ),
+
+          const Spacer(),
+
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            decoration: BoxDecoration(
+              color: AppTheme.primaryBlue.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Text(
+              'REVIEW DUE',
+              style: Typography.bodyMediumStyle.copyWith(
+                color: AppTheme.primaryBlue,
+                fontWeight: FontWeight.w600,
+                fontSize: 10,
+                letterSpacing: 0.5,
+              ),
+            ),
+          ),
+        ]),
+
+        const Spacing.height(16),
+
+        ...List.generate(3, (index) {
+          final concepts = [
+            {'concept': 'Affordances', 'strength': 0.9, 'status': 'Strong'},
+            {'concept': 'Mental Models', 'strength': 0.7, 'status': 'Good'},
+            {'concept': 'Cognitive Load', 'strength': 0.4, 'status': 'Weak'},
+          ];
+          
+          final item = concepts[index];
+          final double strength = item['strength'] as double;
+          final String concept = item['concept'] as String;
+          final String status = item['status'] as String;
+          
+          Color strengthColor;
+          if (strength > 0.8) {
+            strengthColor = AppTheme.primaryGreen;
+          } else if (strength > 0.6) {
+            strengthColor = Colors.orange;
+          } else {
+            strengthColor = Colors.red;
+          }
+
+          return Container(
+            margin: const EdgeInsets.only(bottom: 12),
+            child: Div.column([
+              Div.row([
+                Expanded(
+                  child: Text(
+                    concept,
+                    style: Typography.bodyMediumStyle.copyWith(
+                      fontWeight: FontWeight.w500,
+                      fontSize: 14,
+                    ),
+                  ),
+                ),
+                Text(
+                  status,
+                  style: Typography.bodyMediumStyle.copyWith(
+                    color: strengthColor,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 12,
+                  ),
+                ),
+              ]),
+              const Spacing.height(6),
+              Container(
+                height: 6,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(3),
+                  color: AppTheme.textPrimary.withValues(alpha: 0.1),
+                ),
+                child: FractionallySizedBox(
+                  alignment: Alignment.centerLeft,
+                  widthFactor: strength,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(3),
+                      color: strengthColor,
+                    ),
+                  ),
+                ),
+              ),
+            ]),
+          );
+        }),
+
+        const Spacing.height(8),
+
+        Container(
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: Colors.orange.withValues(alpha: 0.1),
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: Colors.orange.withValues(alpha: 0.3),
+            ),
+          ),
+          child: Div.row([
+            const Icon(
+              Icons.schedule,
+              color: Colors.orange,
+              size: 16,
+            ),
+
+            const Spacing.width(8),
+
+            Text(
+              'Review \'Cognitive Load\' to strengthen understanding',
+              style: Typography.bodyMediumStyle.copyWith(
+                color: Colors.orange,
+                fontSize: 12,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ]),
+        ),
+      ]),
+    );
+  }
+}
+
+class ReadingStatsCard extends StatelessWidget {
+  const ReadingStatsCard({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: AppTheme.backgroundLight,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: AppTheme.textPrimary.withValues(alpha: 0.1),
+        ),
+      ),
+      child: Div.column([
+        Text(
+          'This widget was replaced by new Duolingo-inspired components above',
+          style: Typography.bodyMediumStyle.copyWith(
+            color: AppTheme.textPrimary.withValues(alpha: 0.5),
+            fontStyle: FontStyle.italic,
+          ),
           textAlign: TextAlign.center,
         ),
 
-        Spacing.height(16),
+        const Spacing.height(20),
 
-        LottieAnimationWidget(),
-      ],
-      padding: 16,
+        Div.row([
+          StatisticItem(
+            label: 'Books Read',
+            value: '127',
+            icon: Icons.menu_book,
+            color: AppTheme.primaryBlue,
+          ),
+
+          StatisticItem(
+            label: 'Hours Spent',
+            value: '342h',
+            icon: Icons.access_time,
+            color: AppTheme.primaryGreen,
+          ),
+
+          StatisticItem(
+            label: 'Avg. Rating',
+            value: '4.6★',
+            icon: Icons.star,
+            color: Colors.orange,
+          ),
+        ], mainAxisAlignment: MainAxisAlignment.spaceBetween),
+      ]),
+    );
+  }
+}
+
+class StatisticItem extends StatelessWidget {
+  final String label;
+  final String value;
+  final IconData icon;
+  final Color color;
+
+  const StatisticItem({
+    super.key,
+    required this.label,
+    required this.value,
+    required this.icon,
+    required this.color,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: Div.column([
+        Container(
+          width: 40,
+          height: 40,
+          decoration: BoxDecoration(
+            color: color.withValues(alpha: 0.1),
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Icon(
+            icon,
+            color: color,
+            size: 20,
+          ),
+        ),
+
+        const Spacing.height(8),
+
+        Text(
+          value,
+          style: Typography.bodyLargeStyle.copyWith(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+
+        const Spacing.height(4),
+
+        Text(
+          label,
+          style: Typography.bodyMediumStyle.copyWith(
+            fontSize: 12,
+            color: AppTheme.textPrimary.withValues(alpha: 0.6),
+          ),
+        ),
+      ], crossAxisAlignment: CrossAxisAlignment.center),
+    );
+  }
+}
+
+class AchievementGallery extends StatelessWidget {
+  const AchievementGallery({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.grey[850],
+        gradient: const LinearGradient(
+          colors: [Color(0xFFFFD700), Color(0xFFFFA500)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.grey[700]!, width: 1),
       ),
-    );
-  }
+      child: Div.column([
+        Div.row([
+          const Icon(
+            Icons.emoji_events,
+            color: Colors.white,
+            size: 24,
+          ),
 
-  Widget LottieAnimationWidget() {
-    return SizedBox(
-      height: 200,
-      child: Lottie.asset(
-        'assets/logo_animation.lottie',
-        fit: BoxFit.contain,
-        animate: true,
-        repeat: true,
-      ),
+          const Spacing.width(12),
+
+          Text(
+            ACHIEVEMENT_GALLERY_LABEL,
+            style: Typography.bodyLargeStyle.copyWith(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 16,
+            ),
+          ),
+
+          const Spacer(),
+
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            decoration: BoxDecoration(
+              color: Colors.white.withValues(alpha: 0.2),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Text(
+              '47/100',
+              style: Typography.bodyMediumStyle.copyWith(
+                color: Colors.white,
+                fontWeight: FontWeight.w600,
+                fontSize: 11,
+              ),
+            ),
+          ),
+        ]),
+
+        const Spacing.height(20),
+
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Div.row([
+            ...[
+              {'icon': Icons.local_fire_department, 'title': 'Streak Master', 'desc': '30 day streak', 'earned': true},
+              {'icon': Icons.school, 'title': 'Book Worm', 'desc': '10 books read', 'earned': true},
+              {'icon': Icons.lightbulb, 'title': 'Insight Hunter', 'desc': '100 insights', 'earned': true},
+              {'icon': Icons.speed, 'title': 'Speed Reader', 'desc': '5 books in a week', 'earned': false},
+              {'icon': Icons.quiz, 'title': 'Quiz Master', 'desc': '50 perfect scores', 'earned': false},
+            ].map((badge) {
+              final bool earned = badge['earned'] as bool;
+              return Container(
+                width: 80,
+                margin: const EdgeInsets.only(right: 16),
+                child: Div.column([
+                  Container(
+                    width: 60,
+                    height: 60,
+                    decoration: BoxDecoration(
+                      color: earned 
+                          ? Colors.white 
+                          : Colors.white.withValues(alpha: 0.2),
+                      borderRadius: BorderRadius.circular(30),
+                      border: Border.all(
+                        color: earned 
+                            ? Colors.transparent 
+                            : Colors.white.withValues(alpha: 0.3),
+                        width: 2,
+                      ),
+                    ),
+                    child: Icon(
+                      badge['icon'] as IconData,
+                      color: earned 
+                          ? const Color(0xFFFFD700) 
+                          : Colors.white.withValues(alpha: 0.4),
+                      size: 28,
+                    ),
+                  ),
+
+                  const Spacing.height(8),
+
+                  Text(
+                    badge['title'] as String,
+                    style: Typography.bodyMediumStyle.copyWith(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w600,
+                      fontSize: 11,
+                    ),
+                    textAlign: TextAlign.center,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+
+                  const Spacing.height(2),
+
+                  Text(
+                    badge['desc'] as String,
+                    style: Typography.bodyMediumStyle.copyWith(
+                      color: Colors.white.withValues(alpha: 0.8),
+                      fontSize: 9,
+                    ),
+                    textAlign: TextAlign.center,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ]),
+              );
+            }),
+          ]),
+        ),
+
+        const Spacing.height(16),
+
+        Container(
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: Colors.white.withValues(alpha: 0.1),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Text(
+            'Complete 3 more chapters to unlock \'Quiz Master\' badge! 🏆',
+            style: Typography.bodyMediumStyle.copyWith(
+              color: Colors.white.withValues(alpha: 0.9),
+              fontSize: 12,
+              fontWeight: FontWeight.w500,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ),
+      ]),
     );
   }
 }
 
-class AchievementsSection extends StatelessWidget {
-  const AchievementsSection({super.key});
+class ReadingLeagueCard extends StatelessWidget {
+  const ReadingLeagueCard({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Div.column([
-      app_typography.Typography.headingMedium(
-        ACHIEVEMENTS_SECTION_TITLE,
-        textAlign: TextAlign.left,
-      ),
-      Spacing.height(16),
-      AchievementItem(
-        title: 'Design Fundamentals',
-        description: 'Completed all modules',
-        icon: Icons.school,
-      ),
-      Spacing.height(12),
-      AchievementItem(
-        title: 'Quick Learner',
-        description: 'Finished course in 7 days',
-        icon: Icons.timer,
-      ),
-      Spacing.height(12),
-      AchievementItem(
-        title: 'Perfect Score',
-        description: 'Answered all questions correctly',
-        icon: Icons.star,
-      ),
-    ], crossAxisAlignment: 'stretch');
-  }
-
-  Widget AchievementItem({
-    required String title,
-    required String description,
-    required IconData icon,
-  }) {
-    return Div.row(
-      [
-        Icon(icon, color: Colors.amber, size: 32),
-        Spacing.width(16),
-        Expanded(
-          child: Div.column([
-            app_typography.Typography.bodyLarge(title),
-            app_typography.Typography.bodyMedium(description),
-          ], crossAxisAlignment: 'start'),
-        ),
-      ],
-      padding: 12,
+    return Container(
+      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.grey[850],
-        borderRadius: BorderRadius.circular(12),
+        gradient: const LinearGradient(
+          colors: [Color(0xFF8B5CF6), Color(0xFFA855F7)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(16),
       ),
+      child: Div.column([
+        Div.row([
+          const Icon(
+            Icons.leaderboard,
+            color: Colors.white,
+            size: 24,
+          ),
+
+          const Spacing.width(12),
+
+          Expanded(
+            child: Text(
+              READING_LEAGUE_LABEL,
+              style: Typography.bodyLargeStyle.copyWith(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: 16,
+              ),
+            ),
+          ),
+
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+            decoration: BoxDecoration(
+              color: Colors.white.withValues(alpha: 0.2),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Text(
+              'GOLD',
+              style: Typography.bodyMediumStyle.copyWith(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: 10,
+                letterSpacing: 1,
+              ),
+            ),
+          ),
+        ]),
+
+        const Spacing.height(16),
+
+        Text(
+          'You\'re #3 out of 47 in your reading group this week!',
+          style: Typography.bodyMediumStyle.copyWith(
+            color: Colors.white.withValues(alpha: 0.9),
+            fontSize: 13,
+          ),
+          textAlign: TextAlign.center,
+        ),
+
+        const Spacing.height(16),
+
+        ...[
+          {'rank': 1, 'name': 'Sarah Chen', 'xp': 2847, 'you': false},
+          {'rank': 2, 'name': 'Mike Johnson', 'xp': 2156, 'you': false},
+          {'rank': 3, 'name': 'You', 'xp': 1923, 'you': true},
+          {'rank': 4, 'name': 'Emma Davis', 'xp': 1845, 'you': false},
+        ].asMap().entries.map((entry) {
+          final person = entry.value;
+          final bool isYou = person['you'] as bool;
+          
+          return Container(
+            margin: const EdgeInsets.only(bottom: 8),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            decoration: BoxDecoration(
+              color: isYou 
+                  ? Colors.white.withValues(alpha: 0.2)
+                  : Colors.white.withValues(alpha: 0.05),
+              borderRadius: BorderRadius.circular(8),
+              border: isYou 
+                  ? Border.all(color: Colors.white.withValues(alpha: 0.3))
+                  : null,
+            ),
+            child: Div.row([
+              Container(
+                width: 24,
+                height: 24,
+                decoration: BoxDecoration(
+                  color: person['rank'] == 1
+                      ? const Color(0xFFFFD700)
+                      : person['rank'] == 2
+                          ? const Color(0xFFC0C0C0)
+                          : person['rank'] == 3
+                              ? const Color(0xFFCD7F32)
+                              : Colors.white.withValues(alpha: 0.2),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Center(
+                  child: Text(
+                    '${person['rank']}',
+                    style: Typography.bodyMediumStyle.copyWith(
+                      color: (person['rank'] as int) <= 3 ? Colors.white : Colors.white.withValues(alpha: 0.8),
+                      fontWeight: FontWeight.bold,
+                      fontSize: 12,
+                    ),
+                  ),
+                ),
+              ),
+
+              const Spacing.width(12),
+
+              Expanded(
+                child: Text(
+                  person['name'] as String,
+                  style: Typography.bodyMediumStyle.copyWith(
+                    color: Colors.white,
+                    fontWeight: isYou ? FontWeight.bold : FontWeight.normal,
+                    fontSize: 13,
+                  ),
+                ),
+              ),
+
+              Text(
+                '${person['xp']} XP',
+                style: Typography.bodyMediumStyle.copyWith(
+                  color: Colors.white.withValues(alpha: 0.8),
+                  fontSize: 12,
+                ),
+              ),
+            ]),
+          );
+        }),
+      ]),
     );
   }
 }
 
-class ProfileActionsSection extends StatelessWidget {
-  const ProfileActionsSection({super.key});
+class WeeklyChallengeCard extends StatelessWidget {
+  const WeeklyChallengeCard({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: AppTheme.backgroundLight,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: const Color(0xFF10B981).withValues(alpha: 0.3),
+          width: 2,
+        ),
+      ),
+      child: Div.column([
+        Div.row([
+          Container(
+            width: 44,
+            height: 44,
+            decoration: BoxDecoration(
+              color: const Color(0xFF10B981),
+              borderRadius: BorderRadius.circular(22),
+            ),
+            child: const Icon(
+              Icons.emoji_events,
+              color: Colors.white,
+              size: 24,
+            ),
+          ),
+
+          const Spacing.width(16),
+
+          Expanded(
+            child: Div.column([
+              Text(
+                WEEKLY_CHALLENGE_LABEL,
+                style: Typography.bodyLargeStyle.copyWith(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 16,
+                ),
+              ),
+
+              const Spacing.height(4),
+
+              Text(
+                'Read 3 books this week',
+                style: Typography.bodyMediumStyle.copyWith(
+                  color: AppTheme.textPrimary.withValues(alpha: 0.7),
+                  fontSize: 13,
+                ),
+              ),
+            ], crossAxisAlignment: CrossAxisAlignment.start),
+          ),
+
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+            decoration: BoxDecoration(
+              color: const Color(0xFF10B981).withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Text(
+              '2/3',
+              style: Typography.bodyMediumStyle.copyWith(
+                color: const Color(0xFF10B981),
+                fontWeight: FontWeight.bold,
+                fontSize: 12,
+              ),
+            ),
+          ),
+        ]),
+
+        const Spacing.height(20),
+
+        Div.row([
+          ...List.generate(3, (index) {
+            final bool completed = index < 2;
+            return Expanded(
+              child: Container(
+                height: 8,
+                margin: const EdgeInsets.symmetric(horizontal: 2),
+                decoration: BoxDecoration(
+                  color: completed 
+                      ? const Color(0xFF10B981) 
+                      : AppTheme.textPrimary.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(4),
+                ),
+              ),
+            );
+          }),
+        ]),
+
+        const Spacing.height(16),
+
+        Container(
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: const Color(0xFF10B981).withValues(alpha: 0.1),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Div.row([
+            const Icon(
+              Icons.access_time,
+              color: Color(0xFF10B981),
+              size: 16,
+            ),
+
+            const Spacing.width(8),
+
+            Text(
+              'Complete 1 more book by Sunday to earn +200 XP bonus!',
+              style: Typography.bodyMediumStyle.copyWith(
+                color: const Color(0xFF10B981),
+                fontSize: 12,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ]),
+        ),
+      ]),
+    );
+  }
+}
+
+class OLD_AchievementShowcase extends StatelessWidget {
+  const OLD_AchievementShowcase({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            AppTheme.primaryGreen.withValues(alpha: 0.1),
+            AppTheme.primaryBlue.withValues(alpha: 0.1),
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: AppTheme.primaryGreen.withValues(alpha: 0.3),
+        ),
+      ),
+      child: Div.column([
+        Div.row([
+          Container(
+            width: 48,
+            height: 48,
+            decoration: BoxDecoration(
+              color: AppTheme.primaryGreen,
+              borderRadius: BorderRadius.circular(24),
+            ),
+            child: const Icon(
+              Icons.emoji_events,
+              color: Colors.white,
+              size: 28,
+            ),
+          ),
+
+          const Spacing.width(16),
+
+          Expanded(
+            child: Div.column([
+              Text(
+                'Speed Reader!',
+                style: Typography.bodyLargeStyle.copyWith(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                  color: AppTheme.primaryGreen,
+                ),
+              ),
+
+              const Spacing.height(4),
+
+              Text(
+                'Read 5 books in one week',
+                style: Typography.bodyMediumStyle.copyWith(
+                  color: AppTheme.textPrimary.withValues(alpha: 0.8),
+                ),
+              ),
+            ], crossAxisAlignment: CrossAxisAlignment.start),
+          ),
+
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            decoration: BoxDecoration(
+              color: AppTheme.primaryGreen,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Text(
+              '+50 XP',
+              style: Typography.bodyMediumStyle.copyWith(
+                color: Colors.white,
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+        ], crossAxisAlignment: CrossAxisAlignment.center),
+      ]),
+    );
+  }
+}
+
+class CourseProgressCard extends StatelessWidget {
+  const CourseProgressCard({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: AppTheme.backgroundLight,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: AppTheme.textPrimary.withValues(alpha: 0.1),
+        ),
+      ),
+      child: Div.column([
+        Text(
+          'Course Progress',
+          style: Typography.bodyLargeStyle.copyWith(
+            fontWeight: FontWeight.w600,
+            fontSize: 16,
+          ),
+        ),
+
+        const Spacing.height(16),
+
+        Div.row([
+          Typography.bodyMedium('Current Course:'),
+
+          const Spacer(),
+
+          Text(
+            'UX Design Fundamentals',
+            style: Typography.bodyMediumStyle.copyWith(
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ], mainAxisAlignment: MainAxisAlignment.spaceBetween),
+
+        const Spacing.height(8),
+
+        Div.row([
+          Typography.bodyMedium('Progress:'),
+
+          const Spacer(),
+
+          Text(
+            '8/12 chapters',
+            style: Typography.bodyMediumStyle.copyWith(
+              color: AppTheme.primaryBlue,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ], mainAxisAlignment: MainAxisAlignment.spaceBetween),
+
+        const Spacing.height(12),
+
+        Stack(
+          children: [
+            Container(
+              width: double.infinity,
+              height: 8,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(4),
+                color: AppTheme.textPrimary.withValues(alpha: 0.1),
+              ),
+            ),
+
+            FractionallySizedBox(
+              alignment: Alignment.centerLeft,
+              widthFactor: 0.67,
+              child: Container(
+                height: 8,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(4),
+                  gradient: const LinearGradient(
+                    colors: [AppTheme.primaryBlue, AppTheme.primaryGreen],
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+
+        const Spacing.height(16),
+
+        Container(
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: AppTheme.primaryBlue.withValues(alpha: 0.1),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Div.row([
+            Icon(
+              Icons.timer,
+              color: AppTheme.primaryBlue,
+              size: 16,
+            ),
+
+            const Spacing.width(8),
+
+            Text(
+              'Estimated 45 minutes to complete',
+              style: Typography.bodyMediumStyle.copyWith(
+                color: AppTheme.primaryBlue,
+                fontSize: 12,
+              ),
+            ),
+          ]),
+        ),
+      ]),
+    );
+  }
+}
+
+class QuickActionsSection extends StatelessWidget {
+  const QuickActionsSection({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Div.column([
-      ActionButton(
-        text: SETTINGS_BUTTON_TEXT,
-        icon: Icons.settings,
-        onPressed: () {},
-      ),
-      Spacing.height(12),
-      ActionButton(
-        text: LOGOUT_BUTTON_TEXT,
-        icon: Icons.logout,
-        onPressed: () {},
-        isPrimary: false,
-      ),
-    ], crossAxisAlignment: 'stretch');
-  }
-
-  Widget ActionButton({
-    required String text,
-    required IconData icon,
-    required VoidCallback onPressed,
-    bool isPrimary = true,
-  }) {
-    final Color backgroundColor = isPrimary
-        ? Colors.blue
-        : Colors.red.withValues(alpha: 0.2);
-    final Color textColor = isPrimary ? Colors.white : Colors.red;
-
-    return ElevatedButton.icon(
-      onPressed: onPressed,
-      icon: Icon(icon, color: textColor),
-      label: app_typography.Typography.bodyLarge(
-        text,
-        textAlign: TextAlign.center,
-      ),
-      style: ElevatedButton.styleFrom(
-        backgroundColor: backgroundColor,
-        padding: const EdgeInsets.symmetric(
-          vertical: 16,
-          horizontal: 24,
+      Text(
+        'Quick Actions',
+        style: Typography.bodyLargeStyle.copyWith(
+          fontWeight: FontWeight.w600,
+          fontSize: 16,
         ),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
+      ),
+
+      const Spacing.height(16),
+
+      Div.row([
+        Expanded(
+          child: ActionButton(
+            label: 'Continue Reading',
+            icon: Icons.play_arrow,
+            color: AppTheme.primaryBlue,
+            onTap: () {},
+          ),
+        ),
+
+        const Spacing.width(12),
+
+        Expanded(
+          child: ActionButton(
+            label: 'Browse Library',
+            icon: Icons.library_books,
+            color: AppTheme.primaryGreen,
+            onTap: () {},
+          ),
+        ),
+      ]),
+
+      const Spacing.height(12),
+
+      ActionButton(
+        label: 'View All Achievements',
+        icon: Icons.emoji_events,
+        color: Colors.orange,
+        onTap: () {},
+        fullWidth: true,
+      ),
+    ]);
+  }
+}
+
+class ActionButton extends StatelessWidget {
+  final String label;
+  final IconData icon;
+  final Color color;
+  final VoidCallback onTap;
+  final bool fullWidth;
+
+  const ActionButton({
+    super.key,
+    required this.label,
+    required this.icon,
+    required this.color,
+    required this.onTap,
+    this.fullWidth = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: color.withValues(alpha: 0.1),
+      borderRadius: BorderRadius.circular(12),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(12),
+        child: Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: color.withValues(alpha: 0.3),
+            ),
+          ),
+          child: Div.row([
+            Icon(
+              icon,
+              color: color,
+              size: 20,
+            ),
+
+            const Spacing.width(8),
+
+            Text(
+              label,
+              style: Typography.bodyMediumStyle.copyWith(
+                color: color,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ], mainAxisAlignment: MainAxisAlignment.center),
         ),
       ),
     );
