@@ -58,4 +58,8 @@ class Constants {
   static const String COURSE_OVERVIEW = 'Course Overview';
   static const String START_BUTTON_TEXT = 'Start';
   static const String PROGRESS_PERCENTAGE = '0%';
+
+  // Currency and rewards
+  static const String CURRENCY_NAME = 'Aha';
+  static const String CURRENCY_PLURAL = 'Ahas';
 }

@@ -87,3 +87,61 @@ Readlock believes that learning should be:
 - **Progressive** - Building understanding step by step through guided experiences
 
 The app combines the depth of non-fiction books with the engagement of modern interactive media, creating a unique learning experience that's both entertaining and educational.
+
+## Monetization Strategy
+
+### Freemium Model - "Hook, Learn, Convert"
+
+#### **Free Tier: First Taste**
+- **First 2-3 chapters** of every course completely free
+- Full access to "Why Your Door Hates You" and "Norman's Seven Deadly Sins" 
+- Limited Aha rewards (show what they can earn)
+- Social proof notifications (see what others are learning)
+- Basic progress tracking
+
+#### **Pro Features: Premium Experience**
+- 🔒 **PRO Badge** on locked chapters 4-6
+- Unlimited Aha currency earning potential
+- Advanced progress analytics and insights
+- Exclusive author interviews and behind-the-scenes content
+- Priority access to new course launches
+- Downloadable course summaries and notes
+- Community features and discussion forums
+
+#### **Conversion Psychology**
+**The "Cliff-Hanger" Strategy:**
+- End free content right at peak engagement (Chapter 3: "When Smart People Do Dumb Things")
+- Show preview snippets of premium content: *"In Chapter 4, discover why zippers are philosophy..."*
+- Display missed Aha opportunities: *"Pro users earned 67 more Ahas in this course"*
+- Social proof of premium users: *"89% of Pro users complete full courses"*
+
+#### **UI/UX Implementation**
+- **Roadmap View:** Free chapters highlighted, Pro chapters with elegant lock icons
+- **Progress Bars:** Show completion as % of available content vs. total content  
+- **Upgrade Prompts:** Contextual, not annoying - *"Unlock the rest of your design journey"*
+- **Value Reinforcement:** Show specific premium benefits at natural stopping points
+
+#### **Pricing Strategy**
+- **$9.99/month** - Lower barrier than competitors
+- **$79.99/year** - 33% savings incentive  
+- **$149.99 lifetime** - For super fans and early adopters
+- **7-day free trial** of Pro features after completing free chapters
+
+#### **Retention Hooks**
+- **Streak Protection:** "Don't lose your 7-day learning streak - upgrade to continue"
+- **Social Comparison:** "Pro users are averaging 23 more Ahas than free users"
+- **Achievement Gates:** Some achievements only unlockable with full course completion
+- **Course Series:** "Continue your learning journey with 'The Viral Effect' (Pro only)"
+
+#### **Conversion Funnels**
+1. **Immediate Hook:** Amazing free experience that exceeds expectations
+2. **Natural Cliff:** Content gets really good right when paywall hits
+3. **Social Proof:** Show community of engaged premium learners  
+4. **Value Demonstration:** Clear ROI on premium features
+5. **Urgency/Scarcity:** Limited-time bonuses for early upgraders
+
+#### **Success Metrics**
+- **Free-to-Paid Conversion:** Target 15-20% (industry standard 2-5%)
+- **Trial-to-Paid:** Target 40%+ (great onboarding + engagement)
+- **Churn Rate:** Target <5% monthly (quality content + progression psychology)
+- **Time to Conversion:** Average 3-5 free chapter completions

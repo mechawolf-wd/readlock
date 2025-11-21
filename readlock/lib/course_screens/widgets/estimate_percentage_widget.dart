@@ -9,9 +9,13 @@ import 'package:relevant/constants/typography.dart';
 import 'package:relevant/constants/app_theme.dart';
 import 'package:relevant/utility_widgets/text_animation/progressive_text.dart';
 
+// Constants
 const double ESTIMATE_SECTION_SPACING = 24.0;
 const double SLIDER_HEIGHT = 60.0;
 const int ANIMATION_DURATION_MS = 300;
+const int CLOSE_ESTIMATE_THRESHOLD = 10;
+const String YOUR_ESTIMATE_LABEL = 'Your Estimate';
+const String SUBMIT_BUTTON_TEXT = 'Submit Estimate';
 
 class EstimatePercentageWidget extends StatefulWidget {
   final QuestionContent content;
@@ -35,14 +39,17 @@ class EstimatePercentageWidgetState extends State<EstimatePercentageWidget>
   late AnimationController revealController;
   late Animation<double> revealAnimation;
   
-  // The correct answer should be stored in correctAnswerIndices[0]
-  int get correctPercentage => widget.content.correctAnswerIndices.isNotEmpty 
-      ? widget.content.correctAnswerIndices[0] 
-      : 50;
+  int get correctPercentage {
+    if (widget.content.correctAnswerIndices.isNotEmpty) {
+      return widget.content.correctAnswerIndices[0];
+    }
+    return 50;
+  }
 
   @override
   void initState() {
     super.initState();
+    
     revealController = AnimationController(
       duration: const Duration(milliseconds: ANIMATION_DURATION_MS),
       vsync: this,
@@ -99,6 +106,8 @@ class EstimatePercentageWidgetState extends State<EstimatePercentageWidget>
     );
   }
 
+  // Widget methods
+  
   Widget QuestionText() {
     return Text(
       widget.content.question,
@@ -112,22 +121,20 @@ class EstimatePercentageWidgetState extends State<EstimatePercentageWidget>
   }
 
   Widget EstimateDisplay() {
+    final Color borderColor = getBorderColor();
+    final TextStyle estimateTextStyle = getEstimateTextStyle();
+
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: AppTheme.backgroundLight,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: hasSubmitted 
-              ? AppTheme.primaryGreen.withValues(alpha: 0.3)
-              : AppTheme.primaryBlue.withValues(alpha: 0.3),
-          width: 2,
-        ),
+        border: Border.all(color: borderColor, width: 2),
       ),
       child: Column(
         children: [
           Text(
-            'Your Estimate',
+            YOUR_ESTIMATE_LABEL,
             style: Typography.bodyMediumStyle.copyWith(
               fontSize: 12,
               color: AppTheme.textPrimary.withValues(alpha: 0.6),
@@ -139,17 +146,33 @@ class EstimatePercentageWidgetState extends State<EstimatePercentageWidget>
 
           AnimatedDefaultTextStyle(
             duration: const Duration(milliseconds: 200),
-            style: Typography.bodyLargeStyle.copyWith(
-              fontSize: hasSubmitted ? 36 : 42,
-              fontWeight: FontWeight.bold,
-              color: hasSubmitted 
-                  ? AppTheme.textPrimary.withValues(alpha: 0.7)
-                  : AppTheme.primaryBlue,
-            ),
+            style: estimateTextStyle,
             child: Text('${currentEstimate.round()}%'),
           ),
         ],
       ),
+    );
+  }
+
+  // Helper methods
+
+  Color getBorderColor() {
+    if (hasSubmitted) {
+      return AppTheme.primaryGreen.withValues(alpha: 0.3);
+    }
+    return AppTheme.primaryBlue.withValues(alpha: 0.3);
+  }
+
+  TextStyle getEstimateTextStyle() {
+    final double fontSize = hasSubmitted ? 36 : 42;
+    final Color textColor = hasSubmitted 
+        ? AppTheme.textPrimary.withValues(alpha: 0.7)
+        : AppTheme.primaryBlue;
+
+    return Typography.bodyLargeStyle.copyWith(
+      fontSize: fontSize,
+      fontWeight: FontWeight.bold,
+      color: textColor,
     );
   }
 
@@ -171,11 +194,10 @@ class EstimatePercentageWidgetState extends State<EstimatePercentageWidget>
                 pressedElevation: 4,
               ),
               trackHeight: 6,
-              tickMarkShape: const RoundSliderTickMarkShape(tickMarkRadius: 0),
+              tickMarkShape: const RoundSliderTickMarkShape(),
             ),
             child: Slider(
               value: currentEstimate,
-              min: 0,
               max: 100,
               divisions: 100,
               onChanged: hasSubmitted ? null : (value) {
@@ -228,7 +250,7 @@ class EstimatePercentageWidgetState extends State<EstimatePercentageWidget>
         ),
         child: Center(
           child: Text(
-            'Submit Estimate',
+            SUBMIT_BUTTON_TEXT,
             style: Typography.bodyLargeStyle.copyWith(
               color: Colors.white,
               fontWeight: FontWeight.w600,
@@ -243,48 +265,22 @@ class EstimatePercentageWidgetState extends State<EstimatePercentageWidget>
 
   Widget ResultSection() {
     final int difference = (currentEstimate.round() - correctPercentage).abs();
-    final bool isClose = difference <= 10;
+    final bool isClose = difference <= CLOSE_ESTIMATE_THRESHOLD;
     
     return FadeTransition(
       opacity: revealAnimation,
       child: Container(
         padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: isClose 
-              ? AppTheme.primaryGreen.withValues(alpha: 0.1)
-              : Colors.orange.shade50,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(
-            color: isClose 
-                ? AppTheme.primaryGreen
-                : Colors.orange.shade400,
-            width: 2,
-          ),
-        ),
+        decoration: buildResultDecoration(isClose),
         child: Div.column(
           [
             Div.row(
               [
-                Icon(
-                  isClose ? Icons.check_circle : Icons.info_outline,
-                  color: isClose 
-                      ? AppTheme.primaryGreen
-                      : Colors.orange.shade600,
-                  size: 20,
-                ),
+                buildResultIcon(isClose),
 
                 const Spacing.width(8),
 
-                Text(
-                  isClose ? 'Great estimate!' : 'Keep practicing!',
-                  style: Typography.bodyLargeStyle.copyWith(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 14,
-                    color: isClose 
-                        ? AppTheme.primaryGreen
-                        : Colors.orange.shade700,
-                  ),
-                ),
+                buildResultMessage(isClose),
               ],
             ),
 
@@ -294,16 +290,7 @@ class EstimatePercentageWidgetState extends State<EstimatePercentageWidget>
               !isClose,
               Padding(
                 padding: const EdgeInsets.only(bottom: 8),
-                child: Text(
-                  difference > 30 
-                      ? 'Tip: Consider the context and real-world factors that might influence this statistic.'
-                      : 'Close! Think about the specific details mentioned in the text.',
-                  style: Typography.bodyMediumStyle.copyWith(
-                    fontSize: 12,
-                    color: Colors.orange.shade600,
-                    fontStyle: FontStyle.italic,
-                  ),
-                ),
+                child: buildHintText(difference),
               ),
             ),
 
@@ -391,6 +378,71 @@ class EstimatePercentageWidgetState extends State<EstimatePercentageWidget>
     );
   }
 
+  BoxDecoration buildResultDecoration(bool isClose) {
+    final Color backgroundColor = isClose 
+        ? AppTheme.primaryGreen.withValues(alpha: 0.1)
+        : Colors.orange.shade50;
+    final Color borderColor = isClose 
+        ? AppTheme.primaryGreen
+        : Colors.orange.shade400;
+
+    return BoxDecoration(
+      color: backgroundColor,
+      borderRadius: BorderRadius.circular(12),
+      border: Border.all(color: borderColor, width: 2),
+    );
+  }
+
+  Widget buildResultIcon(bool isClose) {
+    final IconData iconData = isClose ? Icons.check_circle : Icons.info_outline;
+    final Color iconColor = isClose 
+        ? AppTheme.primaryGreen
+        : Colors.orange.shade600;
+
+    return Icon(iconData, color: iconColor, size: 20);
+  }
+
+  Widget buildResultMessage(bool isClose) {
+    final String message = isClose ? 'Great estimate!' : 'Keep practicing!';
+    final Color textColor = isClose 
+        ? AppTheme.primaryGreen
+        : Colors.orange.shade700;
+
+    return Text(
+      message,
+      style: Typography.bodyLargeStyle.copyWith(
+        fontWeight: FontWeight.w600,
+        fontSize: 14,
+        color: textColor,
+      ),
+    );
+  }
+
+  Widget buildHintText(int difference) {
+    final String hintMessage = getHintMessage(difference);
+    
+    return Text(
+      hintMessage,
+      style: Typography.bodyMediumStyle.copyWith(
+        fontSize: 12,
+        color: Colors.orange.shade600,
+        fontStyle: FontStyle.italic,
+      ),
+    );
+  }
+
+  String getHintMessage(int difference) {
+    final bool isLargeDifference = difference > 30;
+    
+    if (isLargeDifference) {
+      return 'Tip: Consider the context and real-world factors that might influence this statistic.';
+    }
+    
+    return 'Close! Think about the specific details mentioned in the text.';
+  }
+
+  // Action methods
+
   void submitEstimate() {
     setState(() {
       hasSubmitted = true;
@@ -399,47 +451,44 @@ class EstimatePercentageWidgetState extends State<EstimatePercentageWidget>
     revealController.forward();
 
     final int difference = (currentEstimate.round() - correctPercentage).abs();
-    final bool isClose = difference <= 10;
+    final bool isClose = difference <= CLOSE_ESTIMATE_THRESHOLD;
 
-    // Show XP snackbar after a short delay only if close
     if (isClose) {
-      Future.delayed(const Duration(milliseconds: 500), () {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Icon(
-                    Icons.star,
-                    color: Colors.white,
-                    size: 16,
-                  ),
-
-                  const Spacing.width(8),
-
-                  Text(
-                    '+8 XP',
-                    style: Typography.bodyLargeStyle.copyWith(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ],
-              ),
-              backgroundColor: Colors.green.shade600,
-              duration: const Duration(seconds: 2),
-              behavior: SnackBarBehavior.floating,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
-              ),
-              margin: const EdgeInsets.all(16),
-            ),
-          );
-        }
-      });
+      showAhaReward();
     }
 
     widget.onAnswerSelected(currentEstimate.round(), isClose);
+  }
+
+  void showAhaReward() {
+    Future.delayed(const Duration(milliseconds: 500), () {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Icon(Icons.star, color: Colors.white, size: 16),
+                const Spacing.width(8),
+                Text(
+                  '+8 Aha',
+                  style: Typography.bodyLargeStyle.copyWith(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
+            backgroundColor: Colors.green.shade600,
+            duration: const Duration(seconds: 2),
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
+            margin: const EdgeInsets.all(16),
+          ),
+        );
+      }
+    });
   }
 }

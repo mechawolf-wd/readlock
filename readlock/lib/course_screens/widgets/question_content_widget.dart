@@ -13,7 +13,7 @@ class QuestionContentWidget extends StatefulWidget {
   static const double QUESTION_SECTION_SPACING = 24.0;
   static const double OPTION_BUTTON_SPACING = 16.0;
   static const double BUTTON_PADDING = 16.0;
-  static const double EXPLANATION_PADDING = 16.0;
+  static const double EAhaLANATION_PADDING = 16.0;
 
   final QuestionContent content;
   final void Function(int selectedIndex, bool isCorrect)
@@ -239,7 +239,7 @@ class QuestionContentWidgetState extends State<QuestionContentWidget> {
         hasAnswered = true;
       });
 
-      // Show XP snackbar after a short delay
+      // Show Aha snackbar after a short delay
       Future.delayed(const Duration(milliseconds: 300), () {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -250,7 +250,7 @@ class QuestionContentWidgetState extends State<QuestionContentWidget> {
                   const Icon(Icons.star, color: Colors.white, size: 16),
                   const Spacing.width(8),
                   Text(
-                    '+5 XP',
+                    '+5 Aha',
                     style: Typography.bodyLargeStyle.copyWith(
                       color: Colors.white,
                       fontWeight: FontWeight.w600,

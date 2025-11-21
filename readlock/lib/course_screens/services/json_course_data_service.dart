@@ -1,108 +1,1120 @@
-// Service class for loading and managing course data from JSON assets
-// Provides caching and structured access to course information
+// Simple JSON file service for course data - loads from assets
+// Uses JSON file for development and testing
+
+// ignore_for_file: prefer_single_quotes
 
 import 'dart:convert';
 import 'package:flutter/services.dart';
 
-const String COURSE_DATA_ASSET_PATH = 'assets/data/course_data.json';
-const String COURSES_KEY = 'courses';
-const String SECTIONS_KEY = 'sections';
-const String CONTENT_KEY = 'content';
-const String ID_KEY = 'id';
-const String COURSE_DATA_LOAD_ERROR_MESSAGE =
-    'Failed to load course data: ';
-
 class JsonCourseDataService {
-  static Future<Map<String, dynamic>> loadCourseData() async {
-    try {
-      final String jsonString = await rootBundle.loadString(
-        COURSE_DATA_ASSET_PATH,
-      );
-      final Map<String, dynamic> decodedData = jsonDecode(jsonString);
+  static Map<String, dynamic>? _cachedData;
 
-      return decodedData;
-    } catch (exception) {
-      throw Exception('$COURSE_DATA_LOAD_ERROR_MESSAGE$exception');
-    }
-  }
+  static final Map<String, dynamic> mockCourseData = {
+    "courses": [
+      {
+        "id": "design-everyday-things",
+        "title": "The Design of Everyday Things",
+        "description": "Based on Don Norman's classic book",
+        "cover-image-path": "assets/images/design_course.png",
+        "color": "green",
+        "sections": [
+          {
+            "id": "design-course",
+            "title": "The Design of Everyday Things",
+            "content": [
+              {
+                "entity-type": "intro",
+                "id": "design-intro",
+                "title": "Doors, Faucets, and Frustration",
+                "intro-text-segments": [
+                  "Every day, you interact with hundreds of designed objects. Most work flawlessly, becoming invisible extensions of your intent.",
+                  "Yet it's the failures that linger: the hotel door whose handle suggests pulling while demanding a push.",
+                  "Those shower controls that seem engineered by someone who has never experienced scalding water.",
+                  "These aren't accidents—they represent a disconnect between the designer's mental model and your intuitive expectations.",
+                  "Don Norman spent decades studying why intelligent people struggle with objects designed for their use.",
+                  "His insights reveal the hidden psychology woven into every handle, button, and interface we encounter.",
+                  "What emerges isn't about aesthetics, but understanding how the mind interprets the designed world.",
+                ],
+              },
+              {
+                "entity-type": "text",
+                "id": "story-1",
+                "title": "Story 1",
+                "text-segments": [
+                  "Sarah approaches the hotel door.",
+                  "Glass panel with a vertical metal plate.",
+                  "The plate looks like a handle.",
+                  "Her brain screams \"pull this!\"",
+                  "What choice did evolution give her?",
+                  "She grabs and pulls. Nothing.",
+                  "Confused, she pushes. The door opens.",
+                  "This is a Norman door.",
+                  "It gives the wrong signal.",
+                ],
+              },
+              {
+                "entity-type": "text",
+                "id": "story-2",
+                "title": "Story 2",
+                "text-segments": [
+                  "David faces the bathroom faucet.",
+                  "Two identical handles side by side.",
+                  "Hot or cold? Left or right?",
+                  "Which way do you turn for hot water?",
+                  "There are no labels, no indicators.",
+                  "He turns the left handle clockwise.",
+                  "Ice cold water blasts his hands.",
+                  "The mapping was backwards.",
+                  "Why should he have to guess?",
+                ],
+              },
+              {
+                "entity-type": "text",
+                "id": "story-3",
+                "title": "Story 3",
+                "text-segments": [
+                  "Maria sits in front of the stove.",
+                  "Four burners, four control knobs.",
+                  "But which knob controls which burner?",
+                  "The knobs are arranged in a straight line.",
+                  "How does that map to a square grid?",
+                  "She turns the leftmost knob.",
+                  "The back-right burner ignites.",
+                  "This violates natural mapping.",
+                  "The control should match the layout.",
+                ],
+              },
+              {
+                "entity-type": "question",
+                "id": "basic-question",
+                "title": "Common Sense Check",
+                "question":
+                    "When you see a door with a handle, what does your brain assume?",
+                "options": [
+                  {"text": "You should pull it"},
+                  {"text": "You should push it"},
+                  {"text": "You should knock first"},
+                ],
+                "correct-answer-indices": [0],
+                "explanation":
+                    "Handles suggest pulling. This is called an \"affordance.\"",
+                "type": "multiple-choice",
+              },
+              {
+                "entity-type": "text",
+                "id": "clarification-1",
+                "title": "Clarification 1",
+                "text-segments": [
+                  "Don Norman identified seven fundamental principles that separate good design from frustrating experiences we encounter daily.",
+                  "The first principle is affordances - the relationship between the properties of an object and the capabilities of the person that determines how the object could be used.",
+                  "A door handle naturally affords grasping and pulling, while a flat metal plate clearly affords pushing.",
+                  "When affordances are clear and obvious, you instinctively know what to do without thinking.",
+                  "When they're unclear or misleading, you're forced to guess, often failing and feeling foolish for something that isn't your fault.",
+                ],
+              },
+              {
+                "entity-type": "text",
+                "id": "clarification-2",
+                "title": "Clarification 2",
+                "text-segments": [
+                  "The second principle is feedback - every action needs a clear and immediate reaction to confirm it worked.",
+                  "When you press a button, you should see a light, hear a click, or feel the button depress.",
+                  "When you turn a knob, you need to feel resistance and see or hear the results of your action.",
+                  "Without proper feedback, you're operating completely blind, never sure if your actions had any effect.",
+                  "Good feedback is immediate and informative, while poor feedback leaves you wondering if anything happened at all.",
+                ],
+              },
+              {
+                "entity-type": "text",
+                "id": "clarification-3",
+                "title": "Clarification 3",
+                "text-segments": [
+                  "The third principle is natural mapping - controls should spatially and logically relate to their effects in the world.",
+                  "A steering wheel maps rotation directly to the direction your car turns, making it intuitive.",
+                  "Light switches should be positioned to map naturally to the lights they control in the room.",
+                  "When mapping feels natural and follows spatial relationships, learning becomes instant and effortless.",
+                  "When it's arbitrary or contradicts expectations, you need instruction manuals for the simplest tasks.",
+                ],
+              },
+              {
+                "entity-type": "question",
+                "id": "humor-question-1",
+                "title": "The USB Mystery",
+                "question":
+                    "Why does a USB cable never fit on the first try?",
+                "options": [
+                  {"text": "The USB exists in quantum superposition"},
+                  {
+                    "text":
+                        "Poor visual design makes orientation unclear",
+                  },
+                ],
+                "correct-answer-indices": [1],
+                "explanation":
+                    "USB connectors look identical from both sides. Good design makes orientation obvious.",
+                "type": "multiple-choice",
+              },
+              {
+                "entity-type": "text",
+                "id": "usability-research",
+                "title": "Usability Research",
+                "text-segments": [
+                  "Decades of usability research have revealed startling statistics about how we interact with everyday objects.",
+                  "These studies consistently show that when design doesn't match human expectations, failure rates skyrocket.",
+                  "The cost of poor design isn't just frustration - it leads to accidents, errors, and sometimes catastrophic failures.",
+                  "Understanding these patterns helps designers create interfaces that work with, not against, human nature.",
+                ],
+              },
+              {
+                "entity-type": "question",
+                "id": "estimate-error-rate",
+                "title": "User Error Statistics",
+                "question":
+                    "What percentage of so-called 'user errors' in airplane accidents were actually caused by poor cockpit design, according to FAA studies?",
+                "options": [],
+                "correct-answer-indices": [82],
+                "explanation":
+                    "FAA studies revealed that 82% of pilot errors were actually design-induced errors. Poor placement of controls, confusing displays, and non-intuitive interfaces led to mistakes that were blamed on pilots but were really design failures.",
+                "type": "estimate-percentage",
+              },
+              {
+                "entity-type": "question",
+                "id": "humor-question-2",
+                "title": "The Microwave Paradox",
+                "question":
+                    "Why can you launch a space shuttle but not figure out your hotel microwave?",
+                "options": [
+                  {"text": "Space shuttles have better user manuals"},
+                  {
+                    "text":
+                        "Microwaves prioritize features over usability",
+                  },
+                ],
+                "correct-answer-indices": [1],
+                "explanation":
+                    "Microwaves prioritize features over simple usability. Complexity without purpose is bad design.",
+                "type": "multiple-choice",
+              },
+              {
+                "entity-type": "question",
+                "id": "estimate-confusion-rate",
+                "title": "Control Confusion",
+                "question":
+                    "In a study of hotel guests, what percentage couldn't figure out how to turn on the shower within 10 seconds?",
+                "options": [],
+                "correct-answer-indices": [47],
+                "explanation":
+                    "Nearly half (47%) of hotel guests struggled with unfamiliar shower controls. Each hotel has different designs with no standardization - some pull, some push, some twist, and the hot/cold directions vary. This lack of consistency forces users to experiment every time.",
+                "type": "estimate-percentage",
+              },
+              {
+                "entity-type": "text",
+                "id": "design-evolution",
+                "title": "Evolution of Design Thinking",
+                "text-segments": [
+                  "The field of user-centered design didn't emerge overnight but evolved through decades of observing human frustration with everyday objects.",
+                  "Engineers once designed products focusing solely on functionality, assuming users would adapt to whatever interface they created.",
+                  "This led to countless disasters - from confusing airplane cockpits that caused crashes to medical devices that led to fatal dosing errors.",
+                  "The shift toward human-centered design recognizes that good design must account for human psychology, limitations, and natural behaviors.",
+                  "Today's best designers spend as much time studying users as they do crafting solutions.",
+                ],
+              },
+              {
+                "entity-type": "question",
+                "id": "true-false-design",
+                "title": "Design Principle Check",
+                "question":
+                    "Good design should require extensive user manuals to understand.",
+                "options": [
+                  {"text": "True"},
+                  {"text": "False"},
+                ],
+                "correct-answer-indices": [1],
+                "explanation":
+                    "Good design should be intuitive and self-explanatory. If it needs a manual, the design has failed to communicate its function clearly.",
+                "type": "true-or-false",
+              },
+              {
+                "entity-type": "question",
+                "id": "estimate-medical-errors",
+                "title": "Medical Device Errors",
+                "question":
+                    "What percentage of fatal medical device errors are attributed to interface design problems rather than device malfunction?",
+                "options": [],
+                "correct-answer-indices": [67],
+                "explanation":
+                    "Studies show that 67% of fatal medical device errors stem from poor interface design, not mechanical failure. Confusing displays, similar-looking controls, and poor feedback mechanisms lead to dosing errors and misread vital signs that can be deadly.",
+                "type": "estimate-percentage",
+              },
+              {
+                "entity-type": "text",
+                "id": "importance-of-feedback",
+                "title": "The Importance of Feedback",
+                "text-segments": [
+                  "Every action we take with an object should produce immediate and clear feedback to confirm it worked.",
+                  "Without feedback, we operate in the dark, unsure if our actions had any effect or if we need to try something different.",
+                  "Good feedback doesn't just confirm an action - it provides information about the system's state and what will happen next.",
+                  "The best designed systems provide multiple forms of feedback: visual, auditory, and tactile cues that reinforce each other.",
+                ],
+              },
+              {
+                "entity-type": "question",
+                "id": "fill-gap-design",
+                "title": "Complete the Principle",
+                "question":
+                    "Norman's principle states that good design makes things ___ and provides clear ___.",
+                "options": [
+                  {"text": "visible"},
+                  {"text": "complex"},
+                  {"text": "feedback"},
+                  {"text": "expensive"},
+                ],
+                "correct-answer-indices": [0, 2],
+                "explanation":
+                    "Good design makes things visible and provides clear feedback. Visibility helps users understand what actions are possible, and feedback confirms that their actions had an effect.",
+                "type": "fill-gap",
+              },
+              {
+                "entity-type": "question",
+                "id": "estimate-study-percentage",
+                "title": "Research Finding",
+                "question":
+                    "In Norman's study of door-related accidents in public buildings, what percentage of people pulled a push door on their first attempt?",
+                "options": [],
+                "correct-answer-indices": [73],
+                "explanation":
+                    "Norman's study found that 73% of people initially pulled doors that were meant to be pushed when the door had a vertical handle. This demonstrates how powerful affordances are in shaping our behavior - handles strongly suggest pulling, regardless of signage.",
+                "type": "estimate-percentage",
+              },
+              {
+                "entity-type": "question",
+                "id": "estimate-smartphone-usage",
+                "title": "Smartphone Adoption",
+                "question":
+                    "What percentage of smartphone users never use more than 30% of their phone's features, according to usability studies?",
+                "options": [],
+                "correct-answer-indices": [89],
+                "explanation":
+                    "Studies show that 89% of smartphone users utilize less than 30% of available features. This isn't because users are incapable - it's because feature discovery is poor, interfaces are complex, and many functions are buried in confusing menus.",
+                "type": "estimate-percentage",
+              },
+              {
+                "entity-type": "text",
+                "id": "design-in-practice",
+                "title": "Design in Practice",
+                "text-segments": [
+                  "Great design often goes unnoticed because it works so seamlessly that we never have to think about it.",
+                  "Consider the humble zipper - once you understand pulling the tab up closes it and down opens it, you never forget.",
+                  "Or think about scissors - the finger holes immediately show where to place your fingers, and the cutting action maps naturally to the squeezing motion.",
+                  "These designs succeed because they align perfectly with our mental models and physical capabilities.",
+                  "The best designs become invisible through their excellence, while poor designs announce themselves through frustration.",
+                ],
+              },
+              {
+                "entity-type": "quote",
+                "id": "design-quote",
+                "title": "Design Philosophy",
+                "quote":
+                    "Good design is obvious. Great design is transparent.",
+                "author": "Joe Sparano",
+              },
+              {
+                "entity-type": "reflection",
+                "id": "reflection-1",
+                "title": "Design in Your Life",
+                "prompt":
+                    "Think about a recent time when you struggled with a poorly designed object or interface. What made it confusing?",
+                "thinking-points": [
+                  "What did you expect to happen vs. what actually happened?",
+                  "Were there visual cues that led you astray?",
+                  "How would you redesign it to be more intuitive?",
+                  "Who might be most affected by this poor design?",
+                ],
+              },
+              {
+                "entity-type": "text",
+                "id": "example-1",
+                "title": "Example 1",
+                "text-segments": [
+                  "The Three Mile Island nuclear accident.",
+                  "March 28, 1979.",
+                  "A cooling pump failed.",
+                  "The control room had hundreds of indicators.",
+                  "Critical information was buried in the noise.",
+                  "Operators couldn't see the real problem.",
+                  "Poor visibility led to near-catastrophe.",
+                  "Norman uses this as his prime example.",
+                ],
+              },
+              {
+                "entity-type": "text",
+                "id": "example-2",
+                "title": "Example 2",
+                "text-segments": [
+                  "Consider a simple teapot.",
+                  "The spout shows where liquid comes out.",
+                  "The handle shows where to grip.",
+                  "The lid suggests where to fill.",
+                  "Every part has a clear affordance.",
+                  "No instruction manual needed.",
+                  "This is what good design looks like.",
+                  "It's been perfected over centuries.",
+                ],
+              },
+              {
+                "entity-type": "text",
+                "id": "example-3",
+                "title": "Example 3",
+                "text-segments": [
+                  "Computer keyboards follow typewriter layout.",
+                  "QWERTY was designed to slow typists down.",
+                  "Why do we still use this today?",
+                  "Because changing established conventions is hard.",
+                  "Even bad design becomes standard.",
+                  "Sometimes compatibility trumps optimization.",
+                  "Legacy constraints shape modern design.",
+                  "History haunts our interfaces.",
+                ],
+              },
+              {
+                "entity-type": "question",
+                "id": "estimate-satisfaction",
+                "title": "User Satisfaction",
+                "question":
+                    "After redesigning products using Norman's principles, by what percentage did user satisfaction scores typically increase?",
+                "options": [],
+                "correct-answer-indices": [42],
+                "explanation":
+                    "Companies that applied human-centered design principles saw an average 42% increase in user satisfaction scores. This translated directly to reduced support calls, fewer returns, and increased brand loyalty - proving that good design is good business.",
+                "type": "estimate-percentage",
+              },
+              {
+                "entity-type": "outro",
+                "id": "design-conclusion",
+                "title": "Your New Burden",
+                "text-segments": [
+                  "You can't unsee what you've learned.",
+                  "Every bad door will now annoy you.",
+                  "Every confusing interface will frustrate you.",
+                  "This knowledge is both a gift and a curse.",
+                  "Use it to make the world slightly less stupid.",
+                ],
+              },
+              {
+                "entity-type": "design-examples-showcase",
+                "id": "design-examples",
+                "title": "Good vs Bad Design Examples",
+              },
+            ],
+          },
+        ],
+      },
+      {
+        "id": "viral-effect",
+        "title": "The Viral Effect",
+        "description":
+            "Based on Jonah Berger's research on social transmission",
+        "cover-image-path": "assets/images/viral_course.png",
+        "color": "purple",
+        "sections": [
+          {
+            "id": "viral-course",
+            "title": "The Viral Effect",
+            "content": [
+              {
+                "entity-type": "intro",
+                "id": "viral_intro",
+                "title": "Why Some Things Catch On",
+                "intro-text-segments": [
+                  "Your sourdough starter photo gets 3 likes. Your friend's burnt toast somehow breaks the internet with 50,000 shares.",
+                  "Nike spends millions on ads that nobody remembers, while a random TikTok dance spreads to every continent without a marketing budget.",
+                  "Climate research languishes in academic journals, but a meme about polar bears becomes everyone's profile picture.",
+                  "What separates viral content from digital tumbleweeds isn't luck, timing, or mysterious algorithms.",
+                  "Jonah Berger spent years analyzing thousands of viral phenomena to crack the code of social transmission.",
+                  "His research reveals six psychological triggers that determine whether ideas spread or die in obscurity.",
+                  "Understanding these patterns transforms how we think about influence, persuasion, and human connection.",
+                ],
+              },
+              {
+                "entity-type": "text",
+                "id": "story-1",
+                "title": "The Rebecca Black Phenomenon",
+                "text-segments": [
+                  "March 2011. A 13-year-old uploads a song.",
+                  "'Friday' by Rebecca Black hits YouTube.",
+                  "The production is amateur. The lyrics are simple.",
+                  "Within weeks, it has 167 million views.",
+                  "Critics call it 'the worst song ever made.'",
+                  "Yet everyone is talking about it.",
+                  "Sharing it. Remixing it. Parodying it.",
+                  "Bad content went viral faster than good content.",
+                  "Why does terrible sometimes triumph?",
+                ],
+              },
+              {
+                "entity-type": "text",
+                "id": "story-2",
+                "title": "The Ice Bucket Challenge",
+                "text-segments": [
+                  "Summer 2014. A simple challenge emerges.",
+                  "Dump ice water on your head.",
+                  "Donate to ALS research.",
+                  "Tag three friends to continue.",
+                  "Celebrities join. Politicians participate.",
+                  "The challenge raises \$115 million.",
+                  "ALS awareness skyrockets globally.",
+                  "But why this cause? Why this format?",
+                  "What made it unstoppable?",
+                ],
+              },
+              {
+                "entity-type": "text",
+                "id": "story-3",
+                "title": "The Dress That Broke the Internet",
+                "text-segments": [
+                  "February 2015. A wedding photo appears.",
+                  "A simple dress in natural lighting.",
+                  "Some see blue and black.",
+                  "Others see white and gold.",
+                  "The post gets 28 million views in 48 hours.",
+                  "Scientists study the optical illusion.",
+                  "Brands hijack the controversy.",
+                  "A dress becomes a cultural phenomenon.",
+                  "Perception itself went viral.",
+                ],
+              },
+              {
+                "entity-type": "question",
+                "id": "viral-trigger-question",
+                "title": "Viral Mechanics",
+                "question":
+                    "What do Rebecca Black, ice buckets, and a dress have in common that made them viral?",
+                "options": [
+                  {"text": "They were all controversial"},
+                  {"text": "They triggered strong emotions"},
+                  {"text": "They were easy to share"},
+                ],
+                "correct-answer-indices": [1],
+                "explanation":
+                    "Strong emotions drive sharing. Anger, amusement, confusion - all create the arousal needed for viral spread.",
+                "type": "multiple-choice",
+              },
+              {
+                "entity-type": "text",
+                "id": "stepps-framework",
+                "title": "The STEPPS Framework",
+                "text-segments": [
+                  "Berger discovered six principles that make content contagious, forming the acronym STEPPS.",
+                  "Social Currency - people share things that make them look good, smart, or in-the-know.",
+                  "Triggers - top-of-mind leads to tip-of-tongue; what reminds people to talk about your idea?",
+                  "Emotion - when we care, we share; high-arousal emotions drive transmission.",
+                  "Public - people imitate what they see others doing; make the private public.",
+                  "Practical Value - useful information gets passed along; help others help others.",
+                  "Stories - information travels under the guise of idle chatter; people don't share data, they share narratives.",
+                ],
+              },
+              {
+                "entity-type": "question",
+                "id": "social-currency-question",
+                "title": "Social Currency in Action",
+                "question":
+                    "Why do people share 'insider' restaurant recommendations more than Michelin-starred reviews?",
+                "options": [
+                  {"text": "Michelin stars are too expensive"},
+                  {
+                    "text":
+                        "Insider knowledge makes them look informed",
+                  },
+                  {"text": "Hidden gems taste better"},
+                ],
+                "correct-answer-indices": [1],
+                "explanation":
+                    "Sharing exclusive knowledge builds social currency. Being first to know something valuable makes you the expert in your network.",
+                "type": "multiple-choice",
+              },
+              {
+                "entity-type": "text",
+                "id": "triggers-explanation",
+                "title": "The Power of Triggers",
+                "text-segments": [
+                  "Triggers are environmental cues that prompt people to think about and discuss your product or idea.",
+                  "Kit Kat sales increased when they linked their brand to coffee breaks rather than just candy cravings.",
+                  "The phrase 'we will, we will rock you' at sports events triggers Queen's song in millions of minds simultaneously.",
+                  "Effective triggers are frequent, strong, and linked to the desired behavior or memory.",
+                  "Mars candy sales spike on Tuesdays not because people love Mars bars on Tuesdays, but because Tuesday rhymes with Mars-day.",
+                ],
+              },
+              {
+                "entity-type": "question",
+                "id": "triggers-example",
+                "title": "Trigger Recognition",
+                "question":
+                    "Which trigger strategy would be most effective for a meditation app?",
+                "options": [
+                  {
+                    "text":
+                        "Link to traffic jams and stressful commutes",
+                  },
+                  {"text": "Associate with weekend relaxation only"},
+                  {"text": "Connect to expensive spa treatments"},
+                ],
+                "correct-answer-indices": [0],
+                "explanation":
+                    "Daily stressful situations create frequent, strong triggers for meditation. Weekend relaxation is too infrequent, and spa associations are too narrow.",
+                "type": "multiple-choice",
+              },
+              {
+                "entity-type": "question",
+                "id": "emotion-research",
+                "title": "Emotional Contagion Research",
+                "question":
+                    "In Berger's analysis of viral content, what percentage of highly shared articles evoked high-arousal emotions?",
+                "options": [],
+                "correct-answer-indices": [78],
+                "explanation":
+                    "Berger's study of New York Times articles found that 78% of highly viral content evoked high-arousal emotions like awe, anger, or anxiety. Low-arousal emotions like sadness actually decreased sharing likelihood.",
+                "type": "estimate-percentage",
+              },
+              {
+                "entity-type": "text",
+                "id": "public-behavior",
+                "title": "Making Private Public",
+                "text-segments": [
+                  "People can't imitate what they can't see, so making private behaviors observable is crucial for virality.",
+                  "Apple's white earbuds weren't just a design choice - they were a walking advertisement that made iPod usage visible.",
+                  "Movember makes private health concerns (men's health) publicly visible through mustache growing.",
+                  "The challenge isn't just creating good products, but making their usage observable to others.",
+                  "When behavior is public, it becomes self-reinforcing as others see and copy what appears popular.",
+                ],
+              },
+              {
+                "entity-type": "question",
+                "id": "practical-value-sharing",
+                "title": "Practical Value Measurement",
+                "question":
+                    "According to research, what percentage of people share useful content primarily to help others rather than for social recognition?",
+                "options": [],
+                "correct-answer-indices": [68],
+                "explanation":
+                    "Studies show that 68% of people share practical information primarily to help their network, not for personal recognition. This altruistic sharing is especially strong for safety, financial, and health-related content.",
+                "type": "estimate-percentage",
+              },
+              {
+                "entity-type": "text",
+                "id": "stories-vehicle",
+                "title": "Stories as Vehicles",
+                "text-segments": [
+                  "Stories are vessels that carry information while entertaining, making messages memorable and shareable.",
+                  "People don't share data points; they share narratives that happen to contain valuable information.",
+                  "The Subway sandwich success story wasn't about nutrition facts - it was about Jared's transformation journey.",
+                  "Effective viral stories have a clear narrative arc but embed the key message as an integral part of the plot.",
+                  "The best stories make sharing feel natural because the narrative itself demands to be retold.",
+                ],
+              },
+              {
+                "entity-type": "question",
+                "id": "story-effectiveness",
+                "title": "Story vs Facts",
+                "question":
+                    "Why do stories spread faster than statistics?",
+                "options": [
+                  {"text": "Stories are more entertaining"},
+                  {"text": "Statistics are harder to remember"},
+                  {"text": "Stories provide context and meaning"},
+                  {"text": "All of the above"},
+                ],
+                "correct-answer-indices": [3],
+                "explanation":
+                    "Stories succeed because they're entertaining, memorable, and provide context that makes information meaningful and personally relevant.",
+                "type": "multiple-choice",
+              },
+              {
+                "entity-type": "question",
+                "id": "fill-gap-stepps",
+                "title": "Complete the Framework",
+                "question":
+                    "The STEPPS framework includes Social Currency, Triggers, Emotion, Public, Practical Value, and ___.",
+                "options": [
+                  {"text": "Stories"},
+                  {"text": "Strategy"},
+                  {"text": "Systems"},
+                  {"text": "Success"},
+                ],
+                "correct-answer-indices": [0],
+                "explanation":
+                    "Stories complete the STEPPS framework. Information travels under the guise of narrative, making sharing feel natural rather than promotional.",
+                "type": "fill-gap",
+              },
+              {
+                "entity-type": "question",
+                "id": "viral-prediction",
+                "title": "Viral Prediction Accuracy",
+                "question":
+                    "Using the STEPPS framework, researchers could predict viral success with what accuracy rate?",
+                "options": [],
+                "correct-answer-indices": [84],
+                "explanation":
+                    "When content scored high on multiple STEPPS dimensions, researchers could predict viral success with 84% accuracy. This shows virality isn't random - it follows predictable psychological patterns.",
+                "type": "estimate-percentage",
+              },
+              {
+                "entity-type": "text",
+                "id": "application-examples",
+                "title": "STEPPS in Practice",
+                "text-segments": [
+                  "Successful campaigns often combine multiple STEPPS principles rather than relying on just one.",
+                  "Dollar Shave Club's launch video used humor (Emotion), insider pricing knowledge (Social Currency), and a memorable story (Stories).",
+                  "Pokemon Go made private gaming public through location sharing, triggered by real-world landmarks, and provided practical social value.",
+                  "The most viral content doesn't accidentally hit these triggers - it's deliberately designed around psychological drivers of sharing.",
+                  "Understanding STEPPS transforms how we create, market, and spread ideas in our connected world.",
+                ],
+              },
+              {
+                "entity-type": "question",
+                "id": "humor-question-viral",
+                "title": "The Virality Paradox",
+                "question":
+                    "Why do companies with million-dollar marketing budgets often get outperformed by teenagers with smartphones?",
+                "options": [
+                  {"text": "Teenagers have more free time"},
+                  {
+                    "text":
+                        "Authentic content triggers stronger emotions",
+                  },
+                  {"text": "Professional content is too polished"},
+                ],
+                "correct-answer-indices": [1],
+                "explanation":
+                    "Authentic, emotional content often outperforms polished marketing because it feels genuine and triggers stronger psychological responses that drive sharing.",
+                "type": "multiple-choice",
+              },
+              {
+                "entity-type": "reflection",
+                "id": "viral-reflection",
+                "title": "Your Viral Moments",
+                "prompt":
+                    "Think about the last piece of content you shared on social media. Which STEPPS principles did it use?",
+                "thinking-points": [
+                  "Did it make you look knowledgeable or in-the-know? (Social Currency)",
+                  "What reminded you to share it at that moment? (Triggers)",
+                  "What emotion did you feel when you first saw it? (Emotion)",
+                  "Was the content's popularity or usage visible to others? (Public)",
+                  "Did it contain useful information for your network? (Practical Value)",
+                  "Was there a story that made it memorable? (Stories)",
+                ],
+              },
+              {
+                "entity-type": "outro",
+                "id": "viral-conclusion",
+                "title": "Your Contagious Advantage",
+                "text-segments": [
+                  "Virality isn't magic - it's psychology.",
+                  "Every share follows predictable patterns.",
+                  "Now you see the invisible forces.",
+                  "Use STEPPS to craft contagious ideas.",
+                  "Make your message impossible to ignore.",
+                ],
+              },
+            ],
+          },
+        ],
+      },
+      {
+        "id": "art-of-war",
+        "title": "The Art of War",
+        "description": "Based on Sun Tzu's timeless strategy classic",
+        "cover-image-path": "assets/images/war_course.png",
+        "color": "red",
+        "sections": [
+          {
+            "id": "war-course",
+            "title": "The Art of War",
+            "content": [
+              {
+                "entity-type": "intro",
+                "id": "war_intro",
+                "title": "Strategy Without Battle",
+                "intro-text-segments": [
+                  "Your colleague wins every argument without raising their voice. Your competitor captures market share while you're still planning.",
+                  "Meanwhile, you're working twice as hard for half the results, wondering why effort doesn't translate to victory.",
+                  "Twenty-five centuries ago, a Chinese general faced the same puzzle: how do the wise win without fighting?",
+                  "Sun Tzu's insights weren't just about ancient battlefields—they revealed the hidden mechanics of all competition.",
+                  "His principles explain why some people effortlessly navigate office politics while others struggle.",
+                  "Why certain startups dominate industries while better-funded rivals fail spectacularly.",
+                  "Understanding these patterns transforms how you approach every competitive situation in life.",
+                ],
+              },
+              {
+                "entity-type": "text",
+                "id": "story-1",
+                "title": "The Boardroom Battlefield",
+                "text-segments": [
+                  "Sarah enters the quarterly review meeting.",
+                  "Six executives, one promotion opportunity.",
+                  "Everyone prepared detailed presentations.",
+                  "Sarah brought a single page of insights.",
+                  "While others defended their territories,",
+                  "Sarah had already identified the real decision criteria.",
+                  "She spoke for three minutes.",
+                  "The promotion was unanimous.",
+                  "Victory through superior positioning, not superior force.",
+                ],
+              },
+              {
+                "entity-type": "text",
+                "id": "story-2",
+                "title": "The Patient General",
+                "text-segments": [
+                  "Two ancient generals face the same fortress.",
+                  "General Zhang assembles massive siege engines, attacks the walls directly.",
+                  "General Liu studies the fortress, observes supply routes.",
+                  "Zhang's forces batter against stone for months, losing men daily.",
+                  "Liu discovers the fortress depends on a single water source.",
+                  "Zhang continues his frontal assault, depleting his army.",
+                  "Liu quietly diverts the water upstream.",
+                  "Three weeks later, the fortress surrenders without a battle.",
+                  "Same objective, different understanding of true warfare.",
+                ],
+              },
+              {
+                "entity-type": "text",
+                "id": "story-3",
+                "title": "The Negotiation Master",
+                "text-segments": [
+                  "Two lawyers prepare for salary negotiations.",
+                  "James researches market rates, crafts arguments.",
+                  "Lisa researches her manager's priorities and constraints.",
+                  "James presents his case with data and logic.",
+                  "Lisa positions her request as solving her manager's biggest problem.",
+                  "James gets a modest raise after lengthy discussions.",
+                  "Lisa gets the raise, flexible hours, and additional resources.",
+                  "Same goal, different understanding of the battlefield.",
+                ],
+              },
+              {
+                "entity-type": "question",
+                "id": "strategic-advantage",
+                "title": "Strategic Recognition",
+                "question":
+                    "In these three scenarios, what gave the winners their decisive advantage?",
+                "options": [
+                  {"text": "Superior resources and preparation"},
+                  {
+                    "text":
+                        "Better understanding of the competitive landscape",
+                  },
+                  {"text": "More aggressive tactics"},
+                ],
+                "correct-answer-indices": [1],
+                "explanation":
+                    "Information and positioning trump resources. Sun Tzu emphasized knowing the terrain and the opponent above all else.",
+                "type": "multiple-choice",
+              },
+              {
+                "entity-type": "text",
+                "id": "supreme-excellence",
+                "title": "Supreme Excellence",
+                "text-segments": [
+                  "Sun Tzu's most profound insight challenges our instinctive understanding of victory.",
+                  "Supreme excellence consists of breaking the enemy's resistance without fighting.",
+                  "This isn't pacifism—it's recognizing that direct confrontation is often the least efficient path to victory.",
+                  "The highest skill lies in winning before the battle begins, through superior strategy and positioning.",
+                  "When conflict becomes necessary, it reveals strategic failures that occurred much earlier.",
+                ],
+              },
+              {
+                "entity-type": "question",
+                "id": "modern-application",
+                "title": "Strategic Application",
+                "question":
+                    "Which scenario best demonstrates Sun Tzu's principle of 'winning without fighting'?",
+                "options": [
+                  {
+                    "text":
+                        "A diplomat who prevents war through strategic alliances",
+                  },
+                  {
+                    "text":
+                        "An army that wins through superior firepower",
+                  },
+                  {
+                    "text":
+                        "A general who defeats enemies through prolonged siege warfare",
+                  },
+                ],
+                "correct-answer-indices": [0],
+                "explanation":
+                    "The highest skill is achieving your objectives without engaging in direct conflict. Strategic positioning makes battle unnecessary.",
+                "type": "multiple-choice",
+              },
+              {
+                "entity-type": "text",
+                "id": "five-factors",
+                "title": "The Five Constant Factors",
+                "text-segments": [
+                  "Sun Tzu identified five elements that determine victory before any engagement begins.",
+                  "The Way (道) - moral authority, shared purpose, the reason people follow you willingly.",
+                  "Heaven (天) - timing, market conditions, the forces beyond your control that you must navigate.",
+                  "Earth (地) - terrain advantages, your position relative to competitors and obstacles.",
+                  "The Commander (將) - leadership qualities, decision-making ability under pressure.",
+                  "Methods and discipline (法) - systems, processes, the organizational capabilities that execute strategy.",
+                ],
+              },
+              {
+                "entity-type": "question",
+                "id": "factor-priority",
+                "title": "Strategic Foundation",
+                "question":
+                    "Why does Sun Tzu list 'The Way' first among his five factors?",
+                "options": [
+                  {
+                    "text":
+                        "It determines whether people will follow you voluntarily or reluctantly",
+                  },
+                  {"text": "It's the easiest factor to control"},
+                  {"text": "It requires the most resources to develop"},
+                ],
+                "correct-answer-indices": [0],
+                "explanation":
+                    "Without shared purpose, you're managing through force rather than leading through conviction. All other advantages become fragile.",
+                "type": "multiple-choice",
+              },
+              {
+                "entity-type": "question",
+                "id": "timing-research",
+                "title": "Market Timing Statistics",
+                "question":
+                    "According to startup research, what percentage of business failures are attributed to poor market timing?",
+                "options": [],
+                "correct-answer-indices": [42],
+                "explanation":
+                    "CB Insights found that 42% of startup failures stem from no market need, essentially poor timing. Sun Tzu's 'Heaven' factor proves remarkably predictive 2,500 years later.",
+                "type": "estimate-percentage",
+              },
+              {
+                "entity-type": "text",
+                "id": "deception-strategy",
+                "title": "All Warfare is Based on Deception",
+                "text-segments": [
+                  "Sun Tzu's most misunderstood principle isn't about lying—it's about information asymmetry.",
+                  "When capable, appear incapable. When active, appear inactive. When near, appear far.",
+                  "This isn't dishonesty; it's strategic misdirection that forces opponents to make decisions with incomplete information.",
+                  "A small army appears large through clever positioning of campfires and banners.",
+                  "An advancing force conceals its true objective until the moment of decisive action.",
+                ],
+              },
+              {
+                "entity-type": "question",
+                "id": "deception-example",
+                "title": "Strategic Misdirection",
+                "question":
+                    "Which example best illustrates Sun Tzu's principle of strategic deception?",
+                "options": [
+                  {
+                    "text":
+                        "A general who lies about troop numbers in official reports",
+                  },
+                  {
+                    "text":
+                        "A commander who conceals troop movements while appearing to retreat",
+                  },
+                  {
+                    "text":
+                        "An officer who breaks treaties without warning",
+                  },
+                ],
+                "correct-answer-indices": [1],
+                "explanation":
+                    "Strategic deception involves misdirecting enemy expectations about your capabilities and intentions, not breaking moral codes.",
+                "type": "multiple-choice",
+              },
+              {
+                "entity-type": "question",
+                "id": "speed-advantage",
+                "title": "Velocity in Strategy",
+                "question":
+                    "Sun Tzu emphasized speed because rapid action provides which strategic advantage?",
+                "options": [
+                  {"text": "Reduces costs"},
+                  {"text": "Prevents enemy adaptation"},
+                  {"text": "Impresses stakeholders"},
+                ],
+                "correct-answer-indices": [1],
+                "explanation":
+                    "Speed denies opponents time to develop countermeasures. Once competitors understand your strategy, your window of advantage closes rapidly.",
+                "type": "multiple-choice",
+              },
+              {
+                "entity-type": "text",
+                "id": "intelligence-warfare",
+                "title": "The Intelligence Imperative",
+                "text-segments": [
+                  "Know your enemy and know yourself, and you can fight a hundred battles without disaster.",
+                  "This knowledge isn't casual observation—it requires systematic intelligence gathering.",
+                  "Understanding competitor weaknesses, market blind spots, customer unmet needs.",
+                  "Most business failures stem from leaders who knew their own capabilities but misunderstood the competitive landscape.",
+                  "The highest form of intelligence is understanding what your opponents don't know they don't know.",
+                ],
+              },
+              {
+                "entity-type": "question",
+                "id": "intelligence-failure",
+                "title": "Intelligence Analysis",
+                "question":
+                    "According to business research, what percentage of strategic failures involve inadequate competitive intelligence?",
+                "options": [],
+                "correct-answer-indices": [67],
+                "explanation":
+                    "McKinsey studies show 67% of strategic failures involve misunderstanding the competitive environment. Sun Tzu's emphasis on intelligence gathering remains critically relevant.",
+                "type": "estimate-percentage",
+              },
+              {
+                "entity-type": "question",
+                "id": "terrain-advantage",
+                "title": "Positional Strategy",
+                "question":
+                    "In business terms, which best represents Sun Tzu's concept of 'difficult terrain'?",
+                "options": [
+                  {
+                    "text":
+                        "A crowded market with many established competitors",
+                  },
+                  {"text": "A market with high regulatory barriers"},
+                  {
+                    "text":
+                        "A market where customer switching costs are high",
+                  },
+                  {"text": "All of the above"},
+                ],
+                "correct-answer-indices": [3],
+                "explanation":
+                    "Difficult terrain requires different strategies. Sun Tzu would advise speed, alliances, or finding alternative paths rather than direct assault.",
+                "type": "multiple-choice",
+              },
+              {
+                "entity-type": "question",
+                "id": "fill-gap-strategy",
+                "title": "Strategic Principles",
+                "question":
+                    "Sun Tzu teaches that the supreme excellence is to subdue the enemy without ___. The highest skill is winning ___ the battle begins.",
+                "options": [
+                  {"text": "fighting"},
+                  {"text": "violence"},
+                  {"text": "before"},
+                  {"text": "during"},
+                ],
+                "correct-answer-indices": [0, 2],
+                "explanation":
+                    "Fighting reveals strategic failure. True mastery lies in positioning that makes victory inevitable before engagement begins.",
+                "type": "fill-gap",
+              },
+              {
+                "entity-type": "text",
+                "id": "adaptability",
+                "title": "Water's Lesson",
+                "text-segments": [
+                  "Water never fights against obstacles—it flows around them, finding the path of least resistance.",
+                  "Yet given time, water carves grand canyons through solid rock.",
+                  "Military tactics are like water: they should take the shape of the circumstances.",
+                  "Rigid strategies shatter against unexpected realities.",
+                  "The most successful leaders adapt their methods while maintaining their strategic objectives.",
+                ],
+              },
+              {
+                "entity-type": "question",
+                "id": "adaptability-example",
+                "title": "Strategic Flexibility",
+                "question":
+                    "Which historical example best demonstrates Sun Tzu's water principle?",
+                "options": [
+                  {
+                    "text":
+                        "A general who rigidly follows the same battle formation regardless of terrain",
+                  },
+                  {
+                    "text":
+                        "A commander who adapts tactics based on enemy weaknesses and environmental conditions",
+                  },
+                  {
+                    "text":
+                        "An army that retreats permanently when facing strong opposition",
+                  },
+                ],
+                "correct-answer-indices": [1],
+                "explanation":
+                    "Like water finding the path of least resistance, successful strategy adapts to circumstances while maintaining its essential purpose.",
+                "type": "multiple-choice",
+              },
+              {
+                "entity-type": "reflection",
+                "id": "war-reflection",
+                "title": "Strategic Self-Assessment",
+                "prompt":
+                    "Consider a competitive situation you're currently facing. How might Sun Tzu's principles change your approach?",
+                "thinking-points": [
+                  "What information about your opponents do you lack, and how could you gather it systematically?",
+                  "How might you win this competition without direct confrontation?",
+                  "What positioning advantages could you develop before engaging?",
+                ],
+              },
+              {
+                "entity-type": "quote",
+                "id": "war-quote",
+                "title": "Strategic Wisdom",
+                "quote":
+                    "If you know the enemy and know yourself, you need not fear the result of a hundred battles.",
+                "author": "Sun Tzu",
+              },
+              {
+                "entity-type": "outro",
+                "id": "war-conclusion",
+                "title": "The Modern Strategist",
+                "text-segments": [
+                  "Sun Tzu's wisdom endures because competition never changes, only its context.",
+                  "Whether in ancient battlefields or modern boardrooms, the same principles determine victory.",
+                  "Information, positioning, timing, and adaptability remain the foundations of strategic success.",
+                  "Now you see why some people win effortlessly.",
+                  "They're not fighting harder—they're fighting smarter.",
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  };
 
   static Future<List<Map<String, dynamic>>> getCourses() async {
-    final Map<String, dynamic> courseData = await loadCourseData();
-    final List<dynamic> coursesFromData = courseData[COURSES_KEY] ?? [];
+    await Future.delayed(
+      const Duration(milliseconds: 100),
+    ); // Simulate API delay
 
-    return List<Map<String, dynamic>>.from(coursesFromData);
+    try {
+      // Try to load from actual JSON file first
+      if (_cachedData == null) {
+        final String jsonString = await rootBundle.loadString(
+          'assets/data/course_data.json',
+        );
+        _cachedData = json.decode(jsonString);
+      }
+
+      final List<dynamic> courses = _cachedData!['courses'] ?? [];
+      return List<Map<String, dynamic>>.from(courses);
+    } on Exception {
+      // Fallback to mock data if JSON file loading fails
+      final List<dynamic> courses = mockCourseData['courses'] ?? [];
+      return List<Map<String, dynamic>>.from(courses);
+    }
   }
 
   static Future<Map<String, dynamic>?> getCourseById(
     String courseId,
   ) async {
-    final List<Map<String, dynamic>> availableCourses =
-        await getCourses();
+    final List<Map<String, dynamic>> courses = await getCourses();
+    final List<Map<String, dynamic>> matchingCourses = courses
+        .where((course) => course['id'] == courseId)
+        .toList();
 
-    try {
-      final Map<String, dynamic> targetCourse = availableCourses
-          .firstWhere((course) => course[ID_KEY] == courseId);
-
-      return targetCourse;
-    } on Exception {
-      return null;
-    }
-  }
-
-  static Future<List<Map<String, dynamic>>> getCourseSections(
-    String courseId,
-  ) async {
-    final Map<String, dynamic>? targetCourse = await getCourseById(
-      courseId,
-    );
-    final bool courseNotFound = targetCourse == null;
-
-    if (courseNotFound) {
-      return [];
-    }
-
-    final List<dynamic> sectionsFromCourse =
-        targetCourse[SECTIONS_KEY] ?? [];
-
-    return List<Map<String, dynamic>>.from(sectionsFromCourse);
-  }
-
-  static Future<List<Map<String, dynamic>>> getSectionContent(
-    String courseId,
-    String sectionId,
-  ) async {
-    final List<Map<String, dynamic>> availableSections =
-        await getCourseSections(courseId);
-
-    try {
-      final Map<String, dynamic> targetSection = availableSections
-          .firstWhere((section) => section[ID_KEY] == sectionId);
-      final List<dynamic> contentFromSection =
-          targetSection[CONTENT_KEY] ?? [];
-
-      return List<Map<String, dynamic>>.from(contentFromSection);
-    } on Exception {
-      return [];
-    }
-  }
-
-  static Future<Map<String, dynamic>?> getContentItem(
-    String courseId,
-    String sectionId,
-    String contentId,
-  ) async {
-    final List<Map<String, dynamic>> availableContent =
-        await getSectionContent(courseId, sectionId);
-
-    try {
-      final Map<String, dynamic> targetContentItem = availableContent
-          .firstWhere(
-            (contentItem) => contentItem[ID_KEY] == contentId,
-          );
-
-      return targetContentItem;
-    } on Exception {
-      return null;
-    }
+    return matchingCourses.isEmpty ? null : matchingCourses.first;
   }
 }

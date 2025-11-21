@@ -5,6 +5,29 @@ import 'package:relevant/course_screens/course_detail_screen.dart';
 import 'package:relevant/course_screens/data/course_data.dart';
 import 'package:relevant/utility_widgets/utility_widgets.dart';
 import 'package:relevant/constants/typography.dart';
+import 'package:relevant/constants/app_theme.dart';
+
+// Constants
+const String COURSE_ROADMAP_DEFAULT_TITLE = 'Course Roadmap';
+const String COURSE_DEFAULT_COLOR = 'green';
+const String COURSE_SUBTITLE_TEXT =
+    'Master design psychology fundamentals';
+const String AHA_COUNTER_TEXT = '30 Aha';
+const String QUESTIONS_COUNTER_TEXT = '29 questions';
+
+// Level constants
+const String LEVEL_PREFIX = 'Level ';
+const String DESIGN_PRINCIPLES_TITLE = 'Design Principles';
+const String PSYCHOLOGY_OF_DESIGN_TITLE = 'Psychology of Design';
+const String AFFORDANCES_TITLE = 'Affordances';
+const String FEEDBACK_SYSTEMS_TITLE = 'Feedback Systems';
+const String ADVANCED_CONCEPTS_TITLE = 'Advanced Concepts';
+
+const String CORE_FUNDAMENTALS_SUBTITLE = 'Core fundamentals';
+const String MENTAL_MODELS_SUBTITLE = 'Mental models';
+const String VISUAL_CUES_SUBTITLE = 'Visual cues';
+const String USER_RESPONSES_SUBTITLE = 'User responses';
+const String MASTER_LEVEL_SUBTITLE = 'Master level';
 
 class CourseRoadmapScreen extends StatefulWidget {
   final String courseId;
@@ -36,7 +59,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
           courseData!['sections'] ?? [],
         );
       }
-    } catch (error) {
+    } on Exception {
       // Handle error silently
     } finally {
       setState(() {
@@ -51,28 +74,59 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
       return const Center(child: CircularProgressIndicator());
     }
 
-    return Container(
-      color: Colors.grey[900],
+    return Material(
+      color: AppTheme.backgroundDark,
       child: SafeArea(
         child: Div.column([
-          const Spacing.height(32),
+          RoadmapHeader(),
+
+          const Spacing.height(24),
 
           Expanded(
-            child: ListView.builder(
+            child: ListView(
               padding: const EdgeInsets.symmetric(horizontal: 20),
-              itemCount: courseSections.length,
-              itemBuilder: (context, sectionIndex) {
-                final section = courseSections[sectionIndex];
-                final contentList = List<Map<String, dynamic>>.from(
-                  section['content'] ?? [],
-                );
+              children: [
+                LevelCard(
+                  levelNumber: 1,
+                  title: DESIGN_PRINCIPLES_TITLE,
+                  subtitle: CORE_FUNDAMENTALS_SUBTITLE,
+                  isCompleted: true,
+                  onTap: () => navigateToCourseContent(0, 0),
+                ),
 
-                return SectionCard(
-                  section: section,
-                  contentCount: contentList.length,
-                  onTap: () => navigateToCourseContent(sectionIndex, 0),
-                );
-              },
+                LevelCard(
+                  levelNumber: 2,
+                  title: PSYCHOLOGY_OF_DESIGN_TITLE,
+                  subtitle: MENTAL_MODELS_SUBTITLE,
+                  isCompleted: true,
+                  onTap: () => navigateToCourseContent(0, 0),
+                ),
+
+                LevelCard(
+                  levelNumber: 3,
+                  title: AFFORDANCES_TITLE,
+                  subtitle: VISUAL_CUES_SUBTITLE,
+                  isCompleted: false,
+                  isCurrentLevel: true,
+                  onTap: () => navigateToCourseContent(0, 0),
+                ),
+
+                LevelCard(
+                  levelNumber: 4,
+                  title: FEEDBACK_SYSTEMS_TITLE,
+                  subtitle: USER_RESPONSES_SUBTITLE,
+                  isCompleted: false,
+                  onTap: () => navigateToCourseContent(0, 0),
+                ),
+
+                LevelCard(
+                  levelNumber: 5,
+                  title: ADVANCED_CONCEPTS_TITLE,
+                  subtitle: MASTER_LEVEL_SUBTITLE,
+                  isCompleted: false,
+                  onTap: () => navigateToCourseContent(0, 0),
+                ),
+              ],
             ),
           ),
         ]),
@@ -80,10 +134,140 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
     );
   }
 
+  Widget RoadmapHeader() {
+    final String courseTitle =
+        courseData?['title'] ?? COURSE_ROADMAP_DEFAULT_TITLE;
+    final String courseColor =
+        courseData?['color'] ?? COURSE_DEFAULT_COLOR;
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+      child: Div.column([
+        Div.row([
+          Material(
+            color: Colors.transparent,
+            child: InkWell(
+              onTap: () {
+                Navigator.of(context).pop();
+              },
+              borderRadius: BorderRadius.circular(12),
+              child: const Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Icon(
+                  Icons.arrow_back,
+                  color: AppTheme.textPrimary,
+                  size: 24,
+                ),
+              ),
+            ),
+          ),
+
+          const Spacer(),
+        ]),
+
+        const Spacing.height(20),
+
+        Div.column([
+          Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: getColorFromString(
+                courseColor,
+              ).withValues(alpha: 0.2),
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Icon(
+              Icons.psychology_outlined,
+              color: getColorFromString(courseColor),
+              size: 48,
+            ),
+          ),
+
+          const Spacing.height(16),
+
+          Typography.headingLarge(courseTitle),
+
+          const Spacing.height(4),
+
+          Text(
+            COURSE_SUBTITLE_TEXT,
+            style: Typography.bodyMediumStyle.copyWith(
+              color: AppTheme.textPrimary,
+              fontSize: 16,
+              decoration: TextDecoration.none,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ], crossAxisAlignment: CrossAxisAlignment.center),
+
+        const Spacing.height(16),
+
+        Div.row([
+          const Spacer(),
+
+          Div.row([
+            const Icon(
+              Icons.lightbulb,
+              color: AppTheme.primaryGreen,
+              size: 16,
+            ),
+
+            const Spacing.width(4),
+
+            Text(
+              AHA_COUNTER_TEXT,
+              style: Typography.bodyMediumStyle.copyWith(
+                color: AppTheme.textPrimary,
+                fontSize: 16,
+                decoration: TextDecoration.none,
+              ),
+            ),
+          ]),
+
+          const Spacing.width(20),
+
+          Div.row([
+            const Icon(Icons.quiz, color: AppTheme.primaryBlue, size: 16),
+
+            const Spacing.width(4),
+
+            Text(
+              QUESTIONS_COUNTER_TEXT,
+              style: Typography.bodyMediumStyle.copyWith(
+                color: AppTheme.textPrimary,
+                fontSize: 16,
+                decoration: TextDecoration.none,
+              ),
+            ),
+          ]),
+
+          const Spacer(),
+        ], mainAxisAlignment: MainAxisAlignment.center),
+      ], crossAxisAlignment: CrossAxisAlignment.start),
+    );
+  }
+
+  Color getColorFromString(String colorName) {
+    switch (colorName.toLowerCase()) {
+      case 'green':
+        return AppTheme.primaryGreen;
+      case 'purple':
+        return Colors.purple;
+      case 'blue':
+        return AppTheme.primaryBlue;
+      case 'red':
+        return Colors.red;
+      case 'orange':
+        return Colors.orange;
+      default:
+        return AppTheme.primaryGreen;
+    }
+  }
+
   void navigateToCourseContent(int sectionIndex, int contentIndex) {
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute(
-        builder: (context) => CourseDetailScreen(
+    Navigator.of(context).push(
+      AppTheme.fadeTransition(
+        CourseDetailScreen(
           courseId: widget.courseId,
           initialSectionIndex: sectionIndex,
           initialContentIndex: contentIndex,
@@ -93,15 +277,21 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
   }
 }
 
-class SectionCard extends StatelessWidget {
-  final Map<String, dynamic> section;
-  final int contentCount;
+class LevelCard extends StatelessWidget {
+  final int levelNumber;
+  final String title;
+  final String subtitle;
+  final bool isCompleted;
+  final bool isCurrentLevel;
   final VoidCallback onTap;
 
-  const SectionCard({
+  const LevelCard({
     super.key,
-    required this.section,
-    required this.contentCount,
+    required this.levelNumber,
+    required this.title,
+    required this.subtitle,
+    required this.isCompleted,
+    this.isCurrentLevel = false,
     required this.onTap,
   });
 
@@ -112,19 +302,14 @@ class SectionCard extends StatelessWidget {
       child: Container(
         margin: const EdgeInsets.only(bottom: 16),
         padding: const EdgeInsets.all(20),
-        decoration: BoxDecoration(
-          color: Colors.grey[850],
-          borderRadius: BorderRadius.circular(16),
-        ),
+        decoration: buildCardDecoration(),
         child: Div.row([
+          LevelBadge(),
+
+          const Spacing.width(16),
+
           Expanded(
-            child: Div.column([
-              Typography.headingMedium(section['title'] ?? ''),
-
-              const Spacing.height(8),
-
-              Typography.bodyMedium('$contentCount lessons'),
-            ], crossAxisAlignment: 'start'),
+            child: LevelContent(),
           ),
 
           const Icon(
@@ -135,5 +320,95 @@ class SectionCard extends StatelessWidget {
         ]),
       ),
     );
+  }
+
+  BoxDecoration buildCardDecoration() {
+    final Color cardColor = getCardColor();
+    final Color borderColor = getBorderColor();
+    
+    return BoxDecoration(
+      color: cardColor,
+      borderRadius: BorderRadius.circular(16),
+      border: Border.all(color: borderColor),
+    );
+  }
+
+  Color getCardColor() {
+    if (isCurrentLevel) {
+      return AppTheme.primaryGreen.withValues(alpha: 0.1);
+    }
+    return Colors.grey.withValues(alpha: 0.05);
+  }
+
+  Color getBorderColor() {
+    if (isCurrentLevel) {
+      return AppTheme.primaryGreen.withValues(alpha: 0.3);
+    }
+    return Colors.grey.withValues(alpha: 0.1);
+  }
+
+  Widget LevelBadge() {
+    return Container(
+      width: 40,
+      height: 40,
+      decoration: BoxDecoration(
+        color: getBadgeColor(),
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Center(
+        child: buildBadgeContent(),
+      ),
+    );
+  }
+
+  Color getBadgeColor() {
+    if (isCompleted) {
+      return AppTheme.primaryGreen;
+    }
+    
+    if (isCurrentLevel) {
+      return AppTheme.primaryGreen.withValues(alpha: 0.2);
+    }
+    
+    return Colors.grey.withValues(alpha: 0.2);
+  }
+
+  Widget buildBadgeContent() {
+    return RenderIf.condition(
+      isCompleted,
+      const Icon(
+        Icons.check,
+        color: Colors.white,
+        size: 20,
+      ),
+      Text(
+        levelNumber.toString(),
+        style: Typography.bodyMediumStyle.copyWith(
+          color: AppTheme.textPrimary,
+          fontSize: 16,
+          decoration: TextDecoration.none,
+        ),
+        textAlign: TextAlign.center,
+      ),
+    );
+  }
+
+  Widget LevelContent() {
+    return Div.column([
+      Typography.headingMedium(
+        '$LEVEL_PREFIX$levelNumber: $title',
+      ),
+
+      const Spacing.height(4),
+
+      Text(
+        subtitle,
+        style: Typography.bodyMediumStyle.copyWith(
+          color: AppTheme.textPrimary,
+          fontSize: 14,
+          decoration: TextDecoration.none,
+        ),
+      ),
+    ], crossAxisAlignment: CrossAxisAlignment.start);
   }
 }

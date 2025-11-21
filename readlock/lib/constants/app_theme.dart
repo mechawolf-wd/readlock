@@ -98,6 +98,28 @@ class AppTheme {
   static const double alphaDark = 0.8;
   static const double alphaOpaque = 0.9;
 
+  // Navigation transitions
+  static const Duration transitionDuration = Duration(milliseconds: 300);
+  static const Curve transitionCurve = Curves.easeInOut;
+
+  static PageRouteBuilder<T> fadeTransition<T>(Widget page) {
+    return PageRouteBuilder<T>(
+      pageBuilder: (context, animation, secondaryAnimation) => page,
+      transitionDuration: transitionDuration,
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        return FadeTransition(
+          opacity: Tween<double>(begin: 0.0, end: 1.0).animate(
+            CurvedAnimation(
+              parent: animation,
+              curve: transitionCurve,
+            ),
+          ),
+          child: child,
+        );
+      },
+    );
+  }
+
   // Essential color variants with alpha transparency (used in widgets)
   static Color get primaryDeepPurpleLight =>
       primaryDeepPurple.withValues(alpha: alphaLight);

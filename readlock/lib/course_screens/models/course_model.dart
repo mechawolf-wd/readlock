@@ -88,6 +88,18 @@ class ReflectionContent extends CourseContent {
   });
 }
 
+class QuoteContent extends CourseContent {
+  final String quote;
+  final String author;
+
+  const QuoteContent({
+    required super.id,
+    required super.title,
+    required this.quote,
+    required this.author,
+  });
+}
+
 enum QuestionType {
   multipleChoice,
   trueOrFalse,

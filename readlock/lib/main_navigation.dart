@@ -2,7 +2,8 @@
 // Provides navigation between course roadmap and profile screens
 
 import 'package:flutter/material.dart';
-import 'package:relevant/course_screens/course_roadmap_screen.dart';
+import 'package:relevant/constants/app_theme.dart';
+import 'package:relevant/screens/courses_screen.dart';
 import 'package:relevant/screens/shelf_screen.dart';
 import 'package:relevant/screens/profile_screen.dart';
 import 'package:relevant/screens/sandbox_screen.dart';
@@ -24,7 +25,7 @@ class MainNavigationState extends State<MainNavigation> {
 
   final List<Widget> screens = [
     const ShelfScreen(),
-    const CourseRoadmapScreen(courseId: 'design-everyday-things'),
+    const CoursesScreen(),
     const ProfileScreen(),
     const SandboxScreen(),
   ];
@@ -46,7 +47,7 @@ class MainNavigationState extends State<MainNavigation> {
         : 0;
         
     return Scaffold(
-      backgroundColor: Colors.grey[900],
+      backgroundColor: AppTheme.backgroundDark,
       body: IndexedStack(index: safeIndex, children: screens),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: safeIndex,

@@ -208,6 +208,177 @@ class KnowledgeTreeWidget extends StatelessWidget {
 
 ---
 
+## 🎭 Marketing Tactics & Notification Strategy
+
+### **Duolingo's Notification Mastery**
+
+Duolingo has perfected the art of re-engaging users through a sophisticated notification system that balances persistence with personality. Their approach offers valuable lessons for Readlock's user retention strategy.
+
+#### **Core Notification Types:**
+
+##### 1. **Streak Protection Notifications**
+
+- **Trigger**: 12+ hours without activity on an active streak
+- **Message Style**: "Don't lose your 47-day streak! Just 5 minutes to keep it alive 🔥"
+- **Psychology**: Loss aversion - fear of losing progress motivates action
+- **Timing**: Escalating urgency as day progresses
+
+##### 2. **Guilt-Free Re-engagement**
+
+- **Trigger**: 2-7 days of inactivity
+- **Message Style**: "These French words miss you! 🥺" or "Your Spanish is getting lonely..."
+- **Psychology**: Emotional attachment through anthropomorphization
+- **Approach**: Playful guilt rather than shame
+
+##### 3. **Achievement Celebrations**
+
+- **Trigger**: Milestone completions, new badges, level-ups
+- **Message Style**: "🎉 You're officially intermediate! Time to celebrate with a lesson?"
+- **Psychology**: Reward reinforcement to maintain momentum
+- **Timing**: Immediate after achievement + follow-up 24 hours later
+
+##### 4. **Social Pressure Leverage**
+
+- **Trigger**: Friends' activity or competitions
+- **Message Style**: "Sarah just passed you on the leaderboard! Defend your position 💪"
+- **Psychology**: Social comparison and competitive motivation
+- **Frequency**: Weekly summaries + real-time for close competitions
+
+##### 5. **Habit Formation Support**
+
+- **Trigger**: Consistent usage patterns detected
+- **Message Style**: "Perfect time for your daily lesson! You usually study at 7 PM 📚"
+- **Psychology**: Reinforces existing habits with contextual cues
+- **Personalization**: Based on individual usage analytics
+
+#### **Advanced Notification Tactics:**
+
+##### **The Owl Personality (Duo)**
+
+- **Character Development**: Friendly → Concerned → Passive-aggressive → Threatening
+- **Example Progression**:
+  - Day 1: "Time for your daily lesson! 🦉"
+  - Day 3: "Looks like you forgot about me 😢"
+  - Day 7: "These reminders don't seem to be working..."
+  - Day 14: "I see you're ignoring me. That's fine. I'll just sit here in the dark..."
+
+##### **Scarcity & Urgency**
+
+- **Limited-Time Events**: "Double XP weekend ends in 2 hours!"
+- **Streak Freezes**: "You have 2 streak freezes left. Use one now?"
+- **League Deadlines**: "Only 6 hours left in Diamond League!"
+
+##### **Educational Hooks**
+
+- **Fun Facts**: "Did you know? Germans have a word for the pain of finishing a good book: Weltschmerz"
+- **Progress Insights**: "You've learned 47% more words this month than last!"
+- **Cultural Connections**: "Today is Día de los Muertos! Learn about it in Spanish 🌮"
+
+### **Readlock Notification Strategy**
+
+Adapting Duolingo's proven tactics for book learning and knowledge retention:
+
+#### **1. Reading Streak Guardians**
+
+```
+📚 "Your 12-day reading streak needs just 10 minutes today!"
+📖 "Don't break your streak! One chapter is all it takes."
+🔥 "Streak in danger: 3 hours left to keep your 25-day run alive"
+```
+
+#### **2. Knowledge Decay Alerts**
+
+```
+🧠 "Quick refresh: Do you remember the key insight from Chapter 3?"
+💡 "Your 'Design Principles' knowledge is fading. 5-min review?"
+📊 "Spaced repetition time! Review yesterday's concepts while they're fresh."
+```
+
+#### **3. Curiosity-Driven Re-engagement**
+
+```
+🤔 "What would Sun Tzu say about your current challenge?"
+✨ "This quote from your last book might change your perspective today..."
+📚 "Your next 'aha moment' is waiting in Chapter 7"
+```
+
+#### **4. Progress Celebrations**
+
+```
+🎉 "Book mastery unlocked! You've completed 'Design of Everyday Things'"
+🏆 "Achievement: Philosophy Explorer - 5 books across 3 centuries!"
+⭐ "Insight streak: You've identified key concepts 7 days running!"
+```
+
+#### **5. Social Learning Prompts**
+
+```
+👥 "3 friends are reading books you'd love. See their recommendations?"
+💬 "Your book club discussion starts in 1 hour - ready with insights?"
+🔄 "Share your favorite quote? Sarah shared one that got 12 likes!"
+```
+
+#### **6. Personalized Learning Cues**
+
+```
+🕰️ "Perfect timing! You usually read best around 9 PM"
+🎯 "Based on your interests: This psychology book connects to your recent reads"
+📈 "You're 40% faster at grasping concepts than last month!"
+```
+
+### **Marketing Psychology Principles**
+
+#### **1. Variable Reward Scheduling**
+
+- **Unpredictable reinforcement** creates stronger habits than consistent rewards
+- **Implementation**: Random bonus XP, surprise book recommendations, unexpected celebration moments
+
+#### **2. The Zeigarnik Effect**
+
+- **Incomplete tasks** create psychological tension until resolved
+- **Implementation**: "You're 73% through this chapter..." notifications
+
+#### **3. Social Proof Amplification**
+
+- **Others' success** motivates individual action
+- **Implementation**: "847 people finished this book this week" counters
+
+#### **4. Loss Aversion Leverage**
+
+- **Fear of losing** is stronger than desire to gain
+- **Implementation**: Streak protection, concept decay warnings, limited-time insights
+
+### **Notification Cadence Strategy**
+
+#### **Active Users** (Daily engagement)
+
+- **Morning**: Motivational book quote or daily challenge
+- **Optimal Time**: Personalized reading reminder based on usage patterns
+- **Evening**: Progress celebration or tomorrow's preview
+
+#### **Declining Users** (3-7 days inactive)
+
+- **Day 3**: Gentle re-engagement with curiosity hook
+- **Day 5**: Social proof or fear of missing out
+- **Day 7**: Streak protection or progress reminder
+
+#### **Lapsed Users** (1+ weeks inactive)
+
+- **Week 2**: Value-first approach with free insight or quote
+- **Week 4**: Social connection or community highlight
+- **Month 2**: Win-back campaign with fresh content or features
+
+### **Content Personalization Matrix**
+
+| User Type      | Primary Motivator     | Notification Style        | Example                                                |
+| -------------- | --------------------- | ------------------------- | ------------------------------------------------------ |
+| **Achiever**   | Progress & Mastery    | Data-driven celebrations  | "Level up: 50 concepts mastered!"                      |
+| **Explorer**   | Discovery & Curiosity | Mystery & intrigue        | "Hidden connection found between your last 2 books..." |
+| **Socializer** | Community & Sharing   | Social proof & connection | "Your insight inspired 12 people to read this book"    |
+| **Competitor** | Rankings & Comparison | Leaderboards & challenges | "You're #3 in this week's reading challenge!"          |
+
+---
+
 ## 🎨 Visual Design Patterns
 
 ### Color Psychology

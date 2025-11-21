@@ -8,11 +8,8 @@ import 'package:relevant/constants/app_theme.dart';
 
 const String PROFILE_GREETING = 'Welcome back, Alex!';
 const String DAILY_GOAL_LABEL = 'Daily Goal';
-const String WEEKLY_CHALLENGE_LABEL = 'Weekly Challenge';
-const String KNOWLEDGE_MASTERY_LABEL = 'Knowledge Mastery';
 const String ACHIEVEMENT_GALLERY_LABEL = 'Achievement Gallery';
 const String READING_LEAGUE_LABEL = 'Reading League';
-const String CONCEPT_STRENGTH_LABEL = 'Concept Strength';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -37,23 +34,11 @@ class ProfileScreen extends StatelessWidget {
             
             const Spacing.height(20),
             
-            KnowledgeMasteryCard(),
-            
-            const Spacing.height(20),
-            
-            ConceptStrengthMeter(),
-            
-            const Spacing.height(20),
-            
             AchievementGallery(),
             
             const Spacing.height(20),
             
             ReadingLeagueCard(),
-            
-            const Spacing.height(20),
-            
-            WeeklyChallengeCard(),
           ], crossAxisAlignment: CrossAxisAlignment.stretch),
         ),
       ),
@@ -165,7 +150,7 @@ class DuolingoProfileHeader extends StatelessWidget {
               const Spacing.width(4),
 
               Text(
-                '2,847 XP',
+                '2,847 Aha',
                 style: Typography.bodyMediumStyle.copyWith(
                   color: Colors.white,
                   fontWeight: FontWeight.w600,
@@ -283,7 +268,7 @@ class EnhancedStreakCard extends StatelessWidget {
               const Spacing.height(4),
 
               Text(
-                '+85 XP earned today',
+                '+85 Aha earned today',
                 style: Typography.bodyMediumStyle.copyWith(
                   color: AppTheme.primaryGreen,
                   fontWeight: FontWeight.w500,
@@ -424,7 +409,7 @@ class DailyGoalCard extends StatelessWidget {
               borderRadius: BorderRadius.circular(12),
             ),
             child: Text(
-              '85/100 XP',
+              '85/100 Aha',
               style: Typography.bodyMediumStyle.copyWith(
                 color: Colors.white,
                 fontWeight: FontWeight.w600,
@@ -457,7 +442,7 @@ class DailyGoalCard extends StatelessWidget {
         const Spacing.height(12),
 
         Text(
-          '15 XP to go! You\'re almost there 💪',
+          '15 Aha to go! You\'re almost there 💪',
           style: Typography.bodyMediumStyle.copyWith(
             color: Colors.white.withValues(alpha: 0.9),
             fontSize: 13,
@@ -469,343 +454,7 @@ class DailyGoalCard extends StatelessWidget {
   }
 }
 
-class KnowledgeMasteryCard extends StatelessWidget {
-  const KnowledgeMasteryCard({super.key});
 
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: AppTheme.backgroundLight,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: Colors.purple.withValues(alpha: 0.2),
-        ),
-      ),
-      child: Div.column([
-        Div.row([
-          Container(
-            width: 44,
-            height: 44,
-            decoration: BoxDecoration(
-              color: Colors.purple,
-              borderRadius: BorderRadius.circular(22),
-            ),
-            child: const Icon(
-              Icons.psychology,
-              color: Colors.white,
-              size: 24,
-            ),
-          ),
-
-          const Spacing.width(16),
-
-          Expanded(
-            child: Div.column([
-              Text(
-                KNOWLEDGE_MASTERY_LABEL,
-                style: Typography.bodyLargeStyle.copyWith(
-                  fontWeight: FontWeight.w600,
-                  fontSize: 16,
-                ),
-              ),
-
-              const Spacing.height(4),
-
-              Text(
-                'You\'ve mastered 73% of Design Principles',
-                style: Typography.bodyMediumStyle.copyWith(
-                  color: AppTheme.textPrimary.withValues(alpha: 0.7),
-                  fontSize: 13,
-                ),
-              ),
-            ], crossAxisAlignment: CrossAxisAlignment.start),
-          ),
-        ]),
-
-        const Spacing.height(20),
-
-        Div.row([
-          Expanded(
-            child: Div.column([
-              Text(
-                'Design Thinking',
-                style: Typography.bodyMediumStyle.copyWith(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              const Spacing.height(4),
-              Container(
-                height: 6,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(3),
-                  color: AppTheme.textPrimary.withValues(alpha: 0.1),
-                ),
-                child: FractionallySizedBox(
-                  alignment: Alignment.centerLeft,
-                  widthFactor: 0.9,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(3),
-                      color: AppTheme.primaryGreen,
-                    ),
-                  ),
-                ),
-              ),
-              const Spacing.height(2),
-              Text(
-                'Mastered',
-                style: Typography.bodyMediumStyle.copyWith(
-                  fontSize: 10,
-                  color: AppTheme.primaryGreen,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ]),
-          ),
-
-          const Spacing.width(16),
-
-          Expanded(
-            child: Div.column([
-              Text(
-                'User Research',
-                style: Typography.bodyMediumStyle.copyWith(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              const Spacing.height(4),
-              Container(
-                height: 6,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(3),
-                  color: AppTheme.textPrimary.withValues(alpha: 0.1),
-                ),
-                child: FractionallySizedBox(
-                  alignment: Alignment.centerLeft,
-                  widthFactor: 0.6,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(3),
-                      color: Colors.orange,
-                    ),
-                  ),
-                ),
-              ),
-              const Spacing.height(2),
-              Text(
-                'Learning',
-                style: Typography.bodyMediumStyle.copyWith(
-                  fontSize: 10,
-                  color: Colors.orange,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ]),
-          ),
-
-          const Spacing.width(16),
-
-          Expanded(
-            child: Div.column([
-              Text(
-                'Psychology',
-                style: Typography.bodyMediumStyle.copyWith(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              const Spacing.height(4),
-              Container(
-                height: 6,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(3),
-                  color: AppTheme.textPrimary.withValues(alpha: 0.1),
-                ),
-                child: FractionallySizedBox(
-                  alignment: Alignment.centerLeft,
-                  widthFactor: 0.3,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(3),
-                      color: Colors.red,
-                    ),
-                  ),
-                ),
-              ),
-              const Spacing.height(2),
-              Text(
-                'Beginner',
-                style: Typography.bodyMediumStyle.copyWith(
-                  fontSize: 10,
-                  color: Colors.red,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ]),
-          ),
-        ]),
-      ]),
-    );
-  }
-}
-
-class ConceptStrengthMeter extends StatelessWidget {
-  const ConceptStrengthMeter({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: AppTheme.backgroundLight,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: AppTheme.primaryBlue.withValues(alpha: 0.2),
-        ),
-      ),
-      child: Div.column([
-        Div.row([
-          const Icon(
-            Icons.trending_up,
-            color: AppTheme.primaryBlue,
-            size: 24,
-          ),
-
-          const Spacing.width(12),
-
-          Text(
-            CONCEPT_STRENGTH_LABEL,
-            style: Typography.bodyLargeStyle.copyWith(
-              fontWeight: FontWeight.w600,
-              fontSize: 16,
-            ),
-          ),
-
-          const Spacer(),
-
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-            decoration: BoxDecoration(
-              color: AppTheme.primaryBlue.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Text(
-              'REVIEW DUE',
-              style: Typography.bodyMediumStyle.copyWith(
-                color: AppTheme.primaryBlue,
-                fontWeight: FontWeight.w600,
-                fontSize: 10,
-                letterSpacing: 0.5,
-              ),
-            ),
-          ),
-        ]),
-
-        const Spacing.height(16),
-
-        ...List.generate(3, (index) {
-          final concepts = [
-            {'concept': 'Affordances', 'strength': 0.9, 'status': 'Strong'},
-            {'concept': 'Mental Models', 'strength': 0.7, 'status': 'Good'},
-            {'concept': 'Cognitive Load', 'strength': 0.4, 'status': 'Weak'},
-          ];
-          
-          final item = concepts[index];
-          final double strength = item['strength'] as double;
-          final String concept = item['concept'] as String;
-          final String status = item['status'] as String;
-          
-          Color strengthColor;
-          if (strength > 0.8) {
-            strengthColor = AppTheme.primaryGreen;
-          } else if (strength > 0.6) {
-            strengthColor = Colors.orange;
-          } else {
-            strengthColor = Colors.red;
-          }
-
-          return Container(
-            margin: const EdgeInsets.only(bottom: 12),
-            child: Div.column([
-              Div.row([
-                Expanded(
-                  child: Text(
-                    concept,
-                    style: Typography.bodyMediumStyle.copyWith(
-                      fontWeight: FontWeight.w500,
-                      fontSize: 14,
-                    ),
-                  ),
-                ),
-                Text(
-                  status,
-                  style: Typography.bodyMediumStyle.copyWith(
-                    color: strengthColor,
-                    fontWeight: FontWeight.w600,
-                    fontSize: 12,
-                  ),
-                ),
-              ]),
-              const Spacing.height(6),
-              Container(
-                height: 6,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(3),
-                  color: AppTheme.textPrimary.withValues(alpha: 0.1),
-                ),
-                child: FractionallySizedBox(
-                  alignment: Alignment.centerLeft,
-                  widthFactor: strength,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(3),
-                      color: strengthColor,
-                    ),
-                  ),
-                ),
-              ),
-            ]),
-          );
-        }),
-
-        const Spacing.height(8),
-
-        Container(
-          padding: const EdgeInsets.all(12),
-          decoration: BoxDecoration(
-            color: Colors.orange.withValues(alpha: 0.1),
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(
-              color: Colors.orange.withValues(alpha: 0.3),
-            ),
-          ),
-          child: Div.row([
-            const Icon(
-              Icons.schedule,
-              color: Colors.orange,
-              size: 16,
-            ),
-
-            const Spacing.width(8),
-
-            Text(
-              'Review \'Cognitive Load\' to strengthen understanding',
-              style: Typography.bodyMediumStyle.copyWith(
-                color: Colors.orange,
-                fontSize: 12,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-          ]),
-        ),
-      ]),
-    );
-  }
-}
 
 class ReadingStatsCard extends StatelessWidget {
   const ReadingStatsCard({super.key});
@@ -1133,10 +782,10 @@ class ReadingLeagueCard extends StatelessWidget {
         const Spacing.height(16),
 
         ...[
-          {'rank': 1, 'name': 'Sarah Chen', 'xp': 2847, 'you': false},
-          {'rank': 2, 'name': 'Mike Johnson', 'xp': 2156, 'you': false},
-          {'rank': 3, 'name': 'You', 'xp': 1923, 'you': true},
-          {'rank': 4, 'name': 'Emma Davis', 'xp': 1845, 'you': false},
+          {'rank': 1, 'name': 'Sarah Chen', 'aha': 2847, 'you': false},
+          {'rank': 2, 'name': 'Mike Johnson', 'aha': 2156, 'you': false},
+          {'rank': 3, 'name': 'You', 'aha': 1923, 'you': true},
+          {'rank': 4, 'name': 'Emma Davis', 'aha': 1845, 'you': false},
         ].asMap().entries.map((entry) {
           final person = entry.value;
           final bool isYou = person['you'] as bool;
@@ -1193,7 +842,7 @@ class ReadingLeagueCard extends StatelessWidget {
               ),
 
               Text(
-                '${person['xp']} XP',
+                '${person['aha']} Aha',
                 style: Typography.bodyMediumStyle.copyWith(
                   color: Colors.white.withValues(alpha: 0.8),
                   fontSize: 12,
@@ -1207,129 +856,6 @@ class ReadingLeagueCard extends StatelessWidget {
   }
 }
 
-class WeeklyChallengeCard extends StatelessWidget {
-  const WeeklyChallengeCard({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: AppTheme.backgroundLight,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: const Color(0xFF10B981).withValues(alpha: 0.3),
-          width: 2,
-        ),
-      ),
-      child: Div.column([
-        Div.row([
-          Container(
-            width: 44,
-            height: 44,
-            decoration: BoxDecoration(
-              color: const Color(0xFF10B981),
-              borderRadius: BorderRadius.circular(22),
-            ),
-            child: const Icon(
-              Icons.emoji_events,
-              color: Colors.white,
-              size: 24,
-            ),
-          ),
-
-          const Spacing.width(16),
-
-          Expanded(
-            child: Div.column([
-              Text(
-                WEEKLY_CHALLENGE_LABEL,
-                style: Typography.bodyLargeStyle.copyWith(
-                  fontWeight: FontWeight.w600,
-                  fontSize: 16,
-                ),
-              ),
-
-              const Spacing.height(4),
-
-              Text(
-                'Read 3 books this week',
-                style: Typography.bodyMediumStyle.copyWith(
-                  color: AppTheme.textPrimary.withValues(alpha: 0.7),
-                  fontSize: 13,
-                ),
-              ),
-            ], crossAxisAlignment: CrossAxisAlignment.start),
-          ),
-
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-            decoration: BoxDecoration(
-              color: const Color(0xFF10B981).withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Text(
-              '2/3',
-              style: Typography.bodyMediumStyle.copyWith(
-                color: const Color(0xFF10B981),
-                fontWeight: FontWeight.bold,
-                fontSize: 12,
-              ),
-            ),
-          ),
-        ]),
-
-        const Spacing.height(20),
-
-        Div.row([
-          ...List.generate(3, (index) {
-            final bool completed = index < 2;
-            return Expanded(
-              child: Container(
-                height: 8,
-                margin: const EdgeInsets.symmetric(horizontal: 2),
-                decoration: BoxDecoration(
-                  color: completed 
-                      ? const Color(0xFF10B981) 
-                      : AppTheme.textPrimary.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(4),
-                ),
-              ),
-            );
-          }),
-        ]),
-
-        const Spacing.height(16),
-
-        Container(
-          padding: const EdgeInsets.all(12),
-          decoration: BoxDecoration(
-            color: const Color(0xFF10B981).withValues(alpha: 0.1),
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: Div.row([
-            const Icon(
-              Icons.access_time,
-              color: Color(0xFF10B981),
-              size: 16,
-            ),
-
-            const Spacing.width(8),
-
-            Text(
-              'Complete 1 more book by Sunday to earn +200 XP bonus!',
-              style: Typography.bodyMediumStyle.copyWith(
-                color: const Color(0xFF10B981),
-                fontSize: 12,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-          ]),
-        ),
-      ]),
-    );
-  }
-}
 
 class OLD_AchievementShowcase extends StatelessWidget {
   const OLD_AchievementShowcase({super.key});
@@ -1399,7 +925,7 @@ class OLD_AchievementShowcase extends StatelessWidget {
               borderRadius: BorderRadius.circular(12),
             ),
             child: Text(
-              '+50 XP',
+              '+50 Aha',
               style: Typography.bodyMediumStyle.copyWith(
                 color: Colors.white,
                 fontSize: 12,

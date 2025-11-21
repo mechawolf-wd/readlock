@@ -11,6 +11,7 @@ import 'package:relevant/course_screens/widgets/question_content_widget.dart';
 import 'package:relevant/course_screens/widgets/outro_content_widget.dart';
 import 'package:relevant/course_screens/widgets/design_examples_showcase.dart';
 import 'package:relevant/course_screens/widgets/reflection_content_widget.dart';
+import 'package:relevant/course_screens/widgets/quote_content_widget.dart';
 import 'package:relevant/course_screens/widgets/true_false_question_widget.dart';
 import 'package:relevant/course_screens/widgets/fill_gap_question_widget.dart';
 import 'package:relevant/course_screens/widgets/incorrect_statement_widget.dart';
@@ -29,34 +30,38 @@ const String QUESTION_TYPE_ESTIMATE_PERCENTAGE = 'estimate-percentage';
 
 class JsonContentWidgetFactory {
   static Widget createContentWidget(Map<String, dynamic> contentData) {
-    final String entityType = contentData['entityType'] ?? '';
+    final String entityType = contentData['entity-type'] ?? '';
 
     switch (entityType) {
-      case 'intro-content':
+      case 'intro':
         {
           return JsonIntroContentWidget(contentData: contentData);
         }
-      case 'text-content':
+      case 'text':
         {
           return JsonTextContentWidget(contentData: contentData);
         }
-      case 'question-content':
+      case 'question':
         {
           return JsonQuestionContentWidget(contentData: contentData);
         }
-      case 'outro-content':
+      case 'outro':
         {
           return JsonOutroContentWidget(contentData: contentData);
         }
-      case 'design-examples-showcase-content':
+      case 'design-examples-showcase':
         {
           return JsonDesignExamplesShowcaseWidget(
             contentData: contentData,
           );
         }
-      case 'reflection-content':
+      case 'reflection':
         {
           return JsonReflectionContentWidget(contentData: contentData);
+        }
+      case 'quote':
+        {
+          return JsonQuoteContentWidget(contentData: contentData);
         }
       default:
         {
@@ -98,7 +103,7 @@ class JsonIntroContentWidget extends StatelessWidget {
       id: contentData['id'] ?? '',
       title: contentData['title'] ?? '',
       introTextSegments: List<String>.from(
-        contentData['introTextSegments'] ?? [],
+        contentData['intro-text-segments'] ?? [],
       ),
     );
 
@@ -117,7 +122,7 @@ class JsonTextContentWidget extends StatelessWidget {
       id: contentData['id'] ?? '',
       title: contentData['title'] ?? '',
       textSegments: List<String>.from(
-        contentData['textSegments'] ?? [],
+        contentData['text-segments'] ?? [],
       ),
       text: contentData['text'],
     );
@@ -153,7 +158,7 @@ class JsonQuestionContentWidget extends StatelessWidget {
           )
           .toList(),
       correctAnswerIndices: List<int>.from(
-        contentData['correctAnswerIndices'] ?? [],
+        contentData['correct-answer-indices'] ?? [],
       ),
       explanation: contentData['explanation'] ?? '',
       type: _parseQuestionType(contentData['type']),
@@ -253,7 +258,7 @@ class JsonOutroContentWidget extends StatelessWidget {
       id: contentData['id'] ?? '',
       title: contentData['title'] ?? '',
       outroTextSegments: List<String>.from(
-        contentData['outroTextSegments'] ?? [],
+        contentData['text-segments'] ?? [],
       ),
     );
 
@@ -290,11 +295,32 @@ class JsonReflectionContentWidget extends StatelessWidget {
       title: contentData['title'] ?? '',
       prompt: contentData['prompt'] ?? '',
       thinkingPoints: List<String>.from(
-        contentData['thinkingPoints'] ?? [],
+        contentData['thinking-points'] ?? [],
       ),
-      emoji: contentData['emoji'] ?? '🤔',
+      emoji: contentData['emoji'],
     );
 
     return ReflectionContentWidget(content: reflectionContent);
+  }
+}
+
+class JsonQuoteContentWidget extends StatelessWidget {
+  final Map<String, dynamic> contentData;
+
+  const JsonQuoteContentWidget({
+    super.key,
+    required this.contentData,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final quoteContent = QuoteContent(
+      id: contentData['id'] ?? '',
+      title: contentData['title'] ?? '',
+      quote: contentData['quote'] ?? '',
+      author: contentData['author'] ?? '',
+    );
+
+    return QuoteContentWidget(content: quoteContent);
   }
 }

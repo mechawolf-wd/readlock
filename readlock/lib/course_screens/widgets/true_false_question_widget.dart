@@ -284,7 +284,7 @@ class TrueFalseQuestionWidgetState
 
     widget.onAnswerSelected(answerIndex, isCorrect);
     
-    // Show XP snackbar for correct answer
+    // Show Aha snackbar for correct answer
     if (isCorrect && mounted) {
       Future.delayed(const Duration(milliseconds: 300), () {
         if (mounted) {
@@ -296,7 +296,7 @@ class TrueFalseQuestionWidgetState
                   const Icon(Icons.star, color: Colors.white, size: 16),
                   const SizedBox(width: 8),
                   Text(
-                    '+10 XP',
+                    '+10 Aha',
                     style: Typography.bodyLargeStyle.copyWith(
                       color: Colors.white,
                       fontWeight: FontWeight.w600,

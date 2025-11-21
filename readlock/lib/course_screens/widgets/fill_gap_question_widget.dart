@@ -8,6 +8,7 @@ import 'package:relevant/utility_widgets/utility_widgets.dart';
 import 'package:relevant/constants/typography.dart';
 import 'package:relevant/constants/app_theme.dart';
 import 'package:relevant/utility_widgets/text_animation/progressive_text.dart';
+import 'package:relevant/utility_widgets/feedback_snackbar.dart';
 
 const double FILL_GAP_OPTION_HEIGHT = 48.0;
 const double FILL_GAP_OPTION_SPACING = 12.0;
@@ -206,7 +207,7 @@ class FillGapQuestionWidgetState extends State<FillGapQuestionWidget>
     return Div.column(
       [
         Text(
-          'Drag options to fill the gaps:',
+          'Tap options to fill the gaps:',
           style: Typography.bodyLargeStyle.copyWith(
             fontSize: 14,
             fontWeight: FontWeight.w500,
@@ -230,7 +231,26 @@ class FillGapQuestionWidgetState extends State<FillGapQuestionWidget>
 
   Widget OptionChip({required int optionIndex}) {
     final bool isUsed = usedOptionIndices.contains(optionIndex);
-    final bool isDisabled = hasAnswered || isUsed;
+    final bool isDisabled = isUsed && !hasAnswered;
+    final bool isCorrectOption = hasAnswered && widget.content.correctAnswerIndices.contains(optionIndex);
+
+    Color chipColor;
+    Color borderColor;
+    Color textColor;
+    
+    if (hasAnswered && isCorrectOption) {
+      chipColor = AppTheme.primaryGreen.withValues(alpha: 0.1);
+      borderColor = AppTheme.primaryGreen;
+      textColor = AppTheme.primaryGreen;
+    } else if (isUsed) {
+      chipColor = AppTheme.textPrimary.withValues(alpha: 0.05);
+      borderColor = AppTheme.textPrimary.withValues(alpha: 0.1);
+      textColor = AppTheme.textPrimary.withValues(alpha: 0.3);
+    } else {
+      chipColor = AppTheme.backgroundLight;
+      borderColor = AppTheme.primaryBlue.withValues(alpha: 0.3);
+      textColor = AppTheme.textPrimary;
+    }
 
     return GestureDetector(
       onTap: isDisabled ? null : () => selectOption(optionIndex),
@@ -238,14 +258,10 @@ class FillGapQuestionWidgetState extends State<FillGapQuestionWidget>
         duration: const Duration(milliseconds: FILL_GAP_ANIMATION_DURATION_MS),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
         decoration: BoxDecoration(
-          color: isUsed
-              ? AppTheme.textPrimary.withValues(alpha: 0.05)
-              : AppTheme.backgroundLight,
+          color: chipColor,
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
-            color: isUsed
-                ? AppTheme.textPrimary.withValues(alpha: 0.1)
-                : AppTheme.primaryBlue.withValues(alpha: 0.3),
+            color: borderColor,
             width: 1.5,
           ),
         ),
@@ -253,10 +269,9 @@ class FillGapQuestionWidgetState extends State<FillGapQuestionWidget>
           widget.content.options[optionIndex].text,
           style: Typography.bodyLargeStyle.copyWith(
             fontSize: 14,
-            color: isUsed
-                ? AppTheme.textPrimary.withValues(alpha: 0.3)
-                : AppTheme.textPrimary,
-            decoration: isUsed ? TextDecoration.lineThrough : null,
+            color: textColor,
+            fontWeight: isCorrectOption ? FontWeight.w600 : FontWeight.normal,
+            decoration: isUsed && !isCorrectOption ? TextDecoration.lineThrough : null,
           ),
         ),
       ),
@@ -395,8 +410,12 @@ class FillGapQuestionWidgetState extends State<FillGapQuestionWidget>
       hasAnswered = true;
     });
 
-    if (!allCorrect) {
+    if (allCorrect) {
+      FeedbackSnackBar.showCorrectAnswer(context);
+    } else {
+      showCorrectAnswers();
       triggerShakeAnimation();
+      FeedbackSnackBar.showWrongAnswer(context, explanation: widget.content.explanation);
     }
 
     widget.onAnswerSelected(0, allCorrect);
@@ -428,4 +447,14 @@ class FillGapQuestionWidgetState extends State<FillGapQuestionWidget>
       });
     });
   }
+
+  void showCorrectAnswers() {
+    setState(() {
+      for (int gapIndex = 0; gapIndex < widget.content.correctAnswerIndices.length; gapIndex++) {
+        selectedOptionsForGaps[gapIndex] = widget.content.correctAnswerIndices[gapIndex];
+        usedOptionIndices.add(widget.content.correctAnswerIndices[gapIndex]);
+      }
+    });
+  }
+
 }

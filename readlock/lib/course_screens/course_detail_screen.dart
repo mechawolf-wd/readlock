@@ -134,10 +134,8 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
         children: [
           GestureDetector(
             onTap: () {
-              Navigator.of(context).pushReplacement(
-                MaterialPageRoute(
-                  builder: (context) => const MainNavigation(),
-                ),
+              Navigator.of(context).push(
+                AppTheme.fadeTransition(const MainNavigation()),
               );
             },
             child: const Icon(
