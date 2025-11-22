@@ -2,11 +2,11 @@
 // Provides navigation between course roadmap and profile screens
 
 import 'package:flutter/material.dart';
-import 'package:relevant/constants/app_theme.dart';
-import 'package:relevant/screens/courses_screen.dart';
-import 'package:relevant/screens/shelf_screen.dart';
-import 'package:relevant/screens/profile_screen.dart';
-import 'package:relevant/screens/sandbox_screen.dart';
+import 'package:readlock/constants/app_theme.dart';
+import 'package:readlock/screens/courses_screen.dart';
+import 'package:readlock/screens/shelf_screen.dart';
+import 'package:readlock/screens/profile_screen.dart';
+import 'package:readlock/screens/sandbox_screen.dart';
 
 const String HOME_TAB_LABEL = 'Home';
 const String COURSES_TAB_LABEL = 'Courses';
@@ -33,34 +33,23 @@ class MainNavigationState extends State<MainNavigation> {
   @override
   void initState() {
     super.initState();
-    // Reset invalid index during hot reload
-    if (currentIndex >= screens.length) {
-      currentIndex = 0;
-    }
   }
 
   @override
   Widget build(BuildContext context) {
-    // Ensure index is safe without mutating state
-    final int safeIndex = (currentIndex >= 0 && currentIndex < screens.length) 
-        ? currentIndex 
-        : 0;
-        
     return Scaffold(
       backgroundColor: AppTheme.backgroundDark,
-      body: IndexedStack(index: safeIndex, children: screens),
+      body: IndexedStack(index: currentIndex, children: screens),
       bottomNavigationBar: BottomNavigationBar(
-        currentIndex: safeIndex,
+        currentIndex: currentIndex,
         onTap: (navigationItemIndex) {
-          if (navigationItemIndex >= 0 && navigationItemIndex < screens.length) {
-            setState(() {
-              currentIndex = navigationItemIndex;
-            });
-          }
+          setState(() {
+            currentIndex = navigationItemIndex;
+          });
         },
-        backgroundColor: Colors.grey[850],
-        selectedItemColor: Colors.blue,
-        unselectedItemColor: Colors.grey[400],
+        backgroundColor: Colors.white,
+        selectedItemColor: AppTheme.primaryBlue,
+        unselectedItemColor: AppTheme.textSecondary,
         type: BottomNavigationBarType.fixed,
         items: NavigationItems(),
       ),

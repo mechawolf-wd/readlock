@@ -1,7 +1,9 @@
 // Utility widgets for simplified Flutter UI development
 // Provides Div widget for layout and Spacing widget for consistent spacing
 
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide Typography;
+import 'package:readlock/constants/typography.dart';
+import 'package:readlock/constants/app_theme.dart';
 
 // String constants for directions
 const String DIRECTION_VERTICAL = 'vertical';
@@ -641,21 +643,74 @@ class Spacing extends StatelessWidget {
 
 class RenderIf {
   /// Conditionally renders a widget based on a boolean condition
-  /// 
+  ///
   /// If condition is true, returns `ifTrue` widget
   /// If condition is false, returns `ifFalse` widget (or SizedBox.shrink() if not provided)
-  /// 
+  ///
   /// Examples:
   /// ```dart
   /// RenderIf.condition(isLoggedIn, Text('Welcome back!'))
   /// RenderIf.condition(hasError, ErrorWidget(), Text('All good!'))
   /// RenderIf.condition(items.isNotEmpty, ItemsList())
   /// ```
-  static Widget condition(bool condition, Widget ifTrue, [Widget? ifFalse]) {
+  static Widget condition(
+    bool condition,
+    Widget ifTrue, [
+    Widget? ifFalse,
+  ]) {
     if (condition) {
       return ifTrue;
     } else {
       return ifFalse ?? const SizedBox.shrink();
     }
+  }
+}
+
+class StatsBar extends StatelessWidget {
+  const StatsBar({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Div.row([StreakCounter(), const Spacer(), AhaCounter()]);
+  }
+
+  Widget StreakCounter() {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      decoration: BoxDecoration(
+        color: Colors.grey.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: Colors.grey.withValues(alpha: 0.2)),
+      ),
+      child: Div.row([
+        const Icon(
+          Icons.local_fire_department,
+          color: Colors.orange,
+          size: 20,
+        ),
+        const Spacing.width(8),
+        Typography.text('7'),
+      ]),
+    );
+  }
+
+  Widget AhaCounter() {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      decoration: BoxDecoration(
+        color: Colors.grey.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: Colors.grey.withValues(alpha: 0.2)),
+      ),
+      child: Div.row([
+        const Icon(
+          Icons.lightbulb,
+          color: AppTheme.primaryGreen,
+          size: 20,
+        ),
+        const Spacing.width(8),
+        Typography.text('23'),
+      ]),
+    );
   }
 }

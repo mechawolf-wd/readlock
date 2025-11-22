@@ -2,12 +2,12 @@
 // Handles user answer selection and shows explanations after answering
 
 import 'package:flutter/material.dart' hide Typography;
-import 'package:relevant/constants/app_constants.dart';
-import 'package:relevant/course_screens/models/course_model.dart';
-import 'package:relevant/utility_widgets/utility_widgets.dart';
-import 'package:relevant/constants/typography.dart';
-import 'package:relevant/constants/app_theme.dart';
-import 'package:relevant/utility_widgets/text_animation/progressive_text.dart';
+import 'package:readlock/constants/app_constants.dart';
+import 'package:readlock/course_screens/models/course_model.dart';
+import 'package:readlock/utility_widgets/utility_widgets.dart';
+import 'package:readlock/constants/typography.dart';
+import 'package:readlock/constants/app_theme.dart';
+import 'package:readlock/utility_widgets/text_animation/progressive_text.dart';
 
 class QuestionContentWidget extends StatefulWidget {
   static const double QUESTION_SECTION_SPACING = 24.0;
@@ -17,7 +17,7 @@ class QuestionContentWidget extends StatefulWidget {
 
   final QuestionContent content;
   final void Function(int selectedIndex, bool isCorrect)
-      onAnswerSelected;
+  onAnswerSelected;
 
   const QuestionContentWidget({
     super.key,
@@ -26,7 +26,8 @@ class QuestionContentWidget extends StatefulWidget {
   });
 
   @override
-  State<QuestionContentWidget> createState() => QuestionContentWidgetState();
+  State<QuestionContentWidget> createState() =>
+      QuestionContentWidgetState();
 }
 
 class QuestionContentWidgetState extends State<QuestionContentWidget> {
@@ -77,7 +78,7 @@ class QuestionContentWidgetState extends State<QuestionContentWidget> {
       ...widget.content.options.asMap().entries.map((entry) {
         final int optionIndex = entry.key;
         final QuestionOption option = entry.value;
-        
+
         return Div.column([
           optionButton(optionIndex, option),
 
@@ -91,9 +92,8 @@ class QuestionContentWidgetState extends State<QuestionContentWidget> {
 
   Widget optionButton(int optionIndex, QuestionOption option) {
     final bool isSelected = selectedAnswerIndex == optionIndex;
-    final bool isCorrectAnswer = widget.content.correctAnswerIndices.contains(
-      optionIndex,
-    );
+    final bool isCorrectAnswer = widget.content.correctAnswerIndices
+        .contains(optionIndex);
     final bool isCorrectAndAnswered =
         hasAnswered && isCorrectAnswer && isSelected;
 
@@ -131,21 +131,23 @@ class QuestionContentWidgetState extends State<QuestionContentWidget> {
             children: [
               RenderIf.condition(
                 isCorrectAndAnswered,
-                Row(children: [
-                  Container(
-                    padding: AppTheme.contentPaddingTinyInsets,
-                    decoration: BoxDecoration(
-                      color: themeColor.withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(4),
+                Row(
+                  children: [
+                    Container(
+                      padding: AppTheme.contentPaddingTinyInsets,
+                      decoration: BoxDecoration(
+                        color: themeColor.withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                      child: Icon(
+                        Icons.check_circle,
+                        color: themeColor,
+                        size: 18,
+                      ),
                     ),
-                    child: Icon(
-                      Icons.check_circle,
-                      color: themeColor,
-                      size: 18,
-                    ),
-                  ),
-                  const Spacing.width(12),
-                ]),
+                    const Spacing.width(12),
+                  ],
+                ),
               ),
 
               Expanded(
@@ -183,9 +185,8 @@ class QuestionContentWidgetState extends State<QuestionContentWidget> {
   }
 
   void selectAnswer(int optionIndex) {
-    final bool isCorrectAnswer = widget.content.correctAnswerIndices.contains(
-      optionIndex,
-    );
+    final bool isCorrectAnswer = widget.content.correctAnswerIndices
+        .contains(optionIndex);
 
     if (!isCorrectAnswer && !hasAnswered) {
       // Wrong answer - show helpful guidance
@@ -198,7 +199,11 @@ class QuestionContentWidgetState extends State<QuestionContentWidget> {
               Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Icon(Icons.lightbulb_outline, color: Colors.white, size: 16),
+                  const Icon(
+                    Icons.lightbulb_outline,
+                    color: Colors.white,
+                    size: 16,
+                  ),
                   const Spacing.width(8),
                   Text(
                     'Think again',

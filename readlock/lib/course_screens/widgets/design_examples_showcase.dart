@@ -2,10 +2,10 @@
 // Provides entertaining conclusion to design courses with relatable examples
 
 import 'package:flutter/material.dart' hide Typography;
-import 'package:relevant/constants/typography.dart';
-import 'package:relevant/utility_widgets/text_animation/progressive_text.dart';
-import 'package:relevant/utility_widgets/utility_widgets.dart';
-import 'package:relevant/constants/app_theme.dart';
+import 'package:readlock/constants/typography.dart';
+import 'package:readlock/utility_widgets/text_animation/progressive_text.dart';
+import 'package:readlock/utility_widgets/utility_widgets.dart';
+import 'package:readlock/constants/app_theme.dart';
 
 class DesignExamplesShowcase extends StatefulWidget {
   const DesignExamplesShowcase({super.key});
@@ -142,45 +142,45 @@ class DesignExamplesShowcaseState
 
     return Div.column(
       [
-          Row(
-            children: [
-              Container(
-                padding: AppTheme.contentPaddingSmallerInsets,
-                decoration: BoxDecoration(
-                  color: themeColor.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Icon(
-                  example.isGoodDesign
-                      ? Icons.check_circle
-                      : Icons.cancel,
-                  color: themeColor,
-                  size: 24,
-                ),
+        Row(
+          children: [
+            Container(
+              padding: AppTheme.contentPaddingSmallerInsets,
+              decoration: BoxDecoration(
+                color: themeColor.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(8),
               ),
-
-              const Spacing.width(12),
-
-              Expanded(
-                child: Text(
-                  example.title,
-                  style: Typography.bodyLargeStyle.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
-                  textAlign: TextAlign.left,
-                ),
+              child: Icon(
+                example.isGoodDesign
+                    ? Icons.check_circle
+                    : Icons.cancel,
+                color: themeColor,
+                size: 24,
               ),
-            ],
-          ),
+            ),
 
-          const Spacing.height(20),
+            const Spacing.width(12),
 
-          ProgressiveText(
-            textSegments: example.textSegments,
-            textStyle: Typography.bodyLargeStyle,
-            characterDelay: const Duration(milliseconds: 15),
-            crossAxisAlignment: CrossAxisAlignment.start,
-          ),
+            Expanded(
+              child: Text(
+                example.title,
+                style: Typography.bodyLargeStyle.copyWith(
+                  fontWeight: FontWeight.w600,
+                ),
+                textAlign: TextAlign.left,
+              ),
+            ),
+          ],
+        ),
+
+        const Spacing.height(20),
+
+        ProgressiveText(
+          textSegments: example.textSegments,
+          textStyle: Typography.bodyLargeStyle,
+          characterDelay: const Duration(milliseconds: 15),
+          crossAxisAlignment: CrossAxisAlignment.start,
+        ),
       ],
       crossAxisAlignment: CrossAxisAlignment.start,
       width: double.infinity,

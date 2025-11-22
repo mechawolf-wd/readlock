@@ -2,9 +2,9 @@
 // Showcases mockups of engaging learning patterns adapted for book reading
 
 import 'package:flutter/material.dart' hide Typography;
-import 'package:relevant/constants/typography.dart';
-import 'package:relevant/utility_widgets/utility_widgets.dart';
-import 'package:relevant/constants/app_theme.dart';
+import 'package:readlock/constants/typography.dart';
+import 'package:readlock/utility_widgets/utility_widgets.dart';
+import 'package:readlock/constants/app_theme.dart';
 
 const String PROFILE_GREETING = 'Welcome back, Alex!';
 const String DAILY_GOAL_LABEL = 'Daily Goal';
@@ -23,21 +23,21 @@ class ProfileScreen extends StatelessWidget {
           padding: const EdgeInsets.all(20),
           child: Div.column([
             DuolingoProfileHeader(),
-            
+
             const Spacing.height(24),
-            
+
             EnhancedStreakCard(),
-            
+
             const Spacing.height(20),
-            
+
             DailyGoalCard(),
-            
+
             const Spacing.height(20),
-            
+
             AchievementGallery(),
-            
+
             const Spacing.height(20),
-            
+
             ReadingLeagueCard(),
           ], crossAxisAlignment: CrossAxisAlignment.stretch),
         ),
@@ -82,33 +82,31 @@ class DuolingoProfileHeader extends StatelessWidget {
 
           Expanded(
             child: Div.column([
-              Text(
+              Typography.headingMedium(
                 PROFILE_GREETING,
-                style: Typography.bodyLargeStyle.copyWith(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
+                color: Colors.white,
               ),
 
               const Spacing.height(4),
 
-              Text(
+              Typography.bodyMedium(
                 'Level 12 Knowledge Seeker',
-                style: Typography.bodyMediumStyle.copyWith(
-                  color: Colors.white.withValues(alpha: 0.9),
-                  fontSize: 14,
-                ),
+                color: Colors.white.withValues(alpha: 0.9),
               ),
             ], crossAxisAlignment: CrossAxisAlignment.start),
           ),
 
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 8,
+            ),
             decoration: BoxDecoration(
               color: Colors.white.withValues(alpha: 0.2),
               borderRadius: BorderRadius.circular(20),
-              border: Border.all(color: Colors.white.withValues(alpha: 0.3)),
+              border: Border.all(
+                color: Colors.white.withValues(alpha: 0.3),
+              ),
             ),
             child: Div.row([
               const Icon(
@@ -119,13 +117,9 @@ class DuolingoProfileHeader extends StatelessWidget {
 
               const Spacing.width(6),
 
-              Text(
+              Typography.bodyMedium(
                 '23 day streak',
-                style: Typography.bodyMediumStyle.copyWith(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w600,
-                  fontSize: 12,
-                ),
+                color: Colors.white,
               ),
             ]),
           ),
@@ -135,35 +129,30 @@ class DuolingoProfileHeader extends StatelessWidget {
 
         Div.row([
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 12,
+              vertical: 8,
+            ),
             decoration: BoxDecoration(
               color: Colors.white.withValues(alpha: 0.15),
               borderRadius: BorderRadius.circular(16),
             ),
             child: Div.row([
-              const Icon(
-                Icons.star,
-                color: Colors.white,
-                size: 16,
-              ),
+              const Icon(Icons.star, color: Colors.white, size: 16),
 
               const Spacing.width(4),
 
-              Text(
-                '2,847 Aha',
-                style: Typography.bodyMediumStyle.copyWith(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w600,
-                  fontSize: 12,
-                ),
-              ),
+              Typography.bodyMedium('2,847 Aha', color: Colors.white),
             ]),
           ),
 
           const Spacing.width(12),
 
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 12,
+              vertical: 8,
+            ),
             decoration: BoxDecoration(
               color: Colors.white.withValues(alpha: 0.15),
               borderRadius: BorderRadius.circular(16),
@@ -177,42 +166,27 @@ class DuolingoProfileHeader extends StatelessWidget {
 
               const Spacing.width(4),
 
-              Text(
-                '47 badges',
-                style: Typography.bodyMediumStyle.copyWith(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w600,
-                  fontSize: 12,
-                ),
-              ),
+              Typography.bodyMedium('47 badges', color: Colors.white),
             ]),
           ),
 
           const Spacing.width(12),
 
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 12,
+              vertical: 8,
+            ),
             decoration: BoxDecoration(
               color: Colors.white.withValues(alpha: 0.15),
               borderRadius: BorderRadius.circular(16),
             ),
             child: Div.row([
-              const Icon(
-                Icons.school,
-                color: Colors.white,
-                size: 16,
-              ),
+              const Icon(Icons.school, color: Colors.white, size: 16),
 
               const Spacing.width(4),
 
-              Text(
-                '12 books',
-                style: Typography.bodyMediumStyle.copyWith(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w600,
-                  fontSize: 12,
-                ),
-              ),
+              Typography.bodyMedium('12 books', color: Colors.white),
             ]),
           ),
         ]),
@@ -256,42 +230,32 @@ class EnhancedStreakCard extends StatelessWidget {
 
           Expanded(
             child: Div.column([
-              Text(
+              Typography.headingMedium(
                 '23 Day Streak!',
-                style: Typography.bodyLargeStyle.copyWith(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18,
-                  color: const Color(0xFFFF9600),
-                ),
+                color: const Color(0xFFFF9600),
               ),
 
               const Spacing.height(4),
 
-              Text(
+              Typography.bodyMedium(
                 '+85 Aha earned today',
-                style: Typography.bodyMediumStyle.copyWith(
-                  color: AppTheme.primaryGreen,
-                  fontWeight: FontWeight.w500,
-                  fontSize: 13,
-                ),
+                color: AppTheme.primaryGreen,
               ),
             ], crossAxisAlignment: CrossAxisAlignment.start),
           ),
 
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 12,
+              vertical: 6,
+            ),
             decoration: BoxDecoration(
               color: const Color(0xFFFF9600).withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(12),
             ),
-            child: Text(
+            child: Typography.bodyMedium(
               'PERFECT!',
-              style: Typography.bodyMediumStyle.copyWith(
-                color: const Color(0xFFFF9600),
-                fontWeight: FontWeight.bold,
-                fontSize: 10,
-                letterSpacing: 1,
-              ),
+              color: const Color(0xFFFF9600),
             ),
           ),
         ]),
@@ -303,7 +267,7 @@ class EnhancedStreakCard extends StatelessWidget {
             final bool isCompleted = dayIndex < 6;
             final bool isToday = dayIndex == 6;
             final bool isFuture = dayIndex > 6;
-            
+
             return Expanded(
               child: Container(
                 height: 40,
@@ -312,24 +276,23 @@ class EnhancedStreakCard extends StatelessWidget {
                   color: isCompleted
                       ? const Color(0xFFFF9600)
                       : isToday
-                          ? const Color(0xFFFF9600)
-                          : AppTheme.textPrimary.withValues(alpha: 0.05),
+                      ? const Color(0xFFFF9600)
+                      : AppTheme.textPrimary.withValues(alpha: 0.05),
                   borderRadius: BorderRadius.circular(8),
-                  border: isToday 
-                      ? Border.all(color: const Color(0xFFFF9600), width: 2)
+                  border: isToday
+                      ? Border.all(
+                          color: const Color(0xFFFF9600),
+                          width: 2,
+                        )
                       : null,
                 ),
                 child: Div.column([
                   const Spacing.height(4),
-                  Text(
+                  Typography.bodyMedium(
                     ['M', 'T', 'W', 'T', 'F', 'S', 'S'][dayIndex],
-                    style: Typography.bodyMediumStyle.copyWith(
-                      fontSize: 10,
-                      fontWeight: FontWeight.w600,
-                      color: isCompleted || isToday
-                          ? Colors.white
-                          : AppTheme.textPrimary.withValues(alpha: 0.4),
-                    ),
+                    color: isCompleted || isToday
+                        ? Colors.white
+                        : AppTheme.textPrimary.withValues(alpha: 0.4),
                     textAlign: TextAlign.center,
                   ),
                   const Spacing.height(2),
@@ -337,8 +300,8 @@ class EnhancedStreakCard extends StatelessWidget {
                     isCompleted
                         ? Icons.local_fire_department
                         : isToday
-                            ? Icons.local_fire_department
-                            : Icons.circle_outlined,
+                        ? Icons.local_fire_department
+                        : Icons.circle_outlined,
                     color: isCompleted || isToday
                         ? Colors.white
                         : AppTheme.textPrimary.withValues(alpha: 0.3),
@@ -352,13 +315,9 @@ class EnhancedStreakCard extends StatelessWidget {
 
         const Spacing.height(16),
 
-        Text(
+        Typography.bodyMedium(
           'You\'re in the top 10% of readers this week! 🎉',
-          style: Typography.bodyMediumStyle.copyWith(
-            color: AppTheme.textPrimary.withValues(alpha: 0.8),
-            fontWeight: FontWeight.w500,
-            fontSize: 13,
-          ),
+          color: AppTheme.textPrimary.withValues(alpha: 0.8),
           textAlign: TextAlign.center,
         ),
       ]),
@@ -383,38 +342,26 @@ class DailyGoalCard extends StatelessWidget {
       ),
       child: Div.column([
         Div.row([
-          const Icon(
-            Icons.flag,
-            color: Colors.white,
-            size: 24,
-          ),
+          const Icon(Icons.flag, color: Colors.white, size: 24),
 
           const Spacing.width(12),
 
-          Text(
-            DAILY_GOAL_LABEL,
-            style: Typography.bodyLargeStyle.copyWith(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-              fontSize: 16,
-            ),
-          ),
+          Typography.bodyLarge(DAILY_GOAL_LABEL, color: Colors.white),
 
           const Spacer(),
 
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 10,
+              vertical: 4,
+            ),
             decoration: BoxDecoration(
               color: Colors.white.withValues(alpha: 0.2),
               borderRadius: BorderRadius.circular(12),
             ),
-            child: Text(
+            child: Typography.bodyMedium(
               '85/100 Aha',
-              style: Typography.bodyMediumStyle.copyWith(
-                color: Colors.white,
-                fontWeight: FontWeight.w600,
-                fontSize: 12,
-              ),
+              color: Colors.white,
             ),
           ),
         ]),
@@ -441,20 +388,15 @@ class DailyGoalCard extends StatelessWidget {
 
         const Spacing.height(12),
 
-        Text(
+        Typography.bodyMedium(
           '15 Aha to go! You\'re almost there 💪',
-          style: Typography.bodyMediumStyle.copyWith(
-            color: Colors.white.withValues(alpha: 0.9),
-            fontSize: 13,
-          ),
+          color: Colors.white.withValues(alpha: 0.9),
           textAlign: TextAlign.center,
         ),
       ]),
     );
   }
 }
-
-
 
 class ReadingStatsCard extends StatelessWidget {
   const ReadingStatsCard({super.key});
@@ -471,12 +413,9 @@ class ReadingStatsCard extends StatelessWidget {
         ),
       ),
       child: Div.column([
-        Text(
+        Typography.bodyMedium(
           'This widget was replaced by new Duolingo-inspired components above',
-          style: Typography.bodyMediumStyle.copyWith(
-            color: AppTheme.textPrimary.withValues(alpha: 0.5),
-            fontStyle: FontStyle.italic,
-          ),
+          color: AppTheme.textPrimary.withValues(alpha: 0.5),
           textAlign: TextAlign.center,
         ),
 
@@ -534,31 +473,18 @@ class StatisticItem extends StatelessWidget {
             color: color.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(20),
           ),
-          child: Icon(
-            icon,
-            color: color,
-            size: 20,
-          ),
+          child: Icon(icon, color: color, size: 20),
         ),
 
         const Spacing.height(8),
 
-        Text(
-          value,
-          style: Typography.bodyLargeStyle.copyWith(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
+        Typography.headingMedium(value),
 
         const Spacing.height(4),
 
-        Text(
+        Typography.bodyMedium(
           label,
-          style: Typography.bodyMediumStyle.copyWith(
-            fontSize: 12,
-            color: AppTheme.textPrimary.withValues(alpha: 0.6),
-          ),
+          color: AppTheme.textPrimary.withValues(alpha: 0.6),
         ),
       ], crossAxisAlignment: CrossAxisAlignment.center),
     );
@@ -582,39 +508,27 @@ class AchievementGallery extends StatelessWidget {
       ),
       child: Div.column([
         Div.row([
-          const Icon(
-            Icons.emoji_events,
-            color: Colors.white,
-            size: 24,
-          ),
+          const Icon(Icons.emoji_events, color: Colors.white, size: 24),
 
           const Spacing.width(12),
 
-          Text(
+          Typography.bodyLarge(
             ACHIEVEMENT_GALLERY_LABEL,
-            style: Typography.bodyLargeStyle.copyWith(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-              fontSize: 16,
-            ),
+            color: Colors.white,
           ),
 
           const Spacer(),
 
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 8,
+              vertical: 4,
+            ),
             decoration: BoxDecoration(
               color: Colors.white.withValues(alpha: 0.2),
               borderRadius: BorderRadius.circular(8),
             ),
-            child: Text(
-              '47/100',
-              style: Typography.bodyMediumStyle.copyWith(
-                color: Colors.white,
-                fontWeight: FontWeight.w600,
-                fontSize: 11,
-              ),
-            ),
+            child: Typography.bodyMedium('47/100', color: Colors.white),
           ),
         ]),
 
@@ -624,11 +538,36 @@ class AchievementGallery extends StatelessWidget {
           scrollDirection: Axis.horizontal,
           child: Div.row([
             ...[
-              {'icon': Icons.local_fire_department, 'title': 'Streak Master', 'desc': '30 day streak', 'earned': true},
-              {'icon': Icons.school, 'title': 'Book Worm', 'desc': '10 books read', 'earned': true},
-              {'icon': Icons.lightbulb, 'title': 'Insight Hunter', 'desc': '100 insights', 'earned': true},
-              {'icon': Icons.speed, 'title': 'Speed Reader', 'desc': '5 books in a week', 'earned': false},
-              {'icon': Icons.quiz, 'title': 'Quiz Master', 'desc': '50 perfect scores', 'earned': false},
+              {
+                'icon': Icons.local_fire_department,
+                'title': 'Streak Master',
+                'desc': '30 day streak',
+                'earned': true,
+              },
+              {
+                'icon': Icons.school,
+                'title': 'Book Worm',
+                'desc': '10 books read',
+                'earned': true,
+              },
+              {
+                'icon': Icons.lightbulb,
+                'title': 'Insight Hunter',
+                'desc': '100 insights',
+                'earned': true,
+              },
+              {
+                'icon': Icons.speed,
+                'title': 'Speed Reader',
+                'desc': '5 books in a week',
+                'earned': false,
+              },
+              {
+                'icon': Icons.quiz,
+                'title': 'Quiz Master',
+                'desc': '50 perfect scores',
+                'earned': false,
+              },
             ].map((badge) {
               final bool earned = badge['earned'] as bool;
               return Container(
@@ -639,21 +578,21 @@ class AchievementGallery extends StatelessWidget {
                     width: 60,
                     height: 60,
                     decoration: BoxDecoration(
-                      color: earned 
-                          ? Colors.white 
+                      color: earned
+                          ? Colors.white
                           : Colors.white.withValues(alpha: 0.2),
                       borderRadius: BorderRadius.circular(30),
                       border: Border.all(
-                        color: earned 
-                            ? Colors.transparent 
+                        color: earned
+                            ? Colors.transparent
                             : Colors.white.withValues(alpha: 0.3),
                         width: 2,
                       ),
                     ),
                     child: Icon(
                       badge['icon'] as IconData,
-                      color: earned 
-                          ? const Color(0xFFFFD700) 
+                      color: earned
+                          ? const Color(0xFFFFD700)
                           : Colors.white.withValues(alpha: 0.4),
                       size: 28,
                     ),
@@ -661,13 +600,9 @@ class AchievementGallery extends StatelessWidget {
 
                   const Spacing.height(8),
 
-                  Text(
+                  Typography.bodyMedium(
                     badge['title'] as String,
-                    style: Typography.bodyMediumStyle.copyWith(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w600,
-                      fontSize: 11,
-                    ),
+                    color: Colors.white,
                     textAlign: TextAlign.center,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -675,12 +610,9 @@ class AchievementGallery extends StatelessWidget {
 
                   const Spacing.height(2),
 
-                  Text(
+                  Typography.bodyMedium(
                     badge['desc'] as String,
-                    style: Typography.bodyMediumStyle.copyWith(
-                      color: Colors.white.withValues(alpha: 0.8),
-                      fontSize: 9,
-                    ),
+                    color: Colors.white.withValues(alpha: 0.8),
                     textAlign: TextAlign.center,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -699,13 +631,9 @@ class AchievementGallery extends StatelessWidget {
             color: Colors.white.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(12),
           ),
-          child: Text(
+          child: Typography.bodyMedium(
             'Complete 3 more chapters to unlock \'Quiz Master\' badge! 🏆',
-            style: Typography.bodyMediumStyle.copyWith(
-              color: Colors.white.withValues(alpha: 0.9),
-              fontSize: 12,
-              fontWeight: FontWeight.w500,
-            ),
+            color: Colors.white.withValues(alpha: 0.9),
             textAlign: TextAlign.center,
           ),
         ),
@@ -731,51 +659,35 @@ class ReadingLeagueCard extends StatelessWidget {
       ),
       child: Div.column([
         Div.row([
-          const Icon(
-            Icons.leaderboard,
-            color: Colors.white,
-            size: 24,
-          ),
+          const Icon(Icons.leaderboard, color: Colors.white, size: 24),
 
           const Spacing.width(12),
 
           Expanded(
-            child: Text(
+            child: Typography.bodyLarge(
               READING_LEAGUE_LABEL,
-              style: Typography.bodyLargeStyle.copyWith(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-                fontSize: 16,
-              ),
+              color: Colors.white,
             ),
           ),
 
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 10,
+              vertical: 4,
+            ),
             decoration: BoxDecoration(
               color: Colors.white.withValues(alpha: 0.2),
               borderRadius: BorderRadius.circular(12),
             ),
-            child: Text(
-              'GOLD',
-              style: Typography.bodyMediumStyle.copyWith(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-                fontSize: 10,
-                letterSpacing: 1,
-              ),
-            ),
+            child: Typography.bodyMedium('GOLD', color: Colors.white),
           ),
         ]),
 
         const Spacing.height(16),
 
-        Text(
+        Typography.bodyMedium(
           'You\'re #3 out of 47 in your reading group this week!',
-          style: Typography.bodyMediumStyle.copyWith(
-            color: Colors.white.withValues(alpha: 0.9),
-            fontSize: 13,
-          ),
+          color: Colors.white.withValues(alpha: 0.9),
           textAlign: TextAlign.center,
         ),
 
@@ -783,23 +695,33 @@ class ReadingLeagueCard extends StatelessWidget {
 
         ...[
           {'rank': 1, 'name': 'Sarah Chen', 'aha': 2847, 'you': false},
-          {'rank': 2, 'name': 'Mike Johnson', 'aha': 2156, 'you': false},
+          {
+            'rank': 2,
+            'name': 'Mike Johnson',
+            'aha': 2156,
+            'you': false,
+          },
           {'rank': 3, 'name': 'You', 'aha': 1923, 'you': true},
           {'rank': 4, 'name': 'Emma Davis', 'aha': 1845, 'you': false},
         ].asMap().entries.map((entry) {
           final person = entry.value;
           final bool isYou = person['you'] as bool;
-          
+
           return Container(
             margin: const EdgeInsets.only(bottom: 8),
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 12,
+              vertical: 8,
+            ),
             decoration: BoxDecoration(
-              color: isYou 
+              color: isYou
                   ? Colors.white.withValues(alpha: 0.2)
                   : Colors.white.withValues(alpha: 0.05),
               borderRadius: BorderRadius.circular(8),
-              border: isYou 
-                  ? Border.all(color: Colors.white.withValues(alpha: 0.3))
+              border: isYou
+                  ? Border.all(
+                      color: Colors.white.withValues(alpha: 0.3),
+                    )
                   : null,
             ),
             child: Div.row([
@@ -810,20 +732,18 @@ class ReadingLeagueCard extends StatelessWidget {
                   color: person['rank'] == 1
                       ? const Color(0xFFFFD700)
                       : person['rank'] == 2
-                          ? const Color(0xFFC0C0C0)
-                          : person['rank'] == 3
-                              ? const Color(0xFFCD7F32)
-                              : Colors.white.withValues(alpha: 0.2),
+                      ? const Color(0xFFC0C0C0)
+                      : person['rank'] == 3
+                      ? const Color(0xFFCD7F32)
+                      : Colors.white.withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Center(
-                  child: Text(
+                  child: Typography.bodyMedium(
                     '${person['rank']}',
-                    style: Typography.bodyMediumStyle.copyWith(
-                      color: (person['rank'] as int) <= 3 ? Colors.white : Colors.white.withValues(alpha: 0.8),
-                      fontWeight: FontWeight.bold,
-                      fontSize: 12,
-                    ),
+                    color: (person['rank'] as int) <= 3
+                        ? Colors.white
+                        : Colors.white.withValues(alpha: 0.8),
                   ),
                 ),
               ),
@@ -831,22 +751,15 @@ class ReadingLeagueCard extends StatelessWidget {
               const Spacing.width(12),
 
               Expanded(
-                child: Text(
+                child: Typography.bodyMedium(
                   person['name'] as String,
-                  style: Typography.bodyMediumStyle.copyWith(
-                    color: Colors.white,
-                    fontWeight: isYou ? FontWeight.bold : FontWeight.normal,
-                    fontSize: 13,
-                  ),
+                  color: Colors.white,
                 ),
               ),
 
-              Text(
+              Typography.bodyMedium(
                 '${person['aha']} Aha',
-                style: Typography.bodyMediumStyle.copyWith(
-                  color: Colors.white.withValues(alpha: 0.8),
-                  fontSize: 12,
-                ),
+                color: Colors.white.withValues(alpha: 0.8),
               ),
             ]),
           );
@@ -855,7 +768,6 @@ class ReadingLeagueCard extends StatelessWidget {
     );
   }
 }
-
 
 class OLD_AchievementShowcase extends StatelessWidget {
   const OLD_AchievementShowcase({super.key});
@@ -898,39 +810,32 @@ class OLD_AchievementShowcase extends StatelessWidget {
 
           Expanded(
             child: Div.column([
-              Text(
+              Typography.bodyLarge(
                 'Speed Reader!',
-                style: Typography.bodyLargeStyle.copyWith(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                  color: AppTheme.primaryGreen,
-                ),
+                color: AppTheme.primaryGreen,
               ),
 
               const Spacing.height(4),
 
-              Text(
+              Typography.bodyMedium(
                 'Read 5 books in one week',
-                style: Typography.bodyMediumStyle.copyWith(
-                  color: AppTheme.textPrimary.withValues(alpha: 0.8),
-                ),
+                color: AppTheme.textPrimary.withValues(alpha: 0.8),
               ),
             ], crossAxisAlignment: CrossAxisAlignment.start),
           ),
 
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 8,
+              vertical: 4,
+            ),
             decoration: BoxDecoration(
               color: AppTheme.primaryGreen,
               borderRadius: BorderRadius.circular(12),
             ),
-            child: Text(
+            child: Typography.bodyMedium(
               '+50 Aha',
-              style: Typography.bodyMediumStyle.copyWith(
-                color: Colors.white,
-                fontSize: 12,
-                fontWeight: FontWeight.w600,
-              ),
+              color: Colors.white,
             ),
           ),
         ], crossAxisAlignment: CrossAxisAlignment.center),
@@ -954,13 +859,7 @@ class CourseProgressCard extends StatelessWidget {
         ),
       ),
       child: Div.column([
-        Text(
-          'Course Progress',
-          style: Typography.bodyLargeStyle.copyWith(
-            fontWeight: FontWeight.w600,
-            fontSize: 16,
-          ),
-        ),
+        Typography.bodyLarge('Course Progress'),
 
         const Spacing.height(16),
 
@@ -969,12 +868,7 @@ class CourseProgressCard extends StatelessWidget {
 
           const Spacer(),
 
-          Text(
-            'UX Design Fundamentals',
-            style: Typography.bodyMediumStyle.copyWith(
-              fontWeight: FontWeight.w500,
-            ),
-          ),
+          Typography.bodyMedium('UX Design Fundamentals'),
         ], mainAxisAlignment: MainAxisAlignment.spaceBetween),
 
         const Spacing.height(8),
@@ -984,12 +878,9 @@ class CourseProgressCard extends StatelessWidget {
 
           const Spacer(),
 
-          Text(
+          Typography.bodyMedium(
             '8/12 chapters',
-            style: Typography.bodyMediumStyle.copyWith(
-              color: AppTheme.primaryBlue,
-              fontWeight: FontWeight.w500,
-            ),
+            color: AppTheme.primaryBlue,
           ),
         ], mainAxisAlignment: MainAxisAlignment.spaceBetween),
 
@@ -1014,7 +905,10 @@ class CourseProgressCard extends StatelessWidget {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(4),
                   gradient: const LinearGradient(
-                    colors: [AppTheme.primaryBlue, AppTheme.primaryGreen],
+                    colors: [
+                      AppTheme.primaryBlue,
+                      AppTheme.primaryGreen,
+                    ],
                   ),
                 ),
               ),
@@ -1031,20 +925,13 @@ class CourseProgressCard extends StatelessWidget {
             borderRadius: BorderRadius.circular(12),
           ),
           child: Div.row([
-            Icon(
-              Icons.timer,
-              color: AppTheme.primaryBlue,
-              size: 16,
-            ),
+            Icon(Icons.timer, color: AppTheme.primaryBlue, size: 16),
 
             const Spacing.width(8),
 
-            Text(
+            Typography.bodyMedium(
               'Estimated 45 minutes to complete',
-              style: Typography.bodyMediumStyle.copyWith(
-                color: AppTheme.primaryBlue,
-                fontSize: 12,
-              ),
+              color: AppTheme.primaryBlue,
             ),
           ]),
         ),
@@ -1059,13 +946,7 @@ class QuickActionsSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Div.column([
-      Text(
-        'Quick Actions',
-        style: Typography.bodyLargeStyle.copyWith(
-          fontWeight: FontWeight.w600,
-          fontSize: 16,
-        ),
-      ),
+      Typography.bodyLarge('Quick Actions'),
 
       const Spacing.height(16),
 
@@ -1132,26 +1013,14 @@ class ActionButton extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(
-              color: color.withValues(alpha: 0.3),
-            ),
+            border: Border.all(color: color.withValues(alpha: 0.3)),
           ),
           child: Div.row([
-            Icon(
-              icon,
-              color: color,
-              size: 20,
-            ),
+            Icon(icon, color: color, size: 20),
 
             const Spacing.width(8),
 
-            Text(
-              label,
-              style: Typography.bodyMediumStyle.copyWith(
-                color: color,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
+            Typography.bodyMedium(label, color: color),
           ], mainAxisAlignment: MainAxisAlignment.center),
         ),
       ),

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart' hide Typography;
-import 'package:relevant/course_screens/models/course_model.dart';
-import 'package:relevant/utility_widgets/text_animation/progressive_text.dart';
-import 'package:relevant/constants/typography.dart';
-import 'package:relevant/constants/app_theme.dart';
+import 'package:readlock/course_screens/models/course_model.dart';
+import 'package:readlock/utility_widgets/text_animation/progressive_text.dart';
+import 'package:readlock/constants/typography.dart';
+import 'package:readlock/constants/app_theme.dart';
 
 class TextContentWidget extends StatelessWidget {
   final TextContent content;

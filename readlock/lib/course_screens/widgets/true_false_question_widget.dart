@@ -2,12 +2,12 @@
 // Provides intuitive visual feedback and smooth transitions between states
 
 import 'package:flutter/material.dart' hide Typography;
-import 'package:relevant/constants/app_constants.dart';
-import 'package:relevant/course_screens/models/course_model.dart';
-import 'package:relevant/utility_widgets/utility_widgets.dart';
-import 'package:relevant/constants/typography.dart';
-import 'package:relevant/constants/app_theme.dart';
-import 'package:relevant/utility_widgets/text_animation/progressive_text.dart';
+import 'package:readlock/constants/app_constants.dart';
+import 'package:readlock/course_screens/models/course_model.dart';
+import 'package:readlock/utility_widgets/utility_widgets.dart';
+import 'package:readlock/constants/typography.dart';
+import 'package:readlock/constants/app_theme.dart';
+import 'package:readlock/utility_widgets/text_animation/progressive_text.dart';
 
 const double TRUE_FALSE_BUTTON_HEIGHT = 60.0;
 const double TRUE_FALSE_BUTTON_SPACING = 16.0;
@@ -72,12 +72,12 @@ class TrueFalseQuestionWidgetState
   }
 
   Widget QuestionText() {
+    final TextStyle questionTextStyle = Typography.bodyLargeStyle
+        .copyWith(fontWeight: FontWeight.w500, fontSize: 18);
+
     return Text(
       widget.content.question,
-      style: Typography.bodyLargeStyle.copyWith(
-        fontWeight: FontWeight.w500,
-        fontSize: 18,
-      ),
+      style: questionTextStyle,
       textAlign: TextAlign.center,
     );
   }
@@ -146,36 +146,41 @@ class TrueFalseQuestionWidgetState
     Color borderColor;
     Color textColor;
     Color iconColor;
-    double elevation;
-
     if (shouldShowFeedback && isCorrect) {
       backgroundColor = AppTheme.primaryGreen.withValues(alpha: 0.1);
       borderColor = AppTheme.primaryGreen;
       textColor = AppTheme.primaryGreen;
       iconColor = AppTheme.primaryGreen;
-      elevation = 2;
     } else if (isSelected && !hasAnswered) {
       backgroundColor = baseColor.withValues(alpha: 0.1);
       borderColor = baseColor;
       textColor = baseColor;
       iconColor = baseColor;
-      elevation = 4;
     } else if (hasAnswered && !isCorrect && !isSelected) {
       backgroundColor = AppTheme.backgroundLight;
       borderColor = AppTheme.textPrimary.withValues(alpha: 0.1);
       textColor = AppTheme.textPrimary.withValues(alpha: 0.4);
       iconColor = AppTheme.textPrimary.withValues(alpha: 0.4);
-      elevation = 0;
     } else {
       backgroundColor = AppTheme.backgroundLight;
       borderColor = AppTheme.textPrimary.withValues(alpha: 0.2);
       textColor = AppTheme.textPrimary;
       iconColor = AppTheme.textPrimary.withValues(alpha: 0.6);
-      elevation = 1;
     }
 
+    final BoxDecoration buttonDecoration = BoxDecoration(
+      border: Border.all(color: borderColor, width: 2),
+      borderRadius: BorderRadius.circular(12),
+    );
+
+    final TextStyle buttonTextStyle = Typography.bodyLargeStyle
+        .copyWith(
+          color: textColor,
+          fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+          fontSize: 16,
+        );
+
     final Widget buttonContent = Material(
-      elevation: elevation,
       borderRadius: BorderRadius.circular(12),
       color: backgroundColor,
       child: InkWell(
@@ -183,25 +188,13 @@ class TrueFalseQuestionWidgetState
         borderRadius: BorderRadius.circular(12),
         child: Container(
           height: TRUE_FALSE_BUTTON_HEIGHT,
-          decoration: BoxDecoration(
-            border: Border.all(color: borderColor, width: 2),
-            borderRadius: BorderRadius.circular(12),
-          ),
+          decoration: buttonDecoration,
           child: Div.row([
             Icon(icon, color: iconColor, size: TRUE_FALSE_ICON_SIZE),
 
             const Spacing.width(12),
 
-            Text(
-              label,
-              style: Typography.bodyLargeStyle.copyWith(
-                color: textColor,
-                fontWeight: isSelected
-                    ? FontWeight.w600
-                    : FontWeight.w500,
-                fontSize: 16,
-              ),
-            ),
+            Text(label, style: buttonTextStyle),
           ], mainAxisAlignment: MainAxisAlignment.center),
         ),
       ),
@@ -224,43 +217,44 @@ class TrueFalseQuestionWidgetState
   }
 
   Widget ExplanationSection() {
+    final TextStyle explanationHeaderStyle = Typography.bodyLargeStyle
+        .copyWith(
+          fontWeight: FontWeight.w600,
+          fontSize: 14,
+          color: AppTheme.textPrimary.withValues(alpha: 0.8),
+        );
+
+    final TextStyle explanationTextStyle = Typography.bodyLargeStyle
+        .copyWith(fontSize: 14, height: 1.5);
+
     return RenderIf.condition(
       hasAnswered,
-      Div.column([
-        Div.row([
-          Icon(
-            Icons.lightbulb_outline,
-            color: AppTheme.textPrimary.withValues(alpha: 0.6),
-            size: 20,
-          ),
-
-          const Spacing.width(8),
-
-          Text(
-            'Explanation',
-            style: Typography.bodyLargeStyle.copyWith(
-              fontWeight: FontWeight.w600,
-              fontSize: 14,
-              color: AppTheme.textPrimary.withValues(alpha: 0.8),
+      Div.column(
+        [
+          Div.row([
+            Icon(
+              Icons.lightbulb_outline,
+              color: AppTheme.textPrimary.withValues(alpha: 0.6),
+              size: 20,
             ),
-          ),
-        ]),
 
-        const Spacing.height(12),
+            const Spacing.width(8),
 
-        ProgressiveText(
-          textSegments: [widget.content.explanation],
-          textStyle: Typography.bodyLargeStyle.copyWith(
-            fontSize: 14,
-            height: 1.5,
+            Text('Explanation', style: explanationHeaderStyle),
+          ]),
+
+          const Spacing.height(12),
+
+          ProgressiveText(
+            textSegments: [widget.content.explanation],
+            textStyle: explanationTextStyle,
           ),
-        ),
-      ], 
-      crossAxisAlignment: CrossAxisAlignment.start,
-      padding: 16,
-      color: AppTheme.backgroundLight,
-      radius: 12,
-    ),
+        ],
+        crossAxisAlignment: CrossAxisAlignment.start,
+        padding: 16,
+        color: AppTheme.backgroundLight,
+        radius: 12,
+      ),
     );
   }
 
@@ -283,33 +277,36 @@ class TrueFalseQuestionWidgetState
     }
 
     widget.onAnswerSelected(answerIndex, isCorrect);
-    
+
     // Show Aha snackbar for correct answer
     if (isCorrect && mounted) {
       Future.delayed(const Duration(milliseconds: 300), () {
         if (mounted) {
+          final TextStyle ahaTextStyle = Typography.bodyLargeStyle
+              .copyWith(
+                color: Colors.white,
+                fontWeight: FontWeight.w600,
+              );
+
+          final RoundedRectangleBorder snackbarShape =
+              RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              );
+
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   const Icon(Icons.star, color: Colors.white, size: 16),
-                  const SizedBox(width: 8),
-                  Text(
-                    '+10 Aha',
-                    style: Typography.bodyLargeStyle.copyWith(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
+                  const Spacing.width(8),
+                  Text('+10 Aha', style: ahaTextStyle),
                 ],
               ),
               backgroundColor: Colors.green.shade600,
               duration: const Duration(seconds: 2),
               behavior: SnackBarBehavior.floating,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
-              ),
+              shape: snackbarShape,
               margin: const EdgeInsets.all(16),
             ),
           );

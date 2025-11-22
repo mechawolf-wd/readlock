@@ -2,9 +2,9 @@
 // Provides ProgressiveText widget for character-by-character text reveal with sentence navigation
 
 import 'package:flutter/material.dart' hide Typography;
-import 'package:relevant/constants/typography.dart';
-import 'package:relevant/utility_widgets/utility_widgets.dart';
-import 'package:relevant/utility_widgets/visual_effects/blur_overlay.dart';
+import 'package:readlock/constants/typography.dart';
+import 'package:readlock/utility_widgets/utility_widgets.dart';
+import 'package:readlock/utility_widgets/visual_effects/blur_overlay.dart';
 
 class ProgressiveText extends StatefulWidget {
   static const double DEFAULT_BOTTOM_SPACING = 8.0;
@@ -258,7 +258,10 @@ class ProgressiveTextState extends State<ProgressiveText> {
         revealedText,
         style:
             widget.textStyle ??
-            const TextStyle(fontSize: 16, height: 1.5),
+            Typography.bodyMediumStyle.copyWith(
+              fontSize: 16,
+              height: 1.5,
+            ),
         textAlign: TextAlign.start,
       ),
     ]);

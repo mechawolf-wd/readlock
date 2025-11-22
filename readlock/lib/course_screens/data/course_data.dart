@@ -1,4 +1,4 @@
-import 'package:relevant/course_screens/services/json_course_data_service.dart';
+import 'package:readlock/course_screens/services/json_course_data_service.dart';
 
 class CourseData {
   static Future<List<Map<String, dynamic>>> get availableCourses async {

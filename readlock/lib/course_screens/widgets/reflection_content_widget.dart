@@ -2,12 +2,12 @@
 // Encourages users to pause and think about design concepts
 
 import 'package:flutter/material.dart' hide Typography;
-import 'package:relevant/constants/app_constants.dart';
-import 'package:relevant/course_screens/models/course_model.dart';
-import 'package:relevant/utility_widgets/utility_widgets.dart';
-import 'package:relevant/constants/typography.dart';
-import 'package:relevant/constants/app_theme.dart';
-import 'package:relevant/utility_widgets/text_animation/progressive_text.dart';
+import 'package:readlock/constants/app_constants.dart';
+import 'package:readlock/course_screens/models/course_model.dart';
+import 'package:readlock/utility_widgets/utility_widgets.dart';
+import 'package:readlock/constants/typography.dart';
+import 'package:readlock/constants/app_theme.dart';
+import 'package:readlock/utility_widgets/text_animation/progressive_text.dart';
 
 class ReflectionContentWidget extends StatefulWidget {
   final ReflectionContent content;
@@ -15,10 +15,12 @@ class ReflectionContentWidget extends StatefulWidget {
   const ReflectionContentWidget({super.key, required this.content});
 
   @override
-  State<ReflectionContentWidget> createState() => ReflectionContentWidgetState();
+  State<ReflectionContentWidget> createState() =>
+      ReflectionContentWidgetState();
 }
 
-class ReflectionContentWidgetState extends State<ReflectionContentWidget> {
+class ReflectionContentWidgetState
+    extends State<ReflectionContentWidget> {
   Set<int> selectedPoints = {};
 
   @override
@@ -50,35 +52,38 @@ class ReflectionContentWidgetState extends State<ReflectionContentWidget> {
   }
 
   Widget ReflectionPrompt() {
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: AppTheme.backgroundLight,
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: ProgressiveText(
-        textSegments: [widget.content.prompt],
-        textStyle: Typography.bodyLargeStyle.copyWith(
+    final BoxDecoration promptDecoration = BoxDecoration(
+      color: AppTheme.backgroundLight,
+      borderRadius: BorderRadius.circular(16),
+    );
+
+    final TextStyle promptTextStyle = Typography.bodyLargeStyle
+        .copyWith(
           fontSize: 16,
           fontWeight: FontWeight.w500,
           height: 1.6,
-        ),
+        );
+
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: promptDecoration,
+      child: ProgressiveText(
+        textSegments: [widget.content.prompt],
+        textStyle: promptTextStyle,
       ),
     );
   }
 
   Widget ThinkingCards() {
     // Limit to first 3 thinking points for better UX
-    final limitedPoints = widget.content.thinkingPoints.take(3).toList();
-    
+    final limitedPoints = widget.content.thinkingPoints
+        .take(3)
+        .toList();
+
     return Div.column([
-      Text(
+      Typography.bodyMedium(
         'Consider these aspects:',
-        style: Typography.bodyLargeStyle.copyWith(
-          fontWeight: FontWeight.w500,
-          fontSize: 14,
-          color: AppTheme.textPrimary.withValues(alpha: 0.7),
-        ),
+        color: AppTheme.textPrimary.withValues(alpha: 0.7),
       ),
 
       const Spacing.height(16),
@@ -102,14 +107,34 @@ class ReflectionContentWidgetState extends State<ReflectionContentWidget> {
     required bool isSelected,
     required VoidCallback onTap,
   }) {
-    final colors = [
-      AppTheme.primaryBlue,
-      Colors.purple,
-      Colors.orange,
-    ];
-    
+    final colors = [AppTheme.primaryBlue, Colors.purple, Colors.orange];
+
     final color = colors[index % colors.length];
-    
+
+    final BoxDecoration cardDecoration = BoxDecoration(
+      color: isSelected
+          ? color.withValues(alpha: 0.1)
+          : AppTheme.backgroundLight,
+      borderRadius: BorderRadius.circular(12),
+      border: Border.all(
+        color: isSelected
+            ? color
+            : AppTheme.textPrimary.withValues(alpha: 0.1),
+        width: isSelected ? 2 : 1,
+      ),
+    );
+
+    final BoxDecoration checkboxDecoration = BoxDecoration(
+      color: isSelected ? color : Colors.transparent,
+      borderRadius: BorderRadius.circular(6),
+      border: Border.all(
+        color: isSelected
+            ? color
+            : AppTheme.textPrimary.withValues(alpha: 0.3),
+        width: 2,
+      ),
+    );
+
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       child: Material(
@@ -120,52 +145,29 @@ class ReflectionContentWidgetState extends State<ReflectionContentWidget> {
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 200),
             padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: isSelected 
-                ? color.withValues(alpha: 0.1) 
-                : AppTheme.backgroundLight,
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(
-                color: isSelected 
-                  ? color 
-                  : AppTheme.textPrimary.withValues(alpha: 0.1),
-                width: isSelected ? 2 : 1,
-              ),
-            ),
+            decoration: cardDecoration,
             child: Row(
               children: [
                 AnimatedContainer(
                   duration: const Duration(milliseconds: 200),
                   width: 24,
                   height: 24,
-                  decoration: BoxDecoration(
-                    color: isSelected ? color : Colors.transparent,
-                    borderRadius: BorderRadius.circular(6),
-                    border: Border.all(
-                      color: isSelected ? color : AppTheme.textPrimary.withValues(alpha: 0.3),
-                      width: 2,
-                    ),
-                  ),
+                  decoration: checkboxDecoration,
                   child: isSelected
-                    ? Icon(
-                        Icons.check,
-                        color: Colors.white,
-                        size: 16,
-                      )
-                    : null,
+                      ? const Icon(
+                          Icons.check,
+                          color: Colors.white,
+                          size: 16,
+                        )
+                      : null,
                 ),
                 const Spacing.width(12),
                 Expanded(
-                  child: Text(
+                  child: Typography.bodyMedium(
                     point,
-                    style: Typography.bodyMediumStyle.copyWith(
-                      fontSize: 14,
-                      height: 1.4,
-                      color: isSelected 
-                        ? color 
+                    color: isSelected
+                        ? color
                         : AppTheme.textPrimary.withValues(alpha: 0.8),
-                      fontWeight: isSelected ? FontWeight.w500 : FontWeight.normal,
-                    ),
                   ),
                 ),
               ],
@@ -175,7 +177,6 @@ class ReflectionContentWidgetState extends State<ReflectionContentWidget> {
       ),
     );
   }
-
 
   void togglePoint(int index) {
     setState(() {

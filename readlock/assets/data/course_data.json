@@ -6,7 +6,11 @@
       "description": "Based on Don Norman's classic book",
       "cover-image-path": "assets/images/design_course.png",
       "color": "green",
-      "genres": ["design", "user-experience", "psychology"],
+      "genres": [
+        "design",
+        "user-experience",
+        "psychology"
+      ],
       "sections": [
         {
           "id": "design-course",
@@ -424,7 +428,11 @@
       "description": "Based on Jonah Berger's research on social transmission",
       "cover-image-path": "assets/images/viral_course.png",
       "color": "purple",
-      "genres": ["marketing", "psychology", "social-media"],
+      "genres": [
+        "marketing",
+        "psychology",
+        "social-media"
+      ],
       "sections": [
         {
           "id": "viral-course",
@@ -764,7 +772,11 @@
       "description": "Based on Sun Tzu's timeless strategy classic",
       "cover-image-path": "assets/images/war_course.png",
       "color": "red",
-      "genres": ["strategy", "leadership", "business"],
+      "genres": [
+        "strategy",
+        "leadership",
+        "business"
+      ],
       "sections": [
         {
           "id": "war-course",

@@ -21,30 +21,33 @@ Coding conventions and architectural patterns for the Readlock Flutter applicati
 10. **Utility widgets** - use Div.row/column instead of Container directly
 11. **Spacing widgets** - use Spacing.height/width instead of SizedBox
 12. **Typography consistency** - use typography.dart for all text
+13. **Style extraction** - extract complex styling objects (BoxDecoration, TextStyle, EdgeInsets with multiple properties) to variables, keep simple one-liners inline
+14. **Loop extraction** - extract loops, iterations, and ListView builders from widget tree into separate methods with descriptive names
 
 ### Code Formatting
 
-13. **Logical separation** - newlines between code sections, methods, properties
-14. **Curly braces required** - never single-line if statements
-15. **Switch statements** - always use curly brackets with case
-16. **Widget lists** - newlines between sibling widgets
-17. **Const optimization** - prefix widgets with const where applicable
-18. **File documentation** - add purpose description at top of widget files
+15. **Logical separation** - newlines between code sections, methods, properties
+16. **Curly braces required** - never single-line if statements
+17. **Switch statements** - always use curly brackets with case
+18. **Widget lists** - newlines between sibling widgets
+19. **Const optimization** - prefix widgets with const where applicable
+20. **File documentation** - add purpose description at top of widget files
 
 ### Control Flow
 
-19. **Extract conditions** - pull if statement contents into variables
-20. **Avoid ternary in UI** - let functions handle decision logic
-21. **No nested ternary** - avoid complex conditional operators
-22. **Explicit over spread** - prefer explicit list items vs spread operators
-23. **Descriptive indices** - use itemIndex/widgetIndex vs index
-24. **Whitespace around blocks** - surround if/for/while with newlines
+21. **Extract conditions** - pull if statement contents into variables
+22. **Avoid ternary in UI** - let functions handle decision logic
+23. **No nested ternary** - avoid complex conditional operators
+24. **Consistent loop syntax** - always use .map().toList() for collections, never spread operators (...) or for loops in widget building
+25. **Explicit over spread** - prefer explicit list items vs spread operators
+26. **Descriptive indices** - use itemIndex/widgetIndex vs index
+27. **Whitespace around blocks** - surround if/for/while with newlines
 
 ### Performance
 
-25. **4-pixel rule** - use multiples of 4 for spacing values
-26. **Avoid overengineering** - don't optimize before inspection
-27. **Code reuse** - extract repeated code into methods/widgets
+28. **4-pixel rule** - use multiples of 4 for spacing values
+29. **Avoid overengineering** - don't optimize before inspection
+30. **Code reuse** - extract repeated code into methods/widgets
 
 ## Development Principles
 

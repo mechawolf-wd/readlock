@@ -2,13 +2,13 @@
 // Users drag answers to fill blanks in sentences with visual feedback
 
 import 'package:flutter/material.dart' hide Typography;
-import 'package:relevant/constants/app_constants.dart';
-import 'package:relevant/course_screens/models/course_model.dart';
-import 'package:relevant/utility_widgets/utility_widgets.dart';
-import 'package:relevant/constants/typography.dart';
-import 'package:relevant/constants/app_theme.dart';
-import 'package:relevant/utility_widgets/text_animation/progressive_text.dart';
-import 'package:relevant/utility_widgets/feedback_snackbar.dart';
+import 'package:readlock/constants/app_constants.dart';
+import 'package:readlock/course_screens/models/course_model.dart';
+import 'package:readlock/utility_widgets/utility_widgets.dart';
+import 'package:readlock/constants/typography.dart';
+import 'package:readlock/constants/app_theme.dart';
+import 'package:readlock/utility_widgets/text_animation/progressive_text.dart';
+import 'package:readlock/utility_widgets/feedback_snackbar.dart';
 
 const double FILL_GAP_OPTION_HEIGHT = 48.0;
 const double FILL_GAP_OPTION_SPACING = 12.0;
@@ -20,7 +20,8 @@ const int FILL_GAP_SHAKE_DURATION_MS = 500;
 
 class FillGapQuestionWidget extends StatefulWidget {
   final QuestionContent content;
-  final void Function(int selectedIndex, bool isCorrect) onAnswerSelected;
+  final void Function(int selectedIndex, bool isCorrect)
+  onAnswerSelected;
 
   const FillGapQuestionWidget({
     super.key,
@@ -29,7 +30,8 @@ class FillGapQuestionWidget extends StatefulWidget {
   });
 
   @override
-  State<FillGapQuestionWidget> createState() => FillGapQuestionWidgetState();
+  State<FillGapQuestionWidget> createState() =>
+      FillGapQuestionWidgetState();
 }
 
 class FillGapQuestionWidgetState extends State<FillGapQuestionWidget>
@@ -93,8 +95,10 @@ class FillGapQuestionWidgetState extends State<FillGapQuestionWidget>
   }
 
   Widget QuestionWithGaps() {
-    final List<String> questionParts = widget.content.question.split('___');
-    
+    final List<String> questionParts = widget.content.question.split(
+      '___',
+    );
+
     return Wrap(
       alignment: WrapAlignment.center,
       crossAxisAlignment: WrapCrossAlignment.center,
@@ -104,7 +108,7 @@ class FillGapQuestionWidgetState extends State<FillGapQuestionWidget>
         ...questionParts.asMap().entries.expand((entry) {
           final int index = entry.key;
           final String part = entry.value;
-          
+
           return [
             if (part.isNotEmpty)
               Text(
@@ -125,9 +129,12 @@ class FillGapQuestionWidgetState extends State<FillGapQuestionWidget>
   Widget GapWidget({required int gapIndex}) {
     final int? selectedOptionIndex = selectedOptionsForGaps[gapIndex];
     final bool hasSelection = selectedOptionIndex != null;
-    final bool isCorrect = hasAnswered &&
+    final bool isCorrect =
+        hasAnswered &&
         hasSelection &&
-        widget.content.correctAnswerIndices.contains(selectedOptionIndex);
+        widget.content.correctAnswerIndices.contains(
+          selectedOptionIndex,
+        );
     final bool isIncorrect = hasAnswered && hasSelection && !isCorrect;
 
     Color backgroundColor;
@@ -166,7 +173,10 @@ class FillGapQuestionWidgetState extends State<FillGapQuestionWidget>
           minWidth: FILL_GAP_BLANK_WIDTH,
           minHeight: FILL_GAP_BLANK_HEIGHT,
         ),
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        padding: const EdgeInsets.symmetric(
+          horizontal: 12,
+          vertical: 8,
+        ),
         decoration: BoxDecoration(
           color: backgroundColor,
           borderRadius: BorderRadius.circular(8),
@@ -177,7 +187,9 @@ class FillGapQuestionWidgetState extends State<FillGapQuestionWidget>
             displayText,
             style: Typography.bodyLargeStyle.copyWith(
               fontSize: 14,
-              fontWeight: hasSelection ? FontWeight.w500 : FontWeight.normal,
+              fontWeight: hasSelection
+                  ? FontWeight.w500
+                  : FontWeight.normal,
               color: hasSelection
                   ? AppTheme.textPrimary
                   : AppTheme.textPrimary.withValues(alpha: 0.3),
@@ -204,40 +216,40 @@ class FillGapQuestionWidgetState extends State<FillGapQuestionWidget>
   }
 
   Widget AvailableOptions() {
-    return Div.column(
-      [
-        Text(
-          'Tap options to fill the gaps:',
-          style: Typography.bodyLargeStyle.copyWith(
-            fontSize: 14,
-            fontWeight: FontWeight.w500,
-            color: AppTheme.textPrimary.withValues(alpha: 0.7),
-          ),
+    return Div.column([
+      Text(
+        'Tap options to fill the gaps:',
+        style: Typography.bodyLargeStyle.copyWith(
+          fontSize: 14,
+          fontWeight: FontWeight.w500,
+          color: AppTheme.textPrimary.withValues(alpha: 0.7),
         ),
+      ),
 
-        const Spacing.height(12),
+      const Spacing.height(12),
 
-        Wrap(
-          spacing: FILL_GAP_OPTION_SPACING,
-          runSpacing: FILL_GAP_OPTION_SPACING,
-          children: List.generate(
-            widget.content.options.length,
-            (optionIndex) => OptionChip(optionIndex: optionIndex),
-          ),
+      Wrap(
+        spacing: FILL_GAP_OPTION_SPACING,
+        runSpacing: FILL_GAP_OPTION_SPACING,
+        children: List.generate(
+          widget.content.options.length,
+          (optionIndex) => OptionChip(optionIndex: optionIndex),
         ),
-      ],
-    );
+      ),
+    ]);
   }
 
   Widget OptionChip({required int optionIndex}) {
     final bool isUsed = usedOptionIndices.contains(optionIndex);
     final bool isDisabled = isUsed && !hasAnswered;
-    final bool isCorrectOption = hasAnswered && widget.content.correctAnswerIndices.contains(optionIndex);
+    final bool isCorrectOption =
+        hasAnswered &&
+        widget.content.correctAnswerIndices.contains(optionIndex);
 
     Color chipColor;
     Color borderColor;
     Color textColor;
-    
+
     if (hasAnswered && isCorrectOption) {
       chipColor = AppTheme.primaryGreen.withValues(alpha: 0.1);
       borderColor = AppTheme.primaryGreen;
@@ -255,23 +267,29 @@ class FillGapQuestionWidgetState extends State<FillGapQuestionWidget>
     return GestureDetector(
       onTap: isDisabled ? null : () => selectOption(optionIndex),
       child: AnimatedContainer(
-        duration: const Duration(milliseconds: FILL_GAP_ANIMATION_DURATION_MS),
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+        duration: const Duration(
+          milliseconds: FILL_GAP_ANIMATION_DURATION_MS,
+        ),
+        padding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 10,
+        ),
         decoration: BoxDecoration(
           color: chipColor,
           borderRadius: BorderRadius.circular(20),
-          border: Border.all(
-            color: borderColor,
-            width: 1.5,
-          ),
+          border: Border.all(color: borderColor, width: 1.5),
         ),
         child: Text(
           widget.content.options[optionIndex].text,
           style: Typography.bodyLargeStyle.copyWith(
             fontSize: 14,
             color: textColor,
-            fontWeight: isCorrectOption ? FontWeight.w600 : FontWeight.normal,
-            decoration: isUsed && !isCorrectOption ? TextDecoration.lineThrough : null,
+            fontWeight: isCorrectOption
+                ? FontWeight.w600
+                : FontWeight.normal,
+            decoration: isUsed && !isCorrectOption
+                ? TextDecoration.lineThrough
+                : null,
           ),
         ),
       ),
@@ -279,14 +297,16 @@ class FillGapQuestionWidgetState extends State<FillGapQuestionWidget>
   }
 
   Widget SubmitButton() {
-    final bool allGapsFilled = selectedOptionsForGaps.values
-        .every((selectedOption) => selectedOption != null);
+    final bool allGapsFilled = selectedOptionsForGaps.values.every(
+      (selectedOption) => selectedOption != null,
+    );
     final bool canSubmit = allGapsFilled && !hasAnswered;
 
     return Material(
-      elevation: canSubmit ? 2 : 0,
       borderRadius: BorderRadius.circular(12),
-      color: canSubmit ? AppTheme.primaryBlue : AppTheme.backgroundLight,
+      color: canSubmit
+          ? AppTheme.primaryBlue
+          : AppTheme.backgroundLight,
       child: InkWell(
         onTap: canSubmit ? checkAnswer : null,
         borderRadius: BorderRadius.circular(12),
@@ -322,27 +342,25 @@ class FillGapQuestionWidgetState extends State<FillGapQuestionWidget>
     return RenderIf.condition(
       hasAnswered,
       Div.column(
-      [
-        Div.row(
-            [
-              Icon(
-                Icons.lightbulb_outline,
-                color: AppTheme.textPrimary.withValues(alpha: 0.6),
-                size: 20,
-              ),
+        [
+          Div.row([
+            Icon(
+              Icons.lightbulb_outline,
+              color: AppTheme.textPrimary.withValues(alpha: 0.6),
+              size: 20,
+            ),
 
-              const Spacing.width(8),
+            const Spacing.width(8),
 
-              Text(
-                'Explanation',
-                style: Typography.bodyLargeStyle.copyWith(
-                  fontWeight: FontWeight.w600,
-                  fontSize: 14,
-                  color: AppTheme.textPrimary.withValues(alpha: 0.8),
-                ),
+            Text(
+              'Explanation',
+              style: Typography.bodyLargeStyle.copyWith(
+                fontWeight: FontWeight.w600,
+                fontSize: 14,
+                color: AppTheme.textPrimary.withValues(alpha: 0.8),
               ),
-            ],
-          ),
+            ),
+          ]),
 
           const Spacing.height(12),
 
@@ -354,10 +372,10 @@ class FillGapQuestionWidgetState extends State<FillGapQuestionWidget>
             ),
           ),
         ],
-      padding: 16,
-      color: AppTheme.backgroundLight,
-      radius: 12,
-    ),
+        padding: 16,
+        color: AppTheme.backgroundLight,
+        radius: 12,
+      ),
     );
   }
 
@@ -397,13 +415,16 @@ class FillGapQuestionWidgetState extends State<FillGapQuestionWidget>
   }
 
   void checkAnswer() {
-    final bool allCorrect = selectedOptionsForGaps.entries.every((entry) {
+    final bool allCorrect = selectedOptionsForGaps.entries.every((
+      entry,
+    ) {
       final int gapIndex = entry.key;
       final int? selectedOption = entry.value;
       if (selectedOption == null) {
         return false;
       }
-      return widget.content.correctAnswerIndices[gapIndex] == selectedOption;
+      return widget.content.correctAnswerIndices[gapIndex] ==
+          selectedOption;
     });
 
     setState(() {
@@ -415,7 +436,10 @@ class FillGapQuestionWidgetState extends State<FillGapQuestionWidget>
     } else {
       showCorrectAnswers();
       triggerShakeAnimation();
-      FeedbackSnackBar.showWrongAnswer(context, explanation: widget.content.explanation);
+      FeedbackSnackBar.showWrongAnswer(
+        context,
+        explanation: widget.content.explanation,
+      );
     }
 
     widget.onAnswerSelected(0, allCorrect);
@@ -423,14 +447,13 @@ class FillGapQuestionWidgetState extends State<FillGapQuestionWidget>
 
   void triggerShakeAnimation() {
     shakeController = AnimationController(
-      duration: const Duration(milliseconds: FILL_GAP_SHAKE_DURATION_MS),
+      duration: const Duration(
+        milliseconds: FILL_GAP_SHAKE_DURATION_MS,
+      ),
       vsync: this,
     );
 
-    shakeAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(
+    shakeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(
         parent: shakeController!,
         curve: Curves.elasticIn,
@@ -450,11 +473,17 @@ class FillGapQuestionWidgetState extends State<FillGapQuestionWidget>
 
   void showCorrectAnswers() {
     setState(() {
-      for (int gapIndex = 0; gapIndex < widget.content.correctAnswerIndices.length; gapIndex++) {
-        selectedOptionsForGaps[gapIndex] = widget.content.correctAnswerIndices[gapIndex];
-        usedOptionIndices.add(widget.content.correctAnswerIndices[gapIndex]);
+      for (
+        int gapIndex = 0;
+        gapIndex < widget.content.correctAnswerIndices.length;
+        gapIndex++
+      ) {
+        selectedOptionsForGaps[gapIndex] =
+            widget.content.correctAnswerIndices[gapIndex];
+        usedOptionIndices.add(
+          widget.content.correctAnswerIndices[gapIndex],
+        );
       }
     });
   }
-
 }

@@ -1,10 +1,10 @@
 // Widget that displays concluding content for course sections
 import 'package:flutter/material.dart' hide Typography;
-import 'package:relevant/course_screens/models/course_model.dart';
-import 'package:relevant/utility_widgets/utility_widgets.dart';
-import 'package:relevant/utility_widgets/text_animation/text_animation.dart';
-import 'package:relevant/constants/typography.dart';
-import 'package:relevant/constants/app_theme.dart';
+import 'package:readlock/course_screens/models/course_model.dart';
+import 'package:readlock/utility_widgets/utility_widgets.dart';
+import 'package:readlock/utility_widgets/text_animation/text_animation.dart';
+import 'package:readlock/constants/typography.dart';
+import 'package:readlock/constants/app_theme.dart';
 
 class OutroContentWidget extends StatelessWidget {
   final OutroContent content;

@@ -1,11 +1,11 @@
 // Course detail screen displaying individual course content with navigation
 // Supports various content types including text, questions, intro/outro, and design examples
 import 'package:flutter/material.dart';
-import 'package:relevant/course_screens/widgets/json_content_widget_factory.dart';
-import 'package:relevant/course_screens/data/course_data.dart';
-import 'package:relevant/constants/app_theme.dart';
-import 'package:relevant/utility_widgets/utility_widgets.dart';
-import 'package:relevant/main_navigation.dart';
+import 'package:readlock/course_screens/widgets/json_content_widget_factory.dart';
+import 'package:readlock/course_screens/data/course_data.dart';
+import 'package:readlock/constants/app_theme.dart';
+import 'package:readlock/utility_widgets/utility_widgets.dart';
+import 'package:readlock/main_navigation.dart';
 
 const String NO_CONTENT_AVAILABLE_MESSAGE =
     'No content available for this course';
@@ -34,7 +34,7 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
   late PageController pageController;
   late int currentContentIndex;
   late int currentSectionIndex;
-  
+
   List<Map<String, dynamic>> allContent = [];
   Map<String, dynamic>? courseData;
   bool isLoading = true;
@@ -81,16 +81,16 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
         body: Center(child: CircularProgressIndicator()),
       ),
       SafeArea(
-      child: Scaffold(
-        backgroundColor: AppTheme.backgroundDark,
-        body: Column(
-          children: [
-            TopProgressBar(),
-            Expanded(child: CourseBody()),
-          ],
+        child: Scaffold(
+          backgroundColor: AppTheme.backgroundDark,
+          body: Column(
+            children: [
+              TopProgressBar(),
+              Expanded(child: CourseBody()),
+            ],
+          ),
         ),
       ),
-    ),
     );
   }
 
@@ -99,14 +99,14 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
       allContent.isEmpty,
       EmptyContentMessage(),
       PageView.builder(
-      controller: pageController,
-      scrollDirection: Axis.vertical,
-      itemCount: allContent.length,
-      onPageChanged: handlePageChanged,
-      itemBuilder: (context, contentItemIndex) {
-        return ContentWidget(allContent[contentItemIndex]);
-      },
-    ),
+        controller: pageController,
+        scrollDirection: Axis.vertical,
+        itemCount: allContent.length,
+        onPageChanged: handlePageChanged,
+        itemBuilder: (context, contentItemIndex) {
+          return ContentWidget(allContent[contentItemIndex]);
+        },
+      ),
     );
   }
 
@@ -124,36 +124,38 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
   }
 
   Widget TopProgressBar() {
-    final double progress = allContent.isNotEmpty 
-        ? (currentContentIndex + 1) / allContent.length 
+    final double progress = allContent.isNotEmpty
+        ? (currentContentIndex + 1) / allContent.length
         : 0.0;
-    
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       child: Row(
         children: [
           GestureDetector(
             onTap: () {
-              Navigator.of(context).push(
-                AppTheme.fadeTransition(const MainNavigation()),
-              );
+              Navigator.of(
+                context,
+              ).push(AppTheme.fadeTransition(const MainNavigation()));
             },
             child: const Icon(
               Icons.arrow_back,
-              color: Colors.white,
+              color: AppTheme.textPrimary,
               size: 24,
             ),
           ),
-          
+
           const SizedBox(width: 12),
-          
+
           Expanded(
             child: ClipRRect(
               borderRadius: BorderRadius.circular(4),
               child: LinearProgressIndicator(
                 value: progress,
                 backgroundColor: AppTheme.backgroundLight,
-                valueColor: AlwaysStoppedAnimation<Color>(getCourseColor()),
+                valueColor: AlwaysStoppedAnimation<Color>(
+                  getCourseColor(),
+                ),
                 minHeight: 8,
               ),
             ),
@@ -163,16 +165,20 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
     );
   }
 
-
   Future<List<Map<String, dynamic>>> getAllContent() async {
     if (courseData == null) {
       return [];
     }
-    
-    final sections = List<Map<String, dynamic>>.from(courseData!['sections'] ?? []);
-    
+
+    final sections = List<Map<String, dynamic>>.from(
+      courseData!['sections'] ?? [],
+    );
+
     return sections
-        .expand((section) => List<Map<String, dynamic>>.from(section['content'] ?? []))
+        .expand(
+          (section) =>
+              List<Map<String, dynamic>>.from(section['content'] ?? []),
+        )
         .toList();
   }
 
@@ -207,5 +213,4 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
         }
     }
   }
-
 }

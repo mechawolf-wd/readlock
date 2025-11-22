@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:relevant/main_navigation.dart';
+import 'package:readlock/main_navigation.dart';
 
 void main() {
   runApp(const RelevantApp());
@@ -12,7 +12,6 @@ class RelevantApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Design Course',
       theme: appTheme(),
       home: const MainNavigation(),
       debugShowCheckedModeBanner: false,
@@ -21,14 +20,17 @@ class RelevantApp extends StatelessWidget {
 
   ThemeData appTheme() {
     return ThemeData(
-      colorScheme: ColorScheme.fromSeed(
-        seedColor: Colors.blue,
-        brightness: Brightness.dark,
+      colorScheme: ColorScheme.fromSeed(seedColor: Colors.tealAccent),
+      scaffoldBackgroundColor: Colors.white,
+      appBarTheme: const AppBarTheme(
+        backgroundColor: Colors.white,
+        foregroundColor: Colors.black,
+        elevation: 0,
+        iconTheme: IconThemeData(color: Colors.black),
       ),
-      scaffoldBackgroundColor: Colors.grey[900],
       useMaterial3: true,
       textTheme: GoogleFonts.dmSansTextTheme(
-        ThemeData.dark().textTheme,
+        ThemeData.light().textTheme,
       ),
     );
   }

@@ -2,24 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class AppTheme {
-  // Dark theme colors
-  static const Color primaryBlue = Color(0xFF4A90E2);
-  static const Color primaryGreen = Color(0xFF7ED321);
-  static const Color primaryBrown = Color(0xFFB8860B); // Brownish gold
-  static const Color primaryAmber = Color(0xFFDAA520); // Golden rod
+  // Light theme colors
+  static const Color primaryBlue = Color(0xFF1976D2);
+  static const Color primaryGreen = Color(0xFF388E3C);
+  static const Color primaryBrown = Color(0xFF8D6E63); // Brown
+  static const Color primaryAmber = Color(0xFFF57C00); // Amber
   static const Color primaryDeepPurple = Color(
-    0xFFCD853F,
-  ); // Peru brown
+    0xFF7B1FA2,
+  ); // Deep Purple
 
-  static const Color backgroundDark = Color(0xFF1E1E1E);
-  static const Color backgroundLight = Color(0xFF2D2D2D);
-  static const Color textPrimary = Color(0xFFF5F5DC); // Beige text
-  static const Color textSecondary = Color(0xFFD2B48C); // Tan text
+  static const Color backgroundDark = Color(0xFFFFFFFF); // White background
+  static const Color backgroundLight = Color(0xFFF5F5F5); // Light grey background
+  static const Color textPrimary = Color(0xFF212121); // Dark text
+  static const Color textSecondary = Color(0xFF757575); // Grey text
 
   // Additional color constants
-  static const Color shadowColor = Colors.black;
-  static const Color greyBackground = Color(0xFF3D3D3D);
-  static const Color white = Color(0xFF2D2D2D); // Dark card color
+  static const Color greyBackground = Color(0xFFF5F5F5);
+  static const Color white = Color(0xFFFFFFFF); // White color
 
   // Status colors
   static const Color successColor = Colors.green;
@@ -77,9 +76,9 @@ class AppTheme {
   static const double cardPadding = 16.0;
   static const double cardMarginBottom = 12.0;
   static final Color cardBackgroundColor =
-      Colors.grey[800] ?? const Color(0xFF424242);
+      Colors.grey[50] ?? const Color(0xFFFAFAFA);
   static final Color cardBorderColor =
-      Colors.grey[700] ?? const Color(0xFF616161);
+      Colors.grey[300] ?? const Color(0xFFE0E0E0);
   static const double cardBorderWidth = 1.0;
 
   // Content padding
@@ -194,21 +193,21 @@ class AppTheme {
         {
           return ColorScheme.fromSeed(
             seedColor: primaryBlue,
-            brightness: Brightness.dark,
+            brightness: Brightness.light,
           );
         }
       case CourseThemeColor.green:
         {
           return ColorScheme.fromSeed(
             seedColor: primaryGreen,
-            brightness: Brightness.dark,
+            brightness: Brightness.light,
           );
         }
       case CourseThemeColor.purple:
         {
           return ColorScheme.fromSeed(
             seedColor: primaryBrown,
-            brightness: Brightness.dark,
+            brightness: Brightness.light,
           );
         }
     }
@@ -222,23 +221,23 @@ class AppTheme {
     if (shouldShowFeedback) {
       if (isCorrect) {
         return const QuestionOptionColors(
-          backgroundColor: Color(0xFF2E7D32),
-          textColor: Color(0xFFC8E6C9),
+          backgroundColor: Color(0xFFE8F5E8),
+          textColor: Color(0xFF2E7D32),
         );
       } else {
         return const QuestionOptionColors(
-          backgroundColor: Color(0xFFC62828),
-          textColor: Color(0xFFFFCDD2),
+          backgroundColor: Color(0xFFFFEBEE),
+          textColor: Color(0xFFC62828),
         );
       }
     } else if (isSelected) {
       return const QuestionOptionColors(
-        backgroundColor: AppTheme.primaryBrown,
-        textColor: Color(0xFFFDF5E6),
+        backgroundColor: Color(0xFFEFEBE9),
+        textColor: AppTheme.primaryBrown,
       );
     } else {
       return const QuestionOptionColors(
-        backgroundColor: Color(0xFF424242),
+        backgroundColor: Color(0xFFFFFFFF),
         textColor: AppTheme.textPrimary,
       );
     }

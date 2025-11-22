@@ -2,8 +2,8 @@
 // Provides educational guidance for wrong answers and celebration for correct ones
 
 import 'package:flutter/material.dart' hide Typography;
-import 'package:relevant/constants/typography.dart';
-import 'package:relevant/utility_widgets/utility_widgets.dart';
+import 'package:readlock/constants/typography.dart';
+import 'package:readlock/utility_widgets/utility_widgets.dart';
 
 class FeedbackSnackBar {
   static void showCorrectAnswer(BuildContext context) {
@@ -14,13 +14,7 @@ class FeedbackSnackBar {
           children: [
             const Icon(Icons.star, color: Colors.white, size: 16),
             const Spacing.width(8),
-            Text(
-              '+5 Aha',
-              style: Typography.bodyLargeStyle.copyWith(
-                color: Colors.white,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
+            Typography.bodyLarge('+5 Aha', color: Colors.white),
           ],
         ),
         backgroundColor: Colors.green.shade600,
@@ -34,7 +28,10 @@ class FeedbackSnackBar {
     );
   }
 
-  static void showWrongAnswer(BuildContext context, {String? explanation}) {
+  static void showWrongAnswer(
+    BuildContext context, {
+    String? explanation,
+  }) {
     final String message = explanation != null
         ? 'Common thought, though $explanation'
         : 'Consider the key concepts from this section. The correct answer relates to the main principle discussed.';
@@ -48,25 +45,22 @@ class FeedbackSnackBar {
             Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Icon(Icons.lightbulb_outline, color: Colors.white, size: 16),
+                const Icon(
+                  Icons.lightbulb_outline,
+                  color: Colors.white,
+                  size: 16,
+                ),
                 const Spacing.width(8),
-                Text(
+                Typography.bodyLarge(
                   'Think again',
-                  style: Typography.bodyLargeStyle.copyWith(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w600,
-                  ),
+                  color: Colors.white,
                 ),
               ],
             ),
             const Spacing.height(4),
-            Text(
+            Typography.bodyMedium(
               message,
-              style: Typography.bodyMediumStyle.copyWith(
-                color: Colors.white.withValues(alpha: 0.9),
-                fontSize: 12,
-                height: 1.3,
-              ),
+              color: Colors.white.withValues(alpha: 0.9),
             ),
           ],
         ),
@@ -81,19 +75,17 @@ class FeedbackSnackBar {
     );
   }
 
-  static void showCustomFeedback(BuildContext context, String message, bool isCorrect) {
+  static void showCustomFeedback(
+    BuildContext context,
+    String message,
+    bool isCorrect,
+  ) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(
-          message,
-          style: Typography.bodyMediumStyle.copyWith(
-            color: Colors.white,
-            fontSize: 14,
-          ),
-        ),
-        backgroundColor: isCorrect 
-          ? Colors.green.shade600
-          : Colors.orange.shade600,
+        content: Typography.bodyMedium(message, color: Colors.white),
+        backgroundColor: isCorrect
+            ? Colors.green.shade600
+            : Colors.orange.shade600,
         duration: const Duration(seconds: 3),
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(

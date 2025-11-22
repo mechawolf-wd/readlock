@@ -1,11 +1,11 @@
 // Course roadmap screen displaying a simple list of course sections
 // Clean card-based layout showing course information
 import 'package:flutter/material.dart' hide Typography;
-import 'package:relevant/course_screens/course_detail_screen.dart';
-import 'package:relevant/course_screens/data/course_data.dart';
-import 'package:relevant/utility_widgets/utility_widgets.dart';
-import 'package:relevant/constants/typography.dart';
-import 'package:relevant/constants/app_theme.dart';
+import 'package:readlock/course_screens/course_detail_screen.dart';
+import 'package:readlock/course_screens/data/course_data.dart';
+import 'package:readlock/utility_widgets/utility_widgets.dart';
+import 'package:readlock/constants/typography.dart';
+import 'package:readlock/constants/app_theme.dart';
 
 // Constants
 const String COURSE_ROADMAP_DEFAULT_TITLE = 'Course Roadmap';
@@ -140,6 +140,11 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
     final String courseColor =
         courseData?['color'] ?? COURSE_DEFAULT_COLOR;
 
+    final BoxDecoration courseIconDecoration = BoxDecoration(
+      color: getColorFromString(courseColor).withValues(alpha: 0.2),
+      borderRadius: BorderRadius.circular(20),
+    );
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
       child: Div.column([
@@ -170,12 +175,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
         Div.column([
           Container(
             padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: getColorFromString(
-                courseColor,
-              ).withValues(alpha: 0.2),
-              borderRadius: BorderRadius.circular(20),
-            ),
+            decoration: courseIconDecoration,
             child: Icon(
               Icons.psychology_outlined,
               color: getColorFromString(courseColor),
@@ -189,13 +189,8 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
 
           const Spacing.height(4),
 
-          Text(
+          Typography.bodyMedium(
             COURSE_SUBTITLE_TEXT,
-            style: Typography.bodyMediumStyle.copyWith(
-              color: AppTheme.textPrimary,
-              fontSize: 16,
-              decoration: TextDecoration.none,
-            ),
             textAlign: TextAlign.center,
           ),
         ], crossAxisAlignment: CrossAxisAlignment.center),
@@ -214,31 +209,21 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
 
             const Spacing.width(4),
 
-            Text(
-              AHA_COUNTER_TEXT,
-              style: Typography.bodyMediumStyle.copyWith(
-                color: AppTheme.textPrimary,
-                fontSize: 16,
-                decoration: TextDecoration.none,
-              ),
-            ),
+            Typography.bodyMedium(AHA_COUNTER_TEXT),
           ]),
 
           const Spacing.width(20),
 
           Div.row([
-            const Icon(Icons.quiz, color: AppTheme.primaryBlue, size: 16),
+            const Icon(
+              Icons.quiz,
+              color: AppTheme.primaryBlue,
+              size: 16,
+            ),
 
             const Spacing.width(4),
 
-            Text(
-              QUESTIONS_COUNTER_TEXT,
-              style: Typography.bodyMediumStyle.copyWith(
-                color: AppTheme.textPrimary,
-                fontSize: 16,
-                decoration: TextDecoration.none,
-              ),
-            ),
+            Typography.bodyMedium(QUESTIONS_COUNTER_TEXT),
           ]),
 
           const Spacer(),
@@ -308,9 +293,7 @@ class LevelCard extends StatelessWidget {
 
           const Spacing.width(16),
 
-          Expanded(
-            child: LevelContent(),
-          ),
+          Expanded(child: LevelContent()),
 
           const Icon(
             Icons.arrow_forward_ios,
@@ -325,7 +308,7 @@ class LevelCard extends StatelessWidget {
   BoxDecoration buildCardDecoration() {
     final Color cardColor = getCardColor();
     final Color borderColor = getBorderColor();
-    
+
     return BoxDecoration(
       color: cardColor,
       borderRadius: BorderRadius.circular(16),
@@ -348,16 +331,16 @@ class LevelCard extends StatelessWidget {
   }
 
   Widget LevelBadge() {
+    final BoxDecoration badgeDecoration = BoxDecoration(
+      color: getBadgeColor(),
+      borderRadius: BorderRadius.circular(20),
+    );
+
     return Container(
       width: 40,
       height: 40,
-      decoration: BoxDecoration(
-        color: getBadgeColor(),
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Center(
-        child: buildBadgeContent(),
-      ),
+      decoration: badgeDecoration,
+      child: Center(child: buildBadgeContent()),
     );
   }
 
@@ -365,29 +348,20 @@ class LevelCard extends StatelessWidget {
     if (isCompleted) {
       return AppTheme.primaryGreen;
     }
-    
+
     if (isCurrentLevel) {
       return AppTheme.primaryGreen.withValues(alpha: 0.2);
     }
-    
+
     return Colors.grey.withValues(alpha: 0.2);
   }
 
   Widget buildBadgeContent() {
     return RenderIf.condition(
       isCompleted,
-      const Icon(
-        Icons.check,
-        color: Colors.white,
-        size: 20,
-      ),
-      Text(
+      const Icon(Icons.check, color: Colors.white, size: 20),
+      Typography.bodyMedium(
         levelNumber.toString(),
-        style: Typography.bodyMediumStyle.copyWith(
-          color: AppTheme.textPrimary,
-          fontSize: 16,
-          decoration: TextDecoration.none,
-        ),
         textAlign: TextAlign.center,
       ),
     );
@@ -395,20 +369,11 @@ class LevelCard extends StatelessWidget {
 
   Widget LevelContent() {
     return Div.column([
-      Typography.headingMedium(
-        '$LEVEL_PREFIX$levelNumber: $title',
-      ),
+      Typography.headingMedium('$LEVEL_PREFIX$levelNumber: $title'),
 
       const Spacing.height(4),
 
-      Text(
-        subtitle,
-        style: Typography.bodyMediumStyle.copyWith(
-          color: AppTheme.textPrimary,
-          fontSize: 14,
-          decoration: TextDecoration.none,
-        ),
-      ),
+      Typography.bodyMedium(subtitle),
     ], crossAxisAlignment: CrossAxisAlignment.start);
   }
 }

@@ -2,12 +2,12 @@
 // Users slide to guess the percentage before revealing the actual answer
 
 import 'package:flutter/material.dart' hide Typography;
-import 'package:relevant/constants/app_constants.dart';
-import 'package:relevant/course_screens/models/course_model.dart';
-import 'package:relevant/utility_widgets/utility_widgets.dart';
-import 'package:relevant/constants/typography.dart';
-import 'package:relevant/constants/app_theme.dart';
-import 'package:relevant/utility_widgets/text_animation/progressive_text.dart';
+import 'package:readlock/constants/app_constants.dart';
+import 'package:readlock/course_screens/models/course_model.dart';
+import 'package:readlock/utility_widgets/utility_widgets.dart';
+import 'package:readlock/constants/typography.dart';
+import 'package:readlock/constants/app_theme.dart';
+import 'package:readlock/utility_widgets/text_animation/progressive_text.dart';
 
 // Constants
 const double ESTIMATE_SECTION_SPACING = 24.0;
@@ -19,7 +19,8 @@ const String SUBMIT_BUTTON_TEXT = 'Submit Estimate';
 
 class EstimatePercentageWidget extends StatefulWidget {
   final QuestionContent content;
-  final void Function(int selectedIndex, bool isCorrect) onAnswerSelected;
+  final void Function(int selectedIndex, bool isCorrect)
+  onAnswerSelected;
 
   const EstimatePercentageWidget({
     super.key,
@@ -32,13 +33,14 @@ class EstimatePercentageWidget extends StatefulWidget {
       EstimatePercentageWidgetState();
 }
 
-class EstimatePercentageWidgetState extends State<EstimatePercentageWidget>
+class EstimatePercentageWidgetState
+    extends State<EstimatePercentageWidget>
     with SingleTickerProviderStateMixin {
   double currentEstimate = 50;
   bool hasSubmitted = false;
   late AnimationController revealController;
   late Animation<double> revealAnimation;
-  
+
   int get correctPercentage {
     if (widget.content.correctAnswerIndices.isNotEmpty) {
       return widget.content.correctAnswerIndices[0];
@@ -49,12 +51,12 @@ class EstimatePercentageWidgetState extends State<EstimatePercentageWidget>
   @override
   void initState() {
     super.initState();
-    
+
     revealController = AnimationController(
       duration: const Duration(milliseconds: ANIMATION_DURATION_MS),
       vsync: this,
     );
-    
+
     revealAnimation = CurvedAnimation(
       parent: revealController,
       curve: Curves.easeInOut,
@@ -91,12 +93,14 @@ class EstimatePercentageWidgetState extends State<EstimatePercentageWidget>
 
             RenderIf.condition(
               hasSubmitted,
-              Column(children: [
-                const Spacing.height(ESTIMATE_SECTION_SPACING),
-                ResultSection(),
-                const Spacing.height(ESTIMATE_SECTION_SPACING),
-                ExplanationSection(),
-              ]),
+              Column(
+                children: [
+                  const Spacing.height(ESTIMATE_SECTION_SPACING),
+                  ResultSection(),
+                  const Spacing.height(ESTIMATE_SECTION_SPACING),
+                  ExplanationSection(),
+                ],
+              ),
             ),
           ],
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -107,7 +111,7 @@ class EstimatePercentageWidgetState extends State<EstimatePercentageWidget>
   }
 
   // Widget methods
-  
+
   Widget QuestionText() {
     return Text(
       widget.content.question,
@@ -147,7 +151,7 @@ class EstimatePercentageWidgetState extends State<EstimatePercentageWidget>
           AnimatedDefaultTextStyle(
             duration: const Duration(milliseconds: 200),
             style: estimateTextStyle,
-            child: Text('${currentEstimate.round()}%'),
+            child: Typography.text('${currentEstimate.round()}%'),
           ),
         ],
       ),
@@ -165,7 +169,7 @@ class EstimatePercentageWidgetState extends State<EstimatePercentageWidget>
 
   TextStyle getEstimateTextStyle() {
     final double fontSize = hasSubmitted ? 36 : 42;
-    final Color textColor = hasSubmitted 
+    final Color textColor = hasSubmitted
         ? AppTheme.textPrimary.withValues(alpha: 0.7)
         : AppTheme.primaryBlue;
 
@@ -186,7 +190,9 @@ class EstimatePercentageWidgetState extends State<EstimatePercentageWidget>
           SliderTheme(
             data: SliderThemeData(
               activeTrackColor: AppTheme.primaryBlue,
-              inactiveTrackColor: AppTheme.textPrimary.withValues(alpha: 0.1),
+              inactiveTrackColor: AppTheme.textPrimary.withValues(
+                alpha: 0.1,
+              ),
               thumbColor: AppTheme.primaryBlue,
               overlayColor: AppTheme.primaryBlue.withValues(alpha: 0.1),
               thumbShape: const RoundSliderThumbShape(
@@ -200,11 +206,13 @@ class EstimatePercentageWidgetState extends State<EstimatePercentageWidget>
               value: currentEstimate,
               max: 100,
               divisions: 100,
-              onChanged: hasSubmitted ? null : (value) {
-                setState(() {
-                  currentEstimate = value;
-                });
-              },
+              onChanged: hasSubmitted
+                  ? null
+                  : (value) {
+                      setState(() {
+                        currentEstimate = value;
+                      });
+                    },
             ),
           ),
 
@@ -240,96 +248,93 @@ class EstimatePercentageWidgetState extends State<EstimatePercentageWidget>
     return RenderIf.condition(
       !hasSubmitted,
       InkWell(
-      onTap: submitEstimate,
-      borderRadius: BorderRadius.circular(12),
-      child: Container(
-        height: 48,
-        decoration: BoxDecoration(
-          color: AppTheme.primaryBlue,
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Center(
-          child: Text(
-            SUBMIT_BUTTON_TEXT,
-            style: Typography.bodyLargeStyle.copyWith(
-              color: Colors.white,
-              fontWeight: FontWeight.w600,
-              fontSize: 16,
+        onTap: submitEstimate,
+        borderRadius: BorderRadius.circular(12),
+        child: Container(
+          height: 48,
+          decoration: BoxDecoration(
+            color: AppTheme.primaryBlue,
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Center(
+            child: Text(
+              SUBMIT_BUTTON_TEXT,
+              style: Typography.bodyLargeStyle.copyWith(
+                color: Colors.white,
+                fontWeight: FontWeight.w600,
+                fontSize: 16,
+              ),
             ),
           ),
         ),
       ),
-    ),
     );
   }
 
   Widget ResultSection() {
-    final int difference = (currentEstimate.round() - correctPercentage).abs();
+    final int difference = (currentEstimate.round() - correctPercentage)
+        .abs();
     final bool isClose = difference <= CLOSE_ESTIMATE_THRESHOLD;
-    
+
     return FadeTransition(
       opacity: revealAnimation,
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: buildResultDecoration(isClose),
-        child: Div.column(
-          [
-            Div.row(
-              [
-                buildResultIcon(isClose),
+        child: Div.column([
+          Div.row([
+            buildResultIcon(isClose),
 
-                const Spacing.width(8),
+            const Spacing.width(8),
 
-                buildResultMessage(isClose),
-              ],
+            buildResultMessage(isClose),
+          ]),
+
+          const Spacing.height(12),
+
+          RenderIf.condition(
+            !isClose,
+            Padding(
+              padding: const EdgeInsets.only(bottom: 8),
+              child: buildHintText(difference),
             ),
+          ),
 
-            const Spacing.height(12),
-
-            RenderIf.condition(
-              !isClose,
-              Padding(
-                padding: const EdgeInsets.only(bottom: 8),
-                child: buildHintText(difference),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              ResultColumn(
+                label: 'Your Estimate',
+                value: '${currentEstimate.round()}%',
+                isHighlighted: false,
               ),
-            ),
 
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                ResultColumn(
-                  label: 'Your Estimate',
-                  value: '${currentEstimate.round()}%',
-                  isHighlighted: false,
-                ),
+              Container(
+                width: 1,
+                height: 40,
+                color: AppTheme.textPrimary.withValues(alpha: 0.1),
+              ),
 
-                Container(
-                  width: 1,
-                  height: 40,
-                  color: AppTheme.textPrimary.withValues(alpha: 0.1),
-                ),
+              ResultColumn(
+                label: 'Actual',
+                value: '$correctPercentage%',
+                isHighlighted: true,
+              ),
 
-                ResultColumn(
-                  label: 'Actual',
-                  value: '$correctPercentage%',
-                  isHighlighted: true,
-                ),
+              Container(
+                width: 1,
+                height: 40,
+                color: AppTheme.textPrimary.withValues(alpha: 0.1),
+              ),
 
-                Container(
-                  width: 1,
-                  height: 40,
-                  color: AppTheme.textPrimary.withValues(alpha: 0.1),
-                ),
-
-                ResultColumn(
-                  label: 'Difference',
-                  value: '$difference%',
-                  isHighlighted: false,
-                ),
-              ],
-            ),
-          ],
-        ),
+              ResultColumn(
+                label: 'Difference',
+                value: '$difference%',
+                isHighlighted: false,
+              ),
+            ],
+          ),
+        ]),
       ),
     );
   }
@@ -355,8 +360,10 @@ class EstimatePercentageWidgetState extends State<EstimatePercentageWidget>
           value,
           style: Typography.bodyLargeStyle.copyWith(
             fontSize: 18,
-            fontWeight: isHighlighted ? FontWeight.bold : FontWeight.w600,
-            color: isHighlighted 
+            fontWeight: isHighlighted
+                ? FontWeight.bold
+                : FontWeight.w600,
+            color: isHighlighted
                 ? AppTheme.primaryGreen
                 : AppTheme.textPrimary,
           ),
@@ -379,10 +386,10 @@ class EstimatePercentageWidgetState extends State<EstimatePercentageWidget>
   }
 
   BoxDecoration buildResultDecoration(bool isClose) {
-    final Color backgroundColor = isClose 
+    final Color backgroundColor = isClose
         ? AppTheme.primaryGreen.withValues(alpha: 0.1)
         : Colors.orange.shade50;
-    final Color borderColor = isClose 
+    final Color borderColor = isClose
         ? AppTheme.primaryGreen
         : Colors.orange.shade400;
 
@@ -394,8 +401,10 @@ class EstimatePercentageWidgetState extends State<EstimatePercentageWidget>
   }
 
   Widget buildResultIcon(bool isClose) {
-    final IconData iconData = isClose ? Icons.check_circle : Icons.info_outline;
-    final Color iconColor = isClose 
+    final IconData iconData = isClose
+        ? Icons.check_circle
+        : Icons.info_outline;
+    final Color iconColor = isClose
         ? AppTheme.primaryGreen
         : Colors.orange.shade600;
 
@@ -403,8 +412,10 @@ class EstimatePercentageWidgetState extends State<EstimatePercentageWidget>
   }
 
   Widget buildResultMessage(bool isClose) {
-    final String message = isClose ? 'Great estimate!' : 'Keep practicing!';
-    final Color textColor = isClose 
+    final String message = isClose
+        ? 'Great estimate!'
+        : 'Keep practicing!';
+    final Color textColor = isClose
         ? AppTheme.primaryGreen
         : Colors.orange.shade700;
 
@@ -420,7 +431,7 @@ class EstimatePercentageWidgetState extends State<EstimatePercentageWidget>
 
   Widget buildHintText(int difference) {
     final String hintMessage = getHintMessage(difference);
-    
+
     return Text(
       hintMessage,
       style: Typography.bodyMediumStyle.copyWith(
@@ -433,11 +444,11 @@ class EstimatePercentageWidgetState extends State<EstimatePercentageWidget>
 
   String getHintMessage(int difference) {
     final bool isLargeDifference = difference > 30;
-    
+
     if (isLargeDifference) {
       return 'Tip: Consider the context and real-world factors that might influence this statistic.';
     }
-    
+
     return 'Close! Think about the specific details mentioned in the text.';
   }
 
@@ -450,7 +461,8 @@ class EstimatePercentageWidgetState extends State<EstimatePercentageWidget>
 
     revealController.forward();
 
-    final int difference = (currentEstimate.round() - correctPercentage).abs();
+    final int difference = (currentEstimate.round() - correctPercentage)
+        .abs();
     final bool isClose = difference <= CLOSE_ESTIMATE_THRESHOLD;
 
     if (isClose) {

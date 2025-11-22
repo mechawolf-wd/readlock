@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class Typography {
-  // Base color definitions
-  static const Color TEXT_PRIMARY = Color(0xFFE0E0E0);
-  static const Color TEXT_SECONDARY = Color(0xFFB0B0B0);
-  static const Color TEXT_TERTIARY = Color(0xFF808080);
+  // Base color definitions for light theme
+  static const Color TEXT_PRIMARY = Color(0xFF212121);
+  static const Color TEXT_SECONDARY = Color(0xFF757575);
+  static const Color TEXT_TERTIARY = Color(0xFF9E9E9E);
 
   // Typography styles
   static final TextStyle headingLargeStyle = GoogleFonts.merriweather(
@@ -37,31 +37,81 @@ class Typography {
   );
 
   // Text widget methods
-  static Text text(String content, {TextAlign? textAlign}) {
-    return Text(content, style: bodyMediumStyle, textAlign: textAlign);
-  }
-
-  static Text headingLarge(String content, {TextAlign? textAlign}) {
+  static Text text(
+    String content, {
+    TextAlign? textAlign,
+    Color? color,
+  }) {
     return Text(
       content,
-      style: headingLargeStyle,
+      style: color != null
+          ? bodyMediumStyle.copyWith(color: color)
+          : bodyMediumStyle,
       textAlign: textAlign,
     );
   }
 
-  static Text headingMedium(String content, {TextAlign? textAlign}) {
+  static Text headingLarge(
+    String content, {
+    TextAlign? textAlign,
+    Color? color,
+  }) {
     return Text(
       content,
-      style: headingMediumStyle,
+      style: color != null
+          ? headingLargeStyle.copyWith(color: color)
+          : headingLargeStyle,
       textAlign: textAlign,
     );
   }
 
-  static Text bodyLarge(String content, {TextAlign? textAlign}) {
-    return Text(content, style: bodyLargeStyle, textAlign: textAlign);
+  static Text headingMedium(
+    String content, {
+    TextAlign? textAlign,
+    Color? color,
+    int? maxLines,
+    TextOverflow? overflow,
+  }) {
+    return Text(
+      content,
+      style: color != null
+          ? headingMediumStyle.copyWith(color: color)
+          : headingMediumStyle,
+      textAlign: textAlign,
+      maxLines: maxLines,
+      overflow: overflow,
+    );
   }
 
-  static Text bodyMedium(String content, {TextAlign? textAlign}) {
-    return Text(content, style: bodyMediumStyle, textAlign: textAlign);
+  static Text bodyLarge(
+    String content, {
+    TextAlign? textAlign,
+    Color? color,
+  }) {
+    return Text(
+      content,
+      style: color != null
+          ? bodyLargeStyle.copyWith(color: color)
+          : bodyLargeStyle,
+      textAlign: textAlign,
+    );
+  }
+
+  static Text bodyMedium(
+    String content, {
+    TextAlign? textAlign,
+    Color? color,
+    int? maxLines,
+    TextOverflow? overflow,
+  }) {
+    return Text(
+      content,
+      style: color != null
+          ? bodyMediumStyle.copyWith(color: color)
+          : bodyMediumStyle,
+      textAlign: textAlign,
+      maxLines: maxLines,
+      overflow: overflow,
+    );
   }
 }

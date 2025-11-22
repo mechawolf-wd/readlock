@@ -2,12 +2,12 @@
 // Users select which statement is incorrect with visual feedback
 
 import 'package:flutter/material.dart' hide Typography;
-import 'package:relevant/constants/app_constants.dart';
-import 'package:relevant/course_screens/models/course_model.dart';
-import 'package:relevant/utility_widgets/utility_widgets.dart';
-import 'package:relevant/constants/typography.dart';
-import 'package:relevant/constants/app_theme.dart';
-import 'package:relevant/utility_widgets/text_animation/progressive_text.dart';
+import 'package:readlock/constants/app_constants.dart';
+import 'package:readlock/course_screens/models/course_model.dart';
+import 'package:readlock/utility_widgets/utility_widgets.dart';
+import 'package:readlock/constants/typography.dart';
+import 'package:readlock/constants/app_theme.dart';
+import 'package:readlock/utility_widgets/text_animation/progressive_text.dart';
 
 const double STATEMENT_ITEM_SPACING = 12.0;
 const double STATEMENT_SECTION_SPACING = 24.0;
@@ -85,7 +85,7 @@ class IncorrectStatementWidgetState
     return Div.column([
       ...widget.content.options.asMap().entries.map((entry) {
         final int statementIndex = entry.key;
-        
+
         return Div.column([
           StatementItem(statementIndex: statementIndex),
 

@@ -2,20 +2,20 @@
 // Provides wrapper widgets that convert JSON data to proper model objects
 
 import 'package:flutter/material.dart' hide Typography;
-import 'package:relevant/constants/typography.dart';
-import 'package:relevant/utility_widgets/utility_widgets.dart';
-import 'package:relevant/course_screens/models/course_model.dart';
-import 'package:relevant/course_screens/widgets/intro_content_widget.dart';
-import 'package:relevant/course_screens/widgets/text_content_widget.dart';
-import 'package:relevant/course_screens/widgets/question_content_widget.dart';
-import 'package:relevant/course_screens/widgets/outro_content_widget.dart';
-import 'package:relevant/course_screens/widgets/design_examples_showcase.dart';
-import 'package:relevant/course_screens/widgets/reflection_content_widget.dart';
-import 'package:relevant/course_screens/widgets/quote_content_widget.dart';
-import 'package:relevant/course_screens/widgets/true_false_question_widget.dart';
-import 'package:relevant/course_screens/widgets/fill_gap_question_widget.dart';
-import 'package:relevant/course_screens/widgets/incorrect_statement_widget.dart';
-import 'package:relevant/course_screens/widgets/estimate_percentage_widget.dart';
+import 'package:readlock/constants/typography.dart';
+import 'package:readlock/utility_widgets/utility_widgets.dart';
+import 'package:readlock/course_screens/models/course_model.dart';
+import 'package:readlock/course_screens/widgets/intro_content_widget.dart';
+import 'package:readlock/course_screens/widgets/text_content_widget.dart';
+import 'package:readlock/course_screens/widgets/question_content_widget.dart';
+import 'package:readlock/course_screens/widgets/outro_content_widget.dart';
+import 'package:readlock/course_screens/widgets/design_examples_showcase.dart';
+import 'package:readlock/course_screens/widgets/reflection_content_widget.dart';
+import 'package:readlock/course_screens/widgets/quote_content_widget.dart';
+import 'package:readlock/course_screens/widgets/true_false_question_widget.dart';
+import 'package:readlock/course_screens/widgets/fill_gap_question_widget.dart';
+import 'package:readlock/course_screens/widgets/incorrect_statement_widget.dart';
+import 'package:readlock/course_screens/widgets/estimate_percentage_widget.dart';
 
 const String UNKNOWN_CONTENT_TYPE_MESSAGE = 'Unknown content type: ';
 
@@ -307,10 +307,7 @@ class JsonReflectionContentWidget extends StatelessWidget {
 class JsonQuoteContentWidget extends StatelessWidget {
   final Map<String, dynamic> contentData;
 
-  const JsonQuoteContentWidget({
-    super.key,
-    required this.contentData,
-  });
+  const JsonQuoteContentWidget({super.key, required this.contentData});
 
   @override
   Widget build(BuildContext context) {
