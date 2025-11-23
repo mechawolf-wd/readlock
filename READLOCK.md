@@ -68,11 +68,16 @@ Based on the course data structure, strategically use these content types:
 
 ### **Optimal Flow Pattern**
 
+**Traditional Story-Based Flow:**
 1. **Hook Introduction** (Intro) → **Story Foundation** (Text × 2-3) → **Comprehension Check** (Question)
-
 2. **Concept Deep-Dive** (Text + Quote) → **Application Challenge** (Fill Gap/Estimate) → **Understanding Verification** (Question)
 3. **Advanced Application** (Reflection) → **Error Recognition** (Incorrect Statement) → **Synthesis** (Text)
 4. **Visual Learning** (Design Examples) → **Final Integration** (Question/Reflection) → **Conclusion** (Outro)
+
+**Alternative Dialog-Based Flow:**
+1. **Engaging Questions** (Question × 2-3) → **Interactive Explanation** (Text) → **Topic Introduction** (Text)
+2. **Concept Exploration** (Text + Quote) → **Application Challenge** (Fill Gap/Estimate) → **Understanding Verification** (Question)
+3. **Advanced Application** (Reflection) → **Synthesis** (Text) → **Final Integration** (Question) → **Conclusion** (Outro)
 
 ### **Content Metrics**
 
@@ -145,8 +150,8 @@ Based on the course data structure, strategically use these content types:
 
 **Opening Strategy:**
 
-- Hook with the book's most compelling example or question
-- Establish personal relevance ("Why should you care about [book topic]?")
+- **Story-Based Opening**: Hook with the book's most compelling example or question, then establish personal relevance ("Why should you care about [book topic]?")
+- **Dialog-Based Opening**: Alternative approach with 2-3 engaging question widgets that create a conversation with the user, followed by explanatory content, then transition into topic exploration
 - Preview the journey and what learners will gain
 
 **Content Progression:**
@@ -399,6 +404,17 @@ Use `<rl-marker-green>` tags for essential concepts users must retain (markers o
 - **Offline Capability**: Core course content downloadable for offline access
 - **Memory Management**: App should run smoothly on devices with 2GB+ RAM
 
+### **Language Support**
+
+Readlock will be available in the following languages:
+
+- **🇺🇸 English** - Primary language and default
+- **🇪🇸 Spanish** - Major international market
+- **🇫🇷 French** - European expansion
+- **🇩🇪 German** - Key European market
+- **🇷🇺 Russian** - Eastern European reach
+- **🇵🇱 Polish** - Polish reach
+
 ### **Content Delivery**
 
 - **Progressive Loading**: Text loads first, images/media load progressively
@@ -546,8 +562,9 @@ Use `<rl-marker-green>` tags for essential concepts users must retain (markers o
 
 #### **1. Text Highlighting & Saving**
 
-- Users can highlight text in courses to save important parts
-- Highlights saved in "My Highlights" section
+- Users can save entire slides instead of text highlights
+- Saved slides available in "My Saved Slides" section
+- Text segments can have blurred fragments that can be unblurred by clicking/tapping them
 
 #### **2. Scripted Elevation (Post-Course Feature)**
 

@@ -22,12 +22,8 @@
               "title": "Doors, Faucets, and Frustration",
               "intro-text-segments": [
                 "Every day, you interact with hundreds of designed objects. Most work flawlessly, becoming invisible extensions of your intent.",
-                "Yet it's the failures that linger: the hotel door whose handle suggests pulling while demanding a push.",
-                "Those shower controls that seem engineered by someone who has never experienced scalding water.",
-                "These aren't accidents—they represent a disconnect between the designer's mental model and your intuitive expectations.",
-                "Don Norman spent decades studying why intelligent people struggle with objects designed for their use.",
-                "His insights reveal the hidden psychology woven into every handle, button, and interface we encounter.",
-                "What emerges isn't about aesthetics, but understanding how the mind interprets the designed world."
+                "Yet it's the failures that linger: the hotel door whose handle suggests pulling while demanding a push. Those shower controls that seem engineered by someone who has never experienced scalding water.",
+                "In this course, we will explore how the mind interprets the designed world and discover the hidden psychology behind every handle, button, and interface we encounter."
               ]
             },
             {
@@ -80,9 +76,9 @@
             },
             {
               "entity-type": "question",
-              "id": "basic-question",
-              "title": "Common Sense Check",
-              "question": "When you see a door with a handle, what does your brain assume?",
+              "id": "question-door",
+              "title": "Door Design",
+              "question": "Quick question: When you see a door with a handle, what does your brain assume?",
               "options": [
                 {
                   "text": "You should pull it"
@@ -97,50 +93,105 @@
               "correct-answer-indices": [
                 0
               ],
-              "explanation": "Handles suggest pulling. This is called an \"affordance.\"",
+              "explanation": "Handles suggest pulling. This is called an \"affordance\" - what the design tells you to do.",
+              "hint": "Think about what action a handle naturally suggests when you grab it.",
+              "type": "multiple-choice"
+            },
+            {
+              "entity-type": "question",
+              "id": "question-faucet",
+              "title": "Faucet Mapping",
+              "question": "Think about it: Why did David struggle with the bathroom faucet?",
+              "options": [
+                {
+                  "text": "The handles had no clear mapping to hot and cold"
+                },
+                {
+                  "text": "He didn't read the instructions"
+                },
+                {
+                  "text": "The water pressure was too high"
+                }
+              ],
+              "correct-answer-indices": [
+                0
+              ],
+              "explanation": "Without visual cues or natural positioning, users have to guess which control does what.",
+              "hint": "Consider what information was missing from the faucet handles.",
+              "type": "multiple-choice"
+            },
+            {
+              "entity-type": "question",
+              "id": "question-stove",
+              "title": "Stove Controls",
+              "question": "Consider this: What made the stove controls confusing for Maria?",
+              "options": [
+                {
+                  "text": "The knobs were arranged differently than the burners"
+                },
+                {
+                  "text": "The knobs were too small"
+                },
+                {
+                  "text": "She wasn't familiar with gas stoves"
+                }
+              ],
+              "correct-answer-indices": [
+                0
+              ],
+              "explanation": "Linear control layout doesn't match the square burner arrangement - poor natural mapping.",
+              "hint": "Look at how the controls were positioned compared to the burners.",
               "type": "multiple-choice"
             },
             {
               "entity-type": "text",
-              "id": "clarification-1",
-              "title": "Clarification 1",
+              "id": "topic-introduction",
+              "title": "The Psychology of Design",
               "text-segments": [
-                "Don Norman identified seven fundamental principles that separate good design from frustrating experiences we encounter daily.",
-                "The first principle is affordances - the relationship between the properties of an object and the capabilities of the person that determines how the object could be used.",
-                "A door handle naturally affords grasping and pulling, while a flat metal plate clearly affords pushing.",
-                "When affordances are clear and obvious, you instinctively know what to do without thinking.",
-                "When they're unclear or misleading, you're forced to guess, often failing and feeling foolish for something that isn't your fault."
+                "Those three scenarios reveal something profound about human psychology and design.",
+                "Each failure wasn't random - they point to specific psychological principles that designers either understand or ignore.",
+                "Don Norman spent decades studying these patterns and identified seven fundamental principles that separate intuitive design from daily frustration.",
+                "Understanding these principles transforms how you see every interface, from door handles to smartphone apps."
               ]
             },
             {
               "entity-type": "text",
-              "id": "clarification-2",
-              "title": "Clarification 2",
+              "id": "principle-affordances",
+              "title": "Affordances",
               "text-segments": [
-                "The second principle is feedback - every action needs a clear and immediate reaction to confirm it worked.",
+                "The first principle is affordances - the relationship between an object's properties and what actions they suggest to users.",
+                "A door handle naturally affords grasping and pulling, while a flat metal plate clearly affords pushing.",
+                "Good affordances are immediately obvious - you know what to do without thinking or reading instructions.",
+                "Poor affordances mislead users into taking wrong actions, creating the illusion of user error when it's actually design failure."
+              ]
+            },
+            {
+              "entity-type": "text",
+              "id": "principle-feedback",
+              "title": "Feedback",
+              "text-segments": [
+                "The second principle is feedback - every action needs a clear and immediate response to confirm it worked.",
                 "When you press a button, you should see a light, hear a click, or feel the button depress.",
-                "When you turn a knob, you need to feel resistance and see or hear the results of your action.",
-                "Without proper feedback, you're operating completely blind, never sure if your actions had any effect.",
+                "Without proper feedback, you're operating blind, never sure if your actions had any effect.",
                 "Good feedback is immediate and informative, while poor feedback leaves you wondering if anything happened at all."
               ]
             },
             {
               "entity-type": "text",
-              "id": "clarification-3",
-              "title": "Clarification 3",
+              "id": "principle-mapping",
+              "title": "Natural Mapping",
               "text-segments": [
-                "The third principle is natural mapping - controls should spatially and logically relate to their effects in the world.",
-                "A steering wheel maps rotation directly to the direction your car turns, making it intuitive.",
-                "Light switches should be positioned to map naturally to the lights they control in the room.",
-                "When mapping feels natural and follows spatial relationships, learning becomes instant and effortless.",
-                "When it's arbitrary or contradicts expectations, you need instruction manuals for the simplest tasks."
+                "The third principle is natural mapping - controls should spatially and logically relate to their effects.",
+                "A steering wheel maps rotation directly to car direction, making the relationship intuitive and learnable.",
+                "Light switches positioned to mirror room layout create instant understanding of which controls what.",
+                "When mapping violates spatial relationships, simple tasks require instruction manuals and constant mental translation."
               ]
             },
             {
               "entity-type": "question",
               "id": "humor-question-1",
               "title": "The USB Mystery",
-              "question": "Why does a USB cable never fit on the first try?",
+              "question": "What do you think? Why does a USB cable never fit on the first try?",
               "options": [
                 {
                   "text": "The USB exists in quantum superposition"
@@ -153,6 +204,7 @@
                 1
               ],
               "explanation": "USB connectors look identical from both sides. Good design makes orientation obvious.",
+              "hint": "Consider what visual information the USB connector provides to help users orient it correctly.",
               "type": "multiple-choice"
             },
             {
@@ -170,19 +222,20 @@
               "entity-type": "question",
               "id": "estimate-error-rate",
               "title": "User Error Statistics",
-              "question": "What percentage of so-called 'user errors' in airplane accidents were actually caused by poor cockpit design, according to FAA studies?",
+              "question": "Can you estimate: What percentage of so-called 'user errors' in airplane accidents were actually caused by poor cockpit design, according to FAA studies?",
               "options": [],
               "correct-answer-indices": [
                 82
               ],
               "explanation": "FAA studies revealed that 82% of pilot errors were actually design-induced errors. Poor placement of controls, confusing displays, and non-intuitive interfaces led to mistakes that were blamed on pilots but were really design failures.",
+              "hint": "Think about how cockpit design might influence pilot behavior and decision-making under pressure.",
               "type": "estimate-percentage"
             },
             {
               "entity-type": "question",
               "id": "humor-question-2",
               "title": "The Microwave Paradox",
-              "question": "Why can you launch a space shuttle but not figure out your hotel microwave?",
+              "question": "What do you think? Why can you launch a space shuttle but not figure out your hotel microwave?",
               "options": [
                 {
                   "text": "Space shuttles have better user manuals"
@@ -201,7 +254,7 @@
               "entity-type": "question",
               "id": "estimate-confusion-rate",
               "title": "Control Confusion",
-              "question": "In a study of hotel guests, what percentage couldn't figure out how to turn on the shower within 10 seconds?",
+              "question": "What do you think? In a study of hotel guests, what percentage couldn't figure out how to turn on the shower within 10 seconds?",
               "options": [],
               "correct-answer-indices": [
                 47
@@ -225,7 +278,7 @@
               "entity-type": "question",
               "id": "true-false-design",
               "title": "Design Principle Check",
-              "question": "Good design should require extensive user manuals to understand.",
+              "question": "What do you think? Good design should require extensive user manuals to understand.",
               "options": [
                 {
                   "text": "True"
@@ -244,7 +297,7 @@
               "entity-type": "question",
               "id": "estimate-medical-errors",
               "title": "Medical Device Errors",
-              "question": "What percentage of fatal medical device errors are attributed to interface design problems rather than device malfunction?",
+              "question": "What do you think? What percentage of fatal medical device errors are attributed to interface design problems rather than device malfunction?",
               "options": [],
               "correct-answer-indices": [
                 67
@@ -267,7 +320,7 @@
               "entity-type": "question",
               "id": "fill-gap-design",
               "title": "Complete the Principle",
-              "question": "Norman's principle states that good design makes things ___ and provides clear ___.",
+              "question": "What do you think? Norman's principle states that good design makes things ___ and provides clear ___.",
               "options": [
                 {
                   "text": "visible"
@@ -293,7 +346,7 @@
               "entity-type": "question",
               "id": "estimate-study-percentage",
               "title": "Research Finding",
-              "question": "In Norman's study of door-related accidents in public buildings, what percentage of people pulled a push door on their first attempt?",
+              "question": "What do you think? In Norman's study of door-related accidents in public buildings, what percentage of people pulled a push door on their first attempt?",
               "options": [],
               "correct-answer-indices": [
                 73
@@ -305,7 +358,7 @@
               "entity-type": "question",
               "id": "estimate-smartphone-usage",
               "title": "Smartphone Adoption",
-              "question": "What percentage of smartphone users never use more than 30% of their phone's features, according to usability studies?",
+              "question": "What do you think? What percentage of smartphone users never use more than 30% of their phone's features, according to usability studies?",
               "options": [],
               "correct-answer-indices": [
                 89
@@ -324,13 +377,6 @@
                 "These designs succeed because they align perfectly with our mental models and physical capabilities.",
                 "The best designs become invisible through their excellence, while poor designs announce themselves through frustration."
               ]
-            },
-            {
-              "entity-type": "quote",
-              "id": "design-quote",
-              "title": "Design Philosophy",
-              "quote": "Good design is obvious. Great design is transparent.",
-              "author": "Joe Sparano"
             },
             {
               "entity-type": "reflection",
@@ -393,7 +439,7 @@
               "entity-type": "question",
               "id": "estimate-satisfaction",
               "title": "User Satisfaction",
-              "question": "After redesigning products using Norman's principles, by what percentage did user satisfaction scores typically increase?",
+              "question": "What do you think? After redesigning products using Norman's principles, by what percentage did user satisfaction scores typically increase?",
               "options": [],
               "correct-answer-indices": [
                 42
@@ -504,7 +550,7 @@
               "entity-type": "question",
               "id": "viral-trigger-question",
               "title": "Viral Mechanics",
-              "question": "What do Rebecca Black, ice buckets, and a dress have in common that made them viral?",
+              "question": "What do you think? What do Rebecca Black, ice buckets, and a dress have in common that made them viral?",
               "options": [
                 {
                   "text": "They were all controversial"
@@ -540,7 +586,7 @@
               "entity-type": "question",
               "id": "social-currency-question",
               "title": "Social Currency in Action",
-              "question": "Why do people share 'insider' restaurant recommendations more than Michelin-starred reviews?",
+              "question": "What do you think? Why do people share 'insider' restaurant recommendations more than Michelin-starred reviews?",
               "options": [
                 {
                   "text": "Michelin stars are too expensive"
@@ -574,7 +620,7 @@
               "entity-type": "question",
               "id": "triggers-example",
               "title": "Trigger Recognition",
-              "question": "Which trigger strategy would be most effective for a meditation app?",
+              "question": "What do you think? Which trigger strategy would be most effective for a meditation app?",
               "options": [
                 {
                   "text": "Link to traffic jams and stressful commutes"
@@ -596,7 +642,7 @@
               "entity-type": "question",
               "id": "emotion-research",
               "title": "Emotional Contagion Research",
-              "question": "In Berger's analysis of viral content, what percentage of highly shared articles evoked high-arousal emotions?",
+              "question": "What do you think? In Berger's analysis of viral content, what percentage of highly shared articles evoked high-arousal emotions?",
               "options": [],
               "correct-answer-indices": [
                 78
@@ -620,7 +666,7 @@
               "entity-type": "question",
               "id": "practical-value-sharing",
               "title": "Practical Value Measurement",
-              "question": "According to research, what percentage of people share useful content primarily to help others rather than for social recognition?",
+              "question": "What do you think? According to research, what percentage of people share useful content primarily to help others rather than for social recognition?",
               "options": [],
               "correct-answer-indices": [
                 68
@@ -644,7 +690,7 @@
               "entity-type": "question",
               "id": "story-effectiveness",
               "title": "Story vs Facts",
-              "question": "Why do stories spread faster than statistics?",
+              "question": "What do you think? Why do stories spread faster than statistics?",
               "options": [
                 {
                   "text": "Stories are more entertaining"
@@ -669,7 +715,7 @@
               "entity-type": "question",
               "id": "fill-gap-stepps",
               "title": "Complete the Framework",
-              "question": "The STEPPS framework includes Social Currency, Triggers, Emotion, Public, Practical Value, and ___.",
+              "question": "What do you think? The STEPPS framework includes Social Currency, Triggers, Emotion, Public, Practical Value, and ___.",
               "options": [
                 {
                   "text": "Stories"
@@ -694,7 +740,7 @@
               "entity-type": "question",
               "id": "viral-prediction",
               "title": "Viral Prediction Accuracy",
-              "question": "Using the STEPPS framework, researchers could predict viral success with what accuracy rate?",
+              "question": "What do you think? Using the STEPPS framework, researchers could predict viral success with what accuracy rate?",
               "options": [],
               "correct-answer-indices": [
                 84
@@ -718,7 +764,7 @@
               "entity-type": "question",
               "id": "humor-question-viral",
               "title": "The Virality Paradox",
-              "question": "Why do companies with million-dollar marketing budgets often get outperformed by teenagers with smartphones?",
+              "question": "What do you think? Why do companies with million-dollar marketing budgets often get outperformed by teenagers with smartphones?",
               "options": [
                 {
                   "text": "Teenagers have more free time"
@@ -847,7 +893,7 @@
               "entity-type": "question",
               "id": "strategic-advantage",
               "title": "Strategic Recognition",
-              "question": "In these three scenarios, what gave the winners their decisive advantage?",
+              "question": "What do you think? In these three scenarios, what gave the winners their decisive advantage?",
               "options": [
                 {
                   "text": "Superior resources and preparation"
@@ -881,7 +927,7 @@
               "entity-type": "question",
               "id": "modern-application",
               "title": "Strategic Application",
-              "question": "Which scenario best demonstrates Sun Tzu's principle of 'winning without fighting'?",
+              "question": "What do you think? Which scenario best demonstrates Sun Tzu's principle of 'winning without fighting'?",
               "options": [
                 {
                   "text": "A diplomat who prevents war through strategic alliances"
@@ -916,7 +962,7 @@
               "entity-type": "question",
               "id": "factor-priority",
               "title": "Strategic Foundation",
-              "question": "Why does Sun Tzu list 'The Way' first among his five factors?",
+              "question": "What do you think? Why does Sun Tzu list 'The Way' first among his five factors?",
               "options": [
                 {
                   "text": "It determines whether people will follow you voluntarily or reluctantly"
@@ -938,7 +984,7 @@
               "entity-type": "question",
               "id": "timing-research",
               "title": "Market Timing Statistics",
-              "question": "According to startup research, what percentage of business failures are attributed to poor market timing?",
+              "question": "What do you think? According to startup research, what percentage of business failures are attributed to poor market timing?",
               "options": [],
               "correct-answer-indices": [
                 42
@@ -962,7 +1008,7 @@
               "entity-type": "question",
               "id": "deception-example",
               "title": "Strategic Misdirection",
-              "question": "Which example best illustrates Sun Tzu's principle of strategic deception?",
+              "question": "What do you think? Which example best illustrates Sun Tzu's principle of strategic deception?",
               "options": [
                 {
                   "text": "A general who lies about troop numbers in official reports"
@@ -984,7 +1030,7 @@
               "entity-type": "question",
               "id": "speed-advantage",
               "title": "Velocity in Strategy",
-              "question": "Sun Tzu emphasized speed because rapid action provides which strategic advantage?",
+              "question": "What do you think? Sun Tzu emphasized speed because rapid action provides which strategic advantage?",
               "options": [
                 {
                   "text": "Reduces costs"
@@ -1018,7 +1064,7 @@
               "entity-type": "question",
               "id": "intelligence-failure",
               "title": "Intelligence Analysis",
-              "question": "According to business research, what percentage of strategic failures involve inadequate competitive intelligence?",
+              "question": "What do you think? According to business research, what percentage of strategic failures involve inadequate competitive intelligence?",
               "options": [],
               "correct-answer-indices": [
                 67
@@ -1030,7 +1076,7 @@
               "entity-type": "question",
               "id": "terrain-advantage",
               "title": "Positional Strategy",
-              "question": "In business terms, which best represents Sun Tzu's concept of 'difficult terrain'?",
+              "question": "What do you think? In business terms, which best represents Sun Tzu's concept of 'difficult terrain'?",
               "options": [
                 {
                   "text": "A crowded market with many established competitors"
@@ -1055,7 +1101,7 @@
               "entity-type": "question",
               "id": "fill-gap-strategy",
               "title": "Strategic Principles",
-              "question": "Sun Tzu teaches that the supreme excellence is to subdue the enemy without ___. The highest skill is winning ___ the battle begins.",
+              "question": "What do you think? Sun Tzu teaches that the supreme excellence is to subdue the enemy without ___. The highest skill is winning ___ the battle begins.",
               "options": [
                 {
                   "text": "fighting"
@@ -1093,7 +1139,7 @@
               "entity-type": "question",
               "id": "adaptability-example",
               "title": "Strategic Flexibility",
-              "question": "Which historical example best demonstrates Sun Tzu's water principle?",
+              "question": "What do you think? Which historical example best demonstrates Sun Tzu's water principle?",
               "options": [
                 {
                   "text": "A general who rigidly follows the same battle formation regardless of terrain"
@@ -1121,13 +1167,6 @@
                 "How might you win this competition without direct confrontation?",
                 "What positioning advantages could you develop before engaging?"
               ]
-            },
-            {
-              "entity-type": "quote",
-              "id": "war-quote",
-              "title": "Strategic Wisdom",
-              "quote": "If you know the enemy and know yourself, you need not fear the result of a hundred battles.",
-              "author": "Sun Tzu"
             },
             {
               "entity-type": "outro",

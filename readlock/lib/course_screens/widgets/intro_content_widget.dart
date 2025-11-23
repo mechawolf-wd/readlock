@@ -21,11 +21,10 @@ class IntroContentWidget extends StatelessWidget {
           ProgressiveText(
             textSegments: content.introTextSegments,
             textStyle: Typography.bodyMediumStyle,
-            characterDelay: const Duration(milliseconds: 15),
           ),
         ],
         padding: Constants.COURSE_SECTION_PADDING,
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
       ),
     );

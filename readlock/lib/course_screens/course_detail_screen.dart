@@ -1,11 +1,12 @@
 // Course detail screen displaying individual course content with navigation
 // Supports various content types including text, questions, intro/outro, and design examples
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide Typography;
 import 'package:readlock/course_screens/widgets/json_content_widget_factory.dart';
 import 'package:readlock/course_screens/data/course_data.dart';
 import 'package:readlock/constants/app_theme.dart';
 import 'package:readlock/utility_widgets/utility_widgets.dart';
 import 'package:readlock/main_navigation.dart';
+import 'package:readlock/constants/typography.dart';
 
 const String NO_CONTENT_AVAILABLE_MESSAGE =
     'No content available for this course';
@@ -39,6 +40,14 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
   Map<String, dynamic>? courseData;
   bool isLoading = true;
 
+  final EdgeInsets topBarPadding = const EdgeInsets.symmetric(
+    horizontal: 16,
+    vertical: 12,
+  );
+  final BorderRadius progressBarRadius = BorderRadius.circular(4);
+  final IconData backIcon = Icons.arrow_back;
+  final TextStyle emptyMessageTextStyle = const TextStyle(fontSize: 18);
+
   @override
   void initState() {
     super.initState();
@@ -53,12 +62,12 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
   Future<void> loadCourseData() async {
     try {
       courseData = await CourseData.getCourseById(widget.courseId);
+
       if (courseData != null) {
         allContent = await getAllContent();
       }
-    } catch (e) {
-      // Handle error
-      print('$ERROR_LOADING_COURSE_DATA: $e');
+    } catch (error) {
+      debugPrint('$ERROR_LOADING_COURSE_DATA: $error');
     } finally {
       setState(() {
         isLoading = false;
@@ -83,12 +92,11 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
       SafeArea(
         child: Scaffold(
           backgroundColor: AppTheme.backgroundDark,
-          body: Column(
-            children: [
-              TopProgressBar(),
-              Expanded(child: CourseBody()),
-            ],
-          ),
+          body: Div.column([
+            TopProgressBar(),
+
+            Expanded(child: CourseBody()),
+          ]),
         ),
       ),
     );
@@ -111,12 +119,7 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
   }
 
   Widget EmptyContentMessage() {
-    return const Center(
-      child: Text(
-        NO_CONTENT_AVAILABLE_MESSAGE,
-        style: TextStyle(fontSize: 18),
-      ),
-    );
+    return Center(child: Typography.text(NO_CONTENT_AVAILABLE_MESSAGE));
   }
 
   Widget ContentWidget(Map<String, dynamic> content) {
@@ -129,39 +132,29 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
         : 0.0;
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      child: Row(
-        children: [
-          GestureDetector(
-            onTap: () {
-              Navigator.of(
-                context,
-              ).push(AppTheme.fadeTransition(const MainNavigation()));
-            },
-            child: const Icon(
-              Icons.arrow_back,
-              color: AppTheme.textPrimary,
-              size: 24,
-            ),
-          ),
+      padding: topBarPadding,
+      child: Div.row([
+        GestureDetector(
+          onTap: navigateToMainScreen,
+          child: Icon(backIcon, color: AppTheme.textPrimary, size: 24),
+        ),
 
-          const SizedBox(width: 12),
+        const Spacing.width(12),
 
-          Expanded(
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(4),
-              child: LinearProgressIndicator(
-                value: progress,
-                backgroundColor: AppTheme.backgroundLight,
-                valueColor: AlwaysStoppedAnimation<Color>(
-                  getCourseColor(),
-                ),
-                minHeight: 8,
+        Expanded(
+          child: ClipRRect(
+            borderRadius: progressBarRadius,
+            child: LinearProgressIndicator(
+              value: progress,
+              backgroundColor: AppTheme.backgroundLight,
+              valueColor: AlwaysStoppedAnimation<Color>(
+                getCourseColor(),
               ),
+              minHeight: 8,
             ),
           ),
-        ],
-      ),
+        ),
+      ]),
     );
   }
 
@@ -174,6 +167,18 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
       courseData!['sections'] ?? [],
     );
 
+    return ExpandSectionsToContent(sections);
+  }
+
+  void navigateToMainScreen() {
+    Navigator.of(
+      context,
+    ).push(AppTheme.fadeTransition(const MainNavigation()));
+  }
+
+  List<Map<String, dynamic>> ExpandSectionsToContent(
+    List<Map<String, dynamic>> sections,
+  ) {
     return sections
         .expand(
           (section) =>

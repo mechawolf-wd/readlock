@@ -123,6 +123,7 @@ class QuestionContent extends CourseContent {
   final List<QuestionOption> options;
   final List<int> correctAnswerIndices;
   final String explanation;
+  final String? hint;
   final QuestionType type;
   final String? scenarioContext;
   final List<String>? followUpPrompts;
@@ -134,6 +135,7 @@ class QuestionContent extends CourseContent {
     required this.options,
     required this.correctAnswerIndices,
     required this.explanation,
+    this.hint,
     this.type = QuestionType.multipleChoice,
     this.scenarioContext,
     this.followUpPrompts,

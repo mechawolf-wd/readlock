@@ -169,8 +169,7 @@ class Div extends StatelessWidget {
   /// ```
   final dynamic radius;
 
-  const Div.column(
-    this.children, {
+  const Div.column({
     super.key,
     this.width,
     this.height,
@@ -182,10 +181,9 @@ class Div extends StatelessWidget {
     this.crossAxisAlignment,
     this.debugBorder,
     this.radius,
-  }) : direction = DIRECTION_VERTICAL;
+  }, [this.children]) : direction = DIRECTION_VERTICAL;
 
-  const Div.row(
-    this.children, {
+  const Div.row({
     super.key,
     this.width,
     this.height,
@@ -197,7 +195,7 @@ class Div extends StatelessWidget {
     this.crossAxisAlignment,
     this.debugBorder,
     this.radius,
-  }) : direction = DIRECTION_HORIZONTAL;
+  }, [this.children]) : direction = DIRECTION_HORIZONTAL;
 
   const Div.emptyColumn({
     super.key,
@@ -671,7 +669,7 @@ class StatsBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Div.row([StreakCounter(), const Spacer(), AhaCounter()]);
+    return Div.row({}, [StreakCounter(), const Spacer(), AhaCounter()]);
   }
 
   Widget StreakCounter() {
@@ -682,7 +680,7 @@ class StatsBar extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: Colors.grey.withValues(alpha: 0.2)),
       ),
-      child: Div.row([
+      child: Div.row({}, [
         const Icon(
           Icons.local_fire_department,
           color: Colors.orange,
@@ -702,7 +700,7 @@ class StatsBar extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: Colors.grey.withValues(alpha: 0.2)),
       ),
-      child: Div.row([
+      child: Div.row({}, [
         const Icon(
           Icons.lightbulb,
           color: AppTheme.primaryGreen,

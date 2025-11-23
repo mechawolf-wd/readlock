@@ -6,6 +6,7 @@ import 'package:readlock/course_screens/data/course_data.dart';
 import 'package:readlock/utility_widgets/utility_widgets.dart';
 import 'package:readlock/constants/typography.dart';
 import 'package:readlock/constants/app_theme.dart';
+import 'package:readlock/utility_widgets/course_loading_screen.dart';
 
 // Constants
 const String COURSE_ROADMAP_DEFAULT_TITLE = 'Course Roadmap';
@@ -250,15 +251,31 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
   }
 
   void navigateToCourseContent(int sectionIndex, int contentIndex) {
-    Navigator.of(context).push(
-      AppTheme.fadeTransition(
-        CourseDetailScreen(
-          courseId: widget.courseId,
-          initialSectionIndex: sectionIndex,
-          initialContentIndex: contentIndex,
-        ),
+    showLoadingScreenThenNavigate(sectionIndex, contentIndex);
+  }
+
+  void showLoadingScreenThenNavigate(int sectionIndex, int contentIndex) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const CourseLoadingScreen(),
       ),
     );
+
+    Future.delayed(const Duration(milliseconds: 1500), () {
+      if (mounted) {
+        Navigator.pushReplacement(
+          context,
+          AppTheme.fadeTransition(
+            CourseDetailScreen(
+              courseId: widget.courseId,
+              initialSectionIndex: sectionIndex,
+              initialContentIndex: contentIndex,
+            ),
+          ),
+        );
+      }
+    });
   }
 }
 

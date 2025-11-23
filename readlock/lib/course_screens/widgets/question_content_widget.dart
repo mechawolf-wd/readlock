@@ -7,7 +7,9 @@ import 'package:readlock/course_screens/models/course_model.dart';
 import 'package:readlock/utility_widgets/utility_widgets.dart';
 import 'package:readlock/constants/typography.dart';
 import 'package:readlock/constants/app_theme.dart';
-import 'package:readlock/utility_widgets/text_animation/progressive_text.dart';
+import 'package:readlock/utility_widgets/explanation_dialog.dart';
+
+enum OptionButtonState { normal, selected, correctAndAnswered }
 
 class QuestionContentWidget extends StatefulWidget {
   static const double QUESTION_SECTION_SPACING = 24.0;
@@ -34,248 +36,299 @@ class QuestionContentWidgetState extends State<QuestionContentWidget> {
   int? selectedAnswerIndex;
   List<int> selectedAnswerIndices = [];
   bool hasAnswered = false;
+  bool showHint = false;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return Div.column(
+      [
+        QuestionText(),
+
+        const Spacing.height(
+          QuestionContentWidget.QUESTION_SECTION_SPACING,
+        ),
+
+        OptionsList(),
+
+        const Spacing.height(
+          QuestionContentWidget.QUESTION_SECTION_SPACING,
+        ),
+
+      ],
       color: AppTheme.backgroundDark,
-      padding: const EdgeInsets.all(Constants.COURSE_SECTION_PADDING),
-      child: Center(
-        child: Div.column(
-          [
-            questionText(),
+      padding: Constants.COURSE_SECTION_PADDING,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.center,
+    );
+  }
 
-            const Spacing.height(
-              QuestionContentWidget.QUESTION_SECTION_SPACING,
-            ),
+  Widget QuestionText() {
+    return Typography.bodyLarge(widget.content.question);
+  }
 
-            optionsList(),
+  Widget OptionsList() {
+    return Div.column(BuildOptionWidgets());
+  }
 
-            const Spacing.height(
-              QuestionContentWidget.QUESTION_SECTION_SPACING,
-            ),
+  List<Widget> BuildOptionWidgets() {
+    return widget.content.options.asMap().entries.map((entry) {
+      final int optionIndex = entry.key;
+      final QuestionOption option = entry.value;
 
-            explanationSection(),
-          ],
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.center,
+      return Div.column([
+        OptionButton(optionIndex, option),
+
+        const Spacing.height(
+          QuestionContentWidget.OPTION_BUTTON_SPACING,
+        ),
+      ]);
+    }).toList();
+  }
+
+  Widget OptionButton(int optionIndex, QuestionOption option) {
+    final OptionButtonState buttonState = getOptionButtonState(
+      optionIndex,
+    );
+    final BoxDecoration optionDecoration = BuildOptionDecoration(
+      buttonState,
+    );
+    final TextStyle optionTextStyle = BuildOptionTextStyle(buttonState);
+    final BorderRadius inkWellRadius = Style.inkWellRadius;
+
+    return Div.row([
+      Expanded(
+        child: InkWell(
+          onTap: hasAnswered ? null : () => selectAnswer(optionIndex),
+          borderRadius: inkWellRadius,
+          child: Div.row(
+            [
+              BuildCorrectAnswerIcon(buttonState),
+
+              Expanded(
+                child: Text(option.text, style: optionTextStyle),
+              ),
+            ],
+            padding: AppTheme.contentPaddingMediumInsets,
+            decoration: optionDecoration,
+          ),
         ),
       ),
-    );
-  }
-
-  Widget questionText() {
-    return Text(
-      widget.content.question,
-      style: Typography.bodyLargeStyle.copyWith(
-        fontWeight: FontWeight.w500,
-      ),
-    );
-  }
-
-  Widget optionsList() {
-    return Div.column([
-      ...widget.content.options.asMap().entries.map((entry) {
-        final int optionIndex = entry.key;
-        final QuestionOption option = entry.value;
-
-        return Div.column([
-          optionButton(optionIndex, option),
-
-          const Spacing.height(
-            QuestionContentWidget.OPTION_BUTTON_SPACING,
-          ),
-        ]);
-      }),
     ]);
   }
 
-  Widget optionButton(int optionIndex, QuestionOption option) {
+  OptionButtonState getOptionButtonState(int optionIndex) {
     final bool isSelected = selectedAnswerIndex == optionIndex;
     final bool isCorrectAnswer = widget.content.correctAnswerIndices
         .contains(optionIndex);
     final bool isCorrectAndAnswered =
         hasAnswered && isCorrectAnswer && isSelected;
 
-    Color themeColor;
-    Color backgroundColor;
-    Color textColor;
-
     if (isCorrectAndAnswered) {
-      themeColor = AppTheme.primaryGreen;
-      backgroundColor = AppTheme.backgroundLight;
-      textColor = AppTheme.textPrimary;
+      return OptionButtonState.correctAndAnswered;
     } else if (isSelected && !hasAnswered) {
-      themeColor = AppTheme.primaryBlue;
-      backgroundColor = AppTheme.backgroundLight;
-      textColor = AppTheme.textPrimary;
+      return OptionButtonState.selected;
     } else {
-      themeColor = AppTheme.textPrimary.withValues(alpha: 0.2);
-      backgroundColor = AppTheme.backgroundLight;
-      textColor = AppTheme.textPrimary;
+      return OptionButtonState.normal;
+    }
+  }
+
+  BoxDecoration BuildOptionDecoration(OptionButtonState state) {
+    final Color themeColor = getThemeColorForState(state);
+
+    return Style.optionDecoration.copyWith(
+      border: Border.all(color: themeColor, width: 2),
+    );
+  }
+
+  TextStyle BuildOptionTextStyle(OptionButtonState state) {
+    final bool isSelected =
+        state == OptionButtonState.selected ||
+        state == OptionButtonState.correctAndAnswered;
+
+    return Style.optionTextStyle.copyWith(
+      fontWeight: isSelected ? FontWeight.w500 : FontWeight.normal,
+    );
+  }
+
+  Widget BuildCorrectAnswerIcon(OptionButtonState state) {
+    if (state != OptionButtonState.correctAndAnswered) {
+      return const SizedBox.shrink();
     }
 
-    final Widget optionContainer = Container(
-      width: double.infinity,
-      decoration: BoxDecoration(
-        color: backgroundColor,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: themeColor, width: 2),
-      ),
-      child: InkWell(
-        onTap: hasAnswered ? null : () => selectAnswer(optionIndex),
-        borderRadius: BorderRadius.circular(12),
-        child: Padding(
-          padding: AppTheme.contentPaddingMediumInsets,
-          child: Row(
-            children: [
-              RenderIf.condition(
-                isCorrectAndAnswered,
-                Row(
-                  children: [
-                    Container(
-                      padding: AppTheme.contentPaddingTinyInsets,
-                      decoration: BoxDecoration(
-                        color: themeColor.withValues(alpha: 0.1),
-                        borderRadius: BorderRadius.circular(4),
-                      ),
-                      child: Icon(
-                        Icons.check_circle,
-                        color: themeColor,
-                        size: 18,
-                      ),
-                    ),
-                    const Spacing.width(12),
-                  ],
-                ),
-              ),
+    final Color themeColor = getThemeColorForState(state);
+    final BoxDecoration iconDecoration = Style.correctIconDecoration
+        .copyWith(color: themeColor.withValues(alpha: 0.1));
 
-              Expanded(
-                child: Text(
-                  option.text,
-                  style: Typography.bodyLargeStyle.copyWith(
-                    fontSize: 14,
-                    fontWeight: isSelected
-                        ? FontWeight.w500
-                        : FontWeight.normal,
-                    color: textColor,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
+    return Div.row([
+      Div.row(
+        [Icon(Icons.check_circle, color: themeColor, size: 18)],
+        padding: AppTheme.contentPaddingTinyInsets,
+        decoration: iconDecoration,
       ),
-    );
 
-    return optionContainer;
+      const Spacing.width(12),
+    ]);
   }
 
-  Widget explanationSection() {
-    return RenderIf.condition(
-      hasAnswered,
-      ProgressiveText(
-        textSegments: [widget.content.explanation],
-        textStyle: Typography.bodyLargeStyle.copyWith(
-          fontSize: 14,
-          height: 1.5,
+  Color getThemeColorForState(OptionButtonState state) {
+    switch (state) {
+      case OptionButtonState.correctAndAnswered:
+        return AppTheme.primaryGreen;
+      case OptionButtonState.selected:
+        return AppTheme.primaryBlue;
+      case OptionButtonState.normal:
+        return AppTheme.textPrimary.withValues(alpha: 0.2);
+    }
+  }
+
+  void showIncorrectAnswerSnackbar() {
+    ScaffoldMessenger.of(context).showSnackBar(buildIncorrectAnswerSnackbar());
+  }
+
+  SnackBar buildIncorrectAnswerSnackbar() {
+    return SnackBar(
+      content: Div.row([
+        const Icon(Icons.lightbulb_outline, color: Colors.white, size: 16),
+
+        const Spacing.width(8),
+
+        Typography.text('Incorrect', color: Colors.white),
+
+        const Spacer(),
+
+        TextButton(
+          onPressed: showHintDialog,
+          child: Typography.text('Hint it?', color: Colors.white),
         ),
-      ),
+      ]),
+      backgroundColor: Colors.grey.shade600,
+      duration: const Duration(seconds: 4),
+      behavior: SnackBarBehavior.floating,
+      shape: Style.snackbarShape,
+      margin: Style.snackbarMargin,
     );
   }
+
+  // Logic methods
 
   void selectAnswer(int optionIndex) {
     final bool isCorrectAnswer = widget.content.correctAnswerIndices
         .contains(optionIndex);
 
     if (!isCorrectAnswer && !hasAnswered) {
-      // Wrong answer - show helpful guidance
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Icon(
-                    Icons.lightbulb_outline,
-                    color: Colors.white,
-                    size: 16,
-                  ),
-                  const Spacing.width(8),
-                  Text(
-                    'Think again',
-                    style: Typography.bodyLargeStyle.copyWith(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ],
-              ),
-              const Spacing.height(4),
-              Text(
-                'Consider the key concepts from this section. The correct answer relates to the main principle discussed.',
-                style: Typography.bodyMediumStyle.copyWith(
-                  color: Colors.white.withValues(alpha: 0.9),
-                  fontSize: 12,
-                  height: 1.3,
-                ),
-              ),
-            ],
-          ),
-          backgroundColor: Colors.orange.shade600,
-          duration: const Duration(milliseconds: 3000),
-          behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8),
-          ),
-          margin: const EdgeInsets.all(16),
-        ),
-      );
+      showIncorrectAnswerSnackbar();
       return;
     }
 
     if (isCorrectAnswer && !hasAnswered) {
-      // Correct answer - mark as answered and show green
-      setState(() {
-        selectedAnswerIndex = optionIndex;
-        hasAnswered = true;
-      });
-
-      // Show Aha snackbar after a short delay
-      Future.delayed(const Duration(milliseconds: 300), () {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Icon(Icons.star, color: Colors.white, size: 16),
-                  const Spacing.width(8),
-                  Text(
-                    '+5 Aha',
-                    style: Typography.bodyLargeStyle.copyWith(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ],
-              ),
-              backgroundColor: Colors.green.shade600,
-              duration: const Duration(seconds: 2),
-              behavior: SnackBarBehavior.floating,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
-              ),
-              margin: const EdgeInsets.all(16),
-            ),
-          );
-        }
-      });
-
-      widget.onAnswerSelected(optionIndex, isCorrectAnswer);
+      handleCorrectAnswer(optionIndex, isCorrectAnswer);
     }
   }
+
+  void handleCorrectAnswer(int optionIndex, bool isCorrectAnswer) {
+    setState(() {
+      selectedAnswerIndex = optionIndex;
+      hasAnswered = true;
+    });
+
+    showCorrectAnswerFeedback();
+    widget.onAnswerSelected(optionIndex, isCorrectAnswer);
+  }
+
+  void showHintDialog() {
+    final String dialogContent = widget.content.hint ?? 'No hint available';
+    showFullScreenDialog('Hint', dialogContent);
+  }
+
+  void showExplanationDialog() {
+    showFullScreenDialog('Explanation', widget.content.explanation);
+  }
+
+  void showFullScreenDialog(String title, String content) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (BuildContext context) {
+        return ExplanationDialog(
+          title: title,
+          content: content,
+        );
+      },
+    );
+  }
+
+  void showCorrectAnswerFeedback() {
+    Future.delayed(const Duration(milliseconds: 300), () {
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(buildCorrectAnswerSnackbar());
+      }
+    });
+  }
+
+  // UI building methods
+
+  SnackBar buildCorrectAnswerSnackbar() {
+    return SnackBar(
+      content: Div.row([
+        const Icon(Icons.star, color: Colors.white, size: 16),
+
+        const Spacing.width(8),
+
+        Typography.text('+5 Aha', color: Colors.white),
+
+        const Spacer(),
+
+        TextButton(
+          onPressed: showExplanationDialog,
+          child: Typography.text('Why?', color: Colors.white),
+        ),
+      ]),
+      backgroundColor: Colors.green.shade600,
+      duration: const Duration(seconds: 5),
+      behavior: SnackBarBehavior.floating,
+      shape: Style.snackbarShape,
+      margin: Style.snackbarMargin,
+    );
+  }
+}
+
+class Style {
+  static final BorderRadius inkWellRadius = BorderRadius.circular(12);
+
+  static final BoxDecoration optionDecoration = BoxDecoration(
+    color: AppTheme.backgroundLight,
+    borderRadius: BorderRadius.circular(12),
+  );
+
+  static final TextStyle optionTextStyle = Typography.bodyLargeStyle
+      .copyWith(fontSize: 14, color: AppTheme.textPrimary);
+
+  static final BoxDecoration correctIconDecoration = BoxDecoration(
+    borderRadius: BorderRadius.circular(4),
+  );
+
+  static final TextStyle explanationTextStyle = Typography
+      .bodyLargeStyle
+      .copyWith(fontSize: 14, height: 1.5);
+
+  static final RoundedRectangleBorder snackbarShape =
+      RoundedRectangleBorder(borderRadius: BorderRadius.circular(8));
+
+  static const EdgeInsets snackbarMargin = EdgeInsets.all(16);
+
+  static final BoxDecoration hintButtonDecoration = BoxDecoration(
+    color: AppTheme.primaryBlue.withValues(alpha: 0.1),
+    borderRadius: BorderRadius.circular(8),
+    border: Border.all(
+      color: AppTheme.primaryBlue.withValues(alpha: 0.3),
+    ),
+  );
+
+  static final TextStyle dialogTextStyle = Typography.bodyLargeStyle.copyWith(
+    fontSize: 16,
+    height: 1.6,
+  );
 }

@@ -9,6 +9,27 @@ import 'package:readlock/constants/typography.dart';
 import 'package:readlock/constants/app_theme.dart';
 import 'package:readlock/utility_widgets/text_animation/progressive_text.dart';
 
+enum TrueFalseButtonState {
+  normal,
+  selected,
+  correctAndAnswered,
+  incorrectAndMuted,
+}
+
+class ButtonColors {
+  final Color backgroundColor;
+  final Color borderColor;
+  final Color textColor;
+  final Color iconColor;
+
+  const ButtonColors({
+    required this.backgroundColor,
+    required this.borderColor,
+    required this.textColor,
+    required this.iconColor,
+  });
+}
+
 const double TRUE_FALSE_BUTTON_HEIGHT = 60.0;
 const double TRUE_FALSE_BUTTON_SPACING = 16.0;
 const double TRUE_FALSE_SECTION_SPACING = 24.0;
@@ -142,64 +163,114 @@ class TrueFalseQuestionWidgetState
     required VoidCallback? onTap,
     required int buttonIndex,
   }) {
-    Color backgroundColor;
-    Color borderColor;
-    Color textColor;
-    Color iconColor;
-    if (shouldShowFeedback && isCorrect) {
-      backgroundColor = AppTheme.primaryGreen.withValues(alpha: 0.1);
-      borderColor = AppTheme.primaryGreen;
-      textColor = AppTheme.primaryGreen;
-      iconColor = AppTheme.primaryGreen;
-    } else if (isSelected && !hasAnswered) {
-      backgroundColor = baseColor.withValues(alpha: 0.1);
-      borderColor = baseColor;
-      textColor = baseColor;
-      iconColor = baseColor;
-    } else if (hasAnswered && !isCorrect && !isSelected) {
-      backgroundColor = AppTheme.backgroundLight;
-      borderColor = AppTheme.textPrimary.withValues(alpha: 0.1);
-      textColor = AppTheme.textPrimary.withValues(alpha: 0.4);
-      iconColor = AppTheme.textPrimary.withValues(alpha: 0.4);
-    } else {
-      backgroundColor = AppTheme.backgroundLight;
-      borderColor = AppTheme.textPrimary.withValues(alpha: 0.2);
-      textColor = AppTheme.textPrimary;
-      iconColor = AppTheme.textPrimary.withValues(alpha: 0.6);
-    }
-
-    final BoxDecoration buttonDecoration = BoxDecoration(
-      border: Border.all(color: borderColor, width: 2),
-      borderRadius: BorderRadius.circular(12),
+    final TrueFalseButtonState buttonState = getTrueFalseButtonState(
+      isSelected: isSelected,
+      shouldShowFeedback: shouldShowFeedback,
+      isCorrect: isCorrect,
     );
 
-    final TextStyle buttonTextStyle = Typography.bodyLargeStyle
-        .copyWith(
-          color: textColor,
-          fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
-          fontSize: 16,
-        );
+    final ButtonColors colors = getButtonColors(buttonState, baseColor);
+    final BoxDecoration decoration = buildButtonDecoration(colors);
+    final TextStyle textStyle = buildButtonTextStyle(colors, isSelected);
+    final Widget content = buildButtonContent(label, icon, colors, decoration, textStyle, onTap);
 
-    final Widget buttonContent = Material(
+    return applyShakeAnimation(buttonIndex, content);
+  }
+
+  TrueFalseButtonState getTrueFalseButtonState({
+    required bool isSelected,
+    required bool shouldShowFeedback,
+    required bool isCorrect,
+  }) {
+    if (shouldShowFeedback && isCorrect) {
+      return TrueFalseButtonState.correctAndAnswered;
+    } else if (isSelected && !hasAnswered) {
+      return TrueFalseButtonState.selected;
+    } else if (hasAnswered && !isCorrect && !isSelected) {
+      return TrueFalseButtonState.incorrectAndMuted;
+    } else {
+      return TrueFalseButtonState.normal;
+    }
+  }
+
+  ButtonColors getButtonColors(TrueFalseButtonState state, Color baseColor) {
+    switch (state) {
+      case TrueFalseButtonState.correctAndAnswered:
+        return ButtonColors(
+          backgroundColor: AppTheme.primaryGreen.withValues(alpha: 0.1),
+          borderColor: AppTheme.primaryGreen,
+          textColor: AppTheme.primaryGreen,
+          iconColor: AppTheme.primaryGreen,
+        );
+      case TrueFalseButtonState.selected:
+        return ButtonColors(
+          backgroundColor: baseColor.withValues(alpha: 0.1),
+          borderColor: baseColor,
+          textColor: baseColor,
+          iconColor: baseColor,
+        );
+      case TrueFalseButtonState.incorrectAndMuted:
+        return ButtonColors(
+          backgroundColor: AppTheme.backgroundLight,
+          borderColor: AppTheme.textPrimary.withValues(alpha: 0.1),
+          textColor: AppTheme.textPrimary.withValues(alpha: 0.4),
+          iconColor: AppTheme.textPrimary.withValues(alpha: 0.4),
+        );
+      case TrueFalseButtonState.normal:
+        return ButtonColors(
+          backgroundColor: AppTheme.backgroundLight,
+          borderColor: AppTheme.textPrimary.withValues(alpha: 0.2),
+          textColor: AppTheme.textPrimary,
+          iconColor: AppTheme.textPrimary.withValues(alpha: 0.6),
+        );
+    }
+  }
+
+  BoxDecoration buildButtonDecoration(ButtonColors colors) {
+    return BoxDecoration(
+      border: Border.all(color: colors.borderColor, width: 2),
       borderRadius: BorderRadius.circular(12),
-      color: backgroundColor,
+    );
+  }
+
+  TextStyle buildButtonTextStyle(ButtonColors colors, bool isSelected) {
+    return Typography.bodyLargeStyle.copyWith(
+      color: colors.textColor,
+      fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+      fontSize: 16,
+    );
+  }
+
+  Widget buildButtonContent(
+    String label,
+    IconData icon,
+    ButtonColors colors,
+    BoxDecoration decoration,
+    TextStyle textStyle,
+    VoidCallback? onTap,
+  ) {
+    return Material(
+      borderRadius: BorderRadius.circular(12),
+      color: colors.backgroundColor,
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(12),
         child: Container(
           height: TRUE_FALSE_BUTTON_HEIGHT,
-          decoration: buttonDecoration,
+          decoration: decoration,
           child: Div.row([
-            Icon(icon, color: iconColor, size: TRUE_FALSE_ICON_SIZE),
+            Icon(icon, color: colors.iconColor, size: TRUE_FALSE_ICON_SIZE),
 
             const Spacing.width(12),
 
-            Text(label, style: buttonTextStyle),
+            Text(label, style: textStyle),
           ], mainAxisAlignment: MainAxisAlignment.center),
         ),
       ),
     );
+  }
 
+  Widget applyShakeAnimation(int buttonIndex, Widget content) {
     if (buttonIndex == selectedAnswerIndex && shakeAnimation != null) {
       return AnimatedBuilder(
         animation: shakeAnimation!,
@@ -209,11 +280,11 @@ class TrueFalseQuestionWidgetState
             child: child,
           );
         },
-        child: buttonContent,
+        child: content,
       );
     }
 
-    return buttonContent;
+    return content;
   }
 
   Widget ExplanationSection() {

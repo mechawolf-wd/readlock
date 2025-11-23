@@ -213,6 +213,7 @@ class CoursesScreenState extends State<CoursesScreen> {
       Typography.headingMedium(genreName),
       const Spacing.height(16),
     ];
+
     sectionWidgets.addAll(CourseCards(coursesInGenre));
 
     return Container(
@@ -253,15 +254,6 @@ class CourseCard extends StatelessWidget {
     final String color = course['color'] ?? 'blue';
     final String courseId = course['id'] ?? '';
 
-    final BoxDecoration cardDecoration = BoxDecoration(
-      color: getColorFromString(color).withValues(alpha: 0.08),
-      borderRadius: BorderRadius.circular(16),
-      border: Border.all(
-        color: getColorFromString(color).withValues(alpha: 0.2),
-        width: 1.5,
-      ),
-    );
-
     return Container(
       margin: const EdgeInsets.only(bottom: 20),
       child: Material(
@@ -279,7 +271,7 @@ class CourseCard extends StatelessWidget {
           child: Container(
             width: double.infinity,
             padding: const EdgeInsets.all(24),
-            decoration: cardDecoration,
+            decoration: Style.cardDecoration,
             child: Div.column([
               Div.row([
                 Expanded(
@@ -318,14 +310,9 @@ class CourseCard extends StatelessWidget {
         ? Icons.psychology_outlined
         : Icons.trending_up_outlined;
 
-    final BoxDecoration iconDecoration = BoxDecoration(
-      color: color.withValues(alpha: 0.1),
-      borderRadius: BorderRadius.circular(12),
-    );
-
     return Container(
       padding: const EdgeInsets.all(12),
-      decoration: iconDecoration,
+      decoration: Style.iconDecoration,
       child: Icon(icon, color: color, size: 24),
     );
   }
@@ -347,15 +334,9 @@ class CourseCard extends StatelessWidget {
   }
 
   Widget StartButton({required Color color}) {
-    final BoxDecoration buttonDecoration = BoxDecoration(
-      color: color.withValues(alpha: 0.1),
-      borderRadius: BorderRadius.circular(20),
-      border: Border.all(color: color.withValues(alpha: 0.3)),
-    );
-
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      decoration: buttonDecoration,
+      decoration: Style.startButtonDecoration,
       child: Div.row([
         Typography.text('Start Course'),
 
@@ -383,20 +364,6 @@ class GenreChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final BoxDecoration chipDecoration = BoxDecoration(
-      color: color.withValues(alpha: isSelected ? 0.15 : 0.04),
-      borderRadius: BorderRadius.circular(20),
-      border: Border.all(
-        color: color.withValues(alpha: isSelected ? 0.4 : 0.12),
-      ),
-    );
-
-    final TextStyle chipTextStyle = TextStyle(
-      color: color.withValues(alpha: isSelected ? 1.0 : 0.6),
-      fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
-      fontSize: 14,
-    );
-
     return Material(
       color: Colors.transparent,
       child: InkWell(
@@ -407,10 +374,48 @@ class GenreChip extends StatelessWidget {
             horizontal: 16,
             vertical: 8,
           ),
-          decoration: chipDecoration,
-          child: Text(label, style: chipTextStyle),
+          decoration: Style.chipDecoration,
+          child: Text(label, style: Style.chipTextStyle),
         ),
       ),
     );
   }
+}
+
+class Style {
+  static final BoxDecoration cardDecoration = BoxDecoration(
+    color: AppTheme.backgroundLight.withValues(alpha: 0.08),
+    borderRadius: BorderRadius.circular(16),
+    border: Border.all(
+      color: AppTheme.primaryBlue.withValues(alpha: 0.2),
+      width: 1.5,
+    ),
+  );
+
+  static final BoxDecoration iconDecoration = BoxDecoration(
+    color: AppTheme.primaryBlue.withValues(alpha: 0.1),
+    borderRadius: BorderRadius.circular(12),
+  );
+
+  static final BoxDecoration startButtonDecoration = BoxDecoration(
+    color: AppTheme.primaryGreen.withValues(alpha: 0.1),
+    borderRadius: BorderRadius.circular(20),
+    border: Border.all(
+      color: AppTheme.primaryGreen.withValues(alpha: 0.3),
+    ),
+  );
+
+  static final BoxDecoration chipDecoration = BoxDecoration(
+    color: AppTheme.primaryBlue.withValues(alpha: 0.15),
+    borderRadius: BorderRadius.circular(20),
+    border: Border.all(
+      color: AppTheme.primaryBlue.withValues(alpha: 0.4),
+    ),
+  );
+
+  static final TextStyle chipTextStyle = const TextStyle(
+    color: AppTheme.primaryBlue,
+    fontWeight: FontWeight.w600,
+    fontSize: 14,
+  );
 }

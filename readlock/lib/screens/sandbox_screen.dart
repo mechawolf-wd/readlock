@@ -372,7 +372,8 @@ class SwipeToRevealWidget extends StatefulWidget {
   const SwipeToRevealWidget({super.key});
 
   @override
-  State<SwipeToRevealWidget> createState() => SwipeToRevealWidgetState();
+  State<SwipeToRevealWidget> createState() =>
+      SwipeToRevealWidgetState();
 }
 
 class SwipeToRevealWidgetState extends State<SwipeToRevealWidget>
@@ -407,17 +408,11 @@ class SwipeToRevealWidgetState extends State<SwipeToRevealWidget>
       decoration: BoxDecoration(
         color: AppTheme.backgroundLight,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: Colors.purple.withValues(alpha: 0.2),
-        ),
+        border: Border.all(color: Colors.purple.withValues(alpha: 0.2)),
       ),
       child: Div.column([
         Div.row([
-          const Icon(
-            Icons.visibility,
-            color: Colors.purple,
-            size: 24,
-          ),
+          const Icon(Icons.visibility, color: Colors.purple, size: 24),
 
           const Spacing.width(12),
 
@@ -453,7 +448,9 @@ class SwipeToRevealWidgetState extends State<SwipeToRevealWidget>
                     'The most powerful design principle is...',
                     style: Typography.bodyMediumStyle.copyWith(
                       fontSize: 14,
-                      color: AppTheme.textPrimary.withValues(alpha: 0.6),
+                      color: AppTheme.textPrimary.withValues(
+                        alpha: 0.6,
+                      ),
                     ),
                     textAlign: TextAlign.center,
                   ),
@@ -493,8 +490,16 @@ class SwipeToRevealWidgetState extends State<SwipeToRevealWidget>
 
               Positioned.fill(
                 child: GestureDetector(
-                  onPanUpdate: (details) {
+                  onHorizontalDragUpdate: (details) {
                     if (!isRevealed && details.delta.dx > 2) {
+                      setState(() {
+                        isRevealed = true;
+                      });
+                      revealController.forward();
+                    }
+                  },
+                  onTap: () {
+                    if (!isRevealed) {
                       setState(() {
                         isRevealed = true;
                       });
@@ -516,7 +521,7 @@ class SwipeToRevealWidgetState extends State<SwipeToRevealWidget>
                           ),
                           const Spacing.width(8),
                           Text(
-                            'Swipe right →',
+                            'Swipe right → or tap',
                             style: Typography.bodyMediumStyle.copyWith(
                               fontSize: 12,
                               color: Colors.purple,
@@ -556,20 +561,22 @@ class ConceptConnectionWidget extends StatefulWidget {
   const ConceptConnectionWidget({super.key});
 
   @override
-  State<ConceptConnectionWidget> createState() => ConceptConnectionWidgetState();
+  State<ConceptConnectionWidget> createState() =>
+      ConceptConnectionWidgetState();
 }
 
-class ConceptConnectionWidgetState extends State<ConceptConnectionWidget> {
+class ConceptConnectionWidgetState
+    extends State<ConceptConnectionWidget> {
   int? selectedConcept;
   int? selectedApplication;
   bool hasMatched = false;
-  
+
   final List<String> concepts = [
     'Affordances',
     'Feedback',
     'Constraints',
   ];
-  
+
   final List<String> applications = [
     'Door handles that show how to open',
     'Button click sounds and animations',
@@ -583,17 +590,11 @@ class ConceptConnectionWidgetState extends State<ConceptConnectionWidget> {
       decoration: BoxDecoration(
         color: AppTheme.backgroundLight,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: Colors.teal.withValues(alpha: 0.2),
-        ),
+        border: Border.all(color: Colors.teal.withValues(alpha: 0.2)),
       ),
       child: Div.column([
         Div.row([
-          const Icon(
-            Icons.account_tree,
-            color: Colors.teal,
-            size: 24,
-          ),
+          const Icon(Icons.account_tree, color: Colors.teal, size: 24),
 
           const Spacing.width(12),
 
@@ -636,14 +637,17 @@ class ConceptConnectionWidgetState extends State<ConceptConnectionWidget> {
                 final int index = entry.key;
                 final String concept = entry.value;
                 final bool isSelected = selectedConcept == index;
-                
+
                 return Padding(
                   padding: const EdgeInsets.only(bottom: 8),
                   child: GestureDetector(
                     onTap: () {
                       setState(() {
-                        selectedConcept = selectedConcept == index ? null : index;
-                        if (selectedApplication != null && selectedConcept != null) {
+                        selectedConcept = selectedConcept == index
+                            ? null
+                            : index;
+                        if (selectedApplication != null &&
+                            selectedConcept != null) {
                           checkMatch();
                         }
                       });
@@ -656,20 +660,28 @@ class ConceptConnectionWidgetState extends State<ConceptConnectionWidget> {
                       decoration: BoxDecoration(
                         color: isSelected
                             ? Colors.teal.withValues(alpha: 0.1)
-                            : AppTheme.backgroundDark.withValues(alpha: 0.5),
+                            : AppTheme.backgroundDark.withValues(
+                                alpha: 0.5,
+                              ),
                         borderRadius: BorderRadius.circular(8),
                         border: Border.all(
                           color: isSelected
                               ? Colors.teal
-                              : AppTheme.textPrimary.withValues(alpha: 0.2),
+                              : AppTheme.textPrimary.withValues(
+                                  alpha: 0.2,
+                                ),
                         ),
                       ),
                       child: Text(
                         concept,
                         style: Typography.bodyMediumStyle.copyWith(
                           fontSize: 13,
-                          fontWeight: isSelected ? FontWeight.w500 : FontWeight.normal,
-                          color: isSelected ? Colors.teal : AppTheme.textPrimary,
+                          fontWeight: isSelected
+                              ? FontWeight.w500
+                              : FontWeight.normal,
+                          color: isSelected
+                              ? Colors.teal
+                              : AppTheme.textPrimary,
                         ),
                       ),
                     ),
@@ -696,14 +708,16 @@ class ConceptConnectionWidgetState extends State<ConceptConnectionWidget> {
                 final int index = entry.key;
                 final String application = entry.value;
                 final bool isSelected = selectedApplication == index;
-                
+
                 return Padding(
                   padding: const EdgeInsets.only(bottom: 8),
                   child: GestureDetector(
                     onTap: () {
                       setState(() {
-                        selectedApplication = selectedApplication == index ? null : index;
-                        if (selectedConcept != null && selectedApplication != null) {
+                        selectedApplication =
+                            selectedApplication == index ? null : index;
+                        if (selectedConcept != null &&
+                            selectedApplication != null) {
                           checkMatch();
                         }
                       });
@@ -716,20 +730,28 @@ class ConceptConnectionWidgetState extends State<ConceptConnectionWidget> {
                       decoration: BoxDecoration(
                         color: isSelected
                             ? Colors.teal.withValues(alpha: 0.1)
-                            : AppTheme.backgroundDark.withValues(alpha: 0.5),
+                            : AppTheme.backgroundDark.withValues(
+                                alpha: 0.5,
+                              ),
                         borderRadius: BorderRadius.circular(8),
                         border: Border.all(
                           color: isSelected
                               ? Colors.teal
-                              : AppTheme.textPrimary.withValues(alpha: 0.2),
+                              : AppTheme.textPrimary.withValues(
+                                  alpha: 0.2,
+                                ),
                         ),
                       ),
                       child: Text(
                         application,
                         style: Typography.bodyMediumStyle.copyWith(
                           fontSize: 12,
-                          fontWeight: isSelected ? FontWeight.w500 : FontWeight.normal,
-                          color: isSelected ? Colors.teal : AppTheme.textPrimary,
+                          fontWeight: isSelected
+                              ? FontWeight.w500
+                              : FontWeight.normal,
+                          color: isSelected
+                              ? Colors.teal
+                              : AppTheme.textPrimary,
                           height: 1.3,
                         ),
                       ),
@@ -752,7 +774,11 @@ class ConceptConnectionWidgetState extends State<ConceptConnectionWidget> {
               border: Border.all(color: AppTheme.primaryGreen),
             ),
             child: Div.row([
-              const Icon(Icons.check_circle, color: AppTheme.primaryGreen, size: 16),
+              const Icon(
+                Icons.check_circle,
+                color: AppTheme.primaryGreen,
+                size: 16,
+              ),
               const Spacing.width(8),
               Text(
                 'Perfect match! +10 Connection points',
@@ -774,7 +800,7 @@ class ConceptConnectionWidgetState extends State<ConceptConnectionWidget> {
       setState(() {
         hasMatched = true;
       });
-      
+
       Future.delayed(const Duration(milliseconds: 1500), () {
         if (mounted) {
           setState(() {
@@ -819,7 +845,10 @@ class MicroQuizWidgetState extends State<MicroQuizWidget>
       vsync: this,
     );
     bounceAnimation = Tween<double>(begin: 1.0, end: 1.1).animate(
-      CurvedAnimation(parent: bounceController, curve: Curves.elasticOut),
+      CurvedAnimation(
+        parent: bounceController,
+        curve: Curves.elasticOut,
+      ),
     );
   }
 
@@ -836,17 +865,11 @@ class MicroQuizWidgetState extends State<MicroQuizWidget>
       decoration: BoxDecoration(
         color: AppTheme.backgroundLight,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: Colors.indigo.withValues(alpha: 0.2),
-        ),
+        border: Border.all(color: Colors.indigo.withValues(alpha: 0.2)),
       ),
       child: Div.column([
         Div.row([
-          const Icon(
-            Icons.quiz,
-            color: Colors.indigo,
-            size: 24,
-          ),
+          const Icon(Icons.quiz, color: Colors.indigo, size: 24),
 
           const Spacing.width(12),
 
@@ -879,14 +902,17 @@ class MicroQuizWidgetState extends State<MicroQuizWidget>
           final String option = entry.value;
           final bool isSelected = selectedAnswer == index;
           final bool isCorrect = hasAnswered && index == correctAnswer;
-          final bool isWrong = hasAnswered && isSelected && index != correctAnswer;
+          final bool isWrong =
+              hasAnswered && isSelected && index != correctAnswer;
 
           Color backgroundColor;
           Color borderColor;
           Color textColor;
 
           if (isCorrect) {
-            backgroundColor = AppTheme.primaryGreen.withValues(alpha: 0.1);
+            backgroundColor = AppTheme.primaryGreen.withValues(
+              alpha: 0.1,
+            );
             borderColor = AppTheme.primaryGreen;
             textColor = AppTheme.primaryGreen;
           } else if (isWrong) {
@@ -898,7 +924,9 @@ class MicroQuizWidgetState extends State<MicroQuizWidget>
             borderColor = Colors.indigo;
             textColor = Colors.indigo;
           } else {
-            backgroundColor = AppTheme.backgroundDark.withValues(alpha: 0.5);
+            backgroundColor = AppTheme.backgroundDark.withValues(
+              alpha: 0.5,
+            );
             borderColor = AppTheme.textPrimary.withValues(alpha: 0.2);
             textColor = AppTheme.textPrimary;
           }
@@ -909,7 +937,9 @@ class MicroQuizWidgetState extends State<MicroQuizWidget>
               animation: bounceAnimation,
               builder: (context, child) {
                 return Transform.scale(
-                  scale: (isCorrect && hasAnswered) ? bounceAnimation.value : 1.0,
+                  scale: (isCorrect && hasAnswered)
+                      ? bounceAnimation.value
+                      : 1.0,
                   child: child,
                 );
               },
@@ -931,21 +961,44 @@ class MicroQuizWidgetState extends State<MicroQuizWidget>
                       height: 24,
                       decoration: BoxDecoration(
                         color: isCorrect || isWrong || isSelected
-                            ? (isCorrect ? AppTheme.primaryGreen : 
-                               isWrong ? Colors.red : Colors.indigo)
+                            ? (isCorrect
+                                  ? AppTheme.primaryGreen
+                                  : isWrong
+                                  ? Colors.red
+                                  : Colors.indigo)
                             : Colors.transparent,
                         shape: BoxShape.circle,
                         border: Border.all(
-                          color: isCorrect ? AppTheme.primaryGreen :
-                                 isWrong ? Colors.red :
-                                 isSelected ? Colors.indigo :
-                                 AppTheme.textPrimary.withValues(alpha: 0.3),
+                          color: isCorrect
+                              ? AppTheme.primaryGreen
+                              : isWrong
+                              ? Colors.red
+                              : isSelected
+                              ? Colors.indigo
+                              : AppTheme.textPrimary.withValues(
+                                  alpha: 0.3,
+                                ),
                         ),
                       ),
-                      child: isCorrect ? const Icon(Icons.check, color: Colors.white, size: 16) :
-                             isWrong ? const Icon(Icons.close, color: Colors.white, size: 16) :
-                             isSelected ? const Icon(Icons.circle, color: Colors.white, size: 8) :
-                             null,
+                      child: isCorrect
+                          ? const Icon(
+                              Icons.check,
+                              color: Colors.white,
+                              size: 16,
+                            )
+                          : isWrong
+                          ? const Icon(
+                              Icons.close,
+                              color: Colors.white,
+                              size: 16,
+                            )
+                          : isSelected
+                          ? const Icon(
+                              Icons.circle,
+                              color: Colors.white,
+                              size: 8,
+                            )
+                          : null,
                     ),
 
                     const Spacing.width(12),
@@ -956,7 +1009,9 @@ class MicroQuizWidgetState extends State<MicroQuizWidget>
                         style: Typography.bodyMediumStyle.copyWith(
                           fontSize: 14,
                           color: textColor,
-                          fontWeight: (isCorrect || isSelected) ? FontWeight.w500 : FontWeight.normal,
+                          fontWeight: (isCorrect || isSelected)
+                              ? FontWeight.w500
+                              : FontWeight.normal,
                           height: 1.3,
                         ),
                       ),
@@ -1010,10 +1065,12 @@ class ProgressCelebrationWidget extends StatefulWidget {
   const ProgressCelebrationWidget({super.key});
 
   @override
-  State<ProgressCelebrationWidget> createState() => ProgressCelebrationWidgetState();
+  State<ProgressCelebrationWidget> createState() =>
+      ProgressCelebrationWidgetState();
 }
 
-class ProgressCelebrationWidgetState extends State<ProgressCelebrationWidget>
+class ProgressCelebrationWidgetState
+    extends State<ProgressCelebrationWidget>
     with TickerProviderStateMixin {
   late AnimationController progressController;
   late AnimationController celebrationController;
@@ -1032,7 +1089,7 @@ class ProgressCelebrationWidgetState extends State<ProgressCelebrationWidget>
       duration: const Duration(milliseconds: 500),
       vsync: this,
     );
-    
+
     progressAnimation = CurvedAnimation(
       parent: progressController,
       curve: Curves.easeInOut,
@@ -1057,9 +1114,7 @@ class ProgressCelebrationWidgetState extends State<ProgressCelebrationWidget>
       decoration: BoxDecoration(
         color: AppTheme.backgroundLight,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: Colors.amber.withValues(alpha: 0.2),
-        ),
+        border: Border.all(color: Colors.amber.withValues(alpha: 0.2)),
       ),
       child: Div.column([
         Div.row([
@@ -1067,10 +1122,14 @@ class ProgressCelebrationWidgetState extends State<ProgressCelebrationWidget>
             animation: celebrationAnimation,
             builder: (context, child) {
               return Transform.scale(
-                scale: hasCompleted ? 1.0 + (celebrationAnimation.value * 0.3) : 1.0,
+                scale: hasCompleted
+                    ? 1.0 + (celebrationAnimation.value * 0.3)
+                    : 1.0,
                 child: Icon(
                   hasCompleted ? Icons.emoji_events : Icons.trending_up,
-                  color: hasCompleted ? Colors.amber : Colors.amber.shade700,
+                  color: hasCompleted
+                      ? Colors.amber
+                      : Colors.amber.shade700,
                   size: 24,
                 ),
               );
@@ -1135,7 +1194,10 @@ class ProgressCelebrationWidgetState extends State<ProgressCelebrationWidget>
                   child: Container(
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
-                        colors: [Colors.amber.shade400, Colors.amber.shade600],
+                        colors: [
+                          Colors.amber.shade400,
+                          Colors.amber.shade600,
+                        ],
                         begin: Alignment.centerLeft,
                         end: Alignment.centerRight,
                       ),
@@ -1242,17 +1304,11 @@ class SliderRevealWidgetState extends State<SliderRevealWidget> {
       decoration: BoxDecoration(
         color: AppTheme.backgroundLight,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: Colors.cyan.withValues(alpha: 0.2),
-        ),
+        border: Border.all(color: Colors.cyan.withValues(alpha: 0.2)),
       ),
       child: Div.column([
         Div.row([
-          const Icon(
-            Icons.tune,
-            color: Colors.cyan,
-            size: 24,
-          ),
+          const Icon(Icons.tune, color: Colors.cyan, size: 24),
 
           const Spacing.width(12),
 
@@ -1301,10 +1357,14 @@ class SliderRevealWidgetState extends State<SliderRevealWidget> {
             SliderTheme(
               data: SliderThemeData(
                 activeTrackColor: Colors.cyan,
-                inactiveTrackColor: AppTheme.textPrimary.withValues(alpha: 0.1),
+                inactiveTrackColor: AppTheme.textPrimary.withValues(
+                  alpha: 0.1,
+                ),
                 thumbColor: Colors.cyan,
                 overlayColor: Colors.cyan.withValues(alpha: 0.1),
-                thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 12),
+                thumbShape: const RoundSliderThumbShape(
+                  enabledThumbRadius: 12,
+                ),
                 trackHeight: 6,
               ),
               child: Slider(
@@ -1379,7 +1439,8 @@ class MemoryCardMatchWidget extends StatefulWidget {
   const MemoryCardMatchWidget({super.key});
 
   @override
-  State<MemoryCardMatchWidget> createState() => MemoryCardMatchWidgetState();
+  State<MemoryCardMatchWidget> createState() =>
+      MemoryCardMatchWidgetState();
 }
 
 class MemoryCardMatchWidgetState extends State<MemoryCardMatchWidget>
@@ -1388,11 +1449,14 @@ class MemoryCardMatchWidgetState extends State<MemoryCardMatchWidget>
   List<int?> selectedCards = [];
   List<bool> matchedCards = List.filled(6, false);
   int matches = 0;
-  
+
   final List<String> cardPairs = [
-    'Affordance', 'Visual cue for action',
-    'Feedback', 'System response',
-    'Constraint', 'Limits user actions'
+    'Affordance',
+    'Visual cue for action',
+    'Feedback',
+    'System response',
+    'Constraint',
+    'Limits user actions',
   ];
 
   @override
@@ -1408,11 +1472,7 @@ class MemoryCardMatchWidgetState extends State<MemoryCardMatchWidget>
       ),
       child: Div.column([
         Div.row([
-          const Icon(
-            Icons.memory,
-            color: Colors.deepPurple,
-            size: 24,
-          ),
+          const Icon(Icons.memory, color: Colors.deepPurple, size: 24),
 
           const Spacing.width(12),
 
@@ -1467,15 +1527,15 @@ class MemoryCardMatchWidgetState extends State<MemoryCardMatchWidget>
                   color: matchedCards[index]
                       ? Colors.deepPurple.withValues(alpha: 0.1)
                       : flippedCards[index]
-                          ? Colors.deepPurple.withValues(alpha: 0.05)
-                          : AppTheme.backgroundDark.withValues(alpha: 0.5),
+                      ? Colors.deepPurple.withValues(alpha: 0.05)
+                      : AppTheme.backgroundDark.withValues(alpha: 0.5),
                   borderRadius: BorderRadius.circular(8),
                   border: Border.all(
                     color: matchedCards[index]
                         ? Colors.deepPurple
                         : flippedCards[index]
-                            ? Colors.deepPurple.withValues(alpha: 0.5)
-                            : AppTheme.textPrimary.withValues(alpha: 0.2),
+                        ? Colors.deepPurple.withValues(alpha: 0.5)
+                        : AppTheme.textPrimary.withValues(alpha: 0.2),
                     width: matchedCards[index] ? 2 : 1,
                   ),
                 ),
@@ -1487,13 +1547,20 @@ class MemoryCardMatchWidgetState extends State<MemoryCardMatchWidget>
                           ? cardPairs[index]
                           : '?',
                       style: Typography.bodyMediumStyle.copyWith(
-                        fontSize: flippedCards[index] || matchedCards[index] ? 11 : 18,
-                        fontWeight: matchedCards[index] ? FontWeight.w600 : FontWeight.normal,
+                        fontSize:
+                            flippedCards[index] || matchedCards[index]
+                            ? 11
+                            : 18,
+                        fontWeight: matchedCards[index]
+                            ? FontWeight.w600
+                            : FontWeight.normal,
                         color: matchedCards[index]
                             ? Colors.deepPurple
                             : flippedCards[index]
-                                ? AppTheme.textPrimary
-                                : AppTheme.textPrimary.withValues(alpha: 0.4),
+                            ? AppTheme.textPrimary
+                            : AppTheme.textPrimary.withValues(
+                                alpha: 0.4,
+                              ),
                         height: 1.2,
                       ),
                       textAlign: TextAlign.center,
@@ -1516,7 +1583,11 @@ class MemoryCardMatchWidgetState extends State<MemoryCardMatchWidget>
               border: Border.all(color: AppTheme.primaryGreen),
             ),
             child: Div.row([
-              const Icon(Icons.celebration, color: AppTheme.primaryGreen, size: 16),
+              const Icon(
+                Icons.celebration,
+                color: AppTheme.primaryGreen,
+                size: 16,
+              ),
               const Spacing.width(8),
               Text(
                 'Perfect! All design principles matched! +15 Memory points',
@@ -1534,7 +1605,9 @@ class MemoryCardMatchWidgetState extends State<MemoryCardMatchWidget>
   }
 
   void flipCard(int index) {
-    if (flippedCards[index] || matchedCards[index] || selectedCards.length >= 2) {
+    if (flippedCards[index] ||
+        matchedCards[index] ||
+        selectedCards.length >= 2) {
       return;
     }
 
@@ -1553,10 +1626,11 @@ class MemoryCardMatchWidgetState extends State<MemoryCardMatchWidget>
   void checkMatch() {
     final int first = selectedCards[0]!;
     final int second = selectedCards[1]!;
-    
+
     // Check if cards are a matching pair
-    final bool isMatch = (first < 3 && second >= 3 && first == second - 3) ||
-                        (second < 3 && first >= 3 && second == first - 3);
+    final bool isMatch =
+        (first < 3 && second >= 3 && first == second - 3) ||
+        (second < 3 && first >= 3 && second == first - 3);
 
     if (isMatch) {
       setState(() {
@@ -1581,24 +1655,25 @@ class PriorityRankingWidget extends StatefulWidget {
   const PriorityRankingWidget({super.key});
 
   @override
-  State<PriorityRankingWidget> createState() => PriorityRankingWidgetState();
+  State<PriorityRankingWidget> createState() =>
+      PriorityRankingWidgetState();
 }
 
 class PriorityRankingWidgetState extends State<PriorityRankingWidget> {
   List<String> principles = [
     'Usability',
-    'Aesthetics', 
+    'Aesthetics',
     'Accessibility',
-    'Performance'
+    'Performance',
   ];
-  
+
   List<String> correctOrder = [
     'Usability',
-    'Accessibility', 
+    'Accessibility',
     'Performance',
-    'Aesthetics'
+    'Aesthetics',
   ];
-  
+
   bool hasSubmitted = false;
 
   @override
@@ -1608,17 +1683,11 @@ class PriorityRankingWidgetState extends State<PriorityRankingWidget> {
       decoration: BoxDecoration(
         color: AppTheme.backgroundLight,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: Colors.orange.withValues(alpha: 0.2),
-        ),
+        border: Border.all(color: Colors.orange.withValues(alpha: 0.2)),
       ),
       child: Div.column([
         Div.row([
-          const Icon(
-            Icons.sort,
-            color: Colors.orange,
-            size: 24,
-          ),
+          const Icon(Icons.sort, color: Colors.orange, size: 24),
 
           const Spacing.width(12),
 
@@ -1649,34 +1718,42 @@ class PriorityRankingWidgetState extends State<PriorityRankingWidget> {
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           itemCount: principles.length,
-          onReorder: hasSubmitted ? (oldIndex, newIndex) {} : (oldIndex, newIndex) {
-            setState(() {
-              if (newIndex > oldIndex) {
-                newIndex -= 1;
-              }
-              final String item = principles.removeAt(oldIndex);
-              principles.insert(newIndex, item);
-            });
-          },
+          onReorder: hasSubmitted
+              ? (oldIndex, newIndex) {}
+              : (oldIndex, newIndex) {
+                  setState(() {
+                    if (newIndex > oldIndex) {
+                      newIndex -= 1;
+                    }
+                    final String item = principles.removeAt(oldIndex);
+                    principles.insert(newIndex, item);
+                  });
+                },
           itemBuilder: (context, index) {
             final String principle = principles[index];
-            final bool isCorrect = hasSubmitted && 
-                                 principles[index] == correctOrder[index];
-            
+            final bool isCorrect =
+                hasSubmitted &&
+                principles[index] == correctOrder[index];
+
             return Container(
               key: ValueKey(principle),
               margin: const EdgeInsets.only(bottom: 8),
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 12,
+              ),
               decoration: BoxDecoration(
-                color: hasSubmitted 
-                    ? (isCorrect 
-                        ? AppTheme.primaryGreen.withValues(alpha: 0.1)
-                        : Colors.orange.withValues(alpha: 0.1))
+                color: hasSubmitted
+                    ? (isCorrect
+                          ? AppTheme.primaryGreen.withValues(alpha: 0.1)
+                          : Colors.orange.withValues(alpha: 0.1))
                     : AppTheme.backgroundDark.withValues(alpha: 0.5),
                 borderRadius: BorderRadius.circular(8),
                 border: Border.all(
                   color: hasSubmitted
-                      ? (isCorrect ? AppTheme.primaryGreen : Colors.orange)
+                      ? (isCorrect
+                            ? AppTheme.primaryGreen
+                            : Colors.orange)
                       : Colors.orange.withValues(alpha: 0.3),
                 ),
               ),
@@ -1687,7 +1764,9 @@ class PriorityRankingWidgetState extends State<PriorityRankingWidget> {
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
                     color: hasSubmitted
-                        ? (isCorrect ? AppTheme.primaryGreen : Colors.orange)
+                        ? (isCorrect
+                              ? AppTheme.primaryGreen
+                              : Colors.orange)
                         : Colors.orange,
                   ),
                 ),
@@ -1699,9 +1778,13 @@ class PriorityRankingWidgetState extends State<PriorityRankingWidget> {
                     principle,
                     style: Typography.bodyMediumStyle.copyWith(
                       fontSize: 14,
-                      fontWeight: isCorrect ? FontWeight.w500 : FontWeight.normal,
+                      fontWeight: isCorrect
+                          ? FontWeight.w500
+                          : FontWeight.normal,
                       color: hasSubmitted
-                          ? (isCorrect ? AppTheme.primaryGreen : Colors.orange.shade700)
+                          ? (isCorrect
+                                ? AppTheme.primaryGreen
+                                : Colors.orange.shade700)
                           : AppTheme.textPrimary,
                     ),
                   ),
@@ -1720,7 +1803,9 @@ class PriorityRankingWidgetState extends State<PriorityRankingWidget> {
                   hasSubmitted,
                   Icon(
                     isCorrect ? Icons.check_circle : Icons.info,
-                    color: isCorrect ? AppTheme.primaryGreen : Colors.orange,
+                    color: isCorrect
+                        ? AppTheme.primaryGreen
+                        : Colors.orange,
                     size: 20,
                   ),
                 ),
@@ -1789,10 +1874,12 @@ class BeforeAfterComparisonWidget extends StatefulWidget {
   const BeforeAfterComparisonWidget({super.key});
 
   @override
-  State<BeforeAfterComparisonWidget> createState() => BeforeAfterComparisonWidgetState();
+  State<BeforeAfterComparisonWidget> createState() =>
+      BeforeAfterComparisonWidgetState();
 }
 
-class BeforeAfterComparisonWidgetState extends State<BeforeAfterComparisonWidget> {
+class BeforeAfterComparisonWidgetState
+    extends State<BeforeAfterComparisonWidget> {
   bool showAfter = false;
 
   @override
@@ -1802,17 +1889,11 @@ class BeforeAfterComparisonWidgetState extends State<BeforeAfterComparisonWidget
       decoration: BoxDecoration(
         color: AppTheme.backgroundLight,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: Colors.pink.withValues(alpha: 0.2),
-        ),
+        border: Border.all(color: Colors.pink.withValues(alpha: 0.2)),
       ),
       child: Div.column([
         Div.row([
-          const Icon(
-            Icons.compare,
-            color: Colors.pink,
-            size: 24,
-          ),
+          const Icon(Icons.compare, color: Colors.pink, size: 24),
 
           const Spacing.width(12),
 
@@ -1833,11 +1914,16 @@ class BeforeAfterComparisonWidgetState extends State<BeforeAfterComparisonWidget
               });
             },
             child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 12,
+                vertical: 6,
+              ),
               decoration: BoxDecoration(
                 color: Colors.pink.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: Colors.pink.withValues(alpha: 0.3)),
+                border: Border.all(
+                  color: Colors.pink.withValues(alpha: 0.3),
+                ),
               ),
               child: Text(
                 showAfter ? 'AFTER' : 'BEFORE',
@@ -1870,12 +1956,12 @@ class BeforeAfterComparisonWidgetState extends State<BeforeAfterComparisonWidget
             key: ValueKey(showAfter),
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: showAfter 
+              color: showAfter
                   ? AppTheme.primaryGreen.withValues(alpha: 0.05)
                   : Colors.red.withValues(alpha: 0.05),
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
-                color: showAfter 
+                color: showAfter
                     ? AppTheme.primaryGreen.withValues(alpha: 0.3)
                     : Colors.red.withValues(alpha: 0.3),
               ),
@@ -1886,7 +1972,9 @@ class BeforeAfterComparisonWidgetState extends State<BeforeAfterComparisonWidget
                 style: Typography.bodyLargeStyle.copyWith(
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
-                  color: showAfter ? AppTheme.primaryGreen : Colors.red.shade700,
+                  color: showAfter
+                      ? AppTheme.primaryGreen
+                      : Colors.red.shade700,
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -1900,21 +1988,31 @@ class BeforeAfterComparisonWidgetState extends State<BeforeAfterComparisonWidget
                     vertical: showAfter ? 12 : 6,
                   ),
                   decoration: BoxDecoration(
-                    color: showAfter ? AppTheme.primaryBlue : Colors.grey.shade400,
-                    borderRadius: BorderRadius.circular(showAfter ? 8 : 0),
-                    boxShadow: showAfter ? [
-                      BoxShadow(
-                        color: AppTheme.primaryBlue.withValues(alpha: 0.3),
-                        blurRadius: 8,
-                        offset: const Offset(0, 2),
-                      ),
-                    ] : null,
+                    color: showAfter
+                        ? AppTheme.primaryBlue
+                        : Colors.grey.shade400,
+                    borderRadius: BorderRadius.circular(
+                      showAfter ? 8 : 0,
+                    ),
+                    boxShadow: showAfter
+                        ? [
+                            BoxShadow(
+                              color: AppTheme.primaryBlue.withValues(
+                                alpha: 0.3,
+                              ),
+                              blurRadius: 8,
+                              offset: const Offset(0, 2),
+                            ),
+                          ]
+                        : null,
                   ),
                   child: Text(
                     showAfter ? 'Download Now' : 'click here',
                     style: Typography.bodyLargeStyle.copyWith(
                       fontSize: showAfter ? 14 : 12,
-                      fontWeight: showAfter ? FontWeight.w600 : FontWeight.normal,
+                      fontWeight: showAfter
+                          ? FontWeight.w600
+                          : FontWeight.normal,
                       color: showAfter ? Colors.white : Colors.black54,
                     ),
                   ),
@@ -1924,12 +2022,12 @@ class BeforeAfterComparisonWidgetState extends State<BeforeAfterComparisonWidget
               const Spacing.height(16),
 
               Text(
-                showAfter 
+                showAfter
                     ? '• Clear action • Proper sizing • Good contrast • Visual hierarchy'
                     : '• Vague text • Poor sizing • Low contrast • No visual cues',
                 style: Typography.bodyMediumStyle.copyWith(
                   fontSize: 12,
-                  color: showAfter 
+                  color: showAfter
                       ? Colors.green.shade700
                       : Colors.red.shade700,
                   height: 1.4,
@@ -1960,7 +2058,8 @@ class ReactionPickerWidget extends StatefulWidget {
   const ReactionPickerWidget({super.key});
 
   @override
-  State<ReactionPickerWidget> createState() => ReactionPickerWidgetState();
+  State<ReactionPickerWidget> createState() =>
+      ReactionPickerWidgetState();
 }
 
 class ReactionPickerWidgetState extends State<ReactionPickerWidget> {
@@ -1972,7 +2071,7 @@ class ReactionPickerWidgetState extends State<ReactionPickerWidget> {
     '👍': 'Makes sense',
     '🤔': 'Need to think',
     '😕': 'Disagree',
-    '🤯': 'Mind blown!'
+    '🤯': 'Mind blown!',
   };
 
   @override
@@ -1982,9 +2081,7 @@ class ReactionPickerWidgetState extends State<ReactionPickerWidget> {
       decoration: BoxDecoration(
         color: AppTheme.backgroundLight,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: Colors.green.withValues(alpha: 0.2),
-        ),
+        border: Border.all(color: Colors.green.withValues(alpha: 0.2)),
       ),
       child: Div.column([
         Div.row([
@@ -2052,24 +2149,24 @@ class ReactionPickerWidgetState extends State<ReactionPickerWidget> {
               onTap: hasSubmitted ? null : () => selectReaction(emoji),
               child: AnimatedContainer(
                 duration: const Duration(milliseconds: 200),
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 12,
+                ),
                 decoration: BoxDecoration(
-                  color: isSelected 
+                  color: isSelected
                       ? Colors.green.withValues(alpha: 0.1)
                       : AppTheme.backgroundDark.withValues(alpha: 0.5),
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(
-                    color: isSelected 
+                    color: isSelected
                         ? Colors.green
                         : AppTheme.textPrimary.withValues(alpha: 0.2),
                     width: isSelected ? 2 : 1,
                   ),
                 ),
                 child: Div.row([
-                  Text(
-                    emoji,
-                    style: const TextStyle(fontSize: 20),
-                  ),
+                  Text(emoji, style: const TextStyle(fontSize: 20)),
 
                   const Spacing.width(8),
 
@@ -2077,8 +2174,12 @@ class ReactionPickerWidgetState extends State<ReactionPickerWidget> {
                     label,
                     style: Typography.bodyMediumStyle.copyWith(
                       fontSize: 12,
-                      fontWeight: isSelected ? FontWeight.w500 : FontWeight.normal,
-                      color: isSelected ? Colors.green : AppTheme.textPrimary,
+                      fontWeight: isSelected
+                          ? FontWeight.w500
+                          : FontWeight.normal,
+                      color: isSelected
+                          ? Colors.green
+                          : AppTheme.textPrimary,
                     ),
                   ),
                 ]),
@@ -2141,7 +2242,8 @@ class KnowledgeBuilderWidget extends StatefulWidget {
   const KnowledgeBuilderWidget({super.key});
 
   @override
-  State<KnowledgeBuilderWidget> createState() => KnowledgeBuilderWidgetState();
+  State<KnowledgeBuilderWidget> createState() =>
+      KnowledgeBuilderWidgetState();
 }
 
 class KnowledgeBuilderWidgetState extends State<KnowledgeBuilderWidget>
@@ -2152,10 +2254,22 @@ class KnowledgeBuilderWidgetState extends State<KnowledgeBuilderWidget>
   late Animation<double> pulseAnimation;
 
   final List<Map<String, String>> levels = [
-    {'title': 'Basic Principles', 'description': 'Understanding core design fundamentals'},
-    {'title': 'User Psychology', 'description': 'How users think and behave'},
-    {'title': 'Advanced Patterns', 'description': 'Complex interaction patterns'},
-    {'title': 'Design Systems', 'description': 'Creating scalable design frameworks'},
+    {
+      'title': 'Basic Principles',
+      'description': 'Understanding core design fundamentals',
+    },
+    {
+      'title': 'User Psychology',
+      'description': 'How users think and behave',
+    },
+    {
+      'title': 'Advanced Patterns',
+      'description': 'Complex interaction patterns',
+    },
+    {
+      'title': 'Design Systems',
+      'description': 'Creating scalable design frameworks',
+    },
   ];
 
   @override
@@ -2165,7 +2279,7 @@ class KnowledgeBuilderWidgetState extends State<KnowledgeBuilderWidget>
       duration: const Duration(milliseconds: 1000),
       vsync: this,
     )..repeat(reverse: true);
-    
+
     pulseAnimation = Tween<double>(begin: 1.0, end: 1.1).animate(
       CurvedAnimation(parent: pulseController, curve: Curves.easeInOut),
     );
@@ -2184,17 +2298,11 @@ class KnowledgeBuilderWidgetState extends State<KnowledgeBuilderWidget>
       decoration: BoxDecoration(
         color: AppTheme.backgroundLight,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: Colors.indigo.withValues(alpha: 0.2),
-        ),
+        border: Border.all(color: Colors.indigo.withValues(alpha: 0.2)),
       ),
       child: Div.column([
         Div.row([
-          const Icon(
-            Icons.school,
-            color: Colors.indigo,
-            size: 24,
-          ),
+          const Icon(Icons.school, color: Colors.indigo, size: 24),
 
           const Spacing.width(12),
 
@@ -2245,7 +2353,9 @@ class KnowledgeBuilderWidgetState extends State<KnowledgeBuilderWidget>
                 animation: pulseAnimation,
                 builder: (context, child) {
                   return Transform.scale(
-                    scale: (isCurrent && isUnlocked) ? pulseAnimation.value : 1.0,
+                    scale: (isCurrent && isUnlocked)
+                        ? pulseAnimation.value
+                        : 1.0,
                     child: child,
                   );
                 },
@@ -2255,19 +2365,19 @@ class KnowledgeBuilderWidgetState extends State<KnowledgeBuilderWidget>
                     color: isCompleted
                         ? AppTheme.primaryGreen.withValues(alpha: 0.1)
                         : isCurrent
-                            ? Colors.indigo.withValues(alpha: 0.1)
-                            : isUnlocked
-                                ? AppTheme.backgroundDark.withValues(alpha: 0.5)
-                                : AppTheme.textPrimary.withValues(alpha: 0.05),
+                        ? Colors.indigo.withValues(alpha: 0.1)
+                        : isUnlocked
+                        ? AppTheme.backgroundDark.withValues(alpha: 0.5)
+                        : AppTheme.textPrimary.withValues(alpha: 0.05),
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(
                       color: isCompleted
                           ? AppTheme.primaryGreen
                           : isCurrent
-                              ? Colors.indigo
-                              : isUnlocked
-                                  ? Colors.indigo.withValues(alpha: 0.3)
-                                  : AppTheme.textPrimary.withValues(alpha: 0.1),
+                          ? Colors.indigo
+                          : isUnlocked
+                          ? Colors.indigo.withValues(alpha: 0.3)
+                          : AppTheme.textPrimary.withValues(alpha: 0.1),
                       width: (isCurrent || isCompleted) ? 2 : 1,
                     ),
                   ),
@@ -2279,25 +2389,38 @@ class KnowledgeBuilderWidgetState extends State<KnowledgeBuilderWidget>
                         color: isCompleted
                             ? AppTheme.primaryGreen
                             : isCurrent
-                                ? Colors.indigo
-                                : isUnlocked
-                                    ? Colors.indigo.withValues(alpha: 0.3)
-                                    : AppTheme.textPrimary.withValues(alpha: 0.2),
+                            ? Colors.indigo
+                            : isUnlocked
+                            ? Colors.indigo.withValues(alpha: 0.3)
+                            : AppTheme.textPrimary.withValues(
+                                alpha: 0.2,
+                              ),
                         shape: BoxShape.circle,
                       ),
                       child: Center(
                         child: isCompleted
-                            ? const Icon(Icons.check, color: Colors.white, size: 16)
+                            ? const Icon(
+                                Icons.check,
+                                color: Colors.white,
+                                size: 16,
+                              )
                             : isUnlocked
-                                ? Text(
-                                    '${index + 1}',
-                                    style: Typography.bodyLargeStyle.copyWith(
+                            ? Text(
+                                '${index + 1}',
+                                style: Typography.bodyLargeStyle
+                                    .copyWith(
                                       fontSize: 14,
                                       fontWeight: FontWeight.bold,
-                                      color: isCurrent ? Colors.white : Colors.indigo,
+                                      color: isCurrent
+                                          ? Colors.white
+                                          : Colors.indigo,
                                     ),
-                                  )
-                                : const Icon(Icons.lock, color: Colors.white, size: 16),
+                              )
+                            : const Icon(
+                                Icons.lock,
+                                color: Colors.white,
+                                size: 16,
+                              ),
                       ),
                     ),
 
@@ -2313,10 +2436,12 @@ class KnowledgeBuilderWidgetState extends State<KnowledgeBuilderWidget>
                             color: isCompleted
                                 ? AppTheme.primaryGreen
                                 : isCurrent
-                                    ? Colors.indigo
-                                    : isUnlocked
-                                        ? AppTheme.textPrimary
-                                        : AppTheme.textPrimary.withValues(alpha: 0.4),
+                                ? Colors.indigo
+                                : isUnlocked
+                                ? AppTheme.textPrimary
+                                : AppTheme.textPrimary.withValues(
+                                    alpha: 0.4,
+                                  ),
                           ),
                         ),
 
@@ -2326,9 +2451,13 @@ class KnowledgeBuilderWidgetState extends State<KnowledgeBuilderWidget>
                           level['description']!,
                           style: Typography.bodyMediumStyle.copyWith(
                             fontSize: 12,
-                            color: isUnlocked 
-                                ? AppTheme.textPrimary.withValues(alpha: 0.7)
-                                : AppTheme.textPrimary.withValues(alpha: 0.3),
+                            color: isUnlocked
+                                ? AppTheme.textPrimary.withValues(
+                                    alpha: 0.7,
+                                  )
+                                : AppTheme.textPrimary.withValues(
+                                    alpha: 0.3,
+                                  ),
                             height: 1.3,
                           ),
                         ),
@@ -2355,7 +2484,9 @@ class KnowledgeBuilderWidgetState extends State<KnowledgeBuilderWidget>
         LinearProgressIndicator(
           value: (currentLevel + 1) / levels.length,
           backgroundColor: AppTheme.textPrimary.withValues(alpha: 0.1),
-          valueColor: const AlwaysStoppedAnimation<Color>(Colors.indigo),
+          valueColor: const AlwaysStoppedAnimation<Color>(
+            Colors.indigo,
+          ),
           minHeight: 6,
         ),
 
@@ -2390,17 +2521,18 @@ class TimelineBuilderWidget extends StatefulWidget {
   const TimelineBuilderWidget({super.key});
 
   @override
-  State<TimelineBuilderWidget> createState() => TimelineBuilderWidgetState();
+  State<TimelineBuilderWidget> createState() =>
+      TimelineBuilderWidgetState();
 }
 
 class TimelineBuilderWidgetState extends State<TimelineBuilderWidget> {
   List<String> timelineEvents = [];
   List<String> availableEvents = [
     'Research user needs',
-    'Create wireframes', 
+    'Create wireframes',
     'Design prototypes',
     'User testing',
-    'Final implementation'
+    'Final implementation',
   ];
   bool isComplete = false;
 
@@ -2411,17 +2543,11 @@ class TimelineBuilderWidgetState extends State<TimelineBuilderWidget> {
       decoration: BoxDecoration(
         color: AppTheme.backgroundLight,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: Colors.brown.withValues(alpha: 0.2),
-        ),
+        border: Border.all(color: Colors.brown.withValues(alpha: 0.2)),
       ),
       child: Div.column([
         Div.row([
-          const Icon(
-            Icons.timeline,
-            color: Colors.brown,
-            size: 24,
-          ),
+          const Icon(Icons.timeline, color: Colors.brown, size: 24),
 
           const Spacing.width(12),
 
@@ -2465,7 +2591,9 @@ class TimelineBuilderWidgetState extends State<TimelineBuilderWidget> {
                     'Drop events here to build timeline',
                     style: Typography.bodyMediumStyle.copyWith(
                       fontSize: 12,
-                      color: AppTheme.textPrimary.withValues(alpha: 0.4),
+                      color: AppTheme.textPrimary.withValues(
+                        alpha: 0.4,
+                      ),
                       fontStyle: FontStyle.italic,
                     ),
                   ),
@@ -2473,31 +2601,42 @@ class TimelineBuilderWidgetState extends State<TimelineBuilderWidget> {
               : Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 8),
                   child: Row(
-                    children: timelineEvents.asMap().entries.map((entry) {
+                    children: timelineEvents.asMap().entries.map((
+                      entry,
+                    ) {
                       final int index = entry.key;
                       final String event = entry.value;
-                      
+
                       return Expanded(
                         child: Container(
                           margin: EdgeInsets.only(
                             left: index == 0 ? 0 : 4,
-                            right: index == timelineEvents.length - 1 ? 0 : 4,
+                            right: index == timelineEvents.length - 1
+                                ? 0
+                                : 4,
                           ),
                           child: GestureDetector(
                             onTap: () => removeFromTimeline(index),
                             child: Container(
                               padding: const EdgeInsets.all(8),
                               decoration: BoxDecoration(
-                                color: Colors.brown.withValues(alpha: 0.1),
+                                color: Colors.brown.withValues(
+                                  alpha: 0.1,
+                                ),
                                 borderRadius: BorderRadius.circular(6),
-                                border: Border.all(color: Colors.brown.withValues(alpha: 0.3)),
+                                border: Border.all(
+                                  color: Colors.brown.withValues(
+                                    alpha: 0.3,
+                                  ),
+                                ),
                               ),
                               child: Text(
                                 event,
-                                style: Typography.bodyMediumStyle.copyWith(
-                                  fontSize: 10,
-                                  color: Colors.brown.shade700,
-                                ),
+                                style: Typography.bodyMediumStyle
+                                    .copyWith(
+                                      fontSize: 10,
+                                      color: Colors.brown.shade700,
+                                    ),
                                 textAlign: TextAlign.center,
                                 maxLines: 2,
                                 overflow: TextOverflow.ellipsis,
@@ -2529,21 +2668,26 @@ class TimelineBuilderWidgetState extends State<TimelineBuilderWidget> {
           runSpacing: 8,
           children: availableEvents.map((event) {
             final bool isUsed = timelineEvents.contains(event);
-            
+
             return GestureDetector(
               onTap: isUsed ? null : () => addToTimeline(event),
               child: AnimatedOpacity(
                 duration: const Duration(milliseconds: 200),
                 opacity: isUsed ? 0.3 : 1.0,
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 8,
+                  ),
                   decoration: BoxDecoration(
-                    color: isUsed 
+                    color: isUsed
                         ? Colors.grey.withValues(alpha: 0.1)
-                        : AppTheme.backgroundDark.withValues(alpha: 0.5),
+                        : AppTheme.backgroundDark.withValues(
+                            alpha: 0.5,
+                          ),
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(
-                      color: isUsed 
+                      color: isUsed
                           ? Colors.grey.withValues(alpha: 0.3)
                           : Colors.brown.withValues(alpha: 0.3),
                     ),
@@ -2552,7 +2696,7 @@ class TimelineBuilderWidgetState extends State<TimelineBuilderWidget> {
                     event,
                     style: Typography.bodyMediumStyle.copyWith(
                       fontSize: 12,
-                      color: isUsed 
+                      color: isUsed
                           ? AppTheme.textPrimary.withValues(alpha: 0.4)
                           : AppTheme.textPrimary,
                     ),
@@ -2574,7 +2718,11 @@ class TimelineBuilderWidgetState extends State<TimelineBuilderWidget> {
               border: Border.all(color: AppTheme.primaryGreen),
             ),
             child: Div.row([
-              const Icon(Icons.check_circle, color: AppTheme.primaryGreen, size: 16),
+              const Icon(
+                Icons.check_circle,
+                color: AppTheme.primaryGreen,
+                size: 16,
+              ),
               const Spacing.width(8),
               Text(
                 'Perfect timeline! You understand the design process. +12 Process points',
@@ -2612,12 +2760,12 @@ class TimelineBuilderWidgetState extends State<TimelineBuilderWidget> {
   void checkTimeline() {
     final List<String> correctOrder = [
       'Research user needs',
-      'Create wireframes', 
+      'Create wireframes',
       'Design prototypes',
       'User testing',
-      'Final implementation'
+      'Final implementation',
     ];
-    
+
     bool isCorrect = true;
     for (int i = 0; i < timelineEvents.length; i++) {
       if (timelineEvents[i] != correctOrder[i]) {
@@ -2636,17 +2784,31 @@ class WordAssociationWidget extends StatefulWidget {
   const WordAssociationWidget({super.key});
 
   @override
-  State<WordAssociationWidget> createState() => WordAssociationWidgetState();
+  State<WordAssociationWidget> createState() =>
+      WordAssociationWidgetState();
 }
 
 class WordAssociationWidgetState extends State<WordAssociationWidget> {
   String centralWord = 'Usability';
   List<String> associatedWords = [];
   List<String> availableWords = [
-    'Intuitive', 'Accessible', 'Efficient', 'Clear', 'Simple', 
-    'Colorful', 'Trendy', 'Flashy', 'Complex'
+    'Intuitive',
+    'Accessible',
+    'Efficient',
+    'Clear',
+    'Simple',
+    'Colorful',
+    'Trendy',
+    'Flashy',
+    'Complex',
   ];
-  Set<String> correctWords = {'Intuitive', 'Accessible', 'Efficient', 'Clear', 'Simple'};
+  Set<String> correctWords = {
+    'Intuitive',
+    'Accessible',
+    'Efficient',
+    'Clear',
+    'Simple',
+  };
 
   @override
   Widget build(BuildContext context) {
@@ -2655,17 +2817,11 @@ class WordAssociationWidgetState extends State<WordAssociationWidget> {
       decoration: BoxDecoration(
         color: AppTheme.backgroundLight,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: Colors.blue.withValues(alpha: 0.2),
-        ),
+        border: Border.all(color: Colors.blue.withValues(alpha: 0.2)),
       ),
       child: Div.column([
         Div.row([
-          const Icon(
-            Icons.hub,
-            color: Colors.blue,
-            size: 24,
-          ),
+          const Icon(Icons.hub, color: Colors.blue, size: 24),
 
           const Spacing.width(12),
 
@@ -2731,7 +2887,9 @@ class WordAssociationWidgetState extends State<WordAssociationWidget> {
                     'Tap words below to add associations',
                     style: Typography.bodyMediumStyle.copyWith(
                       fontSize: 12,
-                      color: AppTheme.textPrimary.withValues(alpha: 0.4),
+                      color: AppTheme.textPrimary.withValues(
+                        alpha: 0.4,
+                      ),
                       fontStyle: FontStyle.italic,
                     ),
                   ),
@@ -2741,18 +2899,25 @@ class WordAssociationWidgetState extends State<WordAssociationWidget> {
                   runSpacing: 8,
                   children: associatedWords.map((word) {
                     final bool isCorrect = correctWords.contains(word);
-                    
+
                     return GestureDetector(
                       onTap: () => removeAssociation(word),
                       child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 6,
+                        ),
                         decoration: BoxDecoration(
-                          color: isCorrect 
-                              ? AppTheme.primaryGreen.withValues(alpha: 0.1)
+                          color: isCorrect
+                              ? AppTheme.primaryGreen.withValues(
+                                  alpha: 0.1,
+                                )
                               : Colors.red.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(12),
                           border: Border.all(
-                            color: isCorrect ? AppTheme.primaryGreen : Colors.red,
+                            color: isCorrect
+                                ? AppTheme.primaryGreen
+                                : Colors.red,
                           ),
                         ),
                         child: Div.row([
@@ -2760,7 +2925,9 @@ class WordAssociationWidgetState extends State<WordAssociationWidget> {
                             word,
                             style: Typography.bodyMediumStyle.copyWith(
                               fontSize: 12,
-                              color: isCorrect ? AppTheme.primaryGreen : Colors.red.shade700,
+                              color: isCorrect
+                                  ? AppTheme.primaryGreen
+                                  : Colors.red.shade700,
                               fontWeight: FontWeight.w500,
                             ),
                           ),
@@ -2768,7 +2935,9 @@ class WordAssociationWidgetState extends State<WordAssociationWidget> {
                           Icon(
                             isCorrect ? Icons.check : Icons.close,
                             size: 14,
-                            color: isCorrect ? AppTheme.primaryGreen : Colors.red,
+                            color: isCorrect
+                                ? AppTheme.primaryGreen
+                                : Colors.red,
                           ),
                         ]),
                       ),
@@ -2795,21 +2964,26 @@ class WordAssociationWidgetState extends State<WordAssociationWidget> {
           runSpacing: 8,
           children: availableWords.map((word) {
             final bool isUsed = associatedWords.contains(word);
-            
+
             return GestureDetector(
               onTap: isUsed ? null : () => addAssociation(word),
               child: AnimatedOpacity(
                 duration: const Duration(milliseconds: 200),
                 opacity: isUsed ? 0.3 : 1.0,
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 8,
+                  ),
                   decoration: BoxDecoration(
-                    color: isUsed 
+                    color: isUsed
                         ? Colors.grey.withValues(alpha: 0.1)
-                        : AppTheme.backgroundDark.withValues(alpha: 0.5),
+                        : AppTheme.backgroundDark.withValues(
+                            alpha: 0.5,
+                          ),
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(
-                      color: isUsed 
+                      color: isUsed
                           ? Colors.grey.withValues(alpha: 0.3)
                           : Colors.blue.withValues(alpha: 0.3),
                     ),
@@ -2818,7 +2992,7 @@ class WordAssociationWidgetState extends State<WordAssociationWidget> {
                     word,
                     style: Typography.bodyMediumStyle.copyWith(
                       fontSize: 12,
-                      color: isUsed 
+                      color: isUsed
                           ? AppTheme.textPrimary.withValues(alpha: 0.4)
                           : AppTheme.textPrimary,
                     ),
@@ -2830,7 +3004,10 @@ class WordAssociationWidgetState extends State<WordAssociationWidget> {
         ),
 
         RenderIf.condition(
-          associatedWords.length == 5 && associatedWords.every((word) => correctWords.contains(word)),
+          associatedWords.length == 5 &&
+              associatedWords.every(
+                (word) => correctWords.contains(word),
+              ),
           Container(
             margin: const EdgeInsets.only(top: 16),
             padding: const EdgeInsets.all(12),
@@ -2840,7 +3017,11 @@ class WordAssociationWidgetState extends State<WordAssociationWidget> {
               border: Border.all(color: AppTheme.primaryGreen),
             ),
             child: Div.row([
-              const Icon(Icons.psychology, color: AppTheme.primaryGreen, size: 16),
+              const Icon(
+                Icons.psychology,
+                color: AppTheme.primaryGreen,
+                size: 16,
+              ),
               const Spacing.width(8),
               Text(
                 'Excellent associations! You understand usability principles. +8 Concept points',
@@ -2876,7 +3057,8 @@ class DialAdjustmentWidget extends StatefulWidget {
   const DialAdjustmentWidget({super.key});
 
   @override
-  State<DialAdjustmentWidget> createState() => DialAdjustmentWidgetState();
+  State<DialAdjustmentWidget> createState() =>
+      DialAdjustmentWidgetState();
 }
 
 class DialAdjustmentWidgetState extends State<DialAdjustmentWidget> {
@@ -2886,24 +3068,19 @@ class DialAdjustmentWidgetState extends State<DialAdjustmentWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final bool isOptimal = (complexityLevel < 30 && usabilityLevel > 70);
-    
+    final bool isOptimal =
+        (complexityLevel < 30 && usabilityLevel > 70);
+
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: AppTheme.backgroundLight,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: Colors.purple.withValues(alpha: 0.2),
-        ),
+        border: Border.all(color: Colors.purple.withValues(alpha: 0.2)),
       ),
       child: Div.column([
         Div.row([
-          const Icon(
-            Icons.tune,
-            color: Colors.purple,
-            size: 24,
-          ),
+          const Icon(Icons.tune, color: Colors.purple, size: 24),
 
           const Spacing.width(12),
 
@@ -2957,10 +3134,14 @@ class DialAdjustmentWidgetState extends State<DialAdjustmentWidget> {
           SliderTheme(
             data: SliderThemeData(
               activeTrackColor: Colors.purple,
-              inactiveTrackColor: AppTheme.textPrimary.withValues(alpha: 0.1),
+              inactiveTrackColor: AppTheme.textPrimary.withValues(
+                alpha: 0.1,
+              ),
               thumbColor: Colors.purple,
               overlayColor: Colors.purple.withValues(alpha: 0.1),
-              thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 12),
+              thumbShape: const RoundSliderThumbShape(
+                enabledThumbRadius: 12,
+              ),
               trackHeight: 6,
             ),
             child: Slider(
@@ -3023,10 +3204,14 @@ class DialAdjustmentWidgetState extends State<DialAdjustmentWidget> {
           SliderTheme(
             data: SliderThemeData(
               activeTrackColor: Colors.purple,
-              inactiveTrackColor: AppTheme.textPrimary.withValues(alpha: 0.1),
+              inactiveTrackColor: AppTheme.textPrimary.withValues(
+                alpha: 0.1,
+              ),
               thumbColor: Colors.purple,
               overlayColor: Colors.purple.withValues(alpha: 0.1),
-              thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 12),
+              thumbShape: const RoundSliderThumbShape(
+                enabledThumbRadius: 12,
+              ),
               trackHeight: 6,
             ),
             child: Slider(
@@ -3066,7 +3251,7 @@ class DialAdjustmentWidgetState extends State<DialAdjustmentWidget> {
         Container(
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
-            color: isOptimal 
+            color: isOptimal
                 ? AppTheme.primaryGreen.withValues(alpha: 0.1)
                 : Colors.orange.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(8),
@@ -3083,12 +3268,14 @@ class DialAdjustmentWidgetState extends State<DialAdjustmentWidget> {
             const Spacing.width(8),
             Expanded(
               child: Text(
-                isOptimal 
+                isOptimal
                     ? 'Perfect balance! Low complexity + high usability = great design'
                     : 'Try adjusting: aim for simple and easy to use',
                 style: Typography.bodyMediumStyle.copyWith(
                   fontSize: 12,
-                  color: isOptimal ? AppTheme.primaryGreen : Colors.orange.shade700,
+                  color: isOptimal
+                      ? AppTheme.primaryGreen
+                      : Colors.orange.shade700,
                   fontWeight: FontWeight.w500,
                   height: 1.3,
                 ),
@@ -3134,7 +3321,8 @@ class StoryBranchingWidget extends StatefulWidget {
   const StoryBranchingWidget({super.key});
 
   @override
-  State<StoryBranchingWidget> createState() => StoryBranchingWidgetState();
+  State<StoryBranchingWidget> createState() =>
+      StoryBranchingWidgetState();
 }
 
 class StoryBranchingWidgetState extends State<StoryBranchingWidget> {
@@ -3144,70 +3332,72 @@ class StoryBranchingWidgetState extends State<StoryBranchingWidget> {
 
   final List<Map<String, dynamic>> storyNodes = [
     {
-      'text': 'Kenji, a product designer in Tokyo, faces a deadline. His team needs to choose a design direction for a mobile app.',
+      'text':
+          'Kenji, a product designer in Tokyo, faces a deadline. His team needs to choose a design direction for a mobile app.',
       'choices': [
         {'text': 'Research users first', 'next': 1, 'points': 5},
         {'text': 'Start with visual design', 'next': 2, 'points': 2},
-      ]
+      ],
     },
     {
-      'text': 'Kenji conducts user interviews at a local café. He discovers users struggle with small buttons on mobile devices.',
+      'text':
+          'Kenji conducts user interviews at a local café. He discovers users struggle with small buttons on mobile devices.',
       'choices': [
         {'text': 'Increase button sizes', 'next': 3, 'points': 5},
         {'text': 'Add colorful animations', 'next': 4, 'points': 1},
-      ]
+      ],
     },
     {
-      'text': 'Kenji creates beautiful mockups with trendy gradients, but ignores user needs during the design process.',
+      'text':
+          'Kenji creates beautiful mockups with trendy gradients, but ignores user needs during the design process.',
       'choices': [
         {'text': 'Test with users anyway', 'next': 5, 'points': 3},
         {'text': 'Ship the pretty design', 'next': 6, 'points': 0},
-      ]
+      ],
     },
     {
-      'text': 'The app launches with accessible, easy-to-tap buttons. Users love the intuitive interface and adoption soars.',
+      'text':
+          'The app launches with accessible, easy-to-tap buttons. Users love the intuitive interface and adoption soars.',
       'choices': [],
-      'ending': 'success'
+      'ending': 'success',
     },
     {
-      'text': 'Despite beautiful animations, users struggle with tiny buttons. Adoption remains low.',
+      'text':
+          'Despite beautiful animations, users struggle with tiny buttons. Adoption remains low.',
       'choices': [],
-      'ending': 'partial'
+      'ending': 'partial',
     },
     {
-      'text': 'Late-stage testing reveals usability issues, but there\'s time to fix critical problems.',
+      'text':
+          'Late-stage testing reveals usability issues, but there\'s time to fix critical problems.',
       'choices': [],
-      'ending': 'partial'
+      'ending': 'partial',
     },
     {
-      'text': 'The beautiful app launches but users can\'t navigate it effectively. Bad reviews flood the app store.',
+      'text':
+          'The beautiful app launches but users can\'t navigate it effectively. Bad reviews flood the app store.',
       'choices': [],
-      'ending': 'failure'
+      'ending': 'failure',
     },
   ];
 
   @override
   Widget build(BuildContext context) {
     final Map<String, dynamic> currentNode = storyNodes[currentStory];
-    final List<dynamic> choices = currentNode['choices'] as List<dynamic>;
+    final List<dynamic> choices =
+        currentNode['choices'] as List<dynamic>;
     final bool isEnding = choices.isEmpty;
-    
+
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: AppTheme.backgroundLight,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: Colors.teal.withValues(alpha: 0.2),
-        ),
+        border: Border.all(color: Colors.teal.withValues(alpha: 0.2)),
       ),
       child: Div.column([
         Div.row([
-          const Icon(
-            Icons.auto_stories,
-            color: Colors.teal,
-            size: 24,
-          ),
+          const Icon(Icons.auto_stories, color: Colors.teal, size: 24),
 
           const Spacing.width(12),
 
@@ -3267,9 +3457,13 @@ class StoryBranchingWidgetState extends State<StoryBranchingWidget> {
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: getEndingColor(currentNode['ending']).withValues(alpha: 0.1),
+              color: getEndingColor(
+                currentNode['ending'],
+              ).withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: getEndingColor(currentNode['ending'])),
+              border: Border.all(
+                color: getEndingColor(currentNode['ending']),
+              ),
             ),
             child: Div.column([
               Div.row([
@@ -3326,15 +3520,21 @@ class StoryBranchingWidgetState extends State<StoryBranchingWidget> {
           ),
         ] else ...[
           ...choices.map<Widget>((choice) {
-            final Map<String, dynamic> choiceMap = choice as Map<String, dynamic>;
+            final Map<String, dynamic> choiceMap =
+                choice as Map<String, dynamic>;
             return Padding(
               padding: const EdgeInsets.only(bottom: 8),
               child: GestureDetector(
                 onTap: () => makeChoice(choiceMap),
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 12,
+                  ),
                   decoration: BoxDecoration(
-                    color: AppTheme.backgroundDark.withValues(alpha: 0.5),
+                    color: AppTheme.backgroundDark.withValues(
+                      alpha: 0.5,
+                    ),
                     borderRadius: BorderRadius.circular(8),
                     border: Border.all(
                       color: Colors.teal.withValues(alpha: 0.3),
@@ -3367,37 +3567,53 @@ class StoryBranchingWidgetState extends State<StoryBranchingWidget> {
 
   Color getEndingColor(String ending) {
     switch (ending) {
-      case 'success': return AppTheme.primaryGreen;
-      case 'partial': return Colors.orange;
-      case 'failure': return Colors.red;
-      default: return Colors.teal;
+      case 'success':
+        return AppTheme.primaryGreen;
+      case 'partial':
+        return Colors.orange;
+      case 'failure':
+        return Colors.red;
+      default:
+        return Colors.teal;
     }
   }
 
   IconData getEndingIcon(String ending) {
     switch (ending) {
-      case 'success': return Icons.celebration;
-      case 'partial': return Icons.warning;
-      case 'failure': return Icons.error;
-      default: return Icons.info;
+      case 'success':
+        return Icons.celebration;
+      case 'partial':
+        return Icons.warning;
+      case 'failure':
+        return Icons.error;
+      default:
+        return Icons.info;
     }
   }
 
   String getEndingTitle(String ending) {
     switch (ending) {
-      case 'success': return 'Excellent Design Process!';
-      case 'partial': return 'Mixed Results';
-      case 'failure': return 'Design Failed';
-      default: return 'Story Complete';
+      case 'success':
+        return 'Excellent Design Process!';
+      case 'partial':
+        return 'Mixed Results';
+      case 'failure':
+        return 'Design Failed';
+      default:
+        return 'Story Complete';
     }
   }
 
   String getEndingMessage(String ending) {
     switch (ending) {
-      case 'success': return 'Kenji followed user-centered design principles and created a successful product. +15 Story points';
-      case 'partial': return 'Some good choices, but could be improved. +8 Story points';
-      case 'failure': return 'Design without user focus leads to poor outcomes. +3 Story points for learning';
-      default: return 'Story completed.';
+      case 'success':
+        return 'Kenji followed user-centered design principles and created a successful product. +15 Story points';
+      case 'partial':
+        return 'Some good choices, but could be improved. +8 Story points';
+      case 'failure':
+        return 'Design without user focus leads to poor outcomes. +3 Story points for learning';
+      default:
+        return 'Story completed.';
     }
   }
 
@@ -3421,14 +3637,20 @@ class PatternRecognitionWidget extends StatefulWidget {
   const PatternRecognitionWidget({super.key});
 
   @override
-  State<PatternRecognitionWidget> createState() => PatternRecognitionWidgetState();
+  State<PatternRecognitionWidget> createState() =>
+      PatternRecognitionWidgetState();
 }
 
-class PatternRecognitionWidgetState extends State<PatternRecognitionWidget> {
+class PatternRecognitionWidgetState
+    extends State<PatternRecognitionWidget> {
   List<String> designPatterns = [
-    'Card Layout', 'Navigation Bar', 'Search Box', 'Button Grid', 'Card Layout'
+    'Card Layout',
+    'Navigation Bar',
+    'Search Box',
+    'Button Grid',
+    'Card Layout',
   ];
-  
+
   List<bool> selectedIndices = List.filled(5, false);
   bool hasSubmitted = false;
   int score = 0;
@@ -3440,17 +3662,11 @@ class PatternRecognitionWidgetState extends State<PatternRecognitionWidget> {
       decoration: BoxDecoration(
         color: AppTheme.backgroundLight,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: Colors.red.withValues(alpha: 0.2),
-        ),
+        border: Border.all(color: Colors.red.withValues(alpha: 0.2)),
       ),
       child: Div.column([
         Div.row([
-          const Icon(
-            Icons.pattern,
-            color: Colors.red,
-            size: 24,
-          ),
+          const Icon(Icons.pattern, color: Colors.red, size: 24),
 
           const Spacing.width(12),
 
@@ -3504,28 +3720,47 @@ class PatternRecognitionWidgetState extends State<PatternRecognitionWidget> {
                 final String pattern = entry.value;
                 final bool isSelected = selectedIndices[index];
                 final bool isRepeated = pattern == 'Card Layout';
-                
+
                 return GestureDetector(
-                  onTap: hasSubmitted ? null : () => toggleSelection(index),
+                  onTap: hasSubmitted
+                      ? null
+                      : () => toggleSelection(index),
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 8,
+                    ),
                     decoration: BoxDecoration(
                       color: hasSubmitted
-                          ? (isRepeated 
-                              ? AppTheme.primaryGreen.withValues(alpha: 0.1)
-                              : (isSelected 
-                                  ? Colors.red.withValues(alpha: 0.1)
-                                  : AppTheme.backgroundDark.withValues(alpha: 0.5)))
-                          : (isSelected 
-                              ? Colors.red.withValues(alpha: 0.1)
-                              : AppTheme.backgroundDark.withValues(alpha: 0.5)),
+                          ? (isRepeated
+                                ? AppTheme.primaryGreen.withValues(
+                                    alpha: 0.1,
+                                  )
+                                : (isSelected
+                                      ? Colors.red.withValues(
+                                          alpha: 0.1,
+                                        )
+                                      : AppTheme.backgroundDark
+                                            .withValues(alpha: 0.5)))
+                          : (isSelected
+                                ? Colors.red.withValues(alpha: 0.1)
+                                : AppTheme.backgroundDark.withValues(
+                                    alpha: 0.5,
+                                  )),
                       borderRadius: BorderRadius.circular(8),
                       border: Border.all(
                         color: hasSubmitted
-                            ? (isRepeated 
-                                ? AppTheme.primaryGreen
-                                : (isSelected ? Colors.red : AppTheme.textPrimary.withValues(alpha: 0.2)))
-                            : (isSelected ? Colors.red : AppTheme.textPrimary.withValues(alpha: 0.2)),
+                            ? (isRepeated
+                                  ? AppTheme.primaryGreen
+                                  : (isSelected
+                                        ? Colors.red
+                                        : AppTheme.textPrimary
+                                              .withValues(alpha: 0.2)))
+                            : (isSelected
+                                  ? Colors.red
+                                  : AppTheme.textPrimary.withValues(
+                                      alpha: 0.2,
+                                    )),
                         width: hasSubmitted && isRepeated ? 2 : 1,
                       ),
                     ),
@@ -3535,11 +3770,17 @@ class PatternRecognitionWidgetState extends State<PatternRecognitionWidget> {
                         style: Typography.bodyMediumStyle.copyWith(
                           fontSize: 12,
                           color: hasSubmitted
-                              ? (isRepeated 
-                                  ? AppTheme.primaryGreen
-                                  : (isSelected ? Colors.red.shade700 : AppTheme.textPrimary))
-                              : (isSelected ? Colors.red : AppTheme.textPrimary),
-                          fontWeight: hasSubmitted && isRepeated ? FontWeight.w600 : FontWeight.normal,
+                              ? (isRepeated
+                                    ? AppTheme.primaryGreen
+                                    : (isSelected
+                                          ? Colors.red.shade700
+                                          : AppTheme.textPrimary))
+                              : (isSelected
+                                    ? Colors.red
+                                    : AppTheme.textPrimary),
+                          fontWeight: hasSubmitted && isRepeated
+                              ? FontWeight.w600
+                              : FontWeight.normal,
                         ),
                       ),
 
@@ -3548,11 +3789,19 @@ class PatternRecognitionWidgetState extends State<PatternRecognitionWidget> {
                         Padding(
                           padding: const EdgeInsets.only(left: 8),
                           child: Icon(
-                            isRepeated ? Icons.check_circle : 
-                            isSelected ? Icons.cancel : Icons.circle_outlined,
+                            isRepeated
+                                ? Icons.check_circle
+                                : isSelected
+                                ? Icons.cancel
+                                : Icons.circle_outlined,
                             size: 16,
-                            color: isRepeated ? AppTheme.primaryGreen :
-                                   isSelected ? Colors.red : AppTheme.textPrimary.withValues(alpha: 0.3),
+                            color: isRepeated
+                                ? AppTheme.primaryGreen
+                                : isSelected
+                                ? Colors.red
+                                : AppTheme.textPrimary.withValues(
+                                    alpha: 0.3,
+                                  ),
                           ),
                         ),
                       ),
@@ -3595,27 +3844,35 @@ class PatternRecognitionWidgetState extends State<PatternRecognitionWidget> {
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: score >= 2 
+              color: score >= 2
                   ? AppTheme.primaryGreen.withValues(alpha: 0.1)
                   : Colors.orange.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(8),
               border: Border.all(
-                color: score >= 2 ? AppTheme.primaryGreen : Colors.orange,
+                color: score >= 2
+                    ? AppTheme.primaryGreen
+                    : Colors.orange,
               ),
             ),
             child: Div.column([
               Div.row([
                 Icon(
                   score >= 2 ? Icons.visibility : Icons.psychology,
-                  color: score >= 2 ? AppTheme.primaryGreen : Colors.orange,
+                  color: score >= 2
+                      ? AppTheme.primaryGreen
+                      : Colors.orange,
                   size: 16,
                 ),
                 const Spacing.width(8),
                 Text(
-                  score >= 2 ? 'Great pattern recognition!' : 'Pattern recognition needs practice',
+                  score >= 2
+                      ? 'Great pattern recognition!'
+                      : 'Pattern recognition needs practice',
                   style: Typography.bodyMediumStyle.copyWith(
                     fontSize: 12,
-                    color: score >= 2 ? AppTheme.primaryGreen : Colors.orange.shade700,
+                    color: score >= 2
+                        ? AppTheme.primaryGreen
+                        : Colors.orange.shade700,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -3652,14 +3909,14 @@ class PatternRecognitionWidgetState extends State<PatternRecognitionWidget> {
     if (selectedIndices[4]) {
       correctSelections++; // Second Card Layout
     }
-    
+
     // Subtract incorrect selections
     for (int i = 1; i < 4; i++) {
       if (selectedIndices[i]) {
         correctSelections--;
       }
     }
-    
+
     setState(() {
       hasSubmitted = true;
       score = correctSelections.clamp(0, 2);

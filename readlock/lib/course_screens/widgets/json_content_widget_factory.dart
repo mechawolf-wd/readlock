@@ -161,6 +161,7 @@ class JsonQuestionContentWidget extends StatelessWidget {
         contentData['correct-answer-indices'] ?? [],
       ),
       explanation: contentData['explanation'] ?? '',
+      hint: contentData['hint'],
       type: _parseQuestionType(contentData['type']),
       scenarioContext: contentData['scenarioContext'],
       followUpPrompts: contentData['followUpPrompts'] != null

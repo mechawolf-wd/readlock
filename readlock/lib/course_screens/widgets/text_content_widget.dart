@@ -18,7 +18,6 @@ class TextContentWidget extends StatelessWidget {
       child: ProgressiveText(
         textSegments: content.textSegments,
         textStyle: Typography.bodyMediumStyle,
-        characterDelay: const Duration(milliseconds: 15),
         crossAxisAlignment: CrossAxisAlignment.start,
       ),
     );

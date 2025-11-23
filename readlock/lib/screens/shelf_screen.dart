@@ -58,55 +58,13 @@ class ShelfScreenState extends State<ShelfScreen> {
   }
 
   Widget LatestCourseCard() {
-    final BoxDecoration newBadgeDecoration = BoxDecoration(
-      color: AppTheme.primaryGreen.withValues(alpha: 0.2),
-      borderRadius: BorderRadius.circular(12),
-    );
-
-    final TextStyle newBadgeTextStyle = Typography.bodyMediumStyle
-        .copyWith(
-          fontSize: 12,
-          fontWeight: FontWeight.w600,
-          color: AppTheme.primaryGreen,
-        );
-
-    final TextStyle sectionsTextStyle = Typography.bodyMediumStyle
-        .copyWith(
-          color: AppTheme.textPrimary.withValues(alpha: 0.7),
-          fontSize: 14,
-        );
-
-    final BoxDecoration continueButtonDecoration = BoxDecoration(
-      color: AppTheme.primaryGreen.withValues(alpha: 0.15),
-      borderRadius: BorderRadius.circular(24),
-      border: Border.all(
-        color: AppTheme.primaryGreen.withValues(alpha: 0.4),
-        width: 1.5,
-      ),
-    );
-
-    final TextStyle continueButtonTextStyle = Typography.bodyMediumStyle
-        .copyWith(
-          color: AppTheme.primaryGreen,
-          fontWeight: FontWeight.w600,
-        );
-
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(24),
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          onTap: () {
-            Navigator.push(
-              context,
-              AppTheme.fadeTransition(
-                const CourseRoadmapScreen(
-                  courseId: 'design-everyday-things',
-                ),
-              ),
-            );
-          },
+          onTap: navigateToDesignCourse,
           borderRadius: BorderRadius.circular(18),
           child: Div.column([
             Div.row([
@@ -130,13 +88,16 @@ class ShelfScreenState extends State<ShelfScreen> {
                         horizontal: 8,
                         vertical: 4,
                       ),
-                      decoration: newBadgeDecoration,
-                      child: Text('NEW', style: newBadgeTextStyle),
+                      decoration: Style.newBadgeDecoration,
+                      child: Text(
+                        'NEW',
+                        style: Style.newBadgeTextStyle,
+                      ),
                     ),
 
                     const Spacing.width(8),
 
-                    Text('6 sections', style: sectionsTextStyle),
+                    Text('6 sections', style: Style.sectionsTextStyle),
                   ]),
                 ], crossAxisAlignment: CrossAxisAlignment.start),
               ),
@@ -163,11 +124,11 @@ class ShelfScreenState extends State<ShelfScreen> {
                   horizontal: 20,
                   vertical: 10,
                 ),
-                decoration: continueButtonDecoration,
+                decoration: Style.continueButtonDecoration,
                 child: Div.row([
                   Text(
                     'Continue Learning',
-                    style: continueButtonTextStyle,
+                    style: Style.continueButtonTextStyle,
                   ),
 
                   const Spacing.width(8),
@@ -185,4 +146,59 @@ class ShelfScreenState extends State<ShelfScreen> {
       ),
     );
   }
+
+  // Navigation methods
+
+  void navigateToDesignCourse() {
+    showLoadingScreenThenNavigate();
+  }
+
+  void showLoadingScreenThenNavigate() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) =>
+            const CourseRoadmapScreen(courseId: 'design-everyday-things'),
+      ),
+    );
+  }
+}
+
+
+class Style {
+  static final TextStyle sectionsTextStyle = Typography.bodyLargeStyle
+      .copyWith(color: AppTheme.textSecondary, fontSize: 12);
+
+  static final TextStyle newBadgeTextStyle = Typography.bodyLargeStyle
+      .copyWith(
+        color: AppTheme.primaryGreen,
+        fontSize: 10,
+        fontWeight: FontWeight.bold,
+        letterSpacing: 0.5,
+      );
+
+  static final BoxDecoration newBadgeDecoration = BoxDecoration(
+    color: AppTheme.primaryGreen.withValues(alpha: 0.1),
+    borderRadius: BorderRadius.circular(6),
+    border: Border.all(
+      color: AppTheme.primaryGreen.withValues(alpha: 0.3),
+    ),
+  );
+
+  static final BoxDecoration continueButtonDecoration = BoxDecoration(
+    color: AppTheme.primaryGreen.withValues(alpha: 0.1),
+    borderRadius: BorderRadius.circular(8),
+    border: Border.all(
+      color: AppTheme.primaryGreen.withValues(alpha: 0.3),
+      width: 1.5,
+    ),
+  );
+
+  static final TextStyle continueButtonTextStyle = Typography
+      .bodyLargeStyle
+      .copyWith(
+        color: AppTheme.primaryGreen,
+        fontSize: 14,
+        fontWeight: FontWeight.w600,
+      );
 }

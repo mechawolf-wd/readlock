@@ -9,19 +9,19 @@ Coding conventions and architectural patterns for the Readlock Flutter applicati
 1. **No abbreviations** - use descriptive names (userProfile vs up)
 2. **No underscore prefixes** - avoid private variable naming with \_
 3. **Clarity over brevity** - longer names acceptable for clarity
-4. **Widget methods** - name by function (NavigationItems vs buildNavigationItems)
+4. **Widget methods** - name by function (NavigationItems vs buildNavigationItems), use camelCase for functions (navigateToScreen vs NavigateToScreen), use PascalCase for icon definitions (CloseIcon vs closeIcon)
 5. **Constants** - extract hardcoded strings, use UPPER_SNAKE_CASE
 6. **Provider naming** - use store pattern (userStore, productStore)
-
+`
 ### Widget Architecture
 
 7. **Component extraction** - avoid deep nesting, extract separate widgets
 8. **Design system separation** - never nest design components in UI code
-9. **Function extraction** - avoid deep nesting in build methods
+9. **Function extraction** - never nest functions inside the UI, unless very simple
 10. **Utility widgets** - use Div.row/column instead of Container directly
 11. **Spacing widgets** - use Spacing.height/width instead of SizedBox
 12. **Typography consistency** - use typography.dart for all text
-13. **Style extraction** - extract complex styling objects (BoxDecoration, TextStyle, EdgeInsets with multiple properties) to variables, keep simple one-liners inline
+13. **Style extraction** - extract complex styling objects (BoxDecoration, TextStyle, EdgeInsets with multiple properties) to variables above the build method, keep simple one-liners inline. Also extract complete icon widgets above the build method (not just IconData constants). Use a `Style` class at the bottom of the file for organizing extracted styles
 14. **Loop extraction** - extract loops, iterations, and ListView builders from widget tree into separate methods with descriptive names
 
 ### Code Formatting

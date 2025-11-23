@@ -3,6 +3,7 @@
 
 import 'package:flutter/material.dart' hide Typography;
 import 'package:readlock/constants/typography.dart';
+import 'package:readlock/constants/app_theme.dart';
 import 'package:readlock/utility_widgets/utility_widgets.dart';
 import 'package:readlock/utility_widgets/visual_effects/blur_overlay.dart';
 
@@ -50,11 +51,14 @@ class ProgressiveTextState extends State<ProgressiveText> {
   int currentCharacterPosition = 0;
   String revealedText = '';
 
+  late List<bool> sentenceBlurStates;
+
   @override
   void initState() {
     super.initState();
 
     textSentences = widget.textSegments;
+    sentenceBlurStates = List.filled(textSentences.length, true);
 
     final bool hasSentences = textSentences.isNotEmpty;
 
@@ -173,6 +177,15 @@ class ProgressiveTextState extends State<ProgressiveText> {
     }
   }
 
+  void toggleBlurForSentence(int sentenceIndex) {
+    if (sentenceIndex < sentenceBlurStates.length) {
+      setState(() {
+        sentenceBlurStates[sentenceIndex] =
+            !sentenceBlurStates[sentenceIndex];
+      });
+    }
+  }
+
   @override
   void dispose() {
     isRevealingCurrentSentence = false;
@@ -221,7 +234,8 @@ class ProgressiveTextState extends State<ProgressiveText> {
           ),
         );
 
-        if (widget.enableBlurOnCompleted) {
+        if (widget.enableBlurOnCompleted &&
+            sentenceBlurStates[sentenceItemIndex]) {
           sentenceWidget = BlurOverlay(
             blurSigma: widget.blurSigma,
             opacity: widget.completedOpacity,
@@ -229,7 +243,10 @@ class ProgressiveTextState extends State<ProgressiveText> {
           );
         }
 
-        return sentenceWidget;
+        return GestureDetector(
+          onTap: () => toggleBlurForSentence(sentenceItemIndex),
+          child: sentenceWidget,
+        );
       },
     );
 
@@ -254,15 +271,30 @@ class ProgressiveTextState extends State<ProgressiveText> {
     }
 
     return Div.column([
-      Text(
-        revealedText,
-        style:
-            widget.textStyle ??
-            Typography.bodyMediumStyle.copyWith(
-              fontSize: 16,
-              height: 1.5,
+      RichText(
+        text: TextSpan(
+          children: [
+            TextSpan(
+              text: revealedText,
+              style:
+                  widget.textStyle ??
+                  Typography.bodyMediumStyle.copyWith(
+                    fontSize: 16,
+                    height: 1.5,
+                  ),
             ),
-        textAlign: TextAlign.start,
+            if (isRevealingCurrentSentence)
+              TextSpan(
+                text: '|',
+                style: (widget.textStyle ?? Typography.bodyMediumStyle)
+                    .copyWith(
+                      fontSize: 16,
+                      height: 1.5,
+                      color: AppTheme.primaryBlue,
+                    ),
+              ),
+          ],
+        ),
       ),
     ]);
   }

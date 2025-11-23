@@ -15,7 +15,7 @@ const double SLIDER_HEIGHT = 60.0;
 const int ANIMATION_DURATION_MS = 300;
 const int CLOSE_ESTIMATE_THRESHOLD = 10;
 const String YOUR_ESTIMATE_LABEL = 'Your Estimate';
-const String SUBMIT_BUTTON_TEXT = 'Submit Estimate';
+const String SUBMIT_BUTTON_TEXT = 'Estimate';
 
 class EstimatePercentageWidget extends StatefulWidget {
   final QuestionContent content;
@@ -137,17 +137,6 @@ class EstimatePercentageWidgetState
       ),
       child: Column(
         children: [
-          Text(
-            YOUR_ESTIMATE_LABEL,
-            style: Typography.bodyMediumStyle.copyWith(
-              fontSize: 12,
-              color: AppTheme.textPrimary.withValues(alpha: 0.6),
-              letterSpacing: 1,
-            ),
-          ),
-
-          const Spacing.height(8),
-
           AnimatedDefaultTextStyle(
             duration: const Duration(milliseconds: 200),
             style: estimateTextStyle,
@@ -412,12 +401,12 @@ class EstimatePercentageWidgetState
   }
 
   Widget buildResultMessage(bool isClose) {
-    final String message = isClose
-        ? 'Great estimate!'
-        : 'Keep practicing!';
-    final Color textColor = isClose
-        ? AppTheme.primaryGreen
-        : Colors.orange.shade700;
+    if (!isClose) {
+      return const SizedBox.shrink();
+    }
+    
+    final String message = 'Great estimate!';
+    final Color textColor = AppTheme.primaryGreen;
 
     return Text(
       message,

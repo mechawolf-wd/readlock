@@ -11,8 +11,12 @@ class AppTheme {
     0xFF7B1FA2,
   ); // Deep Purple
 
-  static const Color backgroundDark = Color(0xFFFFFFFF); // White background
-  static const Color backgroundLight = Color(0xFFF5F5F5); // Light grey background
+  static const Color backgroundDark = Color(
+    0xFFFFFFFF,
+  ); // White background
+  static const Color backgroundLight = Color(
+    0xFFF5F5F5,
+  ); // Light grey background
   static const Color textPrimary = Color(0xFF212121); // Dark text
   static const Color textSecondary = Color(0xFF757575); // Grey text
 
@@ -88,7 +92,6 @@ class AppTheme {
   static const double contentPaddingTiny = 4.0;
   static const double contentPaddingSmaller = 8.0;
 
-
   // Alpha transparency constants
   static const double alphaVeryLight = 0.05;
   static const double alphaLight = 0.1;
@@ -98,24 +101,27 @@ class AppTheme {
   static const double alphaOpaque = 0.9;
 
   // Navigation transitions
-  static const Duration transitionDuration = Duration(milliseconds: 300);
+  static const Duration transitionDuration = Duration(
+    milliseconds: 300,
+  );
   static const Curve transitionCurve = Curves.easeInOut;
 
   static PageRouteBuilder<T> fadeTransition<T>(Widget page) {
     return PageRouteBuilder<T>(
       pageBuilder: (context, animation, secondaryAnimation) => page,
       transitionDuration: transitionDuration,
-      transitionsBuilder: (context, animation, secondaryAnimation, child) {
-        return FadeTransition(
-          opacity: Tween<double>(begin: 0.0, end: 1.0).animate(
-            CurvedAnimation(
-              parent: animation,
-              curve: transitionCurve,
-            ),
-          ),
-          child: child,
-        );
-      },
+      transitionsBuilder:
+          (context, animation, secondaryAnimation, child) {
+            return FadeTransition(
+              opacity: Tween<double>(begin: 0.0, end: 1.0).animate(
+                CurvedAnimation(
+                  parent: animation,
+                  curve: transitionCurve,
+                ),
+              ),
+              child: child,
+            );
+          },
     );
   }
 
@@ -186,7 +192,6 @@ class AppTheme {
     height: 1.4,
   );
 
-
   static ColorScheme getCourseColorScheme(CourseThemeColor color) {
     switch (color) {
       case CourseThemeColor.blue:
@@ -254,7 +259,6 @@ class AppTheme {
       border: Border.all(color: borderColor),
     );
   }
-
 
   static ButtonStyle getElevatedButtonStyle({
     required Color backgroundColor,
