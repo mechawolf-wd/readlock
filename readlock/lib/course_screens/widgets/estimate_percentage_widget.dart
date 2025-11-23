@@ -37,14 +37,28 @@ class EstimatePercentageWidgetState
     extends State<EstimatePercentageWidget>
     with SingleTickerProviderStateMixin {
   double currentEstimate = 50;
-  bool hasSubmitted = false;
+  bool hasSubmittedEstimate = false;
   late AnimationController revealController;
   late Animation<double> revealAnimation;
+
+  // Icon and styling definitions
+  static const Icon CheckIcon = Icon(
+    Icons.check_circle,
+    color: AppTheme.primaryGreen,
+    size: 20,
+  );
+  static const Icon InfoIcon = Icon(Icons.info_outline, size: 20);
+  static const Icon StarIcon = Icon(
+    Icons.star,
+    color: Colors.white,
+    size: 16,
+  );
 
   int get correctPercentage {
     if (widget.content.correctAnswerIndices.isNotEmpty) {
       return widget.content.correctAnswerIndices[0];
     }
+
     return 50;
   }
 
@@ -71,55 +85,49 @@ class EstimatePercentageWidgetState
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return Div.column(
+      MainContent(),
       color: AppTheme.backgroundDark,
       padding: const EdgeInsets.all(Constants.COURSE_SECTION_PADDING),
-      child: Center(
-        child: Div.column(
-          [
-            QuestionText(),
-
-            const Spacing.height(ESTIMATE_SECTION_SPACING),
-
-            EstimateDisplay(),
-
-            const Spacing.height(ESTIMATE_SECTION_SPACING),
-
-            SliderSection(),
-
-            const Spacing.height(ESTIMATE_SECTION_SPACING),
-
-            SubmitButton(),
-
-            RenderIf.condition(
-              hasSubmitted,
-              Column(
-                children: [
-                  const Spacing.height(ESTIMATE_SECTION_SPACING),
-                  ResultSection(),
-                  const Spacing.height(ESTIMATE_SECTION_SPACING),
-                  ExplanationSection(),
-                ],
-              ),
-            ),
-          ],
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          mainAxisAlignment: MainAxisAlignment.center,
-        ),
-      ),
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      mainAxisAlignment: MainAxisAlignment.center,
     );
   }
 
   // Widget methods
 
+  List<Widget> MainContent() {
+    return [
+      QuestionText(),
+
+      const Spacing.height(ESTIMATE_SECTION_SPACING),
+
+      EstimateDisplay(),
+
+      const Spacing.height(ESTIMATE_SECTION_SPACING),
+
+      SliderSection(),
+
+      const Spacing.height(ESTIMATE_SECTION_SPACING),
+
+      SubmitButton(),
+
+      RenderIf.condition(hasSubmittedEstimate, ResultsContent()),
+    ];
+  }
+
+  Widget ResultsContent() {
+    return Div.column([
+      const Spacing.height(ESTIMATE_SECTION_SPACING),
+      ResultSection(),
+      const Spacing.height(ESTIMATE_SECTION_SPACING),
+      ExplanationSection(),
+    ]);
+  }
+
   Widget QuestionText() {
-    return Text(
+    return Typography.bodyLarge(
       widget.content.question,
-      style: Typography.bodyLargeStyle.copyWith(
-        fontSize: 16,
-        fontWeight: FontWeight.w500,
-        height: 1.5,
-      ),
       textAlign: TextAlign.center,
     );
   }
@@ -127,134 +135,98 @@ class EstimatePercentageWidgetState
   Widget EstimateDisplay() {
     final Color borderColor = getBorderColor();
     final TextStyle estimateTextStyle = getEstimateTextStyle();
+    final BoxDecoration estimateDecoration = Style
+        .estimateDisplayDecoration
+        .copyWith(border: Border.all(color: borderColor, width: 2));
 
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: AppTheme.backgroundLight,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: borderColor, width: 2),
-      ),
-      child: Column(
-        children: [
-          AnimatedDefaultTextStyle(
-            duration: const Duration(milliseconds: 200),
-            style: estimateTextStyle,
-            child: Typography.text('${currentEstimate.round()}%'),
-          ),
-        ],
-      ),
+    return Div.column(
+      [
+        AnimatedDefaultTextStyle(
+          duration: Style.estimateAnimationDuration,
+          style: estimateTextStyle,
+          child: Typography.text('${currentEstimate.round()}%'),
+        ),
+      ],
+      padding: Style.estimateDisplayPadding,
+      decoration: estimateDecoration,
     );
   }
 
   // Helper methods
 
   Color getBorderColor() {
-    if (hasSubmitted) {
+    final bool isSubmitted = hasSubmittedEstimate;
+
+    if (isSubmitted) {
       return AppTheme.primaryGreen.withValues(alpha: 0.3);
     }
     return AppTheme.primaryBlue.withValues(alpha: 0.3);
   }
 
   TextStyle getEstimateTextStyle() {
-    final double fontSize = hasSubmitted ? 36 : 42;
-    final Color textColor = hasSubmitted
+    final bool isSubmitted = hasSubmittedEstimate;
+    final double fontSize = isSubmitted ? 36 : 42;
+    final Color textColor = isSubmitted
         ? AppTheme.textPrimary.withValues(alpha: 0.7)
         : AppTheme.primaryBlue;
 
-    return Typography.bodyLargeStyle.copyWith(
+    return Style.estimateTextStyle.copyWith(
       fontSize: fontSize,
-      fontWeight: FontWeight.bold,
       color: textColor,
     );
   }
 
   Widget SliderSection() {
-    return Container(
+    final SliderThemeData sliderTheme = Style.getSliderTheme();
+
+    return Div.column(
+      [
+        SliderTheme(
+          data: sliderTheme,
+          child: Slider(
+            value: currentEstimate,
+            max: 100,
+            divisions: 100,
+            onChanged: SliderChangeHandler(),
+          ),
+        ),
+      ],
       height: SLIDER_HEIGHT,
-      padding: const EdgeInsets.symmetric(horizontal: 8),
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          SliderTheme(
-            data: SliderThemeData(
-              activeTrackColor: AppTheme.primaryBlue,
-              inactiveTrackColor: AppTheme.textPrimary.withValues(
-                alpha: 0.1,
-              ),
-              thumbColor: AppTheme.primaryBlue,
-              overlayColor: AppTheme.primaryBlue.withValues(alpha: 0.1),
-              thumbShape: const RoundSliderThumbShape(
-                enabledThumbRadius: 12,
-                pressedElevation: 4,
-              ),
-              trackHeight: 6,
-              tickMarkShape: const RoundSliderTickMarkShape(),
-            ),
-            child: Slider(
-              value: currentEstimate,
-              max: 100,
-              divisions: 100,
-              onChanged: hasSubmitted
-                  ? null
-                  : (value) {
-                      setState(() {
-                        currentEstimate = value;
-                      });
-                    },
-            ),
-          ),
-
-          Positioned(
-            left: 0,
-            bottom: 0,
-            child: Text(
-              '0%',
-              style: Typography.bodyMediumStyle.copyWith(
-                fontSize: 12,
-                color: AppTheme.textPrimary.withValues(alpha: 0.5),
-              ),
-            ),
-          ),
-
-          Positioned(
-            right: 0,
-            bottom: 0,
-            child: Text(
-              '100%',
-              style: Typography.bodyMediumStyle.copyWith(
-                fontSize: 12,
-                color: AppTheme.textPrimary.withValues(alpha: 0.5),
-              ),
-            ),
-          ),
-        ],
-      ),
+      padding: Style.sliderPadding,
     );
   }
 
+  Function(double)? SliderChangeHandler() {
+    final bool canChange = !hasSubmittedEstimate;
+
+    if (!canChange) {
+      return null;
+    }
+
+    return (value) {
+      setState(() {
+        currentEstimate = value;
+      });
+    };
+  }
+
   Widget SubmitButton() {
+    final bool shouldShow = !hasSubmittedEstimate;
+
     return RenderIf.condition(
-      !hasSubmitted,
-      InkWell(
+      shouldShow,
+      GestureDetector(
         onTap: submitEstimate,
-        borderRadius: BorderRadius.circular(12),
-        child: Container(
-          height: 48,
-          decoration: BoxDecoration(
-            color: AppTheme.primaryBlue,
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: Center(
-            child: Text(
+        child: Div.column(
+          [
+            Typography.bodyLarge(
               SUBMIT_BUTTON_TEXT,
-              style: Typography.bodyLargeStyle.copyWith(
-                color: Colors.white,
-                fontWeight: FontWeight.w600,
-                fontSize: 16,
-              ),
+              color: Colors.white,
             ),
-          ),
+          ],
+          height: Style.submitButtonHeight,
+          decoration: Style.submitButtonDecoration,
+          mainAxisAlignment: MainAxisAlignment.center,
         ),
       ),
     );
@@ -269,14 +241,14 @@ class EstimatePercentageWidgetState
       opacity: revealAnimation,
       child: Container(
         padding: const EdgeInsets.all(16),
-        decoration: buildResultDecoration(isClose),
+        decoration: ResultDecoration(isClose),
         child: Div.column([
           Div.row([
-            buildResultIcon(isClose),
+            ResultIcon(isClose),
 
             const Spacing.width(8),
 
-            buildResultMessage(isClose),
+            ResultMessage(isClose),
           ]),
 
           const Spacing.height(12),
@@ -285,7 +257,7 @@ class EstimatePercentageWidgetState
             !isClose,
             Padding(
               padding: const EdgeInsets.only(bottom: 8),
-              child: buildHintText(difference),
+              child: HintText(difference),
             ),
           ),
 
@@ -333,32 +305,21 @@ class EstimatePercentageWidgetState
     required String value,
     required bool isHighlighted,
   }) {
-    return Column(
-      children: [
-        Text(
-          label,
-          style: Typography.bodyMediumStyle.copyWith(
-            fontSize: 11,
-            color: AppTheme.textPrimary.withValues(alpha: 0.6),
-          ),
-        ),
+    return Div.column([
+      Typography.bodyMedium(
+        label,
+        color: AppTheme.textPrimary.withValues(alpha: 0.6),
+      ),
 
-        const Spacing.height(4),
+      const Spacing.height(4),
 
-        Text(
-          value,
-          style: Typography.bodyLargeStyle.copyWith(
-            fontSize: 18,
-            fontWeight: isHighlighted
-                ? FontWeight.bold
-                : FontWeight.w600,
-            color: isHighlighted
-                ? AppTheme.primaryGreen
-                : AppTheme.textPrimary,
-          ),
-        ),
-      ],
-    );
+      Typography.bodyLarge(
+        value,
+        color: isHighlighted
+            ? AppTheme.primaryGreen
+            : AppTheme.textPrimary,
+      ),
+    ]);
   }
 
   Widget ExplanationSection() {
@@ -374,7 +335,7 @@ class EstimatePercentageWidgetState
     );
   }
 
-  BoxDecoration buildResultDecoration(bool isClose) {
+  BoxDecoration ResultDecoration(bool isClose) {
     final Color backgroundColor = isClose
         ? AppTheme.primaryGreen.withValues(alpha: 0.1)
         : Colors.orange.shade50;
@@ -389,45 +350,37 @@ class EstimatePercentageWidgetState
     );
   }
 
-  Widget buildResultIcon(bool isClose) {
-    final IconData iconData = isClose
-        ? Icons.check_circle
-        : Icons.info_outline;
-    final Color iconColor = isClose
-        ? AppTheme.primaryGreen
-        : Colors.orange.shade600;
-
-    return Icon(iconData, color: iconColor, size: 20);
-  }
-
-  Widget buildResultMessage(bool isClose) {
-    if (!isClose) {
-      return const SizedBox.shrink();
+  Widget ResultIcon(bool isClose) {
+    if (isClose) {
+      return CheckIcon;
     }
-    
-    final String message = 'Great estimate!';
-    final Color textColor = AppTheme.primaryGreen;
 
-    return Text(
-      message,
-      style: Typography.bodyLargeStyle.copyWith(
-        fontWeight: FontWeight.w600,
-        fontSize: 14,
-        color: textColor,
-      ),
+    return Icon(
+      Icons.info_outline,
+      color: Colors.orange.shade600,
+      size: 20,
     );
   }
 
-  Widget buildHintText(int difference) {
+  Widget ResultMessage(bool isClose) {
+    final bool shouldShow = isClose;
+
+    if (!shouldShow) {
+      return const SizedBox.shrink();
+    }
+
+    return Typography.bodyLarge(
+      'Great estimate!',
+      color: AppTheme.primaryGreen,
+    );
+  }
+
+  Widget HintText(int difference) {
     final String hintMessage = getHintMessage(difference);
 
-    return Text(
+    return Typography.bodyMedium(
       hintMessage,
-      style: Typography.bodyMediumStyle.copyWith(
-        fontSize: 12,
-        color: Colors.orange.shade600,
-        fontStyle: FontStyle.italic,
-      ),
+      color: Colors.orange.shade600,
     );
   }
 
@@ -445,7 +398,7 @@ class EstimatePercentageWidgetState
 
   void submitEstimate() {
     setState(() {
-      hasSubmitted = true;
+      hasSubmittedEstimate = true;
     });
 
     revealController.forward();
@@ -469,15 +422,9 @@ class EstimatePercentageWidgetState
             content: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Icon(Icons.star, color: Colors.white, size: 16),
+                StarIcon,
                 const Spacing.width(8),
-                Text(
-                  '+8 Aha',
-                  style: Typography.bodyLargeStyle.copyWith(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
+                Typography.bodyLarge('+8 Aha', color: Colors.white),
               ],
             ),
             backgroundColor: Colors.green.shade600,
@@ -492,4 +439,46 @@ class EstimatePercentageWidgetState
       }
     });
   }
+}
+
+class Style {
+  static final BoxDecoration estimateDisplayDecoration = BoxDecoration(
+    color: AppTheme.backgroundLight,
+    borderRadius: BorderRadius.circular(16),
+  );
+
+  static const EdgeInsets estimateDisplayPadding = EdgeInsets.all(20);
+
+  static const Duration estimateAnimationDuration = Duration(
+    milliseconds: 200,
+  );
+
+  static final TextStyle estimateTextStyle = Typography.bodyLargeStyle
+      .copyWith(fontWeight: FontWeight.bold);
+
+  static const EdgeInsets sliderPadding = EdgeInsets.symmetric(
+    horizontal: 8,
+  );
+
+  static SliderThemeData getSliderTheme() {
+    return SliderThemeData(
+      activeTrackColor: AppTheme.primaryBlue,
+      inactiveTrackColor: AppTheme.textPrimary.withValues(alpha: 0.1),
+      thumbColor: AppTheme.primaryBlue,
+      overlayColor: AppTheme.primaryBlue.withValues(alpha: 0.1),
+      thumbShape: const RoundSliderThumbShape(
+        enabledThumbRadius: 12,
+        pressedElevation: 4,
+      ),
+      trackHeight: 6,
+      tickMarkShape: const RoundSliderTickMarkShape(),
+    );
+  }
+
+  static const double submitButtonHeight = 48.0;
+
+  static final BoxDecoration submitButtonDecoration = BoxDecoration(
+    color: AppTheme.primaryBlue,
+    borderRadius: BorderRadius.circular(12),
+  );
 }

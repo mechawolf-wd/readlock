@@ -85,49 +85,8 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
 
           Expanded(
             child: ListView(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              children: [
-                LevelCard(
-                  levelNumber: 1,
-                  title: DESIGN_PRINCIPLES_TITLE,
-                  subtitle: CORE_FUNDAMENTALS_SUBTITLE,
-                  isCompleted: true,
-                  onTap: () => navigateToCourseContent(0, 0),
-                ),
-
-                LevelCard(
-                  levelNumber: 2,
-                  title: PSYCHOLOGY_OF_DESIGN_TITLE,
-                  subtitle: MENTAL_MODELS_SUBTITLE,
-                  isCompleted: true,
-                  onTap: () => navigateToCourseContent(0, 0),
-                ),
-
-                LevelCard(
-                  levelNumber: 3,
-                  title: AFFORDANCES_TITLE,
-                  subtitle: VISUAL_CUES_SUBTITLE,
-                  isCompleted: false,
-                  isCurrentLevel: true,
-                  onTap: () => navigateToCourseContent(0, 0),
-                ),
-
-                LevelCard(
-                  levelNumber: 4,
-                  title: FEEDBACK_SYSTEMS_TITLE,
-                  subtitle: USER_RESPONSES_SUBTITLE,
-                  isCompleted: false,
-                  onTap: () => navigateToCourseContent(0, 0),
-                ),
-
-                LevelCard(
-                  levelNumber: 5,
-                  title: ADVANCED_CONCEPTS_TITLE,
-                  subtitle: MASTER_LEVEL_SUBTITLE,
-                  isCompleted: false,
-                  onTap: () => navigateToCourseContent(0, 0),
-                ),
-              ],
+              padding: Style.listViewPadding,
+              children: LevelCardsList(),
             ),
           ),
         ]),
@@ -141,10 +100,11 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
     final String courseColor =
         courseData?['color'] ?? COURSE_DEFAULT_COLOR;
 
-    final BoxDecoration courseIconDecoration = BoxDecoration(
-      color: getColorFromString(courseColor).withValues(alpha: 0.2),
-      borderRadius: BorderRadius.circular(20),
-    );
+    final BoxDecoration courseIconDecoration = Style
+        .courseIconDecoration
+        .copyWith(
+          color: getColorFromString(courseColor).withValues(alpha: 0.2),
+        );
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
@@ -156,7 +116,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
               onTap: () {
                 Navigator.of(context).pop();
               },
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: Style.backButtonRadius,
               child: const Padding(
                 padding: EdgeInsets.all(8.0),
                 child: Icon(
@@ -175,7 +135,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
 
         Div.column([
           Container(
-            padding: const EdgeInsets.all(16),
+            padding: Style.courseIconPadding,
             decoration: courseIconDecoration,
             child: Icon(
               Icons.psychology_outlined,
@@ -198,39 +158,83 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
 
         const Spacing.height(16),
 
-        Div.row([
-          const Spacer(),
-
-          Div.row([
-            const Icon(
-              Icons.lightbulb,
-              color: AppTheme.primaryGreen,
-              size: 16,
-            ),
-
-            const Spacing.width(4),
-
-            Typography.bodyMedium(AHA_COUNTER_TEXT),
-          ]),
-
-          const Spacing.width(20),
-
-          Div.row([
-            const Icon(
-              Icons.quiz,
-              color: AppTheme.primaryBlue,
-              size: 16,
-            ),
-
-            const Spacing.width(4),
-
-            Typography.bodyMedium(QUESTIONS_COUNTER_TEXT),
-          ]),
-
-          const Spacer(),
-        ], mainAxisAlignment: MainAxisAlignment.center),
+        Div.row(
+          CounterRow(),
+          mainAxisAlignment: MainAxisAlignment.center,
+        ),
       ], crossAxisAlignment: CrossAxisAlignment.start),
     );
+  }
+
+  List<Widget> CounterRow() {
+    return [
+      const Spacer(),
+
+      Div.row([
+        Style.AhaIcon,
+
+        const Spacing.width(4),
+
+        Typography.bodyMedium(AHA_COUNTER_TEXT),
+      ]),
+
+      const Spacing.width(20),
+
+      Div.row([
+        Style.QuestionIcon,
+
+        const Spacing.width(4),
+
+        Typography.bodyMedium(QUESTIONS_COUNTER_TEXT),
+      ]),
+
+      const Spacer(),
+    ];
+  }
+
+  List<Widget> LevelCardsList() {
+    return [
+      LevelCard(
+        levelNumber: 1,
+        title: DESIGN_PRINCIPLES_TITLE,
+        subtitle: CORE_FUNDAMENTALS_SUBTITLE,
+        isCompleted: true,
+        onTap: () => navigateToCourseContent(0, 0),
+      ),
+
+      LevelCard(
+        levelNumber: 2,
+        title: PSYCHOLOGY_OF_DESIGN_TITLE,
+        subtitle: MENTAL_MODELS_SUBTITLE,
+        isCompleted: true,
+        onTap: () => navigateToCourseContent(0, 0),
+      ),
+
+      LevelCard(
+        levelNumber: 3,
+        title: AFFORDANCES_TITLE,
+        subtitle: VISUAL_CUES_SUBTITLE,
+        isCompleted: false,
+        isCurrentLevel: true,
+        onTap: () => navigateToCourseContent(0, 0),
+      ),
+
+      LevelCard(
+        levelNumber: 4,
+        title: FEEDBACK_SYSTEMS_TITLE,
+        subtitle: USER_RESPONSES_SUBTITLE,
+        isCompleted: false,
+        onTap: () => navigateToCourseContent(0, 0),
+      ),
+
+      LevelCard(
+        levelNumber: 5,
+        title: ADVANCED_CONCEPTS_TITLE,
+        subtitle: MASTER_LEVEL_SUBTITLE,
+        isCompleted: false,
+        onTap: () => navigateToCourseContent(0, 0),
+      ),
+    ];
   }
 
   Color getColorFromString(String colorName) {
@@ -254,7 +258,10 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
     showLoadingScreenThenNavigate(sectionIndex, contentIndex);
   }
 
-  void showLoadingScreenThenNavigate(int sectionIndex, int contentIndex) {
+  void showLoadingScreenThenNavigate(
+    int sectionIndex,
+    int contentIndex,
+  ) {
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -326,9 +333,8 @@ class LevelCard extends StatelessWidget {
     final Color cardColor = getCardColor();
     final Color borderColor = getBorderColor();
 
-    return BoxDecoration(
+    return LevelCardStyle.cardDecoration.copyWith(
       color: cardColor,
-      borderRadius: BorderRadius.circular(16),
       border: Border.all(color: borderColor),
     );
   }
@@ -348,16 +354,14 @@ class LevelCard extends StatelessWidget {
   }
 
   Widget LevelBadge() {
-    final BoxDecoration badgeDecoration = BoxDecoration(
-      color: getBadgeColor(),
-      borderRadius: BorderRadius.circular(20),
-    );
+    final BoxDecoration badgeDecoration = LevelCardStyle.badgeDecoration
+        .copyWith(color: getBadgeColor());
 
     return Container(
-      width: 40,
-      height: 40,
+      width: LevelCardStyle.badgeSize,
+      height: LevelCardStyle.badgeSize,
       decoration: badgeDecoration,
-      child: Center(child: buildBadgeContent()),
+      child: Center(child: BadgeContent()),
     );
   }
 
@@ -373,7 +377,7 @@ class LevelCard extends StatelessWidget {
     return Colors.grey.withValues(alpha: 0.2);
   }
 
-  Widget buildBadgeContent() {
+  Widget BadgeContent() {
     return RenderIf.condition(
       isCompleted,
       const Icon(Icons.check, color: Colors.white, size: 20),
@@ -393,4 +397,44 @@ class LevelCard extends StatelessWidget {
       Typography.bodyMedium(subtitle),
     ], crossAxisAlignment: CrossAxisAlignment.start);
   }
+}
+
+class Style {
+  static final BoxDecoration courseIconDecoration = BoxDecoration(
+    borderRadius: BorderRadius.circular(20),
+  );
+
+  static final BorderRadius backButtonRadius = BorderRadius.circular(
+    12,
+  );
+
+  static const EdgeInsets courseIconPadding = EdgeInsets.all(16);
+
+  static const EdgeInsets listViewPadding = EdgeInsets.symmetric(
+    horizontal: 20,
+  );
+
+  static const Icon AhaIcon = Icon(
+    Icons.lightbulb,
+    color: AppTheme.primaryGreen,
+    size: 16,
+  );
+
+  static const Icon QuestionIcon = Icon(
+    Icons.quiz,
+    color: AppTheme.primaryBlue,
+    size: 16,
+  );
+}
+
+class LevelCardStyle {
+  static final BoxDecoration cardDecoration = BoxDecoration(
+    borderRadius: BorderRadius.circular(16),
+  );
+
+  static final BoxDecoration badgeDecoration = BoxDecoration(
+    borderRadius: BorderRadius.circular(20),
+  );
+
+  static const double badgeSize = 40.0;
 }

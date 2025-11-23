@@ -35,8 +35,26 @@ class QuestionContentWidget extends StatefulWidget {
 class QuestionContentWidgetState extends State<QuestionContentWidget> {
   int? selectedAnswerIndex;
   List<int> selectedAnswerIndices = [];
-  bool hasAnswered = false;
+  bool hasAnsweredQuestion = false;
   bool showHint = false;
+
+  // Icon definitions
+  static const Icon LightbulbIcon = Icon(
+    Icons.lightbulb_outline,
+    color: Colors.white,
+    size: 16,
+  );
+
+  static const Icon StarIcon = Icon(
+    Icons.star,
+    color: Colors.white,
+    size: 16,
+  );
+
+  static const Icon CheckCircleIcon = Icon(
+    Icons.check_circle,
+    size: 18,
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +71,6 @@ class QuestionContentWidgetState extends State<QuestionContentWidget> {
         const Spacing.height(
           QuestionContentWidget.QUESTION_SECTION_SPACING,
         ),
-
       ],
       color: AppTheme.backgroundDark,
       padding: Constants.COURSE_SECTION_PADDING,
@@ -67,10 +84,10 @@ class QuestionContentWidgetState extends State<QuestionContentWidget> {
   }
 
   Widget OptionsList() {
-    return Div.column(BuildOptionWidgets());
+    return Div.column(OptionWidgets());
   }
 
-  List<Widget> BuildOptionWidgets() {
+  List<Widget> OptionWidgets() {
     return widget.content.options.asMap().entries.map((entry) {
       final int optionIndex = entry.key;
       final QuestionOption option = entry.value;
@@ -89,23 +106,27 @@ class QuestionContentWidgetState extends State<QuestionContentWidget> {
     final OptionButtonState buttonState = getOptionButtonState(
       optionIndex,
     );
-    final BoxDecoration optionDecoration = BuildOptionDecoration(
+    final BoxDecoration optionDecoration = OptionDecoration(
       buttonState,
     );
-    final TextStyle optionTextStyle = BuildOptionTextStyle(buttonState);
-    final BorderRadius inkWellRadius = Style.inkWellRadius;
+    final Color textColor =
+        OptionTextStyle(buttonState).color ?? AppTheme.textPrimary;
 
     return Div.row([
       Expanded(
-        child: InkWell(
-          onTap: hasAnswered ? null : () => selectAnswer(optionIndex),
-          borderRadius: inkWellRadius,
+        child: GestureDetector(
+          onTap: hasAnsweredQuestion
+              ? null
+              : () => selectAnswer(optionIndex),
           child: Div.row(
             [
-              BuildCorrectAnswerIcon(buttonState),
+              CorrectAnswerIcon(buttonState),
 
               Expanded(
-                child: Text(option.text, style: optionTextStyle),
+                child: Typography.bodyLarge(
+                  option.text,
+                  color: textColor,
+                ),
               ),
             ],
             padding: AppTheme.contentPaddingMediumInsets,
@@ -121,18 +142,20 @@ class QuestionContentWidgetState extends State<QuestionContentWidget> {
     final bool isCorrectAnswer = widget.content.correctAnswerIndices
         .contains(optionIndex);
     final bool isCorrectAndAnswered =
-        hasAnswered && isCorrectAnswer && isSelected;
+        hasAnsweredQuestion && isCorrectAnswer && isSelected;
 
     if (isCorrectAndAnswered) {
       return OptionButtonState.correctAndAnswered;
-    } else if (isSelected && !hasAnswered) {
-      return OptionButtonState.selected;
-    } else {
-      return OptionButtonState.normal;
     }
+
+    if (isSelected && !hasAnsweredQuestion) {
+      return OptionButtonState.selected;
+    }
+
+    return OptionButtonState.normal;
   }
 
-  BoxDecoration BuildOptionDecoration(OptionButtonState state) {
+  BoxDecoration OptionDecoration(OptionButtonState state) {
     final Color themeColor = getThemeColorForState(state);
 
     return Style.optionDecoration.copyWith(
@@ -140,7 +163,7 @@ class QuestionContentWidgetState extends State<QuestionContentWidget> {
     );
   }
 
-  TextStyle BuildOptionTextStyle(OptionButtonState state) {
+  TextStyle OptionTextStyle(OptionButtonState state) {
     final bool isSelected =
         state == OptionButtonState.selected ||
         state == OptionButtonState.correctAndAnswered;
@@ -150,7 +173,7 @@ class QuestionContentWidgetState extends State<QuestionContentWidget> {
     );
   }
 
-  Widget BuildCorrectAnswerIcon(OptionButtonState state) {
+  Widget CorrectAnswerIcon(OptionButtonState state) {
     if (state != OptionButtonState.correctAndAnswered) {
       return const SizedBox.shrink();
     }
@@ -173,36 +196,43 @@ class QuestionContentWidgetState extends State<QuestionContentWidget> {
   Color getThemeColorForState(OptionButtonState state) {
     switch (state) {
       case OptionButtonState.correctAndAnswered:
-        return AppTheme.primaryGreen;
+        {
+          return AppTheme.primaryGreen;
+        }
       case OptionButtonState.selected:
-        return AppTheme.primaryBlue;
+        {
+          return AppTheme.primaryBlue;
+        }
       case OptionButtonState.normal:
-        return AppTheme.textPrimary.withValues(alpha: 0.2);
+        {
+          return AppTheme.textPrimary.withValues(alpha: 0.2);
+        }
     }
   }
 
   void showIncorrectAnswerSnackbar() {
-    ScaffoldMessenger.of(context).showSnackBar(buildIncorrectAnswerSnackbar());
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(IncorrectAnswerSnackbar());
   }
 
-  SnackBar buildIncorrectAnswerSnackbar() {
+  SnackBar IncorrectAnswerSnackbar() {
     return SnackBar(
       content: Div.row([
-        const Icon(Icons.lightbulb_outline, color: Colors.white, size: 16),
+        LightbulbIcon,
 
         const Spacing.width(8),
 
-        Typography.text('Incorrect', color: Colors.white),
+        Typography.bodyMedium('Incorrect', color: Colors.white),
 
         const Spacer(),
 
         TextButton(
           onPressed: showHintDialog,
-          child: Typography.text('Hint it?', color: Colors.white),
+          child: Typography.bodyMedium('Hint it?', color: Colors.white),
         ),
       ]),
       backgroundColor: Colors.grey.shade600,
-      duration: const Duration(seconds: 4),
       behavior: SnackBarBehavior.floating,
       shape: Style.snackbarShape,
       margin: Style.snackbarMargin,
@@ -215,12 +245,12 @@ class QuestionContentWidgetState extends State<QuestionContentWidget> {
     final bool isCorrectAnswer = widget.content.correctAnswerIndices
         .contains(optionIndex);
 
-    if (!isCorrectAnswer && !hasAnswered) {
+    if (!isCorrectAnswer && !hasAnsweredQuestion) {
       showIncorrectAnswerSnackbar();
       return;
     }
 
-    if (isCorrectAnswer && !hasAnswered) {
+    if (isCorrectAnswer && !hasAnsweredQuestion) {
       handleCorrectAnswer(optionIndex, isCorrectAnswer);
     }
   }
@@ -228,7 +258,7 @@ class QuestionContentWidgetState extends State<QuestionContentWidget> {
   void handleCorrectAnswer(int optionIndex, bool isCorrectAnswer) {
     setState(() {
       selectedAnswerIndex = optionIndex;
-      hasAnswered = true;
+      hasAnsweredQuestion = true;
     });
 
     showCorrectAnswerFeedback();
@@ -236,7 +266,8 @@ class QuestionContentWidgetState extends State<QuestionContentWidget> {
   }
 
   void showHintDialog() {
-    final String dialogContent = widget.content.hint ?? 'No hint available';
+    final String dialogContent =
+        widget.content.hint ?? 'No hint available';
     showFullScreenDialog('Hint', dialogContent);
   }
 
@@ -250,10 +281,7 @@ class QuestionContentWidgetState extends State<QuestionContentWidget> {
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (BuildContext context) {
-        return ExplanationDialog(
-          title: title,
-          content: content,
-        );
+        return ExplanationDialog(title: title, content: content);
       },
     );
   }
@@ -263,27 +291,27 @@ class QuestionContentWidgetState extends State<QuestionContentWidget> {
       if (mounted) {
         ScaffoldMessenger.of(
           context,
-        ).showSnackBar(buildCorrectAnswerSnackbar());
+        ).showSnackBar(CorrectAnswerSnackbar());
       }
     });
   }
 
   // UI building methods
 
-  SnackBar buildCorrectAnswerSnackbar() {
+  SnackBar CorrectAnswerSnackbar() {
     return SnackBar(
       content: Div.row([
-        const Icon(Icons.star, color: Colors.white, size: 16),
+        StarIcon,
 
         const Spacing.width(8),
 
-        Typography.text('+5 Aha', color: Colors.white),
+        Typography.bodyMedium('+5 Aha', color: Colors.white),
 
         const Spacer(),
 
         TextButton(
           onPressed: showExplanationDialog,
-          child: Typography.text('Why?', color: Colors.white),
+          child: Typography.bodyMedium('Why?', color: Colors.white),
         ),
       ]),
       backgroundColor: Colors.green.shade600,
@@ -296,8 +324,6 @@ class QuestionContentWidgetState extends State<QuestionContentWidget> {
 }
 
 class Style {
-  static final BorderRadius inkWellRadius = BorderRadius.circular(12);
-
   static final BoxDecoration optionDecoration = BoxDecoration(
     color: AppTheme.backgroundLight,
     borderRadius: BorderRadius.circular(12),
@@ -310,25 +336,8 @@ class Style {
     borderRadius: BorderRadius.circular(4),
   );
 
-  static final TextStyle explanationTextStyle = Typography
-      .bodyLargeStyle
-      .copyWith(fontSize: 14, height: 1.5);
-
   static final RoundedRectangleBorder snackbarShape =
       RoundedRectangleBorder(borderRadius: BorderRadius.circular(8));
 
   static const EdgeInsets snackbarMargin = EdgeInsets.all(16);
-
-  static final BoxDecoration hintButtonDecoration = BoxDecoration(
-    color: AppTheme.primaryBlue.withValues(alpha: 0.1),
-    borderRadius: BorderRadius.circular(8),
-    border: Border.all(
-      color: AppTheme.primaryBlue.withValues(alpha: 0.3),
-    ),
-  );
-
-  static final TextStyle dialogTextStyle = Typography.bodyLargeStyle.copyWith(
-    fontSize: 16,
-    height: 1.6,
-  );
 }

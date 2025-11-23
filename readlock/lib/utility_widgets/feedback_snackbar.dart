@@ -16,7 +16,7 @@ class FeedbackSnackBar {
             const Spacing.width(8),
             Typography.bodyLarge('+5 Aha', color: Colors.white),
           ],
-        ),
+        ),``
         backgroundColor: Colors.green.shade600,
         duration: const Duration(seconds: 2),
         behavior: SnackBarBehavior.floating,
