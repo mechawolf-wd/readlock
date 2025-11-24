@@ -137,43 +137,34 @@ class ReflectionContentWidgetState
 
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: onTap,
-          borderRadius: BorderRadius.circular(12),
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 200),
-            padding: const EdgeInsets.all(16),
-            decoration: cardDecoration,
-            child: Row(
-              children: [
-                AnimatedContainer(
-                  duration: const Duration(milliseconds: 200),
-                  width: 24,
-                  height: 24,
-                  decoration: checkboxDecoration,
-                  child: isSelected
-                      ? const Icon(
-                          Icons.check,
-                          color: Colors.white,
-                          size: 16,
-                        )
-                      : null,
-                ),
-                const Spacing.width(12),
-                Expanded(
-                  child: Typography.bodyMedium(
-                    point,
-                    color: isSelected
-                        ? color
-                        : AppTheme.textPrimary.withValues(alpha: 0.8),
-                  ),
-                ),
-              ],
-            ),
+      child: Div.row([
+        AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          width: 24,
+          height: 24,
+          decoration: checkboxDecoration,
+          child: isSelected
+              ? const Icon(
+                  Icons.check,
+                  color: Colors.white,
+                  size: 16,
+                )
+              : null,
+        ),
+        const Spacing.width(12),
+        Expanded(
+          child: Typography.bodyMedium(
+            point,
+            color: isSelected
+                ? color
+                : AppTheme.textPrimary.withValues(alpha: 0.8),
           ),
         ),
+      ], 
+        padding: const EdgeInsets.all(16),
+        decoration: cardDecoration,
+        radius: BorderRadius.circular(12),
+        onTap: onTap,
       ),
     );
   }

@@ -29,44 +29,54 @@ const String QUESTION_TYPE_INCORRECT_STATEMENT = 'incorrect-statement';
 const String QUESTION_TYPE_ESTIMATE_PERCENTAGE = 'estimate-percentage';
 
 class JsonContentWidgetFactory {
+  // Factory method for creating content widgets from JSON data
   static Widget createContentWidget(Map<String, dynamic> contentData) {
     final String entityType = contentData['entity-type'] ?? '';
 
+    // Content type switching based on entity type
     switch (entityType) {
       case 'intro':
         {
           return JsonIntroContentWidget(contentData: contentData);
         }
+
       case 'text':
         {
           return JsonTextContentWidget(contentData: contentData);
         }
+
       case 'question':
         {
           return JsonQuestionContentWidget(contentData: contentData);
         }
+
       case 'outro':
         {
           return JsonOutroContentWidget(contentData: contentData);
         }
+
       case 'design-examples-showcase':
         {
           return JsonDesignExamplesShowcaseWidget(
             contentData: contentData,
           );
         }
+
       case 'reflection':
         {
           return JsonReflectionContentWidget(contentData: contentData);
         }
+
       case 'quote':
         {
           return JsonQuoteContentWidget(contentData: contentData);
         }
+
       case 'estimate-percentage':
         {
           return JsonEstimatePercentageWidget(contentData: contentData);
         }
+
       default:
         {
           return UnknownContentWidget(entityType: entityType);
@@ -75,6 +85,7 @@ class JsonContentWidgetFactory {
   }
 }
 
+// Error widget for unknown content types
 class UnknownContentWidget extends StatelessWidget {
   final String entityType;
 
@@ -82,6 +93,7 @@ class UnknownContentWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Error message display
     return Div.column(
       [
         Typography.text(
@@ -96,6 +108,8 @@ class UnknownContentWidget extends StatelessWidget {
 }
 
 // Wrapper widgets that convert JSON data to the expected format
+
+// Intro content wrapper widget
 class JsonIntroContentWidget extends StatelessWidget {
   final Map<String, dynamic> contentData;
 
@@ -103,18 +117,27 @@ class JsonIntroContentWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final introContent = IntroContent(
-      id: contentData['id'] ?? '',
-      title: contentData['title'] ?? '',
-      introTextSegments: List<String>.from(
-        contentData['intro-text-segments'] ?? [],
-      ),
+    // Data transformation from JSON to model
+    final introContent = createIntroContentModel();
+
+    // Widget rendering
+    return IntroContentWidget(content: introContent);
+  }
+
+  IntroContent createIntroContentModel() {
+    final List<String> textSegments = List<String>.from(
+      contentData['intro-text-segments'] ?? [],
     );
 
-    return IntroContentWidget(content: introContent);
+    return IntroContent(
+      id: contentData['id'] ?? '',
+      title: contentData['title'] ?? '',
+      introTextSegments: textSegments,
+    );
   }
 }
 
+// Text content wrapper widget
 class JsonTextContentWidget extends StatelessWidget {
   final Map<String, dynamic> contentData;
 
@@ -122,19 +145,28 @@ class JsonTextContentWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textContent = TextContent(
-      id: contentData['id'] ?? '',
-      title: contentData['title'] ?? '',
-      textSegments: List<String>.from(
-        contentData['text-segments'] ?? [],
-      ),
-      text: contentData['text'],
+    // Data transformation from JSON to model
+    final textContent = createTextContentModel();
+
+    // Widget rendering
+    return TextContentWidget(content: textContent);
+  }
+
+  TextContent createTextContentModel() {
+    final List<String> textSegments = List<String>.from(
+      contentData['text-segments'] ?? [],
     );
 
-    return TextContentWidget(content: textContent);
+    return TextContent(
+      id: contentData['id'] ?? '',
+      title: contentData['title'] ?? '',
+      textSegments: textSegments,
+      text: contentData['text'],
+    );
   }
 }
 
+// Question content wrapper widget
 class JsonQuestionContentWidget extends StatelessWidget {
   final Map<String, dynamic> contentData;
 
@@ -145,98 +177,131 @@ class JsonQuestionContentWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final List<Map<String, dynamic>> optionsData =
-        List<Map<String, dynamic>>.from(contentData['options'] ?? []);
+    // Data transformation from JSON to model
+    final questionContent = createQuestionContentModel();
 
-    final questionContent = QuestionContent(
+    // Question type-specific widget routing
+    return QuestionWidget(questionContent);
+  }
+
+  QuestionContent createQuestionContentModel() {
+    final List<QuestionOption> questionOptions =
+        createQuestionOptions();
+    final List<int> correctAnswerIndices = List<int>.from(
+      contentData['correct-answer-indices'] ?? [],
+    );
+    final List<String>? followUpPrompts = createFollowUpPrompts();
+
+    return QuestionContent(
       id: contentData['id'] ?? '',
       title: contentData['title'] ?? '',
       question: contentData['question'] ?? '',
-      options: optionsData
-          .map(
-            (option) => QuestionOption(
-              text: option['text'] ?? '',
-              emoji: option['emoji'],
-              hint: option['hint'],
-            ),
-          )
-          .toList(),
-      correctAnswerIndices: List<int>.from(
-        contentData['correct-answer-indices'] ?? [],
-      ),
+      options: questionOptions,
+      correctAnswerIndices: correctAnswerIndices,
       explanation: contentData['explanation'] ?? '',
       hint: contentData['hint'],
-      type: _parseQuestionType(contentData['type']),
+      type: parseQuestionType(contentData['type']),
       scenarioContext: contentData['scenarioContext'],
-      followUpPrompts: contentData['followUpPrompts'] != null
-          ? List<String>.from(contentData['followUpPrompts'])
-          : null,
+      followUpPrompts: followUpPrompts,
     );
+  }
 
-    void onAnswerSelectedCallback(int index, bool isCorrect) {}
+  List<QuestionOption> createQuestionOptions() {
+    final List<Map<String, dynamic>> optionsData =
+        List<Map<String, dynamic>>.from(contentData['options'] ?? []);
 
+    return optionsData
+        .map(
+          (option) => QuestionOption(
+            text: option['text'] ?? '',
+            emoji: option['emoji'],
+            hint: option['hint'],
+          ),
+        )
+        .toList();
+  }
+
+  List<String>? createFollowUpPrompts() {
+    return contentData['followUpPrompts'] != null
+        ? List<String>.from(contentData['followUpPrompts'])
+        : null;
+  }
+
+  Widget QuestionWidget(QuestionContent questionContent) {
+    // Default empty callback for widgets that require it
+    void onAnswerSelected(int index, bool isCorrect) {}
     switch (questionContent.type) {
       case QuestionType.trueOrFalse:
         {
           return TrueFalseQuestionWidget(
             content: questionContent,
-            onAnswerSelected: onAnswerSelectedCallback,
+            onAnswerSelected: onAnswerSelected,
           );
         }
+
       case QuestionType.fillGap:
         {
           return FillGapQuestionWidget(
             content: questionContent,
-            onAnswerSelected: onAnswerSelectedCallback,
+            onAnswerSelected: onAnswerSelected,
           );
         }
+
       case QuestionType.incorrectStatement:
         {
           return IncorrectStatementWidget(
             content: questionContent,
-            onAnswerSelected: onAnswerSelectedCallback,
+            onAnswerSelected: onAnswerSelected,
           );
         }
+
       default:
         {
           return QuestionContentWidget(
             content: questionContent,
-            onAnswerSelected: onAnswerSelectedCallback,
+            onAnswerSelected: onAnswerSelected,
           );
         }
     }
   }
 
-  QuestionType _parseQuestionType(String? type) {
+  QuestionType parseQuestionType(String? type) {
     switch (type) {
       case QUESTION_TYPE_MULTIPLE_CHOICE:
         {
           return QuestionType.multipleChoice;
         }
+
       case QUESTION_TYPE_TRUE_OR_FALSE:
         {
           return QuestionType.trueOrFalse;
         }
+
       case QUESTION_TYPE_SCENARIO:
         {
           return QuestionType.scenario;
         }
+
       case QUESTION_TYPE_REFLECTION:
         {
           return QuestionType.reflection;
         }
+
       case QUESTION_TYPE_FILL_GAP:
         {
           return QuestionType.fillGap;
         }
+
       case QUESTION_TYPE_INCORRECT_STATEMENT:
         {
           return QuestionType.incorrectStatement;
         }
+
       case QUESTION_TYPE_ESTIMATE_PERCENTAGE:
         {
           return QuestionType.estimatePercentage;
         }
+
       default:
         {
           return QuestionType.multipleChoice;
@@ -245,6 +310,7 @@ class JsonQuestionContentWidget extends StatelessWidget {
   }
 }
 
+// Outro content wrapper widget
 class JsonOutroContentWidget extends StatelessWidget {
   final Map<String, dynamic> contentData;
 
@@ -252,18 +318,27 @@ class JsonOutroContentWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final outroContent = OutroContent(
-      id: contentData['id'] ?? '',
-      title: contentData['title'] ?? '',
-      outroTextSegments: List<String>.from(
-        contentData['text-segments'] ?? [],
-      ),
+    // Data transformation from JSON to model
+    final outroContent = createOutroContentModel();
+
+    // Widget rendering
+    return OutroContentWidget(content: outroContent);
+  }
+
+  OutroContent createOutroContentModel() {
+    final List<String> textSegments = List<String>.from(
+      contentData['text-segments'] ?? [],
     );
 
-    return OutroContentWidget(content: outroContent);
+    return OutroContent(
+      id: contentData['id'] ?? '',
+      title: contentData['title'] ?? '',
+      outroTextSegments: textSegments,
+    );
   }
 }
 
+// Design examples showcase wrapper widget
 class JsonDesignExamplesShowcaseWidget extends StatelessWidget {
   final Map<String, dynamic> contentData;
 
@@ -274,10 +349,12 @@ class JsonDesignExamplesShowcaseWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Static design examples showcase
     return const DesignExamplesShowcase();
   }
 }
 
+// Reflection content wrapper widget
 class JsonReflectionContentWidget extends StatelessWidget {
   final Map<String, dynamic> contentData;
 
@@ -288,20 +365,29 @@ class JsonReflectionContentWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final reflectionContent = ReflectionContent(
+    // Data transformation from JSON to model
+    final reflectionContent = createReflectionContentModel();
+
+    // Widget rendering
+    return ReflectionContentWidget(content: reflectionContent);
+  }
+
+  ReflectionContent createReflectionContentModel() {
+    final List<String> thinkingPoints = List<String>.from(
+      contentData['thinking-points'] ?? [],
+    );
+
+    return ReflectionContent(
       id: contentData['id'] ?? '',
       title: contentData['title'] ?? '',
       prompt: contentData['prompt'] ?? '',
-      thinkingPoints: List<String>.from(
-        contentData['thinking-points'] ?? [],
-      ),
+      thinkingPoints: thinkingPoints,
       emoji: contentData['emoji'],
     );
-
-    return ReflectionContentWidget(content: reflectionContent);
   }
 }
 
+// Quote content wrapper widget
 class JsonQuoteContentWidget extends StatelessWidget {
   final Map<String, dynamic> contentData;
 
@@ -309,17 +395,24 @@ class JsonQuoteContentWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final quoteContent = QuoteContent(
+    // Data transformation from JSON to model
+    final quoteContent = createQuoteContentModel();
+
+    // Widget rendering
+    return QuoteContentWidget(content: quoteContent);
+  }
+
+  QuoteContent createQuoteContentModel() {
+    return QuoteContent(
       id: contentData['id'] ?? '',
       title: contentData['title'] ?? '',
       quote: contentData['quote'] ?? '',
       author: contentData['author'] ?? '',
     );
-
-    return QuoteContentWidget(content: quoteContent);
   }
 }
 
+// Estimate percentage content wrapper widget
 class JsonEstimatePercentageWidget extends StatelessWidget {
   final Map<String, dynamic> contentData;
 
@@ -330,7 +423,18 @@ class JsonEstimatePercentageWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final estimateContent = EstimatePercentageContent(
+    // Data transformation from JSON to model
+    final estimateContent = createEstimatePercentageContentModel();
+
+    // Widget rendering with empty callback
+    return EstimatePercentageWidget(
+      content: estimateContent,
+      onAnswerSelected: (int index, bool isCorrect) {},
+    );
+  }
+
+  EstimatePercentageContent createEstimatePercentageContentModel() {
+    return EstimatePercentageContent(
       id: contentData['id'] ?? '',
       title: contentData['title'] ?? '',
       question: contentData['question'] ?? '',
@@ -338,13 +442,6 @@ class JsonEstimatePercentageWidget extends StatelessWidget {
       explanation: contentData['explanation'] ?? '',
       hint: contentData['hint'],
       closeThreshold: contentData['close-threshold'] ?? 10,
-    );
-
-    void onAnswerSelectedCallback(int index, bool isCorrect) {}
-
-    return EstimatePercentageWidget(
-      content: estimateContent,
-      onAnswerSelected: onAnswerSelectedCallback,
     );
   }
 }

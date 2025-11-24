@@ -40,13 +40,19 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
   Map<String, dynamic>? courseData;
   bool isLoading = true;
 
+  // Styling constants
   final EdgeInsets topBarPadding = const EdgeInsets.symmetric(
     horizontal: 16,
     vertical: 12,
   );
   final BorderRadius progressBarRadius = BorderRadius.circular(4);
-  final IconData backIcon = Icons.arrow_back;
-  final TextStyle emptyMessageTextStyle = const TextStyle(fontSize: 18);
+
+  // Icon definitions
+  Widget get BackIcon => const Icon(
+        Icons.arrow_back,
+        color: AppTheme.textPrimary,
+        size: 24,
+      );
 
   @override
   void initState() {
@@ -85,16 +91,20 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
   Widget build(BuildContext context) {
     return RenderIf.condition(
       isLoading,
+      // Loading screen
       const Scaffold(
         backgroundColor: AppTheme.backgroundDark,
         body: Center(child: CircularProgressIndicator()),
       ),
+      // Main course screen
       SafeArea(
         child: Scaffold(
           backgroundColor: AppTheme.backgroundDark,
           body: Div.column([
+            // Progress bar and navigation header
             TopProgressBar(),
 
+            // Main course content area
             Expanded(child: CourseBody()),
           ]),
         ),
@@ -105,33 +115,38 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
   Widget CourseBody() {
     return RenderIf.condition(
       allContent.isEmpty,
+      // Empty state message
       EmptyContentMessage(),
+      // Vertical page view with course content
       PageView.builder(
         controller: pageController,
         scrollDirection: Axis.vertical,
         itemCount: allContent.length,
         onPageChanged: handlePageChanged,
-        itemBuilder: (context, contentItemIndex) {
-          return ContentWidget(allContent[contentItemIndex]);
-        },
+        itemBuilder: getContentItem,
       ),
     );
   }
 
   Widget EmptyContentMessage() {
-    return Center(child: Typography.bodyMedium(NO_CONTENT_AVAILABLE_MESSAGE));
+    return Center(
+      child: Typography.bodyMedium(NO_CONTENT_AVAILABLE_MESSAGE),
+    );
   }
 
-  Widget ContentWidget(Map<String, dynamic> content) {
+  Widget getContentItem(BuildContext context, int contentItemIndex) {
+    final Map<String, dynamic> content = allContent[contentItemIndex];
     return JsonContentWidgetFactory.createContentWidget(content);
   }
 
   Widget TopProgressBar() {
-    final double progress = calculateProgress();
-
     return Div.row([
+      // Back navigation button
       BackNavigationButton(),
+
       const Spacing.width(12),
+
+      // Course progress indicator
       Expanded(child: ProgressIndicator()),
     ], padding: topBarPadding);
   }
@@ -141,11 +156,12 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
       return [];
     }
 
-    final sections = List<Map<String, dynamic>>.from(
-      courseData!['sections'] ?? [],
-    );
+    final List<Map<String, dynamic>> sections = 
+        List<Map<String, dynamic>>.from(
+          courseData!['sections'] ?? [],
+        );
 
-    return ExpandSectionsToContent(sections);
+    return expandSectionsToContent(sections);
   }
 
   void navigateToMainScreen() {
@@ -154,7 +170,7 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
     ).push(AppTheme.fadeTransition(const MainNavigation()));
   }
 
-  List<Map<String, dynamic>> ExpandSectionsToContent(
+  List<Map<String, dynamic>> expandSectionsToContent(
     List<Map<String, dynamic>> sections,
   ) {
     return sections
@@ -177,6 +193,7 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
 
   Color getCourseColor() {
     final String courseColor = courseData?['color'] ?? 'green';
+
     switch (courseColor) {
       case COLOR_BLUE:
         {
@@ -197,9 +214,7 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
     }
   }
 
-  // Helper methods
   double calculateProgress() {
-    
     if (allContent.isEmpty) {
       return 0.0;
     }
@@ -208,23 +223,22 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
   }
 
   Widget BackNavigationButton() {
-    return GestureDetector(
+    return Div.row(
+      [BackIcon],
       onTap: navigateToMainScreen,
-      child: Icon(backIcon, color: AppTheme.textPrimary, size: 24),
     );
   }
 
   Widget ProgressIndicator() {
-    final double progress = calculateProgress();
+    final double progressValue = calculateProgress();
+    final Color courseColor = getCourseColor();
 
     return ClipRRect(
       borderRadius: progressBarRadius,
       child: LinearProgressIndicator(
-        value: progress,
+        value: progressValue,
         backgroundColor: AppTheme.backgroundLight,
-        valueColor: AlwaysStoppedAnimation<Color>(
-          getCourseColor(),
-        ),
+        valueColor: AlwaysStoppedAnimation<Color>(courseColor),
         minHeight: 8,
       ),
     );

@@ -4,17 +4,18 @@ Coding conventions and architectural patterns for the Readlock Flutter applicati
 
 ## Code Architecture
 
-### Naming Conventions
+### @1 Naming Conventions
 
 1. **No abbreviations** - use descriptive names (userProfile vs up). Be specific with loading states (isCourseDataLoading vs isLoading)
 2. **No underscore prefixes** - never prefix any declaration with \_
 3. **Clarity over brevity** - longer names acceptable for clarity
 4. **Widget methods** - name by function (eg. NavigationItems), use PascalCase, no "build" prefix
 5. **Functional methods** - use camelCase for non-widget returning functions (eg. navigateToScreen)
-6. **Icon definitions** - use PascalCase for icon widgets (CloseIcon vs closeIcon)
-7. **Constants** - extract hardcoded strings, use UPPER_SNAKE_CASE
+6. **Getter methods** - use "get" prefix for methods that compute and return values (eg. getButtonColors, getThemeColor, getCardDecoration)
+7. **Icon definitions** - use PascalCase for icon widgets (CloseIcon vs closeIcon)
+8. **Constants** - extract hardcoded strings, use UPPER_SNAKE_CASE
 
-### Widget Architecture
+### @2 Widget Architecture
 
 8. **Component extraction** - avoid deep nesting, extract separate widgets
 9. **Design system separation** - never nest design components in UI code
@@ -25,9 +26,9 @@ Coding conventions and architectural patterns for the Readlock Flutter applicati
 14. **Style and icon extraction** - extract complex styling objects (BoxDecoration, TextStyle, EdgeInsets with multiple properties) to variables above the build method, keep simple one-liners inline. Extract complete icon widgets above the build method with PascalCase naming (CloseIcon). Only icon variable names should appear in UI tree, never inline Icon() constructors
 15. **Loop extraction** - extract loops, iterations, and ListView builders from widget tree into separate methods with descriptive names
 16. **Data transformation extraction** - extract complex data operations (.from(), .map(), nested property access) into intermediate variables for clarity
-17. **Interaction widgets** - use GestureDetector instead of InkWell unless ripple effect is specifically needed
+17. **Interaction widgets** - prefer to use onTap as a Div class parameter or GestureDetector instead of InkWell unless ripple effect is specifically needed
 
-### Code Formatting
+### @3 Code Formatting
 
 18. **Logical separation** - newlines between code sections, methods, properties (readability)
 19. **Curly braces required** - never single-line if statements
@@ -35,31 +36,18 @@ Coding conventions and architectural patterns for the Readlock Flutter applicati
 21. **Widget lists** - newlines between sibling widgets in Div.row([]) and Div.column([]) arrays
 22. **UI section comments** - use single-line comments to describe UI sections (eg. // Header, // Body content, // Looping over items, // Footer)
 
-### Control Flow
+### @3 Control Flow
 
 23. **Extract conditions** - pull if statement contents into variables
 24. **Avoid ternary in UI** - let functions handle decision logic
-25. **No nested ternary** - avoid complex conditional operators
+25. **No nested ternary** - avoid complex conditional operators, extract
 26. **Consistent loop syntax** - Never use spread operators (...) or for loops in widget building
 27. **Explicit over spread** - prefer explicit list items vs spread operators
 28. **Descriptive indices** - use itemIndex/widgetIndex vs index
 29. **Whitespace around blocks** - surround if/for/while with newlines
 
-### Performance
+### @4 Performance
 
 30. **4-pixel rule** - use multiples of 4 for spacing values
 31. **Avoid overengineering** - don't optimize before inspection
 32. **Code reuse** - extract repeated code into methods/widgets
-
-## Development Principles
-
-### Task Focus
-
-- Execute exactly what's requested - nothing more, nothing less
-- Prefer editing existing files over creating new ones
-- Only create documentation when explicitly requested
-
-### Code Quality
-
-- Prioritize readability and maintainability
-- Follow established patterns in this file

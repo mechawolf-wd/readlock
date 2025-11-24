@@ -170,9 +170,9 @@ class TrueFalseQuestionWidgetState
     );
 
     final ButtonColors colors = getButtonColors(buttonState, baseColor);
-    final BoxDecoration decoration = buildButtonDecoration(colors);
-    final TextStyle textStyle = buildButtonTextStyle(colors, isSelected);
-    final Widget content = buildButtonContent(label, icon, colors, decoration, textStyle, onTap);
+    final BoxDecoration decoration = getButtonDecoration(colors);
+    final TextStyle textStyle = getButtonTextStyle(colors, isSelected);
+    final Widget content = ButtonContent(label, icon, colors, decoration, textStyle, onTap);
 
     return applyShakeAnimation(buttonIndex, content);
   }
@@ -226,14 +226,14 @@ class TrueFalseQuestionWidgetState
     }
   }
 
-  BoxDecoration buildButtonDecoration(ButtonColors colors) {
+  BoxDecoration getButtonDecoration(ButtonColors colors) {
     return BoxDecoration(
       border: Border.all(color: colors.borderColor, width: 2),
       borderRadius: BorderRadius.circular(12),
     );
   }
 
-  TextStyle buildButtonTextStyle(ButtonColors colors, bool isSelected) {
+  TextStyle getButtonTextStyle(ButtonColors colors, bool isSelected) {
     return Typography.bodyLargeStyle.copyWith(
       color: colors.textColor,
       fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
@@ -241,7 +241,7 @@ class TrueFalseQuestionWidgetState
     );
   }
 
-  Widget buildButtonContent(
+  Widget ButtonContent(
     String label,
     IconData icon,
     ButtonColors colors,
@@ -249,24 +249,18 @@ class TrueFalseQuestionWidgetState
     TextStyle textStyle,
     VoidCallback? onTap,
   ) {
-    return Material(
-      borderRadius: BorderRadius.circular(12),
-      color: colors.backgroundColor,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(12),
-        child: Container(
-          height: TRUE_FALSE_BUTTON_HEIGHT,
-          decoration: decoration,
-          child: Div.row([
-            Icon(icon, color: colors.iconColor, size: TRUE_FALSE_ICON_SIZE),
+    return Div.row([
+      Icon(icon, color: colors.iconColor, size: TRUE_FALSE_ICON_SIZE),
 
-            const Spacing.width(12),
+      const Spacing.width(12),
 
-            Text(label, style: textStyle),
-          ], mainAxisAlignment: MainAxisAlignment.center),
-        ),
-      ),
+      Text(label, style: textStyle),
+    ], 
+      height: TRUE_FALSE_BUTTON_HEIGHT,
+      decoration: decoration.copyWith(color: colors.backgroundColor),
+      radius: BorderRadius.circular(12),
+      mainAxisAlignment: MainAxisAlignment.center,
+      onTap: onTap,
     );
   }
 

@@ -7,7 +7,7 @@ import 'dart:convert';
 import 'package:flutter/services.dart';
 
 class JsonCourseDataService {
-  static Map<String, dynamic>? _cachedData;
+  static Map<String, dynamic>? cachedData;
 
   static final Map<String, dynamic> mockCourseData = {
     "courses": [
@@ -1091,14 +1091,14 @@ class JsonCourseDataService {
 
     try {
       // Try to load from actual JSON file first
-      if (_cachedData == null) {
+      if (cachedData == null) {
         final String jsonString = await rootBundle.loadString(
           'assets/data/course_data.json',
         );
-        _cachedData = json.decode(jsonString);
+        cachedData = json.decode(jsonString);
       }
 
-      final List<dynamic> courses = _cachedData!['courses'] ?? [];
+      final List<dynamic> courses = cachedData!['courses'] ?? [];
       return List<Map<String, dynamic>>.from(courses);
     } on Exception {
       // Fallback to mock data if JSON file loading fails

@@ -79,14 +79,16 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
       color: AppTheme.backgroundDark,
       child: SafeArea(
         child: Div.column([
+          // Header section with back button and course info
           RoadmapHeader(),
 
           const Spacing.height(24),
 
+          // Scrollable level cards list
           Expanded(
             child: ListView(
               padding: Style.listViewPadding,
-              children: LevelCardsList(),
+              children: getLevelCardsList(),
             ),
           ),
         ]),
@@ -106,70 +108,77 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
           color: getColorFromString(courseColor).withValues(alpha: 0.2),
         );
 
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-      child: Div.column([
-        Div.row([
-          Material(
-            color: Colors.transparent,
-            child: InkWell(
-              onTap: () {
-                Navigator.of(context).pop();
-              },
-              borderRadius: Style.backButtonRadius,
-              child: const Padding(
-                padding: EdgeInsets.all(8.0),
-                child: Icon(
-                  Icons.arrow_back,
-                  color: AppTheme.textPrimary,
-                  size: 24,
-                ),
-              ),
-            ),
-          ),
+    final Widget BackArrowIcon = const Icon(
+      Icons.arrow_back,
+      color: AppTheme.textPrimary,
+      size: 24,
+    );
 
-          const Spacer(),
-        ]),
+    final Widget CourseIcon = Icon(
+      Icons.psychology_outlined,
+      color: getColorFromString(courseColor),
+      size: 48,
+    );
 
-        const Spacing.height(20),
+    return Div.column([
+      // Header navigation row
+      Div.row([
+        // Back button
+        Div.row(
+          [BackArrowIcon],
+          padding: const EdgeInsets.all(8.0),
+          radius: Style.backButtonRadius,
+          onTap: () {
+            Navigator.of(context).pop();
+          },
+        ),
 
-        Div.column([
-          Container(
-            padding: Style.courseIconPadding,
-            decoration: courseIconDecoration,
-            child: Icon(
-              Icons.psychology_outlined,
-              color: getColorFromString(courseColor),
-              size: 48,
-            ),
-          ),
+        const Spacer(),
+      ]),
 
-          const Spacing.height(16),
+      const Spacing.height(20),
 
-          Typography.headingLarge(courseTitle),
-
-          const Spacing.height(4),
-
-          Typography.bodyMedium(
-            COURSE_SUBTITLE_TEXT,
-            textAlign: TextAlign.center,
-          ),
-        ], crossAxisAlignment: CrossAxisAlignment.center),
+      // Course information section
+      Div.column([
+        // Course icon container
+        Div.column(
+          [CourseIcon],
+          padding: Style.courseIconPadding,
+          decoration: courseIconDecoration,
+        ),
 
         const Spacing.height(16),
 
-        Div.row(
-          CounterRow(),
-          mainAxisAlignment: MainAxisAlignment.center,
+        // Course title
+        Typography.headingLarge(courseTitle),
+
+        const Spacing.height(4),
+
+        // Course subtitle
+        Typography.bodyMedium(
+          COURSE_SUBTITLE_TEXT,
+          textAlign: TextAlign.center,
         ),
-      ], crossAxisAlignment: CrossAxisAlignment.start),
+      ], crossAxisAlignment: CrossAxisAlignment.center),
+
+      const Spacing.height(16),
+
+      // Course statistics row
+      Div.row(
+        getCounterRow(),
+        mainAxisAlignment: MainAxisAlignment.center,
+      ),
+    ], 
+      crossAxisAlignment: CrossAxisAlignment.start,
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
     );
   }
 
-  List<Widget> CounterRow() {
+  List<Widget> getCounterRow() {
     return [
       const Spacer(),
 
+      // Aha moments counter
       Div.row([
         Style.AhaIcon,
 
@@ -180,6 +189,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
 
       const Spacing.width(20),
 
+      // Questions counter
       Div.row([
         Style.QuestionIcon,
 
@@ -192,8 +202,9 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
     ];
   }
 
-  List<Widget> LevelCardsList() {
+  List<Widget> getLevelCardsList() {
     return [
+      // Level 1 - Design Principles (completed)
       LevelCard(
         levelNumber: 1,
         title: DESIGN_PRINCIPLES_TITLE,
@@ -202,6 +213,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
         onTap: () => navigateToCourseContent(0, 0),
       ),
 
+      // Level 2 - Psychology of Design (completed)
       LevelCard(
         levelNumber: 2,
         title: PSYCHOLOGY_OF_DESIGN_TITLE,
@@ -210,6 +222,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
         onTap: () => navigateToCourseContent(0, 0),
       ),
 
+      // Level 3 - Affordances (current level)
       LevelCard(
         levelNumber: 3,
         title: AFFORDANCES_TITLE,
@@ -219,6 +232,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
         onTap: () => navigateToCourseContent(0, 0),
       ),
 
+      // Level 4 - Feedback Systems (locked)
       LevelCard(
         levelNumber: 4,
         title: FEEDBACK_SYSTEMS_TITLE,
@@ -227,6 +241,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
         onTap: () => navigateToCourseContent(0, 0),
       ),
 
+      // Level 5 - Advanced Concepts (locked)
       LevelCard(
         levelNumber: 5,
         title: ADVANCED_CONCEPTS_TITLE,
@@ -306,30 +321,34 @@ class LevelCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    final BoxDecoration cardDecoration = getCardDecoration();
+    final Widget ArrowIcon = const Icon(
+      Icons.arrow_forward_ios,
+      color: Colors.white54,
+      size: 20,
+    );
+
+    return Div.row(
+      [
+        // Level number badge
+        LevelBadge(),
+
+        const Spacing.width(16),
+
+        // Level title and description
+        Expanded(child: LevelContent()),
+
+        // Navigation arrow
+        ArrowIcon,
+      ],
+      margin: const EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.all(20),
+      decoration: cardDecoration,
       onTap: onTap,
-      child: Container(
-        margin: const EdgeInsets.only(bottom: 16),
-        padding: const EdgeInsets.all(20),
-        decoration: buildCardDecoration(),
-        child: Div.row([
-          LevelBadge(),
-
-          const Spacing.width(16),
-
-          Expanded(child: LevelContent()),
-
-          const Icon(
-            Icons.arrow_forward_ios,
-            color: Colors.white54,
-            size: 20,
-          ),
-        ]),
-      ),
     );
   }
 
-  BoxDecoration buildCardDecoration() {
+  BoxDecoration getCardDecoration() {
     final Color cardColor = getCardColor();
     final Color borderColor = getBorderColor();
 
@@ -357,11 +376,13 @@ class LevelCard extends StatelessWidget {
     final BoxDecoration badgeDecoration = LevelCardStyle.badgeDecoration
         .copyWith(color: getBadgeColor());
 
-    return Container(
+    return Div.column(
+      [BadgeContent()],
       width: LevelCardStyle.badgeSize,
       height: LevelCardStyle.badgeSize,
       decoration: badgeDecoration,
-      child: Center(child: BadgeContent()),
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
     );
   }
 
@@ -378,9 +399,11 @@ class LevelCard extends StatelessWidget {
   }
 
   Widget BadgeContent() {
+    final Widget CheckIcon = const Icon(Icons.check, color: Colors.white, size: 20);
+
     return RenderIf.condition(
       isCompleted,
-      const Icon(Icons.check, color: Colors.white, size: 20),
+      CheckIcon,
       Typography.bodyMedium(
         levelNumber.toString(),
         textAlign: TextAlign.center,
@@ -390,10 +413,12 @@ class LevelCard extends StatelessWidget {
 
   Widget LevelContent() {
     return Div.column([
+      // Level title with number
       Typography.headingMedium('$LEVEL_PREFIX$levelNumber: $title'),
 
       const Spacing.height(4),
 
+      // Level description
       Typography.bodyMedium(subtitle),
     ], crossAxisAlignment: CrossAxisAlignment.start);
   }

@@ -20,35 +20,40 @@ class ShelfScreen extends StatefulWidget {
 class ShelfScreenState extends State<ShelfScreen> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: AppTheme.backgroundDark,
-      child: SafeArea(
+    return Div.column([
+      SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(24),
           child: Div.column([
+            // Top stats bar
             const StatsBar(),
 
             const Spacing.height(32),
 
+            // Welcome header
             HomeWelcomeHeader(),
 
             const Spacing.height(24),
 
+            // Latest courses section
             LatestCoursesSection(),
 
             const Spacing.height(24),
           ], crossAxisAlignment: CrossAxisAlignment.stretch),
         ),
       ),
-    );
+    ], 
+    color: AppTheme.backgroundDark);
   }
 
   Widget HomeWelcomeHeader() {
     return Div.column([
+      // Main welcome title
       Typography.headingLarge(HOME_TITLE),
 
       const Spacing.height(8),
 
+      // Subtitle text
       Typography.text('Continue your learning journey'),
     ], crossAxisAlignment: CrossAxisAlignment.start);
   }
@@ -58,93 +63,92 @@ class ShelfScreenState extends State<ShelfScreen> {
   }
 
   Widget LatestCourseCard() {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(24),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: navigateToDesignCourse,
-          borderRadius: BorderRadius.circular(18),
+    return Div.column([
+      // Course header row
+      Div.row([
+        // Course info section
+        Expanded(
           child: Div.column([
+            // Course title
+            Typography.headingMedium(
+              'The Design of Everyday Things',
+            ),
+
+            const Spacing.height(8),
+
+            // Course description
+            Typography.text('Based on Don Norman\'s classic book'),
+
+            const Spacing.height(12),
+
+            // Badge and sections row
             Div.row([
-              Expanded(
-                child: Div.column([
-                  Typography.headingMedium(
-                    'The Design of Everyday Things',
-                  ),
-
-                  const Spacing.height(8),
-
-                  Typography.text(
-                    'Based on Don Norman\'s classic book',
-                  ),
-
-                  const Spacing.height(12),
-
-                  Div.row([
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 4,
-                      ),
-                      decoration: Style.newBadgeDecoration,
-                      child: Text(
-                        'NEW',
-                        style: Style.newBadgeTextStyle,
-                      ),
-                    ),
-
-                    const Spacing.width(8),
-
-                    Text('6 sections', style: Style.sectionsTextStyle),
-                  ]),
-                ], crossAxisAlignment: CrossAxisAlignment.start),
-              ),
-
-              const Spacing.width(16),
-
-              Container(
-                padding: const EdgeInsets.all(16),
-                child: const Icon(
-                  Icons.psychology_outlined,
+              // NEW badge
+              Div.column([
+                Typography.bodyMedium(
+                  'NEW', 
                   color: AppTheme.primaryGreen,
-                  size: 32,
                 ),
+              ],
+              padding: const EdgeInsets.symmetric(
+                horizontal: 8,
+                vertical: 4,
               ),
-            ], crossAxisAlignment: CrossAxisAlignment.start),
+              decoration: Style.newBadgeDecoration),
 
-            const Spacing.height(20),
+              const Spacing.width(8),
 
-            Div.row([
-              const Spacer(),
-
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 20,
-                  vertical: 10,
-                ),
-                decoration: Style.continueButtonDecoration,
-                child: Div.row([
-                  Text(
-                    'Continue Learning',
-                    style: Style.continueButtonTextStyle,
-                  ),
-
-                  const Spacing.width(8),
-
-                  const Icon(
-                    Icons.arrow_forward_ios,
-                    color: AppTheme.primaryGreen,
-                    size: 14,
-                  ),
-                ]),
+              // Sections count
+              Typography.bodyMedium(
+                '6 sections',
+                color: AppTheme.textSecondary,
               ),
             ]),
-          ]),
+          ], crossAxisAlignment: CrossAxisAlignment.start),
         ),
-      ),
-    );
+
+        const Spacing.width(16),
+
+        // Course icon
+        const Div.column([
+          CourseIcon(),
+        ],
+        padding: EdgeInsets.all(16)),
+      ], crossAxisAlignment: CrossAxisAlignment.start),
+
+      const Spacing.height(20),
+
+      // Continue button row
+      Div.row([
+        const Spacer(),
+
+        // Continue learning button
+        Div.row([
+          Typography.bodyMedium(
+            'Continue Learning',
+            color: AppTheme.primaryGreen,
+          ),
+
+          const Spacing.width(8),
+
+          // Forward arrow icon
+          const Icon(
+            Icons.arrow_forward_ios,
+            color: AppTheme.primaryGreen,
+            size: 14,
+          ),
+        ],
+        padding: const EdgeInsets.symmetric(
+          horizontal: 20,
+          vertical: 10,
+        ),
+        decoration: Style.continueButtonDecoration),
+      ]),
+    ],
+    width: double.infinity,
+    padding: const EdgeInsets.all(24),
+    radius: BorderRadius.circular(18),
+    onTap: navigateToDesignCourse);
   }
 
   // Navigation methods
@@ -157,26 +161,28 @@ class ShelfScreenState extends State<ShelfScreen> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) =>
-            const CourseRoadmapScreen(courseId: 'design-everyday-things'),
+        builder: (context) => const CourseRoadmapScreen(
+          courseId: 'design-everyday-things',
+        ),
       ),
     );
   }
 }
 
+class CourseIcon extends StatelessWidget {
+  const CourseIcon({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Icon(
+      Icons.psychology_outlined,
+      color: AppTheme.primaryGreen,
+      size: 32,
+    );
+  }
+}
 
 class Style {
-  static final TextStyle sectionsTextStyle = Typography.bodyLargeStyle
-      .copyWith(color: AppTheme.textSecondary, fontSize: 12);
-
-  static final TextStyle newBadgeTextStyle = Typography.bodyLargeStyle
-      .copyWith(
-        color: AppTheme.primaryGreen,
-        fontSize: 10,
-        fontWeight: FontWeight.bold,
-        letterSpacing: 0.5,
-      );
-
   static final BoxDecoration newBadgeDecoration = BoxDecoration(
     color: AppTheme.primaryGreen.withValues(alpha: 0.1),
     borderRadius: BorderRadius.circular(6),
@@ -193,12 +199,4 @@ class Style {
       width: 1.5,
     ),
   );
-
-  static final TextStyle continueButtonTextStyle = Typography
-      .bodyLargeStyle
-      .copyWith(
-        color: AppTheme.primaryGreen,
-        fontSize: 14,
-        fontWeight: FontWeight.w600,
-      );
 }

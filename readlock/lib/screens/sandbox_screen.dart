@@ -188,40 +188,37 @@ class ThoughtPrompWidgetState extends State<ThoughtPrompWidget> {
         ),
       ),
       child: Div.column([
-        GestureDetector(
-          onTap: () {
-            setState(() {
-              isExpanded = !isExpanded;
-            });
-          },
-          child: Div.row([
-            const Icon(
-              Icons.psychology,
-              color: AppTheme.primaryBlue,
-              size: 24,
-            ),
+        Div.row([
+          const Icon(
+            Icons.psychology,
+            color: AppTheme.primaryBlue,
+            size: 24,
+          ),
 
-            const Spacing.width(12),
+          const Spacing.width(12),
 
-            Expanded(
-              child: Text(
-                'Thought Prompt',
-                style: Typography.bodyLargeStyle.copyWith(
-                  fontWeight: FontWeight.w600,
-                  fontSize: 16,
-                ),
+          Expanded(
+            child: Text(
+              'Thought Prompt',
+              style: Typography.bodyLargeStyle.copyWith(
+                fontWeight: FontWeight.w600,
+                fontSize: 16,
               ),
             ),
+          ),
 
-            Icon(
-              isExpanded
-                  ? Icons.keyboard_arrow_up
-                  : Icons.keyboard_arrow_down,
-              color: AppTheme.primaryBlue,
-              size: 24,
-            ),
-          ]),
-        ),
+          Icon(
+            isExpanded
+                ? Icons.keyboard_arrow_up
+                : Icons.keyboard_arrow_down,
+            color: AppTheme.primaryBlue,
+            size: 24,
+          ),
+        ], onTap: () {
+          setState(() {
+            isExpanded = !isExpanded;
+          });
+        }),
 
         RenderIf.condition(
           isExpanded,
@@ -301,17 +298,17 @@ class BookmarkHighlightWidgetState
             ),
           ),
 
-          GestureDetector(
+          Div.row(
+            [Icon(
+              isBookmarked ? Icons.bookmark : Icons.bookmark_border,
+              color: Colors.orange,
+              size: 24,
+            )],
             onTap: () {
               setState(() {
                 isBookmarked = !isBookmarked;
               });
             },
-            child: Icon(
-              isBookmarked ? Icons.bookmark : Icons.bookmark_border,
-              color: Colors.orange,
-              size: 24,
-            ),
           ),
         ]),
 

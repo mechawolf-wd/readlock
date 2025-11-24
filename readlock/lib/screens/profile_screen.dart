@@ -1003,27 +1003,22 @@ class ActionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: color.withValues(alpha: 0.1),
-      borderRadius: BorderRadius.circular(12),
-      child: InkWell(
-        onTap: onTap,
+    return Div.row([
+      Icon(icon, color: color, size: 20),
+
+      const Spacing.width(8),
+
+      Typography.bodyMedium(label, color: color),
+    ], 
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
-        child: Container(
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: color.withValues(alpha: 0.3)),
-          ),
-          child: Div.row([
-            Icon(icon, color: color, size: 20),
-
-            const Spacing.width(8),
-
-            Typography.bodyMedium(label, color: color),
-          ], mainAxisAlignment: MainAxisAlignment.center),
-        ),
+        border: Border.all(color: color.withValues(alpha: 0.3)),
+        color: color.withValues(alpha: 0.1),
       ),
+      radius: BorderRadius.circular(12),
+      mainAxisAlignment: MainAxisAlignment.center,
+      onTap: onTap,
     );
   }
 }

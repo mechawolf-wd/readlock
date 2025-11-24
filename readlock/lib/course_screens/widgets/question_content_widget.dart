@@ -9,7 +9,7 @@ import 'package:readlock/constants/typography.dart';
 import 'package:readlock/constants/app_theme.dart';
 import 'package:readlock/utility_widgets/explanation_dialog.dart';
 
-enum OptionButtonState { normal, selected, correctAndAnswered }
+enum OptionButtonState { normal, selected, correctAndAnswered, incorrectAndAnswered }
 
 class QuestionContentWidget extends StatefulWidget {
   static const double QUESTION_SECTION_SPACING = 24.0;
@@ -106,24 +106,22 @@ class QuestionContentWidgetState extends State<QuestionContentWidget> {
 
     return Div.row([
       Expanded(
-        child: GestureDetector(
+        child: Div.row(
+          [
+            CorrectAnswerIcon(buttonState),
+
+            Expanded(
+              child: Typography.bodyLarge(
+                option.text,
+                color: textColor,
+              ),
+            ),
+          ],
+          padding: AppTheme.contentPaddingMediumInsets,
+          decoration: optionDecoration,
           onTap: hasAnsweredQuestion
               ? null
               : () => selectAnswer(optionIndex),
-          child: Div.row(
-            [
-              CorrectAnswerIcon(buttonState),
-
-              Expanded(
-                child: Typography.bodyLarge(
-                  option.text,
-                  color: textColor,
-                ),
-              ),
-            ],
-            padding: AppTheme.contentPaddingMediumInsets,
-            decoration: optionDecoration,
-          ),
         ),
       ),
     ]);
@@ -135,9 +133,15 @@ class QuestionContentWidgetState extends State<QuestionContentWidget> {
         .contains(optionIndex);
     final bool isCorrectAndAnswered =
         hasAnsweredQuestion && isCorrectAnswer && isSelected;
+    final bool isIncorrectAndAnswered =
+        hasAnsweredQuestion && !isCorrectAnswer;
 
     if (isCorrectAndAnswered) {
       return OptionButtonState.correctAndAnswered;
+    }
+
+    if (isIncorrectAndAnswered) {
+      return OptionButtonState.incorrectAndAnswered;
     }
 
     if (isSelected && !hasAnsweredQuestion) {
@@ -149,9 +153,13 @@ class QuestionContentWidgetState extends State<QuestionContentWidget> {
 
   BoxDecoration OptionDecoration(OptionButtonState state) {
     final Color themeColor = getThemeColorForState(state);
+    final bool isCorrect = state == OptionButtonState.correctAndAnswered;
 
     return Style.optionDecoration.copyWith(
       border: Border.all(color: themeColor, width: 2),
+      color: isCorrect 
+          ? AppTheme.primaryGreen.withValues(alpha: 0.1)
+          : Style.optionDecoration.color,
     );
   }
 
@@ -159,30 +167,27 @@ class QuestionContentWidgetState extends State<QuestionContentWidget> {
     final bool isSelected =
         state == OptionButtonState.selected ||
         state == OptionButtonState.correctAndAnswered;
+    final bool isCorrect = state == OptionButtonState.correctAndAnswered;
+    final bool isIncorrect = state == OptionButtonState.incorrectAndAnswered;
+
+    Color? textColor;
+    if (isCorrect) {
+      textColor = AppTheme.primaryGreen;
+    } else if (isIncorrect) {
+      textColor = AppTheme.textPrimary.withValues(alpha: 0.3);
+    } else {
+      textColor = Style.optionTextStyle.color;
+    }
 
     return Style.optionTextStyle.copyWith(
       fontWeight: isSelected ? FontWeight.w500 : FontWeight.normal,
+      color: textColor,
     );
   }
 
   Widget CorrectAnswerIcon(OptionButtonState state) {
-    if (state != OptionButtonState.correctAndAnswered) {
-      return const SizedBox.shrink();
-    }
-
-    final Color themeColor = getThemeColorForState(state);
-    final BoxDecoration iconDecoration = Style.correctIconDecoration
-        .copyWith(color: themeColor.withValues(alpha: 0.1));
-
-    return Div.row([
-      Div.row(
-        [Icon(Icons.check_circle, color: themeColor, size: 18)],
-        padding: AppTheme.contentPaddingTinyInsets,
-        decoration: iconDecoration,
-      ),
-
-      const Spacing.width(12),
-    ]);
+    // No icon shown - green color is enough
+    return const SizedBox.shrink();
   }
 
   Color getThemeColorForState(OptionButtonState state) {
@@ -194,6 +199,10 @@ class QuestionContentWidgetState extends State<QuestionContentWidget> {
       case OptionButtonState.selected:
         {
           return AppTheme.primaryBlue;
+        }
+      case OptionButtonState.incorrectAndAnswered:
+        {
+          return AppTheme.textPrimary.withValues(alpha: 0.1);
         }
       case OptionButtonState.normal:
         {

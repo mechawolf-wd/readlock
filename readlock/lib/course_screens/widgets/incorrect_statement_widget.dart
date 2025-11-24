@@ -125,50 +125,44 @@ class IncorrectStatementWidgetState
       borderColor = AppTheme.textPrimary.withValues(alpha: 0.2);
     }
 
-    final Widget statementContainer = Material(
-      color: backgroundColor,
-      borderRadius: BorderRadius.circular(12),
-      child: InkWell(
-        onTap: hasAnswered
-            ? null
-            : () => selectStatement(statementIndex),
-        borderRadius: BorderRadius.circular(12),
-        child: Container(
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: borderColor, width: 2),
+    final Widget statementContainer = Div.row([
+      RenderIf.condition(
+        hasAnswered && feedbackIcon != null,
+        Div.row([
+          Icon(
+            feedbackIcon!,
+            color: isIncorrectStatement
+                ? AppTheme.primaryGreen
+                : AppTheme.textPrimary.withValues(alpha: 0.4),
+            size: 20,
           ),
-          child: Div.row([
-            RenderIf.condition(
-              hasAnswered && feedbackIcon != null,
-              Div.row([
-                Icon(
-                  feedbackIcon!,
-                  color: isIncorrectStatement
-                      ? AppTheme.primaryGreen
-                      : AppTheme.textPrimary.withValues(alpha: 0.4),
-                  size: 20,
-                ),
-                const Spacing.width(12),
-              ]),
-            ),
+          const Spacing.width(12),
+        ]),
+      ),
 
-            Expanded(
-              child: Text(
-                widget.content.options[statementIndex].text,
-                style: Typography.bodyLargeStyle.copyWith(
-                  fontSize: 15,
-                  fontWeight: isSelected
-                      ? FontWeight.w500
-                      : FontWeight.normal,
-                  height: 1.4,
-                ),
-              ),
-            ),
-          ]),
+      Expanded(
+        child: Text(
+          widget.content.options[statementIndex].text,
+          style: Typography.bodyLargeStyle.copyWith(
+            fontSize: 15,
+            fontWeight: isSelected
+                ? FontWeight.w500
+                : FontWeight.normal,
+            height: 1.4,
+          ),
         ),
       ),
+    ], 
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: borderColor, width: 2),
+        color: backgroundColor,
+      ),
+      radius: BorderRadius.circular(12),
+      onTap: hasAnswered
+          ? null
+          : () => selectStatement(statementIndex),
     );
 
     if (isSelected && !isIncorrectStatement && shakeAnimation != null) {

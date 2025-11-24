@@ -1,5 +1,5 @@
 // Courses list screen showing available courses
-// Clean card-based layout with course selection
+// Clean card-based layout with course selection and genre filtering
 
 import 'package:flutter/material.dart' hide Typography;
 import 'package:readlock/course_screens/course_roadmap_screen.dart';
@@ -17,7 +17,7 @@ class CoursesScreen extends StatefulWidget {
 
 class CoursesScreenState extends State<CoursesScreen> {
   List<Map<String, dynamic>> allCourses = [];
-  bool isLoading = true;
+  bool isCourseDataLoading = true;
   String selectedGenre = 'design';
   ScrollController scrollController = ScrollController();
   Map<String, GlobalKey> genreSectionKeys = {};
@@ -55,13 +55,14 @@ class CoursesScreenState extends State<CoursesScreen> {
   Future<void> loadCourses() async {
     try {
       final courses = await CourseData.availableCourses;
+      
       setState(() {
         allCourses = courses;
-        isLoading = false;
+        isCourseDataLoading = false;
       });
-    } catch (error) {
+    } on Exception {
       setState(() {
-        isLoading = false;
+        isCourseDataLoading = false;
       });
     }
   }
@@ -75,27 +76,35 @@ class CoursesScreenState extends State<CoursesScreen> {
 
   Color getGenreColor(String genreId) {
     final coursesInGenre = getCoursesForGenre(genreId);
+
     if (coursesInGenre.isNotEmpty) {
       final colorName = coursesInGenre.first['color'] ?? 'blue';
       return getColorFromString(colorName);
     }
+
     return getColorFromString('blue');
   }
 
   Color getColorFromString(String colorName) {
     switch (colorName.toLowerCase()) {
-      case 'green':
+      case 'green': {
         return AppTheme.primaryGreen;
-      case 'purple':
+      }
+      case 'purple': {
         return Colors.purple;
-      case 'blue':
+      }
+      case 'blue': {
         return AppTheme.primaryBlue;
-      case 'red':
+      }
+      case 'red': {
         return Colors.red;
-      case 'orange':
+      }
+      case 'orange': {
         return Colors.orange;
-      default:
+      }
+      default: {
         return AppTheme.primaryBlue;
+      }
     }
   }
 
@@ -105,8 +114,9 @@ class CoursesScreenState extends State<CoursesScreen> {
     });
 
     final targetKey = genreSectionKeys[genreId];
+    final bool hasValidContext = targetKey?.currentContext != null;
 
-    if (targetKey?.currentContext != null) {
+    if (hasValidContext) {
       Scrollable.ensureVisible(
         targetKey!.currentContext!,
         duration: const Duration(milliseconds: 300),
@@ -117,66 +127,100 @@ class CoursesScreenState extends State<CoursesScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final bool isLoading = isCourseDataLoading;
+
     if (isLoading) {
-      return Container(
-        color: AppTheme.backgroundDark,
-        child: const Center(
-          child: CircularProgressIndicator(color: AppTheme.primaryBlue),
-        ),
-      );
+      return LoadingState();
     }
 
-    return Container(
+    return MainContent();
+  }
+
+  Widget LoadingState() {
+    return Div.column(const [
+      Center(
+        child: CircularProgressIndicator(color: AppTheme.primaryBlue),
+      ),
+    ],
       color: AppTheme.backgroundDark,
-      child: SafeArea(
+      height: 'full',
+      mainAxisAlignment: 'center',
+    );
+  }
+
+  Widget MainContent() {
+    return Div.column([
+      SafeArea(
         child: Div.column([
-          Container(
-            padding: const EdgeInsets.all(24),
-            child: Div.column([
-              const StatsBar(),
+          // Header section with stats and course selection
+          HeaderSection(),
 
-              const Spacing.height(24),
-
-              Div.column([
-                Typography.headingLarge('Choose Your Course'),
-
-                const Spacing.height(16),
-
-                GenreChipsList(),
-              ], crossAxisAlignment: CrossAxisAlignment.start),
-            ], crossAxisAlignment: CrossAxisAlignment.stretch),
-          ),
-
-          Expanded(
-            child: SingleChildScrollView(
-              controller: scrollController,
-              padding: const EdgeInsets.symmetric(horizontal: 24),
-              child: CoursesListByGenre(),
-            ),
-          ),
+          // Scrollable courses list organized by genre
+          CoursesSection(),
         ]),
+      ),
+    ],
+      color: AppTheme.backgroundDark,
+      height: 'full',
+    );
+  }
+
+  Widget HeaderSection() {
+    return Div.column([
+      // User stats bar
+      const StatsBar(),
+
+      const Spacing.height(24),
+
+      // Course selection header and genre filters
+      CourseSelectionHeader(),
+    ],
+      padding: const EdgeInsets.all(24),
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+    );
+  }
+
+  Widget CourseSelectionHeader() {
+    return Div.column([
+      // Main heading
+      Typography.headingLarge('Choose Your Course'),
+
+      const Spacing.height(16),
+
+      // Genre filter chips
+      GenreChipsList(),
+    ], crossAxisAlignment: CrossAxisAlignment.start);
+  }
+
+  Widget CoursesSection() {
+    return Expanded(
+      child: SingleChildScrollView(
+        controller: scrollController,
+        padding: const EdgeInsets.symmetric(horizontal: 24),
+        child: CoursesListByGenre(),
       ),
     );
   }
 
   Widget GenreChipsList() {
-    return SizedBox(
-      height: 40,
-      child: ListView.separated(
+    return Div.column([
+      ListView.separated(
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.symmetric(horizontal: 4),
         itemCount: genres.length,
-        separatorBuilder: (context, index) => const Spacing.width(12),
+        separatorBuilder: (context, itemIndex) => const Spacing.width(12),
         itemBuilder: GenreChipItem,
       ),
+    ],
+      height: 40,
     );
   }
 
-  Widget GenreChipItem(BuildContext context, int index) {
-    final genre = genres[index];
+  Widget GenreChipItem(BuildContext context, int itemIndex) {
+    final genre = genres[itemIndex];
     final genreId = genre['id']!;
     final genreLabel = genre['name']!;
-    final isSelected = selectedGenre == genreId;
+    final bool isSelected = selectedGenre == genreId;
     final chipColor = getGenreColor(genreId);
 
     return GenreChip(
@@ -192,48 +236,66 @@ class CoursesScreenState extends State<CoursesScreen> {
   }
 
   List<Widget> GenreSections() {
-    return genres
-        .map(GenreSection)
-        .where((section) => section != null)
-        .cast<Widget>()
-        .toList();
+    final List<Widget> sections = [];
+    
+    for (final genre in genres) {
+      final section = GenreSection(genre);
+      
+      if (section != null) {
+        sections.add(section);
+      }
+    }
+    
+    return sections;
   }
 
   Widget? GenreSection(Map<String, String> genre) {
     final genreId = genre['id']!;
     final genreName = genre['name']!;
     final coursesInGenre = getCoursesForGenre(genreId);
+    final bool hasCoursesInGenre = coursesInGenre.isNotEmpty;
 
-    if (coursesInGenre.isEmpty) {
+    if (!hasCoursesInGenre) {
       return null;
     }
 
-    final List<Widget> sectionWidgets = [
-      const Spacing.height(16),
-      Typography.headingMedium(genreName),
-      const Spacing.height(16),
-    ];
-
-    sectionWidgets.addAll(CourseCards(coursesInGenre));
-
-    return Container(
+    return Div.column(
+      GenreSectionContent(genreName, coursesInGenre),
       key: genreSectionKeys[genreId],
-      child: Div.column(
-        sectionWidgets,
-        crossAxisAlignment: CrossAxisAlignment.start,
-      ),
+      crossAxisAlignment: CrossAxisAlignment.start,
     );
   }
 
+  List<Widget> GenreSectionContent(String genreName, List<Map<String, dynamic>> coursesInGenre) {
+    final List<Widget> sectionWidgets = [
+      // Section spacing
+      const Spacing.height(16),
+      
+      // Genre heading
+      Typography.headingMedium(genreName),
+      
+      const Spacing.height(16),
+    ];
+
+    // Course cards for this genre
+    sectionWidgets.addAll(CourseCards(coursesInGenre));
+
+    return sectionWidgets;
+  }
+
   List<Widget> CourseCards(List<Map<String, dynamic>> courses) {
-    return courses
-        .map(
-          (courseData) => CourseCard(
-            course: courseData,
-            getColorFromString: getColorFromString,
-          ),
-        )
-        .toList();
+    final List<Widget> courseCardWidgets = [];
+    
+    for (final courseData in courses) {
+      courseCardWidgets.add(
+        CourseCard(
+          course: courseData,
+          getColorFromString: getColorFromString,
+        ),
+      );
+    }
+    
+    return courseCardWidgets;
   }
 }
 
@@ -253,97 +315,119 @@ class CourseCard extends StatelessWidget {
     final String description = course['description'] ?? '';
     final String color = course['color'] ?? 'blue';
     final String courseId = course['id'] ?? '';
+    final Color courseColor = getColorFromString(color);
 
-    return Container(
+    return Div.column(
+      [
+        // Course header with title and icon
+        CourseHeader(title, description, courseColor),
+
+        const Spacing.height(20),
+
+        // Course footer with stats and start button
+        CourseFooter(courseColor),
+      ],
       margin: const EdgeInsets.only(bottom: 20),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: () {
-            Navigator.push(
-              context,
-              AppTheme.fadeTransition(
-                CourseRoadmapScreen(courseId: courseId),
-              ),
-            );
-          },
-          borderRadius: BorderRadius.circular(16),
-          child: Container(
-            width: double.infinity,
-            padding: const EdgeInsets.all(24),
-            decoration: Style.cardDecoration,
-            child: Div.column([
-              Div.row([
-                Expanded(
-                  child: Div.column([
-                    Typography.headingMedium(title),
+      width: double.infinity,
+      padding: const EdgeInsets.all(24),
+      decoration: Style.cardDecoration,
+      radius: BorderRadius.circular(16),
+      onTap: () => navigateToCourseRoadmap(context, courseId),
+    );
+  }
 
-                    const Spacing.height(8),
+  Widget CourseHeader(String title, String description, Color courseColor) {
+    return Div.row([
+      // Course content section
+      Expanded(
+        child: CourseContent(title, description),
+      ),
 
-                    Typography.text(description),
-                  ], crossAxisAlignment: CrossAxisAlignment.start),
-                ),
+      const Spacing.width(16),
 
-                const Spacing.width(16),
+      // Course icon
+      CourseIcon(color: courseColor),
+    ], crossAxisAlignment: CrossAxisAlignment.start);
+  }
 
-                CourseIcon(color: getColorFromString(color)),
-              ], crossAxisAlignment: CrossAxisAlignment.start),
+  Widget CourseContent(String title, String description) {
+    return Div.column([
+      // Course title
+      Typography.headingMedium(title),
 
-              const Spacing.height(20),
+      const Spacing.height(8),
 
-              Div.row([
-                CourseStats(),
+      // Course description
+      Typography.text(description),
+    ], crossAxisAlignment: CrossAxisAlignment.start);
+  }
 
-                const Spacer(),
+  Widget CourseFooter(Color courseColor) {
+    return Div.row([
+      // Course statistics
+      CourseStats(),
 
-                StartButton(color: getColorFromString(color)),
-              ]),
-            ]),
-          ),
-        ),
+      const Spacer(),
+
+      // Start course button
+      StartButton(color: courseColor),
+    ]);
+  }
+
+  void navigateToCourseRoadmap(BuildContext context, String courseId) {
+    Navigator.push(
+      context,
+      AppTheme.fadeTransition(
+        CourseRoadmapScreen(courseId: courseId),
       ),
     );
   }
 
   Widget CourseIcon({required Color color}) {
-    final IconData icon = course['id'] == 'design-everyday-things'
+    final bool isDesignCourse = course['id'] == 'design-everyday-things';
+    final IconData icon = isDesignCourse
         ? Icons.psychology_outlined
         : Icons.trending_up_outlined;
 
-    return Container(
+    return Div.column([
+      Icon(icon, color: color, size: 24),
+    ],
       padding: const EdgeInsets.all(12),
       decoration: Style.iconDecoration,
-      child: Icon(icon, color: color, size: 24),
     );
   }
 
   Widget CourseStats() {
-    final int sections = (course['sections'] as List?)?.length ?? 0;
+    final int sectionsCount = (course['sections'] as List?)?.length ?? 0;
+    final Color iconColor = AppTheme.textPrimary.withValues(alpha: 0.6);
 
     return Div.row([
+      // Book icon
       Icon(
         Icons.book_outlined,
-        color: AppTheme.textPrimary.withValues(alpha: 0.6),
+        color: iconColor,
         size: 16,
       ),
 
       const Spacing.width(6),
 
-      Typography.text('$sections sections'),
+      // Sections count text
+      Typography.text('$sectionsCount sections'),
     ]);
   }
 
   Widget StartButton({required Color color}) {
-    return Container(
+    return Div.row([
+      // Button text
+      Typography.text('Start Course'),
+
+      const Spacing.width(8),
+
+      // Forward arrow icon
+      Icon(Icons.arrow_forward_ios, color: color, size: 12),
+    ],
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: Style.startButtonDecoration,
-      child: Div.row([
-        Typography.text('Start Course'),
-
-        const Spacing.width(8),
-
-        Icon(Icons.arrow_forward_ios, color: color, size: 12),
-      ]),
     );
   }
 }
@@ -364,20 +448,15 @@ class GenreChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(20),
-        child: Container(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 16,
-            vertical: 8,
-          ),
-          decoration: Style.chipDecoration,
-          child: Text(label, style: Style.chipTextStyle),
-        ),
-      ),
+    return Div.row(
+      [
+        // Genre chip label
+        Text(label, style: Style.chipTextStyle),
+      ],
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      decoration: Style.chipDecoration,
+      radius: BorderRadius.circular(20),
+      onTap: onTap,
     );
   }
 }

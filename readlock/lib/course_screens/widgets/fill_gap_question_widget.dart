@@ -166,23 +166,9 @@ class FillGapQuestionWidgetState extends State<FillGapQuestionWidget>
       displayText = '______';
     }
 
-    final Widget gapContainer = GestureDetector(
-      onTap: hasAnswered ? null : () => clearGapSelection(gapIndex),
-      child: Container(
-        constraints: const BoxConstraints(
-          minWidth: FILL_GAP_BLANK_WIDTH,
-          minHeight: FILL_GAP_BLANK_HEIGHT,
-        ),
-        padding: const EdgeInsets.symmetric(
-          horizontal: 12,
-          vertical: 8,
-        ),
-        decoration: BoxDecoration(
-          color: backgroundColor,
-          borderRadius: BorderRadius.circular(8),
-          border: Border.all(color: borderColor, width: 2),
-        ),
-        child: Center(
+    final Widget gapContainer = Div.column(
+      [
+        Center(
           child: Text(
             displayText,
             style: Typography.bodyLargeStyle.copyWith(
@@ -196,7 +182,19 @@ class FillGapQuestionWidgetState extends State<FillGapQuestionWidget>
             ),
           ),
         ),
+      ],
+      width: FILL_GAP_BLANK_WIDTH,
+      height: FILL_GAP_BLANK_HEIGHT,
+      padding: const EdgeInsets.symmetric(
+        horizontal: 12,
+        vertical: 8,
       ),
+      decoration: BoxDecoration(
+        color: backgroundColor,
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: borderColor, width: 2),
+      ),
+      onTap: hasAnswered ? null : () => clearGapSelection(gapIndex),
     );
 
     if (isIncorrect && shakeAnimation != null) {
@@ -264,22 +262,9 @@ class FillGapQuestionWidgetState extends State<FillGapQuestionWidget>
       textColor = AppTheme.textPrimary;
     }
 
-    return GestureDetector(
-      onTap: isDisabled ? null : () => selectOption(optionIndex),
-      child: AnimatedContainer(
-        duration: const Duration(
-          milliseconds: FILL_GAP_ANIMATION_DURATION_MS,
-        ),
-        padding: const EdgeInsets.symmetric(
-          horizontal: 16,
-          vertical: 10,
-        ),
-        decoration: BoxDecoration(
-          color: chipColor,
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: borderColor, width: 1.5),
-        ),
-        child: Text(
+    return Div.row(
+      [
+        Text(
           widget.content.options[optionIndex].text,
           style: Typography.bodyLargeStyle.copyWith(
             fontSize: 14,
@@ -292,7 +277,17 @@ class FillGapQuestionWidgetState extends State<FillGapQuestionWidget>
                 : null,
           ),
         ),
+      ],
+      padding: const EdgeInsets.symmetric(
+        horizontal: 16,
+        vertical: 10,
       ),
+      decoration: BoxDecoration(
+        color: chipColor,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: borderColor, width: 1.5),
+      ),
+      onTap: isDisabled ? null : () => selectOption(optionIndex),
     );
   }
 
@@ -302,39 +297,35 @@ class FillGapQuestionWidgetState extends State<FillGapQuestionWidget>
     );
     final bool canSubmit = allGapsFilled && !hasAnswered;
 
-    return Material(
-      borderRadius: BorderRadius.circular(12),
-      color: canSubmit
-          ? AppTheme.primaryBlue
-          : AppTheme.backgroundLight,
-      child: InkWell(
-        onTap: canSubmit ? checkAnswer : null,
-        borderRadius: BorderRadius.circular(12),
-        child: Container(
-          height: 48,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(
+    return Div.row(
+      [
+        Center(
+          child: Text(
+            hasAnswered ? 'Submitted' : 'Submit Answer',
+            style: Typography.bodyLargeStyle.copyWith(
               color: canSubmit
-                  ? AppTheme.primaryBlue
-                  : AppTheme.textPrimary.withValues(alpha: 0.2),
-              width: 2,
-            ),
-          ),
-          child: Center(
-            child: Text(
-              hasAnswered ? 'Submitted' : 'Submit Answer',
-              style: Typography.bodyLargeStyle.copyWith(
-                color: canSubmit
-                    ? Colors.white
-                    : AppTheme.textPrimary.withValues(alpha: 0.4),
-                fontWeight: FontWeight.w600,
-                fontSize: 16,
-              ),
+                  ? Colors.white
+                  : AppTheme.textPrimary.withValues(alpha: 0.4),
+              fontWeight: FontWeight.w600,
+              fontSize: 16,
             ),
           ),
         ),
+      ],
+      height: 48,
+      color: canSubmit
+          ? AppTheme.primaryBlue
+          : AppTheme.backgroundLight,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: canSubmit
+              ? AppTheme.primaryBlue
+              : AppTheme.textPrimary.withValues(alpha: 0.2),
+          width: 2,
+        ),
       ),
+      onTap: canSubmit ? checkAnswer : null,
     );
   }
 

@@ -200,19 +200,17 @@ class EstimatePercentageWidgetState
 
     return RenderIf.condition(
       shouldShow,
-      GestureDetector(
+      Div.column(
+        [
+          Typography.bodyLarge(
+            SUBMIT_BUTTON_TEXT,
+            color: Colors.white,
+          ),
+        ],
+        height: Style.submitButtonHeight,
+        decoration: Style.submitButtonDecoration,
+        mainAxisAlignment: MainAxisAlignment.center,
         onTap: submitEstimate,
-        child: Div.column(
-          [
-            Typography.bodyLarge(
-              SUBMIT_BUTTON_TEXT,
-              color: Colors.white,
-            ),
-          ],
-          height: Style.submitButtonHeight,
-          decoration: Style.submitButtonDecoration,
-          mainAxisAlignment: MainAxisAlignment.center,
-        ),
       ),
     );
   }

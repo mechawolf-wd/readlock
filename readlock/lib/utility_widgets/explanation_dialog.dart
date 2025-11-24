@@ -39,18 +39,6 @@ class ExplanationDialog extends StatelessWidget {
           [
             // Header
             Div.column([
-              // Drag handle
-              Div.emptyRow(
-                width: 40,
-                height: 4,
-                decoration: BoxDecoration(
-                  color: AppTheme.textPrimary.withValues(alpha: 0.3),
-                  borderRadius: BorderRadius.circular(2),
-                ),
-              ),
-
-              const Spacing.height(16),
-
               // Title and close button
               Div.row([
                 Typography.headingMedium(title),
@@ -64,17 +52,17 @@ class ExplanationDialog extends StatelessWidget {
               ]),
             ], padding: const EdgeInsets.all(MODAL_PADDING)),
 
-            // Body content`
+            // Body content
             Expanded(
-              child: Div.column(
-                [
-                  ProgressiveText(
-                    textSegments: [content],
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                  ),
-                ],
+              child: Container(
+                width: double.infinity,
+                alignment: Alignment.topLeft,
                 padding: const EdgeInsets.symmetric(
                   horizontal: MODAL_PADDING,
+                ),
+                child: ProgressiveText(
+                  textSegments: [content],
+                  crossAxisAlignment: CrossAxisAlignment.start,
                 ),
               ),
             ),

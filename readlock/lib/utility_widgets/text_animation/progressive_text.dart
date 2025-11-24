@@ -193,25 +193,18 @@ class ProgressiveTextState extends State<ProgressiveText> {
 
   @override
   Widget build(BuildContext context) {
-    final Widget content = Div.column(
-      [RevealedTextDisplay()],
-      crossAxisAlignment: CrossAxisAlignment.start,
-    );
+    final Widget content = Div.column([
+      RevealedTextDisplay(),
+    ], crossAxisAlignment: CrossAxisAlignment.start);
 
     if (!widget.showClickableArea) {
       return content;
     }
 
-    return Div.column([
-      MouseRegion(
-        cursor: SystemMouseCursors.click,
-        child: GestureDetector(
-          onTap: handleTap,
-          behavior: HitTestBehavior.translucent,
-          child: content,
-        ),
-      ),
-    ], crossAxisAlignment: 'start');
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      child: GestureDetector(onTap: handleTap, child: content),
+    );
   }
 
   Widget RevealedTextDisplay() {
@@ -219,15 +212,12 @@ class ProgressiveTextState extends State<ProgressiveText> {
       currentSentenceNumber,
       (sentenceItemIndex) {
         Widget sentenceWidget = Div.column(
-          [
-            SentenceText(sentenceItemIndex),
-          ],
+          [SentenceText(sentenceItemIndex)],
           crossAxisAlignment: CrossAxisAlignment.start,
           padding: const EdgeInsets.only(
             bottom: ProgressiveText.DEFAULT_BOTTOM_SPACING,
           ),
         );
-
 
         if (shouldBlurSentence(sentenceItemIndex)) {
           sentenceWidget = BlurOverlay(
@@ -237,10 +227,10 @@ class ProgressiveTextState extends State<ProgressiveText> {
           );
         }
 
-
-        return GestureDetector(
+        return Div.column(
+          [sentenceWidget],
+          crossAxisAlignment: CrossAxisAlignment.start,
           onTap: () => toggleBlurForSentence(sentenceItemIndex),
-          child: sentenceWidget,
         );
       },
     );
@@ -267,21 +257,16 @@ class ProgressiveTextState extends State<ProgressiveText> {
 
     return Div.column([
       RichText(
+        textAlign: TextAlign.left,
         text: TextSpan(
           children: [
-            TextSpan(
-              text: revealedText,
-              style: revealedTextStyle(),
-            ),
+            TextSpan(text: revealedText, style: revealedTextStyle()),
             if (isRevealingCurrentSentence)
-              TextSpan(
-                text: '|',
-                style: cursorTextStyle(),
-              ),
+              TextSpan(text: '|', style: cursorTextStyle()),
           ],
         ),
       ),
-    ]);
+    ], crossAxisAlignment: CrossAxisAlignment.start);
   }
 
   // Helper methods
@@ -291,7 +276,6 @@ class ProgressiveTextState extends State<ProgressiveText> {
   }
 
   bool shouldBlurSentence(int sentenceIndex) {
-
     if (!widget.enableBlurOnCompleted) {
       return false;
     }
@@ -307,20 +291,20 @@ class ProgressiveTextState extends State<ProgressiveText> {
     return Text(
       textSentences[sentenceIndex],
       style: widget.textStyle ?? Typography.bodyMediumStyle,
+      textAlign: TextAlign.left,
     );
   }
 
   TextStyle revealedTextStyle() {
-    final TextStyle baseStyle = widget.textStyle ?? Typography.bodyMediumStyle;
+    final TextStyle baseStyle =
+        widget.textStyle ?? Typography.bodyMediumStyle;
 
-    return baseStyle.copyWith(
-      fontSize: 16,
-      height: 1.5,
-    );
+    return baseStyle.copyWith(fontSize: 16, height: 1.5);
   }
 
   TextStyle cursorTextStyle() {
-    final TextStyle baseStyle = widget.textStyle ?? Typography.bodyMediumStyle;
+    final TextStyle baseStyle =
+        widget.textStyle ?? Typography.bodyMediumStyle;
 
     return baseStyle.copyWith(
       fontSize: 16,

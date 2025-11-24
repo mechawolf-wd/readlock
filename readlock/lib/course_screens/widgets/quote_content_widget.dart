@@ -59,17 +59,17 @@ class QuoteContentWidgetState extends State<QuoteContentWidget> {
 
       Expanded(child: Typography.bodyLarge('Notable Quote')),
 
-      GestureDetector(
+      Div.row(
+        [Icon(
+          isBookmarked ? Icons.bookmark : Icons.bookmark_border,
+          color: Colors.orange,
+          size: 24,
+        )],
         onTap: () {
           setState(() {
             isBookmarked = !isBookmarked;
           });
         },
-        child: Icon(
-          isBookmarked ? Icons.bookmark : Icons.bookmark_border,
-          color: Colors.orange,
-          size: 24,
-        ),
       ),
     ]);
   }

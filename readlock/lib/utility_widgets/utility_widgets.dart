@@ -362,7 +362,7 @@ class Div extends StatelessWidget {
     }
   }
 
-  EdgeInsets buildEdgeInsets(dynamic paddingValue) {
+  EdgeInsets getEdgeInsets(dynamic paddingValue) {
     if (paddingValue == null) {
       return const EdgeInsets.all(0);
     }
@@ -605,8 +605,8 @@ class Div extends StatelessWidget {
     );
 
     final Widget containerWidget = Container(
-      padding: buildEdgeInsets(padding),
-      margin: buildEdgeInsets(margin),
+      padding: getEdgeInsets(padding),
+      margin: getEdgeInsets(margin),
       width: getWidth(),
       height: getHeight(),
       decoration: effectiveDecoration,
@@ -614,11 +614,10 @@ class Div extends StatelessWidget {
       child: ChildLayout(),
     );
 
-    if (onTap != null) {
-      return GestureDetector(
-        onTap: onTap,
-        child: containerWidget,
-      );
+    final bool isOnTapDefined = onTap != null;
+
+    if (isOnTapDefined) {
+      return GestureDetector(onTap: onTap, child: containerWidget);
     }
 
     return containerWidget;
