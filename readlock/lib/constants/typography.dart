@@ -6,7 +6,6 @@ class Typography {
   // Base color definitions for light theme
   static const Color TEXT_PRIMARY = Color(0xFF212121);
   static const Color TEXT_SECONDARY = Color(0xFF757575);
-  static const Color TEXT_TERTIARY = Color(0xFF9E9E9E);
 
   // Typography styles
   static final TextStyle headingLargeStyle = GoogleFonts.merriweather(

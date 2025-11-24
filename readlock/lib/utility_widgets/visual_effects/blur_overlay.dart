@@ -20,16 +20,20 @@ class BlurOverlay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     if (!enabled) {
       return child;
     }
 
+    final ImageFilter blurFilter = ImageFilter.blur(
+      sigmaX: blurSigma,
+      sigmaY: blurSigma,
+    );
+    final Widget opacityChild = Opacity(opacity: opacity, child: child);
+
     return ImageFiltered(
-      imageFilter: ImageFilter.blur(
-        sigmaX: blurSigma,
-        sigmaY: blurSigma,
-      ),
-      child: Opacity(opacity: opacity, child: child),
+      imageFilter: blurFilter,
+      child: opacityChild,
     );
   }
 }

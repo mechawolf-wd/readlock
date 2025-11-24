@@ -11,7 +11,6 @@ const String CLOSE_BUTTON_LABEL = 'Got it';
 const double MODAL_PADDING = 24.0;
 const double BUTTON_VERTICAL_PADDING = 16.0;
 const double BORDER_RADIUS = 12.0;
-const double MODAL_HEIGHT_FRACTION = 0.75;
 
 class ExplanationDialog extends StatelessWidget {
   final String title;
@@ -23,118 +22,91 @@ class ExplanationDialog extends StatelessWidget {
     required this.content,
   });
 
-  // Icon and styling definitions
+  // Icon definitions
   static const Icon CloseIcon = Icon(
     Icons.close,
     color: AppTheme.textPrimary,
   );
-  static const Color backgroundColor = AppTheme.backgroundLight;
-  static const Color buttonColor = AppTheme.primaryGreen;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height:
-          MediaQuery.of(context).size.height * MODAL_HEIGHT_FRACTION,
-      decoration: Style.modalDecoration,
-      child: SafeArea(child: ModalContent()),
+    return DraggableScrollableSheet(
+      initialChildSize: 0.75,
+      minChildSize: 0.5,
+      maxChildSize: 0.9,
+      builder: (context, scrollController) {
+        return Div.column(
+          [
+            // Header
+            Div.column([
+              // Drag handle
+              Div.emptyRow(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: AppTheme.textPrimary.withValues(alpha: 0.3),
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+
+              const Spacing.height(16),
+
+              // Title and close button
+              Div.row([
+                Typography.headingMedium(title),
+
+                const Spacer(),
+
+                IconButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  icon: CloseIcon,
+                ),
+              ]),
+            ], padding: const EdgeInsets.all(MODAL_PADDING)),
+
+            // Body content`
+            Expanded(
+              child: Div.column(
+                [
+                  ProgressiveText(
+                    textSegments: [content],
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                  ),
+                ],
+                padding: const EdgeInsets.symmetric(
+                  horizontal: MODAL_PADDING,
+                ),
+              ),
+            ),
+
+            // Footer - button
+            Div.column(
+              [
+                Typography.bodyMedium(
+                  CLOSE_BUTTON_LABEL,
+                  color: Colors.white,
+                ),
+              ],
+              width: double.infinity,
+              height: 48,
+              decoration: BoxDecoration(
+                color: AppTheme.primaryGreen,
+                borderRadius: BorderRadius.circular(BORDER_RADIUS),
+              ),
+              mainAxisAlignment: MainAxisAlignment.center,
+              margin: const EdgeInsets.all(MODAL_PADDING),
+              onTap: () => Navigator.of(context).pop(),
+            ),
+          ],
+          decoration: const BoxDecoration(
+            color: AppTheme.backgroundLight,
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(20),
+              topRight: Radius.circular(20),
+            ),
+          ),
+        );
+      },
     );
   }
-
-  Widget ModalContent() {
-    return Div.column([ModalHeader(), ModalBody(), ModalFooter()]);
-  }
-
-  Widget ModalHeader() {
-    return Builder(
-      builder: (context) => Div.column([
-        Div.row([
-          const Spacer(),
-
-          Container(
-            width: 40,
-            height: 4,
-            decoration: Style.dragHandleDecoration,
-          ),
-
-          const Spacer(),
-        ]),
-
-        const Spacing.height(16),
-
-        Div.row([
-          Typography.headingMedium(title),
-
-          const Spacer(),
-
-          IconButton(
-            onPressed: () => Navigator.of(context).pop(),
-            icon: CloseIcon,
-          ),
-        ], crossAxisAlignment: CrossAxisAlignment.start),
-      ], padding: const EdgeInsets.all(MODAL_PADDING)),
-    );
-  }
-
-  Widget ModalBody() {
-    return Expanded(
-      child: Div.column(
-        [
-          ProgressiveText(
-            textSegments: [content],
-            textStyle: Style.dialogTextStyle,
-            crossAxisAlignment: CrossAxisAlignment.start,
-          ),
-        ],
-        padding: const EdgeInsets.symmetric(horizontal: MODAL_PADDING),
-        crossAxisAlignment: CrossAxisAlignment.start,
-        width: double.infinity,
-      ),
-    );
-  }
-
-  Widget ModalFooter() {
-    return Builder(
-      builder: (context) => Container(
-        width: double.infinity,
-        padding: const EdgeInsets.all(MODAL_PADDING),
-        child: ElevatedButton(
-          onPressed: () => Navigator.of(context).pop(),
-          style: Style.closeButtonStyle,
-          child: Typography.text(
-            CLOSE_BUTTON_LABEL,
-            color: Colors.white,
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class Style {
-  static final TextStyle dialogTextStyle = Typography.bodyLargeStyle
-      .copyWith(fontSize: 16, height: 1.6);
-
-  static final ButtonStyle closeButtonStyle = ElevatedButton.styleFrom(
-    backgroundColor: AppTheme.primaryGreen,
-    padding: const EdgeInsets.symmetric(
-      vertical: BUTTON_VERTICAL_PADDING,
-    ),
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(BORDER_RADIUS),
-    ),
-  );
-
-  static final BoxDecoration modalDecoration = BoxDecoration(
-    color: AppTheme.backgroundLight,
-    borderRadius: const BorderRadius.only(
-      topLeft: Radius.circular(20),
-      topRight: Radius.circular(20),
-    ),
-  );
-
-  static final BoxDecoration dragHandleDecoration = BoxDecoration(
-    color: AppTheme.textPrimary.withValues(alpha: 0.3),
-    borderRadius: const BorderRadius.all(Radius.circular(2)),
-  );
 }

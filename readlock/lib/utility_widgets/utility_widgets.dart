@@ -169,6 +169,16 @@ class Div extends StatelessWidget {
   /// ```
   final dynamic radius;
 
+  /// Tap handler for GestureDetector wrapping
+  ///
+  /// Examples:
+  /// ```dart
+  /// onTap: () => print('Tapped!')           // Simple tap handler
+  /// onTap: () => Navigator.pop(context)     // Navigation action
+  /// onTap: _handleButtonPress               // Method reference
+  /// ```
+  final VoidCallback? onTap;
+
   const Div.column(
     this.children, {
     super.key,
@@ -182,6 +192,7 @@ class Div extends StatelessWidget {
     this.crossAxisAlignment,
     this.debugBorder,
     this.radius,
+    this.onTap,
   }) : direction = DIRECTION_VERTICAL;
 
   const Div.row(
@@ -197,6 +208,7 @@ class Div extends StatelessWidget {
     this.crossAxisAlignment,
     this.debugBorder,
     this.radius,
+    this.onTap,
   }) : direction = DIRECTION_HORIZONTAL;
 
   const Div.emptyColumn({
@@ -211,6 +223,7 @@ class Div extends StatelessWidget {
     this.crossAxisAlignment,
     this.debugBorder,
     this.radius,
+    this.onTap,
   }) : children = null,
        direction = DIRECTION_VERTICAL;
 
@@ -226,6 +239,7 @@ class Div extends StatelessWidget {
     this.crossAxisAlignment,
     this.debugBorder,
     this.radius,
+    this.onTap,
   }) : children = null,
        direction = DIRECTION_HORIZONTAL;
 
@@ -590,7 +604,7 @@ class Div extends StatelessWidget {
       effectiveDecoration,
     );
 
-    return Container(
+    final Widget containerWidget = Container(
       padding: buildEdgeInsets(padding),
       margin: buildEdgeInsets(margin),
       width: getWidth(),
@@ -599,6 +613,15 @@ class Div extends StatelessWidget {
       color: containerColor,
       child: ChildLayout(),
     );
+
+    if (onTap != null) {
+      return GestureDetector(
+        onTap: onTap,
+        child: containerWidget,
+      );
+    }
+
+    return containerWidget;
   }
 }
 

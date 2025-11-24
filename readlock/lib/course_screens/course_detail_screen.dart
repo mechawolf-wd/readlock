@@ -119,7 +119,7 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
   }
 
   Widget EmptyContentMessage() {
-    return Center(child: Typography.text(NO_CONTENT_AVAILABLE_MESSAGE));
+    return Center(child: Typography.bodyMedium(NO_CONTENT_AVAILABLE_MESSAGE));
   }
 
   Widget ContentWidget(Map<String, dynamic> content) {
@@ -127,35 +127,13 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
   }
 
   Widget TopProgressBar() {
-    final double progress = allContent.isNotEmpty
-        ? (currentContentIndex + 1) / allContent.length
-        : 0.0;
+    final double progress = calculateProgress();
 
-    return Container(
-      padding: topBarPadding,
-      child: Div.row([
-        GestureDetector(
-          onTap: navigateToMainScreen,
-          child: Icon(backIcon, color: AppTheme.textPrimary, size: 24),
-        ),
-
-        const Spacing.width(12),
-
-        Expanded(
-          child: ClipRRect(
-            borderRadius: progressBarRadius,
-            child: LinearProgressIndicator(
-              value: progress,
-              backgroundColor: AppTheme.backgroundLight,
-              valueColor: AlwaysStoppedAnimation<Color>(
-                getCourseColor(),
-              ),
-              minHeight: 8,
-            ),
-          ),
-        ),
-      ]),
-    );
+    return Div.row([
+      BackNavigationButton(),
+      const Spacing.width(12),
+      Expanded(child: ProgressIndicator()),
+    ], padding: topBarPadding);
   }
 
   Future<List<Map<String, dynamic>>> getAllContent() async {
@@ -217,5 +195,38 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
           return Colors.blue;
         }
     }
+  }
+
+  // Helper methods
+  double calculateProgress() {
+    
+    if (allContent.isEmpty) {
+      return 0.0;
+    }
+    
+    return (currentContentIndex + 1) / allContent.length;
+  }
+
+  Widget BackNavigationButton() {
+    return GestureDetector(
+      onTap: navigateToMainScreen,
+      child: Icon(backIcon, color: AppTheme.textPrimary, size: 24),
+    );
+  }
+
+  Widget ProgressIndicator() {
+    final double progress = calculateProgress();
+
+    return ClipRRect(
+      borderRadius: progressBarRadius,
+      child: LinearProgressIndicator(
+        value: progress,
+        backgroundColor: AppTheme.backgroundLight,
+        valueColor: AlwaysStoppedAnimation<Color>(
+          getCourseColor(),
+        ),
+        minHeight: 8,
+      ),
+    );
   }
 }

@@ -14,8 +14,6 @@ enum OptionButtonState { normal, selected, correctAndAnswered }
 class QuestionContentWidget extends StatefulWidget {
   static const double QUESTION_SECTION_SPACING = 24.0;
   static const double OPTION_BUTTON_SPACING = 16.0;
-  static const double BUTTON_PADDING = 16.0;
-  static const double EAhaLANATION_PADDING = 16.0;
 
   final QuestionContent content;
   final void Function(int selectedIndex, bool isCorrect)
@@ -34,9 +32,7 @@ class QuestionContentWidget extends StatefulWidget {
 
 class QuestionContentWidgetState extends State<QuestionContentWidget> {
   int? selectedAnswerIndex;
-  List<int> selectedAnswerIndices = [];
   bool hasAnsweredQuestion = false;
-  bool showHint = false;
 
   // Icon definitions
   static const Icon LightbulbIcon = Icon(
@@ -51,10 +47,6 @@ class QuestionContentWidgetState extends State<QuestionContentWidget> {
     size: 16,
   );
 
-  static const Icon CheckCircleIcon = Icon(
-    Icons.check_circle,
-    size: 18,
-  );
 
   @override
   Widget build(BuildContext context) {

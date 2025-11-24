@@ -57,8 +57,7 @@ class ProgressiveTextState extends State<ProgressiveText> {
   void initState() {
     super.initState();
 
-    textSentences = widget.textSegments;
-    sentenceBlurStates = List.filled(textSentences.length, true);
+    initializeTextState();
 
     final bool hasSentences = textSentences.isNotEmpty;
 
@@ -194,9 +193,9 @@ class ProgressiveTextState extends State<ProgressiveText> {
 
   @override
   Widget build(BuildContext context) {
-    final Widget content = Column(
+    final Widget content = Div.column(
+      [RevealedTextDisplay()],
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: [RevealedTextDisplay()],
     );
 
     if (!widget.showClickableArea) {
@@ -219,29 +218,25 @@ class ProgressiveTextState extends State<ProgressiveText> {
     final List<Widget> sentenceWidgets = List.generate(
       currentSentenceNumber,
       (sentenceItemIndex) {
-        Widget sentenceWidget = Padding(
+        Widget sentenceWidget = Div.column(
+          [
+            SentenceText(sentenceItemIndex),
+          ],
+          crossAxisAlignment: CrossAxisAlignment.start,
           padding: const EdgeInsets.only(
             bottom: ProgressiveText.DEFAULT_BOTTOM_SPACING,
           ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                textSentences[sentenceItemIndex],
-                style: widget.textStyle ?? Typography.bodyMediumStyle,
-              ),
-            ],
-          ),
         );
 
-        if (widget.enableBlurOnCompleted &&
-            sentenceBlurStates[sentenceItemIndex]) {
+
+        if (shouldBlurSentence(sentenceItemIndex)) {
           sentenceWidget = BlurOverlay(
             blurSigma: widget.blurSigma,
             opacity: widget.completedOpacity,
             child: sentenceWidget,
           );
         }
+
 
         return GestureDetector(
           onTap: () => toggleBlurForSentence(sentenceItemIndex),
@@ -257,9 +252,9 @@ class ProgressiveTextState extends State<ProgressiveText> {
       sentenceWidgets.add(CurrentSentenceDisplay());
     }
 
-    return Column(
+    return Div.column(
+      sentenceWidgets,
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: sentenceWidgets,
     );
   }
 
@@ -276,26 +271,61 @@ class ProgressiveTextState extends State<ProgressiveText> {
           children: [
             TextSpan(
               text: revealedText,
-              style:
-                  widget.textStyle ??
-                  Typography.bodyMediumStyle.copyWith(
-                    fontSize: 16,
-                    height: 1.5,
-                  ),
+              style: revealedTextStyle(),
             ),
             if (isRevealingCurrentSentence)
               TextSpan(
                 text: '|',
-                style: (widget.textStyle ?? Typography.bodyMediumStyle)
-                    .copyWith(
-                      fontSize: 16,
-                      height: 1.5,
-                      color: AppTheme.primaryBlue,
-                    ),
+                style: cursorTextStyle(),
               ),
           ],
         ),
       ),
     ]);
+  }
+
+  // Helper methods
+  void initializeTextState() {
+    textSentences = widget.textSegments;
+    sentenceBlurStates = List.filled(textSentences.length, true);
+  }
+
+  bool shouldBlurSentence(int sentenceIndex) {
+
+    if (!widget.enableBlurOnCompleted) {
+      return false;
+    }
+
+    if (sentenceIndex >= sentenceBlurStates.length) {
+      return false;
+    }
+
+    return sentenceBlurStates[sentenceIndex];
+  }
+
+  Widget SentenceText(int sentenceIndex) {
+    return Text(
+      textSentences[sentenceIndex],
+      style: widget.textStyle ?? Typography.bodyMediumStyle,
+    );
+  }
+
+  TextStyle revealedTextStyle() {
+    final TextStyle baseStyle = widget.textStyle ?? Typography.bodyMediumStyle;
+
+    return baseStyle.copyWith(
+      fontSize: 16,
+      height: 1.5,
+    );
+  }
+
+  TextStyle cursorTextStyle() {
+    final TextStyle baseStyle = widget.textStyle ?? Typography.bodyMediumStyle;
+
+    return baseStyle.copyWith(
+      fontSize: 16,
+      height: 1.5,
+      color: AppTheme.primaryBlue,
+    );
   }
 }

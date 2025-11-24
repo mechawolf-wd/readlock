@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class AppTheme {
   // Light theme colors
   static const Color primaryBlue = Color(0xFF1976D2);
   static const Color primaryGreen = Color(0xFF388E3C);
   static const Color primaryBrown = Color(0xFF8D6E63); // Brown
-  static const Color primaryAmber = Color(0xFFF57C00); // Amber
   static const Color primaryDeepPurple = Color(
     0xFF7B1FA2,
   ); // Deep Purple
@@ -29,7 +27,6 @@ class AppTheme {
   static const Color errorColor = Colors.red;
   static const Color warningColor = Colors.orange;
   static const Color warningColorGentle = Color(0xFFFF9800);
-  static const Color infoColor = Colors.blue;
 
   // Essential extended colors for content widgets
   static final Color grey300 =
@@ -61,19 +58,8 @@ class AppTheme {
   static final Color grey50 =
       Colors.grey[50] ?? const Color(0xFFFAFAFA);
 
-  // Spacing
-  static const double spacingXS = 4.0;
-  static const double spacingS = 8.0;
-  static const double spacingM = 12.0;
-  static const double spacingL = 16.0;
-  static const double spacingXL = 20.0;
-  static const double spacingXXL = 24.0;
-  static const double spacingXXXL = 32.0;
-
   // Border Radius
-  static const double radiusSmall = 8.0;
   static const double radiusMedium = 12.0;
-  static const double radiusLarge = 16.0;
 
   // Card specific properties
   static const double cardBorderRadius = 8.0;
@@ -125,129 +111,6 @@ class AppTheme {
     );
   }
 
-  // Essential color variants with alpha transparency (used in widgets)
-  static Color get primaryDeepPurpleLight =>
-      primaryDeepPurple.withValues(alpha: alphaLight);
-  static Color get primaryBrownVeryLight =>
-      primaryBrown.withValues(alpha: alphaVeryLight);
-  static Color get backgroundDarkDark =>
-      backgroundDark.withValues(alpha: alphaDark);
-  static Color get backgroundLightHeavy =>
-      backgroundLight.withValues(alpha: alphaHeavy);
-  static Color get primaryBrownMedium =>
-      primaryBrown.withValues(alpha: alphaMedium);
-  static Color get primaryDeepPurpleMedium =>
-      primaryDeepPurple.withValues(alpha: alphaMedium);
-  static Color get primaryDeepPurpleHeavy =>
-      primaryDeepPurple.withValues(alpha: alphaHeavy);
-  static Color get primaryBrownLight =>
-      primaryBrown.withValues(alpha: alphaLight);
-  static Color get primaryDeepPurpleVeryLight =>
-      primaryDeepPurple.withValues(alpha: alphaVeryLight);
-  static Color get primaryBrownHeavy =>
-      primaryBrown.withValues(alpha: alphaHeavy);
-  static Color get blue600Medium =>
-      blue600.withValues(alpha: alphaMedium);
-  static Color get green600Heavy =>
-      green600.withValues(alpha: alphaHeavy);
-  static Color get amber700Heavy =>
-      amber700.withValues(alpha: alphaHeavy);
-  static Color get brown200Heavy =>
-      brown200.withValues(alpha: alphaHeavy);
-  static Color get blue200Heavy =>
-      blue200.withValues(alpha: alphaHeavy);
-  static Color get grey300Heavy =>
-      grey300.withValues(alpha: alphaHeavy);
-
-  // Typography styles (import from typography.dart)
-  static TextStyle get headingLarge => GoogleFonts.merriweather(
-    fontSize: 28,
-    fontWeight: FontWeight.bold,
-    color: textPrimary,
-    height: 1.4,
-  );
-
-  static TextStyle get headingSmall => GoogleFonts.merriweather(
-    fontSize: 20,
-    fontWeight: FontWeight.w600,
-    color: textPrimary,
-    height: 1.5,
-  );
-
-  static TextStyle get bodyMedium => GoogleFonts.merriweather(
-    fontSize: 16,
-    color: textPrimary,
-    height: 1.6,
-  );
-
-  static TextStyle get bodySmall => GoogleFonts.merriweather(
-    fontSize: 14,
-    color: textSecondary,
-    height: 1.5,
-  );
-
-  static TextStyle get captionText => GoogleFonts.merriweather(
-    fontSize: 12,
-    color: textSecondary,
-    height: 1.4,
-  );
-
-  static ColorScheme getCourseColorScheme(CourseThemeColor color) {
-    switch (color) {
-      case CourseThemeColor.blue:
-        {
-          return ColorScheme.fromSeed(
-            seedColor: primaryBlue,
-            brightness: Brightness.light,
-          );
-        }
-      case CourseThemeColor.green:
-        {
-          return ColorScheme.fromSeed(
-            seedColor: primaryGreen,
-            brightness: Brightness.light,
-          );
-        }
-      case CourseThemeColor.purple:
-        {
-          return ColorScheme.fromSeed(
-            seedColor: primaryBrown,
-            brightness: Brightness.light,
-          );
-        }
-    }
-  }
-
-  static QuestionOptionColors getQuestionOptionColors({
-    required bool isSelected,
-    required bool shouldShowFeedback,
-    required bool isCorrect,
-  }) {
-    if (shouldShowFeedback) {
-      if (isCorrect) {
-        return const QuestionOptionColors(
-          backgroundColor: Color(0xFFE8F5E8),
-          textColor: Color(0xFF2E7D32),
-        );
-      } else {
-        return const QuestionOptionColors(
-          backgroundColor: Color(0xFFFFEBEE),
-          textColor: Color(0xFFC62828),
-        );
-      }
-    } else if (isSelected) {
-      return const QuestionOptionColors(
-        backgroundColor: Color(0xFFEFEBE9),
-        textColor: AppTheme.primaryBrown,
-      );
-    } else {
-      return const QuestionOptionColors(
-        backgroundColor: Color(0xFFFFFFFF),
-        textColor: AppTheme.textPrimary,
-      );
-    }
-  }
-
   static BoxDecoration getContainerDecoration({
     required Color backgroundColor,
     required Color borderColor,
@@ -257,21 +120,6 @@ class AppTheme {
       color: backgroundColor,
       borderRadius: BorderRadius.circular(borderRadius),
       border: Border.all(color: borderColor),
-    );
-  }
-
-  static ButtonStyle getElevatedButtonStyle({
-    required Color backgroundColor,
-    required Color foregroundColor,
-    double borderRadius = radiusMedium,
-  }) {
-    return ElevatedButton.styleFrom(
-      backgroundColor: backgroundColor,
-      foregroundColor: foregroundColor,
-      padding: const EdgeInsets.all(spacingL),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(borderRadius),
-      ),
     );
   }
 
@@ -312,79 +160,4 @@ class AppTheme {
 
   static EdgeInsets get contentPaddingHorizontalInsets =>
       const EdgeInsets.symmetric(horizontal: contentPadding);
-}
-
-class QuestionOptionColors {
-  final Color backgroundColor;
-  final Color textColor;
-
-  const QuestionOptionColors({
-    required this.backgroundColor,
-    required this.textColor,
-  });
-}
-
-enum CourseThemeColor { blue, green, purple }
-
-class ContentBackgroundStyles {
-  // Question container
-  static BoxDecoration get questionContainer =>
-      AppTheme.getContainerDecoration(
-        backgroundColor: AppTheme.blue50,
-        borderColor: AppTheme.blue200,
-      );
-
-  // Reflection container
-  static BoxDecoration get reflectionContainer =>
-      AppTheme.getContainerDecoration(
-        backgroundColor: AppTheme.brown50,
-        borderColor: AppTheme.brown200,
-      );
-
-  // Explanation container
-  static BoxDecoration get explanationContainer =>
-      AppTheme.getContainerDecoration(
-        backgroundColor: AppTheme.grey50,
-        borderColor: AppTheme.grey300,
-      );
-
-  // Insight container
-  static BoxDecoration get insightContainer =>
-      AppTheme.getContainerDecoration(
-        backgroundColor: AppTheme.amber50,
-        borderColor: AppTheme.amber200,
-      );
-
-  // Scenario container
-  static BoxDecoration get scenarioContainer =>
-      AppTheme.getContainerDecoration(
-        backgroundColor: AppTheme.grey50,
-        borderColor: AppTheme.grey300,
-      );
-
-  // Follow-up container
-  static BoxDecoration get followUpContainer =>
-      AppTheme.getContainerDecoration(
-        backgroundColor: AppTheme.blue50,
-        borderColor: AppTheme.blue200,
-      );
-}
-
-class AppIcons {
-  static const IconData psychology = Icons.psychology;
-  static const IconData lightbulbOutline = Icons.lightbulb_outline;
-  static const IconData lightbulb = Icons.lightbulb;
-  static const IconData checkCircle = Icons.check_circle;
-  static const IconData cancel = Icons.cancel;
-  static const IconData emojiObjects = Icons.emoji_objects;
-  static const IconData theater = Icons.theater_comedy;
-  static const IconData questionMarkCircle = Icons.help_outline;
-
-  static Widget GetColoredIcon(
-    IconData icon,
-    Color color, {
-    double size = 24,
-  }) {
-    return Icon(icon, color: color, size: size);
-  }
 }

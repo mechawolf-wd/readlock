@@ -146,3 +146,21 @@ class QuestionContent extends CourseContent {
   int get correctAnswerIndex =>
       correctAnswerIndices.isNotEmpty ? correctAnswerIndices.first : -1;
 }
+
+class EstimatePercentageContent extends CourseContent {
+  final String question;
+  final int correctPercentage;
+  final String explanation;
+  final String? hint;
+  final int closeThreshold;
+
+  const EstimatePercentageContent({
+    required super.id,
+    required super.title,
+    required this.question,
+    required this.correctPercentage,
+    required this.explanation,
+    this.hint,
+    this.closeThreshold = 10,
+  });
+}

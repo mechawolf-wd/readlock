@@ -18,7 +18,7 @@ const String YOUR_ESTIMATE_LABEL = 'Your Estimate';
 const String SUBMIT_BUTTON_TEXT = 'Estimate';
 
 class EstimatePercentageWidget extends StatefulWidget {
-  final QuestionContent content;
+  final EstimatePercentageContent content;
   final void Function(int selectedIndex, bool isCorrect)
   onAnswerSelected;
 
@@ -55,11 +55,7 @@ class EstimatePercentageWidgetState
   );
 
   int get correctPercentage {
-    if (widget.content.correctAnswerIndices.isNotEmpty) {
-      return widget.content.correctAnswerIndices[0];
-    }
-
-    return 50;
+    return widget.content.correctPercentage;
   }
 
   @override
@@ -102,11 +98,7 @@ class EstimatePercentageWidgetState
 
       const Spacing.height(ESTIMATE_SECTION_SPACING),
 
-      EstimateDisplay(),
-
-      const Spacing.height(ESTIMATE_SECTION_SPACING),
-
-      SliderSection(),
+      SliderWithPercentage(),
 
       const Spacing.height(ESTIMATE_SECTION_SPACING),
 
@@ -132,66 +124,59 @@ class EstimatePercentageWidgetState
     );
   }
 
-  Widget EstimateDisplay() {
-    final Color borderColor = getBorderColor();
-    final TextStyle estimateTextStyle = getEstimateTextStyle();
-    final BoxDecoration estimateDecoration = Style
-        .estimateDisplayDecoration
-        .copyWith(border: Border.all(color: borderColor, width: 2));
+  Widget PercentageLabel() {
+    final double sliderPosition = currentEstimate / 100;
+    final double screenWidth = MediaQuery.of(context).size.width;
+    final double sliderWidth = screenWidth - (Style.sliderPadding.horizontal * 2);
+    final double labelPosition = (sliderPosition * sliderWidth) - 20; // Center label on thumb
 
-    return Div.column(
-      [
-        AnimatedDefaultTextStyle(
-          duration: Style.estimateAnimationDuration,
-          style: estimateTextStyle,
-          child: Typography.text('${currentEstimate.round()}%'),
+    return Positioned(
+      left: labelPosition.clamp(0, sliderWidth - 40), // Keep within bounds
+      top: -30, // Position above slider
+      child: Div.column(
+        [
+          Typography.bodyLarge(
+            '${currentEstimate.round()}%',
+            color: AppTheme.primaryBlue,
+            textAlign: TextAlign.center,
+          ),
+        ],
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+        decoration: BoxDecoration(
+          color: AppTheme.backgroundLight,
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(
+            color: AppTheme.primaryBlue.withValues(alpha: 0.3),
+          ),
         ),
-      ],
-      padding: Style.estimateDisplayPadding,
-      decoration: estimateDecoration,
+      ),
     );
   }
 
   // Helper methods
 
-  Color getBorderColor() {
-    final bool isSubmitted = hasSubmittedEstimate;
-
-    if (isSubmitted) {
-      return AppTheme.primaryGreen.withValues(alpha: 0.3);
-    }
-    return AppTheme.primaryBlue.withValues(alpha: 0.3);
-  }
-
-  TextStyle getEstimateTextStyle() {
-    final bool isSubmitted = hasSubmittedEstimate;
-    final double fontSize = isSubmitted ? 36 : 42;
-    final Color textColor = isSubmitted
-        ? AppTheme.textPrimary.withValues(alpha: 0.7)
-        : AppTheme.primaryBlue;
-
-    return Style.estimateTextStyle.copyWith(
-      fontSize: fontSize,
-      color: textColor,
-    );
-  }
-
-  Widget SliderSection() {
+  Widget SliderWithPercentage() {
     final SliderThemeData sliderTheme = Style.getSliderTheme();
 
     return Div.column(
       [
-        SliderTheme(
-          data: sliderTheme,
-          child: Slider(
-            value: currentEstimate,
-            max: 100,
-            divisions: 100,
-            onChanged: SliderChangeHandler(),
-          ),
+        Stack(
+          alignment: Alignment.bottomCenter,
+          children: [
+            SliderTheme(
+              data: sliderTheme,
+              child: Slider(
+                value: currentEstimate,
+                max: 100,
+                divisions: 100,
+                onChanged: SliderChangeHandler(),
+              ),
+            ),
+            PercentageLabel(),
+          ],
         ),
       ],
-      height: SLIDER_HEIGHT,
+      height: SLIDER_HEIGHT + 30, // Extra height for percentage label
       padding: Style.sliderPadding,
     );
   }
@@ -235,7 +220,7 @@ class EstimatePercentageWidgetState
   Widget ResultSection() {
     final int difference = (currentEstimate.round() - correctPercentage)
         .abs();
-    final bool isClose = difference <= CLOSE_ESTIMATE_THRESHOLD;
+    final bool isClose = difference <= widget.content.closeThreshold;
 
     return FadeTransition(
       opacity: revealAnimation,
@@ -405,7 +390,7 @@ class EstimatePercentageWidgetState
 
     final int difference = (currentEstimate.round() - correctPercentage)
         .abs();
-    final bool isClose = difference <= CLOSE_ESTIMATE_THRESHOLD;
+    final bool isClose = difference <= widget.content.closeThreshold;
 
     if (isClose) {
       showAhaReward();
@@ -442,22 +427,8 @@ class EstimatePercentageWidgetState
 }
 
 class Style {
-  static final BoxDecoration estimateDisplayDecoration = BoxDecoration(
-    color: AppTheme.backgroundLight,
-    borderRadius: BorderRadius.circular(16),
-  );
-
-  static const EdgeInsets estimateDisplayPadding = EdgeInsets.all(20);
-
-  static const Duration estimateAnimationDuration = Duration(
-    milliseconds: 200,
-  );
-
-  static final TextStyle estimateTextStyle = Typography.bodyLargeStyle
-      .copyWith(fontWeight: FontWeight.bold);
-
   static const EdgeInsets sliderPadding = EdgeInsets.symmetric(
-    horizontal: 8,
+    horizontal: 16,
   );
 
   static SliderThemeData getSliderTheme() {

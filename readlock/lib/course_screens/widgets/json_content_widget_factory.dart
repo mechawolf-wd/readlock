@@ -63,6 +63,10 @@ class JsonContentWidgetFactory {
         {
           return JsonQuoteContentWidget(contentData: contentData);
         }
+      case 'estimate-percentage':
+        {
+          return JsonEstimatePercentageWidget(contentData: contentData);
+        }
       default:
         {
           return UnknownContentWidget(entityType: entityType);
@@ -193,13 +197,6 @@ class JsonQuestionContentWidget extends StatelessWidget {
             onAnswerSelected: onAnswerSelectedCallback,
           );
         }
-      case QuestionType.estimatePercentage:
-        {
-          return EstimatePercentageWidget(
-            content: questionContent,
-            onAnswerSelected: onAnswerSelectedCallback,
-          );
-        }
       default:
         {
           return QuestionContentWidget(
@@ -320,5 +317,34 @@ class JsonQuoteContentWidget extends StatelessWidget {
     );
 
     return QuoteContentWidget(content: quoteContent);
+  }
+}
+
+class JsonEstimatePercentageWidget extends StatelessWidget {
+  final Map<String, dynamic> contentData;
+
+  const JsonEstimatePercentageWidget({
+    super.key,
+    required this.contentData,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final estimateContent = EstimatePercentageContent(
+      id: contentData['id'] ?? '',
+      title: contentData['title'] ?? '',
+      question: contentData['question'] ?? '',
+      correctPercentage: contentData['correct-percentage'] ?? 50,
+      explanation: contentData['explanation'] ?? '',
+      hint: contentData['hint'],
+      closeThreshold: contentData['close-threshold'] ?? 10,
+    );
+
+    void onAnswerSelectedCallback(int index, bool isCorrect) {}
+
+    return EstimatePercentageWidget(
+      content: estimateContent,
+      onAnswerSelected: onAnswerSelectedCallback,
+    );
   }
 }
