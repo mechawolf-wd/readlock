@@ -207,6 +207,10 @@ Readlock courses weave compelling stories that illuminate insights through intel
 - **Meaningful diversity** - include diverse characters when it serves the learning objective, not just for tokenism
 - **Regional consistency** - match character names, foods, customs, and settings to create believable, cohesive examples
 
+**Internationalization Strategy:**
+
+For internationalized versions of the application, character names will be localized to use familiar names from each target culture and language. This ensures better user engagement and cultural relevance across different markets.
+
 ### **Step 4: Content Highlighting System**
 
 **Implementation:**

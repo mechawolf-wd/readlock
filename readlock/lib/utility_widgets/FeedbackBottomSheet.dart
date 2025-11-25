@@ -1,0 +1,190 @@
+// Centralized bottom sheet modals for course feedback
+// Provides consistent UI for explanations and hints across the app
+
+import 'package:flutter/material.dart' hide Typography;
+import 'package:readlock/utility_widgets/Utility.dart';
+import 'package:readlock/constants/typography.dart';
+import 'package:readlock/constants/appTheme.dart';
+
+const String AHA_DIALOG_TITLE = 'Explanation';
+const String HINT_DIALOG_TITLE = 'Hint';
+const String CLOSE_BUTTON_LABEL = 'Got it';
+const double MODAL_PADDING = 24.0;
+const double BORDER_RADIUS = 12.0;
+
+class FeedbackBottomSheets {
+  // Icon definitions
+  static const Widget AhaIcon = Icon(
+    Icons.lightbulb,
+    color: AppTheme.primaryGreen,
+    size: 20,
+  );
+
+  static final Widget HintIcon = Icon(
+    Icons.tips_and_updates_outlined,
+    color: Colors.orange.shade600,
+    size: 20,
+  );
+
+  // Show Aha explanation bottom sheet for correct answers
+  static void showAhaExplanation({
+    required BuildContext context,
+    required String explanation,
+  }) {
+    showFeedbackSheet(
+      context: context,
+      title: AHA_DIALOG_TITLE,
+      content: explanation,
+      buttonColor: AppTheme.primaryGreen,
+      icon: AhaIcon,
+    );
+  }
+
+  // Show hint bottom sheet for wrong answers
+  static void showHint({
+    required BuildContext context,
+    required String hint,
+  }) {
+    showFeedbackSheet(
+      context: context,
+      title: HINT_DIALOG_TITLE,
+      content: hint,
+      buttonColor: Colors.orange.shade600,
+      icon: HintIcon,
+    );
+  }
+
+  // Generic bottom sheet implementation
+  static void showFeedbackSheet({
+    required BuildContext context,
+    required String title,
+    required String content,
+    required Color buttonColor,
+    required Widget icon,
+  }) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (BuildContext context) {
+        return FeedbackSheet(
+          title: title,
+          content: content,
+          buttonColor: buttonColor,
+          icon: icon,
+        );
+      },
+    );
+  }
+}
+
+class FeedbackSheet extends StatelessWidget {
+  final String title;
+  final String content;
+  final Color buttonColor;
+  final Widget icon;
+
+  const FeedbackSheet({
+    super.key,
+    required this.title,
+    required this.content,
+    required this.buttonColor,
+    required this.icon,
+  });
+
+  // Style definitions
+  BoxDecoration get modalDecoration => const BoxDecoration(
+    color: AppTheme.backgroundLight,
+    borderRadius: BorderRadius.only(
+      topLeft: Radius.circular(20),
+      topRight: Radius.circular(20),
+    ),
+  );
+
+  EdgeInsets get bodyPadding =>
+      const EdgeInsets.symmetric(horizontal: MODAL_PADDING);
+
+  BoxDecoration get buttonDecoration => BoxDecoration(
+    color: buttonColor,
+    borderRadius: BorderRadius.circular(BORDER_RADIUS),
+  );
+
+  EdgeInsets get buttonMargin => const EdgeInsets.all(MODAL_PADDING);
+
+  EdgeInsets get headerPadding => const EdgeInsets.all(MODAL_PADDING);
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: Container(
+        decoration: modalDecoration,
+        padding: const EdgeInsets.only(bottom: 16),
+        child: Wrap(
+          children: [
+            Div.column([
+              // Header section
+              HeaderSection(),
+
+              // Body content
+              BodySection(),
+
+              // Footer button
+              FooterButton(),
+            ]),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget BodySection() {
+    return Container(
+      width: double.infinity,
+      alignment: Alignment.topLeft,
+      padding: bodyPadding,
+      child: Typography.bodyMedium(content, textAlign: TextAlign.left),
+    );
+  }
+
+  Widget HeaderSection() {
+    return Div.column([
+      // Title row with icon
+      TitleRow(),
+    ], padding: headerPadding);
+  }
+
+  Widget TitleRow() {
+    return Div.row([
+      icon,
+
+      const Spacing.width(12),
+
+      Typography.headingMedium(title),
+    ]);
+  }
+
+  Widget FooterButton() {
+    return Builder(
+      builder: (context) {
+        // Extract navigation handler
+        void handleCloseButtonTap() {
+          Navigator.of(context).pop();
+        }
+
+        return Div.column(
+          [
+            Typography.bodyMedium(
+              CLOSE_BUTTON_LABEL,
+              color: Colors.white,
+            ),
+          ],
+          width: double.infinity,
+          height: 48,
+          decoration: buttonDecoration,
+          mainAxisAlignment: MainAxisAlignment.center,
+          margin: buttonMargin,
+          onTap: handleCloseButtonTap,
+        );
+      },
+    );
+  }
+}

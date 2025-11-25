@@ -67,5 +67,7 @@ linter:
     # Disabled rules for project-specific style
     non_constant_identifier_names: false  # Allow capitalized widget method names
 
+    file_names: false
+
 # Additional information about this file can be found at
 # https://dart.dev/guides/language/analysis-options

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:readlock/main_navigation.dart';
+import 'package:readlock/BottomNavigationBar.dart';
 
 void main() {
   runApp(const RelevantApp());
@@ -12,13 +12,13 @@ class RelevantApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: appTheme(),
+      theme: Theme(),
       home: const MainNavigation(),
       debugShowCheckedModeBanner: false,
     );
   }
 
-  ThemeData appTheme() {
+  ThemeData Theme() {
     return ThemeData(
       colorScheme: ColorScheme.fromSeed(seedColor: Colors.tealAccent),
       scaffoldBackgroundColor: Colors.white,
