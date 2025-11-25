@@ -7,23 +7,23 @@ import 'package:readlock/utility_widgets/Utility.dart';
 import 'package:readlock/constants/typography.dart';
 import 'package:readlock/constants/appTheme.dart';
 
-class IntroContentWidget extends StatelessWidget {
+class CCIntro extends StatelessWidget {
   final IntroContent content;
 
-  const IntroContentWidget({super.key, required this.content});
+  const CCIntro({super.key, required this.content});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: AppTheme.backgroundDark,
+      color: RLTheme.backgroundDark,
       child: Div.column(
         [
           ProgressiveText(
             textSegments: content.introTextSegments,
-            textStyle: Typography.bodyMediumStyle,
+            textStyle: RLTypography.bodyMediumStyle,
           ),
         ],
-        padding: Constants.COURSE_SECTION_PADDING,
+        padding: RLConstants.COURSE_SECTION_PADDING,
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
       ),

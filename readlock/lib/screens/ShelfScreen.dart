@@ -22,7 +22,7 @@ class ShelfScreenState extends State<ShelfScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppTheme.backgroundDark,
+      backgroundColor: RLTheme.backgroundDark,
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(24),
@@ -50,12 +50,12 @@ class ShelfScreenState extends State<ShelfScreen> {
   Widget HomeWelcomeHeader() {
     return Div.column([
       // Main welcome title
-      Typography.headingLarge(HOME_TITLE),
+      RLTypography.headingLarge(HOME_TITLE),
 
       const Spacing.height(8),
 
       // Subtitle text
-      Typography.text('Continue your learning journey'),
+      RLTypography.text('Continue your learning journey'),
     ], crossAxisAlignment: CrossAxisAlignment.start);
   }
 
@@ -66,10 +66,10 @@ class ShelfScreenState extends State<ShelfScreen> {
   Widget LatestCourseCard() {
     // Card decoration
     final cardDecoration = BoxDecoration(
-      color: AppTheme.backgroundLight.withValues(alpha: 0.08),
+      color: RLTheme.backgroundLight.withValues(alpha: 0.08),
       borderRadius: BorderRadius.circular(18),
       border: Border.all(
-        color: AppTheme.primaryGreen.withValues(alpha: 0.2),
+        color: RLTheme.primaryGreen.withValues(alpha: 0.2),
         width: 1.5,
       ),
     );
@@ -81,12 +81,12 @@ class ShelfScreenState extends State<ShelfScreen> {
           // Course info section
           Div.column([
             // Course title
-            Typography.headingMedium('The Design of Everyday Things'),
+            RLTypography.headingMedium('The Design of Everyday Things'),
 
             const Spacing.height(8),
 
             // Course description
-            Typography.text('Based on Don Norman\'s classic book'),
+            RLTypography.text('Based on Don Norman\'s classic book'),
 
             const Spacing.height(12),
 
@@ -95,9 +95,9 @@ class ShelfScreenState extends State<ShelfScreen> {
               // NEW badge
               Div.column(
                 [
-                  Typography.bodyMedium(
+                  RLTypography.bodyMedium(
                     'NEW',
-                    color: AppTheme.primaryGreen,
+                    color: RLTheme.primaryGreen,
                   ),
                 ],
                 padding: const EdgeInsets.symmetric(
@@ -110,9 +110,9 @@ class ShelfScreenState extends State<ShelfScreen> {
               const Spacing.width(8),
 
               // Lessons count
-              Typography.bodyMedium(
+              RLTypography.bodyMedium(
                 '6 lessons',
-                color: AppTheme.textSecondary,
+                color: RLTheme.textSecondary,
               ),
             ]),
           ], crossAxisAlignment: CrossAxisAlignment.start),
@@ -132,9 +132,9 @@ class ShelfScreenState extends State<ShelfScreen> {
           // Continue learning button
           Div.row(
             [
-              Typography.bodyMedium(
+              RLTypography.bodyMedium(
                 'Continue Learning',
-                color: AppTheme.primaryGreen,
+                color: RLTheme.primaryGreen,
               ),
 
               const Spacing.width(8),
@@ -142,7 +142,7 @@ class ShelfScreenState extends State<ShelfScreen> {
               // Forward arrow icon
               const Icon(
                 Icons.arrow_forward_ios,
-                color: AppTheme.primaryGreen,
+                color: RLTheme.primaryGreen,
                 size: 14,
               ),
             ],
@@ -185,7 +185,7 @@ class CourseIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     return const Icon(
       Icons.psychology_outlined,
-      color: AppTheme.primaryGreen,
+      color: RLTheme.primaryGreen,
       size: 32,
     );
   }
@@ -193,18 +193,18 @@ class CourseIcon extends StatelessWidget {
 
 class Style {
   static final BoxDecoration newBadgeDecoration = BoxDecoration(
-    color: AppTheme.primaryGreen.withValues(alpha: 0.1),
+    color: RLTheme.primaryGreen.withValues(alpha: 0.1),
     borderRadius: BorderRadius.circular(6),
     border: Border.all(
-      color: AppTheme.primaryGreen.withValues(alpha: 0.3),
+      color: RLTheme.primaryGreen.withValues(alpha: 0.3),
     ),
   );
 
   static final BoxDecoration continueButtonDecoration = BoxDecoration(
-    color: AppTheme.primaryGreen.withValues(alpha: 0.1),
+    color: RLTheme.primaryGreen.withValues(alpha: 0.1),
     borderRadius: BorderRadius.circular(8),
     border: Border.all(
-      color: AppTheme.primaryGreen.withValues(alpha: 0.3),
+      color: RLTheme.primaryGreen.withValues(alpha: 0.3),
       width: 1.5,
     ),
   );

@@ -10,7 +10,9 @@ import 'package:readlock/utility_widgets/Utility.dart';
 // Constants
 const String CORRECT_ANSWER_MESSAGE = '+5 Aha';
 const String WRONG_ANSWER_TITLE = 'Think again';
-const Duration CORRECT_ANSWER_DURATION = Duration(days: 365); // Effectively indefinite
+const Duration CORRECT_ANSWER_DURATION = Duration(
+  days: 365,
+); // Effectively indefinite
 const Duration WRONG_ANSWER_DURATION = Duration(milliseconds: 3000);
 const Duration CUSTOM_FEEDBACK_DURATION = Duration(seconds: 3);
 
@@ -46,7 +48,7 @@ class FeedbackSnackBar {
 
             const Spacing.width(8),
 
-            Typography.bodyLarge(
+            RLTypography.bodyLarge(
               CORRECT_ANSWER_MESSAGE,
               color: Colors.white,
             ),
@@ -62,7 +64,7 @@ class FeedbackSnackBar {
                       onPressed: handleExplanationButtonPress,
                       child: Text(
                         'Why?',
-                        style: Typography.bodyMediumStyle.copyWith(
+                        style: RLTypography.bodyMediumStyle.copyWith(
                           color: Colors.white,
                           fontWeight: FontWeight.w600,
                         ),
@@ -74,7 +76,7 @@ class FeedbackSnackBar {
             ),
           ],
         ),
-        backgroundColor: AppTheme.primaryGreen.withValues(alpha: 0.85),
+        backgroundColor: RLTheme.primaryGreen.withValues(alpha: 0.85),
         duration: snackbarDuration,
         behavior: SnackBarBehavior.floating,
         shape: Style.snackbarShape,
@@ -108,7 +110,7 @@ class FeedbackSnackBar {
 
             const Spacing.width(8),
 
-            Typography.bodyLarge(
+            RLTypography.bodyLarge(
               WRONG_ANSWER_TITLE,
               color: Colors.white,
             ),
@@ -124,7 +126,7 @@ class FeedbackSnackBar {
                       onPressed: handleHintButtonPress,
                       child: Text(
                         'Hint',
-                        style: Typography.bodyMediumStyle.copyWith(
+                        style: RLTypography.bodyMediumStyle.copyWith(
                           color: Colors.white,
                           fontWeight: FontWeight.w600,
                         ),
@@ -152,7 +154,7 @@ class FeedbackSnackBar {
   ) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Typography.bodyMedium(message, color: Colors.white),
+        content: RLTypography.bodyMedium(message, color: Colors.white),
         backgroundColor: CustomFeedbackColor(isCorrect),
         duration: CUSTOM_FEEDBACK_DURATION,
         behavior: SnackBarBehavior.floating,
@@ -165,7 +167,7 @@ class FeedbackSnackBar {
   // Helper methods
   static Color CustomFeedbackColor(bool isCorrect) {
     final Color feedbackColor = isCorrect
-        ? AppTheme.primaryGreen
+        ? RLTheme.primaryGreen
         : Colors.orange.shade600;
 
     return feedbackColor;

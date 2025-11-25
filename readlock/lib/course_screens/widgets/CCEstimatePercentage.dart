@@ -17,24 +17,23 @@ const int CLOSE_ESTIMATE_THRESHOLD = 10;
 const String YOUR_ESTIMATE_LABEL = 'Your Estimate';
 const String SUBMIT_BUTTON_TEXT = 'Estimate';
 
-class EstimatePercentageWidget extends StatefulWidget {
+class CCEstimatePercentage extends StatefulWidget {
   final EstimatePercentageContent content;
   final void Function(int selectedIndex, bool isCorrect)
   onAnswerSelected;
 
-  const EstimatePercentageWidget({
+  const CCEstimatePercentage({
     super.key,
     required this.content,
     required this.onAnswerSelected,
   });
 
   @override
-  State<EstimatePercentageWidget> createState() =>
-      EstimatePercentageWidgetState();
+  State<CCEstimatePercentage> createState() =>
+      CCEstimatePercentageState();
 }
 
-class EstimatePercentageWidgetState
-    extends State<EstimatePercentageWidget>
+class CCEstimatePercentageState extends State<CCEstimatePercentage>
     with SingleTickerProviderStateMixin {
   double currentEstimate = 50;
   bool hasSubmittedEstimate = false;
@@ -44,7 +43,7 @@ class EstimatePercentageWidgetState
   // Icon and styling definitions
   static const Icon CheckIcon = Icon(
     Icons.check_circle,
-    color: AppTheme.primaryGreen,
+    color: RLTheme.primaryGreen,
     size: 20,
   );
   static const Icon InfoIcon = Icon(Icons.info_outline, size: 20);
@@ -83,8 +82,8 @@ class EstimatePercentageWidgetState
   Widget build(BuildContext context) {
     return Div.column(
       MainContent(),
-      color: AppTheme.backgroundDark,
-      padding: const EdgeInsets.all(Constants.COURSE_SECTION_PADDING),
+      color: RLTheme.backgroundDark,
+      padding: const EdgeInsets.all(RLConstants.COURSE_SECTION_PADDING),
       crossAxisAlignment: CrossAxisAlignment.stretch,
       mainAxisAlignment: MainAxisAlignment.center,
     );
@@ -122,85 +121,73 @@ class EstimatePercentageWidgetState
   }
 
   Widget QuestionText() {
-    return Typography.bodyLarge(
+    return RLTypography.bodyLarge(
       widget.content.question,
       textAlign: TextAlign.center,
     );
   }
 
   Widget CurrentEstimateDisplay() {
-    return Div.column(
-      [
-        Typography.bodyMedium(
-          'Your estimate',
-          color: AppTheme.textPrimary.withValues(alpha: 0.7),
+    return Div.column([
+      RLTypography.bodyMedium(
+        'Your estimate',
+        color: RLTheme.textPrimary.withValues(alpha: 0.7),
+      ),
+
+      const Spacing.height(8),
+
+      Div.row([
+        RLTypography.headingLarge(
+          '${currentEstimate.round()}',
+          color: RLTheme.primaryBlue,
         ),
-        
-        const Spacing.height(8),
-        
-        Div.row(
-          [
-            Typography.headingLarge(
-              '${currentEstimate.round()}',
-              color: AppTheme.primaryBlue,
-            ),
-            
-            Typography.headingMedium(
-              '%',
-              color: AppTheme.primaryBlue.withValues(alpha: 0.7),
-            ),
-          ],
-          mainAxisAlignment: MainAxisAlignment.center,
+
+        RLTypography.headingMedium(
+          '%',
+          color: RLTheme.primaryBlue.withValues(alpha: 0.7),
         ),
-      ],
-      crossAxisAlignment: CrossAxisAlignment.center,
-    );
+      ], mainAxisAlignment: MainAxisAlignment.center),
+    ], crossAxisAlignment: CrossAxisAlignment.center);
   }
 
   // Helper methods
 
   Widget EstimationSlider() {
     final SliderThemeData sliderTheme = Style.getSliderTheme();
-    
-    return Div.column(
-      [
-        // Slider with labels
-        SliderTheme(
-          data: sliderTheme,
-          child: Slider(
-            value: currentEstimate,
-            max: 100,
-            divisions: 100,
-            onChanged: getSliderChangeHandler(),
+
+    return Div.column([
+      // Slider with labels
+      SliderTheme(
+        data: sliderTheme,
+        child: Slider(
+          value: currentEstimate,
+          max: 100,
+          divisions: 100,
+          onChanged: getSliderChangeHandler(),
+        ),
+      ),
+
+      // Min/Max labels
+      Div.row([
+        Text(
+          '0%',
+          style: TextStyle(
+            fontSize: 12,
+            color: RLTheme.textPrimary.withValues(alpha: 0.5),
           ),
         ),
-        
-        // Min/Max labels
-        Div.row(
-          [
-            Text(
-              '0%',
-              style: TextStyle(
-                fontSize: 12,
-                color: AppTheme.textPrimary.withValues(alpha: 0.5),
-              ),
-            ),
-            
-            const Spacer(),
-            
-            Text(
-              '100%',
-              style: TextStyle(
-                fontSize: 12,
-                color: AppTheme.textPrimary.withValues(alpha: 0.5),
-              ),
-            ),
-          ],
-          padding: const EdgeInsets.symmetric(horizontal: 12),
+
+        const Spacer(),
+
+        Text(
+          '100%',
+          style: TextStyle(
+            fontSize: 12,
+            color: RLTheme.textPrimary.withValues(alpha: 0.5),
+          ),
         ),
-      ],
-      padding: const EdgeInsets.symmetric(horizontal: 24),
-    );
+      ], padding: const EdgeInsets.symmetric(horizontal: 12)),
+    ], padding: const EdgeInsets.symmetric(horizontal: 24));
   }
 
   Function(double)? getSliderChangeHandler() {
@@ -209,7 +196,7 @@ class EstimatePercentageWidgetState
     if (!canChange) {
       return null;
     }
-    
+
     void handleSliderChange(double value) {
       setState(() {
         currentEstimate = value;
@@ -226,15 +213,11 @@ class EstimatePercentageWidgetState
       shouldShow,
       Div.row(
         [
-          const Icon(
-            Icons.touch_app,
-            color: Colors.white,
-            size: 20,
-          ),
-          
+          const Icon(Icons.touch_app, color: Colors.white, size: 20),
+
           const Spacing.width(8),
-          
-          Typography.bodyLarge(
+
+          RLTypography.bodyLarge(
             'Submit Estimate',
             color: Colors.white,
           ),
@@ -248,7 +231,8 @@ class EstimatePercentageWidgetState
   }
 
   Widget ResultSection() {
-    final int difference = (currentEstimate.round() - correctPercentage).abs();
+    final int difference = (currentEstimate.round() - correctPercentage)
+        .abs();
     final bool isClose = difference <= widget.content.closeThreshold;
 
     return FadeTransition(
@@ -261,9 +245,9 @@ class EstimatePercentageWidgetState
           child: Div.column([
             // Result header
             getResultHeader(isClose, difference),
-            
+
             const Spacing.height(20),
-            
+
             // Comparison display
             getComparisonDisplay(difference),
           ]),
@@ -277,13 +261,13 @@ class EstimatePercentageWidgetState
       return Div.row([
         CheckIcon,
         const Spacing.width(12),
-        Typography.headingMedium(
+        RLTypography.headingMedium(
           'Excellent estimate!',
-          color: AppTheme.primaryGreen,
+          color: RLTheme.primaryGreen,
         ),
       ]);
     }
-    
+
     return Div.column([
       Div.row([
         Icon(
@@ -292,21 +276,21 @@ class EstimatePercentageWidgetState
           size: 20,
         ),
         const Spacing.width(12),
-        Typography.headingMedium(
+        RLTypography.headingMedium(
           difference > 30 ? 'Keep learning!' : 'Getting closer!',
           color: Colors.orange.shade600,
         ),
       ]),
-      
+
       const Spacing.height(8),
-      
-      Typography.bodyMedium(
+
+      RLTypography.bodyMedium(
         getHintMessage(difference),
-        color: AppTheme.textPrimary.withValues(alpha: 0.7),
+        color: RLTheme.textPrimary.withValues(alpha: 0.7),
       ),
     ]);
   }
-  
+
   Widget getComparisonDisplay(int difference) {
     return Div.row([
       // Your estimate
@@ -317,29 +301,29 @@ class EstimatePercentageWidgetState
             style: TextStyle(
               fontSize: 11,
               fontWeight: FontWeight.w600,
-              color: AppTheme.textPrimary.withValues(alpha: 0.5),
+              color: RLTheme.textPrimary.withValues(alpha: 0.5),
               letterSpacing: 0.5,
             ),
             textAlign: TextAlign.center,
           ),
           const Spacing.height(4),
-          Typography.headingMedium(
+          RLTypography.headingMedium(
             '${currentEstimate.round()}%',
-            color: AppTheme.textPrimary,
+            color: RLTheme.textPrimary,
             textAlign: TextAlign.center,
           ),
         ]),
       ),
-      
+
       // Arrow indicator
       Div.column([
         Icon(
           Icons.arrow_forward,
-          color: AppTheme.textPrimary.withValues(alpha: 0.3),
+          color: RLTheme.textPrimary.withValues(alpha: 0.3),
           size: 20,
         ),
       ]),
-      
+
       // Actual answer
       Expanded(
         child: Div.column([
@@ -348,15 +332,15 @@ class EstimatePercentageWidgetState
             style: TextStyle(
               fontSize: 11,
               fontWeight: FontWeight.w600,
-              color: AppTheme.textPrimary.withValues(alpha: 0.5),
+              color: RLTheme.textPrimary.withValues(alpha: 0.5),
               letterSpacing: 0.5,
             ),
             textAlign: TextAlign.center,
           ),
           const Spacing.height(4),
-          Typography.headingMedium(
+          RLTypography.headingMedium(
             '$correctPercentage%',
-            color: AppTheme.primaryGreen,
+            color: RLTheme.primaryGreen,
             textAlign: TextAlign.center,
           ),
         ]),
@@ -369,7 +353,7 @@ class EstimatePercentageWidgetState
       opacity: revealAnimation,
       child: ProgressiveText(
         textSegments: [widget.content.explanation],
-        textStyle: Typography.bodyLargeStyle.copyWith(
+        textStyle: RLTypography.bodyLargeStyle.copyWith(
           fontSize: 14,
           height: 1.5,
         ),
@@ -379,10 +363,10 @@ class EstimatePercentageWidgetState
 
   BoxDecoration getResultCardDecoration(bool isClose) {
     final Color backgroundColor = isClose
-        ? AppTheme.primaryGreen.withValues(alpha: 0.08)
+        ? RLTheme.primaryGreen.withValues(alpha: 0.08)
         : Colors.orange.withValues(alpha: 0.08);
     final Color borderColor = isClose
-        ? AppTheme.primaryGreen.withValues(alpha: 0.3)
+        ? RLTheme.primaryGreen.withValues(alpha: 0.3)
         : Colors.orange.shade400.withValues(alpha: 0.3);
 
     return BoxDecoration(
@@ -391,7 +375,6 @@ class EstimatePercentageWidgetState
       border: Border.all(color: borderColor, width: 1.5),
     );
   }
-
 
   String getHintMessage(int difference) {
     final bool isLargeDifference = difference > 30;
@@ -432,7 +415,7 @@ class EstimatePercentageWidgetState
             children: [
               StarIcon,
               const Spacing.width(8),
-              Typography.bodyLarge('+8 Aha', color: Colors.white),
+              RLTypography.bodyLarge('+8 Aha', color: Colors.white),
             ],
           ),
           backgroundColor: Colors.green.shade600,
@@ -455,10 +438,10 @@ class Style {
 
   static SliderThemeData getSliderTheme() {
     return SliderThemeData(
-      activeTrackColor: AppTheme.primaryBlue,
-      inactiveTrackColor: AppTheme.textPrimary.withValues(alpha: 0.1),
-      thumbColor: AppTheme.primaryBlue,
-      overlayColor: AppTheme.primaryBlue.withValues(alpha: 0.1),
+      activeTrackColor: RLTheme.primaryBlue,
+      inactiveTrackColor: RLTheme.textPrimary.withValues(alpha: 0.1),
+      thumbColor: RLTheme.primaryBlue,
+      overlayColor: RLTheme.primaryBlue.withValues(alpha: 0.1),
       thumbShape: const RoundSliderThumbShape(
         enabledThumbRadius: 12,
         pressedElevation: 4,
@@ -471,11 +454,11 @@ class Style {
   static const double submitButtonHeight = 52.0;
 
   static final BoxDecoration submitButtonDecoration = BoxDecoration(
-    color: AppTheme.primaryBlue,
+    color: RLTheme.primaryBlue,
     borderRadius: BorderRadius.circular(16),
     boxShadow: [
       BoxShadow(
-        color: AppTheme.primaryBlue.withValues(alpha: 0.3),
+        color: RLTheme.primaryBlue.withValues(alpha: 0.3),
         offset: const Offset(0, 4),
         blurRadius: 12,
       ),

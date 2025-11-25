@@ -9,18 +9,16 @@ import 'package:readlock/constants/typography.dart';
 import 'package:readlock/constants/appTheme.dart';
 import 'package:readlock/utility_widgets/text_animation/ProgressiveText.dart';
 
-class ReflectionContentWidget extends StatefulWidget {
+class CCReflection extends StatefulWidget {
   final ReflectionContent content;
 
-  const ReflectionContentWidget({super.key, required this.content});
+  const CCReflection({super.key, required this.content});
 
   @override
-  State<ReflectionContentWidget> createState() =>
-      ReflectionContentWidgetState();
+  State<CCReflection> createState() => CCReflectionState();
 }
 
-class ReflectionContentWidgetState
-    extends State<ReflectionContentWidget> {
+class CCReflectionState extends State<CCReflection> {
   Set<int> selectedPoints = {};
 
   @override
@@ -31,8 +29,8 @@ class ReflectionContentWidgetState
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: AppTheme.backgroundDark,
-      padding: const EdgeInsets.all(Constants.COURSE_SECTION_PADDING),
+      color: RLTheme.backgroundDark,
+      padding: const EdgeInsets.all(RLConstants.COURSE_SECTION_PADDING),
       child: Center(
         child: Div.column(
           [
@@ -53,11 +51,11 @@ class ReflectionContentWidgetState
 
   Widget ReflectionPrompt() {
     final BoxDecoration promptDecoration = BoxDecoration(
-      color: AppTheme.backgroundLight,
+      color: RLTheme.backgroundLight,
       borderRadius: BorderRadius.circular(16),
     );
 
-    final TextStyle promptTextStyle = Typography.bodyLargeStyle
+    final TextStyle promptTextStyle = RLTypography.bodyLargeStyle
         .copyWith(
           fontSize: 16,
           fontWeight: FontWeight.w500,
@@ -81,9 +79,9 @@ class ReflectionContentWidgetState
         .toList();
 
     return Div.column([
-      Typography.bodyMedium(
+      RLTypography.bodyMedium(
         'Consider these aspects:',
-        color: AppTheme.textPrimary.withValues(alpha: 0.7),
+        color: RLTheme.textPrimary.withValues(alpha: 0.7),
       ),
 
       const Spacing.height(16),
@@ -107,19 +105,19 @@ class ReflectionContentWidgetState
     required bool isSelected,
     required VoidCallback onTap,
   }) {
-    final colors = [AppTheme.primaryBlue, Colors.purple, Colors.orange];
+    final colors = [RLTheme.primaryBlue, Colors.purple, Colors.orange];
 
     final color = colors[index % colors.length];
 
     final BoxDecoration cardDecoration = BoxDecoration(
       color: isSelected
           ? color.withValues(alpha: 0.1)
-          : AppTheme.backgroundLight,
+          : RLTheme.backgroundLight,
       borderRadius: BorderRadius.circular(12),
       border: Border.all(
         color: isSelected
             ? color
-            : AppTheme.textPrimary.withValues(alpha: 0.1),
+            : RLTheme.textPrimary.withValues(alpha: 0.1),
         width: isSelected ? 2 : 1,
       ),
     );
@@ -130,37 +128,34 @@ class ReflectionContentWidgetState
       border: Border.all(
         color: isSelected
             ? color
-            : AppTheme.textPrimary.withValues(alpha: 0.3),
+            : RLTheme.textPrimary.withValues(alpha: 0.3),
         width: 2,
       ),
     );
 
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
-      child: Div.row([
-        AnimatedContainer(
-          duration: const Duration(milliseconds: 200),
-          width: 24,
-          height: 24,
-          decoration: checkboxDecoration,
-          child: isSelected
-              ? const Icon(
-                  Icons.check,
-                  color: Colors.white,
-                  size: 16,
-                )
-              : null,
-        ),
-        const Spacing.width(12),
-        Expanded(
-          child: Typography.bodyMedium(
-            point,
-            color: isSelected
-                ? color
-                : AppTheme.textPrimary.withValues(alpha: 0.8),
+      child: Div.row(
+        [
+          AnimatedContainer(
+            duration: const Duration(milliseconds: 200),
+            width: 24,
+            height: 24,
+            decoration: checkboxDecoration,
+            child: isSelected
+                ? const Icon(Icons.check, color: Colors.white, size: 16)
+                : null,
           ),
-        ),
-      ], 
+          const Spacing.width(12),
+          Expanded(
+            child: RLTypography.bodyMedium(
+              point,
+              color: isSelected
+                  ? color
+                  : RLTheme.textPrimary.withValues(alpha: 0.8),
+            ),
+          ),
+        ],
         padding: const EdgeInsets.all(16),
         decoration: cardDecoration,
         radius: BorderRadius.circular(12),

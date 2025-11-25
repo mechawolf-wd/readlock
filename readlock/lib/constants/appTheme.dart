@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class AppTheme {
+class RLTheme {
   // Light theme colors
   static const Color primaryBlue = Color(0xFF1976D2);
   static const Color primaryGreen = Color(0xFF388E3C);

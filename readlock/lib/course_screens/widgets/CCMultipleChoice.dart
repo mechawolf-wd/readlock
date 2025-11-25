@@ -10,64 +10,59 @@ enum OptionButtonState {
   normal,
   selected,
   correctAndAnswered,
-  incorrectAndAnswered
+  incorrectAndAnswered,
 }
 
 const double OPTION_BUTTON_SPACING = 16.0;
 const double QUESTION_SECTION_SPACING = 24.0;
 
-class MultipleChoiceWidget extends StatefulWidget {
+class CCMultipleChoice extends StatefulWidget {
   final QuestionContent content;
-  final void Function(int selectedIndex, bool isCorrect) onAnswerSelected;
+  final void Function(int selectedIndex, bool isCorrect)
+  onAnswerSelected;
 
-  const MultipleChoiceWidget({
+  const CCMultipleChoice({
     super.key,
     required this.content,
     required this.onAnswerSelected,
   });
 
   @override
-  State<MultipleChoiceWidget> createState() => MultipleChoiceWidgetState();
+  State<CCMultipleChoice> createState() => CCMultipleChoiceState();
 }
 
-class MultipleChoiceWidgetState extends State<MultipleChoiceWidget> {
+class CCMultipleChoiceState extends State<CCMultipleChoice> {
   int? selectedAnswerIndex;
   bool hasAnsweredQuestion = false;
 
   @override
   Widget build(BuildContext context) {
     final BoxDecoration normalOptionDecoration = BoxDecoration(
-      color: AppTheme.backgroundLight,
+      color: RLTheme.backgroundLight,
       borderRadius: BorderRadius.circular(12),
       border: Border.all(
-        color: AppTheme.textPrimary.withValues(alpha: 0.2),
+        color: RLTheme.textPrimary.withValues(alpha: 0.2),
         width: 2,
       ),
     );
 
     final BoxDecoration selectedOptionDecoration = BoxDecoration(
-      color: AppTheme.backgroundLight,
+      color: RLTheme.backgroundLight,
       borderRadius: BorderRadius.circular(12),
-      border: Border.all(
-        color: AppTheme.primaryBlue,
-        width: 2,
-      ),
+      border: Border.all(color: RLTheme.primaryBlue, width: 2),
     );
 
     final BoxDecoration correctOptionDecoration = BoxDecoration(
-      color: AppTheme.primaryGreen.withValues(alpha: 0.1),
+      color: RLTheme.primaryGreen.withValues(alpha: 0.1),
       borderRadius: BorderRadius.circular(12),
-      border: Border.all(
-        color: AppTheme.primaryGreen,
-        width: 2,
-      ),
+      border: Border.all(color: RLTheme.primaryGreen, width: 2),
     );
 
     final BoxDecoration incorrectOptionDecoration = BoxDecoration(
-      color: AppTheme.backgroundLight,
+      color: RLTheme.backgroundLight,
       borderRadius: BorderRadius.circular(12),
       border: Border.all(
-        color: AppTheme.textPrimary.withValues(alpha: 0.1),
+        color: RLTheme.textPrimary.withValues(alpha: 0.1),
         width: 2,
       ),
     );
@@ -89,15 +84,15 @@ class MultipleChoiceWidgetState extends State<MultipleChoiceWidget> {
 
         const Spacing.height(QUESTION_SECTION_SPACING),
       ],
-      color: AppTheme.backgroundDark,
-      padding: Constants.COURSE_SECTION_PADDING,
+      color: RLTheme.backgroundDark,
+      padding: RLConstants.COURSE_SECTION_PADDING,
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.center,
     );
   }
 
   Widget questionTextWidget() {
-    return Typography.bodyLarge(widget.content.question);
+    return RLTypography.bodyLarge(widget.content.question);
   }
 
   Widget optionListWidget(
@@ -140,10 +135,14 @@ class MultipleChoiceWidgetState extends State<MultipleChoiceWidget> {
     BoxDecoration incorrectDecoration,
   ) {
     final bool isSelected = selectedAnswerIndex == optionIndex;
-    final bool isCorrectAnswer = widget.content.correctAnswerIndices.contains(optionIndex);
-    final bool shouldShowCorrect = hasAnsweredQuestion && isCorrectAnswer;
-    final bool shouldShowIncorrect = hasAnsweredQuestion && !isCorrectAnswer && isSelected;
-    final bool shouldMute = hasAnsweredQuestion && !isCorrectAnswer && !isSelected;
+    final bool isCorrectAnswer = widget.content.correctAnswerIndices
+        .contains(optionIndex);
+    final bool shouldShowCorrect =
+        hasAnsweredQuestion && isCorrectAnswer;
+    final bool shouldShowIncorrect =
+        hasAnsweredQuestion && !isCorrectAnswer && isSelected;
+    final bool shouldMute =
+        hasAnsweredQuestion && !isCorrectAnswer && !isSelected;
 
     final BoxDecoration decoration = getOptionDecoration(
       isSelected: isSelected,
@@ -164,17 +163,12 @@ class MultipleChoiceWidgetState extends State<MultipleChoiceWidget> {
     );
 
     return Div.row(
-      [
-        Expanded(
-          child: Text(
-            option.text,
-            style: textStyle,
-          ),
-        ),
-      ],
-      padding: AppTheme.contentPaddingMediumInsets,
+      [Expanded(child: Text(option.text, style: textStyle))],
+      padding: RLTheme.contentPaddingMediumInsets,
       decoration: decoration,
-      onTap: hasAnsweredQuestion ? null : () => handleOptionSelection(optionIndex),
+      onTap: hasAnsweredQuestion
+          ? null
+          : () => handleOptionSelection(optionIndex),
     );
   }
 
@@ -209,21 +203,21 @@ class MultipleChoiceWidgetState extends State<MultipleChoiceWidget> {
     required bool shouldShowIncorrect,
     required bool shouldMute,
   }) {
-    Color textColor = AppTheme.textPrimary;
+    Color textColor = RLTheme.textPrimary;
     FontWeight fontWeight = FontWeight.normal;
 
     if (shouldShowCorrect) {
-      textColor = AppTheme.primaryGreen;
+      textColor = RLTheme.primaryGreen;
       fontWeight = FontWeight.w500;
     } else if (shouldShowIncorrect) {
-      textColor = AppTheme.textPrimary.withValues(alpha: 0.5);
+      textColor = RLTheme.textPrimary.withValues(alpha: 0.5);
     } else if (shouldMute) {
-      textColor = AppTheme.textPrimary.withValues(alpha: 0.3);
+      textColor = RLTheme.textPrimary.withValues(alpha: 0.3);
     } else if (isSelected && !hasAnsweredQuestion) {
       fontWeight = FontWeight.w500;
     }
 
-    return Typography.bodyLargeStyle.copyWith(
+    return RLTypography.bodyLargeStyle.copyWith(
       fontSize: 14,
       color: textColor,
       fontWeight: fontWeight,
@@ -231,7 +225,8 @@ class MultipleChoiceWidgetState extends State<MultipleChoiceWidget> {
   }
 
   void handleOptionSelection(int optionIndex) {
-    final bool isCorrectAnswer = widget.content.correctAnswerIndices.contains(optionIndex);
+    final bool isCorrectAnswer = widget.content.correctAnswerIndices
+        .contains(optionIndex);
 
     if (!isCorrectAnswer && !hasAnsweredQuestion) {
       showIncorrectAnswerFeedback();
@@ -261,5 +256,4 @@ class MultipleChoiceWidgetState extends State<MultipleChoiceWidget> {
       hint: widget.content.hint,
     );
   }
-
 }

@@ -25,7 +25,7 @@ class ExplanationDialog extends StatelessWidget {
   // Icon definitions
   static const Icon CloseIcon = Icon(
     Icons.close,
-    color: AppTheme.textPrimary,
+    color: RLTheme.textPrimary,
   );
 
   @override
@@ -37,7 +37,7 @@ class ExplanationDialog extends StatelessWidget {
       builder: (context, scrollController) {
         return Container(
           decoration: const BoxDecoration(
-            color: AppTheme.backgroundLight,
+            color: RLTheme.backgroundLight,
             borderRadius: BorderRadius.only(
               topLeft: Radius.circular(20),
               topRight: Radius.circular(20),
@@ -48,7 +48,7 @@ class ExplanationDialog extends StatelessWidget {
             Div.column([
               // Title and close button
               Div.row([
-                Typography.headingMedium(title),
+                RLTypography.headingMedium(title),
 
                 const Spacer(),
 
@@ -77,7 +77,7 @@ class ExplanationDialog extends StatelessWidget {
             // Footer - button
             Div.column(
               [
-                Typography.bodyMedium(
+                RLTypography.bodyMedium(
                   CLOSE_BUTTON_LABEL,
                   color: Colors.white,
                 ),
@@ -85,7 +85,7 @@ class ExplanationDialog extends StatelessWidget {
               width: double.infinity,
               height: 48,
               decoration: BoxDecoration(
-                color: AppTheme.primaryGreen,
+                color: RLTheme.primaryGreen,
                 borderRadius: BorderRadius.circular(BORDER_RADIUS),
               ),
               mainAxisAlignment: MainAxisAlignment.center,

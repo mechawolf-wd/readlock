@@ -14,7 +14,7 @@ class SandboxScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: AppTheme.backgroundDark,
+      color: RLTheme.backgroundDark,
       child: const SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(20),
@@ -125,7 +125,7 @@ class SandboxHeader extends StatelessWidget {
         Expanded(
           child: Text(
             SANDBOX_TITLE,
-            style: Typography.headingLargeStyle.copyWith(
+            style: RLTypography.headingLargeStyle.copyWith(
               fontSize: 24,
               fontWeight: FontWeight.bold,
             ),
@@ -146,7 +146,7 @@ class SandboxHeader extends StatelessWidget {
           ),
           child: Text(
             'EXPERIMENTAL',
-            style: Typography.bodyMediumStyle.copyWith(
+            style: RLTypography.bodyMediumStyle.copyWith(
               color: Colors.purple,
               fontSize: 10,
               fontWeight: FontWeight.w600,
@@ -158,9 +158,9 @@ class SandboxHeader extends StatelessWidget {
 
       const Spacing.height(8),
 
-      Typography.bodyMedium(
+      RLTypography.bodyMedium(
         'Essential widgets for engaging course content',
-        color: AppTheme.textPrimary.withValues(alpha: 0.7),
+        color: RLTheme.textPrimary.withValues(alpha: 0.7),
       ),
     ]);
   }
@@ -181,44 +181,47 @@ class ThoughtPrompWidgetState extends State<ThoughtPrompWidget> {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: AppTheme.backgroundLight,
+        color: RLTheme.backgroundLight,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: AppTheme.primaryBlue.withValues(alpha: 0.2),
+          color: RLTheme.primaryBlue.withValues(alpha: 0.2),
         ),
       ),
       child: Div.column([
-        Div.row([
-          const Icon(
-            Icons.psychology,
-            color: AppTheme.primaryBlue,
-            size: 24,
-          ),
+        Div.row(
+          [
+            const Icon(
+              Icons.psychology,
+              color: RLTheme.primaryBlue,
+              size: 24,
+            ),
 
-          const Spacing.width(12),
+            const Spacing.width(12),
 
-          Expanded(
-            child: Text(
-              'Thought Prompt',
-              style: Typography.bodyLargeStyle.copyWith(
-                fontWeight: FontWeight.w600,
-                fontSize: 16,
+            Expanded(
+              child: Text(
+                'Thought Prompt',
+                style: RLTypography.bodyLargeStyle.copyWith(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 16,
+                ),
               ),
             ),
-          ),
 
-          Icon(
-            isExpanded
-                ? Icons.keyboard_arrow_up
-                : Icons.keyboard_arrow_down,
-            color: AppTheme.primaryBlue,
-            size: 24,
-          ),
-        ], onTap: () {
-          setState(() {
-            isExpanded = !isExpanded;
-          });
-        }),
+            Icon(
+              isExpanded
+                  ? Icons.keyboard_arrow_up
+                  : Icons.keyboard_arrow_down,
+              color: RLTheme.primaryBlue,
+              size: 24,
+            ),
+          ],
+          onTap: () {
+            setState(() {
+              isExpanded = !isExpanded;
+            });
+          },
+        ),
 
         RenderIf.condition(
           isExpanded,
@@ -228,12 +231,12 @@ class ThoughtPrompWidgetState extends State<ThoughtPrompWidget> {
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: AppTheme.primaryBlue.withValues(alpha: 0.05),
+                color: RLTheme.primaryBlue.withValues(alpha: 0.05),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Text(
                 'Think about a time when you encountered bad design. What made it frustrating? How could it have been improved using the principles from this chapter?',
-                style: Typography.bodyMediumStyle.copyWith(
+                style: RLTypography.bodyMediumStyle.copyWith(
                   fontSize: 14,
                   height: 1.5,
                   fontStyle: FontStyle.italic,
@@ -245,9 +248,9 @@ class ThoughtPrompWidgetState extends State<ThoughtPrompWidget> {
 
             Text(
               'Take a moment to reflect on this before continuing...',
-              style: Typography.bodyMediumStyle.copyWith(
+              style: RLTypography.bodyMediumStyle.copyWith(
                 fontSize: 12,
-                color: AppTheme.textPrimary.withValues(alpha: 0.6),
+                color: RLTheme.textPrimary.withValues(alpha: 0.6),
               ),
             ),
           ]),
@@ -274,7 +277,7 @@ class BookmarkHighlightWidgetState
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: AppTheme.backgroundLight,
+        color: RLTheme.backgroundLight,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: Colors.orange.withValues(alpha: 0.2)),
       ),
@@ -291,7 +294,7 @@ class BookmarkHighlightWidgetState
           Expanded(
             child: Text(
               'Notable Quote',
-              style: Typography.bodyLargeStyle.copyWith(
+              style: RLTypography.bodyLargeStyle.copyWith(
                 fontWeight: FontWeight.w600,
                 fontSize: 16,
               ),
@@ -299,11 +302,13 @@ class BookmarkHighlightWidgetState
           ),
 
           Div.row(
-            [Icon(
-              isBookmarked ? Icons.bookmark : Icons.bookmark_border,
-              color: Colors.orange,
-              size: 24,
-            )],
+            [
+              Icon(
+                isBookmarked ? Icons.bookmark : Icons.bookmark_border,
+                color: Colors.orange,
+                size: 24,
+              ),
+            ],
             onTap: () {
               setState(() {
                 isBookmarked = !isBookmarked;
@@ -326,7 +331,7 @@ class BookmarkHighlightWidgetState
           ),
           child: Text(
             '"Good design is obvious. Great design is transparent."',
-            style: Typography.bodyLargeStyle.copyWith(
+            style: RLTypography.bodyLargeStyle.copyWith(
               fontSize: 16,
               height: 1.4,
               fontStyle: FontStyle.italic,
@@ -340,9 +345,9 @@ class BookmarkHighlightWidgetState
         Div.row([
           Text(
             '— Joe Sparano',
-            style: Typography.bodyMediumStyle.copyWith(
+            style: RLTypography.bodyMediumStyle.copyWith(
               fontSize: 12,
-              color: AppTheme.textPrimary.withValues(alpha: 0.7),
+              color: RLTheme.textPrimary.withValues(alpha: 0.7),
             ),
           ),
 
@@ -352,7 +357,7 @@ class BookmarkHighlightWidgetState
             isBookmarked,
             Text(
               'Bookmarked ✓',
-              style: Typography.bodyMediumStyle.copyWith(
+              style: RLTypography.bodyMediumStyle.copyWith(
                 fontSize: 12,
                 color: Colors.orange,
                 fontWeight: FontWeight.w500,
@@ -403,7 +408,7 @@ class SwipeToRevealWidgetState extends State<SwipeToRevealWidget>
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: AppTheme.backgroundLight,
+        color: RLTheme.backgroundLight,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: Colors.purple.withValues(alpha: 0.2)),
       ),
@@ -416,7 +421,7 @@ class SwipeToRevealWidgetState extends State<SwipeToRevealWidget>
           Expanded(
             child: Text(
               'Swipe to Reveal Insight',
-              style: Typography.bodyLargeStyle.copyWith(
+              style: RLTypography.bodyLargeStyle.copyWith(
                 fontWeight: FontWeight.w600,
                 fontSize: 16,
               ),
@@ -443,11 +448,9 @@ class SwipeToRevealWidgetState extends State<SwipeToRevealWidget>
                 child: Center(
                   child: Text(
                     'The most powerful design principle is...',
-                    style: Typography.bodyMediumStyle.copyWith(
+                    style: RLTypography.bodyMediumStyle.copyWith(
                       fontSize: 14,
-                      color: AppTheme.textPrimary.withValues(
-                        alpha: 0.6,
-                      ),
+                      color: RLTheme.textPrimary.withValues(alpha: 0.6),
                     ),
                     textAlign: TextAlign.center,
                   ),
@@ -471,11 +474,13 @@ class SwipeToRevealWidgetState extends State<SwipeToRevealWidget>
                         child: Center(
                           child: Text(
                             'SIMPLICITY - removing the unnecessary',
-                            style: Typography.bodyLargeStyle.copyWith(
+
+                            style: RLTypography.bodyLargeStyle.copyWith(
                               fontSize: 14,
                               fontWeight: FontWeight.w600,
                               color: Colors.purple,
                             ),
+
                             textAlign: TextAlign.center,
                           ),
                         ),
@@ -519,11 +524,12 @@ class SwipeToRevealWidgetState extends State<SwipeToRevealWidget>
                           const Spacing.width(8),
                           Text(
                             'Swipe right → or tap',
-                            style: Typography.bodyMediumStyle.copyWith(
-                              fontSize: 12,
-                              color: Colors.purple,
-                              fontWeight: FontWeight.w500,
-                            ),
+                            style: RLTypography.bodyMediumStyle
+                                .copyWith(
+                                  fontSize: 12,
+                                  color: Colors.purple,
+                                  fontWeight: FontWeight.w500,
+                                ),
                           ),
                         ], mainAxisAlignment: MainAxisAlignment.center),
                       ),
@@ -541,7 +547,7 @@ class SwipeToRevealWidgetState extends State<SwipeToRevealWidget>
           isRevealed,
           Text(
             'Insight revealed! +5 Understanding points',
-            style: Typography.bodyMediumStyle.copyWith(
+            style: RLTypography.bodyMediumStyle.copyWith(
               fontSize: 12,
               color: Colors.purple,
               fontWeight: FontWeight.w500,
@@ -585,7 +591,7 @@ class ConceptConnectionWidgetState
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: AppTheme.backgroundLight,
+        color: RLTheme.backgroundLight,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: Colors.teal.withValues(alpha: 0.2)),
       ),
@@ -598,7 +604,7 @@ class ConceptConnectionWidgetState
           Expanded(
             child: Text(
               'Connect Concepts',
-              style: Typography.bodyLargeStyle.copyWith(
+              style: RLTypography.bodyLargeStyle.copyWith(
                 fontWeight: FontWeight.w600,
                 fontSize: 16,
               ),
@@ -610,9 +616,9 @@ class ConceptConnectionWidgetState
 
         Text(
           'Match design principles to real-world examples',
-          style: Typography.bodyMediumStyle.copyWith(
+          style: RLTypography.bodyMediumStyle.copyWith(
             fontSize: 12,
-            color: AppTheme.textPrimary.withValues(alpha: 0.6),
+            color: RLTheme.textPrimary.withValues(alpha: 0.6),
           ),
         ),
 
@@ -623,7 +629,7 @@ class ConceptConnectionWidgetState
             child: Div.column([
               Text(
                 'Concepts',
-                style: Typography.bodyMediumStyle.copyWith(
+                style: RLTypography.bodyMediumStyle.copyWith(
                   fontSize: 12,
                   fontWeight: FontWeight.w600,
                   color: Colors.teal,
@@ -657,28 +663,28 @@ class ConceptConnectionWidgetState
                       decoration: BoxDecoration(
                         color: isSelected
                             ? Colors.teal.withValues(alpha: 0.1)
-                            : AppTheme.backgroundDark.withValues(
+                            : RLTheme.backgroundDark.withValues(
                                 alpha: 0.5,
                               ),
                         borderRadius: BorderRadius.circular(8),
                         border: Border.all(
                           color: isSelected
                               ? Colors.teal
-                              : AppTheme.textPrimary.withValues(
+                              : RLTheme.textPrimary.withValues(
                                   alpha: 0.2,
                                 ),
                         ),
                       ),
                       child: Text(
                         concept,
-                        style: Typography.bodyMediumStyle.copyWith(
+                        style: RLTypography.bodyMediumStyle.copyWith(
                           fontSize: 13,
                           fontWeight: isSelected
                               ? FontWeight.w500
                               : FontWeight.normal,
                           color: isSelected
                               ? Colors.teal
-                              : AppTheme.textPrimary,
+                              : RLTheme.textPrimary,
                         ),
                       ),
                     ),
@@ -694,7 +700,7 @@ class ConceptConnectionWidgetState
             child: Div.column([
               Text(
                 'Examples',
-                style: Typography.bodyMediumStyle.copyWith(
+                style: RLTypography.bodyMediumStyle.copyWith(
                   fontSize: 12,
                   fontWeight: FontWeight.w600,
                   color: Colors.teal,
@@ -727,28 +733,28 @@ class ConceptConnectionWidgetState
                       decoration: BoxDecoration(
                         color: isSelected
                             ? Colors.teal.withValues(alpha: 0.1)
-                            : AppTheme.backgroundDark.withValues(
+                            : RLTheme.backgroundDark.withValues(
                                 alpha: 0.5,
                               ),
                         borderRadius: BorderRadius.circular(8),
                         border: Border.all(
                           color: isSelected
                               ? Colors.teal
-                              : AppTheme.textPrimary.withValues(
+                              : RLTheme.textPrimary.withValues(
                                   alpha: 0.2,
                                 ),
                         ),
                       ),
                       child: Text(
                         application,
-                        style: Typography.bodyMediumStyle.copyWith(
+                        style: RLTypography.bodyMediumStyle.copyWith(
                           fontSize: 12,
                           fontWeight: isSelected
                               ? FontWeight.w500
                               : FontWeight.normal,
                           color: isSelected
                               ? Colors.teal
-                              : AppTheme.textPrimary,
+                              : RLTheme.textPrimary,
                           height: 1.3,
                         ),
                       ),
@@ -766,22 +772,22 @@ class ConceptConnectionWidgetState
             margin: const EdgeInsets.only(top: 16),
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: AppTheme.primaryGreen.withValues(alpha: 0.1),
+              color: RLTheme.primaryGreen.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: AppTheme.primaryGreen),
+              border: Border.all(color: RLTheme.primaryGreen),
             ),
             child: Div.row([
               const Icon(
                 Icons.check_circle,
-                color: AppTheme.primaryGreen,
+                color: RLTheme.primaryGreen,
                 size: 16,
               ),
               const Spacing.width(8),
               Text(
                 'Perfect match! +10 Connection points',
-                style: Typography.bodyMediumStyle.copyWith(
+                style: RLTypography.bodyMediumStyle.copyWith(
                   fontSize: 12,
-                  color: AppTheme.primaryGreen,
+                  color: RLTheme.primaryGreen,
                   fontWeight: FontWeight.w500,
                 ),
               ),
@@ -860,7 +866,7 @@ class MicroQuizWidgetState extends State<MicroQuizWidget>
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: AppTheme.backgroundLight,
+        color: RLTheme.backgroundLight,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: Colors.indigo.withValues(alpha: 0.2)),
       ),
@@ -873,7 +879,7 @@ class MicroQuizWidgetState extends State<MicroQuizWidget>
           Expanded(
             child: Text(
               'Quick Quiz',
-              style: Typography.bodyLargeStyle.copyWith(
+              style: RLTypography.bodyLargeStyle.copyWith(
                 fontWeight: FontWeight.w600,
                 fontSize: 16,
               ),
@@ -885,7 +891,7 @@ class MicroQuizWidgetState extends State<MicroQuizWidget>
 
         Text(
           question,
-          style: Typography.bodyLargeStyle.copyWith(
+          style: RLTypography.bodyLargeStyle.copyWith(
             fontSize: 15,
             fontWeight: FontWeight.w500,
             height: 1.4,
@@ -907,11 +913,11 @@ class MicroQuizWidgetState extends State<MicroQuizWidget>
           Color textColor;
 
           if (isCorrect) {
-            backgroundColor = AppTheme.primaryGreen.withValues(
+            backgroundColor = RLTheme.primaryGreen.withValues(
               alpha: 0.1,
             );
-            borderColor = AppTheme.primaryGreen;
-            textColor = AppTheme.primaryGreen;
+            borderColor = RLTheme.primaryGreen;
+            textColor = RLTheme.primaryGreen;
           } else if (isWrong) {
             backgroundColor = Colors.red.withValues(alpha: 0.1);
             borderColor = Colors.red;
@@ -921,11 +927,11 @@ class MicroQuizWidgetState extends State<MicroQuizWidget>
             borderColor = Colors.indigo;
             textColor = Colors.indigo;
           } else {
-            backgroundColor = AppTheme.backgroundDark.withValues(
+            backgroundColor = RLTheme.backgroundDark.withValues(
               alpha: 0.5,
             );
-            borderColor = AppTheme.textPrimary.withValues(alpha: 0.2);
-            textColor = AppTheme.textPrimary;
+            borderColor = RLTheme.textPrimary.withValues(alpha: 0.2);
+            textColor = RLTheme.textPrimary;
           }
 
           return Padding(
@@ -959,7 +965,7 @@ class MicroQuizWidgetState extends State<MicroQuizWidget>
                       decoration: BoxDecoration(
                         color: isCorrect || isWrong || isSelected
                             ? (isCorrect
-                                  ? AppTheme.primaryGreen
+                                  ? RLTheme.primaryGreen
                                   : isWrong
                                   ? Colors.red
                                   : Colors.indigo)
@@ -967,12 +973,12 @@ class MicroQuizWidgetState extends State<MicroQuizWidget>
                         shape: BoxShape.circle,
                         border: Border.all(
                           color: isCorrect
-                              ? AppTheme.primaryGreen
+                              ? RLTheme.primaryGreen
                               : isWrong
                               ? Colors.red
                               : isSelected
                               ? Colors.indigo
-                              : AppTheme.textPrimary.withValues(
+                              : RLTheme.textPrimary.withValues(
                                   alpha: 0.3,
                                 ),
                         ),
@@ -1003,7 +1009,7 @@ class MicroQuizWidgetState extends State<MicroQuizWidget>
                     Expanded(
                       child: Text(
                         option,
-                        style: Typography.bodyMediumStyle.copyWith(
+                        style: RLTypography.bodyMediumStyle.copyWith(
                           fontSize: 14,
                           color: textColor,
                           fontWeight: (isCorrect || isSelected)
@@ -1026,14 +1032,14 @@ class MicroQuizWidgetState extends State<MicroQuizWidget>
             margin: const EdgeInsets.only(top: 16),
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: AppTheme.primaryGreen.withValues(alpha: 0.1),
+              color: RLTheme.primaryGreen.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(8),
             ),
             child: Text(
               'Great design becomes invisible because users can focus on their goals, not fighting the interface.',
-              style: Typography.bodyMediumStyle.copyWith(
+              style: RLTypography.bodyMediumStyle.copyWith(
                 fontSize: 13,
-                color: AppTheme.textPrimary.withValues(alpha: 0.8),
+                color: RLTheme.textPrimary.withValues(alpha: 0.8),
                 height: 1.4,
                 fontStyle: FontStyle.italic,
               ),
@@ -1109,7 +1115,7 @@ class ProgressCelebrationWidgetState
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: AppTheme.backgroundLight,
+        color: RLTheme.backgroundLight,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: Colors.amber.withValues(alpha: 0.2)),
       ),
@@ -1138,7 +1144,7 @@ class ProgressCelebrationWidgetState
           Expanded(
             child: Text(
               hasCompleted ? 'Chapter Complete!' : 'Learning Progress',
-              style: Typography.bodyLargeStyle.copyWith(
+              style: RLTypography.bodyLargeStyle.copyWith(
                 fontWeight: FontWeight.w600,
                 fontSize: 16,
               ),
@@ -1152,7 +1158,7 @@ class ProgressCelebrationWidgetState
           Div.row([
             Text(
               'Design Principles Mastery',
-              style: Typography.bodyMediumStyle.copyWith(
+              style: RLTypography.bodyMediumStyle.copyWith(
                 fontSize: 13,
                 fontWeight: FontWeight.w500,
               ),
@@ -1164,7 +1170,7 @@ class ProgressCelebrationWidgetState
                 final double progress = progressAnimation.value;
                 return Text(
                   '${(progress * 100).toInt()}%',
-                  style: Typography.bodyMediumStyle.copyWith(
+                  style: RLTypography.bodyMediumStyle.copyWith(
                     fontSize: 13,
                     fontWeight: FontWeight.w600,
                     color: Colors.amber.shade700,
@@ -1179,7 +1185,7 @@ class ProgressCelebrationWidgetState
           Container(
             height: 8,
             decoration: BoxDecoration(
-              color: AppTheme.textPrimary.withValues(alpha: 0.1),
+              color: RLTheme.textPrimary.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(4),
             ),
             child: AnimatedBuilder(
@@ -1222,7 +1228,7 @@ class ProgressCelebrationWidgetState
               child: Center(
                 child: Text(
                   'Complete Chapter',
-                  style: Typography.bodyLargeStyle.copyWith(
+                  style: RLTypography.bodyLargeStyle.copyWith(
                     color: Colors.white,
                     fontWeight: FontWeight.w600,
                     fontSize: 14,
@@ -1248,7 +1254,7 @@ class ProgressCelebrationWidgetState
                 const Spacing.width(8),
                 Text(
                   'Excellent work! +50 XP earned',
-                  style: Typography.bodyLargeStyle.copyWith(
+                  style: RLTypography.bodyLargeStyle.copyWith(
                     fontSize: 14,
                     color: Colors.amber.shade700,
                     fontWeight: FontWeight.w600,
@@ -1258,9 +1264,9 @@ class ProgressCelebrationWidgetState
               const Spacing.height(4),
               Text(
                 'You\'ve mastered the fundamentals of good design.',
-                style: Typography.bodyMediumStyle.copyWith(
+                style: RLTypography.bodyMediumStyle.copyWith(
                   fontSize: 12,
-                  color: AppTheme.textPrimary.withValues(alpha: 0.7),
+                  color: RLTheme.textPrimary.withValues(alpha: 0.7),
                   fontStyle: FontStyle.italic,
                 ),
               ),
@@ -1299,7 +1305,7 @@ class SliderRevealWidgetState extends State<SliderRevealWidget> {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: AppTheme.backgroundLight,
+        color: RLTheme.backgroundLight,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: Colors.cyan.withValues(alpha: 0.2)),
       ),
@@ -1312,7 +1318,7 @@ class SliderRevealWidgetState extends State<SliderRevealWidget> {
           Expanded(
             child: Text(
               'Slider to Reveal',
-              style: Typography.bodyLargeStyle.copyWith(
+              style: RLTypography.bodyLargeStyle.copyWith(
                 fontWeight: FontWeight.w600,
                 fontSize: 16,
               ),
@@ -1324,9 +1330,9 @@ class SliderRevealWidgetState extends State<SliderRevealWidget> {
 
         Text(
           'Adjust the design principle importance',
-          style: Typography.bodyMediumStyle.copyWith(
+          style: RLTypography.bodyMediumStyle.copyWith(
             fontSize: 12,
-            color: AppTheme.textPrimary.withValues(alpha: 0.6),
+            color: RLTheme.textPrimary.withValues(alpha: 0.6),
           ),
         ),
 
@@ -1341,7 +1347,7 @@ class SliderRevealWidgetState extends State<SliderRevealWidget> {
           child: Div.column([
             Text(
               'Simplicity in Design',
-              style: Typography.bodyLargeStyle.copyWith(
+              style: RLTypography.bodyLargeStyle.copyWith(
                 fontSize: 14,
                 fontWeight: FontWeight.w500,
                 color: Colors.cyan.shade700,
@@ -1354,7 +1360,7 @@ class SliderRevealWidgetState extends State<SliderRevealWidget> {
             SliderTheme(
               data: SliderThemeData(
                 activeTrackColor: Colors.cyan,
-                inactiveTrackColor: AppTheme.textPrimary.withValues(
+                inactiveTrackColor: RLTheme.textPrimary.withValues(
                   alpha: 0.1,
                 ),
                 thumbColor: Colors.cyan,
@@ -1382,17 +1388,17 @@ class SliderRevealWidgetState extends State<SliderRevealWidget> {
             Div.row([
               Text(
                 'Low',
-                style: Typography.bodyMediumStyle.copyWith(
+                style: RLTypography.bodyMediumStyle.copyWith(
                   fontSize: 12,
-                  color: AppTheme.textPrimary.withValues(alpha: 0.5),
+                  color: RLTheme.textPrimary.withValues(alpha: 0.5),
                 ),
               ),
               const Spacer(),
               Text(
                 'Critical',
-                style: Typography.bodyMediumStyle.copyWith(
+                style: RLTypography.bodyMediumStyle.copyWith(
                   fontSize: 12,
-                  color: AppTheme.textPrimary.withValues(alpha: 0.5),
+                  color: RLTheme.textPrimary.withValues(alpha: 0.5),
                 ),
               ),
             ]),
@@ -1417,7 +1423,7 @@ class SliderRevealWidgetState extends State<SliderRevealWidget> {
               Expanded(
                 child: Text(
                   'Exactly! Simplicity eliminates cognitive load and lets users focus on their goals.',
-                  style: Typography.bodyMediumStyle.copyWith(
+                  style: RLTypography.bodyMediumStyle.copyWith(
                     fontSize: 12,
                     color: Colors.cyan.shade700,
                     height: 1.3,
@@ -1461,7 +1467,7 @@ class MemoryCardMatchWidgetState extends State<MemoryCardMatchWidget>
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: AppTheme.backgroundLight,
+        color: RLTheme.backgroundLight,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
           color: Colors.deepPurple.withValues(alpha: 0.2),
@@ -1476,7 +1482,7 @@ class MemoryCardMatchWidgetState extends State<MemoryCardMatchWidget>
           Expanded(
             child: Text(
               'Memory Match',
-              style: Typography.bodyLargeStyle.copyWith(
+              style: RLTypography.bodyLargeStyle.copyWith(
                 fontWeight: FontWeight.w600,
                 fontSize: 16,
               ),
@@ -1485,7 +1491,7 @@ class MemoryCardMatchWidgetState extends State<MemoryCardMatchWidget>
 
           Text(
             'Matches: $matches/3',
-            style: Typography.bodyMediumStyle.copyWith(
+            style: RLTypography.bodyMediumStyle.copyWith(
               fontSize: 12,
               color: Colors.deepPurple,
               fontWeight: FontWeight.w500,
@@ -1497,9 +1503,9 @@ class MemoryCardMatchWidgetState extends State<MemoryCardMatchWidget>
 
         Text(
           'Match design principles with their descriptions',
-          style: Typography.bodyMediumStyle.copyWith(
+          style: RLTypography.bodyMediumStyle.copyWith(
             fontSize: 12,
-            color: AppTheme.textPrimary.withValues(alpha: 0.6),
+            color: RLTheme.textPrimary.withValues(alpha: 0.6),
           ),
         ),
 
@@ -1525,14 +1531,14 @@ class MemoryCardMatchWidgetState extends State<MemoryCardMatchWidget>
                       ? Colors.deepPurple.withValues(alpha: 0.1)
                       : flippedCards[index]
                       ? Colors.deepPurple.withValues(alpha: 0.05)
-                      : AppTheme.backgroundDark.withValues(alpha: 0.5),
+                      : RLTheme.backgroundDark.withValues(alpha: 0.5),
                   borderRadius: BorderRadius.circular(8),
                   border: Border.all(
                     color: matchedCards[index]
                         ? Colors.deepPurple
                         : flippedCards[index]
                         ? Colors.deepPurple.withValues(alpha: 0.5)
-                        : AppTheme.textPrimary.withValues(alpha: 0.2),
+                        : RLTheme.textPrimary.withValues(alpha: 0.2),
                     width: matchedCards[index] ? 2 : 1,
                   ),
                 ),
@@ -1543,7 +1549,7 @@ class MemoryCardMatchWidgetState extends State<MemoryCardMatchWidget>
                       flippedCards[index] || matchedCards[index]
                           ? cardPairs[index]
                           : '?',
-                      style: Typography.bodyMediumStyle.copyWith(
+                      style: RLTypography.bodyMediumStyle.copyWith(
                         fontSize:
                             flippedCards[index] || matchedCards[index]
                             ? 11
@@ -1554,8 +1560,8 @@ class MemoryCardMatchWidgetState extends State<MemoryCardMatchWidget>
                         color: matchedCards[index]
                             ? Colors.deepPurple
                             : flippedCards[index]
-                            ? AppTheme.textPrimary
-                            : AppTheme.textPrimary.withValues(
+                            ? RLTheme.textPrimary
+                            : RLTheme.textPrimary.withValues(
                                 alpha: 0.4,
                               ),
                         height: 1.2,
@@ -1575,22 +1581,22 @@ class MemoryCardMatchWidgetState extends State<MemoryCardMatchWidget>
             margin: const EdgeInsets.only(top: 16),
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: AppTheme.primaryGreen.withValues(alpha: 0.1),
+              color: RLTheme.primaryGreen.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: AppTheme.primaryGreen),
+              border: Border.all(color: RLTheme.primaryGreen),
             ),
             child: Div.row([
               const Icon(
                 Icons.celebration,
-                color: AppTheme.primaryGreen,
+                color: RLTheme.primaryGreen,
                 size: 16,
               ),
               const Spacing.width(8),
               Text(
                 'Perfect! All design principles matched! +15 Memory points',
-                style: Typography.bodyMediumStyle.copyWith(
+                style: RLTypography.bodyMediumStyle.copyWith(
                   fontSize: 12,
-                  color: AppTheme.primaryGreen,
+                  color: RLTheme.primaryGreen,
                   fontWeight: FontWeight.w500,
                 ),
               ),
@@ -1678,7 +1684,7 @@ class PriorityRankingWidgetState extends State<PriorityRankingWidget> {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: AppTheme.backgroundLight,
+        color: RLTheme.backgroundLight,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: Colors.orange.withValues(alpha: 0.2)),
       ),
@@ -1691,7 +1697,7 @@ class PriorityRankingWidgetState extends State<PriorityRankingWidget> {
           Expanded(
             child: Text(
               'Priority Ranking',
-              style: Typography.bodyLargeStyle.copyWith(
+              style: RLTypography.bodyLargeStyle.copyWith(
                 fontWeight: FontWeight.w600,
                 fontSize: 16,
               ),
@@ -1703,9 +1709,9 @@ class PriorityRankingWidgetState extends State<PriorityRankingWidget> {
 
         Text(
           'Drag to rank design priorities from most to least important',
-          style: Typography.bodyMediumStyle.copyWith(
+          style: RLTypography.bodyMediumStyle.copyWith(
             fontSize: 12,
-            color: AppTheme.textPrimary.withValues(alpha: 0.6),
+            color: RLTheme.textPrimary.withValues(alpha: 0.6),
           ),
         ),
 
@@ -1742,14 +1748,14 @@ class PriorityRankingWidgetState extends State<PriorityRankingWidget> {
               decoration: BoxDecoration(
                 color: hasSubmitted
                     ? (isCorrect
-                          ? AppTheme.primaryGreen.withValues(alpha: 0.1)
+                          ? RLTheme.primaryGreen.withValues(alpha: 0.1)
                           : Colors.orange.withValues(alpha: 0.1))
-                    : AppTheme.backgroundDark.withValues(alpha: 0.5),
+                    : RLTheme.backgroundDark.withValues(alpha: 0.5),
                 borderRadius: BorderRadius.circular(8),
                 border: Border.all(
                   color: hasSubmitted
                       ? (isCorrect
-                            ? AppTheme.primaryGreen
+                            ? RLTheme.primaryGreen
                             : Colors.orange)
                       : Colors.orange.withValues(alpha: 0.3),
                 ),
@@ -1757,12 +1763,12 @@ class PriorityRankingWidgetState extends State<PriorityRankingWidget> {
               child: Div.row([
                 Text(
                   '${index + 1}.',
-                  style: Typography.bodyMediumStyle.copyWith(
+                  style: RLTypography.bodyMediumStyle.copyWith(
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
                     color: hasSubmitted
                         ? (isCorrect
-                              ? AppTheme.primaryGreen
+                              ? RLTheme.primaryGreen
                               : Colors.orange)
                         : Colors.orange,
                   ),
@@ -1773,16 +1779,16 @@ class PriorityRankingWidgetState extends State<PriorityRankingWidget> {
                 Expanded(
                   child: Text(
                     principle,
-                    style: Typography.bodyMediumStyle.copyWith(
+                    style: RLTypography.bodyMediumStyle.copyWith(
                       fontSize: 14,
                       fontWeight: isCorrect
                           ? FontWeight.w500
                           : FontWeight.normal,
                       color: hasSubmitted
                           ? (isCorrect
-                                ? AppTheme.primaryGreen
+                                ? RLTheme.primaryGreen
                                 : Colors.orange.shade700)
-                          : AppTheme.textPrimary,
+                          : RLTheme.textPrimary,
                     ),
                   ),
                 ),
@@ -1801,7 +1807,7 @@ class PriorityRankingWidgetState extends State<PriorityRankingWidget> {
                   Icon(
                     isCorrect ? Icons.check_circle : Icons.info,
                     color: isCorrect
-                        ? AppTheme.primaryGreen
+                        ? RLTheme.primaryGreen
                         : Colors.orange,
                     size: 20,
                   ),
@@ -1826,7 +1832,7 @@ class PriorityRankingWidgetState extends State<PriorityRankingWidget> {
               child: Center(
                 child: Text(
                   'Submit Ranking',
-                  style: Typography.bodyLargeStyle.copyWith(
+                  style: RLTypography.bodyLargeStyle.copyWith(
                     color: Colors.white,
                     fontWeight: FontWeight.w600,
                     fontSize: 14,
@@ -1842,14 +1848,14 @@ class PriorityRankingWidgetState extends State<PriorityRankingWidget> {
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: AppTheme.primaryGreen.withValues(alpha: 0.1),
+              color: RLTheme.primaryGreen.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(8),
             ),
             child: Text(
               'Great thinking! Usability and accessibility should indeed come first - they ensure everyone can use the product effectively.',
-              style: Typography.bodyMediumStyle.copyWith(
+              style: RLTypography.bodyMediumStyle.copyWith(
                 fontSize: 13,
-                color: AppTheme.textPrimary.withValues(alpha: 0.8),
+                color: RLTheme.textPrimary.withValues(alpha: 0.8),
                 height: 1.4,
                 fontStyle: FontStyle.italic,
               ),
@@ -1884,7 +1890,7 @@ class BeforeAfterComparisonWidgetState
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: AppTheme.backgroundLight,
+        color: RLTheme.backgroundLight,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: Colors.pink.withValues(alpha: 0.2)),
       ),
@@ -1897,7 +1903,7 @@ class BeforeAfterComparisonWidgetState
           Expanded(
             child: Text(
               'Before/After Comparison',
-              style: Typography.bodyLargeStyle.copyWith(
+              style: RLTypography.bodyLargeStyle.copyWith(
                 fontWeight: FontWeight.w600,
                 fontSize: 16,
               ),
@@ -1924,7 +1930,7 @@ class BeforeAfterComparisonWidgetState
               ),
               child: Text(
                 showAfter ? 'AFTER' : 'BEFORE',
-                style: Typography.bodyMediumStyle.copyWith(
+                style: RLTypography.bodyMediumStyle.copyWith(
                   fontSize: 10,
                   fontWeight: FontWeight.w600,
                   color: Colors.pink,
@@ -1939,9 +1945,9 @@ class BeforeAfterComparisonWidgetState
 
         Text(
           'Tap to compare good vs bad button design',
-          style: Typography.bodyMediumStyle.copyWith(
+          style: RLTypography.bodyMediumStyle.copyWith(
             fontSize: 12,
-            color: AppTheme.textPrimary.withValues(alpha: 0.6),
+            color: RLTheme.textPrimary.withValues(alpha: 0.6),
           ),
         ),
 
@@ -1954,23 +1960,23 @@ class BeforeAfterComparisonWidgetState
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
               color: showAfter
-                  ? AppTheme.primaryGreen.withValues(alpha: 0.05)
+                  ? RLTheme.primaryGreen.withValues(alpha: 0.05)
                   : Colors.red.withValues(alpha: 0.05),
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
                 color: showAfter
-                    ? AppTheme.primaryGreen.withValues(alpha: 0.3)
+                    ? RLTheme.primaryGreen.withValues(alpha: 0.3)
                     : Colors.red.withValues(alpha: 0.3),
               ),
             ),
             child: Div.column([
               Text(
                 showAfter ? 'Good Design ✓' : 'Bad Design ✗',
-                style: Typography.bodyLargeStyle.copyWith(
+                style: RLTypography.bodyLargeStyle.copyWith(
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
                   color: showAfter
-                      ? AppTheme.primaryGreen
+                      ? RLTheme.primaryGreen
                       : Colors.red.shade700,
                 ),
                 textAlign: TextAlign.center,
@@ -1986,7 +1992,7 @@ class BeforeAfterComparisonWidgetState
                   ),
                   decoration: BoxDecoration(
                     color: showAfter
-                        ? AppTheme.primaryBlue
+                        ? RLTheme.primaryBlue
                         : Colors.grey.shade400,
                     borderRadius: BorderRadius.circular(
                       showAfter ? 8 : 0,
@@ -1994,7 +2000,7 @@ class BeforeAfterComparisonWidgetState
                     boxShadow: showAfter
                         ? [
                             BoxShadow(
-                              color: AppTheme.primaryBlue.withValues(
+                              color: RLTheme.primaryBlue.withValues(
                                 alpha: 0.3,
                               ),
                               blurRadius: 8,
@@ -2005,7 +2011,7 @@ class BeforeAfterComparisonWidgetState
                   ),
                   child: Text(
                     showAfter ? 'Download Now' : 'click here',
-                    style: Typography.bodyLargeStyle.copyWith(
+                    style: RLTypography.bodyLargeStyle.copyWith(
                       fontSize: showAfter ? 14 : 12,
                       fontWeight: showAfter
                           ? FontWeight.w600
@@ -2022,7 +2028,7 @@ class BeforeAfterComparisonWidgetState
                 showAfter
                     ? '• Clear action • Proper sizing • Good contrast • Visual hierarchy'
                     : '• Vague text • Poor sizing • Low contrast • No visual cues',
-                style: Typography.bodyMediumStyle.copyWith(
+                style: RLTypography.bodyMediumStyle.copyWith(
                   fontSize: 12,
                   color: showAfter
                       ? Colors.green.shade700
@@ -2039,9 +2045,9 @@ class BeforeAfterComparisonWidgetState
 
         Text(
           'Tap the badge above to toggle between examples',
-          style: Typography.bodyMediumStyle.copyWith(
+          style: RLTypography.bodyMediumStyle.copyWith(
             fontSize: 11,
-            color: AppTheme.textPrimary.withValues(alpha: 0.5),
+            color: RLTheme.textPrimary.withValues(alpha: 0.5),
             fontStyle: FontStyle.italic,
           ),
           textAlign: TextAlign.center,
@@ -2076,7 +2082,7 @@ class ReactionPickerWidgetState extends State<ReactionPickerWidget> {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: AppTheme.backgroundLight,
+        color: RLTheme.backgroundLight,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: Colors.green.withValues(alpha: 0.2)),
       ),
@@ -2093,7 +2099,7 @@ class ReactionPickerWidgetState extends State<ReactionPickerWidget> {
           Expanded(
             child: Text(
               'Quick Reaction',
-              style: Typography.bodyLargeStyle.copyWith(
+              style: RLTypography.bodyLargeStyle.copyWith(
                 fontWeight: FontWeight.w600,
                 fontSize: 16,
               ),
@@ -2105,9 +2111,9 @@ class ReactionPickerWidgetState extends State<ReactionPickerWidget> {
 
         Text(
           'How do you feel about this design principle?',
-          style: Typography.bodyMediumStyle.copyWith(
+          style: RLTypography.bodyMediumStyle.copyWith(
             fontSize: 12,
-            color: AppTheme.textPrimary.withValues(alpha: 0.6),
+            color: RLTheme.textPrimary.withValues(alpha: 0.6),
           ),
         ),
 
@@ -2121,7 +2127,7 @@ class ReactionPickerWidgetState extends State<ReactionPickerWidget> {
           ),
           child: Text(
             '"The best interface is no interface at all"',
-            style: Typography.bodyLargeStyle.copyWith(
+            style: RLTypography.bodyLargeStyle.copyWith(
               fontSize: 15,
               fontWeight: FontWeight.w500,
               fontStyle: FontStyle.italic,
@@ -2153,12 +2159,12 @@ class ReactionPickerWidgetState extends State<ReactionPickerWidget> {
                 decoration: BoxDecoration(
                   color: isSelected
                       ? Colors.green.withValues(alpha: 0.1)
-                      : AppTheme.backgroundDark.withValues(alpha: 0.5),
+                      : RLTheme.backgroundDark.withValues(alpha: 0.5),
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(
                     color: isSelected
                         ? Colors.green
-                        : AppTheme.textPrimary.withValues(alpha: 0.2),
+                        : RLTheme.textPrimary.withValues(alpha: 0.2),
                     width: isSelected ? 2 : 1,
                   ),
                 ),
@@ -2169,14 +2175,14 @@ class ReactionPickerWidgetState extends State<ReactionPickerWidget> {
 
                   Text(
                     label,
-                    style: Typography.bodyMediumStyle.copyWith(
+                    style: RLTypography.bodyMediumStyle.copyWith(
                       fontSize: 12,
                       fontWeight: isSelected
                           ? FontWeight.w500
                           : FontWeight.normal,
                       color: isSelected
                           ? Colors.green
-                          : AppTheme.textPrimary,
+                          : RLTheme.textPrimary,
                     ),
                   ),
                 ]),
@@ -2204,7 +2210,7 @@ class ReactionPickerWidgetState extends State<ReactionPickerWidget> {
                 const Spacing.width(8),
                 Text(
                   'Thanks for sharing! +3 Engagement points',
-                  style: Typography.bodyMediumStyle.copyWith(
+                  style: RLTypography.bodyMediumStyle.copyWith(
                     fontSize: 12,
                     color: Colors.green.shade700,
                     fontWeight: FontWeight.w500,
@@ -2214,9 +2220,9 @@ class ReactionPickerWidgetState extends State<ReactionPickerWidget> {
               const Spacing.height(4),
               Text(
                 'Your reaction helps us understand what resonates with learners.',
-                style: Typography.bodyMediumStyle.copyWith(
+                style: RLTypography.bodyMediumStyle.copyWith(
                   fontSize: 11,
-                  color: AppTheme.textPrimary.withValues(alpha: 0.7),
+                  color: RLTheme.textPrimary.withValues(alpha: 0.7),
                   fontStyle: FontStyle.italic,
                 ),
               ),
@@ -2293,7 +2299,7 @@ class KnowledgeBuilderWidgetState extends State<KnowledgeBuilderWidget>
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: AppTheme.backgroundLight,
+        color: RLTheme.backgroundLight,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: Colors.indigo.withValues(alpha: 0.2)),
       ),
@@ -2306,7 +2312,7 @@ class KnowledgeBuilderWidgetState extends State<KnowledgeBuilderWidget>
           Expanded(
             child: Text(
               'Knowledge Builder',
-              style: Typography.bodyLargeStyle.copyWith(
+              style: RLTypography.bodyLargeStyle.copyWith(
                 fontWeight: FontWeight.w600,
                 fontSize: 16,
               ),
@@ -2315,7 +2321,7 @@ class KnowledgeBuilderWidgetState extends State<KnowledgeBuilderWidget>
 
           Text(
             'Level ${currentLevel + 1}/4',
-            style: Typography.bodyMediumStyle.copyWith(
+            style: RLTypography.bodyMediumStyle.copyWith(
               fontSize: 12,
               color: Colors.indigo,
               fontWeight: FontWeight.w600,
@@ -2327,9 +2333,9 @@ class KnowledgeBuilderWidgetState extends State<KnowledgeBuilderWidget>
 
         Text(
           'Unlock design mastery step by step',
-          style: Typography.bodyMediumStyle.copyWith(
+          style: RLTypography.bodyMediumStyle.copyWith(
             fontSize: 12,
-            color: AppTheme.textPrimary.withValues(alpha: 0.6),
+            color: RLTheme.textPrimary.withValues(alpha: 0.6),
           ),
         ),
 
@@ -2360,21 +2366,21 @@ class KnowledgeBuilderWidgetState extends State<KnowledgeBuilderWidget>
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
                     color: isCompleted
-                        ? AppTheme.primaryGreen.withValues(alpha: 0.1)
+                        ? RLTheme.primaryGreen.withValues(alpha: 0.1)
                         : isCurrent
                         ? Colors.indigo.withValues(alpha: 0.1)
                         : isUnlocked
-                        ? AppTheme.backgroundDark.withValues(alpha: 0.5)
-                        : AppTheme.textPrimary.withValues(alpha: 0.05),
+                        ? RLTheme.backgroundDark.withValues(alpha: 0.5)
+                        : RLTheme.textPrimary.withValues(alpha: 0.05),
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(
                       color: isCompleted
-                          ? AppTheme.primaryGreen
+                          ? RLTheme.primaryGreen
                           : isCurrent
                           ? Colors.indigo
                           : isUnlocked
                           ? Colors.indigo.withValues(alpha: 0.3)
-                          : AppTheme.textPrimary.withValues(alpha: 0.1),
+                          : RLTheme.textPrimary.withValues(alpha: 0.1),
                       width: (isCurrent || isCompleted) ? 2 : 1,
                     ),
                   ),
@@ -2384,12 +2390,12 @@ class KnowledgeBuilderWidgetState extends State<KnowledgeBuilderWidget>
                       height: 32,
                       decoration: BoxDecoration(
                         color: isCompleted
-                            ? AppTheme.primaryGreen
+                            ? RLTheme.primaryGreen
                             : isCurrent
                             ? Colors.indigo
                             : isUnlocked
                             ? Colors.indigo.withValues(alpha: 0.3)
-                            : AppTheme.textPrimary.withValues(
+                            : RLTheme.textPrimary.withValues(
                                 alpha: 0.2,
                               ),
                         shape: BoxShape.circle,
@@ -2404,7 +2410,7 @@ class KnowledgeBuilderWidgetState extends State<KnowledgeBuilderWidget>
                             : isUnlocked
                             ? Text(
                                 '${index + 1}',
-                                style: Typography.bodyLargeStyle
+                                style: RLTypography.bodyLargeStyle
                                     .copyWith(
                                       fontSize: 14,
                                       fontWeight: FontWeight.bold,
@@ -2427,16 +2433,16 @@ class KnowledgeBuilderWidgetState extends State<KnowledgeBuilderWidget>
                       child: Div.column([
                         Text(
                           level['title']!,
-                          style: Typography.bodyLargeStyle.copyWith(
+                          style: RLTypography.bodyLargeStyle.copyWith(
                             fontSize: 14,
                             fontWeight: FontWeight.w600,
                             color: isCompleted
-                                ? AppTheme.primaryGreen
+                                ? RLTheme.primaryGreen
                                 : isCurrent
                                 ? Colors.indigo
                                 : isUnlocked
-                                ? AppTheme.textPrimary
-                                : AppTheme.textPrimary.withValues(
+                                ? RLTheme.textPrimary
+                                : RLTheme.textPrimary.withValues(
                                     alpha: 0.4,
                                   ),
                           ),
@@ -2446,13 +2452,13 @@ class KnowledgeBuilderWidgetState extends State<KnowledgeBuilderWidget>
 
                         Text(
                           level['description']!,
-                          style: Typography.bodyMediumStyle.copyWith(
+                          style: RLTypography.bodyMediumStyle.copyWith(
                             fontSize: 12,
                             color: isUnlocked
-                                ? AppTheme.textPrimary.withValues(
+                                ? RLTheme.textPrimary.withValues(
                                     alpha: 0.7,
                                   )
-                                : AppTheme.textPrimary.withValues(
+                                : RLTheme.textPrimary.withValues(
                                     alpha: 0.3,
                                   ),
                             height: 1.3,
@@ -2480,7 +2486,7 @@ class KnowledgeBuilderWidgetState extends State<KnowledgeBuilderWidget>
 
         LinearProgressIndicator(
           value: (currentLevel + 1) / levels.length,
-          backgroundColor: AppTheme.textPrimary.withValues(alpha: 0.1),
+          backgroundColor: RLTheme.textPrimary.withValues(alpha: 0.1),
           valueColor: const AlwaysStoppedAnimation<Color>(
             Colors.indigo,
           ),
@@ -2491,7 +2497,7 @@ class KnowledgeBuilderWidgetState extends State<KnowledgeBuilderWidget>
 
         Text(
           'Progress: ${((currentLevel + 1) / levels.length * 100).toInt()}% complete',
-          style: Typography.bodyMediumStyle.copyWith(
+          style: RLTypography.bodyMediumStyle.copyWith(
             fontSize: 11,
             color: Colors.indigo,
             fontWeight: FontWeight.w500,
@@ -2538,7 +2544,7 @@ class TimelineBuilderWidgetState extends State<TimelineBuilderWidget> {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: AppTheme.backgroundLight,
+        color: RLTheme.backgroundLight,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: Colors.brown.withValues(alpha: 0.2)),
       ),
@@ -2551,7 +2557,7 @@ class TimelineBuilderWidgetState extends State<TimelineBuilderWidget> {
           Expanded(
             child: Text(
               'Timeline Builder',
-              style: Typography.bodyLargeStyle.copyWith(
+              style: RLTypography.bodyLargeStyle.copyWith(
                 fontWeight: FontWeight.w600,
                 fontSize: 16,
               ),
@@ -2563,9 +2569,9 @@ class TimelineBuilderWidgetState extends State<TimelineBuilderWidget> {
 
         Text(
           'Drag to arrange the design process in correct order',
-          style: Typography.bodyMediumStyle.copyWith(
+          style: RLTypography.bodyMediumStyle.copyWith(
             fontSize: 12,
-            color: AppTheme.textPrimary.withValues(alpha: 0.6),
+            color: RLTheme.textPrimary.withValues(alpha: 0.6),
           ),
         ),
 
@@ -2586,11 +2592,9 @@ class TimelineBuilderWidgetState extends State<TimelineBuilderWidget> {
               ? Center(
                   child: Text(
                     'Drop events here to build timeline',
-                    style: Typography.bodyMediumStyle.copyWith(
+                    style: RLTypography.bodyMediumStyle.copyWith(
                       fontSize: 12,
-                      color: AppTheme.textPrimary.withValues(
-                        alpha: 0.4,
-                      ),
+                      color: RLTheme.textPrimary.withValues(alpha: 0.4),
                       fontStyle: FontStyle.italic,
                     ),
                   ),
@@ -2629,7 +2633,7 @@ class TimelineBuilderWidgetState extends State<TimelineBuilderWidget> {
                               ),
                               child: Text(
                                 event,
-                                style: Typography.bodyMediumStyle
+                                style: RLTypography.bodyMediumStyle
                                     .copyWith(
                                       fontSize: 10,
                                       color: Colors.brown.shade700,
@@ -2651,7 +2655,7 @@ class TimelineBuilderWidgetState extends State<TimelineBuilderWidget> {
 
         Text(
           'Available Events:',
-          style: Typography.bodyMediumStyle.copyWith(
+          style: RLTypography.bodyMediumStyle.copyWith(
             fontSize: 12,
             fontWeight: FontWeight.w600,
             color: Colors.brown,
@@ -2679,9 +2683,7 @@ class TimelineBuilderWidgetState extends State<TimelineBuilderWidget> {
                   decoration: BoxDecoration(
                     color: isUsed
                         ? Colors.grey.withValues(alpha: 0.1)
-                        : AppTheme.backgroundDark.withValues(
-                            alpha: 0.5,
-                          ),
+                        : RLTheme.backgroundDark.withValues(alpha: 0.5),
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(
                       color: isUsed
@@ -2691,11 +2693,11 @@ class TimelineBuilderWidgetState extends State<TimelineBuilderWidget> {
                   ),
                   child: Text(
                     event,
-                    style: Typography.bodyMediumStyle.copyWith(
+                    style: RLTypography.bodyMediumStyle.copyWith(
                       fontSize: 12,
                       color: isUsed
-                          ? AppTheme.textPrimary.withValues(alpha: 0.4)
-                          : AppTheme.textPrimary,
+                          ? RLTheme.textPrimary.withValues(alpha: 0.4)
+                          : RLTheme.textPrimary,
                     ),
                   ),
                 ),
@@ -2710,22 +2712,22 @@ class TimelineBuilderWidgetState extends State<TimelineBuilderWidget> {
             margin: const EdgeInsets.only(top: 16),
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: AppTheme.primaryGreen.withValues(alpha: 0.1),
+              color: RLTheme.primaryGreen.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: AppTheme.primaryGreen),
+              border: Border.all(color: RLTheme.primaryGreen),
             ),
             child: Div.row([
               const Icon(
                 Icons.check_circle,
-                color: AppTheme.primaryGreen,
+                color: RLTheme.primaryGreen,
                 size: 16,
               ),
               const Spacing.width(8),
               Text(
                 'Perfect timeline! You understand the design process. +12 Process points',
-                style: Typography.bodyMediumStyle.copyWith(
+                style: RLTypography.bodyMediumStyle.copyWith(
                   fontSize: 12,
-                  color: AppTheme.primaryGreen,
+                  color: RLTheme.primaryGreen,
                   fontWeight: FontWeight.w500,
                 ),
               ),
@@ -2812,7 +2814,7 @@ class WordAssociationWidgetState extends State<WordAssociationWidget> {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: AppTheme.backgroundLight,
+        color: RLTheme.backgroundLight,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: Colors.blue.withValues(alpha: 0.2)),
       ),
@@ -2825,7 +2827,7 @@ class WordAssociationWidgetState extends State<WordAssociationWidget> {
           Expanded(
             child: Text(
               'Word Association',
-              style: Typography.bodyLargeStyle.copyWith(
+              style: RLTypography.bodyLargeStyle.copyWith(
                 fontWeight: FontWeight.w600,
                 fontSize: 16,
               ),
@@ -2837,9 +2839,9 @@ class WordAssociationWidgetState extends State<WordAssociationWidget> {
 
         Text(
           'Connect words that relate to the central concept',
-          style: Typography.bodyMediumStyle.copyWith(
+          style: RLTypography.bodyMediumStyle.copyWith(
             fontSize: 12,
-            color: AppTheme.textPrimary.withValues(alpha: 0.6),
+            color: RLTheme.textPrimary.withValues(alpha: 0.6),
           ),
         ),
 
@@ -2856,7 +2858,7 @@ class WordAssociationWidgetState extends State<WordAssociationWidget> {
             ),
             child: Text(
               centralWord,
-              style: Typography.bodyLargeStyle.copyWith(
+              style: RLTypography.bodyLargeStyle.copyWith(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
                 color: Colors.blue.shade700,
@@ -2882,11 +2884,9 @@ class WordAssociationWidgetState extends State<WordAssociationWidget> {
               ? Center(
                   child: Text(
                     'Tap words below to add associations',
-                    style: Typography.bodyMediumStyle.copyWith(
+                    style: RLTypography.bodyMediumStyle.copyWith(
                       fontSize: 12,
-                      color: AppTheme.textPrimary.withValues(
-                        alpha: 0.4,
-                      ),
+                      color: RLTheme.textPrimary.withValues(alpha: 0.4),
                       fontStyle: FontStyle.italic,
                     ),
                   ),
@@ -2906,34 +2906,35 @@ class WordAssociationWidgetState extends State<WordAssociationWidget> {
                         ),
                         decoration: BoxDecoration(
                           color: isCorrect
-                              ? AppTheme.primaryGreen.withValues(
+                              ? RLTheme.primaryGreen.withValues(
                                   alpha: 0.1,
                                 )
                               : Colors.red.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(12),
                           border: Border.all(
                             color: isCorrect
-                                ? AppTheme.primaryGreen
+                                ? RLTheme.primaryGreen
                                 : Colors.red,
                           ),
                         ),
                         child: Div.row([
                           Text(
                             word,
-                            style: Typography.bodyMediumStyle.copyWith(
-                              fontSize: 12,
-                              color: isCorrect
-                                  ? AppTheme.primaryGreen
-                                  : Colors.red.shade700,
-                              fontWeight: FontWeight.w500,
-                            ),
+                            style: RLTypography.bodyMediumStyle
+                                .copyWith(
+                                  fontSize: 12,
+                                  color: isCorrect
+                                      ? RLTheme.primaryGreen
+                                      : Colors.red.shade700,
+                                  fontWeight: FontWeight.w500,
+                                ),
                           ),
                           const Spacing.width(4),
                           Icon(
                             isCorrect ? Icons.check : Icons.close,
                             size: 14,
                             color: isCorrect
-                                ? AppTheme.primaryGreen
+                                ? RLTheme.primaryGreen
                                 : Colors.red,
                           ),
                         ]),
@@ -2947,7 +2948,7 @@ class WordAssociationWidgetState extends State<WordAssociationWidget> {
 
         Text(
           'Available Words:',
-          style: Typography.bodyMediumStyle.copyWith(
+          style: RLTypography.bodyMediumStyle.copyWith(
             fontSize: 12,
             fontWeight: FontWeight.w600,
             color: Colors.blue,
@@ -2975,9 +2976,7 @@ class WordAssociationWidgetState extends State<WordAssociationWidget> {
                   decoration: BoxDecoration(
                     color: isUsed
                         ? Colors.grey.withValues(alpha: 0.1)
-                        : AppTheme.backgroundDark.withValues(
-                            alpha: 0.5,
-                          ),
+                        : RLTheme.backgroundDark.withValues(alpha: 0.5),
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(
                       color: isUsed
@@ -2987,11 +2986,11 @@ class WordAssociationWidgetState extends State<WordAssociationWidget> {
                   ),
                   child: Text(
                     word,
-                    style: Typography.bodyMediumStyle.copyWith(
+                    style: RLTypography.bodyMediumStyle.copyWith(
                       fontSize: 12,
                       color: isUsed
-                          ? AppTheme.textPrimary.withValues(alpha: 0.4)
-                          : AppTheme.textPrimary,
+                          ? RLTheme.textPrimary.withValues(alpha: 0.4)
+                          : RLTheme.textPrimary,
                     ),
                   ),
                 ),
@@ -3009,22 +3008,22 @@ class WordAssociationWidgetState extends State<WordAssociationWidget> {
             margin: const EdgeInsets.only(top: 16),
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: AppTheme.primaryGreen.withValues(alpha: 0.1),
+              color: RLTheme.primaryGreen.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: AppTheme.primaryGreen),
+              border: Border.all(color: RLTheme.primaryGreen),
             ),
             child: Div.row([
               const Icon(
                 Icons.psychology,
-                color: AppTheme.primaryGreen,
+                color: RLTheme.primaryGreen,
                 size: 16,
               ),
               const Spacing.width(8),
               Text(
                 'Excellent associations! You understand usability principles. +8 Concept points',
-                style: Typography.bodyMediumStyle.copyWith(
+                style: RLTypography.bodyMediumStyle.copyWith(
                   fontSize: 12,
-                  color: AppTheme.primaryGreen,
+                  color: RLTheme.primaryGreen,
                   fontWeight: FontWeight.w500,
                 ),
               ),
@@ -3071,7 +3070,7 @@ class DialAdjustmentWidgetState extends State<DialAdjustmentWidget> {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: AppTheme.backgroundLight,
+        color: RLTheme.backgroundLight,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: Colors.purple.withValues(alpha: 0.2)),
       ),
@@ -3084,7 +3083,7 @@ class DialAdjustmentWidgetState extends State<DialAdjustmentWidget> {
           Expanded(
             child: Text(
               'Design Balance Dial',
-              style: Typography.bodyLargeStyle.copyWith(
+              style: RLTypography.bodyLargeStyle.copyWith(
                 fontWeight: FontWeight.w600,
                 fontSize: 16,
               ),
@@ -3096,9 +3095,9 @@ class DialAdjustmentWidgetState extends State<DialAdjustmentWidget> {
 
         Text(
           'Adjust both dials to find the optimal design balance',
-          style: Typography.bodyMediumStyle.copyWith(
+          style: RLTypography.bodyMediumStyle.copyWith(
             fontSize: 12,
-            color: AppTheme.textPrimary.withValues(alpha: 0.6),
+            color: RLTheme.textPrimary.withValues(alpha: 0.6),
           ),
         ),
 
@@ -3109,7 +3108,7 @@ class DialAdjustmentWidgetState extends State<DialAdjustmentWidget> {
           Div.row([
             Text(
               'Complexity',
-              style: Typography.bodyMediumStyle.copyWith(
+              style: RLTypography.bodyMediumStyle.copyWith(
                 fontSize: 14,
                 fontWeight: FontWeight.w500,
                 color: Colors.purple,
@@ -3118,7 +3117,7 @@ class DialAdjustmentWidgetState extends State<DialAdjustmentWidget> {
             const Spacer(),
             Text(
               '${complexityLevel.round()}%',
-              style: Typography.bodyMediumStyle.copyWith(
+              style: RLTypography.bodyMediumStyle.copyWith(
                 fontSize: 14,
                 fontWeight: FontWeight.w600,
                 color: Colors.purple.shade700,
@@ -3131,7 +3130,7 @@ class DialAdjustmentWidgetState extends State<DialAdjustmentWidget> {
           SliderTheme(
             data: SliderThemeData(
               activeTrackColor: Colors.purple,
-              inactiveTrackColor: AppTheme.textPrimary.withValues(
+              inactiveTrackColor: RLTheme.textPrimary.withValues(
                 alpha: 0.1,
               ),
               thumbColor: Colors.purple,
@@ -3156,17 +3155,17 @@ class DialAdjustmentWidgetState extends State<DialAdjustmentWidget> {
           Div.row([
             Text(
               'Simple',
-              style: Typography.bodyMediumStyle.copyWith(
+              style: RLTypography.bodyMediumStyle.copyWith(
                 fontSize: 11,
-                color: AppTheme.textPrimary.withValues(alpha: 0.5),
+                color: RLTheme.textPrimary.withValues(alpha: 0.5),
               ),
             ),
             const Spacer(),
             Text(
               'Complex',
-              style: Typography.bodyMediumStyle.copyWith(
+              style: RLTypography.bodyMediumStyle.copyWith(
                 fontSize: 11,
-                color: AppTheme.textPrimary.withValues(alpha: 0.5),
+                color: RLTheme.textPrimary.withValues(alpha: 0.5),
               ),
             ),
           ]),
@@ -3179,7 +3178,7 @@ class DialAdjustmentWidgetState extends State<DialAdjustmentWidget> {
           Div.row([
             Text(
               'Usability',
-              style: Typography.bodyMediumStyle.copyWith(
+              style: RLTypography.bodyMediumStyle.copyWith(
                 fontSize: 14,
                 fontWeight: FontWeight.w500,
                 color: Colors.purple,
@@ -3188,7 +3187,7 @@ class DialAdjustmentWidgetState extends State<DialAdjustmentWidget> {
             const Spacer(),
             Text(
               '${usabilityLevel.round()}%',
-              style: Typography.bodyMediumStyle.copyWith(
+              style: RLTypography.bodyMediumStyle.copyWith(
                 fontSize: 14,
                 fontWeight: FontWeight.w600,
                 color: Colors.purple.shade700,
@@ -3201,7 +3200,7 @@ class DialAdjustmentWidgetState extends State<DialAdjustmentWidget> {
           SliderTheme(
             data: SliderThemeData(
               activeTrackColor: Colors.purple,
-              inactiveTrackColor: AppTheme.textPrimary.withValues(
+              inactiveTrackColor: RLTheme.textPrimary.withValues(
                 alpha: 0.1,
               ),
               thumbColor: Colors.purple,
@@ -3226,17 +3225,17 @@ class DialAdjustmentWidgetState extends State<DialAdjustmentWidget> {
           Div.row([
             Text(
               'Difficult',
-              style: Typography.bodyMediumStyle.copyWith(
+              style: RLTypography.bodyMediumStyle.copyWith(
                 fontSize: 11,
-                color: AppTheme.textPrimary.withValues(alpha: 0.5),
+                color: RLTheme.textPrimary.withValues(alpha: 0.5),
               ),
             ),
             const Spacer(),
             Text(
               'Easy',
-              style: Typography.bodyMediumStyle.copyWith(
+              style: RLTypography.bodyMediumStyle.copyWith(
                 fontSize: 11,
-                color: AppTheme.textPrimary.withValues(alpha: 0.5),
+                color: RLTheme.textPrimary.withValues(alpha: 0.5),
               ),
             ),
           ]),
@@ -3249,17 +3248,17 @@ class DialAdjustmentWidgetState extends State<DialAdjustmentWidget> {
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
             color: isOptimal
-                ? AppTheme.primaryGreen.withValues(alpha: 0.1)
+                ? RLTheme.primaryGreen.withValues(alpha: 0.1)
                 : Colors.orange.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(8),
             border: Border.all(
-              color: isOptimal ? AppTheme.primaryGreen : Colors.orange,
+              color: isOptimal ? RLTheme.primaryGreen : Colors.orange,
             ),
           ),
           child: Div.row([
             Icon(
               isOptimal ? Icons.balance : Icons.warning,
-              color: isOptimal ? AppTheme.primaryGreen : Colors.orange,
+              color: isOptimal ? RLTheme.primaryGreen : Colors.orange,
               size: 16,
             ),
             const Spacing.width(8),
@@ -3268,10 +3267,10 @@ class DialAdjustmentWidgetState extends State<DialAdjustmentWidget> {
                 isOptimal
                     ? 'Perfect balance! Low complexity + high usability = great design'
                     : 'Try adjusting: aim for simple and easy to use',
-                style: Typography.bodyMediumStyle.copyWith(
+                style: RLTypography.bodyMediumStyle.copyWith(
                   fontSize: 12,
                   color: isOptimal
-                      ? AppTheme.primaryGreen
+                      ? RLTheme.primaryGreen
                       : Colors.orange.shade700,
                   fontWeight: FontWeight.w500,
                   height: 1.3,
@@ -3287,14 +3286,14 @@ class DialAdjustmentWidgetState extends State<DialAdjustmentWidget> {
             margin: const EdgeInsets.only(top: 8),
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: AppTheme.primaryGreen.withValues(alpha: 0.1),
+              color: RLTheme.primaryGreen.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(8),
             ),
             child: Text(
               'Excellent! You found the sweet spot where designs are both simple and usable. +10 Balance points',
-              style: Typography.bodyMediumStyle.copyWith(
+              style: RLTypography.bodyMediumStyle.copyWith(
                 fontSize: 12,
-                color: AppTheme.primaryGreen,
+                color: RLTheme.primaryGreen,
                 fontWeight: FontWeight.w500,
                 height: 1.3,
               ),
@@ -3388,7 +3387,7 @@ class StoryBranchingWidgetState extends State<StoryBranchingWidget> {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: AppTheme.backgroundLight,
+        color: RLTheme.backgroundLight,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: Colors.teal.withValues(alpha: 0.2)),
       ),
@@ -3401,7 +3400,7 @@ class StoryBranchingWidgetState extends State<StoryBranchingWidget> {
           Expanded(
             child: Text(
               'Design Story Path',
-              style: Typography.bodyLargeStyle.copyWith(
+              style: RLTypography.bodyLargeStyle.copyWith(
                 fontWeight: FontWeight.w600,
                 fontSize: 16,
               ),
@@ -3410,7 +3409,7 @@ class StoryBranchingWidgetState extends State<StoryBranchingWidget> {
 
           Text(
             'Chapter ${storyPath.length + 1}',
-            style: Typography.bodyMediumStyle.copyWith(
+            style: RLTypography.bodyMediumStyle.copyWith(
               fontSize: 12,
               color: Colors.teal,
               fontWeight: FontWeight.w500,
@@ -3422,9 +3421,9 @@ class StoryBranchingWidgetState extends State<StoryBranchingWidget> {
 
         Text(
           'Choose how the design story unfolds',
-          style: Typography.bodyMediumStyle.copyWith(
+          style: RLTypography.bodyMediumStyle.copyWith(
             fontSize: 12,
-            color: AppTheme.textPrimary.withValues(alpha: 0.6),
+            color: RLTheme.textPrimary.withValues(alpha: 0.6),
           ),
         ),
 
@@ -3439,10 +3438,10 @@ class StoryBranchingWidgetState extends State<StoryBranchingWidget> {
           ),
           child: Text(
             currentNode['text'],
-            style: Typography.bodyLargeStyle.copyWith(
+            style: RLTypography.bodyLargeStyle.copyWith(
               fontSize: 14,
               height: 1.5,
-              color: AppTheme.textPrimary,
+              color: RLTheme.textPrimary,
             ),
           ),
         ),
@@ -3472,7 +3471,7 @@ class StoryBranchingWidgetState extends State<StoryBranchingWidget> {
                 const Spacing.width(8),
                 Text(
                   getEndingTitle(currentNode['ending']),
-                  style: Typography.bodyLargeStyle.copyWith(
+                  style: RLTypography.bodyLargeStyle.copyWith(
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
                     color: getEndingColor(currentNode['ending']),
@@ -3484,9 +3483,9 @@ class StoryBranchingWidgetState extends State<StoryBranchingWidget> {
 
               Text(
                 getEndingMessage(currentNode['ending']),
-                style: Typography.bodyMediumStyle.copyWith(
+                style: RLTypography.bodyMediumStyle.copyWith(
                   fontSize: 12,
-                  color: AppTheme.textPrimary.withValues(alpha: 0.8),
+                  color: RLTheme.textPrimary.withValues(alpha: 0.8),
                   height: 1.3,
                 ),
               ),
@@ -3506,7 +3505,7 @@ class StoryBranchingWidgetState extends State<StoryBranchingWidget> {
               child: Center(
                 child: Text(
                   'Try Different Choices',
-                  style: Typography.bodyLargeStyle.copyWith(
+                  style: RLTypography.bodyLargeStyle.copyWith(
                     color: Colors.white,
                     fontWeight: FontWeight.w600,
                     fontSize: 14,
@@ -3529,7 +3528,7 @@ class StoryBranchingWidgetState extends State<StoryBranchingWidget> {
                     vertical: 12,
                   ),
                   decoration: BoxDecoration(
-                    color: AppTheme.backgroundDark.withValues(
+                    color: RLTheme.backgroundDark.withValues(
                       alpha: 0.5,
                     ),
                     borderRadius: BorderRadius.circular(8),
@@ -3541,9 +3540,9 @@ class StoryBranchingWidgetState extends State<StoryBranchingWidget> {
                     Expanded(
                       child: Text(
                         choiceMap['text'] as String,
-                        style: Typography.bodyMediumStyle.copyWith(
+                        style: RLTypography.bodyMediumStyle.copyWith(
                           fontSize: 13,
-                          color: AppTheme.textPrimary,
+                          color: RLTheme.textPrimary,
                         ),
                       ),
                     ),
@@ -3565,7 +3564,7 @@ class StoryBranchingWidgetState extends State<StoryBranchingWidget> {
   Color getEndingColor(String ending) {
     switch (ending) {
       case 'success':
-        return AppTheme.primaryGreen;
+        return RLTheme.primaryGreen;
       case 'partial':
         return Colors.orange;
       case 'failure':
@@ -3657,7 +3656,7 @@ class PatternRecognitionWidgetState
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: AppTheme.backgroundLight,
+        color: RLTheme.backgroundLight,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: Colors.red.withValues(alpha: 0.2)),
       ),
@@ -3670,7 +3669,7 @@ class PatternRecognitionWidgetState
           Expanded(
             child: Text(
               'Pattern Recognition',
-              style: Typography.bodyLargeStyle.copyWith(
+              style: RLTypography.bodyLargeStyle.copyWith(
                 fontWeight: FontWeight.w600,
                 fontSize: 16,
               ),
@@ -3682,9 +3681,9 @@ class PatternRecognitionWidgetState
 
         Text(
           'Identify repeated design patterns in the sequence',
-          style: Typography.bodyMediumStyle.copyWith(
+          style: RLTypography.bodyMediumStyle.copyWith(
             fontSize: 12,
-            color: AppTheme.textPrimary.withValues(alpha: 0.6),
+            color: RLTheme.textPrimary.withValues(alpha: 0.6),
           ),
         ),
 
@@ -3700,7 +3699,7 @@ class PatternRecognitionWidgetState
           child: Div.column([
             Text(
               'Design Pattern Sequence:',
-              style: Typography.bodyMediumStyle.copyWith(
+              style: RLTypography.bodyMediumStyle.copyWith(
                 fontSize: 12,
                 fontWeight: FontWeight.w600,
                 color: Colors.red,
@@ -3730,32 +3729,32 @@ class PatternRecognitionWidgetState
                     decoration: BoxDecoration(
                       color: hasSubmitted
                           ? (isRepeated
-                                ? AppTheme.primaryGreen.withValues(
+                                ? RLTheme.primaryGreen.withValues(
                                     alpha: 0.1,
                                   )
                                 : (isSelected
                                       ? Colors.red.withValues(
                                           alpha: 0.1,
                                         )
-                                      : AppTheme.backgroundDark
+                                      : RLTheme.backgroundDark
                                             .withValues(alpha: 0.5)))
                           : (isSelected
                                 ? Colors.red.withValues(alpha: 0.1)
-                                : AppTheme.backgroundDark.withValues(
+                                : RLTheme.backgroundDark.withValues(
                                     alpha: 0.5,
                                   )),
                       borderRadius: BorderRadius.circular(8),
                       border: Border.all(
                         color: hasSubmitted
                             ? (isRepeated
-                                  ? AppTheme.primaryGreen
+                                  ? RLTheme.primaryGreen
                                   : (isSelected
                                         ? Colors.red
-                                        : AppTheme.textPrimary
+                                        : RLTheme.textPrimary
                                               .withValues(alpha: 0.2)))
                             : (isSelected
                                   ? Colors.red
-                                  : AppTheme.textPrimary.withValues(
+                                  : RLTheme.textPrimary.withValues(
                                       alpha: 0.2,
                                     )),
                         width: hasSubmitted && isRepeated ? 2 : 1,
@@ -3764,17 +3763,17 @@ class PatternRecognitionWidgetState
                     child: Div.row([
                       Text(
                         '${index + 1}. $pattern',
-                        style: Typography.bodyMediumStyle.copyWith(
+                        style: RLTypography.bodyMediumStyle.copyWith(
                           fontSize: 12,
                           color: hasSubmitted
                               ? (isRepeated
-                                    ? AppTheme.primaryGreen
+                                    ? RLTheme.primaryGreen
                                     : (isSelected
                                           ? Colors.red.shade700
-                                          : AppTheme.textPrimary))
+                                          : RLTheme.textPrimary))
                               : (isSelected
                                     ? Colors.red
-                                    : AppTheme.textPrimary),
+                                    : RLTheme.textPrimary),
                           fontWeight: hasSubmitted && isRepeated
                               ? FontWeight.w600
                               : FontWeight.normal,
@@ -3793,10 +3792,10 @@ class PatternRecognitionWidgetState
                                 : Icons.circle_outlined,
                             size: 16,
                             color: isRepeated
-                                ? AppTheme.primaryGreen
+                                ? RLTheme.primaryGreen
                                 : isSelected
                                 ? Colors.red
-                                : AppTheme.textPrimary.withValues(
+                                : RLTheme.textPrimary.withValues(
                                     alpha: 0.3,
                                   ),
                           ),
@@ -3825,7 +3824,7 @@ class PatternRecognitionWidgetState
               child: Center(
                 child: Text(
                   'Check Pattern Recognition',
-                  style: Typography.bodyLargeStyle.copyWith(
+                  style: RLTypography.bodyLargeStyle.copyWith(
                     color: Colors.white,
                     fontWeight: FontWeight.w600,
                     fontSize: 14,
@@ -3842,12 +3841,12 @@ class PatternRecognitionWidgetState
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
               color: score >= 2
-                  ? AppTheme.primaryGreen.withValues(alpha: 0.1)
+                  ? RLTheme.primaryGreen.withValues(alpha: 0.1)
                   : Colors.orange.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(8),
               border: Border.all(
                 color: score >= 2
-                    ? AppTheme.primaryGreen
+                    ? RLTheme.primaryGreen
                     : Colors.orange,
               ),
             ),
@@ -3856,7 +3855,7 @@ class PatternRecognitionWidgetState
                 Icon(
                   score >= 2 ? Icons.visibility : Icons.psychology,
                   color: score >= 2
-                      ? AppTheme.primaryGreen
+                      ? RLTheme.primaryGreen
                       : Colors.orange,
                   size: 16,
                 ),
@@ -3865,10 +3864,10 @@ class PatternRecognitionWidgetState
                   score >= 2
                       ? 'Great pattern recognition!'
                       : 'Pattern recognition needs practice',
-                  style: Typography.bodyMediumStyle.copyWith(
+                  style: RLTypography.bodyMediumStyle.copyWith(
                     fontSize: 12,
                     color: score >= 2
-                        ? AppTheme.primaryGreen
+                        ? RLTheme.primaryGreen
                         : Colors.orange.shade700,
                     fontWeight: FontWeight.w600,
                   ),
@@ -3879,9 +3878,9 @@ class PatternRecognitionWidgetState
 
               Text(
                 'You identified $score/2 repeated patterns. ${score >= 2 ? "+12 Recognition points" : "+6 Recognition points for trying"}',
-                style: Typography.bodyMediumStyle.copyWith(
+                style: RLTypography.bodyMediumStyle.copyWith(
                   fontSize: 11,
-                  color: AppTheme.textPrimary.withValues(alpha: 0.7),
+                  color: RLTheme.textPrimary.withValues(alpha: 0.7),
                 ),
               ),
             ]),

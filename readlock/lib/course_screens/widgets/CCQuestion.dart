@@ -9,9 +9,14 @@ import 'package:readlock/constants/typography.dart';
 import 'package:readlock/constants/appTheme.dart';
 import 'package:readlock/utility_widgets/ExplanationDialog.dart';
 
-enum OptionButtonState { normal, selected, correctAndAnswered, incorrectAndAnswered }
+enum OptionButtonState {
+  normal,
+  selected,
+  correctAndAnswered,
+  incorrectAndAnswered,
+}
 
-class QuestionContentWidget extends StatefulWidget {
+class CCQuestion extends StatefulWidget {
   static const double QUESTION_SECTION_SPACING = 24.0;
   static const double OPTION_BUTTON_SPACING = 16.0;
 
@@ -19,18 +24,17 @@ class QuestionContentWidget extends StatefulWidget {
   final void Function(int selectedIndex, bool isCorrect)
   onAnswerSelected;
 
-  const QuestionContentWidget({
+  const CCQuestion({
     super.key,
     required this.content,
     required this.onAnswerSelected,
   });
 
   @override
-  State<QuestionContentWidget> createState() =>
-      QuestionContentWidgetState();
+  State<CCQuestion> createState() => CCQuestionState();
 }
 
-class QuestionContentWidgetState extends State<QuestionContentWidget> {
+class CCQuestionState extends State<CCQuestion> {
   int? selectedAnswerIndex;
   bool hasAnsweredQuestion = false;
 
@@ -47,32 +51,27 @@ class QuestionContentWidgetState extends State<QuestionContentWidget> {
     size: 16,
   );
 
-
   @override
   Widget build(BuildContext context) {
     return Div.column(
       [
         QuestionText(),
 
-        const Spacing.height(
-          QuestionContentWidget.QUESTION_SECTION_SPACING,
-        ),
+        const Spacing.height(CCQuestion.QUESTION_SECTION_SPACING),
 
         OptionsList(),
 
-        const Spacing.height(
-          QuestionContentWidget.QUESTION_SECTION_SPACING,
-        ),
+        const Spacing.height(CCQuestion.QUESTION_SECTION_SPACING),
       ],
-      color: AppTheme.backgroundDark,
-      padding: Constants.COURSE_SECTION_PADDING,
+      color: RLTheme.backgroundDark,
+      padding: RLConstants.COURSE_SECTION_PADDING,
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.center,
     );
   }
 
   Widget QuestionText() {
-    return Typography.bodyLarge(widget.content.question);
+    return RLTypography.bodyLarge(widget.content.question);
   }
 
   Widget OptionsList() {
@@ -87,9 +86,7 @@ class QuestionContentWidgetState extends State<QuestionContentWidget> {
       return Div.column([
         OptionButton(optionIndex, option),
 
-        const Spacing.height(
-          QuestionContentWidget.OPTION_BUTTON_SPACING,
-        ),
+        const Spacing.height(CCQuestion.OPTION_BUTTON_SPACING),
       ]);
     }).toList();
   }
@@ -102,7 +99,7 @@ class QuestionContentWidgetState extends State<QuestionContentWidget> {
       buttonState,
     );
     final Color textColor =
-        OptionTextStyle(buttonState).color ?? AppTheme.textPrimary;
+        OptionTextStyle(buttonState).color ?? RLTheme.textPrimary;
 
     return Div.row([
       Expanded(
@@ -111,13 +108,13 @@ class QuestionContentWidgetState extends State<QuestionContentWidget> {
             CorrectAnswerIcon(buttonState),
 
             Expanded(
-              child: Typography.bodyLarge(
+              child: RLTypography.bodyLarge(
                 option.text,
                 color: textColor,
               ),
             ),
           ],
-          padding: AppTheme.contentPaddingMediumInsets,
+          padding: RLTheme.contentPaddingMediumInsets,
           decoration: optionDecoration,
           onTap: hasAnsweredQuestion
               ? null
@@ -153,12 +150,13 @@ class QuestionContentWidgetState extends State<QuestionContentWidget> {
 
   BoxDecoration OptionDecoration(OptionButtonState state) {
     final Color themeColor = getThemeColorForState(state);
-    final bool isCorrect = state == OptionButtonState.correctAndAnswered;
+    final bool isCorrect =
+        state == OptionButtonState.correctAndAnswered;
 
     return Style.optionDecoration.copyWith(
       border: Border.all(color: themeColor, width: 2),
-      color: isCorrect 
-          ? AppTheme.primaryGreen.withValues(alpha: 0.1)
+      color: isCorrect
+          ? RLTheme.primaryGreen.withValues(alpha: 0.1)
           : Style.optionDecoration.color,
     );
   }
@@ -167,14 +165,16 @@ class QuestionContentWidgetState extends State<QuestionContentWidget> {
     final bool isSelected =
         state == OptionButtonState.selected ||
         state == OptionButtonState.correctAndAnswered;
-    final bool isCorrect = state == OptionButtonState.correctAndAnswered;
-    final bool isIncorrect = state == OptionButtonState.incorrectAndAnswered;
+    final bool isCorrect =
+        state == OptionButtonState.correctAndAnswered;
+    final bool isIncorrect =
+        state == OptionButtonState.incorrectAndAnswered;
 
     Color? textColor;
     if (isCorrect) {
-      textColor = AppTheme.primaryGreen;
+      textColor = RLTheme.primaryGreen;
     } else if (isIncorrect) {
-      textColor = AppTheme.textPrimary.withValues(alpha: 0.3);
+      textColor = RLTheme.textPrimary.withValues(alpha: 0.3);
     } else {
       textColor = Style.optionTextStyle.color;
     }
@@ -194,19 +194,19 @@ class QuestionContentWidgetState extends State<QuestionContentWidget> {
     switch (state) {
       case OptionButtonState.correctAndAnswered:
         {
-          return AppTheme.primaryGreen;
+          return RLTheme.primaryGreen;
         }
       case OptionButtonState.selected:
         {
-          return AppTheme.primaryBlue;
+          return RLTheme.primaryBlue;
         }
       case OptionButtonState.incorrectAndAnswered:
         {
-          return AppTheme.textPrimary.withValues(alpha: 0.1);
+          return RLTheme.textPrimary.withValues(alpha: 0.1);
         }
       case OptionButtonState.normal:
         {
-          return AppTheme.textPrimary.withValues(alpha: 0.2);
+          return RLTheme.textPrimary.withValues(alpha: 0.2);
         }
     }
   }
@@ -224,13 +224,16 @@ class QuestionContentWidgetState extends State<QuestionContentWidget> {
 
         const Spacing.width(8),
 
-        Typography.bodyMedium('Incorrect', color: Colors.white),
+        RLTypography.bodyMedium('Incorrect', color: Colors.white),
 
         const Spacer(),
 
         TextButton(
           onPressed: showHintDialog,
-          child: Typography.bodyMedium('Hint it?', color: Colors.white),
+          child: RLTypography.bodyMedium(
+            'Hint it?',
+            color: Colors.white,
+          ),
         ),
       ]),
       backgroundColor: Colors.grey.shade600,
@@ -304,13 +307,13 @@ class QuestionContentWidgetState extends State<QuestionContentWidget> {
 
         const Spacing.width(8),
 
-        Typography.bodyMedium('+5 Aha', color: Colors.white),
+        RLTypography.bodyMedium('+5 Aha', color: Colors.white),
 
         const Spacer(),
 
         TextButton(
           onPressed: showExplanationDialog,
-          child: Typography.bodyMedium('Why?', color: Colors.white),
+          child: RLTypography.bodyMedium('Why?', color: Colors.white),
         ),
       ]),
       backgroundColor: Colors.green.shade600,
@@ -324,12 +327,12 @@ class QuestionContentWidgetState extends State<QuestionContentWidget> {
 
 class Style {
   static final BoxDecoration optionDecoration = BoxDecoration(
-    color: AppTheme.backgroundLight,
+    color: RLTheme.backgroundLight,
     borderRadius: BorderRadius.circular(12),
   );
 
-  static final TextStyle optionTextStyle = Typography.bodyLargeStyle
-      .copyWith(fontSize: 14, color: AppTheme.textPrimary);
+  static final TextStyle optionTextStyle = RLTypography.bodyLargeStyle
+      .copyWith(fontSize: 14, color: RLTheme.textPrimary);
 
   static final BoxDecoration correctIconDecoration = BoxDecoration(
     borderRadius: BorderRadius.circular(4),

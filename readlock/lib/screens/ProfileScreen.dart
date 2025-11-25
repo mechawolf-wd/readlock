@@ -17,7 +17,7 @@ class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: AppTheme.backgroundDark,
+      color: RLTheme.backgroundDark,
       child: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(20),
@@ -82,14 +82,14 @@ class DuolingoProfileHeader extends StatelessWidget {
 
           Expanded(
             child: Div.column([
-              Typography.headingMedium(
+              RLTypography.headingMedium(
                 PROFILE_GREETING,
                 color: Colors.white,
               ),
 
               const Spacing.height(4),
 
-              Typography.bodyMedium(
+              RLTypography.bodyMedium(
                 'Level 12 Knowledge Seeker',
                 color: Colors.white.withValues(alpha: 0.9),
               ),
@@ -117,7 +117,7 @@ class DuolingoProfileHeader extends StatelessWidget {
 
               const Spacing.width(6),
 
-              Typography.bodyMedium(
+              RLTypography.bodyMedium(
                 '23 day streak',
                 color: Colors.white,
               ),
@@ -142,7 +142,7 @@ class DuolingoProfileHeader extends StatelessWidget {
 
               const Spacing.width(4),
 
-              Typography.bodyMedium('2,847 Aha', color: Colors.white),
+              RLTypography.bodyMedium('2,847 Aha', color: Colors.white),
             ]),
           ),
 
@@ -166,7 +166,7 @@ class DuolingoProfileHeader extends StatelessWidget {
 
               const Spacing.width(4),
 
-              Typography.bodyMedium('47 badges', color: Colors.white),
+              RLTypography.bodyMedium('47 badges', color: Colors.white),
             ]),
           ),
 
@@ -186,7 +186,7 @@ class DuolingoProfileHeader extends StatelessWidget {
 
               const Spacing.width(4),
 
-              Typography.bodyMedium('12 books', color: Colors.white),
+              RLTypography.bodyMedium('12 books', color: Colors.white),
             ]),
           ),
         ]),
@@ -203,7 +203,7 @@ class EnhancedStreakCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: AppTheme.backgroundLight,
+        color: RLTheme.backgroundLight,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
           color: const Color(0xFFFF9600).withValues(alpha: 0.3),
@@ -230,16 +230,16 @@ class EnhancedStreakCard extends StatelessWidget {
 
           Expanded(
             child: Div.column([
-              Typography.headingMedium(
+              RLTypography.headingMedium(
                 '23 Day Streak!',
                 color: const Color(0xFFFF9600),
               ),
 
               const Spacing.height(4),
 
-              Typography.bodyMedium(
+              RLTypography.bodyMedium(
                 '+85 Aha earned today',
-                color: AppTheme.primaryGreen,
+                color: RLTheme.primaryGreen,
               ),
             ], crossAxisAlignment: CrossAxisAlignment.start),
           ),
@@ -253,7 +253,7 @@ class EnhancedStreakCard extends StatelessWidget {
               color: const Color(0xFFFF9600).withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(12),
             ),
-            child: Typography.bodyMedium(
+            child: RLTypography.bodyMedium(
               'PERFECT!',
               color: const Color(0xFFFF9600),
             ),
@@ -277,7 +277,7 @@ class EnhancedStreakCard extends StatelessWidget {
                       ? const Color(0xFFFF9600)
                       : isToday
                       ? const Color(0xFFFF9600)
-                      : AppTheme.textPrimary.withValues(alpha: 0.05),
+                      : RLTheme.textPrimary.withValues(alpha: 0.05),
                   borderRadius: BorderRadius.circular(8),
                   border: isToday
                       ? Border.all(
@@ -288,11 +288,11 @@ class EnhancedStreakCard extends StatelessWidget {
                 ),
                 child: Div.column([
                   const Spacing.height(4),
-                  Typography.bodyMedium(
+                  RLTypography.bodyMedium(
                     ['M', 'T', 'W', 'T', 'F', 'S', 'S'][dayIndex],
                     color: isCompleted || isToday
                         ? Colors.white
-                        : AppTheme.textPrimary.withValues(alpha: 0.4),
+                        : RLTheme.textPrimary.withValues(alpha: 0.4),
                     textAlign: TextAlign.center,
                   ),
                   const Spacing.height(2),
@@ -304,7 +304,7 @@ class EnhancedStreakCard extends StatelessWidget {
                         : Icons.circle_outlined,
                     color: isCompleted || isToday
                         ? Colors.white
-                        : AppTheme.textPrimary.withValues(alpha: 0.3),
+                        : RLTheme.textPrimary.withValues(alpha: 0.3),
                     size: 14,
                   ),
                 ], mainAxisAlignment: MainAxisAlignment.center),
@@ -315,9 +315,9 @@ class EnhancedStreakCard extends StatelessWidget {
 
         const Spacing.height(16),
 
-        Typography.bodyMedium(
+        RLTypography.bodyMedium(
           'You\'re in the top 10% of readers this week! 🎉',
-          color: AppTheme.textPrimary.withValues(alpha: 0.8),
+          color: RLTheme.textPrimary.withValues(alpha: 0.8),
           textAlign: TextAlign.center,
         ),
       ]),
@@ -346,7 +346,7 @@ class DailyGoalCard extends StatelessWidget {
 
           const Spacing.width(12),
 
-          Typography.bodyLarge(DAILY_GOAL_LABEL, color: Colors.white),
+          RLTypography.bodyLarge(DAILY_GOAL_LABEL, color: Colors.white),
 
           const Spacer(),
 
@@ -359,7 +359,7 @@ class DailyGoalCard extends StatelessWidget {
               color: Colors.white.withValues(alpha: 0.2),
               borderRadius: BorderRadius.circular(12),
             ),
-            child: Typography.bodyMedium(
+            child: RLTypography.bodyMedium(
               '85/100 Aha',
               color: Colors.white,
             ),
@@ -388,7 +388,7 @@ class DailyGoalCard extends StatelessWidget {
 
         const Spacing.height(12),
 
-        Typography.bodyMedium(
+        RLTypography.bodyMedium(
           '15 Aha to go! You\'re almost there 💪',
           color: Colors.white.withValues(alpha: 0.9),
           textAlign: TextAlign.center,
@@ -406,16 +406,16 @@ class ReadingStatsCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: AppTheme.backgroundLight,
+        color: RLTheme.backgroundLight,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: AppTheme.textPrimary.withValues(alpha: 0.1),
+          color: RLTheme.textPrimary.withValues(alpha: 0.1),
         ),
       ),
       child: Div.column([
-        Typography.bodyMedium(
+        RLTypography.bodyMedium(
           'This widget was replaced by new Duolingo-inspired components above',
-          color: AppTheme.textPrimary.withValues(alpha: 0.5),
+          color: RLTheme.textPrimary.withValues(alpha: 0.5),
           textAlign: TextAlign.center,
         ),
 
@@ -426,14 +426,14 @@ class ReadingStatsCard extends StatelessWidget {
             label: 'Books Read',
             value: '127',
             icon: Icons.menu_book,
-            color: AppTheme.primaryBlue,
+            color: RLTheme.primaryBlue,
           ),
 
           StatisticItem(
             label: 'Hours Spent',
             value: '342h',
             icon: Icons.access_time,
-            color: AppTheme.primaryGreen,
+            color: RLTheme.primaryGreen,
           ),
 
           StatisticItem(
@@ -478,13 +478,13 @@ class StatisticItem extends StatelessWidget {
 
         const Spacing.height(8),
 
-        Typography.headingMedium(value),
+        RLTypography.headingMedium(value),
 
         const Spacing.height(4),
 
-        Typography.bodyMedium(
+        RLTypography.bodyMedium(
           label,
-          color: AppTheme.textPrimary.withValues(alpha: 0.6),
+          color: RLTheme.textPrimary.withValues(alpha: 0.6),
         ),
       ], crossAxisAlignment: CrossAxisAlignment.center),
     );
@@ -512,7 +512,7 @@ class AchievementGallery extends StatelessWidget {
 
           const Spacing.width(12),
 
-          Typography.bodyLarge(
+          RLTypography.bodyLarge(
             ACHIEVEMENT_GALLERY_LABEL,
             color: Colors.white,
           ),
@@ -528,7 +528,10 @@ class AchievementGallery extends StatelessWidget {
               color: Colors.white.withValues(alpha: 0.2),
               borderRadius: BorderRadius.circular(8),
             ),
-            child: Typography.bodyMedium('47/100', color: Colors.white),
+            child: RLTypography.bodyMedium(
+              '47/100',
+              color: Colors.white,
+            ),
           ),
         ]),
 
@@ -600,7 +603,7 @@ class AchievementGallery extends StatelessWidget {
 
                   const Spacing.height(8),
 
-                  Typography.bodyMedium(
+                  RLTypography.bodyMedium(
                     badge['title'] as String,
                     color: Colors.white,
                     textAlign: TextAlign.center,
@@ -610,7 +613,7 @@ class AchievementGallery extends StatelessWidget {
 
                   const Spacing.height(2),
 
-                  Typography.bodyMedium(
+                  RLTypography.bodyMedium(
                     badge['desc'] as String,
                     color: Colors.white.withValues(alpha: 0.8),
                     textAlign: TextAlign.center,
@@ -631,7 +634,7 @@ class AchievementGallery extends StatelessWidget {
             color: Colors.white.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(12),
           ),
-          child: Typography.bodyMedium(
+          child: RLTypography.bodyMedium(
             'Complete 3 more chapters to unlock \'Quiz Master\' badge! 🏆',
             color: Colors.white.withValues(alpha: 0.9),
             textAlign: TextAlign.center,
@@ -664,7 +667,7 @@ class ReadingLeagueCard extends StatelessWidget {
           const Spacing.width(12),
 
           Expanded(
-            child: Typography.bodyLarge(
+            child: RLTypography.bodyLarge(
               READING_LEAGUE_LABEL,
               color: Colors.white,
             ),
@@ -679,13 +682,13 @@ class ReadingLeagueCard extends StatelessWidget {
               color: Colors.white.withValues(alpha: 0.2),
               borderRadius: BorderRadius.circular(12),
             ),
-            child: Typography.bodyMedium('GOLD', color: Colors.white),
+            child: RLTypography.bodyMedium('GOLD', color: Colors.white),
           ),
         ]),
 
         const Spacing.height(16),
 
-        Typography.bodyMedium(
+        RLTypography.bodyMedium(
           'You\'re #3 out of 47 in your reading group this week!',
           color: Colors.white.withValues(alpha: 0.9),
           textAlign: TextAlign.center,
@@ -739,7 +742,7 @@ class ReadingLeagueCard extends StatelessWidget {
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Center(
-                  child: Typography.bodyMedium(
+                  child: RLTypography.bodyMedium(
                     '${person['rank']}',
                     color: (person['rank'] as int) <= 3
                         ? Colors.white
@@ -751,13 +754,13 @@ class ReadingLeagueCard extends StatelessWidget {
               const Spacing.width(12),
 
               Expanded(
-                child: Typography.bodyMedium(
+                child: RLTypography.bodyMedium(
                   person['name'] as String,
                   color: Colors.white,
                 ),
               ),
 
-              Typography.bodyMedium(
+              RLTypography.bodyMedium(
                 '${person['aha']} Aha',
                 color: Colors.white.withValues(alpha: 0.8),
               ),
@@ -779,15 +782,15 @@ class OLD_AchievementShowcase extends StatelessWidget {
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            AppTheme.primaryGreen.withValues(alpha: 0.1),
-            AppTheme.primaryBlue.withValues(alpha: 0.1),
+            RLTheme.primaryGreen.withValues(alpha: 0.1),
+            RLTheme.primaryBlue.withValues(alpha: 0.1),
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: AppTheme.primaryGreen.withValues(alpha: 0.3),
+          color: RLTheme.primaryGreen.withValues(alpha: 0.3),
         ),
       ),
       child: Div.column([
@@ -796,7 +799,7 @@ class OLD_AchievementShowcase extends StatelessWidget {
             width: 48,
             height: 48,
             decoration: BoxDecoration(
-              color: AppTheme.primaryGreen,
+              color: RLTheme.primaryGreen,
               borderRadius: BorderRadius.circular(24),
             ),
             child: const Icon(
@@ -810,16 +813,16 @@ class OLD_AchievementShowcase extends StatelessWidget {
 
           Expanded(
             child: Div.column([
-              Typography.bodyLarge(
+              RLTypography.bodyLarge(
                 'Speed Reader!',
-                color: AppTheme.primaryGreen,
+                color: RLTheme.primaryGreen,
               ),
 
               const Spacing.height(4),
 
-              Typography.bodyMedium(
+              RLTypography.bodyMedium(
                 'Read 5 books in one week',
-                color: AppTheme.textPrimary.withValues(alpha: 0.8),
+                color: RLTheme.textPrimary.withValues(alpha: 0.8),
               ),
             ], crossAxisAlignment: CrossAxisAlignment.start),
           ),
@@ -830,10 +833,10 @@ class OLD_AchievementShowcase extends StatelessWidget {
               vertical: 4,
             ),
             decoration: BoxDecoration(
-              color: AppTheme.primaryGreen,
+              color: RLTheme.primaryGreen,
               borderRadius: BorderRadius.circular(12),
             ),
-            child: Typography.bodyMedium(
+            child: RLTypography.bodyMedium(
               '+50 Aha',
               color: Colors.white,
             ),
@@ -852,35 +855,35 @@ class CourseProgressCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: AppTheme.backgroundLight,
+        color: RLTheme.backgroundLight,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: AppTheme.textPrimary.withValues(alpha: 0.1),
+          color: RLTheme.textPrimary.withValues(alpha: 0.1),
         ),
       ),
       child: Div.column([
-        Typography.bodyLarge('Course Progress'),
+        RLTypography.bodyLarge('Course Progress'),
 
         const Spacing.height(16),
 
         Div.row([
-          Typography.bodyMedium('Current Course:'),
+          RLTypography.bodyMedium('Current Course:'),
 
           const Spacer(),
 
-          Typography.bodyMedium('UX Design Fundamentals'),
+          RLTypography.bodyMedium('UX Design Fundamentals'),
         ], mainAxisAlignment: MainAxisAlignment.spaceBetween),
 
         const Spacing.height(8),
 
         Div.row([
-          Typography.bodyMedium('Progress:'),
+          RLTypography.bodyMedium('Progress:'),
 
           const Spacer(),
 
-          Typography.bodyMedium(
+          RLTypography.bodyMedium(
             '8/12 chapters',
-            color: AppTheme.primaryBlue,
+            color: RLTheme.primaryBlue,
           ),
         ], mainAxisAlignment: MainAxisAlignment.spaceBetween),
 
@@ -893,7 +896,7 @@ class CourseProgressCard extends StatelessWidget {
               height: 8,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(4),
-                color: AppTheme.textPrimary.withValues(alpha: 0.1),
+                color: RLTheme.textPrimary.withValues(alpha: 0.1),
               ),
             ),
 
@@ -905,10 +908,7 @@ class CourseProgressCard extends StatelessWidget {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(4),
                   gradient: const LinearGradient(
-                    colors: [
-                      AppTheme.primaryBlue,
-                      AppTheme.primaryGreen,
-                    ],
+                    colors: [RLTheme.primaryBlue, RLTheme.primaryGreen],
                   ),
                 ),
               ),
@@ -921,17 +921,17 @@ class CourseProgressCard extends StatelessWidget {
         Container(
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
-            color: AppTheme.primaryBlue.withValues(alpha: 0.1),
+            color: RLTheme.primaryBlue.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(12),
           ),
           child: Div.row([
-            Icon(Icons.timer, color: AppTheme.primaryBlue, size: 16),
+            Icon(Icons.timer, color: RLTheme.primaryBlue, size: 16),
 
             const Spacing.width(8),
 
-            Typography.bodyMedium(
+            RLTypography.bodyMedium(
               'Estimated 45 minutes to complete',
-              color: AppTheme.primaryBlue,
+              color: RLTheme.primaryBlue,
             ),
           ]),
         ),
@@ -946,7 +946,7 @@ class QuickActionsSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Div.column([
-      Typography.bodyLarge('Quick Actions'),
+      RLTypography.bodyLarge('Quick Actions'),
 
       const Spacing.height(16),
 
@@ -955,7 +955,7 @@ class QuickActionsSection extends StatelessWidget {
           child: ActionButton(
             label: 'Continue Reading',
             icon: Icons.play_arrow,
-            color: AppTheme.primaryBlue,
+            color: RLTheme.primaryBlue,
             onTap: () {},
           ),
         ),
@@ -966,7 +966,7 @@ class QuickActionsSection extends StatelessWidget {
           child: ActionButton(
             label: 'Browse Library',
             icon: Icons.library_books,
-            color: AppTheme.primaryGreen,
+            color: RLTheme.primaryGreen,
             onTap: () {},
           ),
         ),
@@ -1009,7 +1009,7 @@ class ActionButton extends StatelessWidget {
 
         const Spacing.width(8),
 
-        Typography.bodyMedium(label, color: color),
+        RLTypography.bodyMedium(label, color: color),
       ],
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(

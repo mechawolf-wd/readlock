@@ -1,4 +1,4 @@
-class Constants {
+class RLConstants {
   // App strings
   static const String APP_TITLE = 'Relevant';
 

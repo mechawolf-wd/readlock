@@ -97,7 +97,7 @@ class UnknownContentWidget extends StatelessWidget {
     // Error message display
     return Div.column(
       [
-        Typography.text(
+        RLTypography.text(
           '$UNKNOWN_CONTENT_TYPE_MESSAGE$entityType',
           textAlign: TextAlign.center,
         ),
@@ -122,7 +122,7 @@ class JsonIntroContentWidget extends StatelessWidget {
     final introContent = createIntroContentModel();
 
     // Widget rendering
-    return IntroContentWidget(content: introContent);
+    return CCIntro(content: introContent);
   }
 
   IntroContent createIntroContentModel() {
@@ -150,7 +150,7 @@ class JsonTextContentWidget extends StatelessWidget {
     final textContent = createTextContentModel();
 
     // Widget rendering
-    return TextContentWidget(content: textContent);
+    return CCTextContent(content: textContent);
   }
 
   TextContent createTextContentModel() {
@@ -235,7 +235,7 @@ class JsonQuestionContentWidget extends StatelessWidget {
     switch (questionContent.type) {
       case QuestionType.multipleChoice:
         {
-          return MultipleChoiceWidget(
+          return CCMultipleChoice(
             content: questionContent,
             onAnswerSelected: onAnswerSelected,
           );
@@ -243,7 +243,7 @@ class JsonQuestionContentWidget extends StatelessWidget {
 
       case QuestionType.trueOrFalse:
         {
-          return TrueFalseQuestionWidget(
+          return CCTrueFalseQuestion(
             content: questionContent,
             onAnswerSelected: onAnswerSelected,
           );
@@ -251,7 +251,7 @@ class JsonQuestionContentWidget extends StatelessWidget {
 
       case QuestionType.reflection:
         {
-          return ReflectionQuestionWidget(
+          return CCReflectionQuestion(
             content: questionContent,
             onAnswerSelected: onAnswerSelected,
           );
@@ -259,7 +259,7 @@ class JsonQuestionContentWidget extends StatelessWidget {
 
       case QuestionType.fillGap:
         {
-          return FillGapQuestionWidget(
+          return CCFillGapQuestion(
             content: questionContent,
             onAnswerSelected: onAnswerSelected,
           );
@@ -267,7 +267,7 @@ class JsonQuestionContentWidget extends StatelessWidget {
 
       case QuestionType.incorrectStatement:
         {
-          return IncorrectStatementWidget(
+          return CCIncorrectStatement(
             content: questionContent,
             onAnswerSelected: onAnswerSelected,
           );
@@ -290,7 +290,7 @@ class JsonQuestionContentWidget extends StatelessWidget {
             closeThreshold: 10,
           );
 
-          return EstimatePercentageWidget(
+          return CCEstimatePercentage(
             content: estimateContent,
             onAnswerSelected: onAnswerSelected,
           );
@@ -350,7 +350,7 @@ class JsonOutroContentWidget extends StatelessWidget {
     final outroContent = createOutroContentModel();
 
     // Widget rendering
-    return OutroContentWidget(content: outroContent);
+    return CCOutro(content: outroContent);
   }
 
   OutroContent createOutroContentModel() {
@@ -378,7 +378,7 @@ class JsonDesignExamplesShowcaseWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Static design examples showcase
-    return const DesignExamplesShowcase();
+    return const CCDesignExamplesShowcase();
   }
 }
 
@@ -397,7 +397,7 @@ class JsonReflectionContentWidget extends StatelessWidget {
     final reflectionContent = createReflectionContentModel();
 
     // Widget rendering
-    return ReflectionContentWidget(content: reflectionContent);
+    return CCReflection(content: reflectionContent);
   }
 
   ReflectionContent createReflectionContentModel() {
@@ -426,7 +426,7 @@ class JsonQuoteContentWidget extends StatelessWidget {
     final quoteContent = createQuoteContentModel();
 
     // Widget rendering
-    return QuoteContentWidget(content: quoteContent);
+    return CCQuote(content: quoteContent);
   }
 
   QuoteContent createQuoteContentModel() {
@@ -454,7 +454,7 @@ class JsonEstimatePercentageWidget extends StatelessWidget {
     final estimateContent = createEstimatePercentageContentModel();
 
     // Widget rendering with empty callback
-    return EstimatePercentageWidget(
+    return CCEstimatePercentage(
       content: estimateContent,
       onAnswerSelected: (int index, bool isCorrect) {},
     );

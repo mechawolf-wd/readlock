@@ -290,26 +290,26 @@ class ProgressiveTextState extends State<ProgressiveText> {
   Widget SentenceText(int sentenceIndex) {
     return Text(
       textSentences[sentenceIndex],
-      style: widget.textStyle ?? Typography.bodyMediumStyle,
+      style: widget.textStyle ?? RLTypography.bodyMediumStyle,
       textAlign: TextAlign.left,
     );
   }
 
   TextStyle revealedTextStyle() {
     final TextStyle baseStyle =
-        widget.textStyle ?? Typography.bodyMediumStyle;
+        widget.textStyle ?? RLTypography.bodyMediumStyle;
 
     return baseStyle.copyWith(fontSize: 16, height: 1.5);
   }
 
   TextStyle cursorTextStyle() {
     final TextStyle baseStyle =
-        widget.textStyle ?? Typography.bodyMediumStyle;
+        widget.textStyle ?? RLTypography.bodyMediumStyle;
 
     return baseStyle.copyWith(
       fontSize: 16,
       height: 1.5,
-      color: AppTheme.primaryBlue,
+      color: RLTheme.primaryBlue,
     );
   }
 }

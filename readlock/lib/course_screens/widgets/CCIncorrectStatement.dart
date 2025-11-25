@@ -13,24 +13,23 @@ const double STATEMENT_ITEM_SPACING = 12.0;
 const double STATEMENT_SECTION_SPACING = 24.0;
 const int SHAKE_DURATION_MS = 500;
 
-class IncorrectStatementWidget extends StatefulWidget {
+class CCIncorrectStatement extends StatefulWidget {
   final QuestionContent content;
   final void Function(int selectedIndex, bool isCorrect)
   onAnswerSelected;
 
-  const IncorrectStatementWidget({
+  const CCIncorrectStatement({
     super.key,
     required this.content,
     required this.onAnswerSelected,
   });
 
   @override
-  State<IncorrectStatementWidget> createState() =>
-      IncorrectStatementWidgetState();
+  State<CCIncorrectStatement> createState() =>
+      CCIncorrectStatementState();
 }
 
-class IncorrectStatementWidgetState
-    extends State<IncorrectStatementWidget>
+class CCIncorrectStatementState extends State<CCIncorrectStatement>
     with SingleTickerProviderStateMixin {
   int? selectedStatementIndex;
   bool hasAnswered = false;
@@ -46,8 +45,8 @@ class IncorrectStatementWidgetState
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: AppTheme.backgroundDark,
-      padding: const EdgeInsets.all(Constants.COURSE_SECTION_PADDING),
+      color: RLTheme.backgroundDark,
+      padding: const EdgeInsets.all(RLConstants.COURSE_SECTION_PADDING),
       child: Center(
         child: Div.column(
           [
@@ -73,7 +72,7 @@ class IncorrectStatementWidgetState
       widget.content.question.isNotEmpty
           ? widget.content.question
           : 'Which statement is incorrect?',
-      style: Typography.bodyLargeStyle.copyWith(
+      style: RLTypography.bodyLargeStyle.copyWith(
         fontWeight: FontWeight.w600,
         fontSize: 18,
       ),
@@ -109,50 +108,51 @@ class IncorrectStatementWidgetState
 
     if (hasAnswered) {
       if (isIncorrectStatement) {
-        backgroundColor = AppTheme.primaryGreen.withValues(alpha: 0.1);
-        borderColor = AppTheme.primaryGreen;
+        backgroundColor = RLTheme.primaryGreen.withValues(alpha: 0.1);
+        borderColor = RLTheme.primaryGreen;
         feedbackIcon = Icons.error_outline;
       } else {
-        backgroundColor = AppTheme.backgroundLight;
-        borderColor = AppTheme.textPrimary.withValues(alpha: 0.1);
+        backgroundColor = RLTheme.backgroundLight;
+        borderColor = RLTheme.textPrimary.withValues(alpha: 0.1);
         feedbackIcon = Icons.check_circle_outline;
       }
     } else if (isSelected) {
       backgroundColor = Colors.orange.shade50;
       borderColor = Colors.orange.shade400;
     } else {
-      backgroundColor = AppTheme.backgroundLight;
-      borderColor = AppTheme.textPrimary.withValues(alpha: 0.2);
+      backgroundColor = RLTheme.backgroundLight;
+      borderColor = RLTheme.textPrimary.withValues(alpha: 0.2);
     }
 
-    final Widget statementContainer = Div.row([
-      RenderIf.condition(
-        hasAnswered && feedbackIcon != null,
-        Div.row([
-          Icon(
-            feedbackIcon!,
-            color: isIncorrectStatement
-                ? AppTheme.primaryGreen
-                : AppTheme.textPrimary.withValues(alpha: 0.4),
-            size: 20,
-          ),
-          const Spacing.width(12),
-        ]),
-      ),
+    final Widget statementContainer = Div.row(
+      [
+        RenderIf.condition(
+          hasAnswered && feedbackIcon != null,
+          Div.row([
+            Icon(
+              feedbackIcon!,
+              color: isIncorrectStatement
+                  ? RLTheme.primaryGreen
+                  : RLTheme.textPrimary.withValues(alpha: 0.4),
+              size: 20,
+            ),
+            const Spacing.width(12),
+          ]),
+        ),
 
-      Expanded(
-        child: Text(
-          widget.content.options[statementIndex].text,
-          style: Typography.bodyLargeStyle.copyWith(
-            fontSize: 15,
-            fontWeight: isSelected
-                ? FontWeight.w500
-                : FontWeight.normal,
-            height: 1.4,
+        Expanded(
+          child: Text(
+            widget.content.options[statementIndex].text,
+            style: RLTypography.bodyLargeStyle.copyWith(
+              fontSize: 15,
+              fontWeight: isSelected
+                  ? FontWeight.w500
+                  : FontWeight.normal,
+              height: 1.4,
+            ),
           ),
         ),
-      ),
-    ], 
+      ],
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
@@ -160,9 +160,7 @@ class IncorrectStatementWidgetState
         color: backgroundColor,
       ),
       radius: BorderRadius.circular(12),
-      onTap: hasAnswered
-          ? null
-          : () => selectStatement(statementIndex),
+      onTap: hasAnswered ? null : () => selectStatement(statementIndex),
     );
 
     if (isSelected && !isIncorrectStatement && shakeAnimation != null) {
@@ -189,16 +187,16 @@ class IncorrectStatementWidgetState
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppTheme.backgroundLight,
+        color: RLTheme.backgroundLight,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: AppTheme.textPrimary.withValues(alpha: 0.1),
+          color: RLTheme.textPrimary.withValues(alpha: 0.1),
         ),
       ),
       child: Div.column([
         ProgressiveText(
           textSegments: [widget.content.explanation],
-          textStyle: Typography.bodyLargeStyle.copyWith(
+          textStyle: RLTypography.bodyLargeStyle.copyWith(
             fontSize: 14,
             height: 1.5,
           ),

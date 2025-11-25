@@ -33,36 +33,35 @@ const double TRUE_FALSE_BUTTON_SPACING = 16.0;
 const double TRUE_FALSE_SECTION_SPACING = 24.0;
 const double TRUE_FALSE_ICON_SIZE = 24.0;
 
-class TrueFalseQuestionWidget extends StatefulWidget {
+class CCTrueFalseQuestion extends StatefulWidget {
   final QuestionContent content;
   final void Function(int selectedIndex, bool isCorrect)
   onAnswerSelected;
 
-  const TrueFalseQuestionWidget({
+  const CCTrueFalseQuestion({
     super.key,
     required this.content,
     required this.onAnswerSelected,
   });
 
   @override
-  State<TrueFalseQuestionWidget> createState() =>
-      TrueFalseQuestionWidgetState();
+  State<CCTrueFalseQuestion> createState() =>
+      CCTrueFalseQuestionState();
 }
 
-class TrueFalseQuestionWidgetState
-    extends State<TrueFalseQuestionWidget> {
+class CCTrueFalseQuestionState extends State<CCTrueFalseQuestion> {
   int? selectedAnswerIndex;
   bool hasAnswered = false;
 
   @override
   Widget build(BuildContext context) {
     final BoxDecoration correctButtonDecoration = BoxDecoration(
-      border: Border.all(color: AppTheme.primaryGreen, width: 2),
+      border: Border.all(color: RLTheme.primaryGreen, width: 2),
       borderRadius: BorderRadius.circular(12),
     );
 
     final BoxDecoration selectedTrueDecoration = BoxDecoration(
-      border: Border.all(color: AppTheme.primaryBlue, width: 2),
+      border: Border.all(color: RLTheme.primaryBlue, width: 2),
       borderRadius: BorderRadius.circular(12),
     );
 
@@ -73,7 +72,7 @@ class TrueFalseQuestionWidgetState
 
     final BoxDecoration mutedDecoration = BoxDecoration(
       border: Border.all(
-        color: AppTheme.textPrimary.withValues(alpha: 0.1),
+        color: RLTheme.textPrimary.withValues(alpha: 0.1),
         width: 2,
       ),
       borderRadius: BorderRadius.circular(12),
@@ -81,7 +80,7 @@ class TrueFalseQuestionWidgetState
 
     final BoxDecoration normalDecoration = BoxDecoration(
       border: Border.all(
-        color: AppTheme.textPrimary.withValues(alpha: 0.2),
+        color: RLTheme.textPrimary.withValues(alpha: 0.2),
         width: 2,
       ),
       borderRadius: BorderRadius.circular(12),
@@ -131,16 +130,14 @@ class TrueFalseQuestionWidgetState
       ],
       crossAxisAlignment: CrossAxisAlignment.stretch,
       mainAxisAlignment: MainAxisAlignment.center,
-      padding: Constants.COURSE_SECTION_PADDING,
-      color: AppTheme.backgroundDark,
+      padding: RLConstants.COURSE_SECTION_PADDING,
+      color: RLTheme.backgroundDark,
     );
   }
 
   Widget questionTextWidget() {
-    final TextStyle questionStyle = Typography.bodyLargeStyle.copyWith(
-      fontWeight: FontWeight.w500,
-      fontSize: 18,
-    );
+    final TextStyle questionStyle = RLTypography.bodyLargeStyle
+        .copyWith(fontWeight: FontWeight.w500, fontSize: 18);
 
     return Text(
       widget.content.question,
@@ -168,7 +165,7 @@ class TrueFalseQuestionWidgetState
       shouldShowCorrect: shouldShowCorrect,
       isSelected: isSelected,
       shouldMute: shouldMute,
-      baseColor: AppTheme.primaryBlue,
+      baseColor: RLTheme.primaryBlue,
     );
 
     final BoxDecoration decoration = getDecorationForState(
@@ -181,7 +178,7 @@ class TrueFalseQuestionWidgetState
       normalDecoration: normalDecoration,
     );
 
-    final TextStyle textStyle = Typography.bodyLargeStyle.copyWith(
+    final TextStyle textStyle = RLTypography.bodyLargeStyle.copyWith(
       color: colors.textColor,
       fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
       fontSize: 16,
@@ -241,7 +238,7 @@ class TrueFalseQuestionWidgetState
       normalDecoration: normalDecoration,
     );
 
-    final TextStyle textStyle = Typography.bodyLargeStyle.copyWith(
+    final TextStyle textStyle = RLTypography.bodyLargeStyle.copyWith(
       color: colors.textColor,
       fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
       fontSize: 16,
@@ -276,18 +273,18 @@ class TrueFalseQuestionWidgetState
       return const SizedBox.shrink();
     }
 
-    final TextStyle headerStyle = Typography.bodyLargeStyle.copyWith(
+    final TextStyle headerStyle = RLTypography.bodyLargeStyle.copyWith(
       fontWeight: FontWeight.w600,
       fontSize: 14,
-      color: AppTheme.textPrimary.withValues(alpha: 0.8),
+      color: RLTheme.textPrimary.withValues(alpha: 0.8),
     );
 
-    final TextStyle explanationStyle = Typography.bodyLargeStyle
+    final TextStyle explanationStyle = RLTypography.bodyLargeStyle
         .copyWith(fontSize: 14, height: 1.5);
 
     final Widget LightbulbIcon = Icon(
       Icons.lightbulb_outline,
-      color: AppTheme.textPrimary.withValues(alpha: 0.6),
+      color: RLTheme.textPrimary.withValues(alpha: 0.6),
       size: 20,
     );
 
@@ -312,7 +309,7 @@ class TrueFalseQuestionWidgetState
       ],
       crossAxisAlignment: CrossAxisAlignment.start,
       padding: 16,
-      color: AppTheme.backgroundLight,
+      color: RLTheme.backgroundLight,
       radius: 12,
     );
   }
@@ -325,10 +322,10 @@ class TrueFalseQuestionWidgetState
   }) {
     if (shouldShowCorrect) {
       return ButtonColors(
-        backgroundColor: AppTheme.primaryGreen.withValues(alpha: 0.1),
-        borderColor: AppTheme.primaryGreen,
-        textColor: AppTheme.primaryGreen,
-        iconColor: AppTheme.primaryGreen,
+        backgroundColor: RLTheme.primaryGreen.withValues(alpha: 0.1),
+        borderColor: RLTheme.primaryGreen,
+        textColor: RLTheme.primaryGreen,
+        iconColor: RLTheme.primaryGreen,
       );
     }
 
@@ -343,18 +340,18 @@ class TrueFalseQuestionWidgetState
 
     if (shouldMute) {
       return ButtonColors(
-        backgroundColor: AppTheme.backgroundLight,
-        borderColor: AppTheme.textPrimary.withValues(alpha: 0.1),
-        textColor: AppTheme.textPrimary.withValues(alpha: 0.4),
-        iconColor: AppTheme.textPrimary.withValues(alpha: 0.4),
+        backgroundColor: RLTheme.backgroundLight,
+        borderColor: RLTheme.textPrimary.withValues(alpha: 0.1),
+        textColor: RLTheme.textPrimary.withValues(alpha: 0.4),
+        iconColor: RLTheme.textPrimary.withValues(alpha: 0.4),
       );
     }
 
     return ButtonColors(
-      backgroundColor: AppTheme.backgroundLight,
-      borderColor: AppTheme.textPrimary.withValues(alpha: 0.2),
-      textColor: AppTheme.textPrimary,
-      iconColor: AppTheme.textPrimary.withValues(alpha: 0.6),
+      backgroundColor: RLTheme.backgroundLight,
+      borderColor: RLTheme.textPrimary.withValues(alpha: 0.2),
+      textColor: RLTheme.textPrimary,
+      iconColor: RLTheme.textPrimary.withValues(alpha: 0.6),
     );
   }
 

@@ -18,23 +18,22 @@ const double FILL_GAP_BLANK_HEIGHT = 40.0;
 const int FILL_GAP_ANIMATION_DURATION_MS = 300;
 const int FILL_GAP_SHAKE_DURATION_MS = 500;
 
-class FillGapQuestionWidget extends StatefulWidget {
+class CCFillGapQuestion extends StatefulWidget {
   final QuestionContent content;
   final void Function(int selectedIndex, bool isCorrect)
   onAnswerSelected;
 
-  const FillGapQuestionWidget({
+  const CCFillGapQuestion({
     super.key,
     required this.content,
     required this.onAnswerSelected,
   });
 
   @override
-  State<FillGapQuestionWidget> createState() =>
-      FillGapQuestionWidgetState();
+  State<CCFillGapQuestion> createState() => CCFillGapQuestionState();
 }
 
-class FillGapQuestionWidgetState extends State<FillGapQuestionWidget>
+class CCFillGapQuestionState extends State<CCFillGapQuestion>
     with TickerProviderStateMixin {
   Map<int, int?> selectedOptionsForGaps = {};
   bool hasAnswered = false;
@@ -68,8 +67,8 @@ class FillGapQuestionWidgetState extends State<FillGapQuestionWidget>
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: AppTheme.backgroundDark,
-      padding: const EdgeInsets.all(Constants.COURSE_SECTION_PADDING),
+      color: RLTheme.backgroundDark,
+      padding: const EdgeInsets.all(RLConstants.COURSE_SECTION_PADDING),
       child: Center(
         child: Div.column(
           [
@@ -113,7 +112,7 @@ class FillGapQuestionWidgetState extends State<FillGapQuestionWidget>
             if (part.isNotEmpty)
               Text(
                 part,
-                style: Typography.bodyLargeStyle.copyWith(
+                style: RLTypography.bodyLargeStyle.copyWith(
                   fontSize: 16,
                   height: 1.5,
                 ),
@@ -143,21 +142,21 @@ class FillGapQuestionWidgetState extends State<FillGapQuestionWidget>
 
     if (hasAnswered) {
       if (isCorrect) {
-        backgroundColor = AppTheme.primaryGreen.withValues(alpha: 0.1);
-        borderColor = AppTheme.primaryGreen;
+        backgroundColor = RLTheme.primaryGreen.withValues(alpha: 0.1);
+        borderColor = RLTheme.primaryGreen;
       } else if (isIncorrect) {
-        backgroundColor = AppTheme.backgroundLight;
-        borderColor = AppTheme.textPrimary.withValues(alpha: 0.3);
+        backgroundColor = RLTheme.backgroundLight;
+        borderColor = RLTheme.textPrimary.withValues(alpha: 0.3);
       } else {
-        backgroundColor = AppTheme.backgroundLight;
-        borderColor = AppTheme.textPrimary.withValues(alpha: 0.2);
+        backgroundColor = RLTheme.backgroundLight;
+        borderColor = RLTheme.textPrimary.withValues(alpha: 0.2);
       }
     } else if (hasSelection) {
-      backgroundColor = AppTheme.primaryBlue.withValues(alpha: 0.1);
-      borderColor = AppTheme.primaryBlue;
+      backgroundColor = RLTheme.primaryBlue.withValues(alpha: 0.1);
+      borderColor = RLTheme.primaryBlue;
     } else {
-      backgroundColor = AppTheme.backgroundLight;
-      borderColor = AppTheme.textPrimary.withValues(alpha: 0.2);
+      backgroundColor = RLTheme.backgroundLight;
+      borderColor = RLTheme.textPrimary.withValues(alpha: 0.2);
     }
 
     if (hasSelection) {
@@ -171,24 +170,21 @@ class FillGapQuestionWidgetState extends State<FillGapQuestionWidget>
         Center(
           child: Text(
             displayText,
-            style: Typography.bodyLargeStyle.copyWith(
+            style: RLTypography.bodyLargeStyle.copyWith(
               fontSize: 14,
               fontWeight: hasSelection
                   ? FontWeight.w500
                   : FontWeight.normal,
               color: hasSelection
-                  ? AppTheme.textPrimary
-                  : AppTheme.textPrimary.withValues(alpha: 0.3),
+                  ? RLTheme.textPrimary
+                  : RLTheme.textPrimary.withValues(alpha: 0.3),
             ),
           ),
         ),
       ],
       width: FILL_GAP_BLANK_WIDTH,
       height: FILL_GAP_BLANK_HEIGHT,
-      padding: const EdgeInsets.symmetric(
-        horizontal: 12,
-        vertical: 8,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(
         color: backgroundColor,
         borderRadius: BorderRadius.circular(8),
@@ -217,10 +213,10 @@ class FillGapQuestionWidgetState extends State<FillGapQuestionWidget>
     return Div.column([
       Text(
         'Tap options to fill the gaps:',
-        style: Typography.bodyLargeStyle.copyWith(
+        style: RLTypography.bodyLargeStyle.copyWith(
           fontSize: 14,
           fontWeight: FontWeight.w500,
-          color: AppTheme.textPrimary.withValues(alpha: 0.7),
+          color: RLTheme.textPrimary.withValues(alpha: 0.7),
         ),
       ),
 
@@ -249,24 +245,24 @@ class FillGapQuestionWidgetState extends State<FillGapQuestionWidget>
     Color textColor;
 
     if (hasAnswered && isCorrectOption) {
-      chipColor = AppTheme.primaryGreen.withValues(alpha: 0.1);
-      borderColor = AppTheme.primaryGreen;
-      textColor = AppTheme.primaryGreen;
+      chipColor = RLTheme.primaryGreen.withValues(alpha: 0.1);
+      borderColor = RLTheme.primaryGreen;
+      textColor = RLTheme.primaryGreen;
     } else if (isUsed) {
-      chipColor = AppTheme.textPrimary.withValues(alpha: 0.05);
-      borderColor = AppTheme.textPrimary.withValues(alpha: 0.1);
-      textColor = AppTheme.textPrimary.withValues(alpha: 0.3);
+      chipColor = RLTheme.textPrimary.withValues(alpha: 0.05);
+      borderColor = RLTheme.textPrimary.withValues(alpha: 0.1);
+      textColor = RLTheme.textPrimary.withValues(alpha: 0.3);
     } else {
-      chipColor = AppTheme.backgroundLight;
-      borderColor = AppTheme.primaryBlue.withValues(alpha: 0.3);
-      textColor = AppTheme.textPrimary;
+      chipColor = RLTheme.backgroundLight;
+      borderColor = RLTheme.primaryBlue.withValues(alpha: 0.3);
+      textColor = RLTheme.textPrimary;
     }
 
     return Div.row(
       [
         Text(
           widget.content.options[optionIndex].text,
-          style: Typography.bodyLargeStyle.copyWith(
+          style: RLTypography.bodyLargeStyle.copyWith(
             fontSize: 14,
             color: textColor,
             fontWeight: isCorrectOption
@@ -278,10 +274,7 @@ class FillGapQuestionWidgetState extends State<FillGapQuestionWidget>
           ),
         ),
       ],
-      padding: const EdgeInsets.symmetric(
-        horizontal: 16,
-        vertical: 10,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       decoration: BoxDecoration(
         color: chipColor,
         borderRadius: BorderRadius.circular(20),
@@ -302,10 +295,10 @@ class FillGapQuestionWidgetState extends State<FillGapQuestionWidget>
         Center(
           child: Text(
             hasAnswered ? 'Submitted' : 'Submit Answer',
-            style: Typography.bodyLargeStyle.copyWith(
+            style: RLTypography.bodyLargeStyle.copyWith(
               color: canSubmit
                   ? Colors.white
-                  : AppTheme.textPrimary.withValues(alpha: 0.4),
+                  : RLTheme.textPrimary.withValues(alpha: 0.4),
               fontWeight: FontWeight.w600,
               fontSize: 16,
             ),
@@ -313,15 +306,13 @@ class FillGapQuestionWidgetState extends State<FillGapQuestionWidget>
         ),
       ],
       height: 48,
-      color: canSubmit
-          ? AppTheme.primaryBlue
-          : AppTheme.backgroundLight,
+      color: canSubmit ? RLTheme.primaryBlue : RLTheme.backgroundLight,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
           color: canSubmit
-              ? AppTheme.primaryBlue
-              : AppTheme.textPrimary.withValues(alpha: 0.2),
+              ? RLTheme.primaryBlue
+              : RLTheme.textPrimary.withValues(alpha: 0.2),
           width: 2,
         ),
       ),
@@ -337,7 +328,7 @@ class FillGapQuestionWidgetState extends State<FillGapQuestionWidget>
           Div.row([
             Icon(
               Icons.lightbulb_outline,
-              color: AppTheme.textPrimary.withValues(alpha: 0.6),
+              color: RLTheme.textPrimary.withValues(alpha: 0.6),
               size: 20,
             ),
 
@@ -345,10 +336,10 @@ class FillGapQuestionWidgetState extends State<FillGapQuestionWidget>
 
             Text(
               'Explanation',
-              style: Typography.bodyLargeStyle.copyWith(
+              style: RLTypography.bodyLargeStyle.copyWith(
                 fontWeight: FontWeight.w600,
                 fontSize: 14,
-                color: AppTheme.textPrimary.withValues(alpha: 0.8),
+                color: RLTheme.textPrimary.withValues(alpha: 0.8),
               ),
             ),
           ]),
@@ -357,14 +348,14 @@ class FillGapQuestionWidgetState extends State<FillGapQuestionWidget>
 
           ProgressiveText(
             textSegments: [widget.content.explanation],
-            textStyle: Typography.bodyLargeStyle.copyWith(
+            textStyle: RLTypography.bodyLargeStyle.copyWith(
               fontSize: 14,
               height: 1.5,
             ),
           ),
         ],
         padding: 16,
-        color: AppTheme.backgroundLight,
+        color: RLTheme.backgroundLight,
         radius: 12,
       ),
     );

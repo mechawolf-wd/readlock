@@ -16,7 +16,7 @@ class FeedbackBottomSheets {
   // Icon definitions
   static const Widget AhaIcon = Icon(
     Icons.lightbulb,
-    color: AppTheme.primaryGreen,
+    color: RLTheme.primaryGreen,
     size: 20,
   );
 
@@ -35,7 +35,7 @@ class FeedbackBottomSheets {
       context: context,
       title: AHA_DIALOG_TITLE,
       content: explanation,
-      buttonColor: AppTheme.primaryGreen,
+      buttonColor: RLTheme.primaryGreen,
       icon: AhaIcon,
     );
   }
@@ -93,7 +93,7 @@ class FeedbackSheet extends StatelessWidget {
 
   // Style definitions
   BoxDecoration get modalDecoration => const BoxDecoration(
-    color: AppTheme.backgroundLight,
+    color: RLTheme.backgroundLight,
     borderRadius: BorderRadius.only(
       topLeft: Radius.circular(20),
       topRight: Radius.circular(20),
@@ -141,7 +141,10 @@ class FeedbackSheet extends StatelessWidget {
       width: double.infinity,
       alignment: Alignment.topLeft,
       padding: bodyPadding,
-      child: Typography.bodyMedium(content, textAlign: TextAlign.left),
+      child: RLTypography.bodyMedium(
+        content,
+        textAlign: TextAlign.left,
+      ),
     );
   }
 
@@ -158,7 +161,7 @@ class FeedbackSheet extends StatelessWidget {
 
       const Spacing.width(12),
 
-      Typography.headingMedium(title),
+      RLTypography.headingMedium(title),
     ]);
   }
 
@@ -172,7 +175,7 @@ class FeedbackSheet extends StatelessWidget {
 
         return Div.column(
           [
-            Typography.bodyMedium(
+            RLTypography.bodyMedium(
               CLOSE_BUTTON_LABEL,
               color: Colors.white,
             ),

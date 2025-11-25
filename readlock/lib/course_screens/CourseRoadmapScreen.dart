@@ -77,7 +77,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
     }
 
     return Material(
-      color: AppTheme.backgroundDark,
+      color: RLTheme.backgroundDark,
       child: SafeArea(
         child: Div.column([
           // Header section with back button and course info
@@ -112,7 +112,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
 
     final Widget BackArrowIcon = const Icon(
       Icons.arrow_back,
-      color: AppTheme.textPrimary,
+      color: RLTheme.textPrimary,
       size: 24,
     );
 
@@ -153,12 +153,12 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
           const Spacing.height(16),
 
           // Course title
-          Typography.headingLarge(courseTitle),
+          RLTypography.headingLarge(courseTitle),
 
           const Spacing.height(4),
 
           // Course subtitle
-          Typography.bodyMedium(
+          RLTypography.bodyMedium(
             COURSE_SUBTITLE_TEXT,
             textAlign: TextAlign.center,
           ),
@@ -187,7 +187,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
 
         const Spacing.width(4),
 
-        Typography.bodyMedium(AHA_COUNTER_TEXT),
+        RLTypography.bodyMedium(AHA_COUNTER_TEXT),
       ]),
 
       const Spacing.width(20),
@@ -198,7 +198,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
 
         const Spacing.width(4),
 
-        Typography.bodyMedium(QUESTIONS_COUNTER_TEXT),
+        RLTypography.bodyMedium(QUESTIONS_COUNTER_TEXT),
       ]),
 
       const Spacer(),
@@ -258,17 +258,17 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
   Color getColorFromString(String colorName) {
     switch (colorName.toLowerCase()) {
       case 'green':
-        return AppTheme.primaryGreen;
+        return RLTheme.primaryGreen;
       case 'purple':
         return Colors.purple;
       case 'blue':
-        return AppTheme.primaryBlue;
+        return RLTheme.primaryBlue;
       case 'red':
         return Colors.red;
       case 'orange':
         return Colors.orange;
       default:
-        return AppTheme.primaryGreen;
+        return RLTheme.primaryGreen;
     }
   }
 
@@ -293,7 +293,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
       if (mounted) {
         Navigator.pushReplacement(
           context,
-          AppTheme.fadeTransition(
+          RLTheme.fadeTransition(
             CourseDetailScreen(
               courseId: widget.courseId,
               initialLessonIndex: lessonIndex,
@@ -365,14 +365,14 @@ class LevelCard extends StatelessWidget {
 
   Color getCardColor() {
     if (isCurrentLevel) {
-      return AppTheme.primaryGreen.withValues(alpha: 0.1);
+      return RLTheme.primaryGreen.withValues(alpha: 0.1);
     }
     return Colors.grey.withValues(alpha: 0.05);
   }
 
   Color getBorderColor() {
     if (isCurrentLevel) {
-      return AppTheme.primaryGreen.withValues(alpha: 0.3);
+      return RLTheme.primaryGreen.withValues(alpha: 0.3);
     }
     return Colors.grey.withValues(alpha: 0.1);
   }
@@ -393,11 +393,11 @@ class LevelCard extends StatelessWidget {
 
   Color getBadgeColor() {
     if (isCompleted) {
-      return AppTheme.primaryGreen;
+      return RLTheme.primaryGreen;
     }
 
     if (isCurrentLevel) {
-      return AppTheme.primaryGreen.withValues(alpha: 0.2);
+      return RLTheme.primaryGreen.withValues(alpha: 0.2);
     }
 
     return Colors.grey.withValues(alpha: 0.2);
@@ -413,7 +413,7 @@ class LevelCard extends StatelessWidget {
     return RenderIf.condition(
       isCompleted,
       CheckIcon,
-      Typography.bodyMedium(
+      RLTypography.bodyMedium(
         levelNumber.toString(),
         textAlign: TextAlign.center,
       ),
@@ -423,12 +423,12 @@ class LevelCard extends StatelessWidget {
   Widget LevelContent() {
     return Div.column([
       // Level title with number
-      Typography.headingMedium('$LEVEL_PREFIX$levelNumber: $title'),
+      RLTypography.headingMedium('$LEVEL_PREFIX$levelNumber: $title'),
 
       const Spacing.height(4),
 
       // Level description
-      Typography.bodyMedium(subtitle),
+      RLTypography.bodyMedium(subtitle),
     ], crossAxisAlignment: CrossAxisAlignment.start);
   }
 }
@@ -450,13 +450,13 @@ class Style {
 
   static const Icon AhaIcon = Icon(
     Icons.lightbulb,
-    color: AppTheme.primaryGreen,
+    color: RLTheme.primaryGreen,
     size: 16,
   );
 
   static const Icon QuestionIcon = Icon(
     Icons.quiz,
-    color: AppTheme.primaryBlue,
+    color: RLTheme.primaryBlue,
     size: 16,
   );
 }

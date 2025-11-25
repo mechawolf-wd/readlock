@@ -10,22 +10,23 @@ const double REFLECTION_SECTION_SPACING = 28.0;
 const double REFLECTION_OPTION_SPACING = 16.0;
 const double REFLECTION_THOUGHT_SPACING = 12.0;
 
-class ReflectionQuestionWidget extends StatefulWidget {
+class CCReflectionQuestion extends StatefulWidget {
   final QuestionContent content;
-  final void Function(int selectedIndex, bool isCorrect) onAnswerSelected;
+  final void Function(int selectedIndex, bool isCorrect)
+  onAnswerSelected;
 
-  const ReflectionQuestionWidget({
+  const CCReflectionQuestion({
     super.key,
     required this.content,
     required this.onAnswerSelected,
   });
 
   @override
-  State<ReflectionQuestionWidget> createState() => 
-      ReflectionQuestionWidgetState();
+  State<CCReflectionQuestion> createState() =>
+      CCReflectionQuestionState();
 }
 
-class ReflectionQuestionWidgetState extends State<ReflectionQuestionWidget> {
+class CCReflectionQuestionState extends State<CCReflectionQuestion> {
   int? selectedAnswerIndex;
   bool hasReflected = false;
   bool hasSelectedInitialThought = false;
@@ -33,35 +34,35 @@ class ReflectionQuestionWidgetState extends State<ReflectionQuestionWidget> {
   @override
   Widget build(BuildContext context) {
     final BoxDecoration thoughtDecoration = BoxDecoration(
-      color: AppTheme.backgroundLight,
+      color: RLTheme.backgroundLight,
       borderRadius: BorderRadius.circular(16),
       border: Border.all(
-        color: AppTheme.textPrimary.withValues(alpha: 0.1),
+        color: RLTheme.textPrimary.withValues(alpha: 0.1),
         width: 1,
       ),
     );
 
     final BoxDecoration selectedThoughtDecoration = BoxDecoration(
-      color: AppTheme.primaryBlue.withValues(alpha: 0.05),
+      color: RLTheme.primaryBlue.withValues(alpha: 0.05),
       borderRadius: BorderRadius.circular(16),
       border: Border.all(
-        color: AppTheme.primaryBlue.withValues(alpha: 0.5),
+        color: RLTheme.primaryBlue.withValues(alpha: 0.5),
         width: 2,
       ),
     );
 
     final BoxDecoration reflectedDecoration = BoxDecoration(
-      color: AppTheme.primaryGreen.withValues(alpha: 0.05),
+      color: RLTheme.primaryGreen.withValues(alpha: 0.05),
       borderRadius: BorderRadius.circular(16),
       border: Border.all(
-        color: AppTheme.primaryGreen.withValues(alpha: 0.4),
+        color: RLTheme.primaryGreen.withValues(alpha: 0.4),
         width: 1.5,
       ),
     );
 
     final Widget ReflectionIcon = Icon(
       Icons.self_improvement,
-      color: AppTheme.primaryBlue.withValues(alpha: 0.7),
+      color: RLTheme.primaryBlue.withValues(alpha: 0.7),
       size: 32,
     );
 
@@ -89,37 +90,35 @@ class ReflectionQuestionWidgetState extends State<ReflectionQuestionWidget> {
         // Reflection insight after selection
         reflectionInsightWidget(),
       ],
-      color: AppTheme.backgroundDark,
-      padding: Constants.COURSE_SECTION_PADDING,
+      color: RLTheme.backgroundDark,
+      padding: RLConstants.COURSE_SECTION_PADDING,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       mainAxisAlignment: MainAxisAlignment.center,
     );
   }
 
   Widget reflectionHeaderWidget(Widget reflectionIcon) {
-    return Div.column(
-      [
-        Center(child: reflectionIcon),
+    return Div.column([
+      Center(child: reflectionIcon),
 
-        const Spacing.height(12),
+      const Spacing.height(12),
 
-        Center(
-          child: Text(
-            'Take a Moment to Reflect',
-            style: Typography.headingMediumStyle.copyWith(
-              fontSize: 18,
-              color: AppTheme.textPrimary.withValues(alpha: 0.9),
-            ),
+      Center(
+        child: Text(
+          'Take a Moment to Reflect',
+          style: RLTypography.headingMediumStyle.copyWith(
+            fontSize: 18,
+            color: RLTheme.textPrimary.withValues(alpha: 0.9),
           ),
         ),
-      ],
-    );
+      ),
+    ]);
   }
 
   Widget reflectionPromptWidget() {
     return Text(
       widget.content.question,
-      style: Typography.bodyLargeStyle.copyWith(
+      style: RLTypography.bodyLargeStyle.copyWith(
         fontSize: 16,
         height: 1.6,
       ),
@@ -164,7 +163,8 @@ class ReflectionQuestionWidgetState extends State<ReflectionQuestionWidget> {
     BoxDecoration reflectedDecoration,
   ) {
     final bool isSelected = selectedAnswerIndex == optionIndex;
-    final bool isCorrectAnswer = widget.content.correctAnswerIndices.contains(optionIndex);
+    final bool isCorrectAnswer = widget.content.correctAnswerIndices
+        .contains(optionIndex);
 
     final BoxDecoration decoration = getThoughtDecoration(
       isSelected: isSelected,
@@ -183,7 +183,7 @@ class ReflectionQuestionWidgetState extends State<ReflectionQuestionWidget> {
 
     final Widget CheckIcon = Icon(
       Icons.check_circle_outline,
-      color: AppTheme.primaryGreen,
+      color: RLTheme.primaryGreen,
       size: 20,
     );
 
@@ -195,16 +195,13 @@ class ReflectionQuestionWidgetState extends State<ReflectionQuestionWidget> {
           const Spacing.width(12),
         ],
 
-        Expanded(
-          child: Text(
-            option.text,
-            style: textStyle,
-          ),
-        ),
+        Expanded(child: Text(option.text, style: textStyle)),
       ],
       padding: 20,
       decoration: decoration,
-      onTap: hasReflected ? null : () => handleThoughtSelection(optionIndex),
+      onTap: hasReflected
+          ? null
+          : () => handleThoughtSelection(optionIndex),
     );
   }
 
@@ -215,7 +212,7 @@ class ReflectionQuestionWidgetState extends State<ReflectionQuestionWidget> {
 
     final Widget InsightIcon = Icon(
       Icons.auto_awesome,
-      color: AppTheme.primaryGreen.withValues(alpha: 0.8),
+      color: RLTheme.primaryGreen.withValues(alpha: 0.8),
       size: 20,
     );
 
@@ -228,10 +225,10 @@ class ReflectionQuestionWidgetState extends State<ReflectionQuestionWidget> {
 
           Text(
             'Insight',
-            style: Typography.bodyLargeStyle.copyWith(
+            style: RLTypography.bodyLargeStyle.copyWith(
               fontWeight: FontWeight.w600,
               fontSize: 14,
-              color: AppTheme.primaryGreen,
+              color: RLTheme.primaryGreen,
             ),
           ),
         ]),
@@ -240,15 +237,15 @@ class ReflectionQuestionWidgetState extends State<ReflectionQuestionWidget> {
 
         Text(
           widget.content.explanation,
-          style: Typography.bodyMediumStyle.copyWith(
+          style: RLTypography.bodyMediumStyle.copyWith(
             fontSize: 14,
             height: 1.6,
-            color: AppTheme.textPrimary.withValues(alpha: 0.9),
+            color: RLTheme.textPrimary.withValues(alpha: 0.9),
           ),
         ),
       ],
       padding: 20,
-      color: AppTheme.primaryGreen.withValues(alpha: 0.05),
+      color: RLTheme.primaryGreen.withValues(alpha: 0.05),
       radius: 12,
     );
   }
@@ -271,7 +268,7 @@ class ReflectionQuestionWidgetState extends State<ReflectionQuestionWidget> {
 
     if (hasReflected) {
       return normalDecoration.copyWith(
-        color: AppTheme.backgroundLight.withValues(alpha: 0.5),
+        color: RLTheme.backgroundLight.withValues(alpha: 0.5),
       );
     }
 
@@ -283,20 +280,20 @@ class ReflectionQuestionWidgetState extends State<ReflectionQuestionWidget> {
     required bool hasReflected,
     required bool isCorrect,
   }) {
-    Color textColor = AppTheme.textPrimary;
+    Color textColor = RLTheme.textPrimary;
     FontWeight fontWeight = FontWeight.normal;
 
     if (hasReflected && isCorrect) {
-      textColor = AppTheme.primaryGreen;
+      textColor = RLTheme.primaryGreen;
       fontWeight = FontWeight.w500;
     } else if (hasReflected && !isCorrect) {
-      textColor = AppTheme.textPrimary.withValues(alpha: 0.5);
+      textColor = RLTheme.textPrimary.withValues(alpha: 0.5);
     } else if (isSelected && !hasReflected) {
       fontWeight = FontWeight.w500;
-      textColor = AppTheme.primaryBlue;
+      textColor = RLTheme.primaryBlue;
     }
 
-    return Typography.bodyMediumStyle.copyWith(
+    return RLTypography.bodyMediumStyle.copyWith(
       fontSize: 15,
       color: textColor,
       fontWeight: fontWeight,
@@ -317,7 +314,8 @@ class ReflectionQuestionWidgetState extends State<ReflectionQuestionWidget> {
   }
 
   void completeReflection(int optionIndex) {
-    final bool isCorrectAnswer = widget.content.correctAnswerIndices.contains(optionIndex);
+    final bool isCorrectAnswer = widget.content.correctAnswerIndices
+        .contains(optionIndex);
 
     setState(() {
       hasReflected = true;

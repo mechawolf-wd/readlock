@@ -6,16 +6,16 @@ import 'package:readlock/utility_widgets/text_animation/TextAnimation.dart';
 import 'package:readlock/constants/typography.dart';
 import 'package:readlock/constants/appTheme.dart';
 
-class OutroContentWidget extends StatelessWidget {
+class CCOutro extends StatelessWidget {
   final OutroContent content;
 
-  const OutroContentWidget({super.key, required this.content});
+  const CCOutro({super.key, required this.content});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: AppTheme.backgroundDark,
-      padding: AppTheme.contentPaddingInsets,
+      color: RLTheme.backgroundDark,
+      padding: RLTheme.contentPaddingInsets,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -23,7 +23,7 @@ class OutroContentWidget extends StatelessWidget {
             children: [
               const Icon(
                 Icons.check_circle,
-                color: AppTheme.primaryGreen,
+                color: RLTheme.primaryGreen,
                 size: 24,
               ),
 
@@ -32,7 +32,7 @@ class OutroContentWidget extends StatelessWidget {
               Expanded(
                 child: Text(
                   content.title,
-                  style: Typography.bodyLargeStyle.copyWith(
+                  style: RLTypography.bodyLargeStyle.copyWith(
                     fontWeight: FontWeight.w600,
                   ),
                   textAlign: TextAlign.left,
@@ -45,7 +45,7 @@ class OutroContentWidget extends StatelessWidget {
 
           ProgressiveText(
             textSegments: content.outroTextSegments,
-            textStyle: Typography.bodyLargeStyle,
+            textStyle: RLTypography.bodyLargeStyle,
             characterDelay: const Duration(milliseconds: 15),
             crossAxisAlignment: CrossAxisAlignment.start,
           ),

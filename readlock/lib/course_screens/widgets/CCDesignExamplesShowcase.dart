@@ -7,16 +7,16 @@ import 'package:readlock/utility_widgets/text_animation/ProgressiveText.dart';
 import 'package:readlock/utility_widgets/Utility.dart';
 import 'package:readlock/constants/appTheme.dart';
 
-class DesignExamplesShowcase extends StatefulWidget {
-  const DesignExamplesShowcase({super.key});
+class CCDesignExamplesShowcase extends StatefulWidget {
+  const CCDesignExamplesShowcase({super.key});
 
   @override
-  State<DesignExamplesShowcase> createState() =>
-      DesignExamplesShowcaseState();
+  State<CCDesignExamplesShowcase> createState() =>
+      CCDesignExamplesShowcaseState();
 }
 
-class DesignExamplesShowcaseState
-    extends State<DesignExamplesShowcase> {
+class CCDesignExamplesShowcaseState
+    extends State<CCDesignExamplesShowcase> {
   int currentExampleIndex = 0;
 
   final List<DesignExample> examples = const [
@@ -85,8 +85,8 @@ class DesignExamplesShowcaseState
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: AppTheme.backgroundDark,
-      padding: AppTheme.contentPaddingVerticalInsets,
+      color: RLTheme.backgroundDark,
+      padding: RLTheme.contentPaddingVerticalInsets,
       child: Column(
         children: [
           PageIndicator(),
@@ -104,7 +104,7 @@ class DesignExamplesShowcaseState
               },
               itemBuilder: (context, index) {
                 return Padding(
-                  padding: AppTheme.contentPaddingHorizontalInsets,
+                  padding: RLTheme.contentPaddingHorizontalInsets,
                   child: ExampleCard(examples[index]),
                 );
               },
@@ -127,8 +127,8 @@ class DesignExamplesShowcaseState
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             color: index == currentExampleIndex
-                ? AppTheme.textPrimary
-                : AppTheme.textPrimary.withValues(alpha: 0.3),
+                ? RLTheme.textPrimary
+                : RLTheme.textPrimary.withValues(alpha: 0.3),
           ),
         ),
       ),
@@ -137,15 +137,15 @@ class DesignExamplesShowcaseState
 
   Widget ExampleCard(DesignExample example) {
     final themeColor = example.isGoodDesign
-        ? AppTheme.primaryGreen
-        : AppTheme.errorColor;
+        ? RLTheme.primaryGreen
+        : RLTheme.errorColor;
 
     return Div.column(
       [
         Row(
           children: [
             Container(
-              padding: AppTheme.contentPaddingSmallerInsets,
+              padding: RLTheme.contentPaddingSmallerInsets,
               decoration: BoxDecoration(
                 color: themeColor.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(8),
@@ -164,7 +164,7 @@ class DesignExamplesShowcaseState
             Expanded(
               child: Text(
                 example.title,
-                style: Typography.bodyLargeStyle.copyWith(
+                style: RLTypography.bodyLargeStyle.copyWith(
                   fontWeight: FontWeight.w600,
                 ),
                 textAlign: TextAlign.left,
@@ -177,15 +177,15 @@ class DesignExamplesShowcaseState
 
         ProgressiveText(
           textSegments: example.textSegments,
-          textStyle: Typography.bodyLargeStyle,
+          textStyle: RLTypography.bodyLargeStyle,
           characterDelay: const Duration(milliseconds: 15),
           crossAxisAlignment: CrossAxisAlignment.start,
         ),
       ],
       crossAxisAlignment: CrossAxisAlignment.start,
       width: double.infinity,
-      padding: AppTheme.contentPaddingInsets,
-      color: AppTheme.backgroundLight,
+      padding: RLTheme.contentPaddingInsets,
+      color: RLTheme.backgroundLight,
       radius: 16,
     );
   }

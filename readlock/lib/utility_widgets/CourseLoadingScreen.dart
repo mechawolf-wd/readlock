@@ -19,7 +19,7 @@ class CourseLoadingScreen extends StatelessWidget {
     size: BIRD_ICON_SIZE,
   );
 
-  static const Color birdIconColor = AppTheme.primaryGreen;
+  static const Color birdIconColor = RLTheme.primaryGreen;
 
   Widget LoadingContent() {
     return const Div.column(
@@ -33,7 +33,7 @@ class CourseLoadingScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppTheme.backgroundDark,
+      backgroundColor: RLTheme.backgroundDark,
       body: LoadingContent(),
     );
   }

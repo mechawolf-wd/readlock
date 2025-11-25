@@ -8,29 +8,29 @@ import 'package:readlock/utility_widgets/Utility.dart';
 import 'package:readlock/constants/typography.dart';
 import 'package:readlock/constants/appTheme.dart';
 
-class QuoteContentWidget extends StatefulWidget {
+class CCQuote extends StatefulWidget {
   final QuoteContent content;
 
-  const QuoteContentWidget({super.key, required this.content});
+  const CCQuote({super.key, required this.content});
 
   @override
-  State<QuoteContentWidget> createState() => QuoteContentWidgetState();
+  State<CCQuote> createState() => CCQuoteState();
 }
 
-class QuoteContentWidgetState extends State<QuoteContentWidget> {
+class CCQuoteState extends State<CCQuote> {
   bool isBookmarked = false;
 
   @override
   Widget build(BuildContext context) {
     final BoxDecoration quoteContainerDecoration = BoxDecoration(
-      color: AppTheme.backgroundLight,
+      color: RLTheme.backgroundLight,
       borderRadius: BorderRadius.circular(16),
       border: Border.all(color: Colors.orange.withValues(alpha: 0.2)),
     );
 
     return Container(
-      color: AppTheme.backgroundDark,
-      padding: const EdgeInsets.all(Constants.COURSE_SECTION_PADDING),
+      color: RLTheme.backgroundDark,
+      padding: const EdgeInsets.all(RLConstants.COURSE_SECTION_PADDING),
       child: Center(
         child: Container(
           padding: const EdgeInsets.all(20),
@@ -57,7 +57,7 @@ class QuoteContentWidgetState extends State<QuoteContentWidget> {
 
       const Spacing.width(12),
 
-      Expanded(child: Typography.bodyLarge('Notable Quote')),
+      Expanded(child: RLTypography.bodyLarge('Notable Quote')),
 
       Div.row(
         [
@@ -89,22 +89,22 @@ class QuoteContentWidgetState extends State<QuoteContentWidget> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: quoteTextDecoration,
-      child: Typography.bodyLarge('"${widget.content.quote}"'),
+      child: RLTypography.bodyLarge('"${widget.content.quote}"'),
     );
   }
 
   Widget QuoteFooter() {
     return Div.row([
-      Typography.bodyMedium(
+      RLTypography.bodyMedium(
         '— ${widget.content.author}',
-        color: AppTheme.textPrimary.withValues(alpha: 0.7),
+        color: RLTheme.textPrimary.withValues(alpha: 0.7),
       ),
 
       const Spacer(),
 
       RenderIf.condition(
         isBookmarked,
-        Typography.bodyMedium('Bookmarked ✓', color: Colors.orange),
+        RLTypography.bodyMedium('Bookmarked ✓', color: Colors.orange),
       ),
     ]);
   }

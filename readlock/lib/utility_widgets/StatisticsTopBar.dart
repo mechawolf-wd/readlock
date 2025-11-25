@@ -23,7 +23,7 @@ class StatisticsTopBar extends StatelessWidget {
 
       const Spacing.width(8),
 
-      Typography.text('7'),
+      RLTypography.text('7'),
     ]);
   }
 
@@ -33,7 +33,7 @@ class StatisticsTopBar extends StatelessWidget {
 
       const Spacing.width(8),
 
-      Typography.text('23'),
+      RLTypography.text('23'),
     ]);
   }
 }
@@ -47,7 +47,7 @@ class Style {
 
   static Icon LightBulbIcon = const Icon(
     Icons.lightbulb,
-    color: AppTheme.primaryGreen,
+    color: RLTheme.primaryGreen,
     size: 20,
   );
 }

@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class Typography {
+class RLTypography {
   // Base color definitions for light theme
   static const Color TEXT_PRIMARY = Color(0xFF212121);
   static const Color TEXT_SECONDARY = Color(0xFF757575);

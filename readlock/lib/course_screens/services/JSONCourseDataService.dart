@@ -6,7 +6,7 @@
 import 'dart:convert';
 import 'package:flutter/services.dart';
 
-class JsonCourseDataService {
+class JSONCourseDataService {
   static Map<String, dynamic>? cachedData;
 
   static final Map<String, dynamic> mockCourseData = {

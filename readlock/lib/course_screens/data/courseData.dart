@@ -2,11 +2,11 @@ import 'package:readlock/course_screens/services/JSONCourseDataService.dart';
 
 class CourseData {
   static Future<List<Map<String, dynamic>>> get availableCourses async {
-    return await JsonCourseDataService.getCourses();
+    return await JSONCourseDataService.getCourses();
   }
 
   static Future<Map<String, dynamic>?> getCourseById(String courseId) {
-    return JsonCourseDataService.getCourseById(courseId);
+    return JSONCourseDataService.getCourseById(courseId);
   }
 
   static void clearCache() {

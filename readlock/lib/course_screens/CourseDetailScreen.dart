@@ -5,7 +5,7 @@ import 'package:readlock/course_screens/widgets/CCJSONContentFactory.dart';
 import 'package:readlock/course_screens/data/courseData.dart';
 import 'package:readlock/constants/appTheme.dart';
 import 'package:readlock/utility_widgets/Utility.dart';
-import 'package:readlock/BottomNavigationBar.dart';
+import 'package:readlock/MainNavigation.dart';
 import 'package:readlock/constants/typography.dart';
 
 const String NO_CONTENT_AVAILABLE_MESSAGE =
@@ -50,7 +50,7 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
   // Icon definitions
   Widget get BackIcon => const Icon(
     Icons.arrow_back,
-    color: AppTheme.textPrimary,
+    color: RLTheme.textPrimary,
     size: 24,
   );
 
@@ -93,13 +93,13 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
       isLoading,
       // Loading screen
       const Scaffold(
-        backgroundColor: AppTheme.backgroundDark,
+        backgroundColor: RLTheme.backgroundDark,
         body: Center(child: CircularProgressIndicator()),
       ),
       // Main course screen
       SafeArea(
         child: Scaffold(
-          backgroundColor: AppTheme.backgroundDark,
+          backgroundColor: RLTheme.backgroundDark,
           body: Div.column([
             // Progress bar and navigation header
             TopProgressBar(),
@@ -130,7 +130,7 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
 
   Widget EmptyContentMessage() {
     return Center(
-      child: Typography.bodyMedium(NO_CONTENT_AVAILABLE_MESSAGE),
+      child: RLTypography.bodyMedium(NO_CONTENT_AVAILABLE_MESSAGE),
     );
   }
 
@@ -165,7 +165,7 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
   void navigateToMainScreen() {
     Navigator.of(
       context,
-    ).push(AppTheme.fadeTransition(const MainNavigation()));
+    ).push(RLTheme.fadeTransition(const MainNavigation()));
   }
 
   List<Map<String, dynamic>> expandLessonsToContent(
@@ -235,7 +235,7 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
       borderRadius: progressBarRadius,
       child: LinearProgressIndicator(
         value: progressValue,
-        backgroundColor: AppTheme.backgroundLight,
+        backgroundColor: RLTheme.backgroundLight,
         valueColor: AlwaysStoppedAnimation<Color>(courseColor),
         minHeight: 8,
       ),

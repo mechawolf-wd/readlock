@@ -90,7 +90,7 @@ class CoursesScreenState extends State<CoursesScreen> {
     switch (colorName.toLowerCase()) {
       case 'green':
         {
-          return AppTheme.primaryGreen;
+          return RLTheme.primaryGreen;
         }
       case 'purple':
         {
@@ -98,7 +98,7 @@ class CoursesScreenState extends State<CoursesScreen> {
         }
       case 'blue':
         {
-          return AppTheme.primaryBlue;
+          return RLTheme.primaryBlue;
         }
       case 'red':
         {
@@ -110,7 +110,7 @@ class CoursesScreenState extends State<CoursesScreen> {
         }
       default:
         {
-          return AppTheme.primaryBlue;
+          return RLTheme.primaryBlue;
         }
     }
   }
@@ -147,10 +147,10 @@ class CoursesScreenState extends State<CoursesScreen> {
     return const Div.column(
       [
         Center(
-          child: CircularProgressIndicator(color: AppTheme.primaryBlue),
+          child: CircularProgressIndicator(color: RLTheme.primaryBlue),
         ),
       ],
-      color: AppTheme.backgroundDark,
+      color: RLTheme.backgroundDark,
       height: 'full',
       mainAxisAlignment: 'center',
     );
@@ -158,7 +158,7 @@ class CoursesScreenState extends State<CoursesScreen> {
 
   Widget MainContent() {
     return Scaffold(
-      backgroundColor: AppTheme.backgroundDark,
+      backgroundColor: RLTheme.backgroundDark,
       body: SafeArea(
         child: Column(
           children: [
@@ -192,7 +192,7 @@ class CoursesScreenState extends State<CoursesScreen> {
   Widget CourseSelectionHeader() {
     return Div.column([
       // Main heading
-      Typography.headingLarge('Choose Your Course'),
+      RLTypography.headingLarge('Choose Your Course'),
 
       const Spacing.height(16),
 
@@ -284,7 +284,7 @@ class CoursesScreenState extends State<CoursesScreen> {
       const Spacing.height(16),
 
       // Genre heading
-      Typography.headingMedium(genreName),
+      RLTypography.headingMedium(genreName),
 
       const Spacing.height(16),
     ];
@@ -366,12 +366,12 @@ class CourseCard extends StatelessWidget {
   Widget CourseContent(String title, String description) {
     return Div.column([
       // Course title
-      Typography.headingMedium(title),
+      RLTypography.headingMedium(title),
 
       const Spacing.height(8),
 
       // Course description
-      Typography.text(description),
+      RLTypography.text(description),
     ], crossAxisAlignment: CrossAxisAlignment.start);
   }
 
@@ -390,7 +390,7 @@ class CourseCard extends StatelessWidget {
   void navigateToCourseRoadmap(BuildContext context, String courseId) {
     Navigator.push(
       context,
-      AppTheme.fadeTransition(CourseRoadmapScreen(courseId: courseId)),
+      RLTheme.fadeTransition(CourseRoadmapScreen(courseId: courseId)),
     );
   }
 
@@ -410,7 +410,7 @@ class CourseCard extends StatelessWidget {
 
   Widget CourseStats() {
     final int lessonsCount = (course['lessons'] as List?)?.length ?? 0;
-    final Color iconColor = AppTheme.textPrimary.withValues(alpha: 0.6);
+    final Color iconColor = RLTheme.textPrimary.withValues(alpha: 0.6);
 
     return Div.row([
       // Book icon
@@ -419,7 +419,7 @@ class CourseCard extends StatelessWidget {
       const Spacing.width(6),
 
       // Lessons count text
-      Typography.text('$lessonsCount lessons'),
+      RLTypography.text('$lessonsCount lessons'),
     ]);
   }
 
@@ -427,7 +427,7 @@ class CourseCard extends StatelessWidget {
     return Div.row(
       [
         // Button text
-        Typography.text('Start Course'),
+        RLTypography.text('Start Course'),
 
         const Spacing.width(8),
 
@@ -471,37 +471,37 @@ class GenreChip extends StatelessWidget {
 
 class Style {
   static final BoxDecoration cardDecoration = BoxDecoration(
-    color: AppTheme.backgroundLight.withValues(alpha: 0.08),
+    color: RLTheme.backgroundLight.withValues(alpha: 0.08),
     borderRadius: BorderRadius.circular(16),
     border: Border.all(
-      color: AppTheme.primaryBlue.withValues(alpha: 0.2),
+      color: RLTheme.primaryBlue.withValues(alpha: 0.2),
       width: 1.5,
     ),
   );
 
   static final BoxDecoration iconDecoration = BoxDecoration(
-    color: AppTheme.primaryBlue.withValues(alpha: 0.1),
+    color: RLTheme.primaryBlue.withValues(alpha: 0.1),
     borderRadius: BorderRadius.circular(12),
   );
 
   static final BoxDecoration startButtonDecoration = BoxDecoration(
-    color: AppTheme.primaryGreen.withValues(alpha: 0.1),
+    color: RLTheme.primaryGreen.withValues(alpha: 0.1),
     borderRadius: BorderRadius.circular(20),
     border: Border.all(
-      color: AppTheme.primaryGreen.withValues(alpha: 0.3),
+      color: RLTheme.primaryGreen.withValues(alpha: 0.3),
     ),
   );
 
   static final BoxDecoration chipDecoration = BoxDecoration(
-    color: AppTheme.primaryBlue.withValues(alpha: 0.15),
+    color: RLTheme.primaryBlue.withValues(alpha: 0.15),
     borderRadius: BorderRadius.circular(20),
     border: Border.all(
-      color: AppTheme.primaryBlue.withValues(alpha: 0.4),
+      color: RLTheme.primaryBlue.withValues(alpha: 0.4),
     ),
   );
 
   static final TextStyle chipTextStyle = const TextStyle(
-    color: AppTheme.primaryBlue,
+    color: RLTheme.primaryBlue,
     fontWeight: FontWeight.w600,
     fontSize: 14,
   );
