@@ -19,11 +19,11 @@
           "content": [
             {
               "entity-type": "intro",
-              "title": "Doors, Faucets, and Frustration",
-              "intro-text-segments": [
-                "Every day, you interact with hundreds of designed objects. Most work flawlessly, becoming invisible extensions of your intent.",
-                "Yet it's the failures that linger: the hotel door whose handle suggests pulling while demanding a push. Those shower controls that seem engineered by someone who has never experienced scalding water.",
-                "In this course, we will explore how the mind interprets the designed world and discover the hidden psychology behind every handle, button, and interface we encounter."
+              "title": "Doors, Handles, and Hidden Messages",
+              "text-segments": [
+                "Every day, objects silently communicate what they want you to do.",
+                "A door handle screams 'pull me!' A flat metal plate whispers 'push here.'",
+                "In this course, we'll explore three fundamental design principles: affordances, mapping, and feedback."
               ]
             },
             {
@@ -45,34 +45,34 @@
               "entity-type": "text",
               "title": "Story 2",
               "text-segments": [
-                "David faces the bathroom faucet.",
-                "Two identical handles side by side.",
-                "Hot or cold? Left or right?",
-                "Which way do you turn for hot water?",
-                "There are no labels, no indicators.",
-                "He turns the left handle clockwise.",
-                "Ice cold water blasts his hands.",
-                "The mapping was backwards.",
-                "Why should he have to guess?"
+                "Emma approaches the conference room door.",
+                "It's entirely made of glass.",
+                "No visible handle, no obvious push point.",
+                "The surface is completely smooth.",
+                "She pushes where others have pushed.",
+                "Smudges on the glass are her only clue.",
+                "The door swings open.",
+                "Poor affordances left her guessing.",
+                "Good design would show her the way."
               ]
             },
             {
               "entity-type": "text",
               "title": "Story 3",
               "text-segments": [
-                "Maria sits in front of the stove.",
-                "Four burners, four control knobs.",
-                "But which knob controls which burner?",
-                "The knobs are arranged in a straight line.",
-                "How does that map to a square grid?",
-                "She turns the leftmost knob.",
-                "The back-right burner ignites.",
-                "This violates natural mapping.",
-                "The control should match the layout."
+                "Alex finds a sleek modern water bottle.",
+                "The cap looks like it should twist off.",
+                "He turns it counterclockwise. Nothing.",
+                "He tries clockwise. Still stuck.",
+                "Finally, he notices it's a flip-top.",
+                "The cap hinges upward, not twist.",
+                "The bottle's design suggested the wrong action.",
+                "This is what designers call false affordances.",
+                "Objects that lie about their function."
               ]
             },
             {
-              "entity-type": "multiple-choice-question",
+              "entity-type": "single-choice-question",
               "title": "Door Design",
               "question": "Quick question: When you see a door with a handle, what does your brain assume?",
               "options": [
@@ -93,55 +93,55 @@
               "hint": "Think about what action a handle naturally suggests when you grab it."
             },
             {
-              "entity-type": "multiple-choice-question",
-              "title": "Faucet Mapping",
-              "question": "Think about it: Why did David struggle with the bathroom faucet?",
+              "entity-type": "single-choice-question",
+              "title": "Glass Door Mystery",
+              "question": "Why was Emma confused by the glass door?",
               "options": [
                 {
-                  "text": "The handles had no clear mapping to hot and cold"
+                  "text": "It provided no visual clues about how to open it"
+                },
+                {
+                  "text": "The glass was too transparent"
+                },
+                {
+                  "text": "She was in a hurry"
+                }
+              ],
+              "correct-answer-indices": [
+                0
+              ],
+              "explanation": "The door lacked affordances - visual or physical cues that indicate how it should be used.",
+              "hint": "Consider what visual information the door provided about its operation."
+            },
+            {
+              "entity-type": "single-choice-question",
+              "title": "Water Bottle Confusion",
+              "question": "Why did Alex struggle with the water bottle cap?",
+              "options": [
+                {
+                  "text": "The design suggested twisting when it actually flipped"
                 },
                 {
                   "text": "He didn't read the instructions"
                 },
                 {
-                  "text": "The water pressure was too high"
+                  "text": "The cap was stuck"
                 }
               ],
               "correct-answer-indices": [
                 0
               ],
-              "explanation": "Without visual cues or natural positioning, users have to guess which control does what.",
-              "hint": "Consider what information was missing from the faucet handles."
-            },
-            {
-              "entity-type": "multiple-choice-question",
-              "title": "Stove Controls",
-              "question": "Consider this: What made the stove controls confusing for Maria?",
-              "options": [
-                {
-                  "text": "The knobs were arranged differently than the burners"
-                },
-                {
-                  "text": "The knobs were too small"
-                },
-                {
-                  "text": "She wasn't familiar with gas stoves"
-                }
-              ],
-              "correct-answer-indices": [
-                0
-              ],
-              "explanation": "Linear control layout doesn't match the square burner arrangement - poor natural mapping.",
-              "hint": "Look at how the controls were positioned compared to the burners."
+              "explanation": "This is a false affordance - the design suggests one action while requiring another.",
+              "hint": "Think about what action the cap's appearance suggested versus what was actually needed."
             },
             {
               "entity-type": "text",
-              "title": "The Psychology of Design",
+              "title": "What Are Affordances?",
               "text-segments": [
-                "Those three scenarios reveal something profound about human psychology and design.",
-                "Each failure wasn't random - they point to specific psychological principles that designers either understand or ignore.",
-                "Don Norman spent decades studying these patterns and identified seven fundamental principles that separate intuitive design from daily frustration.",
-                "Understanding these principles transforms how you see every interface, from door handles to smartphone apps."
+                "Those three scenarios reveal something profound about how objects communicate.",
+                "Each confusion wasn't random - it reveals how design shapes our expectations and actions.",
+                "Don Norman studied these patterns and identified affordances as a fundamental principle of intuitive design.",
+                "Understanding affordances transforms how you see every interface, from door handles to smartphone apps."
               ]
             },
             {
@@ -156,28 +156,18 @@
             },
             {
               "entity-type": "text",
-              "title": "Feedback",
+              "title": "Types of Affordances",
               "text-segments": [
-                "The second principle is feedback - every action needs a clear and immediate response to confirm it worked.",
-                "When you press a button, you should see a light, hear a click, or feel the button depress.",
-                "Without proper feedback, you're operating blind, never sure if your actions had any effect.",
-                "Good feedback is immediate and informative, while poor feedback leaves you wondering if anything happened at all."
+                "Objects can provide different types of affordances to guide user behavior.",
+                "Visual affordances use appearance - a raised button looks pressable, a handle looks graspable.",
+                "Physical affordances use shape and texture - a groove suggests sliding, ridges suggest gripping.",
+                "Cultural affordances rely on learned conventions - red means stop, green means go."
               ]
             },
             {
-              "entity-type": "text",
-              "title": "Natural Mapping",
-              "text-segments": [
-                "The third principle is natural mapping - controls should spatially and logically relate to their effects.",
-                "A steering wheel maps rotation directly to car direction, making the relationship intuitive and learnable.",
-                "Light switches positioned to mirror room layout create instant understanding of which controls what.",
-                "When mapping violates spatial relationships, simple tasks require instruction manuals and constant mental translation."
-              ]
-            },
-            {
-              "entity-type": "multiple-choice-question",
+              "entity-type": "single-choice-question",
               "title": "The USB Mystery",
-              "question": "What do you think? Why does a USB cable never fit on the first try?",
+              "question": "Why does a USB cable never fit on the first try?",
               "options": [
                 {
                   "text": "The USB exists in quantum superposition"
@@ -194,67 +184,61 @@
             },
             {
               "entity-type": "text",
-              "title": "Usability Research",
+              "title": "Affordances in Practice",
               "text-segments": [
-                "Decades of usability research have revealed startling statistics about how we interact with everyday objects.",
-                "These studies consistently show that when design doesn't match human expectations, failure rates skyrocket.",
-                "The cost of poor design isn't just frustration - it leads to accidents, errors, and sometimes catastrophic failures.",
-                "Understanding these patterns helps designers create interfaces that work with, not against, human nature."
+                "Great designers use affordances to guide behavior without instruction.",
+                "A well-designed slider has a groove that suggests the direction of movement.",
+                "Buttons are raised to suggest pressing, while flat areas suggest they're not interactive.",
+                "The best affordances feel so natural that you don't even notice them working."
               ]
             },
             {
-              "entity-type": "estimate-percentage-question",
-              "title": "User Error Statistics",
-              "question": "Can you estimate: What percentage of so-called 'user errors' in airplane accidents were actually caused by poor cockpit design, according to FAA studies?",
-              "options": [],
-              "correct-answer-indices": [
-                82
-              ],
-              "explanation": "FAA studies revealed that 82% of pilot errors were actually design-induced errors. Poor placement of controls, confusing displays, and non-intuitive interfaces led to mistakes that were blamed on pilots but were really design failures.",
-              "hint": "Think about how cockpit design might influence pilot behavior and decision-making under pressure."
-            },
-            {
-              "entity-type": "multiple-choice-question",
-              "title": "The Microwave Paradox",
-              "question": "What do you think? Why can you launch a space shuttle but not figure out your hotel microwave?",
+              "entity-type": "true-false-question",
+              "title": "Affordance Check",
+              "question": "True or false: A good affordance requires written instructions to understand.",
               "options": [
                 {
-                  "text": "Space shuttles have better user manuals"
+                  "text": "True"
                 },
                 {
-                  "text": "Microwaves prioritize features over usability"
+                  "text": "False"
                 }
               ],
               "correct-answer-indices": [
                 1
               ],
-              "explanation": "Microwaves prioritize features over simple usability. Complexity without purpose is bad design."
+              "explanation": "False! Good affordances are immediately obvious and require no explanation. If you need instructions, the affordance has failed.",
+              "hint": "Think about the best-designed objects you use - do they need labels?"
             },
             {
-              "entity-type": "estimate-percentage-question",
-              "title": "Control Confusion",
-              "question": "What do you think? In a study of hotel guests, what percentage couldn't figure out how to turn on the shower within 10 seconds?",
-              "options": [],
-              "correct-answer-indices": [
-                47
+              "entity-type": "fill-gap-question",
+              "title": "Complete the Principle",
+              "question": "Fill in the blanks: Affordances are the _____ between object properties and the _____ they suggest.",
+              "options": [
+                {
+                  "text": "relationship"
+                },
+                {
+                  "text": "connection"
+                },
+                {
+                  "text": "actions"
+                },
+                {
+                  "text": "behaviors"
+                }
               ],
-              "explanation": "Nearly half (47%) of hotel guests struggled with unfamiliar shower controls. Each hotel has different designs with no standardization - some pull, some push, some twist, and the hot/cold directions vary. This lack of consistency forces users to experiment every time."
-            },
-            {
-              "entity-type": "text",
-              "title": "Evolution of Design Thinking",
-              "text-segments": [
-                "The field of user-centered design didn't emerge overnight but evolved through decades of observing human frustration with everyday objects.",
-                "Engineers once designed products focusing solely on functionality, assuming users would adapt to whatever interface they created.",
-                "This led to countless disasters - from confusing airplane cockpits that caused crashes to medical devices that led to fatal dosing errors.",
-                "The shift toward human-centered design recognizes that good design must account for human psychology, limitations, and natural behaviors.",
-                "Today's best designers spend as much time studying users as they do crafting solutions."
-              ]
+              "correct-answer-indices": [
+                0,
+                2
+              ],
+              "explanation": "Affordances are the relationship between object properties and the actions they suggest. This fundamental definition shows how design communicates function.",
+              "hint": "Think back to Norman's original definition of affordances."
             },
             {
               "entity-type": "true-false-question",
               "title": "Design Principle Check",
-              "question": "What do you think? Good design should require extensive user manuals to understand.",
+              "question": "Good design should require extensive user manuals to understand.",
               "options": [
                 {
                   "text": "True"
@@ -270,156 +254,597 @@
             },
             {
               "entity-type": "estimate-percentage-question",
-              "title": "Medical Device Errors",
-              "question": "What do you think? What percentage of fatal medical device errors are attributed to interface design problems rather than device malfunction?",
+              "title": "Door Study Results",
+              "question": "In Norman's study of door-related accidents, what percentage of people pulled a push door on their first attempt?",
               "options": [],
               "correct-answer-indices": [
-                67
+                73
               ],
-              "explanation": "Studies show that 67% of fatal medical device errors stem from poor interface design, not mechanical failure. Confusing displays, similar-looking controls, and poor feedback mechanisms lead to dosing errors and misread vital signs that can be deadly."
+              "explanation": "Norman found that 73% of people initially pulled doors that were meant to be pushed when the door had a vertical handle. This demonstrates how powerful affordances are - handles strongly suggest pulling, regardless of signage."
             },
             {
               "entity-type": "text",
-              "title": "The Importance of Feedback",
+              "title": "Affordance Examples",
               "text-segments": [
-                "Every action we take with an object should produce immediate and clear feedback to confirm it worked.",
-                "Without feedback, we operate in the dark, unsure if our actions had any effect or if we need to try something different.",
-                "Good feedback doesn't just confirm an action - it provides information about the system's state and what will happen next.",
-                "The best designed systems provide multiple forms of feedback: visual, auditory, and tactile cues that reinforce each other."
+                "Great affordances work invisibly - you use them without thinking.",
+                "Scissors have finger holes that show exactly where to place your fingers.",
+                "A zipper tab moves up and down along an obvious track.",
+                "Good affordances make the correct action feel inevitable and natural."
               ]
+            },
+            {
+              "entity-type": "design-examples-showcase",
+              "title": "Real Life Examples"
+            },
+            {
+              "entity-type": "reflection",
+              "title": "Affordances in Your Life",
+              "prompt": "Think about an object you use daily that has excellent affordances. What makes it so intuitive?",
+              "thinking-points": [
+                "What visual or physical cues guide your behavior?",
+                "How does the design suggest the correct action?",
+                "Would this object work for someone who's never seen it before?",
+                "What would happen if the affordances were removed?"
+              ]
+            },
+            {
+              "entity-type": "outro",
+              "title": "Seeing Affordances Everywhere",
+              "text-segments": [
+                "You now understand how objects silently communicate their purpose.",
+                "Every handle, button, and switch tells a story about its intended use.",
+                "Good affordances guide you naturally; poor ones leave you guessing.",
+                "In our next lesson, we'll explore natural mapping - how controls relate logically to their effects."
+              ]
+            }
+          ]
+        },
+        {
+          "id": "mapping-course",
+          "title": "Natural Mapping and Mental Models",
+          "lesson-version": "story-based",
+          "content": [
+            {
+              "entity-type": "intro",
+              "title": "When Controls Make Sense",
+              "text-segments": [
+                "Some controls feel instantly logical, while others leave you guessing.",
+                "A steering wheel naturally maps to car direction - turn right to go right.",
+                "In this lesson, we'll explore natural mapping - how great design matches your mental expectations."
+              ]
+            },
+            {
+              "entity-type": "text",
+              "title": "Story 1",
+              "text-segments": [
+                "David faces the bathroom faucet.",
+                "Two identical handles side by side.",
+                "Hot or cold? Left or right?",
+                "Which way do you turn for hot water?",
+                "There are no labels, no indicators.",
+                "He turns the left handle clockwise.",
+                "Ice cold water blasts his hands.",
+                "The mapping was backwards.",
+                "Why should he have to guess?"
+              ]
+            },
+            {
+              "entity-type": "text",
+              "title": "Story 2",
+              "text-segments": [
+                "Maria sits in front of the stove.",
+                "Four burners, four control knobs.",
+                "But which knob controls which burner?",
+                "The knobs are arranged in a straight line.",
+                "How does that map to a square grid?",
+                "She turns the leftmost knob.",
+                "The back-right burner ignites.",
+                "This violates natural mapping.",
+                "The control should match the layout."
+              ]
+            },
+            {
+              "entity-type": "text",
+              "title": "Story 3",
+              "text-segments": [
+                "Tom adjusts his car's side mirrors.",
+                "The control panel has four arrow buttons.",
+                "Up, down, left, right - simple enough.",
+                "He presses up. The mirror tilts down.",
+                "He presses right. It moves left.",
+                "The controls work in reverse.",
+                "His mental model says one thing.",
+                "The system does another.",
+                "Poor mapping breaks intuition."
+              ]
+            },
+            {
+              "entity-type": "single-choice-question",
+              "title": "Faucet Mapping",
+              "question": "Why did David struggle with the bathroom faucet?",
+              "options": [
+                {
+                  "text": "The handles had no clear mapping to hot and cold"
+                },
+                {
+                  "text": "He didn't read the instructions"
+                },
+                {
+                  "text": "The water pressure was too high"
+                }
+              ],
+              "correct-answer-indices": [
+                0
+              ],
+              "explanation": "Without visual cues or natural positioning, users have to guess which control does what. Good mapping makes the relationship obvious.",
+              "hint": "Consider what information was missing from the faucet handles."
+            },
+            {
+              "entity-type": "single-choice-question",
+              "title": "Stove Controls",
+              "question": "What made the stove controls confusing for Maria?",
+              "options": [
+                {
+                  "text": "The knobs were arranged differently than the burners"
+                },
+                {
+                  "text": "The knobs were too small"
+                },
+                {
+                  "text": "She wasn't familiar with gas stoves"
+                }
+              ],
+              "correct-answer-indices": [
+                0
+              ],
+              "explanation": "Linear control layout doesn't match the square burner arrangement - poor spatial mapping forces users to memorize arbitrary relationships.",
+              "hint": "Look at how the controls were positioned compared to the burners."
+            },
+            {
+              "entity-type": "single-choice-question",
+              "title": "Mirror Controls",
+              "question": "What frustrated Tom about the car's mirror controls?",
+              "options": [
+                {
+                  "text": "The controls worked opposite to his expectations"
+                },
+                {
+                  "text": "The buttons were too small"
+                },
+                {
+                  "text": "He couldn't find the controls"
+                }
+              ],
+              "correct-answer-indices": [
+                0
+              ],
+              "explanation": "When controls work opposite to natural expectations, they violate users' mental models and force them to think backwards.",
+              "hint": "Think about what direction Tom expected when he pressed 'up'."
+            },
+            {
+              "entity-type": "text",
+              "title": "What is Natural Mapping?",
+              "text-segments": [
+                "Those three scenarios reveal a fundamental design principle.",
+                "Natural mapping is the relationship between controls and their effects in the world.",
+                "Good mapping uses spatial correspondence, cultural conventions, or logical relationships.",
+                "When mapping is natural, you don't have to think - the right action feels obvious."
+              ]
+            },
+            {
+              "entity-type": "text",
+              "title": "Natural Mapping",
+              "text-segments": [
+                "Natural mapping takes advantage of physical analogies and cultural standards.",
+                "A steering wheel maps rotation directly to direction - turning right makes you go right.",
+                "Light switches positioned to mirror room layout create instant understanding.",
+                "When mapping violates these relationships, simple tasks require mental translation."
+              ]
+            },
+            {
+              "entity-type": "text",
+              "title": "Types of Mapping",
+              "text-segments": [
+                "Spatial mapping uses physical relationships - controls positioned like their effects.",
+                "Cultural mapping relies on learned conventions - red for stop, green for go.",
+                "Semantic mapping uses meaning - louder sounds from bigger speakers.",
+                "The best mapping combines multiple types for maximum clarity."
+              ]
+            },
+            {
+              "entity-type": "single-choice-question",
+              "title": "Steering Wheel Success",
+              "question": "Why does a steering wheel feel so natural to use?",
+              "options": [
+                {
+                  "text": "It maps rotation directly to direction"
+                },
+                {
+                  "text": "It's the traditional way cars work"
+                },
+                {
+                  "text": "It provides good grip"
+                }
+              ],
+              "correct-answer-indices": [
+                0
+              ],
+              "explanation": "Steering wheels work because they provide direct spatial mapping - the direction you turn the wheel corresponds to the direction the car goes.",
+              "hint": "Think about the relationship between wheel movement and car direction."
+            },
+            {
+              "entity-type": "text",
+              "title": "Mapping in Practice",
+              "text-segments": [
+                "Great designers arrange controls to match their effects spatially.",
+                "Volume controls on the right feel natural because we read left to right.",
+                "Elevator buttons arranged vertically match the floors they control.",
+                "Good mapping reduces cognitive load and prevents errors."
+              ]
+            },
+            {
+              "entity-type": "true-false-question",
+              "title": "Mapping Check",
+              "question": "True or false: Good natural mapping should require learning and practice to understand.",
+              "options": [
+                {
+                  "text": "True"
+                },
+                {
+                  "text": "False"
+                }
+              ],
+              "correct-answer-indices": [
+                1
+              ],
+              "explanation": "False! Natural mapping should be immediately intuitive, requiring no learning. If users need to practice, the mapping isn't natural enough.",
+              "hint": "Think about what 'natural' means in this context."
             },
             {
               "entity-type": "fill-gap-question",
               "title": "Complete the Principle",
-              "question": "What do you think? Norman's principle states that good design makes things ___ and provides clear ___.",
+              "question": "Natural mapping uses _____ correspondence and _____ conventions to make controls intuitive.",
               "options": [
                 {
-                  "text": "visible"
+                  "text": "spatial"
                 },
                 {
-                  "text": "complex"
+                  "text": "visual"
                 },
                 {
-                  "text": "feedback"
+                  "text": "cultural"
                 },
                 {
-                  "text": "expensive"
+                  "text": "logical"
                 }
               ],
               "correct-answer-indices": [
                 0,
                 2
               ],
-              "explanation": "Good design makes things visible and provides clear feedback. Visibility helps users understand what actions are possible, and feedback confirms that their actions had an effect."
+              "explanation": "Natural mapping uses spatial correspondence (physical relationships) and cultural conventions (learned standards) to create intuitive controls.",
+              "hint": "Think about the two main ways mapping can feel natural to users."
             },
             {
               "entity-type": "estimate-percentage-question",
-              "title": "Research Finding",
-              "question": "What do you think? In Norman's study of door-related accidents in public buildings, what percentage of people pulled a push door on their first attempt?",
+              "title": "Mapping Errors",
+              "question": "What percentage of user errors in complex control panels are caused by poor mapping, according to design studies?",
               "options": [],
               "correct-answer-indices": [
-                73
+                65
               ],
-              "explanation": "Norman's study found that 73% of people initially pulled doors that were meant to be pushed when the door had a vertical handle. This demonstrates how powerful affordances are in shaping our behavior - handles strongly suggest pulling, regardless of signage."
-            },
-            {
-              "entity-type": "estimate-percentage-question",
-              "title": "Smartphone Adoption",
-              "question": "What do you think? What percentage of smartphone users never use more than 30% of their phone's features, according to usability studies?",
-              "options": [],
-              "correct-answer-indices": [
-                89
-              ],
-              "explanation": "Studies show that 89% of smartphone users utilize less than 30% of available features. This isn't because users are incapable - it's because feature discovery is poor, interfaces are complex, and many functions are buried in confusing menus."
+              "explanation": "Research shows that 65% of errors in complex interfaces stem from poor mapping. When controls don't match user expectations, mistakes are inevitable.",
+              "hint": "Consider how often you press the wrong button when controls aren't where you expect them."
             },
             {
               "entity-type": "text",
-              "title": "Design in Practice",
+              "title": "Mapping Examples",
               "text-segments": [
-                "Great design often goes unnoticed because it works so seamlessly that we never have to think about it.",
-                "Consider the humble zipper - once you understand pulling the tab up closes it and down opens it, you never forget.",
-                "Or think about scissors - the finger holes immediately show where to place your fingers, and the cutting action maps naturally to the squeezing motion.",
-                "These designs succeed because they align perfectly with our mental models and physical capabilities.",
-                "The best designs become invisible through their excellence, while poor designs announce themselves through frustration."
-              ]
-            },
-            {
-              "entity-type": "reflection",
-              "title": "Design in Your Life",
-              "prompt": "Think about a recent time when you struggled with a poorly designed object or interface. What made it confusing?",
-              "thinking-points": [
-                "What did you expect to happen vs. what actually happened?",
-                "Were there visual cues that led you astray?",
-                "How would you redesign it to be more intuitive?",
-                "Who might be most affected by this poor design?"
-              ]
-            },
-            {
-              "entity-type": "text",
-              "title": "Example 1",
-              "text-segments": [
-                "The Three Mile Island nuclear accident.",
-                "March 28, 1979.",
-                "A cooling pump failed.",
-                "The control room had hundreds of indicators.",
-                "Critical information was buried in the noise.",
-                "Operators couldn't see the real problem.",
-                "Poor visibility led to near-catastrophe.",
-                "Norman uses this as his prime example."
-              ]
-            },
-            {
-              "entity-type": "text",
-              "title": "Example 2",
-              "text-segments": [
-                "Consider a simple teapot.",
-                "The spout shows where liquid comes out.",
-                "The handle shows where to grip.",
-                "The lid suggests where to fill.",
-                "Every part has a clear affordance.",
-                "No instruction manual needed.",
-                "This is what good design looks like.",
-                "It's been perfected over centuries."
-              ]
-            },
-            {
-              "entity-type": "text",
-              "title": "Example 3",
-              "text-segments": [
-                "Computer keyboards follow typewriter layout.",
-                "QWERTY was designed to slow typists down.",
-                "Why do we still use this today?",
-                "Because changing established conventions is hard.",
-                "Even bad design becomes standard.",
-                "Sometimes compatibility trumps optimization.",
-                "Legacy constraints shape modern design.",
-                "History haunts our interfaces."
-              ]
-            },
-            {
-              "entity-type": "estimate-percentage-question",
-              "title": "User Satisfaction",
-              "question": "What do you think? After redesigning products using Norman's principles, by what percentage did user satisfaction scores typically increase?",
-              "options": [],
-              "correct-answer-indices": [
-                42
-              ],
-              "explanation": "Companies that applied human-centered design principles saw an average 42% increase in user satisfaction scores. This translated directly to reduced support calls, fewer returns, and increased brand loyalty - proving that good design is good business."
-            },
-            {
-              "entity-type": "outro",
-              "title": "Your New Burden",
-              "text-segments": [
-                "You can't unsee what you've learned.",
-                "Every bad door will now annoy you.",
-                "Every confusing interface will frustrate you.",
-                "This knowledge is both a gift and a curse.",
-                "Use it to make the world slightly less stupid."
+                "Good mapping is everywhere once you notice it.",
+                "Car turn signals: left lever for left turn, right lever for right turn.",
+                "Piano keys: higher notes to the right, lower notes to the left.",
+                "Excellent mapping makes the interface disappear into pure intention."
               ]
             },
             {
               "entity-type": "design-examples-showcase",
-              "title": "Good vs Bad Design Examples"
+              "title": "Real Life Examples"
+            },
+            {
+              "entity-type": "reflection",
+              "title": "Mapping in Your Life",
+              "prompt": "Think about a control interface you use daily that has excellent natural mapping. Why does it work so well?",
+              "thinking-points": [
+                "How do the controls relate spatially to their effects?",
+                "What cultural conventions does the design use?",
+                "Would this interface work for someone from a different culture?",
+                "How would poor mapping make this interface frustrating?"
+              ]
+            },
+            {
+              "entity-type": "outro",
+              "title": "Mental Models Matter",
+              "text-segments": [
+                "You now understand how great design matches mental expectations.",
+                "Natural mapping makes controls feel obvious and prevent errors.",
+                "When mapping breaks down, even simple tasks become complex puzzles.",
+                "In our next lesson, we'll explore feedback - how systems confirm your actions worked."
+              ]
+            }
+          ]
+        },
+        {
+          "id": "feedback-course",
+          "title": "Feedback and System Response",
+          "lesson-version": "story-based",
+          "content": [
+            {
+              "entity-type": "intro",
+              "title": "When Silence Speaks Volumes",
+              "intro-text-segments": [
+                "You press a button and... nothing happens. Or does it?",
+                "Good feedback confirms your actions immediately and clearly.",
+                "In this lesson, we'll explore feedback - how systems communicate what's happening."
+              ]
+            },
+            {
+              "entity-type": "text",
+              "title": "Story 1",
+              "text-segments": [
+                "Lisa stands at the elevator.",
+                "She presses the call button.",
+                "No light, no sound, no confirmation.",
+                "Did it register? She presses again.",
+                "And again. Still nothing visible.",
+                "Three minutes later, two elevators arrive.",
+                "She had called both, unknowingly.",
+                "Silent buttons create confusion.",
+                "Feedback would have prevented this."
+              ]
+            },
+            {
+              "entity-type": "text",
+              "title": "Story 2",
+              "text-segments": [
+                "Mike submits an online form.",
+                "He clicks 'Submit' and waits.",
+                "The page doesn't change at all.",
+                "Is it processing? Did it work?",
+                "He clicks Submit again. Still nothing.",
+                "He refreshes and tries once more.",
+                "Later, he receives three confirmation emails.",
+                "Poor feedback led to triple submission.",
+                "Users need to know what's happening."
+              ]
+            },
+            {
+              "entity-type": "text",
+              "title": "Story 3",
+              "text-segments": [
+                "Anna uses her car's touchscreen.",
+                "She taps to adjust the temperature.",
+                "The screen shows no response.",
+                "She taps harder, multiple times.",
+                "Suddenly the temperature jumps wildly.",
+                "All her taps had registered.",
+                "The system was just slow to respond.",
+                "Delayed feedback creates frustration.",
+                "Immediate acknowledgment is crucial."
+              ]
+            },
+            {
+              "entity-type": "single-choice-question",
+              "title": "Elevator Confusion",
+              "question": "Why did Lisa end up calling two elevators?",
+              "options": [
+                {
+                  "text": "The button provided no feedback about her actions"
+                },
+                {
+                  "text": "She was in a hurry"
+                },
+                {
+                  "text": "The elevator system was broken"
+                }
+              ],
+              "correct-answer-indices": [
+                0
+              ],
+              "explanation": "Without visual or auditory feedback, Lisa couldn't tell if her button presses were registered. Good feedback would have shown her the call was received.",
+              "hint": "Consider what information Lisa needed after pressing the button."
+            },
+            {
+              "entity-type": "single-choice-question",
+              "title": "Form Submission Problem",
+              "question": "What caused Mike to submit the form three times?",
+              "options": [
+                {
+                  "text": "The system gave no indication that submission was processing"
+                },
+                {
+                  "text": "He didn't read the instructions"
+                },
+                {
+                  "text": "His internet was too slow"
+                }
+              ],
+              "correct-answer-indices": [
+                0
+              ],
+              "explanation": "Without feedback showing that the form was being processed, Mike had no way to know his first submission was working. A loading indicator would have prevented this.",
+              "hint": "Think about what Mike needed to see after clicking Submit."
+            },
+            {
+              "entity-type": "single-choice-question",
+              "title": "Touchscreen Frustration",
+              "question": "Why did Anna's temperature adjustment go wrong?",
+              "options": [
+                {
+                  "text": "The system delayed feedback, making her think it wasn't working"
+                },
+                {
+                  "text": "The touchscreen was too sensitive"
+                },
+                {
+                  "text": "She didn't know how to use the system"
+                }
+              ],
+              "correct-answer-indices": [
+                0
+              ],
+              "explanation": "Delayed feedback broke the connection between action and result. Anna needed immediate acknowledgment that each tap was registered, even if processing took time.",
+              "hint": "Consider the timing between Anna's actions and the system's response."
+            },
+            {
+              "entity-type": "text",
+              "title": "What is Feedback?",
+              "text-segments": [
+                "Those three scenarios reveal why feedback is essential for good design.",
+                "Feedback is the system's way of communicating with users about their actions.",
+                "Good feedback is immediate, informative, and appropriate to the action performed.",
+                "Without feedback, users operate blind - never sure if their actions worked."
+              ]
+            },
+            {
+              "entity-type": "text",
+              "title": "The Feedback Loop",
+              "text-segments": [
+                "Every interaction creates a communication loop between user and system.",
+                "User acts, system responds, user interprets response, user acts again.",
+                "When feedback is missing or unclear, this loop breaks down completely.",
+                "Good feedback keeps the conversation flowing smoothly."
+              ]
+            },
+            {
+              "entity-type": "text",
+              "title": "Types of Feedback",
+              "text-segments": [
+                "Visual feedback uses lights, colors, animations, and text changes.",
+                "Auditory feedback employs clicks, beeps, and sound effects.",
+                "Tactile feedback provides vibration, resistance, or physical response.",
+                "The best systems combine multiple feedback types for clarity."
+              ]
+            },
+            {
+              "entity-type": "single-choice-question",
+              "title": "Keyboard Success",
+              "question": "Why do physical keyboards feel so responsive to use?",
+              "options": [
+                {
+                  "text": "They provide immediate tactile and auditory feedback"
+                },
+                {
+                  "text": "The keys are properly sized"
+                },
+                {
+                  "text": "They're familiar to most users"
+                }
+              ],
+              "correct-answer-indices": [
+                0
+              ],
+              "explanation": "Physical keyboards excel because they provide instant tactile feedback when pressed and auditory confirmation through key clicks. You immediately know your action registered.",
+              "hint": "Think about what you feel and hear when you press a key."
+            },
+            {
+              "entity-type": "text",
+              "title": "Feedback Timing",
+              "text-segments": [
+                "Feedback timing is crucial for maintaining the action-response connection.",
+                "Immediate acknowledgment shows the action was received.",
+                "Progress indicators communicate ongoing processes.",
+                "Completion signals tell users when tasks finish successfully."
+              ]
+            },
+            {
+              "entity-type": "true-false-question",
+              "title": "Feedback Timing",
+              "question": "True or false: Good feedback should only appear when an action is completely finished.",
+              "options": [
+                {
+                  "text": "True"
+                },
+                {
+                  "text": "False"
+                }
+              ],
+              "correct-answer-indices": [
+                1
+              ],
+              "explanation": "False! Good feedback starts immediately to acknowledge the action, continues during processing to show progress, and confirms completion. Waiting until the end leaves users wondering if anything happened.",
+              "hint": "Think about what users need to know during a long process."
+            },
+            {
+              "entity-type": "fill-gap-question",
+              "title": "Complete the Principle",
+              "question": "Good feedback should be _____, _____, and appropriate to the action performed.",
+              "options": [
+                {
+                  "text": "immediate"
+                },
+                {
+                  "text": "delayed"
+                },
+                {
+                  "text": "informative"
+                },
+                {
+                  "text": "complex"
+                }
+              ],
+              "correct-answer-indices": [
+                0,
+                2
+              ],
+              "explanation": "Good feedback should be immediate (so users know their action registered) and informative (so they understand what's happening or what to do next).",
+              "hint": "Think about the key qualities that make feedback effective."
+            },
+            {
+              "entity-type": "estimate-percentage-question",
+              "title": "Button Press Research",
+              "question": "What percentage of users will press a button multiple times if they don't receive immediate feedback, according to usability studies?",
+              "options": [],
+              "correct-answer-indices": [
+                78
+              ],
+              "explanation": "Studies show that 78% of users will press unresponsive buttons repeatedly within 3 seconds. Without feedback, users assume their action didn't register and try again.",
+              "hint": "Consider how you behave when a button seems unresponsive."
+            },
+            {
+              "entity-type": "text",
+              "title": "Feedback Examples",
+              "text-segments": [
+                "Great feedback surrounds us in well-designed interactions.",
+                "Button highlights when you hover over them in software.",
+                "ATMs beep when you press buttons and show confirmation screens.",
+                "Car indicators click rhythmically to confirm they're working.",
+                "Excellent feedback makes interaction feel natural and confident."
+              ]
+            },
+            {
+              "entity-type": "design-examples-showcase",
+              "title": "Real Life Examples"
+            },
+            {
+              "entity-type": "reflection",
+              "title": "Feedback in Your Life",
+              "prompt": "Think about a device or interface you use that provides excellent feedback. What makes the feedback so effective?",
+              "thinking-points": [
+                "What types of feedback does it provide (visual, auditory, tactile)?",
+                "How quickly does the feedback appear after your actions?",
+                "How does the feedback help you understand what's happening?",
+                "What would happen if this feedback was removed?"
+              ]
+            },
+            {
+              "entity-type": "outro",
+              "title": "The Conversation Continues",
+              "text-segments": [
+                "You now understand how systems should communicate with users.",
+                "Good feedback creates confident, efficient interactions.",
+                "Poor feedback leads to confusion, errors, and frustration.",
+                "You've mastered the three pillars: affordances reveal purpose, mapping creates logic, and feedback confirms action."
+              ]
             }
           ]
         }

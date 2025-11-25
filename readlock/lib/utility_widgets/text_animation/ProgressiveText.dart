@@ -162,8 +162,11 @@ class ProgressiveTextState extends State<ProgressiveText> {
   }
 
   void handleTap() {
+    print('should work');
+
     if (widget.onTap != null) {
       widget.onTap!();
+
       return;
     }
 
@@ -201,10 +204,12 @@ class ProgressiveTextState extends State<ProgressiveText> {
       return content;
     }
 
-    return MouseRegion(
-      cursor: SystemMouseCursors.click,
-      child: GestureDetector(onTap: handleTap, child: content),
-    );
+    `return Div.column([
+      MouseRegion(
+        cursor: SystemMouseCursors.click,
+        child: GestureDetector(onTap: handleTap, child: content),
+      ),
+    ], onTap: handleTap);`
   }
 
   Widget RevealedTextDisplay() {
@@ -214,7 +219,12 @@ class ProgressiveTextState extends State<ProgressiveText> {
         Widget sentenceWidget = Div.column(
           [SentenceText(sentenceItemIndex)],
           crossAxisAlignment: CrossAxisAlignment.start,
-          padding: const [0, 0, ProgressiveText.DEFAULT_BOTTOM_SPACING, 0],
+          padding: const [
+            0,
+            0,
+            ProgressiveText.DEFAULT_BOTTOM_SPACING,
+            0,
+          ],
         );
 
         if (shouldBlurSentence(sentenceItemIndex)) {

@@ -20,7 +20,7 @@
             {
               "entity-type": "intro",
               "title": "Doors, Faucets, and Frustration",
-              "intro-text-segments": [
+              "text-segments": [
                 "Every day, you interact with hundreds of designed objects. Most work flawlessly, becoming invisible extensions of your intent.",
                 "Yet it's the failures that linger: the hotel door whose handle suggests pulling while demanding a push. Those shower controls that seem engineered by someone who has never experienced scalding water.",
                 "In this course, we will explore how the mind interprets the designed world and discover the hidden psychology behind every handle, button, and interface we encounter."

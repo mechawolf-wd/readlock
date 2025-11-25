@@ -102,6 +102,7 @@ class QuoteContent extends CourseContent {
 
 enum QuestionType {
   multipleChoice,
+  singleChoice,
   trueOrFalse,
   reflection,
   fillGap,

@@ -16,6 +16,7 @@ import 'package:readlock/course_screens/widgets/interaction/CCFillGapQuestion.da
 import 'package:readlock/course_screens/widgets/interaction/CCIncorrectStatement.dart';
 import 'package:readlock/course_screens/widgets/interaction/CCEstimatePercentage.dart';
 import 'package:readlock/course_screens/widgets/interaction/CCMultipleChoice.dart';
+import 'package:readlock/course_screens/widgets/interaction/CCSingleChoiceQuestion.dart';
 import 'package:readlock/course_screens/widgets/interaction/CCReflectionQuestion.dart';
 
 const String UNKNOWN_CONTENT_TYPE_MESSAGE = 'Unknown content type: ';
@@ -49,6 +50,11 @@ class JsonContentWidgetFactory {
       case 'multiple-choice-question':
         {
           return JsonMultipleChoiceQuestionWidget(contentData: contentData);
+        }
+
+      case 'single-choice-question':
+        {
+          return JsonSingleChoiceQuestionWidget(contentData: contentData);
         }
 
       case 'true-false-question':
@@ -345,6 +351,23 @@ class JsonMultipleChoiceQuestionWidget extends StatelessWidget {
     return contentData['followUpPrompts'] != null
         ? List<String>.from(contentData['followUpPrompts'])
         : null;
+  }
+}
+
+// Single choice question wrapper widget
+class JsonSingleChoiceQuestionWidget extends StatelessWidget {
+  final Map<String, dynamic> contentData;
+
+  const JsonSingleChoiceQuestionWidget({super.key, required this.contentData});
+
+  @override
+  Widget build(BuildContext context) {
+    final questionContent = JsonMultipleChoiceQuestionWidget(contentData: contentData)
+        .createQuestionContentModel(QuestionType.singleChoice);
+    return CCSingleChoice(
+      content: questionContent,
+      onAnswerSelected: (int index, bool isCorrect) {},
+    );
   }
 }
 

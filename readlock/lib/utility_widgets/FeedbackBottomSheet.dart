@@ -137,14 +137,9 @@ class FeedbackSheet extends StatelessWidget {
   }
 
   Widget BodySection() {
-    return Container(
-      width: double.infinity,
-      alignment: Alignment.topLeft,
+    return Padding(
       padding: bodyPadding,
-      child: RLTypography.bodyMedium(
-        content,
-        textAlign: TextAlign.left,
-      ),
+      child: RLTypography.bodyMedium(content, textAlign: TextAlign.left),
     );
   }
 
