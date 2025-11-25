@@ -46,7 +46,7 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
   // Icon definitions
   final BackIcon = const Icon(
     Icons.arrow_back,
-    color: Color.fromARGB(255, 67, 67, 67),
+    color: Color.fromARGB(255, 157, 157, 157),
     size: 20,
   );
 
@@ -212,7 +212,7 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
         value: progressValue,
         backgroundColor: RLTheme.backgroundLight,
         valueColor: const AlwaysStoppedAnimation<Color>(Colors.green),
-        minHeight: 6,
+        minHeight: 12,
       ),
     );
   }

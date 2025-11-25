@@ -17,7 +17,7 @@ class CCTextContent extends StatelessWidget {
       child: ProgressiveText(
         textSegments: content.textSegments,
         textStyle: RLTypography.bodyMediumStyle,
-        crossAxisAlignment: CrossAxisAlignment.start,
+        textAlignment: CrossAxisAlignment.start,
       ),
     );
   }

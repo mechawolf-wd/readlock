@@ -219,18 +219,12 @@
                   "text": "relationship"
                 },
                 {
-                  "text": "connection"
-                },
-                {
                   "text": "actions"
-                },
-                {
-                  "text": "behaviors"
                 }
               ],
               "correct-answer-indices": [
                 0,
-                2
+                1
               ],
               "explanation": "Affordances are the relationship between object properties and the actions they suggest. This fundamental definition shows how design communicates function.",
               "hint": "Think back to Norman's original definition of affordances."
@@ -509,18 +503,12 @@
                   "text": "spatial"
                 },
                 {
-                  "text": "visual"
-                },
-                {
                   "text": "cultural"
-                },
-                {
-                  "text": "logical"
                 }
               ],
               "correct-answer-indices": [
                 0,
-                2
+                1
               ],
               "explanation": "Natural mapping uses spatial correspondence (physical relationships) and cultural conventions (learned standards) to create intuitive controls.",
               "hint": "Think about the two main ways mapping can feel natural to users."
@@ -783,18 +771,12 @@
                   "text": "immediate"
                 },
                 {
-                  "text": "delayed"
-                },
-                {
                   "text": "informative"
-                },
-                {
-                  "text": "complex"
                 }
               ],
               "correct-answer-indices": [
                 0,
-                2
+                1
               ],
               "explanation": "Good feedback should be immediate (so users know their action registered) and informative (so they understand what's happening or what to do next).",
               "hint": "Think about the key qualities that make feedback effective."

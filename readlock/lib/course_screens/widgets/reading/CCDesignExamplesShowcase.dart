@@ -177,8 +177,8 @@ class CCDesignExamplesShowcaseState
         ProgressiveText(
           textSegments: example.textSegments,
           textStyle: RLTypography.bodyLargeStyle,
-          characterDelay: const Duration(milliseconds: 15),
-          crossAxisAlignment: CrossAxisAlignment.start,
+          typewriterCharacterDelay: const Duration(milliseconds: 15),
+          textAlignment: CrossAxisAlignment.start,
         ),
       ],
       crossAxisAlignment: CrossAxisAlignment.start,

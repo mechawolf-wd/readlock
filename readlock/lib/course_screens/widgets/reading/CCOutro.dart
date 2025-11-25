@@ -46,8 +46,8 @@ class CCOutro extends StatelessWidget {
           ProgressiveText(
             textSegments: content.outroTextSegments,
             textStyle: RLTypography.bodyLargeStyle,
-            characterDelay: const Duration(milliseconds: 15),
-            crossAxisAlignment: CrossAxisAlignment.start,
+            typewriterCharacterDelay: const Duration(milliseconds: 15),
+            textAlignment: CrossAxisAlignment.start,
           ),
         ],
       ),

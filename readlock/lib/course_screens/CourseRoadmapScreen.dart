@@ -1,7 +1,7 @@
 // Course roadmap screen displaying a simple list of course lessons
 // Clean card-based layout showing course information
 import 'package:flutter/material.dart' hide Typography;
-import 'package:readlock/course_screens/CourseDetailScreen.dart';
+import 'package:readlock/course_screens/CourseContentViewer.dart';
 import 'package:readlock/course_screens/data/courseData.dart';
 import 'package:readlock/utility_widgets/Utility.dart';
 import 'package:readlock/constants/RLTypography.dart';

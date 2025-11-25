@@ -69,7 +69,7 @@ class ExplanationDialog extends StatelessWidget {
                 ),
                 child: ProgressiveText(
                   textSegments: [content],
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  textAlignment: CrossAxisAlignment.start,
                 ),
               ),
             ),
