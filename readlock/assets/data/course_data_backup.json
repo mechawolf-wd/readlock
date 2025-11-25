@@ -146,6 +146,7 @@
             },
             {
               "entity-type": "text",
+              "id": "principle-affordances",
               "title": "Affordances",
               "text-segments": [
                 "The first principle is affordances - the relationship between an object's properties and what actions they suggest to users.",
@@ -156,6 +157,7 @@
             },
             {
               "entity-type": "text",
+              "id": "principle-feedback",
               "title": "Feedback",
               "text-segments": [
                 "The second principle is feedback - every action needs a clear and immediate response to confirm it worked.",
@@ -166,6 +168,7 @@
             },
             {
               "entity-type": "text",
+              "id": "principle-mapping",
               "title": "Natural Mapping",
               "text-segments": [
                 "The third principle is natural mapping - controls should spatially and logically relate to their effects.",
@@ -176,6 +179,7 @@
             },
             {
               "entity-type": "multiple-choice-question",
+              "id": "humor-question-1",
               "title": "The USB Mystery",
               "question": "What do you think? Why does a USB cable never fit on the first try?",
               "options": [
@@ -194,6 +198,7 @@
             },
             {
               "entity-type": "text",
+              "id": "usability-research",
               "title": "Usability Research",
               "text-segments": [
                 "Decades of usability research have revealed startling statistics about how we interact with everyday objects.",
@@ -204,6 +209,7 @@
             },
             {
               "entity-type": "estimate-percentage-question",
+              "id": "estimate-error-rate",
               "title": "User Error Statistics",
               "question": "Can you estimate: What percentage of so-called 'user errors' in airplane accidents were actually caused by poor cockpit design, according to FAA studies?",
               "options": [],
@@ -215,6 +221,7 @@
             },
             {
               "entity-type": "multiple-choice-question",
+              "id": "humor-question-2",
               "title": "The Microwave Paradox",
               "question": "What do you think? Why can you launch a space shuttle but not figure out your hotel microwave?",
               "options": [
@@ -232,6 +239,7 @@
             },
             {
               "entity-type": "estimate-percentage-question",
+              "id": "estimate-confusion-rate",
               "title": "Control Confusion",
               "question": "What do you think? In a study of hotel guests, what percentage couldn't figure out how to turn on the shower within 10 seconds?",
               "options": [],
@@ -242,6 +250,7 @@
             },
             {
               "entity-type": "text",
+              "id": "design-evolution",
               "title": "Evolution of Design Thinking",
               "text-segments": [
                 "The field of user-centered design didn't emerge overnight but evolved through decades of observing human frustration with everyday objects.",
@@ -253,6 +262,7 @@
             },
             {
               "entity-type": "true-false-question",
+              "id": "true-false-design",
               "title": "Design Principle Check",
               "question": "What do you think? Good design should require extensive user manuals to understand.",
               "options": [
@@ -270,6 +280,7 @@
             },
             {
               "entity-type": "estimate-percentage-question",
+              "id": "estimate-medical-errors",
               "title": "Medical Device Errors",
               "question": "What do you think? What percentage of fatal medical device errors are attributed to interface design problems rather than device malfunction?",
               "options": [],
@@ -280,6 +291,7 @@
             },
             {
               "entity-type": "text",
+              "id": "importance-of-feedback",
               "title": "The Importance of Feedback",
               "text-segments": [
                 "Every action we take with an object should produce immediate and clear feedback to confirm it worked.",
@@ -290,6 +302,7 @@
             },
             {
               "entity-type": "fill-gap-question",
+              "id": "fill-gap-design",
               "title": "Complete the Principle",
               "question": "What do you think? Norman's principle states that good design makes things ___ and provides clear ___.",
               "options": [
@@ -314,6 +327,7 @@
             },
             {
               "entity-type": "estimate-percentage-question",
+              "id": "estimate-study-percentage",
               "title": "Research Finding",
               "question": "What do you think? In Norman's study of door-related accidents in public buildings, what percentage of people pulled a push door on their first attempt?",
               "options": [],
@@ -324,6 +338,7 @@
             },
             {
               "entity-type": "estimate-percentage-question",
+              "id": "estimate-smartphone-usage",
               "title": "Smartphone Adoption",
               "question": "What do you think? What percentage of smartphone users never use more than 30% of their phone's features, according to usability studies?",
               "options": [],
@@ -334,6 +349,7 @@
             },
             {
               "entity-type": "text",
+              "id": "design-in-practice",
               "title": "Design in Practice",
               "text-segments": [
                 "Great design often goes unnoticed because it works so seamlessly that we never have to think about it.",
@@ -345,6 +361,7 @@
             },
             {
               "entity-type": "reflection",
+              "id": "reflection-1",
               "title": "Design in Your Life",
               "prompt": "Think about a recent time when you struggled with a poorly designed object or interface. What made it confusing?",
               "thinking-points": [
@@ -356,6 +373,7 @@
             },
             {
               "entity-type": "text",
+              "id": "example-1",
               "title": "Example 1",
               "text-segments": [
                 "The Three Mile Island nuclear accident.",
@@ -370,6 +388,7 @@
             },
             {
               "entity-type": "text",
+              "id": "example-2",
               "title": "Example 2",
               "text-segments": [
                 "Consider a simple teapot.",
@@ -384,6 +403,7 @@
             },
             {
               "entity-type": "text",
+              "id": "example-3",
               "title": "Example 3",
               "text-segments": [
                 "Computer keyboards follow typewriter layout.",
@@ -398,6 +418,7 @@
             },
             {
               "entity-type": "estimate-percentage-question",
+              "id": "estimate-satisfaction",
               "title": "User Satisfaction",
               "question": "What do you think? After redesigning products using Norman's principles, by what percentage did user satisfaction scores typically increase?",
               "options": [],
@@ -408,6 +429,7 @@
             },
             {
               "entity-type": "outro",
+              "id": "design-conclusion",
               "title": "Your New Burden",
               "text-segments": [
                 "You can't unsee what you've learned.",
@@ -419,6 +441,7 @@
             },
             {
               "entity-type": "design-examples-showcase",
+              "id": "design-examples",
               "title": "Good vs Bad Design Examples"
             }
           ]

@@ -1,6 +1,6 @@
 import 'package:readlock/course_screens/services/JSONCourseDataService.dart';
 
-class CourseData {
+class CourseDataService {
   static Future<List<Map<String, dynamic>>> get availableCourses async {
     return await JSONCourseDataService.getCourses();
   }

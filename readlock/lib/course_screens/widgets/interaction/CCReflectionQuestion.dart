@@ -1,14 +1,24 @@
 import 'package:flutter/material.dart' hide Typography;
-import 'package:readlock/constants/constants.dart';
+import 'package:readlock/constants/RLConstants.dart';
 import 'package:readlock/course_screens/models/courseModel.dart';
 import 'package:readlock/utility_widgets/Utility.dart';
-import 'package:readlock/constants/typography.dart';
-import 'package:readlock/constants/appTheme.dart';
+import 'package:readlock/constants/RLTypography.dart';
+import 'package:readlock/constants/RLTheme.dart';
 import 'package:readlock/utility_widgets/FeedbackSnackbar.dart';
 
 const double REFLECTION_SECTION_SPACING = 28.0;
 const double REFLECTION_OPTION_SPACING = 16.0;
 const double REFLECTION_THOUGHT_SPACING = 12.0;
+
+class ThoughtTextStyleConfig {
+  final Color color;
+  final FontWeight fontWeight;
+
+  const ThoughtTextStyleConfig({
+    required this.color,
+    required this.fontWeight,
+  });
+}
 
 class CCReflectionQuestion extends StatefulWidget {
   final QuestionContent content;
@@ -31,9 +41,29 @@ class CCReflectionQuestionState extends State<CCReflectionQuestion> {
   bool hasReflected = false;
   bool hasSelectedInitialThought = false;
 
+  // Style definitions
+  late final BoxDecoration thoughtDecoration;
+  late final BoxDecoration selectedThoughtDecoration;
+  late final BoxDecoration reflectedDecoration;
+  late final TextStyle headerTextStyle;
+  late final TextStyle promptTextStyle;
+  late final TextStyle insightHeaderTextStyle;
+  late final TextStyle insightContentTextStyle;
+
+  // Icon definitions
+  late final Widget ReflectionIcon;
+  late final Widget CheckIcon;
+  late final Widget InsightIcon;
+
   @override
-  Widget build(BuildContext context) {
-    final BoxDecoration thoughtDecoration = BoxDecoration(
+  void initState() {
+    super.initState();
+    initializeStyles();
+    initializeIcons();
+  }
+
+  void initializeStyles() {
+    thoughtDecoration = BoxDecoration(
       color: RLTheme.backgroundLight,
       borderRadius: BorderRadius.circular(16),
       border: Border.all(
@@ -42,7 +72,7 @@ class CCReflectionQuestionState extends State<CCReflectionQuestion> {
       ),
     );
 
-    final BoxDecoration selectedThoughtDecoration = BoxDecoration(
+    selectedThoughtDecoration = BoxDecoration(
       color: RLTheme.primaryBlue.withValues(alpha: 0.05),
       borderRadius: BorderRadius.circular(16),
       border: Border.all(
@@ -51,7 +81,7 @@ class CCReflectionQuestionState extends State<CCReflectionQuestion> {
       ),
     );
 
-    final BoxDecoration reflectedDecoration = BoxDecoration(
+    reflectedDecoration = BoxDecoration(
       color: RLTheme.primaryGreen.withValues(alpha: 0.05),
       borderRadius: BorderRadius.circular(16),
       border: Border.all(
@@ -60,35 +90,71 @@ class CCReflectionQuestionState extends State<CCReflectionQuestion> {
       ),
     );
 
-    final Widget ReflectionIcon = Icon(
+    headerTextStyle = RLTypography.headingMediumStyle.copyWith(
+      fontSize: 18,
+      color: RLTheme.textPrimary.withValues(alpha: 0.9),
+    );
+
+    promptTextStyle = RLTypography.bodyLargeStyle.copyWith(
+      fontSize: 16,
+      height: 1.6,
+    );
+
+    insightHeaderTextStyle = RLTypography.bodyLargeStyle.copyWith(
+      fontWeight: FontWeight.w600,
+      fontSize: 14,
+      color: RLTheme.primaryGreen,
+    );
+
+    insightContentTextStyle = RLTypography.bodyMediumStyle.copyWith(
+      fontSize: 14,
+      height: 1.6,
+      color: RLTheme.textPrimary.withValues(alpha: 0.9),
+    );
+  }
+
+  void initializeIcons() {
+    ReflectionIcon = Icon(
       Icons.self_improvement,
       color: RLTheme.primaryBlue.withValues(alpha: 0.7),
       size: 32,
     );
 
+    CheckIcon = Icon(
+      Icons.check_circle_outline,
+      color: RLTheme.primaryGreen,
+      size: 20,
+    );
+
+    InsightIcon = Icon(
+      Icons.auto_awesome,
+      color: RLTheme.primaryGreen.withValues(alpha: 0.8),
+      size: 20,
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+
     return Div.column(
       [
-        // Reflection header
-        reflectionHeaderWidget(ReflectionIcon),
+        // Reflection header with icon and title
+        ReflectionHeaderSection(),
 
         const Spacing.height(REFLECTION_SECTION_SPACING),
 
-        // Reflection prompt
-        reflectionPromptWidget(),
+        // Reflection question prompt
+        ReflectionPromptSection(),
 
         const Spacing.height(REFLECTION_SECTION_SPACING),
 
-        // Thought options
-        thoughtOptionsWidget(
-          thoughtDecoration,
-          selectedThoughtDecoration,
-          reflectedDecoration,
-        ),
+        // Thought options for selection
+        ThoughtOptionsSection(),
 
         const Spacing.height(REFLECTION_SECTION_SPACING),
 
         // Reflection insight after selection
-        reflectionInsightWidget(),
+        ReflectionInsightSection(),
       ],
       color: RLTheme.backgroundDark,
       padding: RLConstants.COURSE_SECTION_PADDING,
@@ -97,41 +163,35 @@ class CCReflectionQuestionState extends State<CCReflectionQuestion> {
     );
   }
 
-  Widget reflectionHeaderWidget(Widget reflectionIcon) {
+  Widget ReflectionHeaderSection() {
     return Div.column([
-      Center(child: reflectionIcon),
+      Center(child: ReflectionIcon),
 
       const Spacing.height(12),
 
       Center(
         child: Text(
           'Take a Moment to Reflect',
-          style: RLTypography.headingMediumStyle.copyWith(
-            fontSize: 18,
-            color: RLTheme.textPrimary.withValues(alpha: 0.9),
-          ),
+          style: headerTextStyle,
         ),
       ),
     ]);
   }
 
-  Widget reflectionPromptWidget() {
+  Widget ReflectionPromptSection() {
     return Text(
       widget.content.question,
-      style: RLTypography.bodyLargeStyle.copyWith(
-        fontSize: 16,
-        height: 1.6,
-      ),
+      style: promptTextStyle,
       textAlign: TextAlign.center,
     );
   }
 
-  Widget thoughtOptionsWidget(
-    BoxDecoration normalDecoration,
-    BoxDecoration selectedDecoration,
-    BoxDecoration reflectedDecoration,
-  ) {
-    final List<Widget> optionWidgets = widget.content.options
+  Widget ThoughtOptionsSection() {
+    return Div.column(getThoughtOptionsList());
+  }
+
+  List<Widget> getThoughtOptionsList() {
+    return widget.content.options
         .asMap()
         .entries
         .map((entry) {
@@ -139,40 +199,29 @@ class CCReflectionQuestionState extends State<CCReflectionQuestion> {
           final QuestionOption option = entry.value;
 
           return Div.column([
-            thoughtOptionWidget(
-              optionIndex,
-              option,
-              normalDecoration,
-              selectedDecoration,
-              reflectedDecoration,
+            ThoughtOptionWidget(
+              optionIndex: optionIndex,
+              option: option,
             ),
 
             const Spacing.height(REFLECTION_OPTION_SPACING),
           ]);
         })
         .toList();
-
-    return Div.column(optionWidgets);
   }
 
-  Widget thoughtOptionWidget(
-    int optionIndex,
-    QuestionOption option,
-    BoxDecoration normalDecoration,
-    BoxDecoration selectedDecoration,
-    BoxDecoration reflectedDecoration,
-  ) {
+  Widget ThoughtOptionWidget({
+    required int optionIndex,
+    required QuestionOption option,
+  }) {
     final bool isSelected = selectedAnswerIndex == optionIndex;
     final bool isCorrectAnswer = widget.content.correctAnswerIndices
         .contains(optionIndex);
 
-    final BoxDecoration decoration = getThoughtDecoration(
+    final BoxDecoration decoration = getThoughtOptionDecoration(
       isSelected: isSelected,
       hasReflected: hasReflected,
       isCorrect: isCorrectAnswer,
-      normalDecoration: normalDecoration,
-      selectedDecoration: selectedDecoration,
-      reflectedDecoration: reflectedDecoration,
     );
 
     final TextStyle textStyle = getThoughtTextStyle(
@@ -181,11 +230,6 @@ class CCReflectionQuestionState extends State<CCReflectionQuestion> {
       isCorrect: isCorrectAnswer,
     );
 
-    final Widget CheckIcon = Icon(
-      Icons.check_circle_outline,
-      color: RLTheme.primaryGreen,
-      size: 20,
-    );
 
     return Div.row(
       [
@@ -205,7 +249,7 @@ class CCReflectionQuestionState extends State<CCReflectionQuestion> {
     );
   }
 
-  Widget reflectionInsightWidget() {
+  Widget ReflectionInsightSection() {
     if (!hasReflected) {
       return const SizedBox.shrink();
     }
@@ -248,6 +292,28 @@ class CCReflectionQuestionState extends State<CCReflectionQuestion> {
       color: RLTheme.primaryGreen.withValues(alpha: 0.05),
       radius: 12,
     );
+  }
+
+  BoxDecoration getThoughtOptionDecoration({
+    required bool isSelected,
+    required bool hasReflected,
+    required bool isCorrect,
+  }) {
+    if (hasReflected && isCorrect) {
+      return reflectedDecoration;
+    }
+
+    if (isSelected && !hasReflected) {
+      return selectedThoughtDecoration;
+    }
+
+    if (hasReflected) {
+      return thoughtDecoration.copyWith(
+        color: RLTheme.backgroundLight.withValues(alpha: 0.5),
+      );
+    }
+
+    return thoughtDecoration;
   }
 
   BoxDecoration getThoughtDecoration({

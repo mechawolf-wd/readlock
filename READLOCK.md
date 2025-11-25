@@ -69,15 +69,60 @@ Based on the course data structure, strategically use these content types:
 ### **Optimal Flow Pattern**
 
 **Traditional Story-Based Flow:**
+
 1. **Hook Introduction** (Intro) → **Story Foundation** (Text × 2-3) → **Comprehension Check** (Question)
 2. **Concept Deep-Dive** (Text + Quote) → **Application Challenge** (Fill Gap/Estimate) → **Understanding Verification** (Question)
 3. **Advanced Application** (Reflection) → **Error Recognition** (Incorrect Statement) → **Synthesis** (Text)
 4. **Visual Learning** (Design Examples) → **Final Integration** (Question/Reflection) → **Conclusion** (Outro)
 
 **Alternative Dialog-Based Flow:**
+
 1. **Engaging Questions** (Question × 2-3) → **Interactive Explanation** (Text) → **Topic Introduction** (Text)
 2. **Concept Exploration** (Text + Quote) → **Application Challenge** (Fill Gap/Estimate) → **Understanding Verification** (Question)
 3. **Advanced Application** (Reflection) → **Synthesis** (Text) → **Final Integration** (Question) → **Conclusion** (Outro)
+
+**Real Stories Roadmap** (stories 60% & practice 40%)
+
+1. Intro - max 3 text segments + image (CCIntro.dart)
+
+2. Story 1 - compelling example (CCTextContent.dart)
+3. Story 2 - contrasting scenario (CCTextContent.dart)
+4. Story 3 (optional) - advanced case (CCTextContent.dart)
+
+5. Question 1 - comprehension check (CCMultipleChoice.dart)
+6. Question 2 - pattern recognition (CCMultipleChoice.dart)
+7. Question 3 (optional) - application test (CCMultipleChoice.dart)
+
+8. Explanation of what the topic is (e.g., affordances) (CCTextContent.dart)
+
+9. Engaging description based on examples (CCTextContent.dart)
+10. Engaging simple story for practical application (CCTextContent.dart)
+
+11. Interaction widget (true/false or estimation) (CCTrueFalseQuestion.dart or CCEstimatePercentage.dart)
+12. Interaction widget (different type from previous one) (CCFillGapQuestion.dart or CCIncorrectStatement.dart)
+
+13. "Real Life Examples" slide with heading and graphic (CCDesignExamplesShowcase.dart)
+14. Summary cards (2/3 good & 2/3 bad examples) (CCDesignExamplesShowcase.dart)
+15. Outro + introduction to the next lesson: "In the next lesson we will learn..." (CCOutro.dart)
+
+**Practice-Heavy Roadmap** (practice 70% & stories 30%)
+
+1. Intro - max 3 text segments (CCIntro.dart)
+
+2. Explanation of the topic (immediate concept introduction) (CCTextContent.dart)
+
+3. Estimation question (CCEstimatePercentage.dart)
+4. True/false check (CCTrueFalseQuestion.dart)
+
+5. Further explanation - deeper dive (CCTextContent.dart)
+6. Further explanation 2 - practical applications (CCTextContent.dart)
+
+7. Question 1 - application challenge (CCMultipleChoice.dart)
+8. Question 2 - synthesis test (CCMultipleChoice.dart)
+
+9. "Real Life Examples" slide with heading and graphic (CCDesignExamplesShowcase.dart)
+10. Summary cards (2/3 good & 2/3 bad examples) (CCDesignExamplesShowcase.dart)
+11. Outro + introduction to the next lesson: "In the next lesson we will learn..." (CCOutro.dart)
 
 ### **Content Metrics**
 
@@ -307,6 +352,7 @@ Use `<rl-marker-green>` tags for essential concepts users must retain (markers o
 - **Achievement Gallery**: Book-themed badges for reading milestones
 - **Practice Hub**: Concept review center with spaced repetition
 - **Progress Stories**: "You've mastered 47 business concepts" or "Your philosophy knowledge spans 12 centuries"
+- **Live Learning Counter**: Real-time display showing "2,347 people are learning right now" to create social presence and urgency
 
 ### **Daily Rewards & Achievement System**
 
@@ -331,13 +377,15 @@ Use `<rl-marker-green>` tags for essential concepts users must retain (markers o
 **Achievement Badge System:**
 
 **Streak Achievements:**
+
 - **🔥 Fire Starter** (3-day streak): "Your learning flame is igniting"
-- **🌟 Consistency Star** (7-day streak): "One week of dedicated growth"  
+- **🌟 Consistency Star** (7-day streak): "One week of dedicated growth"
 - **💎 Diamond Learner** (30-day streak): "A month of intellectual commitment"
 - **👑 Knowledge Royalty** (100-day streak): "You've achieved learning mastery"
 - **🏆 Legendary Scholar** (365-day streak): "A full year of continuous learning"
 
 **Progress Achievements:**
+
 - **📚 Chapter Champion** (Complete 10 chapters): "Building your knowledge foundation"
 - **🎓 Course Conqueror** (Complete 3 full courses): "Diverse learning expertise"
 - **🧠 Knowledge Architect** (Complete 10 courses): "You're building an impressive knowledge library"
@@ -345,6 +393,7 @@ Use `<rl-marker-green>` tags for essential concepts users must retain (markers o
 - **📖 Bookworm Elite** (Complete 25 courses): "You've become a true learning addict"
 
 **Skill Achievements:**
+
 - **🎯 Sharpshooter** (95% average question accuracy): "Precision in learning"
 - **⚡ Speed Reader** (Complete courses 20% faster than average): "Efficient knowledge absorption"
 - **💡 Insight Master** (Collect 100 highlighted concepts): "Capturing wisdom effectively"
@@ -352,6 +401,7 @@ Use `<rl-marker-green>` tags for essential concepts users must retain (markers o
 - **🏃 Marathon Learner** (Complete 3+ hour learning session): "Endurance and dedication"
 
 **Special Event Achievements:**
+
 - **🎃 October Scholar** (Complete Halloween-themed learning challenges)
 - **🎄 Holiday Learner** (Maintain streak through December holidays)
 - **🎊 New Year Resolver** (Start learning journey in January)
@@ -361,12 +411,14 @@ Use `<rl-marker-green>` tags for essential concepts users must retain (markers o
 **Daily Reward Tiers:**
 
 **Bronze Tier (Basic Daily Engagement):**
+
 - Daily login: 10 Aha points
 - Complete 1 section: 15 Aha points
 - Answer 3 questions correctly: 10 Aha points
 - Total daily potential: 35 Aha points
 
 **Silver Tier (Active Learning Day):**
+
 - All Bronze requirements +
 - Complete 1 full chapter: 25 Aha points
 - Highlight 2 key insights: 15 Aha points
@@ -374,6 +426,7 @@ Use `<rl-marker-green>` tags for essential concepts users must retain (markers o
 - Total daily potential: 95 Aha points + Silver Day Badge
 
 **Gold Tier (Dedicated Learning Day):**
+
 - All Silver requirements +
 - Complete 2+ chapters: 40 Aha points
 - Make 1 cross-course connection: 30 Aha points
@@ -383,18 +436,21 @@ Use `<rl-marker-green>` tags for essential concepts users must retain (markers o
 **Reward Shop Integration:**
 
 **Cosmetic Rewards (Aha Store):**
+
 - **Custom Profile Themes** (500 Aha): "Personalize your learning space"
 - **Exclusive Badge Frames** (300 Aha): "Show off your achievements in style"
 - **Avatar Customizations** (200 Aha): "Express your learning personality"
 - **Special Effects** (400 Aha): "Celebrate completions with unique animations"
 
 **Learning Enhancements (Aha Store):**
+
 - **Hint Tokens** (50 Aha each): "Get extra help on challenging questions"
 - **Progress Boosters** (100 Aha): "2x rewards for next learning session"
 - **Chapter Previews** (75 Aha): "Unlock sneak peeks of upcoming content"
 - **Concept Maps** (150 Aha): "Visual summaries of completed courses"
 
 **Exclusive Content (Aha Store):**
+
 - **Author Interview Snippets** (300 Aha): "Behind-the-scenes insights from book authors"
 - **Extended Case Studies** (200 Aha): "Deep dives into real-world applications"
 - **Book Recommendation Engine** (250 Aha): "AI-powered suggestions based on your interests"
@@ -403,12 +459,14 @@ Use `<rl-marker-green>` tags for essential concepts users must retain (markers o
 **Social Recognition Features:**
 
 **Leaderboards:**
+
 - **Daily Champions**: Top 10 Aha earners each day
 - **Weekly Wizards**: Highest weekly learning hours
 - **Monthly Masters**: Most courses completed this month
 - **Streak Superstars**: Longest current learning streaks
 
 **Sharing & Celebrations:**
+
 - **Achievement Announcements**: "Sarah just earned the Diamond Learner badge!"
 - **Milestone Sharing**: Auto-generate social media posts for major achievements
 - **Friend Challenges**: "Challenge a friend to beat your weekly Aha score"
@@ -417,12 +475,14 @@ Use `<rl-marker-green>` tags for essential concepts users must retain (markers o
 **Seasonal Events & Limited-Time Rewards:**
 
 **Monthly Themes:**
+
 - **January**: "New Year, New Knowledge" - Double streak bonuses
 - **March**: "Spring Learning" - Bonus rewards for starting new courses
 - **September**: "Back to School" - Extra achievement opportunities
 - **December**: "Year-End Mastery" - Special badges for annual learning goals
 
 **Weekly Challenges:**
+
 - **Motivation Monday**: Extra rewards for starting the week with learning
 - **Wisdom Wednesday**: Bonus points for completing reflection exercises
 - **Finish Strong Friday**: Double rewards for course completions
@@ -430,12 +490,14 @@ Use `<rl-marker-green>` tags for essential concepts users must retain (markers o
 **Psychology-Driven Reward Timing:**
 
 **Variable Reward Schedules:**
+
 - **Surprise Bonuses**: Random 25-100 Aha drops during learning sessions (dopamine boost)
 - **Streak Milestones**: Unexpected rewards at non-obvious intervals (5, 13, 21 days)
 - **Performance Rewards**: Bonus Aha for improvement over personal averages
 - **Discovery Bonuses**: Extra rewards for exploring new course categories
 
 **Loss Aversion Mechanics:**
+
 - **Streak Insurance**: Use Aha points to protect streaks during busy days
 - **Achievement Locks**: Some badges become "at risk" if not maintained
 - **Deadline Pressure**: Limited-time achievements create urgency

@@ -1,11 +1,11 @@
 // Widget that displays introductory content for course lessons
 import 'package:flutter/material.dart' hide Typography;
-import 'package:readlock/constants/constants.dart';
+import 'package:readlock/constants/RLConstants.dart';
 import 'package:readlock/course_screens/models/courseModel.dart';
 import 'package:readlock/utility_widgets/text_animation/ProgressiveText.dart';
 import 'package:readlock/utility_widgets/Utility.dart';
-import 'package:readlock/constants/typography.dart';
-import 'package:readlock/constants/appTheme.dart';
+import 'package:readlock/constants/RLTypography.dart';
+import 'package:readlock/constants/RLTheme.dart';
 
 class CCIntro extends StatelessWidget {
   final IntroContent content;

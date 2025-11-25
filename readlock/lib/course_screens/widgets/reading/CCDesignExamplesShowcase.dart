@@ -2,10 +2,10 @@
 // Provides entertaining conclusion to design courses with relatable examples
 
 import 'package:flutter/material.dart' hide Typography;
-import 'package:readlock/constants/typography.dart';
+import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/utility_widgets/text_animation/ProgressiveText.dart';
 import 'package:readlock/utility_widgets/Utility.dart';
-import 'package:readlock/constants/appTheme.dart';
+import 'package:readlock/constants/RLTheme.dart';
 
 class CCDesignExamplesShowcase extends StatefulWidget {
   const CCDesignExamplesShowcase({super.key});
@@ -95,7 +95,6 @@ class CCDesignExamplesShowcaseState
 
           Expanded(
             child: PageView.builder(
-              scrollDirection: Axis.horizontal,
               itemCount: examples.length,
               onPageChanged: (index) {
                 setState(() {

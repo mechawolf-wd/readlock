@@ -3,8 +3,8 @@
 
 import 'package:flutter/material.dart' hide Typography;
 import 'package:readlock/utility_widgets/Utility.dart';
-import 'package:readlock/constants/typography.dart';
-import 'package:readlock/constants/appTheme.dart';
+import 'package:readlock/constants/RLTypography.dart';
+import 'package:readlock/constants/RLTheme.dart';
 import 'package:readlock/utility_widgets/text_animation/ProgressiveText.dart';
 
 const String CLOSE_BUTTON_LABEL = 'Got it';
@@ -57,7 +57,7 @@ class ExplanationDialog extends StatelessWidget {
                   icon: CloseIcon,
                 ),
               ]),
-            ], padding: const EdgeInsets.all(MODAL_PADDING)),
+            ], padding: MODAL_PADDING),
 
             // Body content
             Expanded(
@@ -89,7 +89,7 @@ class ExplanationDialog extends StatelessWidget {
                 borderRadius: BorderRadius.circular(BORDER_RADIUS),
               ),
               mainAxisAlignment: MainAxisAlignment.center,
-              margin: const EdgeInsets.all(MODAL_PADDING),
+              margin: MODAL_PADDING,
               onTap: () => Navigator.of(context).pop(),
             ),
           ]),

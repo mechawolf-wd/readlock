@@ -2,9 +2,9 @@
 // Showcases mockups of engaging learning patterns adapted for book reading
 
 import 'package:flutter/material.dart' hide Typography;
-import 'package:readlock/constants/typography.dart';
+import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/utility_widgets/Utility.dart';
-import 'package:readlock/constants/appTheme.dart';
+import 'package:readlock/constants/RLTheme.dart';
 
 const String PROFILE_GREETING = 'Welcome back, Alex!';
 const String DAILY_GOAL_LABEL = 'Daily Goal';

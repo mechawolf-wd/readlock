@@ -2,8 +2,8 @@
 // Provides ProgressiveText widget for character-by-character text reveal with sentence navigation
 
 import 'package:flutter/material.dart' hide Typography;
-import 'package:readlock/constants/typography.dart';
-import 'package:readlock/constants/appTheme.dart';
+import 'package:readlock/constants/RLTypography.dart';
+import 'package:readlock/constants/RLTheme.dart';
 import 'package:readlock/utility_widgets/Utility.dart';
 import 'package:readlock/utility_widgets/visual_effects/BlurOverlay.dart';
 
@@ -214,9 +214,7 @@ class ProgressiveTextState extends State<ProgressiveText> {
         Widget sentenceWidget = Div.column(
           [SentenceText(sentenceItemIndex)],
           crossAxisAlignment: CrossAxisAlignment.start,
-          padding: const EdgeInsets.only(
-            bottom: ProgressiveText.DEFAULT_BOTTOM_SPACING,
-          ),
+          padding: const [0, 0, ProgressiveText.DEFAULT_BOTTOM_SPACING, 0],
         );
 
         if (shouldBlurSentence(sentenceItemIndex)) {

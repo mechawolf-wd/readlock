@@ -9,8 +9,9 @@ Coding conventions and architectural patterns for the Readlock Flutter applicati
 **ALL DART FILES MUST USE PASCALCASE. NO EXCEPTIONS WHATSOEVER.**
 
 Examples:
+
 - ✅ CORRECT: `FeedbackSnackbar.dart`
-- ✅ CORRECT: `BottomNavigationBar.dart` 
+- ✅ CORRECT: `BottomNavigationBar.dart`
 - ✅ CORRECT: `CourseLoadingScreen.dart`
 - ✅ CORRECT: `ProgressiveText.dart`
 - ✅ CORRECT: `Utility.dart`
@@ -52,7 +53,8 @@ This applies to ALL Dart files in the project - widgets, models, services, utili
 20. **Curly braces required** - never single-line if statements
 21. **Switch statements** - always use curly brackets with switch instructions
 22. **Widget lists** - newlines between sibling widgets in Div.row([]) and Div.column([]) arrays
-23. **UI section comments** - use single-line comments to describe UI sections (eg. // Header, // Body content, // Looping over items, // Footer)
+23. **RenderIf** - use RenderIf utility method for conditionally rendering widgets - use new lines between parameters of the call (condition, true widget, false widget)
+24. **UI section comments** - use single-line comments to describe UI sections (eg. // Header, // Body content, // Looping over items, // Footer)
 
 ### @4 Control Flow
 

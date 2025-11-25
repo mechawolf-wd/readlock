@@ -2,11 +2,11 @@
 // Users drag answers to fill blanks in sentences with visual feedback
 
 import 'package:flutter/material.dart' hide Typography;
-import 'package:readlock/constants/constants.dart';
+import 'package:readlock/constants/RLConstants.dart';
 import 'package:readlock/course_screens/models/courseModel.dart';
 import 'package:readlock/utility_widgets/Utility.dart';
-import 'package:readlock/constants/typography.dart';
-import 'package:readlock/constants/appTheme.dart';
+import 'package:readlock/constants/RLTypography.dart';
+import 'package:readlock/constants/RLTheme.dart';
 import 'package:readlock/utility_widgets/text_animation/ProgressiveText.dart';
 import 'package:readlock/utility_widgets/FeedbackSnackbar.dart';
 
@@ -184,7 +184,7 @@ class CCFillGapQuestionState extends State<CCFillGapQuestion>
       ],
       width: FILL_GAP_BLANK_WIDTH,
       height: FILL_GAP_BLANK_HEIGHT,
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      padding: const [12, 8],
       decoration: BoxDecoration(
         color: backgroundColor,
         borderRadius: BorderRadius.circular(8),
@@ -274,7 +274,7 @@ class CCFillGapQuestionState extends State<CCFillGapQuestion>
           ),
         ),
       ],
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+      padding: const [16, 10],
       decoration: BoxDecoration(
         color: chipColor,
         borderRadius: BorderRadius.circular(20),

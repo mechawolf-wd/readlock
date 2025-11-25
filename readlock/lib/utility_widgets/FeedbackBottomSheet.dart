@@ -3,8 +3,8 @@
 
 import 'package:flutter/material.dart' hide Typography;
 import 'package:readlock/utility_widgets/Utility.dart';
-import 'package:readlock/constants/typography.dart';
-import 'package:readlock/constants/appTheme.dart';
+import 'package:readlock/constants/RLTypography.dart';
+import 'package:readlock/constants/RLTheme.dart';
 
 const String AHA_DIALOG_TITLE = 'Explanation';
 const String HINT_DIALOG_TITLE = 'Hint';

@@ -5,20 +5,21 @@ import 'package:flutter/material.dart' hide Typography;
 import 'package:readlock/course_screens/CourseRoadmapScreen.dart';
 import 'package:readlock/utility_widgets/StatisticsTopBar.dart';
 import 'package:readlock/utility_widgets/Utility.dart';
-import 'package:readlock/constants/typography.dart';
-import 'package:readlock/constants/appTheme.dart';
+import 'package:readlock/constants/RLTypography.dart';
+import 'package:readlock/constants/RLTheme.dart';
 
 const String HOME_TITLE = 'Welcome Back';
 const String LATEST_COURSES_SECTION_TITLE = 'Latest Courses';
 
-class ShelfScreen extends StatefulWidget {
-  const ShelfScreen({super.key});
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
 
   @override
-  State<ShelfScreen> createState() => ShelfScreenState();
+  State<HomeScreen> createState() => HomeScreenState();
 }
 
-class ShelfScreenState extends State<ShelfScreen> {
+class HomeScreenState extends State<HomeScreen> {
+  // * -----------------
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -46,6 +47,7 @@ class ShelfScreenState extends State<ShelfScreen> {
       ),
     );
   }
+  // * -----------------
 
   Widget HomeWelcomeHeader() {
     return Div.column([
@@ -56,17 +58,12 @@ class ShelfScreenState extends State<ShelfScreen> {
 
       // Subtitle text
       RLTypography.text('Continue your learning journey'),
-    ], crossAxisAlignment: CrossAxisAlignment.start);
+    ], crossAxisAlignment: CrossAxisAlignment.center);
   }
 
   Widget LatestCoursesSection() {
-    return LatestCourseCard();
-  }
-
-  Widget LatestCourseCard() {
     // Card decoration
     final cardDecoration = BoxDecoration(
-      color: RLTheme.backgroundLight.withValues(alpha: 0.08),
       borderRadius: BorderRadius.circular(18),
       border: Border.all(
         color: RLTheme.primaryGreen.withValues(alpha: 0.2),
@@ -92,23 +89,6 @@ class ShelfScreenState extends State<ShelfScreen> {
 
             // Badge and lessons row
             Div.row([
-              // NEW badge
-              Div.column(
-                [
-                  RLTypography.bodyMedium(
-                    'NEW',
-                    color: RLTheme.primaryGreen,
-                  ),
-                ],
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 8,
-                  vertical: 4,
-                ),
-                decoration: Style.newBadgeDecoration,
-              ),
-
-              const Spacing.width(8),
-
               // Lessons count
               RLTypography.bodyMedium(
                 '6 lessons',
@@ -120,7 +100,7 @@ class ShelfScreenState extends State<ShelfScreen> {
           const Spacing.width(16),
 
           // Course icon
-          const Div.column([CourseIcon()], padding: EdgeInsets.all(16)),
+          Style.courseIcon,
         ], crossAxisAlignment: CrossAxisAlignment.start),
 
         const Spacing.height(20),
@@ -146,15 +126,12 @@ class ShelfScreenState extends State<ShelfScreen> {
                 size: 14,
               ),
             ],
-            padding: const EdgeInsets.symmetric(
-              horizontal: 20,
-              vertical: 10,
-            ),
+            padding: const [20, 10],
             decoration: Style.continueButtonDecoration,
           ),
         ]),
       ],
-      padding: const EdgeInsets.all(24),
+      padding: 24,
       decoration: cardDecoration,
       onTap: navigateToDesignCourse,
     );
@@ -163,49 +140,24 @@ class ShelfScreenState extends State<ShelfScreen> {
   // Navigation methods
 
   void navigateToDesignCourse() {
-    showLoadingScreenThenNavigate();
-  }
-
-  void showLoadingScreenThenNavigate() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => const CourseRoadmapScreen(
-          courseId: 'design-everyday-things',
-        ),
-      ),
+    final MaterialPageRoute pageRoute = MaterialPageRoute(
+      builder: (context) =>
+          const CourseRoadmapScreen(courseId: 'design-everyday-things'),
     );
-  }
-}
 
-class CourseIcon extends StatelessWidget {
-  const CourseIcon({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const Icon(
-      Icons.psychology_outlined,
-      color: RLTheme.primaryGreen,
-      size: 32,
-    );
+    Navigator.push(context, pageRoute);
   }
 }
 
 class Style {
-  static final BoxDecoration newBadgeDecoration = BoxDecoration(
-    color: RLTheme.primaryGreen.withValues(alpha: 0.1),
-    borderRadius: BorderRadius.circular(6),
-    border: Border.all(
-      color: RLTheme.primaryGreen.withValues(alpha: 0.3),
-    ),
-  );
-
   static final BoxDecoration continueButtonDecoration = BoxDecoration(
     color: RLTheme.primaryGreen.withValues(alpha: 0.1),
-    borderRadius: BorderRadius.circular(8),
-    border: Border.all(
-      color: RLTheme.primaryGreen.withValues(alpha: 0.3),
-      width: 1.5,
-    ),
+    borderRadius: BorderRadius.circular(16),
+  );
+
+  static final Icon courseIcon = const Icon(
+    Icons.psychology_outlined,
+    color: RLTheme.primaryGreen,
+    size: 32,
   );
 }

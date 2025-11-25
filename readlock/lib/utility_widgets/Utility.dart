@@ -2,8 +2,8 @@
 // Provides Div widget for layout and Spacing widget for consistent spacing
 
 import 'package:flutter/material.dart' hide Typography;
-import 'package:readlock/constants/typography.dart';
-import 'package:readlock/constants/appTheme.dart';
+import 'package:readlock/constants/RLTypography.dart';
+import 'package:readlock/constants/RLTheme.dart';
 
 // String constants for directions
 const String DIRECTION_VERTICAL = 'vertical';

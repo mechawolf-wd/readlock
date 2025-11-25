@@ -3,7 +3,7 @@
 
 import 'package:flutter/material.dart' hide Typography;
 import 'package:readlock/utility_widgets/Utility.dart';
-import 'package:readlock/constants/appTheme.dart';
+import 'package:readlock/constants/RLTheme.dart';
 
 const String LOADING_MESSAGE = 'Birds are indexing the course';
 const double BIRD_ICON_SIZE = 60.0;

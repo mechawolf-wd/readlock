@@ -2,9 +2,9 @@
 // Playground for testing new course content patterns and interactions
 
 import 'package:flutter/material.dart' hide Typography;
-import 'package:readlock/constants/typography.dart';
+import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/utility_widgets/Utility.dart';
-import 'package:readlock/constants/appTheme.dart';
+import 'package:readlock/constants/RLTheme.dart';
 
 const String SANDBOX_TITLE = 'Widget Sandbox';
 

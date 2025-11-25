@@ -4,8 +4,8 @@ import 'package:flutter/material.dart' hide Typography;
 import 'package:readlock/course_screens/CourseDetailScreen.dart';
 import 'package:readlock/course_screens/data/courseData.dart';
 import 'package:readlock/utility_widgets/Utility.dart';
-import 'package:readlock/constants/typography.dart';
-import 'package:readlock/constants/appTheme.dart';
+import 'package:readlock/constants/RLTypography.dart';
+import 'package:readlock/constants/RLTheme.dart';
 import 'package:readlock/utility_widgets/CourseLoadingScreen.dart';
 
 // Constants
@@ -53,7 +53,9 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
 
   Future<void> loadCourseData() async {
     try {
-      courseData = await CourseData.getCourseById(widget.courseId);
+      courseData = await CourseDataService.getCourseById(
+        widget.courseId,
+      );
 
       if (courseData != null) {
         courseLessons = List<Map<String, dynamic>>.from(
@@ -69,7 +71,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
     }
   }
 
-  // * ----- build -----
+  // * -----------------
   @override
   Widget build(BuildContext context) {
     if (isLoading) {
@@ -85,11 +87,11 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
 
           const Spacing.height(24),
 
-          // Scrollable level cards list
+          // Scrollable lesson cards list
           Expanded(
             child: ListView(
               padding: Style.listViewPadding,
-              children: getLevelCardsList(),
+              children: LessonCards(),
             ),
           ),
         ]),
@@ -129,7 +131,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
           // Back button
           Div.row(
             [BackArrowIcon],
-            padding: const EdgeInsets.all(8.0),
+            padding: 8,
             radius: Style.backButtonRadius,
             onTap: () {
               Navigator.of(context).pop();
@@ -173,7 +175,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
         ),
       ],
       crossAxisAlignment: CrossAxisAlignment.start,
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+      padding: const [20, 16],
     );
   }
 
@@ -205,52 +207,52 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
     ];
   }
 
-  List<Widget> getLevelCardsList() {
+  List<Widget> LessonCards() {
     return [
       // Level 1 - Design Principles (completed)
-      LevelCard(
+      LessonCard(
         levelNumber: 1,
         title: DESIGN_PRINCIPLES_TITLE,
         subtitle: CORE_FUNDAMENTALS_SUBTITLE,
         isCompleted: true,
-        onTap: () => navigateToCourseContent(0, 0),
+        onTap: () => showLoadingScreenThenNavigate(0, 0),
       ),
 
       // Level 2 - Psychology of Design (completed)
-      LevelCard(
+      LessonCard(
         levelNumber: 2,
         title: PSYCHOLOGY_OF_DESIGN_TITLE,
         subtitle: MENTAL_MODELS_SUBTITLE,
         isCompleted: true,
-        onTap: () => navigateToCourseContent(0, 0),
+        onTap: () => showLoadingScreenThenNavigate(0, 0),
       ),
 
       // Level 3 - Affordances (current level)
-      LevelCard(
+      LessonCard(
         levelNumber: 3,
         title: AFFORDANCES_TITLE,
         subtitle: VISUAL_CUES_SUBTITLE,
         isCompleted: false,
         isCurrentLevel: true,
-        onTap: () => navigateToCourseContent(0, 0),
+        onTap: () => showLoadingScreenThenNavigate(0, 0),
       ),
 
       // Level 4 - Feedback Systems (locked)
-      LevelCard(
+      LessonCard(
         levelNumber: 4,
         title: FEEDBACK_SYSTEMS_TITLE,
         subtitle: USER_RESPONSES_SUBTITLE,
         isCompleted: false,
-        onTap: () => navigateToCourseContent(0, 0),
+        onTap: () => showLoadingScreenThenNavigate(0, 0),
       ),
 
       // Level 5 - Advanced Concepts (locked)
-      LevelCard(
+      LessonCard(
         levelNumber: 5,
         title: ADVANCED_CONCEPTS_TITLE,
         subtitle: MASTER_LEVEL_SUBTITLE,
         isCompleted: false,
-        onTap: () => navigateToCourseContent(0, 0),
+        onTap: () => showLoadingScreenThenNavigate(0, 0),
       ),
     ];
   }
@@ -272,41 +274,37 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
     }
   }
 
-  void navigateToCourseContent(int lessonIndex, int contentIndex) {
-    showLoadingScreenThenNavigate(lessonIndex, contentIndex);
-  }
-
   void showLoadingScreenThenNavigate(
     int lessonIndex,
     int contentIndex,
   ) {
     // Show loading screen first
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => const CourseLoadingScreen(),
-      ),
+    final pageRoute = MaterialPageRoute(
+      builder: (context) => const CourseLoadingScreen(),
     );
 
+    Navigator.push(context, pageRoute);
+
     // Navigate to course detail after delay
-    Future.delayed(const Duration(milliseconds: 1500), () {
+    void routeToCourse() {
       if (mounted) {
-        Navigator.pushReplacement(
-          context,
-          RLTheme.fadeTransition(
-            CourseDetailScreen(
-              courseId: widget.courseId,
-              initialLessonIndex: lessonIndex,
-              initialContentIndex: contentIndex,
-            ),
+        final fadeTransition = RLTheme.fadeTransition(
+          CourseDetailScreen(
+            courseId: widget.courseId,
+            initialLessonIndex: lessonIndex,
+            initialContentIndex: contentIndex,
           ),
         );
+
+        Navigator.pushReplacement(context, fadeTransition);
       }
-    });
+    }
+
+    Future.delayed(const Duration(milliseconds: 500), routeToCourse);
   }
 }
 
-class LevelCard extends StatelessWidget {
+class LessonCard extends StatelessWidget {
   final int levelNumber;
   final String title;
   final String subtitle;
@@ -314,7 +312,7 @@ class LevelCard extends StatelessWidget {
   final bool isCurrentLevel;
   final VoidCallback onTap;
 
-  const LevelCard({
+  const LessonCard({
     super.key,
     required this.levelNumber,
     required this.title,
@@ -346,10 +344,11 @@ class LevelCard extends StatelessWidget {
         // Navigation arrow
         ArrowIcon,
       ],
-      margin: const EdgeInsets.only(bottom: 16),
-      padding: const EdgeInsets.all(20),
+      margin: 8,
+      padding: 16,
       decoration: cardDecoration,
       onTap: onTap,
+      radius: 36,
     );
   }
 
@@ -423,7 +422,7 @@ class LevelCard extends StatelessWidget {
   Widget LevelContent() {
     return Div.column([
       // Level title with number
-      RLTypography.headingMedium('$LEVEL_PREFIX$levelNumber: $title'),
+      RLTypography.headingMedium(title),
 
       const Spacing.height(4),
 
@@ -435,14 +434,14 @@ class LevelCard extends StatelessWidget {
 
 class Style {
   static final BoxDecoration courseIconDecoration = BoxDecoration(
-    borderRadius: BorderRadius.circular(20),
+    borderRadius: BorderRadius.circular(36),
   );
 
   static final BorderRadius backButtonRadius = BorderRadius.circular(
-    12,
+    36,
   );
 
-  static const EdgeInsets courseIconPadding = EdgeInsets.all(16);
+  static const double courseIconPadding = 16;
 
   static const EdgeInsets listViewPadding = EdgeInsets.symmetric(
     horizontal: 20,
@@ -463,11 +462,11 @@ class Style {
 
 class LevelCardStyle {
   static final BoxDecoration cardDecoration = BoxDecoration(
-    borderRadius: BorderRadius.circular(16),
+    borderRadius: BorderRadius.circular(36),
   );
 
   static final BoxDecoration badgeDecoration = BoxDecoration(
-    borderRadius: BorderRadius.circular(20),
+    borderRadius: BorderRadius.circular(36),
   );
 
   static const double badgeSize = 40.0;

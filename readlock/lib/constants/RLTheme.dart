@@ -95,7 +95,6 @@ class RLTheme {
   static PageRouteBuilder<T> fadeTransition<T>(Widget page) {
     return PageRouteBuilder<T>(
       pageBuilder: (context, animation, secondaryAnimation) => page,
-      transitionDuration: transitionDuration,
       transitionsBuilder:
           (context, animation, secondaryAnimation, child) {
             return FadeTransition(

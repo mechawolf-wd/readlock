@@ -2,9 +2,9 @@
 // Provides navigation between course roadmap and profile screens
 
 import 'package:flutter/material.dart';
-import 'package:readlock/constants/appTheme.dart';
+import 'package:readlock/constants/RLTheme.dart';
 import 'package:readlock/screens/CoursesScreen.dart';
-import 'package:readlock/screens/ShelfScreen.dart';
+import 'package:readlock/screens/HomeScreen.dart';
 import 'package:readlock/screens/ProfileScreen.dart';
 import 'package:readlock/screens/SandboxScreen.dart';
 
@@ -24,7 +24,7 @@ class MainNavigationState extends State<MainNavigation> {
   int currentIndex = 0;
 
   final List<Widget> screens = [
-    const ShelfScreen(),
+    const HomeScreen(),
     const CoursesScreen(),
     const ProfileScreen(),
     const SandboxScreen(),

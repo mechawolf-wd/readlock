@@ -2,11 +2,11 @@
 // Users slide to guess the percentage before revealing the actual answer
 
 import 'package:flutter/material.dart' hide Typography;
-import 'package:readlock/constants/constants.dart';
+import 'package:readlock/constants/RLConstants.dart';
 import 'package:readlock/course_screens/models/courseModel.dart';
 import 'package:readlock/utility_widgets/Utility.dart';
-import 'package:readlock/constants/typography.dart';
-import 'package:readlock/constants/appTheme.dart';
+import 'package:readlock/constants/RLTypography.dart';
+import 'package:readlock/constants/RLTheme.dart';
 import 'package:readlock/utility_widgets/text_animation/ProgressiveText.dart';
 
 // Constants
@@ -83,7 +83,7 @@ class CCEstimatePercentageState extends State<CCEstimatePercentage>
     return Div.column(
       MainContent(),
       color: RLTheme.backgroundDark,
-      padding: const EdgeInsets.all(RLConstants.COURSE_SECTION_PADDING),
+      padding: RLConstants.COURSE_SECTION_PADDING,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       mainAxisAlignment: MainAxisAlignment.center,
     );
@@ -186,8 +186,8 @@ class CCEstimatePercentageState extends State<CCEstimatePercentage>
             color: RLTheme.textPrimary.withValues(alpha: 0.5),
           ),
         ),
-      ], padding: const EdgeInsets.symmetric(horizontal: 12)),
-    ], padding: const EdgeInsets.symmetric(horizontal: 24));
+      ], padding: const [12, 0]),
+    ], padding: const [24, 0]);
   }
 
   Function(double)? getSliderChangeHandler() {

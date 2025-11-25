@@ -2,8 +2,8 @@
 // Provides educational guidance for wrong answers and celebration for correct ones
 
 import 'package:flutter/material.dart' hide Typography;
-import 'package:readlock/constants/typography.dart';
-import 'package:readlock/constants/appTheme.dart';
+import 'package:readlock/constants/RLTypography.dart';
+import 'package:readlock/constants/RLTheme.dart';
 import 'package:readlock/utility_widgets/FeedbackBottomSheet.dart';
 import 'package:readlock/utility_widgets/Utility.dart';
 

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart' hide Typography;
-import 'package:readlock/constants/constants.dart';
+import 'package:readlock/constants/RLConstants.dart';
 import 'package:readlock/course_screens/models/courseModel.dart';
 import 'package:readlock/utility_widgets/Utility.dart';
-import 'package:readlock/constants/typography.dart';
-import 'package:readlock/constants/appTheme.dart';
+import 'package:readlock/constants/RLTypography.dart';
+import 'package:readlock/constants/RLTheme.dart';
 import 'package:readlock/utility_widgets/FeedbackSnackbar.dart';
 
 enum OptionButtonState {
@@ -35,9 +35,20 @@ class CCMultipleChoiceState extends State<CCMultipleChoice> {
   int? selectedAnswerIndex;
   bool hasAnsweredQuestion = false;
 
+  // Style definitions
+  late final BoxDecoration normalOptionDecoration;
+  late final BoxDecoration selectedOptionDecoration;
+  late final BoxDecoration correctOptionDecoration;
+  late final BoxDecoration incorrectOptionDecoration;
+
   @override
-  Widget build(BuildContext context) {
-    final BoxDecoration normalOptionDecoration = BoxDecoration(
+  void initState() {
+    super.initState();
+    initializeStyles();
+  }
+
+  void initializeStyles() {
+    normalOptionDecoration = BoxDecoration(
       color: RLTheme.backgroundLight,
       borderRadius: BorderRadius.circular(12),
       border: Border.all(
@@ -46,19 +57,19 @@ class CCMultipleChoiceState extends State<CCMultipleChoice> {
       ),
     );
 
-    final BoxDecoration selectedOptionDecoration = BoxDecoration(
+    selectedOptionDecoration = BoxDecoration(
       color: RLTheme.backgroundLight,
       borderRadius: BorderRadius.circular(12),
       border: Border.all(color: RLTheme.primaryBlue, width: 2),
     );
 
-    final BoxDecoration correctOptionDecoration = BoxDecoration(
+    correctOptionDecoration = BoxDecoration(
       color: RLTheme.primaryGreen.withValues(alpha: 0.1),
       borderRadius: BorderRadius.circular(12),
       border: Border.all(color: RLTheme.primaryGreen, width: 2),
     );
 
-    final BoxDecoration incorrectOptionDecoration = BoxDecoration(
+    incorrectOptionDecoration = BoxDecoration(
       color: RLTheme.backgroundLight,
       borderRadius: BorderRadius.circular(12),
       border: Border.all(
@@ -66,21 +77,20 @@ class CCMultipleChoiceState extends State<CCMultipleChoice> {
         width: 2,
       ),
     );
+  }
+
+  @override
+  Widget build(BuildContext context) {
 
     return Div.column(
       [
-        // Question text
-        questionTextWidget(),
+        // Question text section
+        QuestionTextSection(),
 
         const Spacing.height(QUESTION_SECTION_SPACING),
 
-        // Options list
-        optionListWidget(
-          normalOptionDecoration,
-          selectedOptionDecoration,
-          correctOptionDecoration,
-          incorrectOptionDecoration,
-        ),
+        // Multiple choice options
+        OptionsListSection(),
 
         const Spacing.height(QUESTION_SECTION_SPACING),
       ],
@@ -91,17 +101,16 @@ class CCMultipleChoiceState extends State<CCMultipleChoice> {
     );
   }
 
-  Widget questionTextWidget() {
+  Widget QuestionTextSection() {
     return RLTypography.bodyLarge(widget.content.question);
   }
 
-  Widget optionListWidget(
-    BoxDecoration normalDecoration,
-    BoxDecoration selectedDecoration,
-    BoxDecoration correctDecoration,
-    BoxDecoration incorrectDecoration,
-  ) {
-    final List<Widget> optionWidgets = widget.content.options
+  Widget OptionsListSection() {
+    return Div.column(getOptionWidgetsList());
+  }
+
+  List<Widget> getOptionWidgetsList() {
+    return widget.content.options
         .asMap()
         .entries
         .map((entry) {
@@ -109,31 +118,21 @@ class CCMultipleChoiceState extends State<CCMultipleChoice> {
           final QuestionOption option = entry.value;
 
           return Div.column([
-            optionButtonWidget(
-              optionIndex,
-              option,
-              normalDecoration,
-              selectedDecoration,
-              correctDecoration,
-              incorrectDecoration,
+            OptionButtonWidget(
+              optionIndex: optionIndex,
+              option: option,
             ),
 
             const Spacing.height(OPTION_BUTTON_SPACING),
           ]);
         })
         .toList();
-
-    return Div.column(optionWidgets);
   }
 
-  Widget optionButtonWidget(
-    int optionIndex,
-    QuestionOption option,
-    BoxDecoration normalDecoration,
-    BoxDecoration selectedDecoration,
-    BoxDecoration correctDecoration,
-    BoxDecoration incorrectDecoration,
-  ) {
+  Widget OptionButtonWidget({
+    required int optionIndex,
+    required QuestionOption option,
+  }) {
     final bool isSelected = selectedAnswerIndex == optionIndex;
     final bool isCorrectAnswer = widget.content.correctAnswerIndices
         .contains(optionIndex);
@@ -144,18 +143,14 @@ class CCMultipleChoiceState extends State<CCMultipleChoice> {
     final bool shouldMute =
         hasAnsweredQuestion && !isCorrectAnswer && !isSelected;
 
-    final BoxDecoration decoration = getOptionDecoration(
+    final BoxDecoration decoration = getOptionButtonDecoration(
       isSelected: isSelected,
       shouldShowCorrect: shouldShowCorrect,
       shouldShowIncorrect: shouldShowIncorrect,
       shouldMute: shouldMute,
-      normalDecoration: normalDecoration,
-      selectedDecoration: selectedDecoration,
-      correctDecoration: correctDecoration,
-      incorrectDecoration: incorrectDecoration,
     );
 
-    final TextStyle textStyle = getOptionTextStyle(
+    final TextStyle textStyle = getOptionButtonTextStyle(
       isSelected: isSelected,
       shouldShowCorrect: shouldShowCorrect,
       shouldShowIncorrect: shouldShowIncorrect,
@@ -163,7 +158,11 @@ class CCMultipleChoiceState extends State<CCMultipleChoice> {
     );
 
     return Div.row(
-      [Expanded(child: Text(option.text, style: textStyle))],
+      [
+        Expanded(
+          child: Text(option.text, style: textStyle),
+        ),
+      ],
       padding: RLTheme.contentPaddingMediumInsets,
       decoration: decoration,
       onTap: hasAnsweredQuestion
@@ -172,32 +171,28 @@ class CCMultipleChoiceState extends State<CCMultipleChoice> {
     );
   }
 
-  BoxDecoration getOptionDecoration({
+  BoxDecoration getOptionButtonDecoration({
     required bool isSelected,
     required bool shouldShowCorrect,
     required bool shouldShowIncorrect,
     required bool shouldMute,
-    required BoxDecoration normalDecoration,
-    required BoxDecoration selectedDecoration,
-    required BoxDecoration correctDecoration,
-    required BoxDecoration incorrectDecoration,
   }) {
     if (shouldShowCorrect) {
-      return correctDecoration;
+      return correctOptionDecoration;
     }
 
     if (shouldShowIncorrect || shouldMute) {
-      return incorrectDecoration;
+      return incorrectOptionDecoration;
     }
 
     if (isSelected && !hasAnsweredQuestion) {
-      return selectedDecoration;
+      return selectedOptionDecoration;
     }
 
-    return normalDecoration;
+    return normalOptionDecoration;
   }
 
-  TextStyle getOptionTextStyle({
+  TextStyle getOptionButtonTextStyle({
     required bool isSelected,
     required bool shouldShowCorrect,
     required bool shouldShowIncorrect,
@@ -234,19 +229,31 @@ class CCMultipleChoiceState extends State<CCMultipleChoice> {
     }
 
     if (isCorrectAnswer && !hasAnsweredQuestion) {
-      setState(() {
-        selectedAnswerIndex = optionIndex;
-        hasAnsweredQuestion = true;
-      });
+      updateSelectedAnswer(optionIndex);
+      
+      notifyAnswerSelected(optionIndex, isCorrectAnswer);
+      
+      showCorrectAnswerFeedback();
+    }
+  }
 
-      widget.onAnswerSelected(optionIndex, isCorrectAnswer);
+  void updateSelectedAnswer(int optionIndex) {
+    setState(() {
+      selectedAnswerIndex = optionIndex;
+      hasAnsweredQuestion = true;
+    });
+  }
 
-      if (mounted) {
-        FeedbackSnackBar.showCorrectAnswer(
-          context,
-          explanation: widget.content.explanation,
-        );
-      }
+  void notifyAnswerSelected(int optionIndex, bool isCorrect) {
+    widget.onAnswerSelected(optionIndex, isCorrect);
+  }
+
+  void showCorrectAnswerFeedback() {
+    if (mounted) {
+      FeedbackSnackBar.showCorrectAnswer(
+        context,
+        explanation: widget.content.explanation,
+      );
     }
   }
 
