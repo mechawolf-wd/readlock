@@ -75,5 +75,3 @@ This applies to ALL Dart files in the project - widgets, models, services, utili
 36. **Code reuse** - extract repeated code into methods/widgets
 
 @important: After aligning the code with the above rules, please write down what was changed for each point in the list, if applicable.
-
-- Use CLAUDE.md file to align new code with standards.

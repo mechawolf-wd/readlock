@@ -41,6 +41,8 @@ class ProgressiveText extends StatefulWidget {
   final VoidCallback? onTapCallback;
   // Whether to enable tap interaction for revealing next sentence
   final bool enableTapToReveal;
+  // Callback triggered when all text segments have been fully revealed
+  final VoidCallback? onAllSegmentsRevealed;
 
   const ProgressiveText({
     super.key,
@@ -55,6 +57,7 @@ class ProgressiveText extends StatefulWidget {
     this.completedSentenceOpacity = 0.2,
     this.onTapCallback,
     this.enableTapToReveal = true,
+    this.onAllSegmentsRevealed,
   });
 
   @override
@@ -173,6 +176,14 @@ class ProgressiveTextState extends State<ProgressiveText> {
       setState(() {
         isRevealingCurrentSentence = false;
       });
+
+      // Check if all sentences have been revealed
+      final bool isLastSentence = 
+          currentSentenceNumber == textSentences.length - 1;
+      
+      if (isLastSentence && widget.onAllSegmentsRevealed != null) {
+        widget.onAllSegmentsRevealed!();
+      }
 
       final bool shouldAutoAdvanceToNextSentence =
           widget.automaticallyRevealNextSentence;
