@@ -20,9 +20,9 @@ class FeedbackBottomSheets {
     size: 20,
   );
 
-  static final Widget HintIcon = Icon(
+  static const Widget HintIcon = Icon(
     Icons.tips_and_updates_outlined,
-    color: Colors.orange.shade600,
+    color: RLTheme.primaryBlue,
     size: 20,
   );
 
@@ -49,7 +49,7 @@ class FeedbackBottomSheets {
       context: context,
       title: HINT_DIALOG_TITLE,
       content: hint,
-      buttonColor: Colors.orange.shade600,
+      buttonColor: RLTheme.primaryBlue,
       icon: HintIcon,
     );
   }

@@ -110,6 +110,27 @@ class RLTheme {
     );
   }
 
+  static PageRouteBuilder<T> slideUpTransition<T>(Widget page) {
+    return PageRouteBuilder<T>(
+      pageBuilder: (context, animation, secondaryAnimation) => page,
+      transitionsBuilder:
+          (context, animation, secondaryAnimation, child) {
+            return SlideTransition(
+              position: Tween<Offset>(
+                begin: const Offset(0.0, 1.0),
+                end: Offset.zero,
+              ).animate(
+                CurvedAnimation(
+                  parent: animation,
+                  curve: transitionCurve,
+                ),
+              ),
+              child: child,
+            );
+          },
+    );
+  }
+
   static BoxDecoration getContainerDecoration({
     required Color backgroundColor,
     required Color borderColor,

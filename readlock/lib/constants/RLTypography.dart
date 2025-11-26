@@ -8,28 +8,30 @@ class RLTypography {
   static const Color TEXT_SECONDARY = Color(0xFF757575);
 
   // Typography styles
-  static final TextStyle headingLargeStyle = GoogleFonts.merriweather(
-    fontSize: 28,
-    fontWeight: FontWeight.bold,
-    color: TEXT_PRIMARY,
-    height: 1.4,
-  );
+  static final TextStyle headingLargeStyle =
+      GoogleFonts.merriweatherSans(
+        fontSize: 28,
+        fontWeight: FontWeight.bold,
+        color: TEXT_PRIMARY,
+        height: 1.4,
+      );
 
-  static final TextStyle headingMediumStyle = GoogleFonts.merriweather(
-    fontSize: 20,
-    fontWeight: FontWeight.w600,
-    color: TEXT_PRIMARY,
-    height: 1.5,
-  );
+  static final TextStyle headingMediumStyle =
+      GoogleFonts.merriweatherSans(
+        fontSize: 20,
+        fontWeight: FontWeight.w600,
+        color: TEXT_PRIMARY,
+        height: 1.5,
+      );
 
-  static final TextStyle bodyLargeStyle = GoogleFonts.merriweather(
+  static final TextStyle bodyLargeStyle = GoogleFonts.merriweatherSans(
     fontSize: 16,
     fontWeight: FontWeight.w500,
     color: TEXT_PRIMARY,
     height: 1.6,
   );
 
-  static final TextStyle bodyMediumStyle = GoogleFonts.merriweather(
+  static final TextStyle bodyMediumStyle = GoogleFonts.merriweatherSans(
     fontSize: 16,
     color: TEXT_PRIMARY,
     height: 1.6,

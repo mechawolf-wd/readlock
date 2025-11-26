@@ -11,6 +11,7 @@ import 'package:readlock/course_screens/widgets/reading/CCOutro.dart';
 import 'package:readlock/course_screens/widgets/reading/CCDesignExamplesShowcase.dart';
 import 'package:readlock/course_screens/widgets/reading/CCReflection.dart';
 import 'package:readlock/course_screens/widgets/reading/CCQuote.dart';
+import 'package:readlock/course_screens/widgets/reading/CCSkillCheck.dart';
 import 'package:readlock/course_screens/widgets/interaction/CCTrueFalseQuestion.dart';
 import 'package:readlock/course_screens/widgets/interaction/CCFillGapQuestion.dart';
 import 'package:readlock/course_screens/widgets/interaction/CCIncorrectStatement.dart';
@@ -107,6 +108,11 @@ class JsonContentWidgetFactory {
       case 'estimate-percentage':
         {
           return JsonEstimatePercentageWidget(contentData: contentData);
+        }
+
+      case 'skill-check':
+        {
+          return const CCSkillCheck();
         }
 
       default:

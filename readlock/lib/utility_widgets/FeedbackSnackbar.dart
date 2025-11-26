@@ -9,7 +9,7 @@ import 'package:readlock/utility_widgets/Utility.dart';
 
 // Constants
 const String CORRECT_ANSWER_MESSAGE = '+5 Aha';
-const String WRONG_ANSWER_TITLE = 'Think again';
+const String WRONG_ANSWER_TITLE = 'Common thought';
 const Duration CORRECT_ANSWER_DURATION = Duration(
   days: 365,
 ); // Effectively indefinite
@@ -138,7 +138,7 @@ class FeedbackSnackBar {
             ),
           ],
         ),
-        backgroundColor: Colors.orange.shade600,
+        backgroundColor: RLTheme.primaryBlue,
         duration: snackbarDuration,
         behavior: SnackBarBehavior.floating,
         shape: Style.snackbarShape,
@@ -168,7 +168,7 @@ class FeedbackSnackBar {
   static Color CustomFeedbackColor(bool isCorrect) {
     final Color feedbackColor = isCorrect
         ? RLTheme.primaryGreen
-        : Colors.orange.shade600;
+        : RLTheme.primaryBlue;
 
     return feedbackColor;
   }

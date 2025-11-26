@@ -124,6 +124,25 @@ Based on the course data structure, strategically use these content types:
 10. Summary cards (2/3 good & 2/3 bad examples) (CCDesignExamplesShowcase.dart)
 11. Outro + introduction to the next lesson: "In the next lesson we will learn..." (CCOutro.dart)
 
+**Single Story Line** (story 80% & practice 20%)
+
+1. No intro - straight to the story
+2. Story pt. 1 (same character)
+3. Story pt. 2 (same character) (could use dialogs)
+4. Story pt. 3 (same character) (could use dialogs)
+
+5. 1st Question asked by the character
+6. 2nd Question asked by the character
+
+7. Realization of character
+8. Explanation of the story
+
+9. "Real Life Examples" slide with heading and graphic (CCDesignExamplesShowcase.dart)
+10. Summary cards (2/3 good & 2/3 bad examples) (CCDesignExamplesShowcase.dart)
+11. Outro + introduction to the next lesson: "In the next lesson we will learn..." (CCOutro.dart)
+
+---
+
 ### **Content Metrics**
 
 - **Total Entities**: 15-30 pieces optimal for 45-90 minute courses
@@ -776,79 +795,10 @@ Readlock will be available in the following languages:
 - **Real-world situation**: Concrete example where course principles apply
 - **Challenge description**: Specific problem or decision point the user faces
 - **Guided solution**: Step-by-step application of course concepts to resolve the situation
+
 - **Outcome explanation**: Why this solution works and connects back to course principles
 
-**Interaction Design**:
-
-- **Swipe-to-accept mechanism**: Users swipe right to accept and save the elevation card
-- **Progressive revelation**: Each card builds complexity - starter scenario → intermediate → advanced application
-- **Personal relevance**: Scenarios tailored to common professional/personal contexts
-- **Action orientation**: Each card ends with "Your next action" prompt
-
-**Content Guidelines for Scripted Elevation**:
-
-- Use specific, believable scenarios (no abstract "imagine" setups)
-- Connect directly to 1-2 key course principles maximum
-- Provide concrete language for real conversations/decisions
-- Include potential obstacles and how course knowledge helps overcome them
-- Focus on immediate, implementable actions rather than long-term strategies
-
-**Examples**:
-
-_For a negotiation course:_
-
-- **Situation**: "Your colleague interrupts you repeatedly in team meetings"
-- **Challenge**: "How do you address this without creating conflict?"
-- **Solution**: "Apply the 'acknowledge-and-redirect' technique from Chapter 3..."
-- **Outcome**: "This preserves relationship while establishing boundaries"
-
-_For a productivity course:_
-
-- **Situation**: "You have 3 urgent deadlines and your manager adds a 'quick' task"
-- **Challenge**: "How do you protect your priorities without seeming uncooperative?"
-- **Solution**: "Use the priority matrix framework to demonstrate trade-offs..."
-- **Outcome**: "Your manager sees the impact and helps prioritize"
-
-**Success Metrics**:
-
-- Users who complete Scripted Elevation show 40%+ higher course application rates
-- 30-day follow-up surveys show increased confidence in applying course concepts
-- Higher user retention and course completion rates for subsequent courses
-
-#### **3. Course Favorites**
-
-- Heart icon to save course to favorites
-- Favorites section in user profile
-
-#### **4. Question Overview**
-
-- "View All Questions" button in course roadmap
-- Shows all questions from the course
-
-### **Implementation Priority**
-
-#### **Phase 1: Core Content (MVP)**
-
-1. Entity structure with proper flow pattern
-2. Essential question types with smart feedback
-3. Basic highlighting system
-4. Progress tracking
-
-#### **Phase 2: Engagement Enhancement**
-
-1. Gamification elements (XP, streaks, badges)
-2. Advanced question types (drag & drop, estimation)
-3. Celebration animations
-4. Social proof elements
-
-#### **Phase 3: Advanced Features**
-
-1. Adaptive difficulty system
-2. Spaced repetition integration
-3. Social features and leaderboards
-4. Advanced analytics
-
-#### **Phase 4: Scale & Optimize**
+**Interaction Design**:- **Swipe-to-accept mechanism**: Users swipe right to accept and save the elevation card- **Progressive revelation**: Each card builds complexity - starter scenario → intermediate → advanced application- **Personal relevance**: Scenarios tailored to common professional/personal contexts- **Action orientation**: Each card ends with "Your next action" prompt**Content Guidelines for Scripted Elevation**:- Use specific, believable scenarios (no abstract "imagine" setups)- Connect directly to 1-2 key course principles maximum- Provide concrete language for real conversations/decisions- Include potential obstacles and how course knowledge helps overcome them- Focus on immediate, implementable actions rather than long-term strategies**Examples**:_For a negotiation course:_- **Situation**: "Your colleague interrupts you repeatedly in team meetings"- **Challenge**: "How do you address this without creating conflict?"- **Solution**: "Apply the 'acknowledge-and-redirect' technique from Chapter 3..."- **Outcome**: "This preserves relationship while establishing boundaries"_For a productivity course:_- **Situation**: "You have 3 urgent deadlines and your manager adds a 'quick' task"- **Challenge**: "How do you protect your priorities without seeming uncooperative?"- **Solution**: "Use the priority matrix framework to demonstrate trade-offs..."- **Outcome**: "Your manager sees the impact and helps prioritize"**Success Metrics**:- Users who complete Scripted Elevation show 40%+ higher course application rates- 30-day follow-up surveys show increased confidence in applying course concepts- Higher user retention and course completion rates for subsequent courses#### **3. Course Favorites**- Heart icon to save course to favorites- Favorites section in user profile#### **4. Question Overview**- "View All Questions" button in course roadmap- Shows all questions from the course### **Implementation Priority**#### **Phase 1: Core Content (MVP)**1. Entity structure with proper flow pattern2. Essential question types with smart feedback3. Basic highlighting system4. Progress tracking#### **Phase 2: Engagement Enhancement**1. Gamification elements (XP, streaks, badges)2. Advanced question types (drag & drop, estimation)3. Celebration animations4. Social proof elements#### **Phase 3: Advanced Features**1. Adaptive difficulty system2. Spaced repetition integration3. Social features and leaderboards4. Advanced analytics#### **Phase 4: Scale & Optimize**
 
 1. Automated content creation tools
 2. A/B testing framework

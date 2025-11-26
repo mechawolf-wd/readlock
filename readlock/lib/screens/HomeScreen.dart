@@ -140,12 +140,12 @@ class HomeScreenState extends State<HomeScreen> {
   // Navigation methods
 
   void navigateToDesignCourse() {
-    final MaterialPageRoute pageRoute = MaterialPageRoute(
-      builder: (context) =>
-          const CourseRoadmapScreen(courseId: 'design-everyday-things'),
+    Navigator.push(
+      context,
+      RLTheme.slideUpTransition(
+        const CourseRoadmapScreen(courseId: 'design-everyday-things'),
+      ),
     );
-
-    Navigator.push(context, pageRoute);
   }
 }
 

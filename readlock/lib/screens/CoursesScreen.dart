@@ -117,7 +117,7 @@ class CourseCard extends StatelessWidget {
     return GestureDetector(
       onTap: () => Navigator.push(
         context,
-        RLTheme.fadeTransition(
+        RLTheme.slideUpTransition(
           CourseRoadmapScreen(courseId: course.id),
         ),
       ),

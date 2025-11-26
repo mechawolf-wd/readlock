@@ -16,6 +16,13 @@ const String COURSE_SUBTITLE_TEXT =
 const String AHA_COUNTER_TEXT = '30 Aha';
 const String QUESTIONS_COUNTER_TEXT = '29 questions';
 
+// Dialog constants
+const String AHA_DIALOG_TITLE = 'Ready to Learn?';
+const String AHA_DIALOG_MESSAGE =
+    'Start your journey into design psychology';
+const String CONTINUE_BUTTON = 'Continue';
+const String AHA_POINTS_TEXT = '+20 Aha';
+
 // Level constants
 const String LEVEL_PREFIX = 'Level ';
 const String DESIGN_PRINCIPLES_TITLE = 'Design Principles';
@@ -278,6 +285,84 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
     int lessonIndex,
     int contentIndex,
   ) {
+    // Show Aha points dialog first
+    showAhaPointsDialog(lessonIndex, contentIndex);
+  }
+
+  void showAhaPointsDialog(int lessonIndex, int contentIndex) {
+    final Widget AhaIcon = const Icon(
+      Icons.lightbulb,
+      color: Colors.white,
+      size: 20,
+    );
+
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: RLTheme.backgroundDark,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (BuildContext context) {
+        return Wrap(
+          children: [
+            Div.column(
+              [
+                // Continue button
+                Div.row(
+                  [
+                    RLTypography.bodyLarge(
+                      CONTINUE_BUTTON,
+                      color: Colors.white,
+                    ),
+
+                    const Spacing.width(16),
+
+                    // Aha points badge
+                    Div.row([
+                      AhaIcon,
+
+                      const Spacing.width(4),
+
+                      RLTypography.bodyLarge(
+                        AHA_POINTS_TEXT,
+                        color: Colors.white,
+                      ),
+                    ]),
+                  ],
+                  padding: const [16, 16],
+                  margin: const [20, 20, 20, 20],
+                  decoration: BoxDecoration(
+                    color: RLTheme.primaryGreen,
+                    borderRadius: BorderRadius.circular(36),
+                    boxShadow: [
+                      BoxShadow(
+                        color: RLTheme.primaryGreen.withValues(alpha: 0.7),
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  onTap: () {
+                    Navigator.of(context).pop();
+                    navigateToCourseWithLoading(
+                      lessonIndex,
+                      contentIndex,
+                    );
+                  },
+                ),
+              ],
+              padding: EdgeInsets.only(
+                bottom: MediaQuery.of(context).viewInsets.bottom,
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void navigateToCourseWithLoading(int lessonIndex, int contentIndex) {
     // Show loading screen first
     final pageRoute = MaterialPageRoute(
       builder: (context) => const CourseLoadingScreen(),
@@ -288,7 +373,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
     // Navigate to course detail after delay
     void routeToCourse() {
       if (mounted) {
-        final fadeTransition = RLTheme.fadeTransition(
+        final slideUpTransition = RLTheme.slideUpTransition(
           CourseDetailScreen(
             courseId: widget.courseId,
             initialLessonIndex: lessonIndex,
@@ -296,7 +381,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
           ),
         );
 
-        Navigator.pushReplacement(context, fadeTransition);
+        Navigator.pushReplacement(context, slideUpTransition);
       }
     }
 

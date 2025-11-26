@@ -290,6 +290,76 @@
                 "Good affordances guide you naturally; poor ones leave you guessing.",
                 "In our next lesson, we'll explore natural mapping - how controls relate logically to their effects."
               ]
+            },
+            {
+              "entity-type": "skill-check"
+            },
+            {
+              "entity-type": "single-choice-question",
+              "title": "Skill Check 1",
+              "question": "A door has a horizontal bar across it. According to the principle of affordances, what should you do?",
+              "options": [
+                {
+                  "text": "Pull the door toward you"
+                },
+                {
+                  "text": "Push the door away from you"
+                }
+              ],
+              "correct-answer-indices": [
+                1
+              ],
+              "explanation": "A horizontal bar (also called a crash bar or panic bar) affords pushing. This is a clear affordance that indicates the door should be pushed to open.",
+              "hint": "Think about what action a horizontal bar naturally suggests."
+            },
+            {
+              "entity-type": "single-choice-question",
+              "title": "Skill Check 2",
+              "question": "You're designing a stovetop with 4 burners arranged in a square. What's the best way to arrange the control knobs?",
+              "options": [
+                {
+                  "text": "In a straight line below the burners"
+                },
+                {
+                  "text": "In a square pattern matching the burner layout"
+                },
+                {
+                  "text": "In a circle around a central dial"
+                }
+              ],
+              "correct-answer-indices": [
+                1
+              ],
+              "explanation": "Natural mapping suggests arranging controls to mirror the layout of what they control. Square knobs matching square burners creates an intuitive spatial relationship.",
+              "hint": "Consider which arrangement would create the most natural mapping."
+            },
+            {
+              "entity-type": "single-choice-question",
+              "title": "Skill Check 3",
+              "question": "When should a system provide feedback to the user?",
+              "options": [
+                {
+                  "text": "Only when an error occurs"
+                },
+                {
+                  "text": "Immediately when an action is initiated, during processing, and upon completion"
+                }
+              ],
+              "correct-answer-indices": [
+                1
+              ],
+              "explanation": "Good feedback should be immediate (acknowledge the action), continuous (show progress), and conclusive (confirm completion). This keeps users informed throughout the entire interaction.",
+              "hint": "Think about when users need reassurance that the system is responding."
+            },
+            {
+              "entity-type": "outro",
+              "title": "The Conversation Continues",
+              "text-segments": [
+                "You now understand how systems should communicate with users.",
+                "Good feedback creates confident, efficient interactions.",
+                "Poor feedback leads to confusion, errors, and frustration.",
+                "You've mastered the three pillars: affordances reveal purpose, mapping creates logic, and feedback confirms action."
+              ]
             }
           ]
         },
@@ -816,16 +886,6 @@
                 "How quickly does the feedback appear after your actions?",
                 "How does the feedback help you understand what's happening?",
                 "What would happen if this feedback was removed?"
-              ]
-            },
-            {
-              "entity-type": "outro",
-              "title": "The Conversation Continues",
-              "text-segments": [
-                "You now understand how systems should communicate with users.",
-                "Good feedback creates confident, efficient interactions.",
-                "Poor feedback leads to confusion, errors, and frustration.",
-                "You've mastered the three pillars: affordances reveal purpose, mapping creates logic, and feedback confirms action."
               ]
             }
           ]
