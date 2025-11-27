@@ -6,7 +6,7 @@ import 'package:readlock/course_screens/models/courseModel.dart';
 import 'package:readlock/utility_widgets/text_animation/ProgressiveText.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLTheme.dart';
-import 'package:readlock/utility_widgets/Utility.dart';
+import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/course_screens/CourseContentViewer.dart';
 
 // String constants
@@ -81,25 +81,17 @@ class CCTextContentState extends State<CCTextContent> {
 
   // Button widget for continuing to next content
   Widget ContinueButton() {
-    // Button decoration styling
-    final BoxDecoration buttonDecoration = BoxDecoration(
-      color: RLTheme.primaryGreen,
-      borderRadius: BorderRadius.circular(BUTTON_BORDER_RADIUS),
-    );
-
     // Button text style
     final Widget buttonText = RLTypography.bodyMedium(
       CONTINUE_BUTTON_TEXT,
       color: Colors.white,
     );
 
-    return Div.column(
-      [buttonText],
-      width: double.infinity,
-      height: CONTINUE_BUTTON_HEIGHT,
-      decoration: buttonDecoration,
-      mainAxisAlignment: MainAxisAlignment.center,
+    return RLDesignSystem.BlockButton(
+      children: [buttonText],
       onTap: handleContinueButtonTap,
+      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+      margin: EdgeInsets.zero,
     );
   }
 

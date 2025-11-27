@@ -6,6 +6,7 @@ import 'package:readlock/course_screens/data/courseData.dart';
 import 'package:readlock/utility_widgets/Utility.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLTheme.dart';
+import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/utility_widgets/CourseLoadingScreen.dart';
 
 // Constants
@@ -20,8 +21,8 @@ const String QUESTIONS_COUNTER_TEXT = '29 questions';
 const String AHA_DIALOG_TITLE = 'Ready to Learn?';
 const String AHA_DIALOG_MESSAGE =
     'Start your journey into design psychology';
-const String CONTINUE_BUTTON = 'Continue';
-const String AHA_POINTS_TEXT = '+20 Aha';
+const String CONTINUE_BUTTON = 'Start';
+const String AHA_POINTS_TEXT = ' +20 XP';
 
 // Level constants
 const String LEVEL_PREFIX = 'Level ';
@@ -78,7 +79,6 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
     }
   }
 
-  // * -----------------
   @override
   Widget build(BuildContext context) {
     if (isLoading) {
@@ -105,7 +105,6 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
       ),
     );
   }
-  // * -----------------
 
   Widget RoadmapHeader() {
     final String courseTitle =
@@ -231,7 +230,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
         title: PSYCHOLOGY_OF_DESIGN_TITLE,
         subtitle: MENTAL_MODELS_SUBTITLE,
         isCompleted: true,
-        onTap: () => showLoadingScreenThenNavigate(0, 0),
+        onTap: () => showLoadingScreenThenNavigate(1, 0),
       ),
 
       // Level 3 - Affordances (current level)
@@ -309,40 +308,23 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
             Div.column(
               [
                 // Continue button
-                Div.row(
-                  [
-                    RLTypography.bodyLarge(
+                RLDesignSystem.BlockButton(
+                  children: [
+                    RLTypography.bodyMedium(
                       CONTINUE_BUTTON,
                       color: Colors.white,
                     ),
 
-                    const Spacing.width(16),
-
                     // Aha points badge
-                    Div.row([
-                      AhaIcon,
-
-                      const Spacing.width(4),
-
-                      RLTypography.bodyLarge(
-                        AHA_POINTS_TEXT,
-                        color: Colors.white,
-                      ),
-                    ]),
+                    RLTypography.bodyMedium(
+                      AHA_POINTS_TEXT,
+                      color: Colors.white,
+                    ),
                   ],
-                  padding: const [16, 16],
-                  margin: const [20, 20, 20, 20],
-                  decoration: BoxDecoration(
-                    color: RLTheme.primaryGreen,
-                    borderRadius: BorderRadius.circular(36),
-                    boxShadow: [
-                      BoxShadow(
-                        color: RLTheme.primaryGreen.withValues(alpha: 0.7),
-                        offset: const Offset(0, 4),
-                      ),
-                    ],
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 16,
+                    horizontal: 16,
                   ),
-                  mainAxisAlignment: MainAxisAlignment.center,
                   onTap: () {
                     Navigator.of(context).pop();
                     navigateToCourseWithLoading(
@@ -364,11 +346,10 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
 
   void navigateToCourseWithLoading(int lessonIndex, int contentIndex) {
     // Show loading screen first
-    final pageRoute = MaterialPageRoute(
-      builder: (context) => const CourseLoadingScreen(),
+    Navigator.push(
+      context,
+      RLTheme.slideUpTransition(const CourseLoadingScreen()),
     );
-
-    Navigator.push(context, pageRoute);
 
     // Navigate to course detail after delay
     void routeToCourse() {

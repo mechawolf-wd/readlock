@@ -1,7 +1,9 @@
 {
   "courses": [
     {
-      "id": "design-everyday-things",
+      "course-id": "design-everyday-things",
+      "language": "EN",
+      "creation-date": "",
       "title": "The Design of Everyday Things",
       "description": "Based on Don Norman's classic book",
       "cover-image-path": "assets/images/design_course.png",
@@ -13,11 +15,12 @@
       ],
       "lessons": [
         {
-          "id": "design-course",
+          "lesson-id": "design-of-everyday-things-l:1",
           "title": "The Design of Everyday Things",
           "lesson-version": "story-based",
           "content": [
             {
+              "content-id": "design-of-everyday-things-c:1",
               "entity-type": "intro",
               "title": "Doors, Handles, and Hidden Messages",
               "text-segments": [
@@ -364,192 +367,97 @@
           ]
         },
         {
-          "id": "mapping-course",
-          "title": "Natural Mapping and Mental Models",
+          "id": "harry-potter-design",
+          "title": "Design Magic: Harry Potter's First Four Years",
           "lesson-version": "story-based",
           "content": [
             {
               "entity-type": "intro",
-              "title": "When Controls Make Sense",
+              "title": "The Design of Magical Objects",
               "text-segments": [
-                "Some controls feel instantly logical, while others leave you guessing.",
-                "A steering wheel naturally maps to car direction - turn right to go right.",
-                "In this lesson, we'll explore natural mapping - how great design matches your mental expectations."
+                "Magic isn't just about spells and potions.",
+                "Even in the wizarding world, objects must communicate their purpose.",
+                "From Hogwarts' moving staircases to the Marauder's Map, magical design follows the same principles as Muggle design.",
+                "Let's explore how affordances, mapping, and feedback work in Harry's world."
               ]
             },
             {
               "entity-type": "text",
-              "title": "Story 1",
+              "title": "Year 1: The Philosopher's Stone",
               "text-segments": [
-                "David faces the bathroom faucet.",
-                "Two identical handles side by side.",
-                "Hot or cold? Left or right?",
-                "Which way do you turn for hot water?",
-                "There are no labels, no indicators.",
-                "He turns the left handle clockwise.",
-                "Ice cold water blasts his hands.",
-                "The mapping was backwards.",
-                "Why should he have to guess?"
+                "Harry encounters his first magical interface: Platform 9¾.",
+                "The solid brick wall offers no visual affordances.",
+                "No handles, no obvious entry point.",
+                "Yet Molly Weasley runs straight at it.",
+                "The design principle? Sometimes the best affordance is invisible to outsiders.",
+                "The wall's apparent solidity is intentional misdirection.",
+                "Only those 'in the know' understand the true affordance: run at it."
               ]
             },
             {
               "entity-type": "text",
-              "title": "Story 2",
+              "title": "Year 2: The Chamber of Secrets",
               "text-segments": [
-                "Maria sits in front of the stove.",
-                "Four burners, four control knobs.",
-                "But which knob controls which burner?",
-                "The knobs are arranged in a straight line.",
-                "How does that map to a square grid?",
-                "She turns the leftmost knob.",
-                "The back-right burner ignites.",
-                "This violates natural mapping.",
-                "The control should match the layout."
+                "Tom Riddle's diary presents a fascinating design challenge.",
+                "It looks like an ordinary notebook - perfect camouflage.",
+                "But when Harry writes in it, it writes back.",
+                "The feedback is immediate and contextual.",
+                "The diary's interface adapts to the user's input.",
+                "This is responsive design taken to its magical extreme.",
+                "The danger? When feedback becomes manipulation."
               ]
             },
             {
               "entity-type": "text",
-              "title": "Story 3",
+              "title": "Year 3: The Prisoner of Azkaban",
               "text-segments": [
-                "Tom adjusts his car's side mirrors.",
-                "The control panel has four arrow buttons.",
-                "Up, down, left, right - simple enough.",
-                "He presses up. The mirror tilts down.",
-                "He presses right. It moves left.",
-                "The controls work in reverse.",
-                "His mental model says one thing.",
-                "The system does another.",
-                "Poor mapping breaks intuition."
+                "The Marauder's Map revolutionizes information design.",
+                "Activation requires a password: 'I solemnly swear I am up to no good.'",
+                "The map then reveals its true interface.",
+                "Dynamic, real-time information display.",
+                "Clear spatial mapping of Hogwarts' layout.",
+                "Immediate feedback showing everyone's location.",
+                "Even magical interfaces need good information architecture."
+              ]
+            },
+            {
+              "entity-type": "text",
+              "title": "Year 4: The Goblet of Fire",
+              "text-segments": [
+                "The Triwizard Tournament introduces complex magical systems.",
+                "The Goblet of Fire itself is a perfect example of constrained design.",
+                "Clear affordances: names go in, champions come out.",
+                "Built-in security through age restrictions.",
+                "When Barty Crouch Jr. hacks the system, he exploits a design flaw.",
+                "The Goblet couldn't distinguish between three schools and four entries.",
+                "Even magical systems need proper error handling."
               ]
             },
             {
               "entity-type": "single-choice-question",
-              "title": "Faucet Mapping",
-              "question": "Why did David struggle with the bathroom faucet?",
+              "title": "Platform 9¾ Affordances",
+              "question": "Why does Platform 9¾'s entrance appear as a solid wall?",
               "options": [
                 {
-                  "text": "The handles had no clear mapping to hot and cold"
+                  "text": "Poor magical design"
                 },
                 {
-                  "text": "He didn't read the instructions"
+                  "text": "Intentional security through obscurity"
                 },
                 {
-                  "text": "The water pressure was too high"
+                  "text": "Cost-cutting by the Ministry of Magic"
                 }
               ],
               "correct-answer-indices": [
-                0
+                1
               ],
-              "explanation": "Without visual cues or natural positioning, users have to guess which control does what. Good mapping makes the relationship obvious.",
-              "hint": "Consider what information was missing from the faucet handles."
-            },
-            {
-              "entity-type": "single-choice-question",
-              "title": "Stove Controls",
-              "question": "What made the stove controls confusing for Maria?",
-              "options": [
-                {
-                  "text": "The knobs were arranged differently than the burners"
-                },
-                {
-                  "text": "The knobs were too small"
-                },
-                {
-                  "text": "She wasn't familiar with gas stoves"
-                }
-              ],
-              "correct-answer-indices": [
-                0
-              ],
-              "explanation": "Linear control layout doesn't match the square burner arrangement - poor spatial mapping forces users to memorize arbitrary relationships.",
-              "hint": "Look at how the controls were positioned compared to the burners."
-            },
-            {
-              "entity-type": "single-choice-question",
-              "title": "Mirror Controls",
-              "question": "What frustrated Tom about the car's mirror controls?",
-              "options": [
-                {
-                  "text": "The controls worked opposite to his expectations"
-                },
-                {
-                  "text": "The buttons were too small"
-                },
-                {
-                  "text": "He couldn't find the controls"
-                }
-              ],
-              "correct-answer-indices": [
-                0
-              ],
-              "explanation": "When controls work opposite to natural expectations, they violate users' mental models and force them to think backwards.",
-              "hint": "Think about what direction Tom expected when he pressed 'up'."
-            },
-            {
-              "entity-type": "text",
-              "title": "What is Natural Mapping?",
-              "text-segments": [
-                "Those three scenarios reveal a fundamental design principle.",
-                "Natural mapping is the relationship between controls and their effects in the world.",
-                "Good mapping uses spatial correspondence, cultural conventions, or logical relationships.",
-                "When mapping is natural, you don't have to think - the right action feels obvious."
-              ]
-            },
-            {
-              "entity-type": "text",
-              "title": "Natural Mapping",
-              "text-segments": [
-                "Natural mapping takes advantage of physical analogies and cultural standards.",
-                "A steering wheel maps rotation directly to direction - turning right makes you go right.",
-                "Light switches positioned to mirror room layout create instant understanding.",
-                "When mapping violates these relationships, simple tasks require mental translation."
-              ]
-            },
-            {
-              "entity-type": "text",
-              "title": "Types of Mapping",
-              "text-segments": [
-                "Spatial mapping uses physical relationships - controls positioned like their effects.",
-                "Cultural mapping relies on learned conventions - red for stop, green for go.",
-                "Semantic mapping uses meaning - louder sounds from bigger speakers.",
-                "The best mapping combines multiple types for maximum clarity."
-              ]
-            },
-            {
-              "entity-type": "single-choice-question",
-              "title": "Steering Wheel Success",
-              "question": "Why does a steering wheel feel so natural to use?",
-              "options": [
-                {
-                  "text": "It maps rotation directly to direction"
-                },
-                {
-                  "text": "It's the traditional way cars work"
-                },
-                {
-                  "text": "It provides good grip"
-                }
-              ],
-              "correct-answer-indices": [
-                0
-              ],
-              "explanation": "Steering wheels work because they provide direct spatial mapping - the direction you turn the wheel corresponds to the direction the car goes.",
-              "hint": "Think about the relationship between wheel movement and car direction."
-            },
-            {
-              "entity-type": "text",
-              "title": "Mapping in Practice",
-              "text-segments": [
-                "Great designers arrange controls to match their effects spatially.",
-                "Volume controls on the right feel natural because we read left to right.",
-                "Elevator buttons arranged vertically match the floors they control.",
-                "Good mapping reduces cognitive load and prevents errors."
-              ]
+              "explanation": "The wall's solid appearance is intentional security design. It hides the entrance from Muggles while still providing clear affordances to those who know the secret.",
+              "hint": "Consider why magical interfaces might need to be hidden from non-magical users."
             },
             {
               "entity-type": "true-false-question",
-              "title": "Mapping Check",
-              "question": "True or false: Good natural mapping should require learning and practice to understand.",
+              "title": "Magical Interface Design",
+              "question": "The Marauder's Map demonstrates good information architecture principles.",
               "options": [
                 {
                   "text": "True"
@@ -559,333 +467,20 @@
                 }
               ],
               "correct-answer-indices": [
-                1
+                0
               ],
-              "explanation": "False! Natural mapping should be immediately intuitive, requiring no learning. If users need to practice, the mapping isn't natural enough.",
-              "hint": "Think about what 'natural' means in this context."
-            },
-            {
-              "entity-type": "fill-gap-question",
-              "title": "Complete the Principle",
-              "question": "Natural mapping uses _____ correspondence and _____ conventions to make controls intuitive.",
-              "options": [
-                {
-                  "text": "spatial"
-                },
-                {
-                  "text": "cultural"
-                }
-              ],
-              "correct-answer-indices": [
-                0,
-                1
-              ],
-              "explanation": "Natural mapping uses spatial correspondence (physical relationships) and cultural conventions (learned standards) to create intuitive controls.",
-              "hint": "Think about the two main ways mapping can feel natural to users."
-            },
-            {
-              "entity-type": "estimate-percentage-question",
-              "title": "Mapping Errors",
-              "question": "What percentage of user errors in complex control panels are caused by poor mapping, according to design studies?",
-              "options": [],
-              "correct-answer-indices": [
-                65
-              ],
-              "explanation": "Research shows that 65% of errors in complex interfaces stem from poor mapping. When controls don't match user expectations, mistakes are inevitable.",
-              "hint": "Consider how often you press the wrong button when controls aren't where you expect them."
-            },
-            {
-              "entity-type": "text",
-              "title": "Mapping Examples",
-              "text-segments": [
-                "Good mapping is everywhere once you notice it.",
-                "Car turn signals: left lever for left turn, right lever for right turn.",
-                "Piano keys: higher notes to the right, lower notes to the left.",
-                "Excellent mapping makes the interface disappear into pure intention."
-              ]
-            },
-            {
-              "entity-type": "design-examples-showcase",
-              "title": "Real Life Examples"
-            },
-            {
-              "entity-type": "reflection",
-              "title": "Mapping in Your Life",
-              "prompt": "Think about a control interface you use daily that has excellent natural mapping. Why does it work so well?",
-              "thinking-points": [
-                "How do the controls relate spatially to their effects?",
-                "What cultural conventions does the design use?",
-                "Would this interface work for someone from a different culture?",
-                "How would poor mapping make this interface frustrating?"
-              ]
+              "explanation": "True! The Map shows real-time information in a clear spatial layout with immediate updates. It's essentially a perfect magical GPS interface.",
+              "hint": "Think about how the Map organizes and displays complex location data."
             },
             {
               "entity-type": "outro",
-              "title": "Mental Models Matter",
+              "title": "Magic Meets Design",
               "text-segments": [
-                "You now understand how great design matches mental expectations.",
-                "Natural mapping makes controls feel obvious and prevent errors.",
-                "When mapping breaks down, even simple tasks become complex puzzles.",
-                "In our next lesson, we'll explore feedback - how systems confirm your actions worked."
-              ]
-            }
-          ]
-        },
-        {
-          "id": "feedback-course",
-          "title": "Feedback and System Response",
-          "lesson-version": "story-based",
-          "content": [
-            {
-              "entity-type": "intro",
-              "title": "When Silence Speaks Volumes",
-              "intro-text-segments": [
-                "You press a button and... nothing happens. Or does it?",
-                "Good feedback confirms your actions immediately and clearly.",
-                "In this lesson, we'll explore feedback - how systems communicate what's happening."
-              ]
-            },
-            {
-              "entity-type": "text",
-              "title": "Story 1",
-              "text-segments": [
-                "Lisa stands at the elevator.",
-                "She presses the call button.",
-                "No light, no sound, no confirmation.",
-                "Did it register? She presses again.",
-                "And again. Still nothing visible.",
-                "Three minutes later, two elevators arrive.",
-                "She had called both, unknowingly.",
-                "Silent buttons create confusion.",
-                "Feedback would have prevented this."
-              ]
-            },
-            {
-              "entity-type": "text",
-              "title": "Story 2",
-              "text-segments": [
-                "Mike submits an online form.",
-                "He clicks 'Submit' and waits.",
-                "The page doesn't change at all.",
-                "Is it processing? Did it work?",
-                "He clicks Submit again. Still nothing.",
-                "He refreshes and tries once more.",
-                "Later, he receives three confirmation emails.",
-                "Poor feedback led to triple submission.",
-                "Users need to know what's happening."
-              ]
-            },
-            {
-              "entity-type": "text",
-              "title": "Story 3",
-              "text-segments": [
-                "Anna uses her car's touchscreen.",
-                "She taps to adjust the temperature.",
-                "The screen shows no response.",
-                "She taps harder, multiple times.",
-                "Suddenly the temperature jumps wildly.",
-                "All her taps had registered.",
-                "The system was just slow to respond.",
-                "Delayed feedback creates frustration.",
-                "Immediate acknowledgment is crucial."
-              ]
-            },
-            {
-              "entity-type": "single-choice-question",
-              "title": "Elevator Confusion",
-              "question": "Why did Lisa end up calling two elevators?",
-              "options": [
-                {
-                  "text": "The button provided no feedback about her actions"
-                },
-                {
-                  "text": "She was in a hurry"
-                },
-                {
-                  "text": "The elevator system was broken"
-                }
-              ],
-              "correct-answer-indices": [
-                0
-              ],
-              "explanation": "Without visual or auditory feedback, Lisa couldn't tell if her button presses were registered. Good feedback would have shown her the call was received.",
-              "hint": "Consider what information Lisa needed after pressing the button."
-            },
-            {
-              "entity-type": "single-choice-question",
-              "title": "Form Submission Problem",
-              "question": "What caused Mike to submit the form three times?",
-              "options": [
-                {
-                  "text": "The system gave no indication that submission was processing"
-                },
-                {
-                  "text": "He didn't read the instructions"
-                },
-                {
-                  "text": "His internet was too slow"
-                }
-              ],
-              "correct-answer-indices": [
-                0
-              ],
-              "explanation": "Without feedback showing that the form was being processed, Mike had no way to know his first submission was working. A loading indicator would have prevented this.",
-              "hint": "Think about what Mike needed to see after clicking Submit."
-            },
-            {
-              "entity-type": "single-choice-question",
-              "title": "Touchscreen Frustration",
-              "question": "Why did Anna's temperature adjustment go wrong?",
-              "options": [
-                {
-                  "text": "The system delayed feedback, making her think it wasn't working"
-                },
-                {
-                  "text": "The touchscreen was too sensitive"
-                },
-                {
-                  "text": "She didn't know how to use the system"
-                }
-              ],
-              "correct-answer-indices": [
-                0
-              ],
-              "explanation": "Delayed feedback broke the connection between action and result. Anna needed immediate acknowledgment that each tap was registered, even if processing took time.",
-              "hint": "Consider the timing between Anna's actions and the system's response."
-            },
-            {
-              "entity-type": "text",
-              "title": "What is Feedback?",
-              "text-segments": [
-                "Those three scenarios reveal why feedback is essential for good design.",
-                "Feedback is the system's way of communicating with users about their actions.",
-                "Good feedback is immediate, informative, and appropriate to the action performed.",
-                "Without feedback, users operate blind - never sure if their actions worked."
-              ]
-            },
-            {
-              "entity-type": "text",
-              "title": "The Feedback Loop",
-              "text-segments": [
-                "Every interaction creates a communication loop between user and system.",
-                "User acts, system responds, user interprets response, user acts again.",
-                "When feedback is missing or unclear, this loop breaks down completely.",
-                "Good feedback keeps the conversation flowing smoothly."
-              ]
-            },
-            {
-              "entity-type": "text",
-              "title": "Types of Feedback",
-              "text-segments": [
-                "Visual feedback uses lights, colors, animations, and text changes.",
-                "Auditory feedback employs clicks, beeps, and sound effects.",
-                "Tactile feedback provides vibration, resistance, or physical response.",
-                "The best systems combine multiple feedback types for clarity."
-              ]
-            },
-            {
-              "entity-type": "single-choice-question",
-              "title": "Keyboard Success",
-              "question": "Why do physical keyboards feel so responsive to use?",
-              "options": [
-                {
-                  "text": "They provide immediate tactile and auditory feedback"
-                },
-                {
-                  "text": "The keys are properly sized"
-                },
-                {
-                  "text": "They're familiar to most users"
-                }
-              ],
-              "correct-answer-indices": [
-                0
-              ],
-              "explanation": "Physical keyboards excel because they provide instant tactile feedback when pressed and auditory confirmation through key clicks. You immediately know your action registered.",
-              "hint": "Think about what you feel and hear when you press a key."
-            },
-            {
-              "entity-type": "text",
-              "title": "Feedback Timing",
-              "text-segments": [
-                "Feedback timing is crucial for maintaining the action-response connection.",
-                "Immediate acknowledgment shows the action was received.",
-                "Progress indicators communicate ongoing processes.",
-                "Completion signals tell users when tasks finish successfully."
-              ]
-            },
-            {
-              "entity-type": "true-false-question",
-              "title": "Feedback Timing",
-              "question": "True or false: Good feedback should only appear when an action is completely finished.",
-              "options": [
-                {
-                  "text": "True"
-                },
-                {
-                  "text": "False"
-                }
-              ],
-              "correct-answer-indices": [
-                1
-              ],
-              "explanation": "False! Good feedback starts immediately to acknowledge the action, continues during processing to show progress, and confirms completion. Waiting until the end leaves users wondering if anything happened.",
-              "hint": "Think about what users need to know during a long process."
-            },
-            {
-              "entity-type": "fill-gap-question",
-              "title": "Complete the Principle",
-              "question": "Good feedback should be _____, _____, and appropriate to the action performed.",
-              "options": [
-                {
-                  "text": "immediate"
-                },
-                {
-                  "text": "informative"
-                }
-              ],
-              "correct-answer-indices": [
-                0,
-                1
-              ],
-              "explanation": "Good feedback should be immediate (so users know their action registered) and informative (so they understand what's happening or what to do next).",
-              "hint": "Think about the key qualities that make feedback effective."
-            },
-            {
-              "entity-type": "estimate-percentage-question",
-              "title": "Button Press Research",
-              "question": "What percentage of users will press a button multiple times if they don't receive immediate feedback, according to usability studies?",
-              "options": [],
-              "correct-answer-indices": [
-                78
-              ],
-              "explanation": "Studies show that 78% of users will press unresponsive buttons repeatedly within 3 seconds. Without feedback, users assume their action didn't register and try again.",
-              "hint": "Consider how you behave when a button seems unresponsive."
-            },
-            {
-              "entity-type": "text",
-              "title": "Feedback Examples",
-              "text-segments": [
-                "Great feedback surrounds us in well-designed interactions.",
-                "Button highlights when you hover over them in software.",
-                "ATMs beep when you press buttons and show confirmation screens.",
-                "Car indicators click rhythmically to confirm they're working.",
-                "Excellent feedback makes interaction feel natural and confident."
-              ]
-            },
-            {
-              "entity-type": "design-examples-showcase",
-              "title": "Real Life Examples"
-            },
-            {
-              "entity-type": "reflection",
-              "title": "Feedback in Your Life",
-              "prompt": "Think about a device or interface you use that provides excellent feedback. What makes the feedback so effective?",
-              "thinking-points": [
-                "What types of feedback does it provide (visual, auditory, tactile)?",
-                "How quickly does the feedback appear after your actions?",
-                "How does the feedback help you understand what's happening?",
-                "What would happen if this feedback was removed?"
+                "Even in a world of magic, good design principles apply.",
+                "Affordances guide user behavior, whether magical or mundane.",
+                "Mapping helps users understand complex systems.",
+                "Feedback keeps users informed and engaged.",
+                "The best magical objects combine wonder with usability."
               ]
             }
           ]

@@ -42,7 +42,7 @@ This applies to ALL Dart files in the project - widgets, models, services, utili
 12. **Function extraction** - never nest functions inside the UI, unless very simple. NO logic (lambdas, functions, ternary operators) directly in widget tree
 13. **Utility widgets** - use Div.row/column instead of Container. Avoid Padding, SizedBox, and other widgets that Div can handle. Never use Container when Div is sufficient
 14. **Spacing widgets** - use Spacing.height/width instead of SizedBox
-15. **Typography consistency** - use Typography widgets for all text, never raw Text() widget
+15. **Typography consistency** - use RLTypography widgets for all text, never raw Text() widget
 16. **Style and icon extraction** - extract complex styling objects (BoxDecoration, TextStyle, EdgeInsets with multiple properties) to variables above the build method, keep simple one-liners inline. Extract complete icon widgets above the build method with PascalCase naming (CloseIcon). Only icon variable names should appear in UI tree, never inline Icon() constructors
 17. **Loop extraction** - extract loops, iterations, and ListView builders from widget tree into separate methods with descriptive names
 18. **Data transformation extraction** - extract complex data operations (.from(), .map(), nested property access) into intermediate variables for clarity
@@ -63,16 +63,17 @@ This applies to ALL Dart files in the project - widgets, models, services, utili
 27. **Extract if conditions** - never use bare if statements with direct conditions. Always extract the condition into a meaningful variable name (eg. `final bool shouldShowButton = isLoggedIn && hasPermission;` then `if (shouldShowButton)`)
 28. **Avoid ternary in UI** - let functions handle decision logic
 29. **No nested ternary** - avoid complex conditional operators, extract
-30. **Consistent loop syntax** - Never use spread operators (...) or for loops in widget building
-31. **Explicit over spread** - prefer explicit list items vs spread operators
-32. **Descriptive indices** - use itemIndex/widgetIndex vs index
-33. **Whitespace around blocks** - surround if/for/while with newlines
+30. **No ternary or null coalescing in UI** - never use `? :` or `??` operators directly in widget parameters. Extract to variables first (eg. `final EdgeInsets buttonMargin = margin ?? EdgeInsets.zero;` instead of `margin: margin ?? 0`)
+31. **Consistent loop syntax** - Never use spread operators (...) or for loops in widget building
+32. **Explicit over spread** - prefer explicit list items vs spread operators
+33. **Descriptive indices** - use itemIndex/widgetIndex vs index
+34. **Whitespace around blocks** - surround if/for/while with newlines
 
 ### @5 Performance
 
-34. **4-pixel rule** - use multiples of 4 for spacing values
-35. **Avoid overengineering** - don't optimize before inspection
-36. **Code reuse** - extract repeated code into methods/widgets
+35. **4-pixel rule** - use multiples of 4 or 8 for design values
+36. **Avoid overengineering** - don't optimize before inspection
+37. **Code reuse** - extract repeated code into methods/widgets
 
 @important: After aligning the code with the above rules, please write down what was changed for each point in the list, if applicable.
 

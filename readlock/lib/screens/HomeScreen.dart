@@ -19,7 +19,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class HomeScreenState extends State<HomeScreen> {
-  // * -----------------
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,7 +46,6 @@ class HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
-  // * -----------------
 
   Widget HomeWelcomeHeader() {
     return Div.column([
@@ -126,7 +124,7 @@ class HomeScreenState extends State<HomeScreen> {
                 size: 14,
               ),
             ],
-            padding: const [20, 10],
+            padding: const [8, 12],
             decoration: Style.continueButtonDecoration,
           ),
         ]),

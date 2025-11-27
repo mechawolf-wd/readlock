@@ -5,6 +5,7 @@ import 'package:flutter/material.dart' hide Typography;
 import 'package:readlock/utility_widgets/Utility.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLTheme.dart';
+import 'package:readlock/constants/RLDesignSystem.dart';
 
 const String AHA_DIALOG_TITLE = 'Explanation';
 const String HINT_DIALOG_TITLE = 'Hint';
@@ -168,18 +169,14 @@ class FeedbackSheet extends StatelessWidget {
           Navigator.of(context).pop();
         }
 
-        return Div.column(
-          [
+        return RLDesignSystem.BlockButton(
+          children: [
             RLTypography.bodyMedium(
               CLOSE_BUTTON_LABEL,
               color: Colors.white,
             ),
           ],
-          width: double.infinity,
-          height: 48,
-          decoration: buttonDecoration,
-          mainAxisAlignment: MainAxisAlignment.center,
-          margin: buttonMargin,
+          backgroundColor: buttonColor,
           onTap: handleCloseButtonTap,
         );
       },

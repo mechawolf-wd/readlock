@@ -6,24 +6,24 @@ import 'package:readlock/utility_widgets/Utility.dart';
 import 'package:readlock/constants/RLTheme.dart';
 
 const String LOADING_MESSAGE = 'Birds are indexing the course';
-const double BIRD_ICON_SIZE = 60.0;
+const double PIGEON_IMAGE_SIZE = 240.0;
 const double SPACING_HEIGHT = 24.0;
 
 class CourseLoadingScreen extends StatelessWidget {
   const CourseLoadingScreen({super.key});
 
-  // Icon and color definitions
-  static const Icon BirdIcon = Icon(
-    Icons.flight_takeoff_outlined,
-    color: birdIconColor,
-    size: BIRD_ICON_SIZE,
-  );
-
-  static const Color birdIconColor = RLTheme.primaryGreen;
+  Widget PigeonImage() {
+    return Image.asset(
+      'pigeon.png',
+      width: PIGEON_IMAGE_SIZE,
+      height: PIGEON_IMAGE_SIZE,
+      fit: BoxFit.contain,
+    );
+  }
 
   Widget LoadingContent() {
-    return const Div.column(
-      [BirdIcon],
+    return Div.column(
+      [PigeonImage()],
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.center,
       width: double.infinity,

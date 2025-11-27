@@ -27,7 +27,6 @@ class CoursesScreenState extends State<CoursesScreen> {
     loadCourses();
   }
 
-  // * -----------------
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -74,7 +73,6 @@ class CoursesScreenState extends State<CoursesScreen> {
       ),
     );
   }
-  // * -----------------
 
   Future<void> loadCourses() async {
     try {

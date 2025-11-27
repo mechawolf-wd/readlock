@@ -5,6 +5,7 @@ import 'package:flutter/material.dart' hide Typography;
 import 'package:readlock/utility_widgets/Utility.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLTheme.dart';
+import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/utility_widgets/text_animation/ProgressiveText.dart';
 
 const String CLOSE_BUTTON_LABEL = 'Got it';
@@ -75,21 +76,14 @@ class ExplanationDialog extends StatelessWidget {
             ),
 
             // Footer - button
-            Div.column(
-              [
+            RLDesignSystem.BlockButton(
+              children: [
                 RLTypography.bodyMedium(
                   CLOSE_BUTTON_LABEL,
                   color: Colors.white,
                 ),
               ],
-              width: double.infinity,
-              height: 48,
-              decoration: BoxDecoration(
-                color: RLTheme.primaryGreen,
-                borderRadius: BorderRadius.circular(BORDER_RADIUS),
-              ),
-              mainAxisAlignment: MainAxisAlignment.center,
-              margin: MODAL_PADDING,
+              backgroundColor: RLTheme.primaryGreen,
               onTap: () => Navigator.of(context).pop(),
             ),
           ]),

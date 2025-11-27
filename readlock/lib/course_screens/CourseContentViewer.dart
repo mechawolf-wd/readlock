@@ -60,9 +60,15 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
 
   // Icon definitions
   static const Icon backNavigationIcon = Icon(
-    Icons.arrow_back,
+    Icons.chevron_left,
     color: Color.fromARGB(255, 157, 157, 157),
     size: BACK_ICON_SIZE,
+  );
+
+  static const Icon blazeIcon = Icon(
+    Icons.local_fire_department,
+    color: Colors.orange,
+    size: 24,
   );
 
   // Initializes widget state and loads course data
@@ -162,6 +168,11 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
 
       // Course progress indicator
       Expanded(child: ProgressIndicator()),
+
+      const Spacing.width(NAVIGATION_SPACING),
+
+      // Streak blaze icon
+      BlazeIcon(),
     ], padding: TOP_BAR_PADDING);
   }
 
@@ -171,6 +182,11 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
       onTap: navigateToMainScreen,
       child: backNavigationIcon,
     );
+  }
+
+  // Streak blaze icon
+  Widget BlazeIcon() {
+    return blazeIcon;
   }
 
   // Progress indicator with individual segments for skill check questions

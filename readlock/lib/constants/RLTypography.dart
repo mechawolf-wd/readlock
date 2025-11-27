@@ -32,7 +32,7 @@ class RLTypography {
   );
 
   static final TextStyle bodyMediumStyle = GoogleFonts.merriweatherSans(
-    fontSize: 16,
+    fontSize: 14,
     color: TEXT_PRIMARY,
     height: 1.6,
   );
@@ -105,11 +105,13 @@ class RLTypography {
     int? maxLines,
     TextOverflow? overflow,
   }) {
+    final style = color != null
+        ? bodyMediumStyle.copyWith(color: color)
+        : bodyMediumStyle;
+
     return Text(
       content,
-      style: color != null
-          ? bodyMediumStyle.copyWith(color: color)
-          : bodyMediumStyle,
+      style: style,
       textAlign: textAlign,
       maxLines: maxLines,
       overflow: overflow,
