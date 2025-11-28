@@ -135,7 +135,6 @@ class CCReflectionQuestionState extends State<CCReflectionQuestion> {
 
   @override
   Widget build(BuildContext context) {
-
     return Div.column(
       [
         // Reflection header with icon and title
@@ -170,10 +169,7 @@ class CCReflectionQuestionState extends State<CCReflectionQuestion> {
       const Spacing.height(12),
 
       Center(
-        child: Text(
-          'Take a Moment to Reflect',
-          style: headerTextStyle,
-        ),
+        child: Text('Take a Moment to Reflect', style: headerTextStyle),
       ),
     ]);
   }
@@ -191,23 +187,16 @@ class CCReflectionQuestionState extends State<CCReflectionQuestion> {
   }
 
   List<Widget> getThoughtOptionsList() {
-    return widget.content.options
-        .asMap()
-        .entries
-        .map((entry) {
-          final int optionIndex = entry.key;
-          final QuestionOption option = entry.value;
+    return widget.content.options.asMap().entries.map((entry) {
+      final int optionIndex = entry.key;
+      final QuestionOption option = entry.value;
 
-          return Div.column([
-            ThoughtOptionWidget(
-              optionIndex: optionIndex,
-              option: option,
-            ),
+      return Div.column([
+        ThoughtOptionWidget(optionIndex: optionIndex, option: option),
 
-            const Spacing.height(REFLECTION_OPTION_SPACING),
-          ]);
-        })
-        .toList();
+        const Spacing.height(REFLECTION_OPTION_SPACING),
+      ]);
+    }).toList();
   }
 
   Widget ThoughtOptionWidget({
@@ -229,7 +218,6 @@ class CCReflectionQuestionState extends State<CCReflectionQuestion> {
       hasReflected: hasReflected,
       isCorrect: isCorrectAnswer,
     );
-
 
     return Div.row(
       [

@@ -78,22 +78,25 @@
               "entity-type": "single-choice-question",
               "title": "Door Design",
               "question": "Quick question: When you see a door with a handle, what does your brain assume?",
+              "explanation": "Handles suggest pulling. This is called an \"affordance\" - what the design tells you to do.",
+              "hint": "Think about what action a handle naturally suggests when you grab it.",
               "options": [
                 {
-                  "text": "You should pull it"
+                  "text": "You should pull it",
+                  "consequence-message": "This is a correct thought - that would be the right action to take."
                 },
                 {
-                  "text": "You should push it"
+                  "text": "You should push it",
+                  "consequence-message": ""
                 },
                 {
-                  "text": "You should knock first"
+                  "text": "You should knock first",
+                  "consequence-message": "While polite, this is not the action suggested by the handle's design."
                 }
               ],
               "correct-answer-indices": [
                 0
-              ],
-              "explanation": "Handles suggest pulling. This is called an \"affordance\" - what the design tells you to do.",
-              "hint": "Think about what action a handle naturally suggests when you grab it."
+              ]
             },
             {
               "entity-type": "single-choice-question",
@@ -386,12 +389,12 @@
               "title": "Year 1: The Philosopher's Stone",
               "text-segments": [
                 "Harry encounters his first magical interface: Platform 9¾.",
-                "The solid brick wall offers no visual affordances.",
+                "The solid brick wall offers no <c:g>visual affordances</c:g>.",
                 "No handles, no obvious entry point.",
                 "Yet Molly Weasley runs straight at it.",
-                "The design principle? Sometimes the best affordance is invisible to outsiders.",
+                "The design principle? Sometimes the best <c:g>affordance</c:g> is invisible to outsiders.",
                 "The wall's apparent solidity is intentional misdirection.",
-                "Only those 'in the know' understand the true affordance: run at it."
+                "Only those 'in the know' understand the true <c:g>affordance</c:g>: run at it."
               ]
             },
             {
@@ -401,23 +404,23 @@
                 "Tom Riddle's diary presents a fascinating design challenge.",
                 "It looks like an ordinary notebook - perfect camouflage.",
                 "But when Harry writes in it, it writes back.",
-                "The feedback is immediate and contextual.",
+                "The <c:g>feedback</c:g> is immediate and contextual.",
                 "The diary's interface adapts to the user's input.",
-                "This is responsive design taken to its magical extreme.",
-                "The danger? When feedback becomes manipulation."
+                "This is <c:g>responsive design</c:g> taken to its magical extreme.",
+                "The danger? When <c:g>feedback</c:g> becomes manipulation."
               ]
             },
             {
               "entity-type": "text",
               "title": "Year 3: The Prisoner of Azkaban",
               "text-segments": [
-                "The Marauder's Map revolutionizes information design.",
+                "The Marauder's Map revolutionizes <c:g>information design</c:g>.",
                 "Activation requires a password: 'I solemnly swear I am up to no good.'",
                 "The map then reveals its true interface.",
-                "Dynamic, real-time information display.",
-                "Clear spatial mapping of Hogwarts' layout.",
-                "Immediate feedback showing everyone's location.",
-                "Even magical interfaces need good information architecture."
+                "Dynamic, <c:g>real-time information display</c:g>.",
+                "Clear <c:g>spatial mapping</c:g> of Hogwarts' layout.",
+                "Immediate <c:g>feedback</c:g> showing everyone's location.",
+                "Even magical interfaces need good <c:g>information architecture</c:g>."
               ]
             },
             {
@@ -425,12 +428,12 @@
               "title": "Year 4: The Goblet of Fire",
               "text-segments": [
                 "The Triwizard Tournament introduces complex magical systems.",
-                "The Goblet of Fire itself is a perfect example of constrained design.",
-                "Clear affordances: names go in, champions come out.",
+                "The Goblet of Fire itself is a perfect example of <c:g>constrained design</c:g>.",
+                "Clear <c:g>affordances</c:g>: names go in, champions come out.",
                 "Built-in security through age restrictions.",
                 "When Barty Crouch Jr. hacks the system, he exploits a design flaw.",
                 "The Goblet couldn't distinguish between three schools and four entries.",
-                "Even magical systems need proper error handling."
+                "Even magical systems need proper <c:g>error handling</c:g>."
               ]
             },
             {

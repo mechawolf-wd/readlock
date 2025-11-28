@@ -1,6 +1,6 @@
 class RLConstants {
   // App strings
-  static const String APP_TITLE = 'Relevant';
+  static const String APP_TITLE = 'Readlock';
 
   // Welcome messages
   static const String BOOKS_WELCOME_MESSAGE =

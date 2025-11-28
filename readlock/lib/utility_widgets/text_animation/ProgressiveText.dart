@@ -6,6 +6,40 @@ import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/utility_widgets/Utility.dart';
 import 'package:readlock/utility_widgets/visual_effects/BlurOverlay.dart';
 
+// Class to represent a segment of text with optional highlighting
+class TextSegmentWithHighlighting {
+  final String textContent;
+  final bool shouldBeHighlighted;
+  final Color? highlightColor;
+  final int segmentStartPosition;
+  final int segmentEndPosition;
+
+  const TextSegmentWithHighlighting({
+    required this.textContent,
+    required this.shouldBeHighlighted,
+    required this.highlightColor,
+    required this.segmentStartPosition,
+    required this.segmentEndPosition,
+  });
+}
+
+// Legacy class for backward compatibility
+class HighlightSegment {
+  final String text;
+  final bool isHighlighted;
+  final Color? color;
+  final int startIndex;
+  final int endIndex;
+
+  const HighlightSegment({
+    required this.text,
+    required this.isHighlighted,
+    required this.color,
+    required this.startIndex,
+    required this.endIndex,
+  });
+}
+
 class ProgressiveText extends StatefulWidget {
   static const double DEFAULT_BOTTOM_SPACING = 8.0;
   static const Duration AUTO_REVEAL_DELAY = Duration(milliseconds: 300);
@@ -113,7 +147,10 @@ class ProgressiveTextState extends State<ProgressiveText> {
         currentSentenceNumber < textSentences.length;
 
     if (hasCurrentSentence) {
-      currentSentenceText = textSentences[currentSentenceNumber];
+      // Use clean text for animation (without highlight markers)
+      currentSentenceText = getCleanText(
+        textSentences[currentSentenceNumber],
+      );
       currentCharacterPosition = 0;
       revealedText = '';
     }
@@ -309,41 +346,25 @@ class ProgressiveTextState extends State<ProgressiveText> {
 
   // Main display widget for revealed sentences
   Widget RevealedTextDisplay() {
-    // Generate widgets for completed sentences
-    final List<Widget> sentenceWidgets = List.generate(
-      currentSentenceNumber,
-      (sentenceItemIndex) {
-        Widget sentenceWidget = Div.column(
-          [SentenceText(sentenceItemIndex)],
-          crossAxisAlignment: CrossAxisAlignment.start,
-          padding: const [
-            0,
-            0,
-            ProgressiveText.DEFAULT_BOTTOM_SPACING,
-            0,
-          ],
-        );
+    final List<Widget> sentenceWidgets = [];
 
-        final bool shouldApplyBlurEffect = shouldBlurSentence(
-          sentenceItemIndex,
-        );
+    // Add completed sentence widgets
+    for (int i = 0; i < currentSentenceNumber; i++) {
+      sentenceWidgets.add(
+        CompletedSentenceWidget(
+          key: ValueKey('sentence_$i'),
+          sentenceIndex: i,
+          sentenceText: textSentences[i],
+          shouldBlur: shouldBlurSentence(i),
+          blurIntensity: widget.completedSentenceBlurIntensity,
+          blurOpacity: widget.completedSentenceOpacity,
+          textStyle: getConsistentTextStyle(),
+          onTap: () => toggleBlurForSentence(i),
+        ),
+      );
+    }
 
-        if (shouldApplyBlurEffect) {
-          sentenceWidget = BlurOverlay(
-            blurSigma: widget.completedSentenceBlurIntensity,
-            opacity: widget.completedSentenceOpacity,
-            child: sentenceWidget,
-          );
-        }
-
-        return Div.column(
-          [sentenceWidget],
-          crossAxisAlignment: CrossAxisAlignment.start,
-          onTap: () => toggleBlurForSentence(sentenceItemIndex),
-        );
-      },
-    );
-
+    // Add current sentence if it exists
     final bool hasActiveSentenceToDisplay =
         currentSentenceNumber < textSentences.length;
 
@@ -359,26 +380,187 @@ class ProgressiveTextState extends State<ProgressiveText> {
 
   // Display widget for currently revealing sentence
   Widget CurrentSentenceDisplay() {
-    final bool hasRevealedTextToShow = revealedText.isNotEmpty;
-    final bool shouldHideEmptyContent = !hasRevealedTextToShow;
-
-    if (shouldHideEmptyContent) {
+    if (revealedText.isEmpty) {
       return const SizedBox.shrink();
     }
 
-    return Div.column([
-      RichText(
-        textAlign: TextAlign.left,
-        text: TextSpan(
-          children: [
-            TextSpan(
-              text: revealedText,
-              style: getConsistentTextStyle(),
-            ),
-          ],
-        ),
+    final String originalText = textSentences[currentSentenceNumber];
+    final bool hasHighlights = originalText.contains('<c:');
+
+    if (hasHighlights) {
+      return buildProgressiveHighlightedText(
+        originalText,
+        revealedText,
+      );
+    }
+
+    // Simplified regular text without highlights - no unnecessary wrapping
+    return RichText(
+      textAlign: TextAlign.left,
+      text: TextSpan(
+        text: revealedText,
+        style: getConsistentTextStyle(),
       ),
-    ], crossAxisAlignment: CrossAxisAlignment.start);
+    );
+  }
+
+  // Build progressively revealed text with highlighting
+  Widget buildProgressiveHighlightedText(
+    String originalText,
+    String revealedCleanText,
+  ) {
+    final List<TextSpan> spans = _buildProgressiveHighlightSpans(
+      originalText,
+      revealedCleanText,
+    );
+
+    return RichText(
+      text: TextSpan(children: spans),
+      textAlign: TextAlign.left,
+    );
+  }
+
+  // Optimized method to build highlight spans without intermediate objects
+  List<TextSpan> _buildProgressiveHighlightSpans(
+    String originalText,
+    String revealedCleanText,
+  ) {
+    final List<TextSpan> spans = [];
+    final RegExp highlightRegex = RegExp(r'<c:(g)>([^<]*)</c:\1>');
+    String remaining = originalText;
+    int cleanTextPosition = 0;
+    final int revealedLength = revealedCleanText.length;
+    final TextStyle baseStyle = getConsistentTextStyle();
+
+    while (remaining.isNotEmpty && cleanTextPosition < revealedLength) {
+      final RegExpMatch? match = highlightRegex.firstMatch(remaining);
+
+      if (match == null) {
+        // Handle remaining text without highlights
+        final int remainingRevealLength =
+            revealedLength - cleanTextPosition;
+        if (remainingRevealLength > 0) {
+          final String visibleText =
+              remaining.length <= remainingRevealLength
+              ? remaining
+              : remaining.substring(0, remainingRevealLength);
+          spans.add(TextSpan(text: visibleText, style: baseStyle));
+        }
+        break;
+      }
+
+      // Handle text before highlight
+      if (match.start > 0) {
+        final String beforeText = remaining.substring(0, match.start);
+        final int beforeTextEnd = cleanTextPosition + beforeText.length;
+
+        if (cleanTextPosition < revealedLength) {
+          final int visibleLength = (beforeTextEnd <= revealedLength)
+              ? beforeText.length
+              : revealedLength - cleanTextPosition;
+
+          if (visibleLength > 0) {
+            spans.add(
+              TextSpan(
+                text: beforeText.substring(0, visibleLength),
+                style: baseStyle,
+              ),
+            );
+          }
+        }
+
+        cleanTextPosition += beforeText.length;
+        if (cleanTextPosition >= revealedLength) {
+          break;
+        }
+      }
+
+      // Handle highlighted text
+      final String colorCode = match.group(1)!;
+      final String highlightedText = match.group(2)!;
+      final int highlightEnd =
+          cleanTextPosition + highlightedText.length;
+
+      if (cleanTextPosition < revealedLength) {
+        final int visibleLength = (highlightEnd <= revealedLength)
+            ? highlightedText.length
+            : revealedLength - cleanTextPosition;
+
+        if (visibleLength > 0) {
+          final Color highlightColor = getHighlightColor(colorCode);
+          spans.add(
+            TextSpan(
+              text: highlightedText.substring(0, visibleLength),
+              style: baseStyle.copyWith(
+                color: highlightColor,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          );
+        }
+      }
+
+      cleanTextPosition += highlightedText.length;
+      remaining = remaining.substring(match.end);
+    }
+
+    return spans;
+  }
+
+  // Build spans for visible text segments
+  List<TextSpan> buildVisibleSpans(
+    List<HighlightSegment> segments,
+    String revealedCleanText,
+  ) {
+    final List<TextSpan> spans = [];
+    int cleanTextPosition = 0;
+
+    for (final segment in segments) {
+      final int segmentStart = cleanTextPosition;
+      final int segmentEnd = cleanTextPosition + segment.text.length;
+      final int revealedLength = revealedCleanText.length;
+
+      final bool segmentNotReachedYet = revealedLength <= segmentStart;
+
+      if (segmentNotReachedYet) {
+        break;
+      }
+
+      final bool segmentPartiallyVisible = revealedLength < segmentEnd;
+      final int visibleEnd = segmentPartiallyVisible
+          ? revealedLength
+          : segmentEnd;
+
+      final bool hasVisibleContent = visibleEnd > segmentStart;
+
+      if (hasVisibleContent) {
+        final String visibleText = segment.text.substring(
+          0,
+          visibleEnd - segmentStart,
+        );
+
+        final TextStyle spanStyle = getSpanStyle(segment);
+
+        spans.add(TextSpan(text: visibleText, style: spanStyle));
+      }
+
+      cleanTextPosition += segment.text.length;
+    }
+
+    return spans;
+  }
+
+  // Get text style for a highlight segment
+  TextStyle getSpanStyle(HighlightSegment segment) {
+    final bool isHighlighted = segment.isHighlighted;
+    final TextStyle baseStyle = getConsistentTextStyle();
+
+    final TextStyle highlightedStyle = baseStyle.copyWith(
+      color: segment.color,
+      fontWeight: FontWeight.bold,
+    );
+
+    return isHighlighted ? highlightedStyle : baseStyle;
   }
 
   // Helper methods
@@ -388,6 +570,123 @@ class ProgressiveTextState extends State<ProgressiveText> {
   void initializeTextState() {
     textSentences = widget.textSegments;
     sentenceBlurStates = List.filled(textSentences.length, true);
+  }
+
+  // Remove highlight markers and return clean text for animation
+  String removeHighlightMarkersFromText(String originalText) {
+    return originalText.replaceAll(RegExp(r'<c:g>|</c:g>'), '');
+  }
+
+  // Check if text contains educational highlight markers
+  bool textContainsEducationalHighlights(String text) {
+    return text.contains('<c:');
+  }
+
+  // Legacy method aliases for compatibility
+  String getCleanText(String originalText) {
+    return removeHighlightMarkersFromText(originalText);
+  }
+
+  bool hasHighlightMarkers(String text) {
+    return textContainsEducationalHighlights(text);
+  }
+
+  List<HighlightSegment> parseHighlights(String originalText) {
+    final segments = parseTextIntoHighlightSegments(originalText);
+
+    return segments
+        .map(
+          (segment) => HighlightSegment(
+            text: segment.textContent,
+            isHighlighted: segment.shouldBeHighlighted,
+            color: segment.highlightColor,
+            startIndex: segment.segmentStartPosition,
+            endIndex: segment.segmentEndPosition,
+          ),
+        )
+        .toList();
+  }
+
+  // Parse text into segments with highlight information for rendering
+  List<TextSegmentWithHighlighting> parseTextIntoHighlightSegments(
+    String originalText,
+  ) {
+    final List<TextSegmentWithHighlighting> segments = [];
+    String remaining = originalText;
+    int offset = 0;
+
+    while (remaining.isNotEmpty) {
+      final RegExpMatch? match = RegExp(
+        r'<c:(g)>([^<]*)</c:\1>',
+      ).firstMatch(remaining);
+
+      final bool hasNoMoreHighlights = match == null;
+
+      if (hasNoMoreHighlights) {
+        final bool hasRemainingText = remaining.isNotEmpty;
+
+        if (hasRemainingText) {
+          segments.add(
+            TextSegmentWithHighlighting(
+              textContent: remaining,
+              shouldBeHighlighted: false,
+              highlightColor: null,
+              segmentStartPosition: offset,
+              segmentEndPosition: offset + remaining.length,
+            ),
+          );
+        }
+        break;
+      }
+
+      final bool hasTextBeforeHighlight = match.start > 0;
+
+      if (hasTextBeforeHighlight) {
+        final String beforeText = remaining.substring(0, match.start);
+
+        segments.add(
+          TextSegmentWithHighlighting(
+            textContent: beforeText,
+            shouldBeHighlighted: false,
+            highlightColor: null,
+            segmentStartPosition: offset,
+            segmentEndPosition: offset + beforeText.length,
+          ),
+        );
+
+        offset += beforeText.length;
+      }
+
+      final String colorCode = match.group(1)!;
+      final String highlightedText = match.group(2)!;
+      final Color highlightColor = getHighlightColor(colorCode);
+
+      segments.add(
+        TextSegmentWithHighlighting(
+          textContent: highlightedText,
+          shouldBeHighlighted: true,
+          highlightColor: highlightColor,
+          segmentStartPosition: offset,
+          segmentEndPosition: offset + highlightedText.length,
+        ),
+      );
+
+      offset += highlightedText.length;
+
+      remaining = remaining.substring(match.end);
+    }
+
+    return segments;
+  }
+
+  // Get color based on marker code
+  Color getHighlightColor(String code) {
+    switch (code) {
+      case 'g':
+        return Colors.green.shade600;
+      default:
+        return Colors.green.shade600; // Fallback to green for any unknown codes
+    }
   }
 
   // Determines whether a specific sentence should have blur effect applied
@@ -411,9 +710,41 @@ class ProgressiveTextState extends State<ProgressiveText> {
 
   // Create text widget for a specific sentence
   Widget SentenceText(int sentenceIndex) {
+    final String originalText = textSentences[sentenceIndex];
+
+    // Check if text has highlights
+    if (hasHighlightMarkers(originalText)) {
+      return buildHighlightedText(originalText);
+    }
+
+    // Regular text without highlights
     return Text(
-      textSentences[sentenceIndex],
+      originalText,
       style: getConsistentTextStyle(),
+      textAlign: TextAlign.left,
+    );
+  }
+
+  // Build text with highlighting support
+  Widget buildHighlightedText(String text) {
+    final List<HighlightSegment> segments = parseHighlights(text);
+    final List<TextSpan> spans = [];
+
+    for (final segment in segments) {
+      final TextStyle baseStyle = getConsistentTextStyle();
+      final TextStyle highlightedStyle = baseStyle.copyWith(
+        color: segment.color,
+        fontWeight: FontWeight.bold,
+      );
+      final TextStyle segmentStyle = segment.isHighlighted
+          ? highlightedStyle
+          : baseStyle;
+
+      spans.add(TextSpan(text: segment.text, style: segmentStyle));
+    }
+
+    return RichText(
+      text: TextSpan(children: spans),
       textAlign: TextAlign.left,
     );
   }
@@ -425,5 +756,122 @@ class ProgressiveTextState extends State<ProgressiveText> {
         widget.textStyle ?? RLTypography.bodyMediumStyle;
 
     return baseStyle.copyWith(fontSize: 16, height: 1.5);
+  }
+}
+
+// Separate widget for completed sentences to prevent unnecessary rebuilds
+class CompletedSentenceWidget extends StatelessWidget {
+  final int sentenceIndex;
+  final String sentenceText;
+  final bool shouldBlur;
+  final double blurIntensity;
+  final double blurOpacity;
+  final TextStyle textStyle;
+  final VoidCallback onTap;
+
+  const CompletedSentenceWidget({
+    super.key,
+    required this.sentenceIndex,
+    required this.sentenceText,
+    required this.shouldBlur,
+    required this.blurIntensity,
+    required this.blurOpacity,
+    required this.textStyle,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    Widget sentenceWidget = Div.column(
+      [_buildSentenceText()],
+      crossAxisAlignment: CrossAxisAlignment.start,
+      padding: const [0, 0, ProgressiveText.DEFAULT_BOTTOM_SPACING, 0],
+    );
+
+    if (shouldBlur) {
+      sentenceWidget = BlurOverlay(
+        blurSigma: blurIntensity,
+        opacity: blurOpacity,
+        child: sentenceWidget,
+      );
+    }
+
+    return Div.column(
+      [sentenceWidget],
+      crossAxisAlignment: CrossAxisAlignment.start,
+      onTap: onTap,
+    );
+  }
+
+  Widget _buildSentenceText() {
+    // Check if text has highlights
+    final bool hasHighlights = sentenceText.contains('<c:');
+
+    if (hasHighlights) {
+      return _buildHighlightedText();
+    }
+
+    return Text(
+      sentenceText,
+      style: textStyle,
+      textAlign: TextAlign.left,
+    );
+  }
+
+  Widget _buildHighlightedText() {
+    final List<TextSpan> spans = [];
+    final RegExp highlightRegex = RegExp(r'<c:(g)>([^<]*)</c:\1>');
+    String remaining = sentenceText;
+
+    while (remaining.isNotEmpty) {
+      final RegExpMatch? match = highlightRegex.firstMatch(remaining);
+
+      if (match == null) {
+        // Add remaining text without highlighting
+        if (remaining.isNotEmpty) {
+          spans.add(TextSpan(text: remaining, style: textStyle));
+        }
+        break;
+      }
+
+      // Add text before highlight
+      if (match.start > 0) {
+        final String beforeText = remaining.substring(0, match.start);
+        spans.add(TextSpan(text: beforeText, style: textStyle));
+      }
+
+      // Add highlighted text
+      final String colorCode = match.group(1)!;
+      final String highlightedText = match.group(2)!;
+      final Color highlightColor = _getHighlightColor(colorCode);
+
+      spans.add(
+        TextSpan(
+          text: highlightedText,
+          style: textStyle.copyWith(
+            color: highlightColor,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      );
+
+      remaining = remaining.substring(match.end);
+    }
+
+    return RichText(
+      text: TextSpan(children: spans),
+      textAlign: TextAlign.left,
+    );
+  }
+
+  Color _getHighlightColor(String code) {
+    switch (code) {
+      case 'g':
+        return Colors.green.shade600;
+      case 'r':
+        return Colors.red.shade600;
+      default:
+        return Colors.grey;
+    }
   }
 }

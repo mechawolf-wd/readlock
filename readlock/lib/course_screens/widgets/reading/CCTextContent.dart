@@ -109,7 +109,7 @@ class CCTextContentState extends State<CCTextContent> {
 
     // Check mounted again after delay
     final bool stillMounted = mounted;
-    
+
     if (!stillMounted) {
       return;
     }

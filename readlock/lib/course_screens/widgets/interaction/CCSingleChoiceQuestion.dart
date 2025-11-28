@@ -5,7 +5,6 @@ import 'package:readlock/utility_widgets/Utility.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLTheme.dart';
 import 'package:readlock/utility_widgets/FeedbackSnackbar.dart';
-import 'package:readlock/utility_widgets/text_animation/ProgressiveText.dart';
 
 enum SingleChoiceButtonState {
   normal,
@@ -94,24 +93,44 @@ class CCSingleChoiceState extends State<CCSingleChoice> {
   }
 
   Widget QuestionTextSection() {
-    return RLTypography.text(widget.content.question);
+    final String questionText = widget.content.question;
+    return RLTypography.text(questionText);
   }
 
   Widget OptionsListSection() {
-    return Div.column(getOptionWidgetsList());
+    final List<Widget> optionWidgets = buildOptionWidgets();
+    return Div.column(optionWidgets);
   }
 
-  List<Widget> getOptionWidgetsList() {
-    return widget.content.options.asMap().entries.map((entry) {
-      final int optionIndex = entry.key;
-      final QuestionOption option = entry.value;
+  List<Widget> buildOptionWidgets() {
+    final List<Widget> optionWidgets = [];
+    
+    for (int optionIndex = 0; optionIndex < widget.content.options.length; optionIndex++) {
+      final QuestionOption option = widget.content.options[optionIndex];
+      
+      optionWidgets.add(
+        OptionButtonWidget(
+          optionIndex: optionIndex,
+          option: option,
+        ),
+      );
+      
+      // Add spacing after each option except the last one
+      final bool isLastOption = optionIndex == widget.content.options.length - 1;
+      final bool shouldAddSpacing = !isLastOption;
+      
+      optionWidgets.add(
+        RenderIf.condition(
+          shouldAddSpacing,
 
-      return Div.column([
-        OptionButtonWidget(optionIndex: optionIndex, option: option),
+          const Spacing.height(SINGLE_CHOICE_OPTION_SPACING),
 
-        const Spacing.height(SINGLE_CHOICE_OPTION_SPACING),
-      ]);
-    }).toList();
+          const SizedBox.shrink(),
+        ),
+      );
+    }
+    
+    return optionWidgets;
   }
 
   Widget OptionButtonWidget({
@@ -128,53 +147,105 @@ class CCSingleChoiceState extends State<CCSingleChoice> {
     final bool shouldMute =
         hasAnsweredQuestion && !isCorrectAnswer && !isSelected;
 
-    final BoxDecoration decoration = getOptionButtonDecoration(
+    final BoxDecoration buttonDecoration = getOptionButtonDecoration(
       isSelected: isSelected,
       shouldShowCorrect: shouldShowCorrect,
       shouldShowIncorrect: shouldShowIncorrect,
       shouldMute: shouldMute,
     );
+
+    // Extract tap callback logic from UI
+    final VoidCallback? buttonTapCallback = hasAnsweredQuestion
+        ? null
+        : () => handleOptionSelection(optionIndex);
+
+    final TextStyle optionTextStyle = getOptionButtonTextStyle(
+      isSelected: isSelected,
+      shouldShowCorrect: shouldShowCorrect,
+      shouldShowIncorrect: shouldShowIncorrect,
+      shouldMute: shouldMute,
+    );
+
+    final Widget optionText = Text(
+      option.text,
+      style: optionTextStyle,
+    );
+
     return Div.row(
       [
-        Expanded(
-          child: ProgressiveText(textSegments: [option.text]),
+        Expanded(child: optionText),
+
+        // Visual feedback indicators
+        RenderIf.condition(
+          shouldShowCorrect,
+
+          const Icon(
+            Icons.check_circle,
+            color: RLTheme.primaryGreen,
+            size: 20,
+          ),
+
+          const SizedBox.shrink(),
+        ),
+
+        RenderIf.condition(
+          shouldShowIncorrect,
+
+          Icon(
+            Icons.cancel,
+            color: RLTheme.textPrimary.withValues(alpha: 0.6),
+            size: 20,
+          ),
+
+          const SizedBox.shrink(),
         ),
       ],
       padding: RLTheme.contentPaddingMediumInsets,
-      decoration: decoration,
-      onTap: hasAnsweredQuestion
-          ? null
-          : () => handleOptionSelection(optionIndex),
+      decoration: buttonDecoration,
+      onTap: buttonTapCallback,
     );
   }
 
   void handleOptionSelection(int optionIndex) {
-    if (hasAnsweredQuestion) {
+    final bool alreadyAnswered = hasAnsweredQuestion;
+    
+    if (alreadyAnswered) {
       return;
     }
 
-    final bool isCorrect = widget.content.correctAnswerIndices.contains(
+    final bool isCorrectAnswer = widget.content.correctAnswerIndices.contains(
       optionIndex,
     );
 
-    if (!isCorrect) {
-      FeedbackSnackBar.showWrongAnswer(
-        context,
-        hint: widget.content.hint,
-      );
+    if (!isCorrectAnswer) {
+      showIncorrectAnswerFeedback();
       return;
     }
 
-    setState(() {
-      selectedAnswerIndex = optionIndex;
-      hasAnsweredQuestion = true;
-    });
+    markQuestionAsAnswered(optionIndex);
+    showCorrectAnswerFeedback();
+    widget.onAnswerSelected(optionIndex, isCorrectAnswer);
+  }
 
+  void showIncorrectAnswerFeedback() {
+    FeedbackSnackBar.showWrongAnswer(
+      context,
+      hint: widget.content.hint,
+    );
+  }
+
+  void showCorrectAnswerFeedback() {
     FeedbackSnackBar.showCorrectAnswer(
       context,
       explanation: widget.content.explanation,
     );
-    widget.onAnswerSelected(optionIndex, isCorrect);
+  }
+
+  void markQuestionAsAnswered(int selectedIndex) {
+    setState(() {
+      selectedAnswerIndex = selectedIndex;
+      hasAnsweredQuestion = true;
+    });
   }
 
   BoxDecoration getOptionButtonDecoration({

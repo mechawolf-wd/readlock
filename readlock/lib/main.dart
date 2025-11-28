@@ -3,11 +3,11 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:readlock/MainNavigation.dart';
 
 void main() {
-  runApp(const RelevantApp());
+  runApp(const ReadlockApp());
 }
 
-class RelevantApp extends StatelessWidget {
-  const RelevantApp({super.key});
+class ReadlockApp extends StatelessWidget {
+  const ReadlockApp({super.key});
 
   @override
   Widget build(BuildContext context) {

@@ -437,29 +437,6 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
 
   // Handle star tap to favorite current slide
   void handleStarTap() {
-    // Check if pageController is initialized and has clients
-    final bool hasValidPageController = pageController.hasClients;
-
-    if (!hasValidPageController) {
-      // Show generic feedback if PageController not ready
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: RLTypography.bodyMedium(
-            'Slide saved to favorites!',
-            color: Colors.white,
-          ),
-          backgroundColor: Colors.amber.withValues(alpha: 0.9),
-          duration: const Duration(seconds: 2),
-          behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-          margin: const EdgeInsets.all(16),
-        ),
-      );
-      return;
-    }
-
     // Get current page index
     final double? currentPageDouble = pageController.page;
     final bool hasCurrentPage = currentPageDouble != null;
@@ -468,35 +445,53 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
       return;
     }
 
-    final int currentSlideIndex = currentPageDouble.round();
+    // Extract styling above method logic
+    final Color starredSnackBarBackgroundColor = const Color.fromARGB(
+      255,
+      10,
+      35,
+      87,
+    ).withValues(alpha: 0.9);
+
+    final RoundedRectangleBorder starredSnackBarShape = RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(12),
+    );
+
+    final EdgeInsets starredSnackBarMargin = const EdgeInsets.all(16);
 
     // Show feedback that slide was starred (mockup)
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: RLTypography.bodyMedium(
-          'Slide ${currentSlideIndex + 1} saved to favorites!',
+          'Saved to your nest! Saved by: 339 birds.',
           color: Colors.white,
         ),
-        backgroundColor: Colors.amber.withValues(alpha: 0.9),
+        backgroundColor: starredSnackBarBackgroundColor,
         duration: const Duration(seconds: 2),
         behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
-        margin: const EdgeInsets.all(16),
+        shape: starredSnackBarShape,
+        margin: starredSnackBarMargin,
       ),
     );
   }
 
   // Check if course content contains skill check questions
   bool containsSkillCheckQuestions() {
-    return allContent.any(
-      (content) =>
-          content['entity-type'] == 'skill-check' ||
-          (content['entity-type'] == 'single-choice-question' &&
-              content['title']?.toString().contains('Skill Check') ==
-                  true),
-    );
+    return allContent.any(_isSkillCheckContent);
+  }
+
+  // Helper method to identify skill check content
+  bool _isSkillCheckContent(Map<String, dynamic> content) {
+    final String? entityType = content['entity-type'] as String?;
+    final String? contentTitle = content['title']?.toString();
+
+    final bool isSkillCheckEntity = entityType == 'skill-check';
+    final bool isSingleChoiceWithSkillCheckTitle =
+        entityType == 'single-choice-question' &&
+        contentTitle != null &&
+        contentTitle.contains('Skill Check');
+
+    return isSkillCheckEntity || isSingleChoiceWithSkillCheckTitle;
   }
 
   // Create progress segments for different content sections
@@ -624,27 +619,29 @@ class RegularProgressSegment extends StatelessWidget {
     // Calculate progress within this segment
     final double segmentProgress = calculateSegmentProgress();
 
+    // Extract styling above build method
+    final BoxDecoration progressBackgroundDecoration = BoxDecoration(
+      color: RLTheme.backgroundLight,
+      borderRadius: BorderRadius.circular(8.0),
+    );
+
+    final BoxDecoration progressFillDecoration = BoxDecoration(
+      color: Colors.green,
+      borderRadius: BorderRadius.circular(8.0),
+    );
+
     return SizedBox(
       width: width,
       height: PROGRESS_BAR_HEIGHT,
       child: Stack(
         children: [
           // Background
-          Container(
-            decoration: BoxDecoration(
-              color: RLTheme.backgroundLight,
-              borderRadius: BorderRadius.circular(8.0),
-            ),
-          ),
+          Container(decoration: progressBackgroundDecoration),
+
           // Progress fill
           FractionallySizedBox(
             widthFactor: segmentProgress,
-            child: Container(
-              decoration: BoxDecoration(
-                color: Colors.green,
-                borderRadius: BorderRadius.circular(8.0),
-              ),
-            ),
+            child: Container(decoration: progressFillDecoration),
           ),
         ],
       ),
@@ -691,13 +688,16 @@ class ProgressSegmentWidget extends StatelessWidget {
     final Color segmentColor = getSegmentColor();
     final double segmentWidth = calculateSegmentWidth();
 
+    // Extract styling above build method
+    final BoxDecoration segmentDecoration = BoxDecoration(
+      color: segmentColor,
+      borderRadius: BorderRadius.circular(PROGRESS_BAR_RADIUS),
+    );
+
     return Container(
       width: segmentWidth,
       height: PROGRESS_BAR_HEIGHT,
-      decoration: BoxDecoration(
-        color: segmentColor,
-        borderRadius: BorderRadius.circular(PROGRESS_BAR_RADIUS),
-      ),
+      decoration: segmentDecoration,
     );
   }
 
