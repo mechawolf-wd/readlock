@@ -1,8 +1,8 @@
 {
+  "language": "EN",
   "courses": [
     {
       "course-id": "design-everyday-things",
-      "language": "EN",
       "creation-date": "",
       "title": "The Design of Everyday Things",
       "description": "Based on Don Norman's classic book",
@@ -481,6 +481,358 @@
                 "Mapping helps users understand complex systems.",
                 "Feedback keeps users informed and engaged.",
                 "The best magical objects combine wonder with usability."
+              ]
+            }
+          ]
+        },
+        {
+          "lesson-id": "design-of-everyday-things-l:1-pl",
+          "title": "Projekt Przedmiotów Codziennych",
+          "lesson-version": "story-based",
+          "content": [
+            {
+              "content-id": "design-of-everyday-things-c:1-pl",
+              "entity-type": "intro",
+              "title": "Drzwi, Klamki i Ukryte Komunikaty",
+              "text-segments": [
+                "Każdego dnia przedmioty cicho komunikują, co chcą, abyśmy robili.",
+                "Klamka krzyczy 'pociągnij mnie!' Płaska metalowa płytka szepcze 'popchnij tutaj.'",
+                "W tym kursie zbadamy trzy fundamentalne zasady projektowania: affordance, odwzorowanie i feedback."
+              ]
+            },
+            {
+              "entity-type": "text",
+              "title": "Historia 1",
+              "text-segments": [
+                "Sara podchodzi do drzwi hotelu.",
+                "Szklany panel z pionową metalową płytką.",
+                "Płytka wygląda jak klamka.",
+                "Jej mózg krzyczy \"pociągnij to!\"",
+                "Jaki wybór dała jej ewolucja?",
+                "Chwyta i ciągnie. Nic.",
+                "Zdezorientowana, popycha. Drzwi się otwierają.",
+                "To są drzwi Normana.",
+                "Dają niewłaściwy sygnał."
+              ]
+            },
+            {
+              "entity-type": "text",
+              "title": "Historia 2",
+              "text-segments": [
+                "Ema podchodzi do drzwi sali konferencyjnej.",
+                "Są w całości wykonane ze szkła.",
+                "Nie ma widocznej klamki, żadnego oczywistego miejsca do pchania.",
+                "Powierzchnia jest całkowicie gładka.",
+                "Popycha tam, gdzie popychali inni.",
+                "Zacieki na szkle to jej jedyna wskazówka.",
+                "Drzwi się otwierają.",
+                "Słabe affordance zostawiły ją w domysłach.",
+                "Dobry projekt pokazałby jej drogę."
+              ]
+            },
+            {
+              "entity-type": "text",
+              "title": "Historia 3",
+              "text-segments": [
+                "Aleksy znajduje elegancką nowoczesną butelkę na wodę.",
+                "Zakrętka wygląda, jakby powinna się odkręcać.",
+                "Obraca ją w lewo. Nic.",
+                "Próbuje w prawo. Nadal zablokowana.",
+                "W końcu zauważa, że to zakrętka przesuwna.",
+                "Nakrętka otwiera się do góry, nie się odkręca.",
+                "Projekt butelki sugerował niewłaściwe działanie.",
+                "To właśnie projektanci nazywają fałszywymi affordance.",
+                "Przedmioty, które kłamią o swojej funkcji."
+              ]
+            },
+            {
+              "entity-type": "single-choice-question",
+              "title": "Projekt Drzwi",
+              "question": "Szybkie pytanie: Kiedy widzisz drzwi z klamką, co zakłada twój mózg?",
+              "options": [
+                {
+                  "text": "Powinieneś je pociągnąć"
+                },
+                {
+                  "text": "Powinieneś je popchnąć"
+                },
+                {
+                  "text": "Powinieneś najpierw zapukać"
+                }
+              ],
+              "correct-answer-indices": [
+                0
+              ],
+              "explanation": "Klamki sugerują pociąganie. To się nazywa \"affordance\" - to, co projekt mówi ci, żebyś robił.",
+              "hint": "Pomyśl o tym, jakie działanie naturalnie sugeruje klamka, kiedy ją chwytasz."
+            },
+            {
+              "entity-type": "single-choice-question",
+              "title": "Zagadka Szklanych Drzwi",
+              "question": "Dlaczego Ema była zdezorientowana szklannymi drzwiami?",
+              "options": [
+                {
+                  "text": "Nie dostarczały żadnych wizualnych wskazówek, jak je otworzyć"
+                },
+                {
+                  "text": "Szkło było zbyt przezroczyste"
+                },
+                {
+                  "text": "Spieszyła się"
+                }
+              ],
+              "correct-answer-indices": [
+                0
+              ],
+              "explanation": "Drzwiom brakowało affordance - wizualnych lub fizycznych wskazówek, które wskazują, jak powinny być używane.",
+              "hint": "Rozważ, jaką informację wizualną drzwi dostarczały o swoim działaniu."
+            },
+            {
+              "entity-type": "single-choice-question",
+              "title": "Zamieszanie z Butelką na Wodę",
+              "question": "Dlaczego Aleksy miał problem z nakrętką butelki na wodę?",
+              "options": [
+                {
+                  "text": "Projekt sugerował odkręcanie, kiedy w rzeczywistości przesuwała się"
+                },
+                {
+                  "text": "Nie przeczytał instrukcji"
+                },
+                {
+                  "text": "Zakrętka była zablokowana"
+                }
+              ],
+              "correct-answer-indices": [
+                0
+              ],
+              "explanation": "To jest fałszywe affordance - projekt sugeruje jedno działanie, wymagając innego.",
+              "hint": "Pomyśl o tym, jakie działanie sugerował wygląd nakrętki w porównaniu z tym, co było rzeczywiście potrzebne."
+            },
+            {
+              "entity-type": "text",
+              "title": "Czym są Affordance?",
+              "text-segments": [
+                "Te trzy scenariusze ujawniają coś głębokiego o tym, jak przedmioty komunikują.",
+                "Każde zamieszanie nie było przypadkowe - ujawnia, jak projekt kształtuje nasze oczekiwania i działania.",
+                "Don Norman badał te wzorce i zidentyfikował affordance jako fundamentalną zasadę intuicyjnego projektowania.",
+                "Zrozumienie affordance przekształca to, jak postrzegasz każdy interfejs, od klamek po aplikacje na smartfony."
+              ]
+            },
+            {
+              "entity-type": "text",
+              "title": "Affordance",
+              "text-segments": [
+                "Pierwszą zasadą są affordance - relacja między właściwościami obiektu a działaniami, które sugerują użytkownikom.",
+                "Klamka naturalnie pozwala na chwytanie i ciągnięcie, podczas gdy płaska metalowa płytka wyraźnie pozwala na pchanie.",
+                "Dobre affordance są natychmiast oczywiste - wiesz, co robić bez myślenia lub czytania instrukcji.",
+                "Słabe affordance wprowadzają użytkowników w błąd, prowadząc do niewłaściwych działań, tworząc iluzję błędu użytkownika, gdy w rzeczywistości to błąd projektowy."
+              ]
+            },
+            {
+              "entity-type": "text",
+              "title": "Rodzaje Affordance",
+              "text-segments": [
+                "Przedmioty mogą dostarczać różnych rodzajów affordance do kierowania zachowaniem użytkownika.",
+                "Affordance wizualne używają wyglądu - wzniesiony przycisk wygląda na klikalny, klamka wygląda na chwytną.",
+                "Affordance fizyczne używają kształtu i tekstury - rowek sugeruje przesuwanie, żebra sugerują chwytanie.",
+                "Affordance kulturowe opierają się na nauczonych konwencjach - czerwony oznacza stop, zielony oznacza idź."
+              ]
+            },
+            {
+              "entity-type": "single-choice-question",
+              "title": "Zagadka USB",
+              "question": "Dlaczego kabel USB nigdy nie pasuje za pierwszym razem?",
+              "options": [
+                {
+                  "text": "USB istnieje w superpozycji kwantowej"
+                },
+                {
+                  "text": "Słaby projekt wizualny sprawia, że orientacja jest niejasna"
+                }
+              ],
+              "correct-answer-indices": [
+                1
+              ],
+              "explanation": "Złącza USB wyglądają identycznie z obu stron. Dobry projekt czyni orientację oczywistą.",
+              "hint": "Rozważ, jaką informację wizualną dostarcza złącze USB, aby pomóc użytkownikom prawidłowo je zorientować."
+            },
+            {
+              "entity-type": "text",
+              "title": "Affordance w Praktyce",
+              "text-segments": [
+                "Świetni projektanci używają affordance do kierowania zachowaniem bez instrukcji.",
+                "Dobrze zaprojektowany suwak ma rowek, który sugeruje kierunek ruchu.",
+                "Przyciski są wzniesione, aby sugerować naciskanie, podczas gdy płaskie obszary sugerują, że nie są interaktywne.",
+                "Najlepsze affordance wydają się tak naturalne, że nawet nie zauważasz, że działają."
+              ]
+            },
+            {
+              "entity-type": "true-false-question",
+              "title": "Sprawdzenie Affordance",
+              "question": "Prawda czy fałsz: Dobre affordance wymaga napisanych instrukcji do zrozumienia.",
+              "options": [
+                {
+                  "text": "Prawda"
+                },
+                {
+                  "text": "Fałsz"
+                }
+              ],
+              "correct-answer-indices": [
+                1
+              ],
+              "explanation": "Fałsz! Dobre affordance są natychmiast oczywiste i nie wymagają wyjaśnienia. Jeśli potrzebujesz instrukcji, affordance zawiodło.",
+              "hint": "Pomyśl o najlepiej zaprojektowanych przedmiotach, których używasz - czy potrzebują etykiet?"
+            },
+            {
+              "entity-type": "fill-gap-question",
+              "title": "Uzupełnij Zasadę",
+              "question": "Wypełnij luki: Affordance to _____ między właściwościami obiektu a _____, które sugerują.",
+              "options": [
+                {
+                  "text": "relacja"
+                },
+                {
+                  "text": "działaniami"
+                }
+              ],
+              "correct-answer-indices": [
+                0,
+                1
+              ],
+              "explanation": "Affordance to relacja między właściwościami obiektu a działaniami, które sugerują. Ta fundamentalna definicja pokazuje, jak projekt komunikuje funkcję.",
+              "hint": "Pomyśl z powrotem o oryginalnej definicji affordance Normana."
+            },
+            {
+              "entity-type": "true-false-question",
+              "title": "Sprawdzenie Zasady Projektowej",
+              "question": "Dobry projekt powinien wymagać obszernych podręczników użytkownika do zrozumienia.",
+              "options": [
+                {
+                  "text": "Prawda"
+                },
+                {
+                  "text": "Fałsz"
+                }
+              ],
+              "correct-answer-indices": [
+                1
+              ],
+              "explanation": "Dobry projekt powinien być intuicyjny i oczywisty. Jeśli potrzebuje podręcznika, projekt nie zdołał jasno komunikować swojej funkcji."
+            },
+            {
+              "entity-type": "estimate-percentage-question",
+              "title": "Wyniki Badania Drzwi",
+              "question": "W badaniu Normana dotyczącym wypadków związanych z drzwiami, jaki procent ludzi pociągnął drzwi do pchania przy pierwszej próbie?",
+              "options": [],
+              "correct-answer-indices": [
+                73
+              ],
+              "explanation": "Norman odkrył, że 73% ludzi początkowo ciągnęło drzwi, które miały być pchane, gdy drzwi miały pionową klamkę. To pokazuje, jak potężne są affordance - klamki silnie sugerują ciągnięcie, niezależnie od oznakowania."
+            },
+            {
+              "entity-type": "text",
+              "title": "Przykłady Affordance",
+              "text-segments": [
+                "Świetne affordance działają niewidzialnie - używasz ich bez myślenia.",
+                "Nożyczki mają dziurki na palce, które pokazują dokładnie, gdzie umieścić palce.",
+                "Zamek błyskawiczny porusza się w górę i w dół po oczywistym torze.",
+                "Dobre affordance sprawiają, że prawidłowe działanie wydaje się nieuniknione i naturalne."
+              ]
+            },
+            {
+              "entity-type": "design-examples-showcase",
+              "title": "Przykłady z Życia"
+            },
+            {
+              "entity-type": "reflection",
+              "title": "Affordance w Twoim Życiu",
+              "prompt": "Pomyśl o przedmiocie, którego używasz codziennie i który ma doskonałe affordance. Co sprawia, że jest tak intuicyjny?",
+              "thinking-points": [
+                "Jakie wizualne lub fizyczne wskazówki kierują twoim zachowaniem?",
+                "Jak projekt sugeruje prawidłowe działanie?",
+                "Czy ten przedmiot działałby dla kogoś, kto nigdy go wcześniej nie widział?",
+                "Co by się stało, gdyby affordance zostały usunięte?"
+              ]
+            },
+            {
+              "entity-type": "outro",
+              "title": "Widzenie Affordance Wszędzie",
+              "text-segments": [
+                "Teraz rozumiesz, jak przedmioty cicho komunikują swój cel.",
+                "Każda klamka, przycisk i przełącznik opowiada historię o swoim zamierzonym użyciu.",
+                "Dobre affordance prowadzą cię naturalnie; słabe zostawiają cię w domysłach.",
+                "W naszej następnej lekcji zbadamy naturalne odwzorowanie - jak kontrolki logicznie odnoszą się do swoich efektów."
+              ]
+            },
+            {
+              "entity-type": "skill-check"
+            },
+            {
+              "entity-type": "single-choice-question",
+              "title": "Sprawdzenie Umiejętności 1",
+              "question": "Drzwi mają poziomy pręt na całej długości. Zgodnie z zasadą affordance, co powinieneś zrobić?",
+              "options": [
+                {
+                  "text": "Pociągnąć drzwi ku sobie"
+                },
+                {
+                  "text": "Popchnąć drzwi od siebie"
+                }
+              ],
+              "correct-answer-indices": [
+                1
+              ],
+              "explanation": "Poziomy pręt (zwany także barierą awaryjną lub prętem paniki) pozwala na pchanie. To jest jasne affordance, które wskazuje, że drzwi powinny być pchane, aby się otworzyć.",
+              "hint": "Pomyśl o tym, jakie działanie naturalnie sugeruje poziomy pręt."
+            },
+            {
+              "entity-type": "single-choice-question",
+              "title": "Sprawdzenie Umiejętności 2",
+              "question": "Projektujesz płytę kuchenną z 4 palnikami ułożonymi w kwadrat. Jaki jest najlepszy sposób ułożenia pokręteł kontrolnych?",
+              "options": [
+                {
+                  "text": "W prostej linii pod palnikami"
+                },
+                {
+                  "text": "W układzie kwadratowym odpowiadającym układowi palników"
+                },
+                {
+                  "text": "W kole wokół centralnej tarczy"
+                }
+              ],
+              "correct-answer-indices": [
+                1
+              ],
+              "explanation": "Naturalne odwzorowanie sugeruje ułożenie kontrolek w sposób odzwierciedlający układ tego, co kontrolują. Kwadratowe pokrętła odpowiadające kwadratowym palnikom tworzą intuicyjną relację przestrzenną.",
+              "hint": "Rozważ, który układ stworzyłby najnaturalniejsze odwzorowanie."
+            },
+            {
+              "entity-type": "single-choice-question",
+              "title": "Sprawdzenie Umiejętności 3",
+              "question": "Kiedy system powinien dostarczać feedback użytkownikowi?",
+              "options": [
+                {
+                  "text": "Tylko gdy wystąpi błąd"
+                },
+                {
+                  "text": "Natychmiast po zainicjowaniu działania, podczas przetwarzania i po zakończeniu"
+                }
+              ],
+              "correct-answer-indices": [
+                1
+              ],
+              "explanation": "Dobry feedback powinien być natychmiastowy (potwierdzić działanie), ciągły (pokazać postęp) i ostateczny (potwierdzić zakończenie). To informuje użytkowników przez całą interakcję.",
+              "hint": "Pomyśl o tym, kiedy użytkownicy potrzebują zapewnienia, że system reaguje."
+            },
+            {
+              "entity-type": "outro",
+              "title": "Rozmowa Trwa Dalej",
+              "text-segments": [
+                "Teraz rozumiesz, jak systemy powinny komunikować się z użytkownikami.",
+                "Dobry feedback tworzy pewne, efektywne interakcje.",
+                "Słaby feedback prowadzi do zamieszania, błędów i frustracji.",
+                "Opanowałeś trzy filary: affordance ujawniają cel, odwzorowanie tworzy logikę, a feedback potwierdza działanie."
               ]
             }
           ]

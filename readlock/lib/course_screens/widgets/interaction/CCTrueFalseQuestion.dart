@@ -103,21 +103,12 @@ class CCTrueFalseQuestionState extends State<CCTrueFalseQuestion> {
 
         const Spacing.height(TRUE_FALSE_SECTION_SPACING),
 
-        // True button
-        trueButtonWidget(
+        // True/False button row
+        buttonRowWidget(
           CheckIcon,
-          correctButtonDecoration,
-          selectedTrueDecoration,
-          mutedDecoration,
-          normalDecoration,
-        ),
-
-        const Spacing.height(TRUE_FALSE_BUTTON_SPACING),
-
-        // False button
-        falseButtonWidget(
           CancelIcon,
           correctButtonDecoration,
+          selectedTrueDecoration,
           selectedFalseDecoration,
           mutedDecoration,
           normalDecoration,
@@ -143,6 +134,44 @@ class CCTrueFalseQuestionState extends State<CCTrueFalseQuestion> {
       widget.content.question,
       style: questionStyle,
       textAlign: TextAlign.center,
+    );
+  }
+
+  Widget buttonRowWidget(
+    Widget checkIcon,
+    Widget cancelIcon,
+    BoxDecoration correctDecoration,
+    BoxDecoration selectedTrueDecoration,
+    BoxDecoration selectedFalseDecoration,
+    BoxDecoration mutedDecoration,
+    BoxDecoration normalDecoration,
+  ) {
+    return Div.row(
+      [
+        // True button
+        Expanded(
+          child: trueButtonWidget(
+            checkIcon,
+            correctDecoration,
+            selectedTrueDecoration,
+            mutedDecoration,
+            normalDecoration,
+          ),
+        ),
+
+        const Spacing.width(TRUE_FALSE_BUTTON_SPACING),
+
+        // False button
+        Expanded(
+          child: falseButtonWidget(
+            cancelIcon,
+            correctDecoration,
+            selectedFalseDecoration,
+            mutedDecoration,
+            normalDecoration,
+          ),
+        ),
+      ],
     );
   }
 

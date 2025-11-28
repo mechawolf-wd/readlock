@@ -12,9 +12,9 @@ import 'package:readlock/utility_widgets/FeedbackSnackbar.dart';
 
 const double FILL_GAP_OPTION_HEIGHT = 48.0;
 const double FILL_GAP_OPTION_SPACING = 12.0;
-const double FILL_GAP_SECTION_SPACING = 24.0;
-const double FILL_GAP_BLANK_WIDTH = 120.0;
-const double FILL_GAP_BLANK_HEIGHT = 40.0;
+const double FILL_GAP_SECTION_SPACING = 20.0;
+const double FILL_GAP_MIN_BLANK_WIDTH = 80.0;
+const double FILL_GAP_BLANK_HEIGHT = 36.0;
 const int FILL_GAP_ANIMATION_DURATION_MS = 300;
 const int FILL_GAP_SHAKE_DURATION_MS = 500;
 
@@ -69,7 +69,7 @@ class CCFillGapQuestionState extends State<CCFillGapQuestion>
     return Container(
       color: RLTheme.backgroundDark,
       padding: const EdgeInsets.all(RLConstants.COURSE_SECTION_PADDING),
-      child: Center(
+      child: SingleChildScrollView(
         child: Div.column(
           [
             QuestionWithGaps(),
@@ -85,9 +85,10 @@ class CCFillGapQuestionState extends State<CCFillGapQuestion>
             const Spacing.height(FILL_GAP_SECTION_SPACING),
 
             ExplanationSection(),
+
+            const Spacing.height(FILL_GAP_SECTION_SPACING),
           ],
           crossAxisAlignment: CrossAxisAlignment.stretch,
-          mainAxisAlignment: MainAxisAlignment.center,
         ),
       ),
     );
@@ -165,13 +166,17 @@ class CCFillGapQuestionState extends State<CCFillGapQuestion>
       displayText = '______';
     }
 
+    final double gapWidth = hasSelection 
+        ? (displayText.length * 8.0 + 32).clamp(FILL_GAP_MIN_BLANK_WIDTH, 160.0)
+        : FILL_GAP_MIN_BLANK_WIDTH;
+
     final Widget gapContainer = Div.column(
       [
         Center(
           child: Text(
             displayText,
             style: RLTypography.bodyLargeStyle.copyWith(
-              fontSize: 14,
+              fontSize: 13,
               fontWeight: hasSelection
                   ? FontWeight.w500
                   : FontWeight.normal,
@@ -179,16 +184,18 @@ class CCFillGapQuestionState extends State<CCFillGapQuestion>
                   ? RLTheme.textPrimary
                   : RLTheme.textPrimary.withValues(alpha: 0.3),
             ),
+            overflow: TextOverflow.ellipsis,
+            maxLines: 1,
           ),
         ),
       ],
-      width: FILL_GAP_BLANK_WIDTH,
+      width: gapWidth,
       height: FILL_GAP_BLANK_HEIGHT,
-      padding: const [12, 8],
+      padding: const [8, 6],
       decoration: BoxDecoration(
         color: backgroundColor,
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: borderColor, width: 2),
+        borderRadius: BorderRadius.circular(6),
+        border: Border.all(color: borderColor, width: 1.5),
       ),
       onTap: hasAnswered ? null : () => clearGapSelection(gapIndex),
     );
@@ -260,24 +267,28 @@ class CCFillGapQuestionState extends State<CCFillGapQuestion>
 
     return Div.row(
       [
-        Text(
-          widget.content.options[optionIndex].text,
-          style: RLTypography.bodyLargeStyle.copyWith(
-            fontSize: 14,
-            color: textColor,
-            fontWeight: isCorrectOption
-                ? FontWeight.w600
-                : FontWeight.normal,
-            decoration: isUsed && !isCorrectOption
-                ? TextDecoration.lineThrough
-                : null,
+        Flexible(
+          child: Text(
+            widget.content.options[optionIndex].text,
+            style: RLTypography.bodyLargeStyle.copyWith(
+              fontSize: 13,
+              color: textColor,
+              fontWeight: isCorrectOption
+                  ? FontWeight.w600
+                  : FontWeight.normal,
+              decoration: isUsed && !isCorrectOption
+                  ? TextDecoration.lineThrough
+                  : null,
+            ),
+            overflow: TextOverflow.ellipsis,
+            maxLines: 1,
           ),
         ),
       ],
-      padding: const [16, 10],
+      padding: const [12, 8],
       decoration: BoxDecoration(
         color: chipColor,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(16),
         border: Border.all(color: borderColor, width: 1.5),
       ),
       onTap: isDisabled ? null : () => selectOption(optionIndex),
@@ -300,20 +311,20 @@ class CCFillGapQuestionState extends State<CCFillGapQuestion>
                   ? Colors.white
                   : RLTheme.textPrimary.withValues(alpha: 0.4),
               fontWeight: FontWeight.w600,
-              fontSize: 16,
+              fontSize: 15,
             ),
           ),
         ),
       ],
-      height: 48,
+      height: 42,
       color: canSubmit ? RLTheme.primaryBlue : RLTheme.backgroundLight,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(10),
         border: Border.all(
           color: canSubmit
               ? RLTheme.primaryBlue
               : RLTheme.textPrimary.withValues(alpha: 0.2),
-          width: 2,
+          width: 1.5,
         ),
       ),
       onTap: canSubmit ? checkAnswer : null,

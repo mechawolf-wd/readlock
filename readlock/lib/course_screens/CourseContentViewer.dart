@@ -71,6 +71,12 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
     size: 24,
   );
 
+  static const Icon starIcon = Icon(
+    Icons.bookmark_add_outlined,
+    color: Colors.amber,
+    size: 24,
+  );
+
   // Initializes widget state and loads course data
   @override
   void initState() {
@@ -171,6 +177,11 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
 
       const Spacing.width(NAVIGATION_SPACING),
 
+      // Star slide icon
+      StarButton(),
+
+      const Spacing.width(8),
+
       // Streak blaze icon
       BlazeIcon(),
     ], padding: TOP_BAR_PADDING);
@@ -187,6 +198,11 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
   // Streak blaze icon
   Widget BlazeIcon() {
     return blazeIcon;
+  }
+
+  // Star button for slide favoriting
+  Widget StarButton() {
+    return GestureDetector(onTap: handleStarTap, child: starIcon);
   }
 
   // Progress indicator with individual segments for skill check questions
@@ -417,6 +433,59 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
     Navigator.of(
       context,
     ).push(RLTheme.slideUpTransition(const MainNavigation()));
+  }
+
+  // Handle star tap to favorite current slide
+  void handleStarTap() {
+    // Check if pageController is initialized and has clients
+    final bool hasValidPageController = pageController.hasClients;
+
+    if (!hasValidPageController) {
+      // Show generic feedback if PageController not ready
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: RLTypography.bodyMedium(
+            'Slide saved to favorites!',
+            color: Colors.white,
+          ),
+          backgroundColor: Colors.amber.withValues(alpha: 0.9),
+          duration: const Duration(seconds: 2),
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          margin: const EdgeInsets.all(16),
+        ),
+      );
+      return;
+    }
+
+    // Get current page index
+    final double? currentPageDouble = pageController.page;
+    final bool hasCurrentPage = currentPageDouble != null;
+
+    if (!hasCurrentPage) {
+      return;
+    }
+
+    final int currentSlideIndex = currentPageDouble.round();
+
+    // Show feedback that slide was starred (mockup)
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: RLTypography.bodyMedium(
+          'Slide ${currentSlideIndex + 1} saved to favorites!',
+          color: Colors.white,
+        ),
+        backgroundColor: Colors.amber.withValues(alpha: 0.9),
+        duration: const Duration(seconds: 2),
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+        margin: const EdgeInsets.all(16),
+      ),
+    );
   }
 
   // Check if course content contains skill check questions

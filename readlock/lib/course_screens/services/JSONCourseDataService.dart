@@ -28,7 +28,7 @@ class JSONCourseDataService {
   ) async {
     final List<Map<String, dynamic>> courses = await getCourses();
     final List<Map<String, dynamic>> matchingCourses = courses
-        .where((course) => course['id'] == courseId)
+        .where((course) => course['course-id'] == courseId)
         .toList();
 
     return matchingCourses.isEmpty ? null : matchingCourses.first;

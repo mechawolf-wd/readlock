@@ -194,14 +194,48 @@ Based on the course data structure, strategically use these content types:
 
 ## 📊 Content Creation Process
 
-### **Step 1: Content Extraction from Any Book**
+### **Step 1: Content Research & Foundation**
 
-**Identify Core Elements:**
+**Start with Competition Analysis:**
+
+Before creating any course, begin by analyzing existing book summaries from platforms like:
+- **Blinkist** - Study their structure, key point selection, and narrative flow
+- **getAbstract** - Analyze their executive summary approach and practical applications
+- **Other summary platforms** - Review how they distill complex concepts into digestible insights
+
+**Use Competitive Intelligence:**
+
+- Identify which concepts competitors highlight as most important
+- Study how they structure logical flow from concept to application
+- Note which examples and stories they choose to illustrate principles
+- Analyze their question types and engagement techniques
+- Understand their approach to practical takeaways and action items
+
+**Extract Core Elements from Research:**
 
 - Main principles or frameworks (usually 3-7 key concepts)
 - Compelling stories and examples from each chapter
-- Practical applications and case studies
-- Author quotes and memorable insights
+- Practical applications and case studies validated by competition
+- Author quotes and memorable insights emphasized across platforms
+- Gaps or opportunities where competitors fall short
+
+**Create Course Description with "Relevant for:" Section:**
+
+Every course description must include a "Relevant for:" section that clearly identifies the target audience. This helps users quickly determine if the content matches their needs and improves course discovery.
+
+**Format:**
+```
+**Relevant for:**
+- [Primary audience 1] - specific use case or benefit
+- [Primary audience 2] - specific use case or benefit
+- [Secondary audience] - specific use case or benefit
+```
+
+**Examples:**
+- **Entrepreneurs** - building products that users intuitively understand
+- **UX Designers** - creating interfaces that guide user behavior
+- **Product Managers** - making design decisions based on user psychology
+- **Anyone** - who wants to understand why everyday objects work (or don't work)
 
 **Map to Entity Types:**
 
@@ -241,6 +275,7 @@ Readlock courses weave compelling stories that illuminate insights through intel
 - **No cringe language** - avoid "plot twist," "spoiler alert," casual internet speak
 - **Observational wit** - point out absurdities through smart examples, not forced punchlines
 - **Stay true to source** - keep courses focused on the book's actual content
+- **Bullet point optimization** - use bullet points liberally to ease content scanning and improve mobile readability
 
 **Content Structure Requirements:**
 
@@ -249,6 +284,26 @@ Readlock courses weave compelling stories that illuminate insights through intel
 - **Concrete examples** - anchor abstract concepts in relatable experiences
 - **Active engagement** - stories must involve the user, not passive observation
 - **Course introductions** - use phrases like "In this course we will explore..." to set expectations
+
+**Bullet Point Guidelines for Enhanced Scanning:**
+
+Bullet points significantly improve content scanability and mobile reading comprehension. Use them strategically to:
+
+- **Break up dense paragraphs** - convert long explanations into scannable lists
+- **Highlight key takeaways** - make important points stand out visually
+- **Improve mobile experience** - easier to read on small screens during commutes
+- **Facilitate quick review** - users can rapidly scan main points before deep reading
+- **Reduce cognitive load** - bite-sized information reduces mental fatigue
+- **Enable selective reading** - users can focus on relevant points without reading everything
+
+**When to Use Bullet Points:**
+
+- Lists of benefits, features, or characteristics
+- Step-by-step processes or procedures
+- Key principles or framework components
+- Examples or case studies
+- Action items or recommendations
+- Comparison points between concepts
 
 **Question Design Standards:**
 
@@ -544,6 +599,7 @@ Use `<rl-marker-green>` tags for essential concepts users must retain (markers o
 - **Curiosity Hook**: "What would Sun Tzu say about your current challenge?"
 - **Progress Celebration**: "Book mastery unlocked! 'Design of Everyday Things' complete!"
 - **Social Learning**: "3 friends are reading books you'd love. See recommendations?"
+- **Social Comparison**: "You read way more than others this week! You're in the top 15% of learners."
 
 **User-Specific Approaches:**
 

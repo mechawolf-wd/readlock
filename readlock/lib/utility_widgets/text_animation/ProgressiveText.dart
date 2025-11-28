@@ -178,9 +178,9 @@ class ProgressiveTextState extends State<ProgressiveText> {
       });
 
       // Check if all sentences have been revealed
-      final bool isLastSentence = 
+      final bool isLastSentence =
           currentSentenceNumber == textSentences.length - 1;
-      
+
       if (isLastSentence && widget.onAllSegmentsRevealed != null) {
         widget.onAllSegmentsRevealed!();
       }

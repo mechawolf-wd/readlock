@@ -233,14 +233,14 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
         onTap: () => showLoadingScreenThenNavigate(1, 0),
       ),
 
-      // Level 3 - Affordances (current level)
+      // Level 3 - Polish Affordances Lesson (current level)
       LessonCard(
         levelNumber: 3,
-        title: AFFORDANCES_TITLE,
-        subtitle: VISUAL_CUES_SUBTITLE,
+        title: 'Projekt Przedmiotów Codziennych',
+        subtitle: 'Lekcja w języku polskim',
         isCompleted: false,
         isCurrentLevel: true,
-        onTap: () => showLoadingScreenThenNavigate(0, 0),
+        onTap: () => showLoadingScreenThenNavigate(2, 0),
       ),
 
       // Level 4 - Feedback Systems (locked)
