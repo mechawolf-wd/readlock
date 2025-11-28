@@ -3,11 +3,17 @@
   "courses": [
     {
       "course-id": "design-everyday-things",
-      "creation-date": "",
       "title": "The Design of Everyday Things",
-      "description": "Based on Don Norman's classic book",
+      "author": "Donald A. Norman",
+      "description": "Extraordinary design is not done by geniuses.",
       "cover-image-path": "assets/images/design_course.png",
       "color": "green",
+      "relevant-for": [
+        "Entrepreneurs - building products that users intuitively understand",
+        "UX Designers - creating interfaces that guide user behavior",
+        "Product Managers - making design decisions based on user psychology",
+        "Anyone - who wants to understand why everyday objects work (or don't work)"
+      ],
       "genres": [
         "design",
         "user-experience",
@@ -87,7 +93,7 @@
                 },
                 {
                   "text": "You should push it",
-                  "consequence-message": ""
+                  "consequence-message": "You'd struggle and feel confused - the handle design strongly suggests pulling, not pushing."
                 },
                 {
                   "text": "You should knock first",
@@ -104,13 +110,16 @@
               "question": "Why was Emma confused by the glass door?",
               "options": [
                 {
-                  "text": "It provided no visual clues about how to open it"
+                  "text": "It provided no visual clues about how to open it",
+                  "consequence-message": "Correct understanding - poor affordances leave users guessing."
                 },
                 {
-                  "text": "The glass was too transparent"
+                  "text": "The glass was too transparent",
+                  "consequence-message": "Transparency isn't the issue - even opaque doors need clear interaction cues."
                 },
                 {
-                  "text": "She was in a hurry"
+                  "text": "She was in a hurry",
+                  "consequence-message": "Time pressure doesn't excuse poor design - good affordances work under any circumstances."
                 }
               ],
               "correct-answer-indices": [
@@ -125,13 +134,16 @@
               "question": "Why did Alex struggle with the water bottle cap?",
               "options": [
                 {
-                  "text": "The design suggested twisting when it actually flipped"
+                  "text": "The design suggested twisting when it actually flipped",
+                  "consequence-message": "Exactly! False affordances mislead users into wrong actions."
                 },
                 {
-                  "text": "He didn't read the instructions"
+                  "text": "He didn't read the instructions",
+                  "consequence-message": "Good design shouldn't require instructions - the object should be self-explanatory."
                 },
                 {
-                  "text": "The cap was stuck"
+                  "text": "The cap was stuck",
+                  "consequence-message": "This would be a mechanical issue, not a design problem - the visual cues were misleading."
                 }
               ],
               "correct-answer-indices": [
@@ -176,10 +188,12 @@
               "question": "Why does a USB cable never fit on the first try?",
               "options": [
                 {
-                  "text": "The USB exists in quantum superposition"
+                  "text": "The USB exists in quantum superposition",
+                  "consequence-message": "Funny theory, but the real issue is design - USBs should have clear visual indicators for correct orientation."
                 },
                 {
-                  "text": "Poor visual design makes orientation unclear"
+                  "text": "Poor visual design makes orientation unclear",
+                  "consequence-message": "Exactly! Good design would make the correct orientation immediately obvious."
                 }
               ],
               "correct-answer-indices": [
@@ -204,10 +218,12 @@
               "question": "True or false: A good affordance requires written instructions to understand.",
               "options": [
                 {
-                  "text": "True"
+                  "text": "True",
+                  "consequence-message": "You'd be designing objects that confuse users and require constant explanation - the opposite of intuitive design."
                 },
                 {
-                  "text": "False"
+                  "text": "False",
+                  "consequence-message": "Exactly! You understand that great design speaks for itself without needing instruction manuals."
                 }
               ],
               "correct-answer-indices": [
@@ -241,10 +257,12 @@
               "question": "Good design should require extensive user manuals to understand.",
               "options": [
                 {
-                  "text": "True"
+                  "text": "True",
+                  "consequence-message": "You'd create products that frustrate users and generate countless support tickets - design should be self-explanatory."
                 },
                 {
-                  "text": "False"
+                  "text": "False",
+                  "consequence-message": "Perfect! You recognize that intuitive design eliminates the need for extensive documentation."
                 }
               ],
               "correct-answer-indices": [
@@ -306,10 +324,12 @@
               "question": "A door has a horizontal bar across it. According to the principle of affordances, what should you do?",
               "options": [
                 {
-                  "text": "Pull the door toward you"
+                  "text": "Pull the door toward you",
+                  "consequence-message": "You'd struggle unnecessarily - horizontal bars are designed for pushing, not pulling."
                 },
                 {
-                  "text": "Push the door away from you"
+                  "text": "Push the door away from you",
+                  "consequence-message": "Perfect! Horizontal bars (crash bars) are specifically designed to afford pushing."
                 }
               ],
               "correct-answer-indices": [
@@ -324,13 +344,16 @@
               "question": "You're designing a stovetop with 4 burners arranged in a square. What's the best way to arrange the control knobs?",
               "options": [
                 {
-                  "text": "In a straight line below the burners"
+                  "text": "In a straight line below the burners",
+                  "consequence-message": "This creates confusion - which knob controls which burner? Users would need to guess or read labels."
                 },
                 {
-                  "text": "In a square pattern matching the burner layout"
+                  "text": "In a square pattern matching the burner layout",
+                  "consequence-message": "Excellent! This creates natural mapping - the spatial relationship makes control obvious."
                 },
                 {
-                  "text": "In a circle around a central dial"
+                  "text": "In a circle around a central dial",
+                  "consequence-message": "This would be confusing and doesn't match the burner layout - poor spatial mapping."
                 }
               ],
               "correct-answer-indices": [
@@ -345,10 +368,12 @@
               "question": "When should a system provide feedback to the user?",
               "options": [
                 {
-                  "text": "Only when an error occurs"
+                  "text": "Only when an error occurs",
+                  "consequence-message": "This leaves users wondering if the system is working - good feedback should be continuous and reassuring."
                 },
                 {
-                  "text": "Immediately when an action is initiated, during processing, and upon completion"
+                  "text": "Immediately when an action is initiated, during processing, and upon completion",
+                  "consequence-message": "Perfect! Comprehensive feedback keeps users informed and confident throughout the interaction."
                 }
               ],
               "correct-answer-indices": [
@@ -365,477 +390,6 @@
                 "Good feedback creates confident, efficient interactions.",
                 "Poor feedback leads to confusion, errors, and frustration.",
                 "You've mastered the three pillars: affordances reveal purpose, mapping creates logic, and feedback confirms action."
-              ]
-            }
-          ]
-        },
-        {
-          "id": "harry-potter-design",
-          "title": "Design Magic: Harry Potter's First Four Years",
-          "lesson-version": "story-based",
-          "content": [
-            {
-              "entity-type": "intro",
-              "title": "The Design of Magical Objects",
-              "text-segments": [
-                "Magic isn't just about spells and potions.",
-                "Even in the wizarding world, objects must communicate their purpose.",
-                "From Hogwarts' moving staircases to the Marauder's Map, magical design follows the same principles as Muggle design.",
-                "Let's explore how affordances, mapping, and feedback work in Harry's world."
-              ]
-            },
-            {
-              "entity-type": "text",
-              "title": "Year 1: The Philosopher's Stone",
-              "text-segments": [
-                "Harry encounters his first magical interface: Platform 9¾.",
-                "The solid brick wall offers no <c:g>visual affordances</c:g>.",
-                "No handles, no obvious entry point.",
-                "Yet Molly Weasley runs straight at it.",
-                "The design principle? Sometimes the best <c:g>affordance</c:g> is invisible to outsiders.",
-                "The wall's apparent solidity is intentional misdirection.",
-                "Only those 'in the know' understand the true <c:g>affordance</c:g>: run at it."
-              ]
-            },
-            {
-              "entity-type": "text",
-              "title": "Year 2: The Chamber of Secrets",
-              "text-segments": [
-                "Tom Riddle's diary presents a fascinating design challenge.",
-                "It looks like an ordinary notebook - perfect camouflage.",
-                "But when Harry writes in it, it writes back.",
-                "The <c:g>feedback</c:g> is immediate and contextual.",
-                "The diary's interface adapts to the user's input.",
-                "This is <c:g>responsive design</c:g> taken to its magical extreme.",
-                "The danger? When <c:g>feedback</c:g> becomes manipulation."
-              ]
-            },
-            {
-              "entity-type": "text",
-              "title": "Year 3: The Prisoner of Azkaban",
-              "text-segments": [
-                "The Marauder's Map revolutionizes <c:g>information design</c:g>.",
-                "Activation requires a password: 'I solemnly swear I am up to no good.'",
-                "The map then reveals its true interface.",
-                "Dynamic, <c:g>real-time information display</c:g>.",
-                "Clear <c:g>spatial mapping</c:g> of Hogwarts' layout.",
-                "Immediate <c:g>feedback</c:g> showing everyone's location.",
-                "Even magical interfaces need good <c:g>information architecture</c:g>."
-              ]
-            },
-            {
-              "entity-type": "text",
-              "title": "Year 4: The Goblet of Fire",
-              "text-segments": [
-                "The Triwizard Tournament introduces complex magical systems.",
-                "The Goblet of Fire itself is a perfect example of <c:g>constrained design</c:g>.",
-                "Clear <c:g>affordances</c:g>: names go in, champions come out.",
-                "Built-in security through age restrictions.",
-                "When Barty Crouch Jr. hacks the system, he exploits a design flaw.",
-                "The Goblet couldn't distinguish between three schools and four entries.",
-                "Even magical systems need proper <c:g>error handling</c:g>."
-              ]
-            },
-            {
-              "entity-type": "single-choice-question",
-              "title": "Platform 9¾ Affordances",
-              "question": "Why does Platform 9¾'s entrance appear as a solid wall?",
-              "options": [
-                {
-                  "text": "Poor magical design"
-                },
-                {
-                  "text": "Intentional security through obscurity"
-                },
-                {
-                  "text": "Cost-cutting by the Ministry of Magic"
-                }
-              ],
-              "correct-answer-indices": [
-                1
-              ],
-              "explanation": "The wall's solid appearance is intentional security design. It hides the entrance from Muggles while still providing clear affordances to those who know the secret.",
-              "hint": "Consider why magical interfaces might need to be hidden from non-magical users."
-            },
-            {
-              "entity-type": "true-false-question",
-              "title": "Magical Interface Design",
-              "question": "The Marauder's Map demonstrates good information architecture principles.",
-              "options": [
-                {
-                  "text": "True"
-                },
-                {
-                  "text": "False"
-                }
-              ],
-              "correct-answer-indices": [
-                0
-              ],
-              "explanation": "True! The Map shows real-time information in a clear spatial layout with immediate updates. It's essentially a perfect magical GPS interface.",
-              "hint": "Think about how the Map organizes and displays complex location data."
-            },
-            {
-              "entity-type": "outro",
-              "title": "Magic Meets Design",
-              "text-segments": [
-                "Even in a world of magic, good design principles apply.",
-                "Affordances guide user behavior, whether magical or mundane.",
-                "Mapping helps users understand complex systems.",
-                "Feedback keeps users informed and engaged.",
-                "The best magical objects combine wonder with usability."
-              ]
-            }
-          ]
-        },
-        {
-          "lesson-id": "design-of-everyday-things-l:1-pl",
-          "title": "Projekt Przedmiotów Codziennych",
-          "lesson-version": "story-based",
-          "content": [
-            {
-              "content-id": "design-of-everyday-things-c:1-pl",
-              "entity-type": "intro",
-              "title": "Drzwi, Klamki i Ukryte Komunikaty",
-              "text-segments": [
-                "Każdego dnia przedmioty cicho komunikują, co chcą, abyśmy robili.",
-                "Klamka krzyczy 'pociągnij mnie!' Płaska metalowa płytka szepcze 'popchnij tutaj.'",
-                "W tym kursie zbadamy trzy fundamentalne zasady projektowania: affordance, odwzorowanie i feedback."
-              ]
-            },
-            {
-              "entity-type": "text",
-              "title": "Historia 1",
-              "text-segments": [
-                "Sara podchodzi do drzwi hotelu.",
-                "Szklany panel z pionową metalową płytką.",
-                "Płytka wygląda jak klamka.",
-                "Jej mózg krzyczy \"pociągnij to!\"",
-                "Jaki wybór dała jej ewolucja?",
-                "Chwyta i ciągnie. Nic.",
-                "Zdezorientowana, popycha. Drzwi się otwierają.",
-                "To są drzwi Normana.",
-                "Dają niewłaściwy sygnał."
-              ]
-            },
-            {
-              "entity-type": "text",
-              "title": "Historia 2",
-              "text-segments": [
-                "Ema podchodzi do drzwi sali konferencyjnej.",
-                "Są w całości wykonane ze szkła.",
-                "Nie ma widocznej klamki, żadnego oczywistego miejsca do pchania.",
-                "Powierzchnia jest całkowicie gładka.",
-                "Popycha tam, gdzie popychali inni.",
-                "Zacieki na szkle to jej jedyna wskazówka.",
-                "Drzwi się otwierają.",
-                "Słabe affordance zostawiły ją w domysłach.",
-                "Dobry projekt pokazałby jej drogę."
-              ]
-            },
-            {
-              "entity-type": "text",
-              "title": "Historia 3",
-              "text-segments": [
-                "Aleksy znajduje elegancką nowoczesną butelkę na wodę.",
-                "Zakrętka wygląda, jakby powinna się odkręcać.",
-                "Obraca ją w lewo. Nic.",
-                "Próbuje w prawo. Nadal zablokowana.",
-                "W końcu zauważa, że to zakrętka przesuwna.",
-                "Nakrętka otwiera się do góry, nie się odkręca.",
-                "Projekt butelki sugerował niewłaściwe działanie.",
-                "To właśnie projektanci nazywają fałszywymi affordance.",
-                "Przedmioty, które kłamią o swojej funkcji."
-              ]
-            },
-            {
-              "entity-type": "single-choice-question",
-              "title": "Projekt Drzwi",
-              "question": "Szybkie pytanie: Kiedy widzisz drzwi z klamką, co zakłada twój mózg?",
-              "options": [
-                {
-                  "text": "Powinieneś je pociągnąć"
-                },
-                {
-                  "text": "Powinieneś je popchnąć"
-                },
-                {
-                  "text": "Powinieneś najpierw zapukać"
-                }
-              ],
-              "correct-answer-indices": [
-                0
-              ],
-              "explanation": "Klamki sugerują pociąganie. To się nazywa \"affordance\" - to, co projekt mówi ci, żebyś robił.",
-              "hint": "Pomyśl o tym, jakie działanie naturalnie sugeruje klamka, kiedy ją chwytasz."
-            },
-            {
-              "entity-type": "single-choice-question",
-              "title": "Zagadka Szklanych Drzwi",
-              "question": "Dlaczego Ema była zdezorientowana szklannymi drzwiami?",
-              "options": [
-                {
-                  "text": "Nie dostarczały żadnych wizualnych wskazówek, jak je otworzyć"
-                },
-                {
-                  "text": "Szkło było zbyt przezroczyste"
-                },
-                {
-                  "text": "Spieszyła się"
-                }
-              ],
-              "correct-answer-indices": [
-                0
-              ],
-              "explanation": "Drzwiom brakowało affordance - wizualnych lub fizycznych wskazówek, które wskazują, jak powinny być używane.",
-              "hint": "Rozważ, jaką informację wizualną drzwi dostarczały o swoim działaniu."
-            },
-            {
-              "entity-type": "single-choice-question",
-              "title": "Zamieszanie z Butelką na Wodę",
-              "question": "Dlaczego Aleksy miał problem z nakrętką butelki na wodę?",
-              "options": [
-                {
-                  "text": "Projekt sugerował odkręcanie, kiedy w rzeczywistości przesuwała się"
-                },
-                {
-                  "text": "Nie przeczytał instrukcji"
-                },
-                {
-                  "text": "Zakrętka była zablokowana"
-                }
-              ],
-              "correct-answer-indices": [
-                0
-              ],
-              "explanation": "To jest fałszywe affordance - projekt sugeruje jedno działanie, wymagając innego.",
-              "hint": "Pomyśl o tym, jakie działanie sugerował wygląd nakrętki w porównaniu z tym, co było rzeczywiście potrzebne."
-            },
-            {
-              "entity-type": "text",
-              "title": "Czym są Affordance?",
-              "text-segments": [
-                "Te trzy scenariusze ujawniają coś głębokiego o tym, jak przedmioty komunikują.",
-                "Każde zamieszanie nie było przypadkowe - ujawnia, jak projekt kształtuje nasze oczekiwania i działania.",
-                "Don Norman badał te wzorce i zidentyfikował affordance jako fundamentalną zasadę intuicyjnego projektowania.",
-                "Zrozumienie affordance przekształca to, jak postrzegasz każdy interfejs, od klamek po aplikacje na smartfony."
-              ]
-            },
-            {
-              "entity-type": "text",
-              "title": "Affordance",
-              "text-segments": [
-                "Pierwszą zasadą są affordance - relacja między właściwościami obiektu a działaniami, które sugerują użytkownikom.",
-                "Klamka naturalnie pozwala na chwytanie i ciągnięcie, podczas gdy płaska metalowa płytka wyraźnie pozwala na pchanie.",
-                "Dobre affordance są natychmiast oczywiste - wiesz, co robić bez myślenia lub czytania instrukcji.",
-                "Słabe affordance wprowadzają użytkowników w błąd, prowadząc do niewłaściwych działań, tworząc iluzję błędu użytkownika, gdy w rzeczywistości to błąd projektowy."
-              ]
-            },
-            {
-              "entity-type": "text",
-              "title": "Rodzaje Affordance",
-              "text-segments": [
-                "Przedmioty mogą dostarczać różnych rodzajów affordance do kierowania zachowaniem użytkownika.",
-                "Affordance wizualne używają wyglądu - wzniesiony przycisk wygląda na klikalny, klamka wygląda na chwytną.",
-                "Affordance fizyczne używają kształtu i tekstury - rowek sugeruje przesuwanie, żebra sugerują chwytanie.",
-                "Affordance kulturowe opierają się na nauczonych konwencjach - czerwony oznacza stop, zielony oznacza idź."
-              ]
-            },
-            {
-              "entity-type": "single-choice-question",
-              "title": "Zagadka USB",
-              "question": "Dlaczego kabel USB nigdy nie pasuje za pierwszym razem?",
-              "options": [
-                {
-                  "text": "USB istnieje w superpozycji kwantowej"
-                },
-                {
-                  "text": "Słaby projekt wizualny sprawia, że orientacja jest niejasna"
-                }
-              ],
-              "correct-answer-indices": [
-                1
-              ],
-              "explanation": "Złącza USB wyglądają identycznie z obu stron. Dobry projekt czyni orientację oczywistą.",
-              "hint": "Rozważ, jaką informację wizualną dostarcza złącze USB, aby pomóc użytkownikom prawidłowo je zorientować."
-            },
-            {
-              "entity-type": "text",
-              "title": "Affordance w Praktyce",
-              "text-segments": [
-                "Świetni projektanci używają affordance do kierowania zachowaniem bez instrukcji.",
-                "Dobrze zaprojektowany suwak ma rowek, który sugeruje kierunek ruchu.",
-                "Przyciski są wzniesione, aby sugerować naciskanie, podczas gdy płaskie obszary sugerują, że nie są interaktywne.",
-                "Najlepsze affordance wydają się tak naturalne, że nawet nie zauważasz, że działają."
-              ]
-            },
-            {
-              "entity-type": "true-false-question",
-              "title": "Sprawdzenie Affordance",
-              "question": "Prawda czy fałsz: Dobre affordance wymaga napisanych instrukcji do zrozumienia.",
-              "options": [
-                {
-                  "text": "Prawda"
-                },
-                {
-                  "text": "Fałsz"
-                }
-              ],
-              "correct-answer-indices": [
-                1
-              ],
-              "explanation": "Fałsz! Dobre affordance są natychmiast oczywiste i nie wymagają wyjaśnienia. Jeśli potrzebujesz instrukcji, affordance zawiodło.",
-              "hint": "Pomyśl o najlepiej zaprojektowanych przedmiotach, których używasz - czy potrzebują etykiet?"
-            },
-            {
-              "entity-type": "fill-gap-question",
-              "title": "Uzupełnij Zasadę",
-              "question": "Wypełnij luki: Affordance to _____ między właściwościami obiektu a _____, które sugerują.",
-              "options": [
-                {
-                  "text": "relacja"
-                },
-                {
-                  "text": "działaniami"
-                }
-              ],
-              "correct-answer-indices": [
-                0,
-                1
-              ],
-              "explanation": "Affordance to relacja między właściwościami obiektu a działaniami, które sugerują. Ta fundamentalna definicja pokazuje, jak projekt komunikuje funkcję.",
-              "hint": "Pomyśl z powrotem o oryginalnej definicji affordance Normana."
-            },
-            {
-              "entity-type": "true-false-question",
-              "title": "Sprawdzenie Zasady Projektowej",
-              "question": "Dobry projekt powinien wymagać obszernych podręczników użytkownika do zrozumienia.",
-              "options": [
-                {
-                  "text": "Prawda"
-                },
-                {
-                  "text": "Fałsz"
-                }
-              ],
-              "correct-answer-indices": [
-                1
-              ],
-              "explanation": "Dobry projekt powinien być intuicyjny i oczywisty. Jeśli potrzebuje podręcznika, projekt nie zdołał jasno komunikować swojej funkcji."
-            },
-            {
-              "entity-type": "estimate-percentage-question",
-              "title": "Wyniki Badania Drzwi",
-              "question": "W badaniu Normana dotyczącym wypadków związanych z drzwiami, jaki procent ludzi pociągnął drzwi do pchania przy pierwszej próbie?",
-              "options": [],
-              "correct-answer-indices": [
-                73
-              ],
-              "explanation": "Norman odkrył, że 73% ludzi początkowo ciągnęło drzwi, które miały być pchane, gdy drzwi miały pionową klamkę. To pokazuje, jak potężne są affordance - klamki silnie sugerują ciągnięcie, niezależnie od oznakowania."
-            },
-            {
-              "entity-type": "text",
-              "title": "Przykłady Affordance",
-              "text-segments": [
-                "Świetne affordance działają niewidzialnie - używasz ich bez myślenia.",
-                "Nożyczki mają dziurki na palce, które pokazują dokładnie, gdzie umieścić palce.",
-                "Zamek błyskawiczny porusza się w górę i w dół po oczywistym torze.",
-                "Dobre affordance sprawiają, że prawidłowe działanie wydaje się nieuniknione i naturalne."
-              ]
-            },
-            {
-              "entity-type": "design-examples-showcase",
-              "title": "Przykłady z Życia"
-            },
-            {
-              "entity-type": "reflection",
-              "title": "Affordance w Twoim Życiu",
-              "prompt": "Pomyśl o przedmiocie, którego używasz codziennie i który ma doskonałe affordance. Co sprawia, że jest tak intuicyjny?",
-              "thinking-points": [
-                "Jakie wizualne lub fizyczne wskazówki kierują twoim zachowaniem?",
-                "Jak projekt sugeruje prawidłowe działanie?",
-                "Czy ten przedmiot działałby dla kogoś, kto nigdy go wcześniej nie widział?",
-                "Co by się stało, gdyby affordance zostały usunięte?"
-              ]
-            },
-            {
-              "entity-type": "outro",
-              "title": "Widzenie Affordance Wszędzie",
-              "text-segments": [
-                "Teraz rozumiesz, jak przedmioty cicho komunikują swój cel.",
-                "Każda klamka, przycisk i przełącznik opowiada historię o swoim zamierzonym użyciu.",
-                "Dobre affordance prowadzą cię naturalnie; słabe zostawiają cię w domysłach.",
-                "W naszej następnej lekcji zbadamy naturalne odwzorowanie - jak kontrolki logicznie odnoszą się do swoich efektów."
-              ]
-            },
-            {
-              "entity-type": "skill-check"
-            },
-            {
-              "entity-type": "single-choice-question",
-              "title": "Sprawdzenie Umiejętności 1",
-              "question": "Drzwi mają poziomy pręt na całej długości. Zgodnie z zasadą affordance, co powinieneś zrobić?",
-              "options": [
-                {
-                  "text": "Pociągnąć drzwi ku sobie"
-                },
-                {
-                  "text": "Popchnąć drzwi od siebie"
-                }
-              ],
-              "correct-answer-indices": [
-                1
-              ],
-              "explanation": "Poziomy pręt (zwany także barierą awaryjną lub prętem paniki) pozwala na pchanie. To jest jasne affordance, które wskazuje, że drzwi powinny być pchane, aby się otworzyć.",
-              "hint": "Pomyśl o tym, jakie działanie naturalnie sugeruje poziomy pręt."
-            },
-            {
-              "entity-type": "single-choice-question",
-              "title": "Sprawdzenie Umiejętności 2",
-              "question": "Projektujesz płytę kuchenną z 4 palnikami ułożonymi w kwadrat. Jaki jest najlepszy sposób ułożenia pokręteł kontrolnych?",
-              "options": [
-                {
-                  "text": "W prostej linii pod palnikami"
-                },
-                {
-                  "text": "W układzie kwadratowym odpowiadającym układowi palników"
-                },
-                {
-                  "text": "W kole wokół centralnej tarczy"
-                }
-              ],
-              "correct-answer-indices": [
-                1
-              ],
-              "explanation": "Naturalne odwzorowanie sugeruje ułożenie kontrolek w sposób odzwierciedlający układ tego, co kontrolują. Kwadratowe pokrętła odpowiadające kwadratowym palnikom tworzą intuicyjną relację przestrzenną.",
-              "hint": "Rozważ, który układ stworzyłby najnaturalniejsze odwzorowanie."
-            },
-            {
-              "entity-type": "single-choice-question",
-              "title": "Sprawdzenie Umiejętności 3",
-              "question": "Kiedy system powinien dostarczać feedback użytkownikowi?",
-              "options": [
-                {
-                  "text": "Tylko gdy wystąpi błąd"
-                },
-                {
-                  "text": "Natychmiast po zainicjowaniu działania, podczas przetwarzania i po zakończeniu"
-                }
-              ],
-              "correct-answer-indices": [
-                1
-              ],
-              "explanation": "Dobry feedback powinien być natychmiastowy (potwierdzić działanie), ciągły (pokazać postęp) i ostateczny (potwierdzić zakończenie). To informuje użytkowników przez całą interakcję.",
-              "hint": "Pomyśl o tym, kiedy użytkownicy potrzebują zapewnienia, że system reaguje."
-            },
-            {
-              "entity-type": "outro",
-              "title": "Rozmowa Trwa Dalej",
-              "text-segments": [
-                "Teraz rozumiesz, jak systemy powinny komunikować się z użytkownikami.",
-                "Dobry feedback tworzy pewne, efektywne interakcje.",
-                "Słaby feedback prowadzi do zamieszania, błędów i frustracji.",
-                "Opanowałeś trzy filary: affordance ujawniają cel, odwzorowanie tworzy logikę, a feedback potwierdza działanie."
               ]
             }
           ]

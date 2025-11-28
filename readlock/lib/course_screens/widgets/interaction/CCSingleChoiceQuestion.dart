@@ -218,26 +218,35 @@ class CCSingleChoiceState extends State<CCSingleChoice> {
     );
 
     if (!isCorrectAnswer) {
-      showIncorrectAnswerFeedback();
+      showIncorrectAnswerFeedback(optionIndex);
       return;
     }
 
     markQuestionAsAnswered(optionIndex);
-    showCorrectAnswerFeedback();
+    showCorrectAnswerFeedback(optionIndex);
     widget.onAnswerSelected(optionIndex, isCorrectAnswer);
   }
 
-  void showIncorrectAnswerFeedback() {
+  void showIncorrectAnswerFeedback(int optionIndex) {
+    final QuestionOption selectedOption = widget.content.options[optionIndex];
+    final String consequenceMessage = selectedOption.consequenceMessage ?? 
+        widget.content.hint ?? 
+        'Try again and think about the design principle.';
+    
     FeedbackSnackBar.showWrongAnswer(
       context,
-      hint: widget.content.hint,
+      hint: consequenceMessage,
     );
   }
 
-  void showCorrectAnswerFeedback() {
+  void showCorrectAnswerFeedback(int optionIndex) {
+    final QuestionOption selectedOption = widget.content.options[optionIndex];
+    final String feedbackMessage = selectedOption.consequenceMessage ?? 
+        widget.content.explanation;
+    
     FeedbackSnackBar.showCorrectAnswer(
       context,
-      explanation: widget.content.explanation,
+      explanation: feedbackMessage,
     );
   }
 

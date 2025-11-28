@@ -114,8 +114,14 @@ class QuestionOption {
   final String text;
   final String? emoji;
   final String? hint;
+  final String? consequenceMessage;
 
-  const QuestionOption({required this.text, this.emoji, this.hint});
+  const QuestionOption({
+    required this.text,
+    this.emoji,
+    this.hint,
+    this.consequenceMessage,
+  });
 }
 
 class QuestionContent extends CourseContent {

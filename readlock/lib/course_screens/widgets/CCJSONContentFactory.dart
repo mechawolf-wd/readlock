@@ -350,6 +350,7 @@ class JsonMultipleChoiceQuestionWidget extends StatelessWidget {
     return optionsData.map((option) => QuestionOption(
       text: option['text'] ?? '',
       hint: option['hint'],
+      consequenceMessage: option['consequence-message'],
     )).toList();
   }
 

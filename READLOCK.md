@@ -143,6 +143,25 @@ Based on the course data structure, strategically use these content types:
 
 ---
 
+**Imaginative Scenario** (story 40% & practice 60%)
+
+1. No intro - straight to the story
+2. Story pt. 1 (yourself)
+3. Story pt. 2 (yourself)
+4. Story pt. 3 (yourself)
+
+5. 1st Question asked to yourself
+6. 2nd Question asked to yourself
+
+7. Realization of yourself
+8. Explanation of the story
+
+9. "Real Life Examples" slide with heading and graphic (CCDesignExamplesShowcase.dart)
+10. Summary cards (2/3 good & 2/3 bad examples) (CCDesignExamplesShowcase.dart)
+11. Outro + introduction to the next lesson: "In the next lesson we will learn..." (CCOutro.dart)
+
+---
+
 ### **Content Metrics**
 
 - **Total Entities**: 15-30 pieces optimal for 45-90 minute courses
@@ -199,6 +218,7 @@ Based on the course data structure, strategically use these content types:
 **Start with Competition Analysis:**
 
 Before creating any course, begin by analyzing existing book summaries from platforms like:
+
 - **Blinkist** - Study their structure, key point selection, and narrative flow
 - **getAbstract** - Analyze their executive summary approach and practical applications
 - **Other summary platforms** - Review how they distill complex concepts into digestible insights
@@ -224,6 +244,7 @@ Before creating any course, begin by analyzing existing book summaries from plat
 Every course description must include a "Relevant for:" section that clearly identifies the target audience. This helps users quickly determine if the content matches their needs and improves course discovery.
 
 **Format:**
+
 ```
 **Relevant for:**
 - [Primary audience 1] - specific use case or benefit
@@ -232,6 +253,7 @@ Every course description must include a "Relevant for:" section that clearly ide
 ```
 
 **Examples:**
+
 - **Entrepreneurs** - building products that users intuitively understand
 - **UX Designers** - creating interfaces that guide user behavior
 - **Product Managers** - making design decisions based on user psychology

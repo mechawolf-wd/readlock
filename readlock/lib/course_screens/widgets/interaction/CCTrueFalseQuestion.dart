@@ -417,26 +417,43 @@ class CCTrueFalseQuestionState extends State<CCTrueFalseQuestion> {
       answerIndex,
     );
 
+    if (!isCorrect) {
+      showIncorrectAnswerFeedback(answerIndex);
+      return;
+    }
+
+    markQuestionAsAnswered(answerIndex);
+    showCorrectAnswerFeedback(answerIndex);
+    widget.onAnswerSelected(answerIndex, isCorrect);
+  }
+
+  void showIncorrectAnswerFeedback(int answerIndex) {
+    final QuestionOption selectedOption = widget.content.options[answerIndex];
+    final String consequenceMessage = selectedOption.consequenceMessage ?? 
+        widget.content.hint ?? 
+        'Think about the design principle and try again.';
+    
+    FeedbackSnackBar.showWrongAnswer(
+      context,
+      hint: consequenceMessage,
+    );
+  }
+
+  void showCorrectAnswerFeedback(int answerIndex) {
+    final QuestionOption selectedOption = widget.content.options[answerIndex];
+    final String feedbackMessage = selectedOption.consequenceMessage ?? 
+        widget.content.explanation;
+    
+    FeedbackSnackBar.showCorrectAnswer(
+      context,
+      explanation: feedbackMessage,
+    );
+  }
+
+  void markQuestionAsAnswered(int selectedIndex) {
     setState(() {
-      selectedAnswerIndex = answerIndex;
+      selectedAnswerIndex = selectedIndex;
       hasAnswered = true;
     });
-
-    widget.onAnswerSelected(answerIndex, isCorrect);
-
-    // Show feedback snackbar
-    if (mounted) {
-      if (isCorrect) {
-        FeedbackSnackBar.showCorrectAnswer(
-          context,
-          explanation: widget.content.explanation,
-        );
-      } else {
-        FeedbackSnackBar.showWrongAnswer(
-          context,
-          hint: widget.content.hint,
-        );
-      }
-    }
   }
 }

@@ -77,6 +77,12 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
     size: 24,
   );
 
+  static const Icon hintBulbIcon = Icon(
+    Icons.lightbulb_outline,
+    color: Colors.yellow,
+    size: 24,
+  );
+
   // Initializes widget state and loads course data
   @override
   void initState() {
@@ -177,6 +183,11 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
 
       const Spacing.width(NAVIGATION_SPACING),
 
+      // Hint bulb icon
+      HintBulbIcon(),
+
+      const Spacing.width(8),
+
       // Star slide icon
       StarButton(),
 
@@ -203,6 +214,14 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
   // Star button for slide favoriting
   Widget StarButton() {
     return GestureDetector(onTap: handleStarTap, child: starIcon);
+  }
+
+  // Hint bulb icon for showing hints
+  Widget HintBulbIcon() {
+    return GestureDetector(
+      onTap: showCurrentQuestionHint,
+      child: hintBulbIcon,
+    );
   }
 
   // Progress indicator with individual segments for skill check questions
@@ -471,6 +490,50 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
         behavior: SnackBarBehavior.floating,
         shape: starredSnackBarShape,
         margin: starredSnackBarMargin,
+      ),
+    );
+  }
+
+  // Handle hint bulb tap to show current question hint
+  void showCurrentQuestionHint() {
+    final bool hasContent = allContent.isNotEmpty;
+    final bool hasValidContentIndex = currentContentIndex < allContent.length;
+
+    if (!hasContent || !hasValidContentIndex) {
+      return;
+    }
+
+    final Map<String, dynamic> currentContent = allContent[currentContentIndex];
+    final String? entityType = currentContent['entity-type'] as String?;
+    final String? hintText = currentContent['hint'] as String?;
+
+    final bool isQuestionContent = entityType == 'single-choice-question' || 
+        entityType == 'true-false-question' ||
+        entityType == 'fill-gap-question';
+
+    if (!isQuestionContent || hintText == null || hintText.isEmpty) {
+      return;
+    }
+
+    // Extract styling above method logic
+    final Color hintSnackBarBackgroundColor = Colors.yellow.shade800;
+    final RoundedRectangleBorder hintSnackBarShape = RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(12),
+    );
+    final EdgeInsets hintSnackBarMargin = const EdgeInsets.all(16);
+
+    // Show hint in a snackbar
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: RLTypography.bodyMedium(
+          '💡 Hint: $hintText',
+          color: Colors.white,
+        ),
+        backgroundColor: hintSnackBarBackgroundColor,
+        duration: const Duration(seconds: 4),
+        behavior: SnackBarBehavior.floating,
+        shape: hintSnackBarShape,
+        margin: hintSnackBarMargin,
       ),
     );
   }
