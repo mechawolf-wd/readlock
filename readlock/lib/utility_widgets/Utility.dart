@@ -173,7 +173,7 @@ class Div extends StatelessWidget {
   /// ```dart
   /// onTap: () => print('Tapped!')           // Simple tap handler
   /// onTap: () => Navigator.pop(context)     // Navigation action
-  /// onTap: _handleButtonPress               // Method reference
+  /// onTap: handleButtonPress               // Method reference
   /// ```
   final VoidCallback? onTap;
 

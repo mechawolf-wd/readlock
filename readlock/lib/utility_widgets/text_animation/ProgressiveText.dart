@@ -218,7 +218,10 @@ class ProgressiveTextState extends State<ProgressiveText> {
       final bool isLastSentence =
           currentSentenceNumber == textSentences.length - 1;
 
-      if (isLastSentence && widget.onAllSegmentsRevealed != null) {
+      final bool shouldTriggerCompletionCallback =
+          isLastSentence && widget.onAllSegmentsRevealed != null;
+
+      if (shouldTriggerCompletionCallback) {
         widget.onAllSegmentsRevealed!();
       }
 
@@ -380,15 +383,27 @@ class ProgressiveTextState extends State<ProgressiveText> {
 
   // Display widget for currently revealing sentence
   Widget CurrentSentenceDisplay() {
-    if (revealedText.isEmpty) {
+    // Extract conditions above conditional logic
+    final bool hasNoRevealedText = revealedText.isEmpty;
+
+    if (hasNoRevealedText) {
       return const SizedBox.shrink();
     }
 
     final String originalText = textSentences[currentSentenceNumber];
-    final bool hasHighlights = originalText.contains('<c:');
+    final bool isImageLinkSegment = originalText.startsWith(
+      'image-link:',
+    );
+    final bool containsHighlightingMarkup = originalText.contains(
+      '<c:',
+    );
 
-    if (hasHighlights) {
-      return buildProgressiveHighlightedText(
+    if (isImageLinkSegment) {
+      return CurrentImageDisplay(originalText);
+    }
+
+    if (containsHighlightingMarkup) {
+      return progressiveHighlightedTextWidget(
         originalText,
         revealedText,
       );
@@ -404,12 +419,64 @@ class ProgressiveTextState extends State<ProgressiveText> {
     );
   }
 
+  // Display widget for current image segment
+  Widget CurrentImageDisplay(String imageSegmentText) {
+    final String imageAssetPath = imageSegmentText.substring(
+      'image-link:'.length,
+    );
+
+    // Extract styling above method
+    const double maxImageHeight = 200.0;
+    const double errorImageHeight = 100.0;
+    const double imageSpacing = 16.0;
+    const double cornerRadius = 8.0;
+
+    final BorderRadius imageBorderRadius = BorderRadius.circular(
+      cornerRadius,
+    );
+
+    final BoxDecoration errorContainerDecoration = BoxDecoration(
+      color: Colors.grey.shade300,
+      borderRadius: imageBorderRadius,
+    );
+
+    final TextStyle errorTextStyle = getConsistentTextStyle().copyWith(
+      color: Colors.grey.shade600,
+      fontSize: 12,
+    );
+
+    return Div.column([
+      // Course image display
+      ClipRRect(
+        borderRadius: imageBorderRadius,
+        child: Image.asset(
+          imageAssetPath,
+          fit: BoxFit.contain,
+          height: maxImageHeight,
+          errorBuilder: (context, error, stackTrace) => Container(
+            height: errorImageHeight,
+            decoration: errorContainerDecoration,
+            child: Center(
+              child: Text(
+                'Image not found: $imageAssetPath',
+                style: errorTextStyle,
+                textAlign: TextAlign.center,
+              ),
+            ),
+          ),
+        ),
+      ),
+
+      const Spacing.height(imageSpacing),
+    ], crossAxisAlignment: CrossAxisAlignment.center);
+  }
+
   // Build progressively revealed text with highlighting
-  Widget buildProgressiveHighlightedText(
+  Widget progressiveHighlightedTextWidget(
     String originalText,
     String revealedCleanText,
   ) {
-    final List<TextSpan> spans = _buildProgressiveHighlightSpans(
+    final List<TextSpan> spans = createProgressiveHighlightSpans(
       originalText,
       revealedCleanText,
     );
@@ -421,7 +488,7 @@ class ProgressiveTextState extends State<ProgressiveText> {
   }
 
   // Optimized method to build highlight spans without intermediate objects
-  List<TextSpan> _buildProgressiveHighlightSpans(
+  List<TextSpan> createProgressiveHighlightSpans(
     String originalText,
     String revealedCleanText,
   ) {
@@ -450,7 +517,9 @@ class ProgressiveTextState extends State<ProgressiveText> {
       }
 
       // Handle text before highlight
-      if (match.start > 0) {
+      final bool hasTextBeforeMatch = match.start > 0;
+
+      if (hasTextBeforeMatch) {
         final String beforeText = remaining.substring(0, match.start);
         final int beforeTextEnd = cleanTextPosition + beforeText.length;
 
@@ -508,7 +577,7 @@ class ProgressiveTextState extends State<ProgressiveText> {
   }
 
   // Build spans for visible text segments
-  List<TextSpan> buildVisibleSpans(
+  List<TextSpan> visibleSpans(
     List<HighlightSegment> segments,
     String revealedCleanText,
   ) {
@@ -685,7 +754,9 @@ class ProgressiveTextState extends State<ProgressiveText> {
       case 'g':
         return Colors.green.shade600;
       default:
-        return Colors.green.shade600; // Fallback to green for any unknown codes
+        return Colors
+            .green
+            .shade600; // Fallback to green for any unknown codes
     }
   }
 
@@ -714,7 +785,7 @@ class ProgressiveTextState extends State<ProgressiveText> {
 
     // Check if text has highlights
     if (hasHighlightMarkers(originalText)) {
-      return buildHighlightedText(originalText);
+      return HighlightedText(originalText);
     }
 
     // Regular text without highlights
@@ -726,7 +797,7 @@ class ProgressiveTextState extends State<ProgressiveText> {
   }
 
   // Build text with highlighting support
-  Widget buildHighlightedText(String text) {
+  Widget HighlightedText(String text) {
     final List<HighlightSegment> segments = parseHighlights(text);
     final List<TextSpan> spans = [];
 
@@ -783,7 +854,7 @@ class CompletedSentenceWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Widget sentenceWidget = Div.column(
-      [_buildSentenceText()],
+      [SentenceText()],
       crossAxisAlignment: CrossAxisAlignment.start,
       padding: const [0, 0, ProgressiveText.DEFAULT_BOTTOM_SPACING, 0],
     );
@@ -803,12 +874,19 @@ class CompletedSentenceWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildSentenceText() {
-    // Check if text has highlights
-    final bool hasHighlights = sentenceText.contains('<c:');
+  Widget SentenceText() {
+    // Extract conditions above widget logic
+    final bool isImageLinkSegment = sentenceText.startsWith(
+      'image-link:',
+    );
+    final bool containsHighlighting = sentenceText.contains('<c:');
 
-    if (hasHighlights) {
-      return _buildHighlightedText();
+    if (isImageLinkSegment) {
+      return ImageDisplay();
+    }
+
+    if (containsHighlighting) {
+      return HighlightedTextDisplay();
     }
 
     return Text(
@@ -818,7 +896,94 @@ class CompletedSentenceWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildHighlightedText() {
+  Widget ImageDisplay() {
+    final String imageAssetPath = extractImagePath();
+
+    // Extract styling above method
+    const double maxImageHeight = 200.0;
+    const double errorImageHeight = 100.0;
+    const double imageSpacing = 16.0;
+    const double cornerRadius = 8.0;
+
+    final BorderRadius imageBorderRadius = BorderRadius.circular(
+      cornerRadius,
+    );
+
+    final BoxDecoration errorContainerDecoration = BoxDecoration(
+      color: Colors.grey.shade300,
+      borderRadius: imageBorderRadius,
+    );
+
+    final TextStyle errorTextStyle = textStyle.copyWith(
+      color: Colors.grey.shade600,
+      fontSize: 12,
+    );
+
+    return Div.column([
+      // Course image display
+      CourseImageDisplay(
+        imageBorderRadius: imageBorderRadius,
+        imageAssetPath: imageAssetPath,
+        maxImageHeight: maxImageHeight,
+        errorContainerDecoration: errorContainerDecoration,
+        errorTextStyle: errorTextStyle,
+        errorImageHeight: errorImageHeight,
+      ),
+
+      const Spacing.height(imageSpacing),
+    ], crossAxisAlignment: CrossAxisAlignment.center);
+  }
+
+  String extractImagePath() {
+    const String imageLinkPrefix = 'image-link:';
+    return sentenceText.substring(imageLinkPrefix.length);
+  }
+
+  Widget CourseImageDisplay({
+    required BorderRadius imageBorderRadius,
+    required String imageAssetPath,
+    required double maxImageHeight,
+    required BoxDecoration errorContainerDecoration,
+    required TextStyle errorTextStyle,
+    required double errorImageHeight,
+  }) {
+    return ClipRRect(
+      borderRadius: imageBorderRadius,
+      child: Image.asset(
+        imageAssetPath,
+        fit: BoxFit.contain,
+        height: maxImageHeight,
+        errorBuilder: (context, error, stackTrace) =>
+            ImageErrorFallback(
+              errorContainerDecoration: errorContainerDecoration,
+              errorTextStyle: errorTextStyle,
+              errorImageHeight: errorImageHeight,
+              imageAssetPath: imageAssetPath,
+            ),
+      ),
+    );
+  }
+
+  Widget ImageErrorFallback({
+    required BoxDecoration errorContainerDecoration,
+    required TextStyle errorTextStyle,
+    required double errorImageHeight,
+    required String imageAssetPath,
+  }) {
+    return Container(
+      height: errorImageHeight,
+      decoration: errorContainerDecoration,
+      child: Center(
+        child: Text(
+          'Image not found: $imageAssetPath',
+          style: errorTextStyle,
+          textAlign: TextAlign.center,
+        ),
+      ),
+    );
+  }
+
+  Widget HighlightedTextDisplay() {
     final List<TextSpan> spans = [];
     final RegExp highlightRegex = RegExp(r'<c:(g)>([^<]*)</c:\1>');
     String remaining = sentenceText;
@@ -826,34 +991,16 @@ class CompletedSentenceWidget extends StatelessWidget {
     while (remaining.isNotEmpty) {
       final RegExpMatch? match = highlightRegex.firstMatch(remaining);
 
-      if (match == null) {
-        // Add remaining text without highlighting
-        if (remaining.isNotEmpty) {
-          spans.add(TextSpan(text: remaining, style: textStyle));
-        }
+      // Extract conditions above conditional logic
+      final bool hasNoHighlightMatch = match == null;
+
+      if (hasNoHighlightMatch) {
+        addRemainingTextSpan(spans, remaining);
         break;
       }
 
-      // Add text before highlight
-      if (match.start > 0) {
-        final String beforeText = remaining.substring(0, match.start);
-        spans.add(TextSpan(text: beforeText, style: textStyle));
-      }
-
-      // Add highlighted text
-      final String colorCode = match.group(1)!;
-      final String highlightedText = match.group(2)!;
-      final Color highlightColor = _getHighlightColor(colorCode);
-
-      spans.add(
-        TextSpan(
-          text: highlightedText,
-          style: textStyle.copyWith(
-            color: highlightColor,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      );
+      addTextBeforeHighlight(spans, remaining, match);
+      addHighlightedTextSpan(spans, match);
 
       remaining = remaining.substring(match.end);
     }
@@ -864,7 +1011,46 @@ class CompletedSentenceWidget extends StatelessWidget {
     );
   }
 
-  Color _getHighlightColor(String code) {
+  void addRemainingTextSpan(
+    List<TextSpan> spans,
+    String remainingText,
+  ) {
+    final bool hasRemainingText = remainingText.isNotEmpty;
+
+    if (hasRemainingText) {
+      spans.add(TextSpan(text: remainingText, style: textStyle));
+    }
+  }
+
+  void addTextBeforeHighlight(
+    List<TextSpan> spans,
+    String text,
+    RegExpMatch match,
+  ) {
+    final bool hasTextBeforeMatch = match.start > 0;
+
+    if (hasTextBeforeMatch) {
+      final String beforeText = text.substring(0, match.start);
+      spans.add(TextSpan(text: beforeText, style: textStyle));
+    }
+  }
+
+  void addHighlightedTextSpan(List<TextSpan> spans, RegExpMatch match) {
+    final String colorCode = match.group(1)!;
+    final String highlightedText = match.group(2)!;
+    final Color highlightColor = getHighlightColor(colorCode);
+
+    final TextStyle highlightedTextStyle = textStyle.copyWith(
+      color: highlightColor,
+      fontWeight: FontWeight.bold,
+    );
+
+    spans.add(
+      TextSpan(text: highlightedText, style: highlightedTextStyle),
+    );
+  }
+
+  Color getHighlightColor(String code) {
     switch (code) {
       case 'g':
         return Colors.green.shade600;

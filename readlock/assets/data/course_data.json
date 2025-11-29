@@ -32,6 +32,7 @@
               "text-segments": [
                 "Every day, objects silently communicate what they want you to do.",
                 "A door handle screams 'pull me!' A flat metal plate whispers 'push here.'",
+                "image-link[no-blur]:assets/kettle.png",
                 "In this course, we'll explore three fundamental design principles: affordances, mapping, and feedback.",
                 "image-link:assets/kettle.png"
               ]

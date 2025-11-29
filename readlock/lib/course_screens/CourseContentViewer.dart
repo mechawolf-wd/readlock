@@ -295,7 +295,9 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
       }
 
       // For regular segments, show partial progress
-      if (segment.type == ProgressSegmentType.regular) {
+      final bool isRegularSegment = segment.type == ProgressSegmentType.regular;
+
+      if (isRegularSegment) {
         segmentWidgets.add(
           RegularProgressSegment(
             segment: segment,
@@ -334,7 +336,9 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
     const double skillCheckWidth = 16.0;
     const double segmentSpacing = 2.0;
 
-    if (segment.type == ProgressSegmentType.skillCheck) {
+    final bool isSkillCheckSegment = segment.type == ProgressSegmentType.skillCheck;
+
+    if (isSkillCheckSegment) {
       return skillCheckWidth;
     }
 
@@ -472,9 +476,8 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
       87,
     ).withValues(alpha: 0.9);
 
-    final RoundedRectangleBorder starredSnackBarShape = RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(12),
-    );
+    final RoundedRectangleBorder starredSnackBarShape =
+        RoundedRectangleBorder(borderRadius: BorderRadius.circular(12));
 
     final EdgeInsets starredSnackBarMargin = const EdgeInsets.all(16);
 
@@ -497,29 +500,35 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
   // Handle hint bulb tap to show current question hint
   void showCurrentQuestionHint() {
     final bool hasContent = allContent.isNotEmpty;
-    final bool hasValidContentIndex = currentContentIndex < allContent.length;
+    final bool hasValidContentIndex =
+        currentContentIndex < allContent.length;
 
     if (!hasContent || !hasValidContentIndex) {
       return;
     }
 
-    final Map<String, dynamic> currentContent = allContent[currentContentIndex];
+    final Map<String, dynamic> currentContent =
+        allContent[currentContentIndex];
     final String? entityType = currentContent['entity-type'] as String?;
     final String? hintText = currentContent['hint'] as String?;
 
-    final bool isQuestionContent = entityType == 'single-choice-question' || 
+    final bool isQuestionContent =
+        entityType == 'single-choice-question' ||
         entityType == 'true-false-question' ||
         entityType == 'fill-gap-question';
 
-    if (!isQuestionContent || hintText == null || hintText.isEmpty) {
+    final bool shouldSkipHintDisplay = !isQuestionContent || 
+        hintText == null || 
+        hintText.isEmpty;
+
+    if (shouldSkipHintDisplay) {
       return;
     }
 
     // Extract styling above method logic
     final Color hintSnackBarBackgroundColor = Colors.yellow.shade800;
-    final RoundedRectangleBorder hintSnackBarShape = RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(12),
-    );
+    final RoundedRectangleBorder hintSnackBarShape =
+        RoundedRectangleBorder(borderRadius: BorderRadius.circular(12));
     final EdgeInsets hintSnackBarMargin = const EdgeInsets.all(16);
 
     // Show hint in a snackbar
@@ -540,11 +549,11 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
 
   // Check if course content contains skill check questions
   bool containsSkillCheckQuestions() {
-    return allContent.any(_isSkillCheckContent);
+    return allContent.any(isSkillCheckContent);
   }
 
   // Helper method to identify skill check content
-  bool _isSkillCheckContent(Map<String, dynamic> content) {
+  bool isSkillCheckContent(Map<String, dynamic> content) {
     final String? entityType = content['entity-type'] as String?;
     final String? contentTitle = content['title']?.toString();
 
