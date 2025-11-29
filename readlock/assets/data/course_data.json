@@ -6,13 +6,13 @@
       "title": "The Design of Everyday Things",
       "author": "Donald A. Norman",
       "description": "Extraordinary design is not done by geniuses.",
-      "cover-image-path": "assets/images/design_course.png",
+      "cover-image-path": "https://image.com",
       "color": "green",
       "relevant-for": [
+        "Anyone - who wants to understand why everyday objects work (or don't work)",
         "Entrepreneurs - building products that users intuitively understand",
         "UX Designers - creating interfaces that guide user behavior",
-        "Product Managers - making design decisions based on user psychology",
-        "Anyone - who wants to understand why everyday objects work (or don't work)"
+        "Product Managers - making design decisions based on user psychology"
       ],
       "genres": [
         "design",
@@ -32,7 +32,8 @@
               "text-segments": [
                 "Every day, objects silently communicate what they want you to do.",
                 "A door handle screams 'pull me!' A flat metal plate whispers 'push here.'",
-                "In this course, we'll explore three fundamental design principles: affordances, mapping, and feedback."
+                "In this course, we'll explore three fundamental design principles: affordances, mapping, and feedback.",
+                "image-link:assets/kettle.png"
               ]
             },
             {
@@ -157,8 +158,8 @@
               "title": "What Are Affordances?",
               "text-segments": [
                 "Those three scenarios reveal something profound about how objects communicate.",
-                "Each confusion wasn't random - it reveals how design shapes our expectations and actions.",
-                "Don Norman studied these patterns and identified affordances as a fundamental principle of intuitive design.",
+                "Each confusion wasn't random - it reveals how <c:g>design shapes our expectations and actions</c:g>.",
+                "Don Norman studied these patterns and identified <c:g>affordances</c:g> as a fundamental principle of intuitive design.",
                 "Understanding affordances transforms how you see every interface, from door handles to smartphone apps."
               ]
             },
@@ -166,9 +167,9 @@
               "entity-type": "text",
               "title": "Affordances",
               "text-segments": [
-                "The first principle is affordances - the relationship between an object's properties and what actions they suggest to users.",
+                "The first principle is <c:g>affordances</c:g> - the relationship between an object's properties and what actions they suggest to users.",
                 "A door handle naturally affords grasping and pulling, while a flat metal plate clearly affords pushing.",
-                "Good affordances are immediately obvious - you know what to do without thinking or reading instructions.",
+                "<c:g>Good affordances</c:g> are immediately obvious - you know what to do without thinking or reading instructions.",
                 "Poor affordances mislead users into taking wrong actions, creating the illusion of user error when it's actually design failure."
               ]
             },
@@ -177,10 +178,15 @@
               "title": "Types of Affordances",
               "text-segments": [
                 "Objects can provide different types of affordances to guide user behavior.",
-                "Visual affordances use appearance - a raised button looks pressable, a handle looks graspable.",
-                "Physical affordances use shape and texture - a groove suggests sliding, ridges suggest gripping.",
-                "Cultural affordances rely on learned conventions - red means stop, green means go."
+                "<c:g>Visual affordances</c:g> use appearance - a raised button looks pressable, a handle looks graspable.",
+                "<c:g>Physical affordances</c:g> use shape and texture - a groove suggests sliding, ridges suggest gripping.",
+                "<c:g>Cultural affordances</c:g> rely on learned conventions - red means stop, green means go."
               ]
+            },
+            {
+              "entity-type": "emotional-slide",
+              "text": "Good work so far!",
+              "icon": "check"
             },
             {
               "entity-type": "single-choice-question",
@@ -206,10 +212,10 @@
               "entity-type": "text",
               "title": "Affordances in Practice",
               "text-segments": [
-                "Great designers use affordances to guide behavior without instruction.",
+                "<c:g>Great designers</c:g> use affordances to guide behavior without instruction.",
                 "A well-designed slider has a groove that suggests the direction of movement.",
                 "Buttons are raised to suggest pressing, while flat areas suggest they're not interactive.",
-                "The best affordances feel so natural that you don't even notice them working."
+                "The <c:g>best affordances</c:g> feel so natural that you don't even notice them working."
               ]
             },
             {
@@ -284,11 +290,16 @@
               "entity-type": "text",
               "title": "Affordance Examples",
               "text-segments": [
-                "Great affordances work invisibly - you use them without thinking.",
+                "<c:g>Great affordances</c:g> work invisibly - you use them without thinking.",
                 "Scissors have finger holes that show exactly where to place your fingers.",
                 "A zipper tab moves up and down along an obvious track.",
-                "Good affordances make the correct action feel inevitable and natural."
+                "Good affordances make the correct action feel <c:g>inevitable and natural</c:g>."
               ]
+            },
+            {
+              "entity-type": "emotional-slide",
+              "text": "You're getting it!",
+              "icon": "progress"
             },
             {
               "entity-type": "design-examples-showcase",
@@ -311,8 +322,8 @@
               "text-segments": [
                 "You now understand how objects silently communicate their purpose.",
                 "Every handle, button, and switch tells a story about its intended use.",
-                "Good affordances guide you naturally; poor ones leave you guessing.",
-                "In our next lesson, we'll explore natural mapping - how controls relate logically to their effects."
+                "<c:g>Good affordances</c:g> guide you naturally; poor ones leave you guessing.",
+                "In our next lesson, we'll explore <c:g>natural mapping</c:g> - how controls relate logically to their effects."
               ]
             },
             {

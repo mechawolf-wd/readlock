@@ -57,3 +57,19 @@ samples, guidance on mobile development, and a full API reference.
 - Designers + marketers must align for product success
 - Norman's Law: development starts "over budget and behind schedule"
 - Users should provide feedback to manufacturers
+
+## Color-Coding System
+
+Readlock uses consistent color-coding throughout lessons to help users build visual associations and improve comprehension:
+
+### Text Highlighting Colors
+- **Green (`<c:g>text</c:g>`)**: Good practices, correct behaviors, positive design principles, and course topic keywords
+- **Red (future)**: Wrong behaviors, poor practices, design failures, and concepts to avoid
+
+### Usage Guidelines
+- **Limited Application**: Use highlighting sparingly to maintain impact and readability
+- **Educational Focus**: Highlight only key concepts, principles, and practices relevant to learning objectives
+- **Consistency**: Always use the same color for the same type of information across all lessons
+- **Context Relevance**: Green highlights should emphasize what learners should adopt or remember as best practices
+
+This color-coding system is implemented through the ProgressiveText.dart widget and helps create memorable learning experiences through visual association.

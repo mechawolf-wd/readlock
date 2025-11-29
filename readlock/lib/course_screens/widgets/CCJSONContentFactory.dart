@@ -19,6 +19,7 @@ import 'package:readlock/course_screens/widgets/interaction/CCEstimatePercentage
 import 'package:readlock/course_screens/widgets/interaction/CCMultipleChoice.dart';
 import 'package:readlock/course_screens/widgets/interaction/CCSingleChoiceQuestion.dart';
 import 'package:readlock/course_screens/widgets/interaction/CCReflectionQuestion.dart';
+import 'package:readlock/course_screens/widgets/interaction/CCEmotionalSlide.dart';
 
 const String UNKNOWN_CONTENT_TYPE_MESSAGE = 'Unknown content type: ';
 
@@ -113,6 +114,11 @@ class JsonContentWidgetFactory {
       case 'skill-check':
         {
           return const CCSkillCheck();
+        }
+
+      case 'emotional-slide':
+        {
+          return JsonEmotionalSlideWidget(contentData: contentData);
         }
 
       default:
@@ -503,6 +509,27 @@ class JsonEstimatePercentageWidget extends StatelessWidget {
       explanation: contentData['explanation'] ?? '',
       hint: contentData['hint'],
       closeThreshold: contentData['close-threshold'] ?? 10,
+    );
+  }
+}
+
+// Emotional slide wrapper widget
+class JsonEmotionalSlideWidget extends StatelessWidget {
+  final Map<String, dynamic> contentData;
+
+  const JsonEmotionalSlideWidget({
+    super.key,
+    required this.contentData,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final String motivationalText = contentData['text'] ?? '';
+    final String? iconName = contentData['icon'];
+
+    return CCEmotionalSlide(
+      text: motivationalText,
+      iconName: iconName,
     );
   }
 }

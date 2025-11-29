@@ -120,7 +120,7 @@ class CCTrueFalseQuestionState extends State<CCTrueFalseQuestion> {
         explanationSectionWidget(),
       ],
       crossAxisAlignment: CrossAxisAlignment.stretch,
-      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.start,
       padding: RLConstants.COURSE_SECTION_PADDING,
       color: RLTheme.backgroundDark,
     );
@@ -223,7 +223,9 @@ class CCTrueFalseQuestionState extends State<CCTrueFalseQuestion> {
 
         const Spacing.width(12),
 
-        Text('True', style: textStyle),
+        Flexible(
+          child: Text('True', style: textStyle),
+        ),
       ],
       height: TRUE_FALSE_BUTTON_HEIGHT,
       decoration: decoration.copyWith(color: colors.backgroundColor),
@@ -283,7 +285,9 @@ class CCTrueFalseQuestionState extends State<CCTrueFalseQuestion> {
 
         const Spacing.width(12),
 
-        Text('False', style: textStyle),
+        Flexible(
+          child: Text('False', style: textStyle),
+        ),
       ],
       height: TRUE_FALSE_BUTTON_HEIGHT,
       decoration: decoration.copyWith(color: colors.backgroundColor),
