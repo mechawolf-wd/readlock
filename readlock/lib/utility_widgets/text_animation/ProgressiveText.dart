@@ -104,6 +104,8 @@ class ProgressiveTextState extends State<ProgressiveText> {
   late List<String> textSentences;
   // Blur on/off state for each completed sentence (true = blurred)
   late List<bool> sentenceBlurStates;
+  // Track which sentences have no-blur modifier
+  late List<bool> sentenceNoBlurFlags;
 
   // Animation state tracking
   // Index of the sentence currently being revealed (0-based)
@@ -304,6 +306,14 @@ class ProgressiveTextState extends State<ProgressiveText> {
   void toggleBlurForSentence(int sentenceIndex) {
     final bool isValidSentenceIndex =
         sentenceIndex < sentenceBlurStates.length;
+    
+    // Don't allow toggling if sentence has no-blur modifier
+    final bool hasNoBlurFlag = sentenceIndex < sentenceNoBlurFlags.length &&
+        sentenceNoBlurFlags[sentenceIndex];
+    
+    if (hasNoBlurFlag) {
+      return;
+    }
 
     if (isValidSentenceIndex) {
       setState(() {
@@ -392,7 +402,7 @@ class ProgressiveTextState extends State<ProgressiveText> {
 
     final String originalText = textSentences[currentSentenceNumber];
     final bool isImageLinkSegment = originalText.startsWith(
-      'image-link:',
+      'image-link',
     );
     final bool containsHighlightingMarkup = originalText.contains(
       '<c:',
@@ -421,7 +431,15 @@ class ProgressiveTextState extends State<ProgressiveText> {
 
   // Display widget for current image segment
   Widget CurrentImageDisplay(String imageSegmentText) {
-    final String imageAssetPath = imageSegmentText.substring(
+    final bool hasNoBlurModifier = imageSegmentText.contains('[no-blur]');
+    
+    // Extract the path after removing modifiers
+    String cleanImageText = imageSegmentText;
+    if (hasNoBlurModifier) {
+      cleanImageText = cleanImageText.replaceAll('[no-blur]', '');
+    }
+    
+    final String imageAssetPath = cleanImageText.substring(
       'image-link:'.length,
     );
 
@@ -445,30 +463,32 @@ class ProgressiveTextState extends State<ProgressiveText> {
       fontSize: 12,
     );
 
-    return Div.column([
-      // Course image display
-      ClipRRect(
-        borderRadius: imageBorderRadius,
-        child: Image.asset(
-          imageAssetPath,
-          fit: BoxFit.contain,
-          height: maxImageHeight,
-          errorBuilder: (context, error, stackTrace) => Container(
-            height: errorImageHeight,
-            decoration: errorContainerDecoration,
-            child: Center(
-              child: Text(
-                'Image not found: $imageAssetPath',
-                style: errorTextStyle,
-                textAlign: TextAlign.center,
+    return Center(
+      child: Div.column([
+        // Course image display
+        ClipRRect(
+          borderRadius: imageBorderRadius,
+          child: Image.asset(
+            imageAssetPath,
+            fit: BoxFit.contain,
+            height: maxImageHeight,
+            errorBuilder: (context, error, stackTrace) => Container(
+              height: errorImageHeight,
+              decoration: errorContainerDecoration,
+              child: Center(
+                child: Text(
+                  'Image not found: $imageAssetPath',
+                  style: errorTextStyle,
+                  textAlign: TextAlign.center,
+                ),
               ),
             ),
           ),
         ),
-      ),
 
-      const Spacing.height(imageSpacing),
-    ], crossAxisAlignment: CrossAxisAlignment.center);
+        const Spacing.height(imageSpacing),
+      ])
+    );
   }
 
   // Build progressively revealed text with highlighting
@@ -639,6 +659,11 @@ class ProgressiveTextState extends State<ProgressiveText> {
   void initializeTextState() {
     textSentences = widget.textSegments;
     sentenceBlurStates = List.filled(textSentences.length, true);
+    
+    // Initialize no-blur flags based on modifiers in text
+    sentenceNoBlurFlags = textSentences.map((sentence) {
+      return sentence.contains('[no-blur]');
+    }).toList();
   }
 
   // Remove highlight markers and return clean text for animation
@@ -776,6 +801,14 @@ class ProgressiveTextState extends State<ProgressiveText> {
       return false;
     }
 
+    // Check if sentence has no-blur modifier
+    final bool hasNoBlurFlag = sentenceIndex < sentenceNoBlurFlags.length &&
+        sentenceNoBlurFlags[sentenceIndex];
+
+    if (hasNoBlurFlag) {
+      return false;
+    }
+
     return sentenceBlurStates[sentenceIndex];
   }
 
@@ -877,7 +910,7 @@ class CompletedSentenceWidget extends StatelessWidget {
   Widget SentenceText() {
     // Extract conditions above widget logic
     final bool isImageLinkSegment = sentenceText.startsWith(
-      'image-link:',
+      'image-link',
     );
     final bool containsHighlighting = sentenceText.contains('<c:');
 
@@ -919,24 +952,32 @@ class CompletedSentenceWidget extends StatelessWidget {
       fontSize: 12,
     );
 
-    return Div.column([
-      // Course image display
-      CourseImageDisplay(
-        imageBorderRadius: imageBorderRadius,
-        imageAssetPath: imageAssetPath,
-        maxImageHeight: maxImageHeight,
-        errorContainerDecoration: errorContainerDecoration,
-        errorTextStyle: errorTextStyle,
-        errorImageHeight: errorImageHeight,
-      ),
+    return Center(
+      child: Div.column([
+        // Course image display
+        CourseImageDisplay(
+          imageBorderRadius: imageBorderRadius,
+          imageAssetPath: imageAssetPath,
+          maxImageHeight: maxImageHeight,
+          errorContainerDecoration: errorContainerDecoration,
+          errorTextStyle: errorTextStyle,
+          errorImageHeight: errorImageHeight,
+        ),
 
-      const Spacing.height(imageSpacing),
-    ], crossAxisAlignment: CrossAxisAlignment.center);
+        const Spacing.height(imageSpacing),
+      ]),
+    );
   }
 
   String extractImagePath() {
+    // Remove modifiers if present
+    String cleanText = sentenceText;
+    if (cleanText.contains('[no-blur]')) {
+      cleanText = cleanText.replaceAll('[no-blur]', '');
+    }
+    
     const String imageLinkPrefix = 'image-link:';
-    return sentenceText.substring(imageLinkPrefix.length);
+    return cleanText.substring(imageLinkPrefix.length);
   }
 
   Widget CourseImageDisplay({

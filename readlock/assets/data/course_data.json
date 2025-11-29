@@ -32,9 +32,21 @@
               "text-segments": [
                 "Every day, objects silently communicate what they want you to do.",
                 "A door handle screams 'pull me!' A flat metal plate whispers 'push here.'",
+                "In this course, we'll explore three fundamental design principles: affordances, mapping, and feedback."
+              ]
+            },
+            {
+              "entity-type": "text",
+              "title": "Hook",
+              "text-segments": [
+                "Take a look at this kettle.",
                 "image-link[no-blur]:assets/kettle.png",
-                "In this course, we'll explore three fundamental design principles: affordances, mapping, and feedback.",
-                "image-link:assets/kettle.png"
+                "What's wrong with this design?",
+                "The handle is on the <c:g>same side</c:g> as the spout!",
+                "When you try to pour hot water, your hand is directly above the steam coming out.",
+                "This is a classic example Don Norman uses to show <c:g>poor design</c:g> - it looks sleek, but it's actually dangerous to use.",
+                "Good design isn't just about aesthetics; it must prioritize <c:g>usability</c:g> and <c:g>safety</c:g> first.",
+                "In the next slides, we'll read stories that show how these principles play out in real-world design challenges."
               ]
             },
             {

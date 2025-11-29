@@ -85,9 +85,9 @@ This applies to ALL Dart files in the project - widgets, models, services, utili
 
 27. (important) **Extract if conditions** - never use bare if statements with direct conditions. Always extract the condition into a meaningful variable name (eg. `final bool shouldShowButton = isLoggedIn && hasPermission;` then `if (shouldShowButton)`)
 
-28. **Avoid ternary in UI** - let functions handle decision logic
+28. (important) **Avoid ternary & functions in UI** - let functions handle decision logic
 
-29. **No nested ternary** - avoid complex conditional operators, extract
+29. (important) **No nested ternary** - avoid complex conditional operators, extract
 
 30. **No ternary or null coalescing in UI** - never use `? :` or `??` operators directly in widget parameters. Extract to variables first (eg. `final EdgeInsets buttonMargin = margin ?? EdgeInsets.zero;` instead of `margin: margin ?? 0`)
 
