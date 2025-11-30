@@ -156,7 +156,7 @@ class CCReflectionQuestionState extends State<CCReflectionQuestion> {
         ReflectionInsightSection(),
       ],
       color: RLTheme.backgroundDark,
-      padding: RLConstants.COURSE_SECTION_PADDING,
+      padding: 24,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       mainAxisAlignment: MainAxisAlignment.center,
     );

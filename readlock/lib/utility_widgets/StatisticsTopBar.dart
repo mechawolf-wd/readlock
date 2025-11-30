@@ -8,12 +8,19 @@ class StatisticsTopBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Div.row([AhaCounter(), const Spacer(), StreakCounter()]);
+    return Div.row([XPCounter(), const Spacer(), StreakCounter()]);
   }
 
   Widget StreakCounter() {
     return Div.row(
-      [Style.FireIcon, const Spacing.width(8), RLTypography.text('7')],
+      [
+        Style.FireIcon,
+        const Spacing.width(8),
+        RLTypography.bodyLarge(
+          '3',
+          color: Colors.grey.withValues(alpha: 0.8),
+        ),
+      ],
       decoration: Style.decoration,
       color: Style.backgroundColor,
       padding: Style.padding,
@@ -21,9 +28,16 @@ class StatisticsTopBar extends StatelessWidget {
     );
   }
 
-  Widget AhaCounter() {
+  Widget XPCounter() {
     return Div.row(
-      [Style.KeyIcon, const Spacing.width(8), RLTypography.text('23')],
+      [
+        Style.KeyIcon,
+        const Spacing.width(8),
+        RLTypography.bodyLarge(
+          '17',
+          color: Colors.grey.withValues(alpha: 0.8),
+        ),
+      ],
       decoration: Style.decoration,
       color: Style.backgroundColor,
       padding: Style.padding,

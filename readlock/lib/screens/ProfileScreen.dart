@@ -22,23 +22,15 @@ class ProfileScreen extends StatelessWidget {
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(20),
           child: Div.column([
-            DuolingoProfileHeader(),
-
-            const Spacing.height(24),
-
-            EnhancedStreakCard(),
-
-            const Spacing.height(20),
-
-            DailyGoalCard(),
+            ReadingLeagueCard(),
 
             const Spacing.height(20),
 
             AchievementGallery(),
 
-            const Spacing.height(20),
+            const Spacing.height(24),
 
-            ReadingLeagueCard(),
+            MenuSection(),
           ], crossAxisAlignment: CrossAxisAlignment.stretch),
         ),
       ),
@@ -46,357 +38,146 @@ class ProfileScreen extends StatelessWidget {
   }
 }
 
-class DuolingoProfileHeader extends StatelessWidget {
-  const DuolingoProfileHeader({super.key});
+class MenuSection extends StatelessWidget {
+  const MenuSection({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [Color(0xFF58CC02), Color(0xFF89E219)],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: BorderRadius.circular(20),
+    return Div.column([
+      // Account & Subscription
+      MenuItem(
+        icon: Icons.person,
+        title: 'Account',
+        onTap: () {},
       ),
-      child: Div.column([
-        Div.row([
-          Container(
-            width: 64,
-            height: 64,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(32),
-              color: Colors.white,
-              border: Border.all(color: Colors.white, width: 3),
-            ),
-            child: const Icon(
-              Icons.person,
-              color: Color(0xFF58CC02),
-              size: 32,
-            ),
-          ),
 
-          const Spacing.width(16),
+      MenuItem(
+        icon: Icons.card_membership,
+        title: 'Reader Pass',
+        onTap: () {},
+      ),
 
-          Expanded(
-            child: Div.column([
-              RLTypography.headingMedium(
-                PROFILE_GREETING,
-                color: Colors.white,
-              ),
+      MenuDivider(),
 
-              const Spacing.height(4),
+      // App Settings
+      MenuItem(
+        icon: Icons.notifications,
+        title: 'Notifications',
+        onTap: () {},
+      ),
 
-              RLTypography.bodyMedium(
-                'Level 12 Knowledge Seeker',
-                color: Colors.white.withValues(alpha: 0.9),
-              ),
-            ], crossAxisAlignment: CrossAxisAlignment.start),
-          ),
+      MenuItem(
+        icon: Icons.volume_up,
+        title: 'Sounds',
+        onTap: () {},
+      ),
 
-          Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 16,
-              vertical: 8,
-            ),
-            decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.2),
-              borderRadius: BorderRadius.circular(20),
-              border: Border.all(
-                color: Colors.white.withValues(alpha: 0.3),
-              ),
-            ),
-            child: Div.row([
-              const Icon(
-                Icons.local_fire_department,
-                color: Colors.white,
-                size: 18,
-              ),
+      MenuItem(
+        icon: Icons.vibration,
+        title: 'Haptics',
+        onTap: () {},
+      ),
 
-              const Spacing.width(6),
+      MenuDivider(),
 
-              RLTypography.bodyMedium(
-                '23 day streak',
-                color: Colors.white,
-              ),
-            ]),
-          ),
-        ], crossAxisAlignment: CrossAxisAlignment.center),
+      // Support & Information
+      MenuItem(
+        icon: Icons.info,
+        title: 'About',
+        onTap: () {},
+      ),
 
-        const Spacing.height(16),
+      MenuItem(
+        icon: Icons.help,
+        title: 'Help',
+        onTap: () {},
+      ),
 
-        Div.row([
-          Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 12,
-              vertical: 8,
-            ),
-            decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.15),
-              borderRadius: BorderRadius.circular(16),
-            ),
-            child: Div.row([
-              const Icon(Icons.star, color: Colors.white, size: 16),
+      MenuItem(
+        icon: Icons.bug_report,
+        title: 'Report a problem',
+        onTap: () {},
+      ),
 
-              const Spacing.width(4),
+      MenuItem(
+        icon: Icons.new_releases,
+        title: 'Product Updates',
+        onTap: () {},
+      ),
 
-              RLTypography.bodyMedium('2,847 Aha', color: Colors.white),
-            ]),
-          ),
+      MenuDivider(),
 
-          const Spacing.width(12),
+      // Account Actions & Legal
+      MenuItem(
+        icon: Icons.gavel,
+        title: 'Legal',
+        onTap: () {},
+      ),
 
-          Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 12,
-              vertical: 8,
-            ),
-            decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.15),
-              borderRadius: BorderRadius.circular(16),
-            ),
-            child: Div.row([
-              const Icon(
-                Icons.emoji_events,
-                color: Colors.white,
-                size: 16,
-              ),
+      MenuItem(
+        icon: Icons.logout,
+        title: 'Log out',
+        onTap: () {},
+        textColor: Colors.red,
+      ),
 
-              const Spacing.width(4),
+      const Spacing.height(24),
 
-              RLTypography.bodyMedium('47 badges', color: Colors.white),
-            ]),
-          ),
+      Center(
+        child: RLTypography.bodyMedium(
+          'Version 1.0.0',
+          color: RLTheme.textPrimary.withValues(alpha: 0.5),
+        ),
+      ),
+    ]);
+  }
+}
 
-          const Spacing.width(12),
+class MenuItem extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final VoidCallback onTap;
+  final Color? textColor;
 
-          Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 12,
-              vertical: 8,
-            ),
-            decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.15),
-              borderRadius: BorderRadius.circular(16),
-            ),
-            child: Div.row([
-              const Icon(Icons.school, color: Colors.white, size: 16),
+  const MenuItem({
+    super.key,
+    required this.icon,
+    required this.title,
+    required this.onTap,
+    this.textColor,
+  });
 
-              const Spacing.width(4),
+  @override
+  Widget build(BuildContext context) {
+    return Div.row([
+      Icon(
+        icon,
+        color: textColor ?? RLTheme.textPrimary.withValues(alpha: 0.7),
+        size: 20,
+      ),
 
-              RLTypography.bodyMedium('12 books', color: Colors.white),
-            ]),
-          ),
-        ]),
-      ]),
+      const Spacing.width(16),
+
+      Expanded(
+        child: RLTypography.bodyMedium(
+          title,
+          color: textColor ?? RLTheme.textPrimary,
+        ),
+      ),
+
+      Icon(
+        Icons.chevron_right,
+        color: RLTheme.textPrimary.withValues(alpha: 0.3),
+        size: 20,
+      ),
+    ], 
+      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 0),
+      onTap: onTap,
     );
   }
 }
 
-class EnhancedStreakCard extends StatelessWidget {
-  const EnhancedStreakCard({super.key});
 
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: RLTheme.backgroundLight,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: const Color(0xFFFF9600).withValues(alpha: 0.3),
-          width: 2,
-        ),
-      ),
-      child: Div.column([
-        Div.row([
-          Container(
-            width: 48,
-            height: 48,
-            decoration: BoxDecoration(
-              color: const Color(0xFFFF9600),
-              borderRadius: BorderRadius.circular(24),
-            ),
-            child: const Icon(
-              Icons.local_fire_department,
-              color: Colors.white,
-              size: 28,
-            ),
-          ),
-
-          const Spacing.width(16),
-
-          Expanded(
-            child: Div.column([
-              RLTypography.headingMedium(
-                '23 Day Streak!',
-                color: const Color(0xFFFF9600),
-              ),
-
-              const Spacing.height(4),
-
-              RLTypography.bodyMedium(
-                '+85 Aha earned today',
-                color: RLTheme.primaryGreen,
-              ),
-            ], crossAxisAlignment: CrossAxisAlignment.start),
-          ),
-
-          Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 12,
-              vertical: 6,
-            ),
-            decoration: BoxDecoration(
-              color: const Color(0xFFFF9600).withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: RLTypography.bodyMedium(
-              'PERFECT!',
-              color: const Color(0xFFFF9600),
-            ),
-          ),
-        ]),
-
-        const Spacing.height(20),
-
-        Div.row([
-          ...List.generate(7, (dayIndex) {
-            final bool isCompleted = dayIndex < 6;
-            final bool isToday = dayIndex == 6;
-            final bool isFuture = dayIndex > 6;
-
-            return Expanded(
-              child: Container(
-                height: 40,
-                margin: const EdgeInsets.symmetric(horizontal: 2),
-                decoration: BoxDecoration(
-                  color: isCompleted
-                      ? const Color(0xFFFF9600)
-                      : isToday
-                      ? const Color(0xFFFF9600)
-                      : RLTheme.textPrimary.withValues(alpha: 0.05),
-                  borderRadius: BorderRadius.circular(8),
-                  border: isToday
-                      ? Border.all(
-                          color: const Color(0xFFFF9600),
-                          width: 2,
-                        )
-                      : null,
-                ),
-                child: Div.column([
-                  const Spacing.height(4),
-                  RLTypography.bodyMedium(
-                    ['M', 'T', 'W', 'T', 'F', 'S', 'S'][dayIndex],
-                    color: isCompleted || isToday
-                        ? Colors.white
-                        : RLTheme.textPrimary.withValues(alpha: 0.4),
-                    textAlign: TextAlign.center,
-                  ),
-                  const Spacing.height(2),
-                  Icon(
-                    isCompleted
-                        ? Icons.local_fire_department
-                        : isToday
-                        ? Icons.local_fire_department
-                        : Icons.circle_outlined,
-                    color: isCompleted || isToday
-                        ? Colors.white
-                        : RLTheme.textPrimary.withValues(alpha: 0.3),
-                    size: 14,
-                  ),
-                ], mainAxisAlignment: MainAxisAlignment.center),
-              ),
-            );
-          }),
-        ]),
-
-        const Spacing.height(16),
-
-        RLTypography.bodyMedium(
-          'You\'re in the top 10% of readers this week! 🎉',
-          color: RLTheme.textPrimary.withValues(alpha: 0.8),
-          textAlign: TextAlign.center,
-        ),
-      ]),
-    );
-  }
-}
-
-class DailyGoalCard extends StatelessWidget {
-  const DailyGoalCard({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [Color(0xFF1CB0F6), Color(0xFF00B4D8)],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Div.column([
-        Div.row([
-          const Icon(Icons.flag, color: Colors.white, size: 24),
-
-          const Spacing.width(12),
-
-          RLTypography.bodyLarge(DAILY_GOAL_LABEL, color: Colors.white),
-
-          const Spacer(),
-
-          Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 10,
-              vertical: 4,
-            ),
-            decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.2),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: RLTypography.bodyMedium(
-              '85/100 Aha',
-              color: Colors.white,
-            ),
-          ),
-        ]),
-
-        const Spacing.height(16),
-
-        Container(
-          height: 12,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(6),
-            color: Colors.white.withValues(alpha: 0.3),
-          ),
-          child: FractionallySizedBox(
-            alignment: Alignment.centerLeft,
-            widthFactor: 0.85,
-            child: Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(6),
-                color: Colors.white,
-              ),
-            ),
-          ),
-        ),
-
-        const Spacing.height(12),
-
-        RLTypography.bodyMedium(
-          '15 Aha to go! You\'re almost there 💪',
-          color: Colors.white.withValues(alpha: 0.9),
-          textAlign: TextAlign.center,
-        ),
-      ]),
-    );
-  }
-}
 
 class ReadingStatsCard extends StatelessWidget {
   const ReadingStatsCard({super.key});
@@ -1020,6 +801,19 @@ class ActionButton extends StatelessWidget {
       radius: BorderRadius.circular(12),
       mainAxisAlignment: MainAxisAlignment.center,
       onTap: onTap,
+    );
+  }
+}
+
+class MenuDivider extends StatelessWidget {
+  const MenuDivider({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 1,
+      margin: const EdgeInsets.symmetric(vertical: 8),
+      color: RLTheme.textPrimary.withValues(alpha: 0.1),
     );
   }
 }

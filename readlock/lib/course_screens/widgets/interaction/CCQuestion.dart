@@ -64,7 +64,7 @@ class CCQuestionState extends State<CCQuestion> {
         const Spacing.height(CCQuestion.QUESTION_SECTION_SPACING),
       ],
       color: RLTheme.backgroundDark,
-      padding: RLConstants.COURSE_SECTION_PADDING,
+      padding: 24,
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.center,
     );
@@ -307,7 +307,7 @@ class CCQuestionState extends State<CCQuestion> {
 
         const Spacing.width(8),
 
-        RLTypography.bodyMedium('+5 Aha', color: Colors.white),
+        RLTypography.bodyMedium('+5 experience', color: Colors.white),
 
         const Spacer(),
 

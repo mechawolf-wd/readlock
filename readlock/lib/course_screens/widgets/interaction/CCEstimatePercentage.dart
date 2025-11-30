@@ -83,7 +83,7 @@ class CCEstimatePercentageState extends State<CCEstimatePercentage>
     return Div.column(
       MainContent(),
       color: RLTheme.backgroundDark,
-      padding: RLConstants.COURSE_SECTION_PADDING,
+      padding: 24,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       mainAxisAlignment: MainAxisAlignment.center,
     );
@@ -155,39 +155,45 @@ class CCEstimatePercentageState extends State<CCEstimatePercentage>
   Widget EstimationSlider() {
     final SliderThemeData sliderTheme = Style.getSliderTheme();
 
-    return Div.column([
-      // Slider with labels
-      SliderTheme(
-        data: sliderTheme,
-        child: Slider(
-          value: currentEstimate,
-          max: 100,
-          divisions: 100,
-          onChanged: getSliderChangeHandler(),
-        ),
-      ),
-
-      // Min/Max labels
-      Div.row([
-        Text(
-          '0%',
-          style: TextStyle(
-            fontSize: 12,
-            color: RLTheme.textPrimary.withValues(alpha: 0.5),
+    return Div.column(
+      [
+        // Slider with labels
+        SliderTheme(
+          data: sliderTheme,
+          child: Slider(
+            value: currentEstimate,
+            max: 100,
+            divisions: 100,
+            onChanged: getSliderChangeHandler(),
           ),
         ),
 
-        const Spacer(),
+        // Min/Max labels
+        Div.row(
+          [
+            Text(
+              '0%',
+              style: TextStyle(
+                fontSize: 12,
+                color: RLTheme.textPrimary.withValues(alpha: 0.5),
+              ),
+            ),
 
-        Text(
-          '100%',
-          style: TextStyle(
-            fontSize: 12,
-            color: RLTheme.textPrimary.withValues(alpha: 0.5),
-          ),
+            const Spacer(),
+
+            Text(
+              '100%',
+              style: TextStyle(
+                fontSize: 12,
+                color: RLTheme.textPrimary.withValues(alpha: 0.5),
+              ),
+            ),
+          ],
+          padding: const [12, 0],
         ),
-      ], padding: const [12, 0]),
-    ], padding: const [24, 0]);
+      ],
+      padding: const [24, 0],
+    );
   }
 
   Function(double)? getSliderChangeHandler() {
@@ -400,13 +406,13 @@ class CCEstimatePercentageState extends State<CCEstimatePercentage>
     final bool isClose = difference <= widget.content.closeThreshold;
 
     if (isClose) {
-      showAhaReward();
+      showExperienceReward();
     }
 
     widget.onAnswerSelected(currentEstimate.round(), isClose);
   }
 
-  void showAhaReward() {
+  void showExperienceReward() {
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -414,8 +420,13 @@ class CCEstimatePercentageState extends State<CCEstimatePercentage>
             mainAxisSize: MainAxisSize.min,
             children: [
               StarIcon,
+
               const Spacing.width(8),
-              RLTypography.bodyLarge('+8 Aha', color: Colors.white),
+
+              RLTypography.bodyLarge(
+                '+8 experience',
+                color: Colors.white,
+              ),
             ],
           ),
           backgroundColor: Colors.green.shade600,

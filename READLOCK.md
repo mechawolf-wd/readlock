@@ -201,7 +201,7 @@ Based on the course data structure, strategically use these content types:
 ### **Progressive Revelation**
 
 - **Scaffolded Complexity**: Simple → Complex → Principle
-- **Aha Moments**: Multiple examples → pattern recognition → framework reveal
+- **experience Moments**: Multiple examples → pattern recognition → framework reveal
 
 ### **Interaction Design**
 
@@ -454,21 +454,21 @@ Use `<rl-marker-green>` tags for essential concepts users must retain (markers o
 
 **Core Daily Reward Mechanics:**
 
-- **Daily Login Bonus**: Progressive rewards for consecutive days (Day 1: 10 Aha, Day 7: 100 Aha + bonus badge)
-- **Reading Streak Multipliers**: 2x Aha points after 3 days, 3x after 7 days, 5x after 30 days
+- **Daily Login Bonus**: Progressive rewards for consecutive days (Day 1: 10 experience, Day 7: 100 experience + bonus badge)
+- **Reading Streak Multipliers**: 2x experience points after 3 days, 3x after 7 days, 5x after 30 days
 - **Daily Quest System**: Rotating challenges that reset every 24 hours with completion rewards
-- **Surprise Bonuses**: Random "Eureka Moments" that grant 50-200 bonus Aha points
+- **Surprise Bonuses**: Random "Eureka Moments" that grant 50-200 bonus experience points
 - **Weekend Doubles**: Saturday/Sunday activities earn double rewards to maintain weekend engagement
 
 **Daily Challenge Categories:**
 
-- **Knowledge Builder**: "Complete 2 course sections" (Reward: 25 Aha + Progress Badge)
-- **Insight Hunter**: "Find and highlight 3 key concepts" (Reward: 30 Aha + Highlighter Badge)
-- **Connector**: "Link today's learning to a previous concept" (Reward: 40 Aha + Synthesis Badge)
-- **Speedster**: "Complete a full chapter in under 20 minutes" (Reward: 35 Aha + Lightning Badge)
-- **Perfectionist**: "Answer 5 questions correctly in a row" (Reward: 50 Aha + Accuracy Badge)
-- **Explorer**: "Start a new course or return to an abandoned one" (Reward: 45 Aha + Discovery Badge)
-- **Reviewer**: "Complete 3 spaced repetition reviews" (Reward: 20 Aha + Memory Master Badge)
+- **Knowledge Builder**: "Complete 2 course sections" (Reward: 25 experience + Progress Badge)
+- **Insight Hunter**: "Find and highlight 3 key concepts" (Reward: 30 experience + Highlighter Badge)
+- **Connector**: "Link today's learning to a previous concept" (Reward: 40 experience + Synthesis Badge)
+- **Speedster**: "Complete a full chapter in under 20 minutes" (Reward: 35 experience + Lightning Badge)
+- **Perfectionist**: "Answer 5 questions correctly in a row" (Reward: 50 experience + Accuracy Badge)
+- **Explorer**: "Start a new course or return to an abandoned one" (Reward: 45 experience + Discovery Badge)
+- **Reviewer**: "Complete 3 spaced repetition reviews" (Reward: 20 experience + Memory Master Badge)
 
 **Achievement Badge System:**
 
@@ -508,55 +508,55 @@ Use `<rl-marker-green>` tags for essential concepts users must retain (markers o
 
 **Bronze Tier (Basic Daily Engagement):**
 
-- Daily login: 10 Aha points
-- Complete 1 section: 15 Aha points
-- Answer 3 questions correctly: 10 Aha points
-- Total daily potential: 35 Aha points
+- Daily login: 10 experience points
+- Complete 1 section: 15 experience points
+- Answer 3 questions correctly: 10 experience points
+- Total daily potential: 35 experience points
 
 **Silver Tier (Active Learning Day):**
 
 - All Bronze requirements +
-- Complete 1 full chapter: 25 Aha points
-- Highlight 2 key insights: 15 Aha points
-- Achieve 80%+ question accuracy: 20 Aha points
-- Total daily potential: 95 Aha points + Silver Day Badge
+- Complete 1 full chapter: 25 experience points
+- Highlight 2 key insights: 15 experience points
+- Achieve 80%+ question accuracy: 20 experience points
+- Total daily potential: 95 experience points + Silver Day Badge
 
 **Gold Tier (Dedicated Learning Day):**
 
 - All Silver requirements +
-- Complete 2+ chapters: 40 Aha points
-- Make 1 cross-course connection: 30 Aha points
-- Maintain perfect streak for 7+ days: 50 Aha bonus
-- Total daily potential: 215 Aha points + Gold Day Badge
+- Complete 2+ chapters: 40 experience points
+- Make 1 cross-course connection: 30 experience points
+- Maintain perfect streak for 7+ days: 50 experience bonus
+- Total daily potential: 215 experience points + Gold Day Badge
 
 **Reward Shop Integration:**
 
-**Cosmetic Rewards (Aha Store):**
+**Cosmetic Rewards (experience Store):**
 
-- **Custom Profile Themes** (500 Aha): "Personalize your learning space"
-- **Exclusive Badge Frames** (300 Aha): "Show off your achievements in style"
-- **Avatar Customizations** (200 Aha): "Express your learning personality"
-- **Special Effects** (400 Aha): "Celebrate completions with unique animations"
+- **Custom Profile Themes** (500 experience): "Personalize your learning space"
+- **Exclusive Badge Frames** (300 experience): "Show off your achievements in style"
+- **Avatar Customizations** (200 experience): "Express your learning personality"
+- **Special Effects** (400 experience): "Celebrate completions with unique animations"
 
-**Learning Enhancements (Aha Store):**
+**Learning Enhancements (experience Store):**
 
-- **Hint Tokens** (50 Aha each): "Get extra help on challenging questions"
-- **Progress Boosters** (100 Aha): "2x rewards for next learning session"
-- **Chapter Previews** (75 Aha): "Unlock sneak peeks of upcoming content"
-- **Concept Maps** (150 Aha): "Visual summaries of completed courses"
+- **Hint Tokens** (50 experience each): "Get extra help on challenging questions"
+- **Progress Boosters** (100 experience): "2x rewards for next learning session"
+- **Chapter Previews** (75 experience): "Unlock sneak peeks of upcoming content"
+- **Concept Maps** (150 experience): "Visual summaries of completed courses"
 
-**Exclusive Content (Aha Store):**
+**Exclusive Content (experience Store):**
 
-- **Author Interview Snippets** (300 Aha): "Behind-the-scenes insights from book authors"
-- **Extended Case Studies** (200 Aha): "Deep dives into real-world applications"
-- **Book Recommendation Engine** (250 Aha): "AI-powered suggestions based on your interests"
-- **Early Access Content** (500 Aha): "Be first to experience new courses"
+- **Author Interview Snippets** (300 experience): "Behind-the-scenes insights from book authors"
+- **Extended Case Studies** (200 experience): "Deep dives into real-world applications"
+- **Book Recommendation Engine** (250 experience): "AI-powered suggestions based on your interests"
+- **Early Access Content** (500 experience): "Be first to experience new courses"
 
 **Social Recognition Features:**
 
 **Leaderboards:**
 
-- **Daily Champions**: Top 10 Aha earners each day
+- **Daily Champions**: Top 10 experience earners each day
 - **Weekly Wizards**: Highest weekly learning hours
 - **Monthly Masters**: Most courses completed this month
 - **Streak Superstars**: Longest current learning streaks
@@ -565,7 +565,7 @@ Use `<rl-marker-green>` tags for essential concepts users must retain (markers o
 
 - **Achievement Announcements**: "Sarah just earned the Diamond Learner badge!"
 - **Milestone Sharing**: Auto-generate social media posts for major achievements
-- **Friend Challenges**: "Challenge a friend to beat your weekly Aha score"
+- **Friend Challenges**: "Challenge a friend to beat your weekly experience score"
 - **Learning Groups**: Join communities around specific book genres or topics
 
 **Seasonal Events & Limited-Time Rewards:**
@@ -587,14 +587,14 @@ Use `<rl-marker-green>` tags for essential concepts users must retain (markers o
 
 **Variable Reward Schedules:**
 
-- **Surprise Bonuses**: Random 25-100 Aha drops during learning sessions (dopamine boost)
+- **Surprise Bonuses**: Random 25-100 experience drops during learning sessions (dopamine boost)
 - **Streak Milestones**: Unexpected rewards at non-obvious intervals (5, 13, 21 days)
-- **Performance Rewards**: Bonus Aha for improvement over personal averages
+- **Performance Rewards**: Bonus experience for improvement over personal averages
 - **Discovery Bonuses**: Extra rewards for exploring new course categories
 
 **Loss Aversion Mechanics:**
 
-- **Streak Insurance**: Use Aha points to protect streaks during busy days
+- **Streak Insurance**: Use experience points to protect streaks during busy days
 - **Achievement Locks**: Some badges become "at risk" if not maintained
 - **Deadline Pressure**: Limited-time achievements create urgency
 - **Investment Protection**: Higher investment in learning leads to greater reward protection

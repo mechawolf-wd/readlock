@@ -7,7 +7,7 @@ import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLTheme.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 
-const String AHA_DIALOG_TITLE = 'Explanation';
+const String DIALOG_TITLE = 'Explanation';
 const String HINT_DIALOG_TITLE = 'Hint';
 const String CLOSE_BUTTON_LABEL = 'Got it';
 const double MODAL_PADDING = 24.0;
@@ -15,7 +15,7 @@ const double BORDER_RADIUS = 12.0;
 
 class FeedbackBottomSheets {
   // Icon definitions
-  static const Widget AhaIcon = Icon(
+  static const Widget ExperienceIcon = Icon(
     Icons.lightbulb,
     color: RLTheme.primaryGreen,
     size: 20,
@@ -27,17 +27,17 @@ class FeedbackBottomSheets {
     size: 20,
   );
 
-  // Show Aha explanation bottom sheet for correct answers
-  static void showAhaExplanation({
+  // Show explanation bottom sheet for correct answers
+  static void showExplanation({
     required BuildContext context,
     required String explanation,
   }) {
     showFeedbackSheet(
       context: context,
-      title: AHA_DIALOG_TITLE,
+      title: DIALOG_TITLE,
       content: explanation,
       buttonColor: RLTheme.primaryGreen,
-      icon: AhaIcon,
+      icon: ExperienceIcon,
     );
   }
 
@@ -140,7 +140,10 @@ class FeedbackSheet extends StatelessWidget {
   Widget BodySection() {
     return Padding(
       padding: bodyPadding,
-      child: RLTypography.bodyMedium(content, textAlign: TextAlign.left),
+      child: RLTypography.bodyMedium(
+        content,
+        textAlign: TextAlign.left,
+      ),
     );
   }
 

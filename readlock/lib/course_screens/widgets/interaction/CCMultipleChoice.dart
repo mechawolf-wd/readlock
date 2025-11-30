@@ -81,7 +81,6 @@ class CCMultipleChoiceState extends State<CCMultipleChoice> {
 
   @override
   Widget build(BuildContext context) {
-
     return Div.column(
       [
         // Question text section
@@ -95,7 +94,7 @@ class CCMultipleChoiceState extends State<CCMultipleChoice> {
         const Spacing.height(QUESTION_SECTION_SPACING),
       ],
       color: RLTheme.backgroundDark,
-      padding: RLConstants.COURSE_SECTION_PADDING,
+      padding: 24,
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.center,
     );
@@ -110,23 +109,16 @@ class CCMultipleChoiceState extends State<CCMultipleChoice> {
   }
 
   List<Widget> getOptionWidgetsList() {
-    return widget.content.options
-        .asMap()
-        .entries
-        .map((entry) {
-          final int optionIndex = entry.key;
-          final QuestionOption option = entry.value;
+    return widget.content.options.asMap().entries.map((entry) {
+      final int optionIndex = entry.key;
+      final QuestionOption option = entry.value;
 
-          return Div.column([
-            OptionButtonWidget(
-              optionIndex: optionIndex,
-              option: option,
-            ),
+      return Div.column([
+        OptionButtonWidget(optionIndex: optionIndex, option: option),
 
-            const Spacing.height(OPTION_BUTTON_SPACING),
-          ]);
-        })
-        .toList();
+        const Spacing.height(OPTION_BUTTON_SPACING),
+      ]);
+    }).toList();
   }
 
   Widget OptionButtonWidget({
@@ -158,11 +150,7 @@ class CCMultipleChoiceState extends State<CCMultipleChoice> {
     );
 
     return Div.row(
-      [
-        Expanded(
-          child: Text(option.text, style: textStyle),
-        ),
-      ],
+      [Expanded(child: Text(option.text, style: textStyle))],
       padding: RLTheme.contentPaddingMediumInsets,
       decoration: decoration,
       onTap: hasAnsweredQuestion
@@ -230,9 +218,9 @@ class CCMultipleChoiceState extends State<CCMultipleChoice> {
 
     if (isCorrectAnswer && !hasAnsweredQuestion) {
       updateSelectedAnswer(optionIndex);
-      
+
       notifyAnswerSelected(optionIndex, isCorrectAnswer);
-      
+
       showCorrectAnswerFeedback();
     }
   }

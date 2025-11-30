@@ -23,7 +23,7 @@ class CCIntro extends StatelessWidget {
             textStyle: RLTypography.bodyMediumStyle,
           ),
         ],
-        padding: RLConstants.COURSE_SECTION_PADDING,
+        padding: 24,
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
       ),

@@ -60,7 +60,7 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
 
   // Icon definitions
   static const Icon backNavigationIcon = Icon(
-    Icons.chevron_left,
+    Icons.close_rounded,
     color: Color.fromARGB(255, 157, 157, 157),
     size: BACK_ICON_SIZE,
   );

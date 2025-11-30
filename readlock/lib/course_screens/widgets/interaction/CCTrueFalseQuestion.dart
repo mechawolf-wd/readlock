@@ -121,7 +121,7 @@ class CCTrueFalseQuestionState extends State<CCTrueFalseQuestion> {
       ],
       crossAxisAlignment: CrossAxisAlignment.stretch,
       mainAxisAlignment: MainAxisAlignment.start,
-      padding: RLConstants.COURSE_SECTION_PADDING,
+      padding: 24,
       color: RLTheme.backgroundDark,
     );
   }
@@ -146,33 +146,31 @@ class CCTrueFalseQuestionState extends State<CCTrueFalseQuestion> {
     BoxDecoration mutedDecoration,
     BoxDecoration normalDecoration,
   ) {
-    return Div.row(
-      [
-        // True button
-        Expanded(
-          child: trueButtonWidget(
-            checkIcon,
-            correctDecoration,
-            selectedTrueDecoration,
-            mutedDecoration,
-            normalDecoration,
-          ),
+    return Div.row([
+      // True button
+      Expanded(
+        child: trueButtonWidget(
+          checkIcon,
+          correctDecoration,
+          selectedTrueDecoration,
+          mutedDecoration,
+          normalDecoration,
         ),
+      ),
 
-        const Spacing.width(TRUE_FALSE_BUTTON_SPACING),
+      const Spacing.width(TRUE_FALSE_BUTTON_SPACING),
 
-        // False button
-        Expanded(
-          child: falseButtonWidget(
-            cancelIcon,
-            correctDecoration,
-            selectedFalseDecoration,
-            mutedDecoration,
-            normalDecoration,
-          ),
+      // False button
+      Expanded(
+        child: falseButtonWidget(
+          cancelIcon,
+          correctDecoration,
+          selectedFalseDecoration,
+          mutedDecoration,
+          normalDecoration,
         ),
-      ],
-    );
+      ),
+    ]);
   }
 
   Widget trueButtonWidget(
@@ -223,9 +221,7 @@ class CCTrueFalseQuestionState extends State<CCTrueFalseQuestion> {
 
         const Spacing.width(12),
 
-        Flexible(
-          child: Text('True', style: textStyle),
-        ),
+        Flexible(child: Text('True', style: textStyle)),
       ],
       height: TRUE_FALSE_BUTTON_HEIGHT,
       decoration: decoration.copyWith(color: colors.backgroundColor),
@@ -285,9 +281,7 @@ class CCTrueFalseQuestionState extends State<CCTrueFalseQuestion> {
 
         const Spacing.width(12),
 
-        Flexible(
-          child: Text('False', style: textStyle),
-        ),
+        Flexible(child: Text('False', style: textStyle)),
       ],
       height: TRUE_FALSE_BUTTON_HEIGHT,
       decoration: decoration.copyWith(color: colors.backgroundColor),
@@ -432,22 +426,22 @@ class CCTrueFalseQuestionState extends State<CCTrueFalseQuestion> {
   }
 
   void showIncorrectAnswerFeedback(int answerIndex) {
-    final QuestionOption selectedOption = widget.content.options[answerIndex];
-    final String consequenceMessage = selectedOption.consequenceMessage ?? 
-        widget.content.hint ?? 
+    final QuestionOption selectedOption =
+        widget.content.options[answerIndex];
+    final String consequenceMessage =
+        selectedOption.consequenceMessage ??
+        widget.content.hint ??
         'Think about the design principle and try again.';
-    
-    FeedbackSnackBar.showWrongAnswer(
-      context,
-      hint: consequenceMessage,
-    );
+
+    FeedbackSnackBar.showWrongAnswer(context, hint: consequenceMessage);
   }
 
   void showCorrectAnswerFeedback(int answerIndex) {
-    final QuestionOption selectedOption = widget.content.options[answerIndex];
-    final String feedbackMessage = selectedOption.consequenceMessage ?? 
-        widget.content.explanation;
-    
+    final QuestionOption selectedOption =
+        widget.content.options[answerIndex];
+    final String feedbackMessage =
+        selectedOption.consequenceMessage ?? widget.content.explanation;
+
     FeedbackSnackBar.showCorrectAnswer(
       context,
       explanation: feedbackMessage,

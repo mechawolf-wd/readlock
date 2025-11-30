@@ -52,7 +52,7 @@ class CCReflectionState extends State<CCReflection> {
   Widget build(BuildContext context) {
     return Container(
       color: RLTheme.backgroundDark,
-      padding: const EdgeInsets.all(RLConstants.COURSE_SECTION_PADDING),
+      padding: const EdgeInsets.all(24),
       child: Center(
         child: Div.column(
           [
@@ -113,7 +113,7 @@ class CCReflectionState extends State<CCReflection> {
     return points.asMap().entries.map((entry) {
       final int index = entry.key;
       final String point = entry.value;
-      
+
       return ThinkingCardWidget(
         point: point,
         index: index,
@@ -183,8 +183,10 @@ class CCReflectionState extends State<CCReflection> {
     required bool isSwiping,
   }) {
     return GestureDetector(
-      onHorizontalDragEnd: (details) => handleSwipeEnd(details, onSwipeComplete),
-      onHorizontalDragUpdate: (details) => handleSwipeUpdate(details, index),
+      onHorizontalDragEnd: (details) =>
+          handleSwipeEnd(details, onSwipeComplete),
+      onHorizontalDragUpdate: (details) =>
+          handleSwipeUpdate(details, index),
       onHorizontalDragStart: (details) => handleSwipeStart(index),
       child: buildAnimatedCardContainer(
         cardDecoration: cardDecoration,
@@ -196,9 +198,14 @@ class CCReflectionState extends State<CCReflection> {
     );
   }
 
-  void handleSwipeEnd(DragEndDetails details, VoidCallback onSwipeComplete) {
-    final bool isValidSwipe = details.primaryVelocity != null && details.primaryVelocity! > 300;
-    
+  void handleSwipeEnd(
+    DragEndDetails details,
+    VoidCallback onSwipeComplete,
+  ) {
+    final bool isValidSwipe =
+        details.primaryVelocity != null &&
+        details.primaryVelocity! > 300;
+
     if (isValidSwipe) {
       onSwipeComplete();
     }
@@ -236,9 +243,9 @@ class CCReflectionState extends State<CCReflection> {
           isSelected: isSelected,
           isSwiping: isSwiping,
         ),
-        
+
         const Spacing.width(12),
-        
+
         // Content section
         buildCardContentSection(
           point: point,
@@ -260,7 +267,9 @@ class CCReflectionState extends State<CCReflection> {
       isSwiping: isSwiping,
     );
 
-    final IconData indicatorIcon = isSelected ? Icons.check : Icons.arrow_forward_ios;
+    final IconData indicatorIcon = isSelected
+        ? Icons.check
+        : Icons.arrow_forward_ios;
     final Color iconColor = isSelected ? Colors.white : cardColor;
 
     return AnimatedContainer(
@@ -271,11 +280,7 @@ class CCReflectionState extends State<CCReflection> {
         color: indicatorColor,
         borderRadius: BorderRadius.circular(16),
       ),
-      child: Icon(
-        indicatorIcon,
-        color: iconColor,
-        size: 16,
-      ),
+      child: Icon(indicatorIcon, color: iconColor, size: 16),
     );
   }
 
@@ -287,11 +292,11 @@ class CCReflectionState extends State<CCReflection> {
     if (isSelected) {
       return cardColor;
     }
-    
+
     if (isSwiping) {
       return cardColor.withValues(alpha: 0.3);
     }
-    
+
     return RLTheme.textPrimary.withValues(alpha: 0.1);
   }
 
@@ -300,22 +305,19 @@ class CCReflectionState extends State<CCReflection> {
     required Color cardColor,
     required bool isSelected,
   }) {
-    final Color textColor = isSelected 
-        ? cardColor 
+    final Color textColor = isSelected
+        ? cardColor
         : RLTheme.textPrimary.withValues(alpha: 0.8);
 
     return Expanded(
       child: Div.column([
         // Main point text
-        RLTypography.bodyMedium(
-          point,
-          color: textColor,
-        ),
-        
+        RLTypography.bodyMedium(point, color: textColor),
+
         // Swipe instruction
         if (!isSelected) ...[
           const Spacing.height(4),
-          
+
           RLTypography.bodyMedium(
             'Swipe right to confirm',
             color: RLTheme.textPrimary.withValues(alpha: 0.5),

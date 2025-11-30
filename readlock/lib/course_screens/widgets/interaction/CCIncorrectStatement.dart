@@ -86,7 +86,7 @@ class CCIncorrectStatementState extends State<CCIncorrectStatement>
   Widget build(BuildContext context) {
     return Container(
       color: RLTheme.backgroundDark,
-      padding: const EdgeInsets.all(RLConstants.COURSE_SECTION_PADDING),
+      padding: const EdgeInsets.all(24),
       child: Center(
         child: Div.column(
           [
@@ -112,7 +112,7 @@ class CCIncorrectStatementState extends State<CCIncorrectStatement>
 
   Widget QuestionTextSection() {
     final String questionText = getQuestionText();
-    
+
     return Text(
       questionText,
       style: questionTextStyle,
@@ -133,13 +133,13 @@ class CCIncorrectStatementState extends State<CCIncorrectStatement>
   List<Widget> getStatementItemsList() {
     return widget.content.options.asMap().entries.map((entry) {
       final int statementIndex = entry.key;
-      final bool isLastItem = statementIndex == widget.content.options.length - 1;
+      final bool isLastItem =
+          statementIndex == widget.content.options.length - 1;
 
       return Div.column([
         StatementItemWidget(statementIndex: statementIndex),
 
-        if (!isLastItem)
-          const Spacing.height(STATEMENT_ITEM_SPACING),
+        if (!isLastItem) const Spacing.height(STATEMENT_ITEM_SPACING),
       ]);
     }).toList();
   }
@@ -176,11 +176,11 @@ class CCIncorrectStatementState extends State<CCIncorrectStatement>
     if (hasAnswered) {
       return getAnsweredStatementStyle(isIncorrectStatement);
     }
-    
+
     if (isSelected) {
       return getSelectedStatementStyle();
     }
-    
+
     return getDefaultStatementStyle();
   }
 
@@ -221,10 +221,11 @@ class CCIncorrectStatementState extends State<CCIncorrectStatement>
     required bool isSelected,
     required StatementStyle statementStyle,
   }) {
-    final BoxDecoration containerDecoration = getStatementContainerDecoration(
-      statementStyle.backgroundColor,
-      statementStyle.borderColor,
-    );
+    final BoxDecoration containerDecoration =
+        getStatementContainerDecoration(
+          statementStyle.backgroundColor,
+          statementStyle.borderColor,
+        );
 
     return Div.row(
       [
@@ -245,8 +246,9 @@ class CCIncorrectStatementState extends State<CCIncorrectStatement>
     int statementIndex,
     StatementStyle statementStyle,
   ) {
-    final bool shouldShowIcon = hasAnswered && statementStyle.feedbackIcon != null;
-    
+    final bool shouldShowIcon =
+        hasAnswered && statementStyle.feedbackIcon != null;
+
     if (!shouldShowIcon) {
       return const Spacing.width(0);
     }
@@ -261,26 +263,21 @@ class CCIncorrectStatementState extends State<CCIncorrectStatement>
         : RLTheme.textPrimary.withValues(alpha: 0.4);
 
     return Div.row([
-      Icon(
-        statementStyle.feedbackIcon!,
-        color: iconColor,
-        size: 20,
-      ),
-      
+      Icon(statementStyle.feedbackIcon!, color: iconColor, size: 20),
+
       const Spacing.width(12),
     ]);
   }
 
-  Widget buildStatementTextSection(int statementIndex, bool isSelected) {
-    final String statementText = widget.content.options[statementIndex].text;
+  Widget buildStatementTextSection(
+    int statementIndex,
+    bool isSelected,
+  ) {
+    final String statementText =
+        widget.content.options[statementIndex].text;
     final TextStyle textStyle = getStatementTextStyle(isSelected);
 
-    return Expanded(
-      child: Text(
-        statementText,
-        style: textStyle,
-      ),
-    );
+    return Expanded(child: Text(statementText, style: textStyle));
   }
 
   TextStyle getStatementTextStyle(bool isSelected) {
@@ -305,8 +302,9 @@ class CCIncorrectStatementState extends State<CCIncorrectStatement>
     required bool isSelected,
     required bool isIncorrectStatement,
   }) {
-    final bool shouldApplyShake = isSelected && !isIncorrectStatement && shakeAnimation != null;
-    
+    final bool shouldApplyShake =
+        isSelected && !isIncorrectStatement && shakeAnimation != null;
+
     if (!shouldApplyShake) {
       return statementContainer;
     }
@@ -328,7 +326,8 @@ class CCIncorrectStatementState extends State<CCIncorrectStatement>
       return const Spacing.height(0);
     }
 
-    final BoxDecoration explanationDecoration = getExplanationDecoration();
+    final BoxDecoration explanationDecoration =
+        getExplanationDecoration();
 
     return Container(
       padding: const EdgeInsets.all(16),

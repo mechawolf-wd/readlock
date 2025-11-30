@@ -30,7 +30,7 @@ class CCQuoteState extends State<CCQuote> {
 
     return Container(
       color: RLTheme.backgroundDark,
-      padding: const EdgeInsets.all(RLConstants.COURSE_SECTION_PADDING),
+      padding: const EdgeInsets.all(24),
       child: Center(
         child: Container(
           padding: const EdgeInsets.all(20),

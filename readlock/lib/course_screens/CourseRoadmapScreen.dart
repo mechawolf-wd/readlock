@@ -14,15 +14,15 @@ const String COURSE_ROADMAP_DEFAULT_TITLE = 'Course Roadmap';
 const String COURSE_DEFAULT_COLOR = 'green';
 const String COURSE_SUBTITLE_TEXT =
     'Master design psychology fundamentals';
-const String AHA_COUNTER_TEXT = '30 Aha';
+const String EXPERIENCE_COUNTER_TEXT = '30 xp';
 const String QUESTIONS_COUNTER_TEXT = '29 questions';
 
 // Dialog constants
-const String AHA_DIALOG_TITLE = 'Ready to Learn?';
-const String AHA_DIALOG_MESSAGE =
+const String DIALOG_TITLE = 'Ready to Learn?';
+const String DIALOG_MESSAGE =
     'Start your journey into design psychology';
 const String CONTINUE_BUTTON = 'Start';
-const String AHA_POINTS_TEXT = ' +20 XP';
+const String POINTS_TEXT = ' +20 XP';
 
 // Level constants
 const String LEVEL_PREFIX = 'Level ';
@@ -189,13 +189,13 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
     return [
       const Spacer(),
 
-      // Aha moments counter
+      // Experience moments counter
       Div.row([
-        Style.AhaIcon,
+        Style.ExperienceIcon,
 
         const Spacing.width(4),
 
-        RLTypography.bodyMedium(AHA_COUNTER_TEXT),
+        RLTypography.bodyMedium(EXPERIENCE_COUNTER_TEXT),
       ]),
 
       const Spacing.width(20),
@@ -284,12 +284,12 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
     int lessonIndex,
     int contentIndex,
   ) {
-    // Show Aha points dialog first
-    showAhaPointsDialog(lessonIndex, contentIndex);
+    // Show experience points dialog first
+    showExperiencePointsDialog(lessonIndex, contentIndex);
   }
 
-  void showAhaPointsDialog(int lessonIndex, int contentIndex) {
-    final Widget AhaIcon = const Icon(
+  void showExperiencePointsDialog(int lessonIndex, int contentIndex) {
+    final Widget ExperienceIcon = const Icon(
       Icons.lightbulb,
       color: Colors.white,
       size: 20,
@@ -315,9 +315,9 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
                       color: Colors.white,
                     ),
 
-                    // Aha points badge
+                    // Experience points badge
                     RLTypography.bodyMedium(
-                      AHA_POINTS_TEXT,
+                      POINTS_TEXT,
                       color: Colors.white,
                     ),
                   ],
@@ -513,7 +513,7 @@ class Style {
     horizontal: 20,
   );
 
-  static const Icon AhaIcon = Icon(
+  static const Icon ExperienceIcon = Icon(
     Icons.lightbulb,
     color: RLTheme.primaryGreen,
     size: 16,

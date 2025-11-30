@@ -4,15 +4,6 @@ class RLTheme {
   // Light theme colors
   static const Color primaryBlue = Color.fromARGB(255, 59, 154, 233);
   static const Color primaryGreen = Color.fromARGB(255, 70, 183, 76);
-  static const Color primaryBrown = Color.fromARGB(
-    255,
-    177,
-    123,
-    104,
-  ); // Brown
-  static const Color primaryDeepPurple = Color(
-    0xFF7B1FA2,
-  ); // Deep Purple
 
   static const Color backgroundDark = Color(
     0xFFFFFFFF,
@@ -22,10 +13,6 @@ class RLTheme {
   ); // Light grey background
   static const Color textPrimary = Color(0xFF212121); // Dark text
   static const Color textSecondary = Color(0xFF757575); // Grey text
-
-  // Additional color constants
-  static const Color greyBackground = Color(0xFFF5F5F5);
-  static const Color white = Color(0xFFFFFFFF); // White color
 
   // Status colors
   static const Color successColor = Color.fromARGB(255, 81, 230, 86);

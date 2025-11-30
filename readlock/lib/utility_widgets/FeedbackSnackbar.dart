@@ -8,7 +8,7 @@ import 'package:readlock/utility_widgets/FeedbackBottomSheet.dart';
 import 'package:readlock/utility_widgets/Utility.dart';
 
 // Constants
-const String CORRECT_ANSWER_MESSAGE = '+5 Aha';
+const String CORRECT_ANSWER_MESSAGE = '+5 experience';
 const String WRONG_ANSWER_TITLE = 'Common thought';
 const Duration CORRECT_ANSWER_DURATION = Duration(
   days: 365,
@@ -33,7 +33,7 @@ class FeedbackSnackBar {
 
       // Show explanation bottom sheet
       if (explanation != null) {
-        FeedbackBottomSheets.showAhaExplanation(
+        FeedbackBottomSheets.showExplanation(
           context: context,
           explanation: explanation,
         );

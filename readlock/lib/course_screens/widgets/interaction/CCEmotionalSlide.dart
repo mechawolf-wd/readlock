@@ -21,21 +21,24 @@ class CCEmotionalSlide extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Extract styling above build method
-    final TextStyle motivationalTextStyle = RLTypography.bodyLargeStyle.copyWith(
-      fontSize: 16,
-      fontWeight: FontWeight.w600,
-      color: RLTheme.textPrimary.withValues(alpha: 0.7),
-      height: 1.2,
-    );
+    final TextStyle motivationalTextStyle = RLTypography.bodyLargeStyle
+        .copyWith(
+          fontSize: 16,
+          fontWeight: FontWeight.w600,
+          color: RLTheme.textPrimary.withValues(alpha: 0.7),
+          height: 1.2,
+        );
 
     return Div.column(
       [
         // Simple motivational content on plain background
-        SimpleMotivationalContent(motivationalTextStyle: motivationalTextStyle),
+        SimpleMotivationalContent(
+          motivationalTextStyle: motivationalTextStyle,
+        ),
       ],
       color: RLTheme.backgroundDark,
       padding: const EdgeInsets.symmetric(
-        horizontal: RLConstants.COURSE_SECTION_PADDING,
+        horizontal: 24,
         vertical: EMOTIONAL_SLIDE_VERTICAL_PADDING,
       ),
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -43,7 +46,9 @@ class CCEmotionalSlide extends StatelessWidget {
     );
   }
 
-  Widget SimpleMotivationalContent({required TextStyle motivationalTextStyle}) {
+  Widget SimpleMotivationalContent({
+    required TextStyle motivationalTextStyle,
+  }) {
     return Div.column(
       [
         // Small motivational icon
@@ -61,7 +66,9 @@ class CCEmotionalSlide extends StatelessWidget {
 
   Widget MotivationalIcon() {
     final IconData motivationalIconData = getIconDataFromName();
-    final Color motivationalIconColor = RLTheme.primaryGreen.withValues(alpha: 0.8);
+    final Color motivationalIconColor = RLTheme.primaryGreen.withValues(
+      alpha: 0.8,
+    );
 
     return Icon(
       motivationalIconData,
@@ -71,11 +78,7 @@ class CCEmotionalSlide extends StatelessWidget {
   }
 
   Widget MotivationalText({required TextStyle textStyle}) {
-    return Text(
-      text,
-      style: textStyle,
-      textAlign: TextAlign.center,
-    );
+    return Text(text, style: textStyle, textAlign: TextAlign.center);
   }
 
   IconData getIconDataFromName() {

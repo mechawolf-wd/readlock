@@ -1,5 +1,5 @@
 // Home screen with latest courses and user stats
-// Features top bar with streak and aha counters
+// Features top bar with streak and experience counters
 
 import 'package:flutter/material.dart' hide Typography;
 import 'package:readlock/course_screens/CourseRoadmapScreen.dart';

@@ -40,20 +40,25 @@ class MainNavigationState extends State<MainNavigation> {
     return Scaffold(
       backgroundColor: RLTheme.backgroundDark,
       body: IndexedStack(index: currentIndex, children: screens),
-
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: currentIndex,
-        onTap: (navigationItemIndex) {
-          setState(() {
-            currentIndex = navigationItemIndex;
-          });
-        },
-        backgroundColor: Colors.white,
-        selectedItemColor: RLTheme.primaryGreen,
-        unselectedItemColor: const Color.fromARGB(255, 201, 201, 201),
-        type: BottomNavigationBarType.fixed,
-        items: NavigationItems(),
-        selectedFontSize: 12,
+      bottomNavigationBar: ClipRRect(
+        borderRadius: const BorderRadius.only(
+          topLeft: Radius.circular(20),
+          topRight: Radius.circular(20),
+        ),
+        child: BottomNavigationBar(
+          currentIndex: currentIndex,
+          onTap: (navigationItemIndex) {
+            setState(() {
+              currentIndex = navigationItemIndex;
+            });
+          },
+          backgroundColor: Colors.white,
+          selectedItemColor: RLTheme.primaryGreen,
+          unselectedItemColor: const Color.fromARGB(255, 201, 201, 201),
+          type: BottomNavigationBarType.fixed,
+          items: NavigationItems(),
+          selectedFontSize: 12,
+        ),
       ),
     );
   }

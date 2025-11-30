@@ -86,7 +86,7 @@ class CCSingleChoiceState extends State<CCSingleChoice> {
         const Spacing.height(SINGLE_CHOICE_SECTION_SPACING),
       ],
       color: RLTheme.backgroundDark,
-      padding: RLConstants.COURSE_SECTION_PADDING,
+      padding: 24,
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.center,
     );
@@ -104,21 +104,23 @@ class CCSingleChoiceState extends State<CCSingleChoice> {
 
   List<Widget> buildOptionWidgets() {
     final List<Widget> optionWidgets = [];
-    
-    for (int optionIndex = 0; optionIndex < widget.content.options.length; optionIndex++) {
+
+    for (
+      int optionIndex = 0;
+      optionIndex < widget.content.options.length;
+      optionIndex++
+    ) {
       final QuestionOption option = widget.content.options[optionIndex];
-      
+
       optionWidgets.add(
-        OptionButtonWidget(
-          optionIndex: optionIndex,
-          option: option,
-        ),
+        OptionButtonWidget(optionIndex: optionIndex, option: option),
       );
-      
+
       // Add spacing after each option except the last one
-      final bool isLastOption = optionIndex == widget.content.options.length - 1;
+      final bool isLastOption =
+          optionIndex == widget.content.options.length - 1;
       final bool shouldAddSpacing = !isLastOption;
-      
+
       optionWidgets.add(
         RenderIf.condition(
           shouldAddSpacing,
@@ -129,7 +131,7 @@ class CCSingleChoiceState extends State<CCSingleChoice> {
         ),
       );
     }
-    
+
     return optionWidgets;
   }
 
@@ -166,10 +168,7 @@ class CCSingleChoiceState extends State<CCSingleChoice> {
       shouldMute: shouldMute,
     );
 
-    final Widget optionText = Text(
-      option.text,
-      style: optionTextStyle,
-    );
+    final Widget optionText = Text(option.text, style: optionTextStyle);
 
     return Div.row(
       [
@@ -208,14 +207,13 @@ class CCSingleChoiceState extends State<CCSingleChoice> {
 
   void handleOptionSelection(int optionIndex) {
     final bool alreadyAnswered = hasAnsweredQuestion;
-    
+
     if (alreadyAnswered) {
       return;
     }
 
-    final bool isCorrectAnswer = widget.content.correctAnswerIndices.contains(
-      optionIndex,
-    );
+    final bool isCorrectAnswer = widget.content.correctAnswerIndices
+        .contains(optionIndex);
 
     if (!isCorrectAnswer) {
       showIncorrectAnswerFeedback(optionIndex);
@@ -228,22 +226,22 @@ class CCSingleChoiceState extends State<CCSingleChoice> {
   }
 
   void showIncorrectAnswerFeedback(int optionIndex) {
-    final QuestionOption selectedOption = widget.content.options[optionIndex];
-    final String consequenceMessage = selectedOption.consequenceMessage ?? 
-        widget.content.hint ?? 
+    final QuestionOption selectedOption =
+        widget.content.options[optionIndex];
+    final String consequenceMessage =
+        selectedOption.consequenceMessage ??
+        widget.content.hint ??
         'Try again and think about the design principle.';
-    
-    FeedbackSnackBar.showWrongAnswer(
-      context,
-      hint: consequenceMessage,
-    );
+
+    FeedbackSnackBar.showWrongAnswer(context, hint: consequenceMessage);
   }
 
   void showCorrectAnswerFeedback(int optionIndex) {
-    final QuestionOption selectedOption = widget.content.options[optionIndex];
-    final String feedbackMessage = selectedOption.consequenceMessage ?? 
-        widget.content.explanation;
-    
+    final QuestionOption selectedOption =
+        widget.content.options[optionIndex];
+    final String feedbackMessage =
+        selectedOption.consequenceMessage ?? widget.content.explanation;
+
     FeedbackSnackBar.showCorrectAnswer(
       context,
       explanation: feedbackMessage,
