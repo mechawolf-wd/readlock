@@ -29,7 +29,7 @@ class ReadlockApp extends StatelessWidget {
         iconTheme: IconThemeData(color: Colors.black),
       ),
       useMaterial3: true,
-      textTheme: GoogleFonts.manropeTextTheme(
+      textTheme: GoogleFonts.poppinsTextTheme(
         ThemeData.light().textTheme,
       ),
     );

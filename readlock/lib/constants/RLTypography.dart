@@ -8,28 +8,28 @@ class RLTypography {
   static const Color TEXT_SECONDARY = Color(0xFF757575);
 
   // Typography styles
-  static final TextStyle headingLargeStyle = GoogleFonts.manrope(
+  static final TextStyle headingLargeStyle = GoogleFonts.poppins(
     fontSize: 28,
     fontWeight: FontWeight.bold,
     color: TEXT_PRIMARY,
     height: 1.4,
   );
 
-  static final TextStyle headingMediumStyle = GoogleFonts.manrope(
+  static final TextStyle headingMediumStyle = GoogleFonts.poppins(
     fontSize: 20,
     fontWeight: FontWeight.w600,
     color: TEXT_PRIMARY,
     height: 1.5,
   );
 
-  static final TextStyle bodyLargeStyle = GoogleFonts.manrope(
+  static final TextStyle bodyLargeStyle = GoogleFonts.poppins(
     fontSize: 16,
     fontWeight: FontWeight.w500,
     color: TEXT_PRIMARY,
     height: 1.6,
   );
 
-  static final TextStyle bodyMediumStyle = GoogleFonts.manrope(
+  static final TextStyle bodyMediumStyle = GoogleFonts.poppins(
     fontSize: 14,
     color: TEXT_PRIMARY,
     height: 1.6,
