@@ -23,26 +23,9 @@ class TextSegmentWithHighlighting {
   });
 }
 
-// Legacy class for backward compatibility
-class HighlightSegment {
-  final String text;
-  final bool isHighlighted;
-  final Color? color;
-  final int startIndex;
-  final int endIndex;
-
-  const HighlightSegment({
-    required this.text,
-    required this.isHighlighted,
-    required this.color,
-    required this.startIndex,
-    required this.endIndex,
-  });
-}
-
 class ProgressiveText extends StatefulWidget {
   static const double DEFAULT_BOTTOM_SPACING = 8.0;
-  static const Duration AUTO_REVEAL_DELAY = Duration(milliseconds: 300);
+  static const Duration AUTO_REVEAL_DELAY = Duration(milliseconds: 7);
 
   // Required properties
   // List of text sentences to reveal progressively
@@ -98,7 +81,8 @@ class ProgressiveText extends StatefulWidget {
   State<ProgressiveText> createState() => ProgressiveTextState();
 }
 
-class ProgressiveTextState extends State<ProgressiveText> {
+class ProgressiveTextState extends State<ProgressiveText>
+    with TickerProviderStateMixin {
   // Text state management
   // All sentences to be displayed progressively
   late List<String> textSentences;
@@ -120,6 +104,10 @@ class ProgressiveTextState extends State<ProgressiveText> {
   int currentCharacterPosition = 0;
   // Portion of current sentence that has been revealed so far
   String revealedText = '';
+
+  // Image reveal animation controller
+  AnimationController? imageRevealController;
+  Animation<double>? imageRevealAnimation;
 
   // Initializes the widget state when first created
   // Sets up text data and starts the typewriter animation for the first sentence
@@ -150,7 +138,7 @@ class ProgressiveTextState extends State<ProgressiveText> {
 
     if (hasCurrentSentence) {
       // Use clean text for animation (without highlight markers)
-      currentSentenceText = getCleanText(
+      currentSentenceText = removeHighlightMarkersFromText(
         textSentences[currentSentenceNumber],
       );
       currentCharacterPosition = 0;
@@ -168,6 +156,19 @@ class ProgressiveTextState extends State<ProgressiveText> {
         !isAlreadyRevealing && hasTextToReveal;
 
     if (!canStartRevealAnimation) {
+      return;
+    }
+
+    // Check if current sentence is an image
+    final String originalSentence =
+        textSentences[currentSentenceNumber];
+    final bool isImageSentence = originalSentence.startsWith(
+      'image-link',
+    );
+
+    if (isImageSentence) {
+      // Start image reveal animation
+      startImageRevealAnimation();
       return;
     }
 
@@ -236,6 +237,63 @@ class ProgressiveTextState extends State<ProgressiveText> {
 
         if (hasMoreSentencesToReveal) {
           await Future.delayed(ProgressiveText.AUTO_REVEAL_DELAY);
+
+          revealNextSentence();
+        }
+      }
+    }
+  }
+
+  // Starts the image reveal animation
+  void startImageRevealAnimation() async {
+    if (!mounted) {
+      return;
+    }
+
+    setState(() {
+      isRevealingCurrentSentence = true;
+      revealedText = 'image'; // Mark as image reveal
+    });
+
+    // Create animation controller for image reveal
+    imageRevealController?.dispose();
+    imageRevealController = AnimationController(
+      duration: const Duration(milliseconds: 800),
+      vsync: this,
+    );
+
+    imageRevealAnimation = CurvedAnimation(
+      parent: imageRevealController!,
+      curve: Curves.easeOutCubic,
+    );
+
+    await imageRevealController!.forward();
+
+    if (mounted) {
+      setState(() {
+        isRevealingCurrentSentence = false;
+      });
+
+      // Check if all sentences have been revealed
+      final bool isLastSentence =
+          currentSentenceNumber == textSentences.length - 1;
+
+      final bool shouldTriggerCompletionCallback =
+          isLastSentence && widget.onAllSegmentsRevealed != null;
+
+      if (shouldTriggerCompletionCallback) {
+        widget.onAllSegmentsRevealed!();
+      }
+
+      final bool shouldAutoAdvanceToNextSentence =
+          widget.automaticallyRevealNextSentence;
+
+      if (shouldAutoAdvanceToNextSentence) {
+        final bool hasMoreSentencesToReveal =
+            currentSentenceNumber < textSentences.length - 1;
+
+        if (hasMoreSentencesToReveal) {
+          await Future.delayed(ProgressiveText.AUTO_REVEAL_DELAY);
           revealNextSentence();
         }
       }
@@ -258,24 +316,6 @@ class ProgressiveTextState extends State<ProgressiveText> {
 
       initializeCurrentSentence();
       startCurrentSentenceReveal();
-    }
-  }
-
-  // Immediately reveals all remaining text without animation
-  // Jumps to the last sentence and displays it fully
-  void revealAll() {
-    final bool canRevealAllText = mounted;
-
-    if (canRevealAllText) {
-      setState(() {
-        isRevealingCurrentSentence = false;
-        currentSentenceNumber = textSentences.length - 1;
-
-        initializeCurrentSentence();
-
-        currentCharacterPosition = currentSentenceText.length - 1;
-        revealedText = currentSentenceText;
-      });
     }
   }
 
@@ -306,11 +346,12 @@ class ProgressiveTextState extends State<ProgressiveText> {
   void toggleBlurForSentence(int sentenceIndex) {
     final bool isValidSentenceIndex =
         sentenceIndex < sentenceBlurStates.length;
-    
+
     // Don't allow toggling if sentence has no-blur modifier
-    final bool hasNoBlurFlag = sentenceIndex < sentenceNoBlurFlags.length &&
+    final bool hasNoBlurFlag =
+        sentenceIndex < sentenceNoBlurFlags.length &&
         sentenceNoBlurFlags[sentenceIndex];
-    
+
     if (hasNoBlurFlag) {
       return;
     }
@@ -328,6 +369,7 @@ class ProgressiveTextState extends State<ProgressiveText> {
   @override
   void dispose() {
     isRevealingCurrentSentence = false;
+    imageRevealController?.dispose();
     super.dispose();
   }
 
@@ -431,14 +473,16 @@ class ProgressiveTextState extends State<ProgressiveText> {
 
   // Display widget for current image segment
   Widget CurrentImageDisplay(String imageSegmentText) {
-    final bool hasNoBlurModifier = imageSegmentText.contains('[no-blur]');
-    
+    final bool hasNoBlurModifier = imageSegmentText.contains(
+      '[no-blur]',
+    );
+
     // Extract the path after removing modifiers
     String cleanImageText = imageSegmentText;
     if (hasNoBlurModifier) {
       cleanImageText = cleanImageText.replaceAll('[no-blur]', '');
     }
-    
+
     final String imageAssetPath = cleanImageText.substring(
       'image-link:'.length,
     );
@@ -463,31 +507,52 @@ class ProgressiveTextState extends State<ProgressiveText> {
       fontSize: 12,
     );
 
-    return Center(
-      child: Div.column([
-        // Course image display
-        ClipRRect(
-          borderRadius: imageBorderRadius,
-          child: Image.asset(
-            imageAssetPath,
-            fit: BoxFit.contain,
-            height: maxImageHeight,
-            errorBuilder: (context, error, stackTrace) => Container(
-              height: errorImageHeight,
-              decoration: errorContainerDecoration,
-              child: Center(
-                child: Text(
-                  'Image not found: $imageAssetPath',
-                  style: errorTextStyle,
-                  textAlign: TextAlign.center,
+    // Create animated builder for reveal effect
+    final bool hasAnimation = imageRevealAnimation != null;
+
+    if (!hasAnimation) {
+      return const SizedBox.shrink();
+    }
+
+    return AnimatedBuilder(
+      animation: imageRevealAnimation!,
+      builder: (context, child) {
+        final double revealProgress = imageRevealAnimation!.value;
+
+        return Center(
+          child: Div.column([
+            // Image with curtain reveal effect
+            ClipRect(
+              child: Align(
+                alignment: Alignment.topCenter,
+                heightFactor: revealProgress,
+                child: ClipRRect(
+                  borderRadius: imageBorderRadius,
+                  child: Image.asset(
+                    imageAssetPath,
+                    fit: BoxFit.contain,
+                    height: maxImageHeight,
+                    errorBuilder: (context, error, stackTrace) =>
+                        Container(
+                          height: errorImageHeight,
+                          decoration: errorContainerDecoration,
+                          child: Center(
+                            child: Text(
+                              'Image not found: $imageAssetPath',
+                              style: errorTextStyle,
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ),
+                  ),
                 ),
               ),
             ),
-          ),
-        ),
 
-        const Spacing.height(imageSpacing),
-      ])
+            const Spacing.height(imageSpacing),
+          ]),
+        );
+      },
     );
   }
 
@@ -513,7 +578,7 @@ class ProgressiveTextState extends State<ProgressiveText> {
     String revealedCleanText,
   ) {
     final List<TextSpan> spans = [];
-    final RegExp highlightRegex = RegExp(r'<c:(g)>([^<]*)</c:\1>');
+    final RegExp highlightRegex = RegExp(r'<c:([gr])>([^<]*)</c:\1>');
     String remaining = originalText;
     int cleanTextPosition = 0;
     final int revealedLength = revealedCleanText.length;
@@ -531,6 +596,7 @@ class ProgressiveTextState extends State<ProgressiveText> {
               remaining.length <= remainingRevealLength
               ? remaining
               : remaining.substring(0, remainingRevealLength);
+
           spans.add(TextSpan(text: visibleText, style: baseStyle));
         }
         break;
@@ -559,6 +625,7 @@ class ProgressiveTextState extends State<ProgressiveText> {
         }
 
         cleanTextPosition += beforeText.length;
+
         if (cleanTextPosition >= revealedLength) {
           break;
         }
@@ -577,6 +644,7 @@ class ProgressiveTextState extends State<ProgressiveText> {
 
         if (visibleLength > 0) {
           final Color highlightColor = getHighlightColor(colorCode);
+
           spans.add(
             TextSpan(
               text: highlightedText.substring(0, visibleLength),
@@ -596,62 +664,6 @@ class ProgressiveTextState extends State<ProgressiveText> {
     return spans;
   }
 
-  // Build spans for visible text segments
-  List<TextSpan> visibleSpans(
-    List<HighlightSegment> segments,
-    String revealedCleanText,
-  ) {
-    final List<TextSpan> spans = [];
-    int cleanTextPosition = 0;
-
-    for (final segment in segments) {
-      final int segmentStart = cleanTextPosition;
-      final int segmentEnd = cleanTextPosition + segment.text.length;
-      final int revealedLength = revealedCleanText.length;
-
-      final bool segmentNotReachedYet = revealedLength <= segmentStart;
-
-      if (segmentNotReachedYet) {
-        break;
-      }
-
-      final bool segmentPartiallyVisible = revealedLength < segmentEnd;
-      final int visibleEnd = segmentPartiallyVisible
-          ? revealedLength
-          : segmentEnd;
-
-      final bool hasVisibleContent = visibleEnd > segmentStart;
-
-      if (hasVisibleContent) {
-        final String visibleText = segment.text.substring(
-          0,
-          visibleEnd - segmentStart,
-        );
-
-        final TextStyle spanStyle = getSpanStyle(segment);
-
-        spans.add(TextSpan(text: visibleText, style: spanStyle));
-      }
-
-      cleanTextPosition += segment.text.length;
-    }
-
-    return spans;
-  }
-
-  // Get text style for a highlight segment
-  TextStyle getSpanStyle(HighlightSegment segment) {
-    final bool isHighlighted = segment.isHighlighted;
-    final TextStyle baseStyle = getConsistentTextStyle();
-
-    final TextStyle highlightedStyle = baseStyle.copyWith(
-      color: segment.color,
-      fontWeight: FontWeight.bold,
-    );
-
-    return isHighlighted ? highlightedStyle : baseStyle;
-  }
-
   // Helper methods
 
   // Initializes the text sentences and blur states from widget properties
@@ -659,7 +671,7 @@ class ProgressiveTextState extends State<ProgressiveText> {
   void initializeTextState() {
     textSentences = widget.textSegments;
     sentenceBlurStates = List.filled(textSentences.length, true);
-    
+
     // Initialize no-blur flags based on modifiers in text
     sentenceNoBlurFlags = textSentences.map((sentence) {
       return sentence.contains('[no-blur]');
@@ -668,109 +680,7 @@ class ProgressiveTextState extends State<ProgressiveText> {
 
   // Remove highlight markers and return clean text for animation
   String removeHighlightMarkersFromText(String originalText) {
-    return originalText.replaceAll(RegExp(r'<c:g>|</c:g>'), '');
-  }
-
-  // Check if text contains educational highlight markers
-  bool textContainsEducationalHighlights(String text) {
-    return text.contains('<c:');
-  }
-
-  // Legacy method aliases for compatibility
-  String getCleanText(String originalText) {
-    return removeHighlightMarkersFromText(originalText);
-  }
-
-  bool hasHighlightMarkers(String text) {
-    return textContainsEducationalHighlights(text);
-  }
-
-  List<HighlightSegment> parseHighlights(String originalText) {
-    final segments = parseTextIntoHighlightSegments(originalText);
-
-    return segments
-        .map(
-          (segment) => HighlightSegment(
-            text: segment.textContent,
-            isHighlighted: segment.shouldBeHighlighted,
-            color: segment.highlightColor,
-            startIndex: segment.segmentStartPosition,
-            endIndex: segment.segmentEndPosition,
-          ),
-        )
-        .toList();
-  }
-
-  // Parse text into segments with highlight information for rendering
-  List<TextSegmentWithHighlighting> parseTextIntoHighlightSegments(
-    String originalText,
-  ) {
-    final List<TextSegmentWithHighlighting> segments = [];
-    String remaining = originalText;
-    int offset = 0;
-
-    while (remaining.isNotEmpty) {
-      final RegExpMatch? match = RegExp(
-        r'<c:(g)>([^<]*)</c:\1>',
-      ).firstMatch(remaining);
-
-      final bool hasNoMoreHighlights = match == null;
-
-      if (hasNoMoreHighlights) {
-        final bool hasRemainingText = remaining.isNotEmpty;
-
-        if (hasRemainingText) {
-          segments.add(
-            TextSegmentWithHighlighting(
-              textContent: remaining,
-              shouldBeHighlighted: false,
-              highlightColor: null,
-              segmentStartPosition: offset,
-              segmentEndPosition: offset + remaining.length,
-            ),
-          );
-        }
-        break;
-      }
-
-      final bool hasTextBeforeHighlight = match.start > 0;
-
-      if (hasTextBeforeHighlight) {
-        final String beforeText = remaining.substring(0, match.start);
-
-        segments.add(
-          TextSegmentWithHighlighting(
-            textContent: beforeText,
-            shouldBeHighlighted: false,
-            highlightColor: null,
-            segmentStartPosition: offset,
-            segmentEndPosition: offset + beforeText.length,
-          ),
-        );
-
-        offset += beforeText.length;
-      }
-
-      final String colorCode = match.group(1)!;
-      final String highlightedText = match.group(2)!;
-      final Color highlightColor = getHighlightColor(colorCode);
-
-      segments.add(
-        TextSegmentWithHighlighting(
-          textContent: highlightedText,
-          shouldBeHighlighted: true,
-          highlightColor: highlightColor,
-          segmentStartPosition: offset,
-          segmentEndPosition: offset + highlightedText.length,
-        ),
-      );
-
-      offset += highlightedText.length;
-
-      remaining = remaining.substring(match.end);
-    }
-
-    return segments;
+    return originalText.replaceAll(RegExp(r'<c:[gr]>|</c:[gr]>'), '');
   }
 
   // Get color based on marker code
@@ -778,6 +688,8 @@ class ProgressiveTextState extends State<ProgressiveText> {
     switch (code) {
       case 'g':
         return Colors.green.shade600;
+      case 'r':
+        return Colors.red.shade600;
       default:
         return Colors
             .green
@@ -802,7 +714,8 @@ class ProgressiveTextState extends State<ProgressiveText> {
     }
 
     // Check if sentence has no-blur modifier
-    final bool hasNoBlurFlag = sentenceIndex < sentenceNoBlurFlags.length &&
+    final bool hasNoBlurFlag =
+        sentenceIndex < sentenceNoBlurFlags.length &&
         sentenceNoBlurFlags[sentenceIndex];
 
     if (hasNoBlurFlag) {
@@ -812,52 +725,13 @@ class ProgressiveTextState extends State<ProgressiveText> {
     return sentenceBlurStates[sentenceIndex];
   }
 
-  // Create text widget for a specific sentence
-  Widget SentenceText(int sentenceIndex) {
-    final String originalText = textSentences[sentenceIndex];
-
-    // Check if text has highlights
-    if (hasHighlightMarkers(originalText)) {
-      return HighlightedText(originalText);
-    }
-
-    // Regular text without highlights
-    return Text(
-      originalText,
-      style: getConsistentTextStyle(),
-      textAlign: TextAlign.left,
-    );
-  }
-
-  // Build text with highlighting support
-  Widget HighlightedText(String text) {
-    final List<HighlightSegment> segments = parseHighlights(text);
-    final List<TextSpan> spans = [];
-
-    for (final segment in segments) {
-      final TextStyle baseStyle = getConsistentTextStyle();
-      final TextStyle highlightedStyle = baseStyle.copyWith(
-        color: segment.color,
-        fontWeight: FontWeight.bold,
-      );
-      final TextStyle segmentStyle = segment.isHighlighted
-          ? highlightedStyle
-          : baseStyle;
-
-      spans.add(TextSpan(text: segment.text, style: segmentStyle));
-    }
-
-    return RichText(
-      text: TextSpan(children: spans),
-      textAlign: TextAlign.left,
-    );
-  }
-
   // Get consistent text style for all text (both revealed and completed)
   // Ensures no visual jump when toggling blur state
   TextStyle getConsistentTextStyle() {
-    final TextStyle baseStyle =
-        widget.textStyle ?? RLTypography.bodyMediumStyle;
+    final bool hasCustomTextStyle = widget.textStyle != null;
+    final TextStyle baseStyle = hasCustomTextStyle
+        ? widget.textStyle!
+        : RLTypography.bodyMediumStyle;
 
     return baseStyle.copyWith(fontSize: 16, height: 1.5);
   }
@@ -975,7 +849,7 @@ class CompletedSentenceWidget extends StatelessWidget {
     if (cleanText.contains('[no-blur]')) {
       cleanText = cleanText.replaceAll('[no-blur]', '');
     }
-    
+
     const String imageLinkPrefix = 'image-link:';
     return cleanText.substring(imageLinkPrefix.length);
   }
@@ -1026,7 +900,7 @@ class CompletedSentenceWidget extends StatelessWidget {
 
   Widget HighlightedTextDisplay() {
     final List<TextSpan> spans = [];
-    final RegExp highlightRegex = RegExp(r'<c:(g)>([^<]*)</c:\1>');
+    final RegExp highlightRegex = RegExp(r'<c:([gr])>([^<]*)</c:\1>');
     String remaining = sentenceText;
 
     while (remaining.isNotEmpty) {

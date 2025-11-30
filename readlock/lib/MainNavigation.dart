@@ -49,10 +49,11 @@ class MainNavigationState extends State<MainNavigation> {
           });
         },
         backgroundColor: Colors.white,
-        selectedItemColor: RLTheme.primaryBlue,
-        unselectedItemColor: RLTheme.textSecondary,
+        selectedItemColor: RLTheme.primaryGreen,
+        unselectedItemColor: const Color.fromARGB(255, 201, 201, 201),
         type: BottomNavigationBarType.fixed,
         items: NavigationItems(),
+        selectedFontSize: 12,
       ),
     );
   }
@@ -60,19 +61,19 @@ class MainNavigationState extends State<MainNavigation> {
   List<BottomNavigationBarItem> NavigationItems() {
     return [
       const BottomNavigationBarItem(
-        icon: Icon(Icons.house),
+        icon: Icon(Icons.house_rounded),
         label: HOME_TAB_LABEL,
       ),
       const BottomNavigationBarItem(
-        icon: Icon(Icons.book_sharp),
+        icon: Icon(Icons.book_rounded),
         label: COURSES_TAB_LABEL,
       ),
       const BottomNavigationBarItem(
-        icon: Icon(Icons.person),
+        icon: Icon(Icons.person_rounded),
         label: YOU_TAB_LABEL,
       ),
       const BottomNavigationBarItem(
-        icon: Icon(Icons.science),
+        icon: Icon(Icons.science_rounded),
         label: SANDBOX_TAB_LABEL,
       ),
     ];

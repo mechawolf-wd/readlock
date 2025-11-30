@@ -66,20 +66,14 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
   );
 
   static const Icon blazeIcon = Icon(
-    Icons.local_fire_department,
+    Icons.local_fire_department_rounded,
     color: Colors.orange,
     size: 24,
   );
 
   static const Icon starIcon = Icon(
-    Icons.bookmark_add_outlined,
+    Icons.save_rounded,
     color: Colors.amber,
-    size: 24,
-  );
-
-  static const Icon hintBulbIcon = Icon(
-    Icons.lightbulb_outline,
-    color: Colors.yellow,
     size: 24,
   );
 
@@ -183,11 +177,6 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
 
       const Spacing.width(NAVIGATION_SPACING),
 
-      // Hint bulb icon
-      HintBulbIcon(),
-
-      const Spacing.width(8),
-
       // Star slide icon
       StarButton(),
 
@@ -214,14 +203,6 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
   // Star button for slide favoriting
   Widget StarButton() {
     return GestureDetector(onTap: handleStarTap, child: starIcon);
-  }
-
-  // Hint bulb icon for showing hints
-  Widget HintBulbIcon() {
-    return GestureDetector(
-      onTap: showCurrentQuestionHint,
-      child: hintBulbIcon,
-    );
   }
 
   // Progress indicator with individual segments for skill check questions
@@ -295,7 +276,8 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
       }
 
       // For regular segments, show partial progress
-      final bool isRegularSegment = segment.type == ProgressSegmentType.regular;
+      final bool isRegularSegment =
+          segment.type == ProgressSegmentType.regular;
 
       if (isRegularSegment) {
         segmentWidgets.add(
@@ -336,7 +318,8 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
     const double skillCheckWidth = 16.0;
     const double segmentSpacing = 2.0;
 
-    final bool isSkillCheckSegment = segment.type == ProgressSegmentType.skillCheck;
+    final bool isSkillCheckSegment =
+        segment.type == ProgressSegmentType.skillCheck;
 
     if (isSkillCheckSegment) {
       return skillCheckWidth;
@@ -493,56 +476,6 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
         behavior: SnackBarBehavior.floating,
         shape: starredSnackBarShape,
         margin: starredSnackBarMargin,
-      ),
-    );
-  }
-
-  // Handle hint bulb tap to show current question hint
-  void showCurrentQuestionHint() {
-    final bool hasContent = allContent.isNotEmpty;
-    final bool hasValidContentIndex =
-        currentContentIndex < allContent.length;
-
-    if (!hasContent || !hasValidContentIndex) {
-      return;
-    }
-
-    final Map<String, dynamic> currentContent =
-        allContent[currentContentIndex];
-    final String? entityType = currentContent['entity-type'] as String?;
-    final String? hintText = currentContent['hint'] as String?;
-
-    final bool isQuestionContent =
-        entityType == 'single-choice-question' ||
-        entityType == 'true-false-question' ||
-        entityType == 'fill-gap-question';
-
-    final bool shouldSkipHintDisplay = !isQuestionContent || 
-        hintText == null || 
-        hintText.isEmpty;
-
-    if (shouldSkipHintDisplay) {
-      return;
-    }
-
-    // Extract styling above method logic
-    final Color hintSnackBarBackgroundColor = Colors.yellow.shade800;
-    final RoundedRectangleBorder hintSnackBarShape =
-        RoundedRectangleBorder(borderRadius: BorderRadius.circular(12));
-    final EdgeInsets hintSnackBarMargin = const EdgeInsets.all(16);
-
-    // Show hint in a snackbar
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: RLTypography.bodyMedium(
-          '💡 Hint: $hintText',
-          color: Colors.white,
-        ),
-        backgroundColor: hintSnackBarBackgroundColor,
-        duration: const Duration(seconds: 4),
-        behavior: SnackBarBehavior.floating,
-        shape: hintSnackBarShape,
-        margin: hintSnackBarMargin,
       ),
     );
   }

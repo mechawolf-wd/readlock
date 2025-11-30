@@ -2,9 +2,14 @@ import 'package:flutter/material.dart';
 
 class RLTheme {
   // Light theme colors
-  static const Color primaryBlue = Color(0xFF1976D2);
-  static const Color primaryGreen = Color(0xFF388E3C);
-  static const Color primaryBrown = Color(0xFF8D6E63); // Brown
+  static const Color primaryBlue = Color.fromARGB(255, 59, 154, 233);
+  static const Color primaryGreen = Color.fromARGB(255, 70, 183, 76);
+  static const Color primaryBrown = Color.fromARGB(
+    255,
+    177,
+    123,
+    104,
+  ); // Brown
   static const Color primaryDeepPurple = Color(
     0xFF7B1FA2,
   ); // Deep Purple
@@ -23,7 +28,7 @@ class RLTheme {
   static const Color white = Color(0xFFFFFFFF); // White color
 
   // Status colors
-  static const Color successColor = Colors.green;
+  static const Color successColor = Color.fromARGB(255, 81, 230, 86);
   static const Color errorColor = Colors.red;
   static const Color warningColor = Colors.orange;
   static const Color warningColorGentle = Color(0xFFFF9800);
@@ -116,15 +121,16 @@ class RLTheme {
       transitionsBuilder:
           (context, animation, secondaryAnimation, child) {
             return SlideTransition(
-              position: Tween<Offset>(
-                begin: const Offset(0.0, 1.0),
-                end: Offset.zero,
-              ).animate(
-                CurvedAnimation(
-                  parent: animation,
-                  curve: transitionCurve,
-                ),
-              ),
+              position:
+                  Tween<Offset>(
+                    begin: const Offset(0.0, 1.0),
+                    end: Offset.zero,
+                  ).animate(
+                    CurvedAnimation(
+                      parent: animation,
+                      curve: transitionCurve,
+                    ),
+                  ),
               child: child,
             );
           },

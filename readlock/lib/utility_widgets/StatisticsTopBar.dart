@@ -8,7 +8,7 @@ class StatisticsTopBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Div.row([StreakCounter(), const Spacer(), AhaCounter()]);
+    return Div.row([AhaCounter(), const Spacer(), StreakCounter()]);
   }
 
   Widget StreakCounter() {
@@ -23,13 +23,7 @@ class StatisticsTopBar extends StatelessWidget {
 
   Widget AhaCounter() {
     return Div.row(
-      [
-        Style.LightBulbIcon,
-
-        const Spacing.width(8),
-
-        RLTypography.text('23'),
-      ],
+      [Style.KeyIcon, const Spacing.width(8), RLTypography.text('23')],
       decoration: Style.decoration,
       color: Style.backgroundColor,
       padding: Style.padding,
@@ -41,14 +35,20 @@ class StatisticsTopBar extends StatelessWidget {
 class Style {
   static BoxDecoration decoration = BoxDecoration(
     border: Border.all(color: Colors.grey.withValues(alpha: 0.2)),
+    boxShadow: [
+      BoxShadow(
+        color: Colors.grey.withAlpha(70),
+        offset: const Offset(0, 2),
+      ),
+    ],
   );
 
   static Color backgroundColor = Colors.white;
 
   static List<int> padding = [8, 16];
 
-  static Icon LightBulbIcon = const Icon(
-    Icons.lightbulb,
+  static Icon KeyIcon = const Icon(
+    Icons.key,
     color: RLTheme.primaryGreen,
     size: 20,
   );

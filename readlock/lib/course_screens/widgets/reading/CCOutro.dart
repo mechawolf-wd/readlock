@@ -23,9 +23,8 @@ class CCOutro extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Text style for title with custom font weight
-    final TextStyle titleTextStyle = RLTypography.bodyLargeStyle.copyWith(
-      fontWeight: FontWeight.w600,
-    );
+    final TextStyle titleTextStyle = RLTypography.bodyLargeStyle
+        .copyWith(fontWeight: FontWeight.w600);
 
     return Div.column(
       [
@@ -45,23 +44,21 @@ class CCOutro extends StatelessWidget {
 
   // Header section with completion icon and title
   Widget HeaderSection(TextStyle titleTextStyle) {
-    return Div.row(
-      [
-        // Completion icon
-        CompletionIcon(),
+    return Div.row([
+      // Completion icon
+      CompletionIcon(),
 
-        const Spacing.width(HEADER_SPACING),
+      const Spacing.width(HEADER_SPACING),
 
-        // Title text
-        Expanded(
-          child: Text(
-            content.title,
-            style: titleTextStyle,
-            textAlign: TextAlign.left,
-          ),
+      // Title text
+      Expanded(
+        child: Text(
+          content.title,
+          style: titleTextStyle,
+          textAlign: TextAlign.left,
         ),
-      ],
-    );
+      ),
+    ]);
   }
 
   // Completion check circle icon
@@ -75,7 +72,8 @@ class CCOutro extends StatelessWidget {
 
   // Progressive text animation section
   Widget ProgressiveTextSection() {
-    final bool hasOutroTextSegments = content.outroTextSegments.isNotEmpty;
+    final bool hasOutroTextSegments =
+        content.outroTextSegments.isNotEmpty;
 
     if (!hasOutroTextSegments) {
       return const SizedBox.shrink();

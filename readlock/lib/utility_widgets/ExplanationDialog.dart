@@ -10,8 +10,6 @@ import 'package:readlock/utility_widgets/text_animation/ProgressiveText.dart';
 
 const String CLOSE_BUTTON_LABEL = 'Got it';
 const double MODAL_PADDING = 24.0;
-const double BUTTON_VERTICAL_PADDING = 16.0;
-const double BORDER_RADIUS = 12.0;
 
 class ExplanationDialog extends StatelessWidget {
   final String title;
