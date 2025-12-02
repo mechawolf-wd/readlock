@@ -28,6 +28,10 @@ class ProfileScreen extends StatelessWidget {
 
             AchievementGallery(),
 
+            const Spacing.height(20),
+
+            LearningStatsCard(),
+
             const Spacing.height(24),
 
             MenuSection(),
@@ -35,6 +39,129 @@ class ProfileScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+class LearningStatsCard extends StatelessWidget {
+  const LearningStatsCard({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final String totalLearningTime = GetTotalLearningTime();
+
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: RLTheme.backgroundLight,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: RLTheme.textPrimary.withValues(alpha: 0.1),
+        ),
+      ),
+      child: Div.column([
+        Div.row([
+          const Icon(
+            Icons.access_time,
+            color: RLTheme.primaryBlue,
+            size: 24,
+          ),
+
+          const Spacing.width(12),
+
+          RLTypography.bodyLarge(
+            'Learning Statistics',
+            color: RLTheme.textPrimary,
+          ),
+        ]),
+
+        const Spacing.height(16),
+
+        Div.row([
+          Expanded(
+            child: LearningStatItem(
+              label: 'Total time spent learning',
+              value: totalLearningTime,
+              icon: Icons.schedule,
+              color: RLTheme.primaryBlue,
+            ),
+          ),
+
+          const Spacing.width(16),
+
+          Expanded(
+            child: LearningStatItem(
+              label: 'Lessons completed',
+              value: '42',
+              icon: Icons.check_circle,
+              color: RLTheme.primaryGreen,
+            ),
+          ),
+        ]),
+      ]),
+    );
+  }
+
+  // Get formatted total learning time
+  String GetTotalLearningTime() {
+    // Example calculation - in real app this would come from user data
+    const int totalHours = 127;
+    const int totalMinutes = 34;
+    
+    return '${totalHours}h ${totalMinutes}m';
+  }
+}
+
+class LearningStatItem extends StatelessWidget {
+  final String label;
+  final String value;
+  final IconData icon;
+  final Color color;
+
+  const LearningStatItem({
+    super.key,
+    required this.label,
+    required this.value,
+    required this.icon,
+    required this.color,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final BoxDecoration iconDecoration = BoxDecoration(
+      color: color.withValues(alpha: 0.1),
+      borderRadius: BorderRadius.circular(8),
+    );
+
+    return Div.column([
+      Container(
+        width: 40,
+        height: 40,
+        decoration: iconDecoration,
+        child: Icon(
+          icon,
+          color: color,
+          size: 20,
+        ),
+      ),
+
+      const Spacing.height(8),
+
+      RLTypography.headingMedium(
+        value,
+        color: color,
+        textAlign: TextAlign.center,
+      ),
+
+      const Spacing.height(4),
+
+      RLTypography.bodyMedium(
+        label,
+        color: RLTheme.textPrimary.withValues(alpha: 0.7),
+        textAlign: TextAlign.center,
+        maxLines: 2,
+        overflow: TextOverflow.ellipsis,
+      ),
+    ], crossAxisAlignment: CrossAxisAlignment.center);
   }
 }
 

@@ -5,6 +5,8 @@ import 'package:readlock/utility_widgets/Utility.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLTheme.dart';
 import 'package:readlock/utility_widgets/FeedbackSnackbar.dart';
+import 'package:readlock/services/SoundService.dart';
+import 'package:readlock/services/HapticsService.dart';
 
 enum SingleChoiceButtonState {
   normal,
@@ -212,6 +214,9 @@ class CCSingleChoiceState extends State<CCSingleChoice> {
       return;
     }
 
+    // Provide light haptic feedback for option selection
+    HapticsService.lightImpact();
+
     final bool isCorrectAnswer = widget.content.correctAnswerIndices
         .contains(optionIndex);
 
@@ -222,6 +227,11 @@ class CCSingleChoiceState extends State<CCSingleChoice> {
 
     markQuestionAsAnswered(optionIndex);
     showCorrectAnswerFeedback(optionIndex);
+    SoundService.playCorrectAnswer();
+
+    // Provide medium impact feedback for correct answer
+    HapticsService.mediumImpact();
+
     widget.onAnswerSelected(optionIndex, isCorrectAnswer);
   }
 

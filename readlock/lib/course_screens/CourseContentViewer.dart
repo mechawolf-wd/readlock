@@ -8,6 +8,7 @@ import 'package:readlock/constants/RLTheme.dart';
 import 'package:readlock/utility_widgets/Utility.dart';
 import 'package:readlock/MainNavigation.dart';
 import 'package:readlock/constants/RLTypography.dart';
+import 'package:readlock/screens/StreakplierRewardScreen.dart';
 
 // String constants
 const String NO_CONTENT_AVAILABLE_MESSAGE =
@@ -347,7 +348,10 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
   Widget getContentItem(BuildContext context, int contentItemIndex) {
     final Map<String, dynamic> content = allContent[contentItemIndex];
 
-    return JsonContentWidgetFactory.createContentWidget(content);
+    return JsonContentWidgetFactory.createContentWidget(
+      content,
+      onLessonComplete: showStreakplierRewardScreen,
+    );
   }
 
   // Load course data from service
@@ -439,6 +443,39 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
     Navigator.of(
       context,
     ).push(RLTheme.slideUpTransition(const MainNavigation()));
+  }
+
+  // Show Streakplier reward screen after lesson completion
+  void showStreakplierRewardScreen() {
+    final LessonReward reward = createLessonReward();
+
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => StreakplierRewardScreen(
+          reward: reward,
+          onContinue: handleRewardScreenContinue,
+        ),
+      ),
+    );
+  }
+
+  // Create lesson reward data based on current lesson performance
+  LessonReward createLessonReward() {
+    // Calculate lesson duration (example: 5 minutes 30 seconds)
+    final Duration lessonDuration = Duration(minutes: 5, seconds: 30);
+    
+    return LessonReward(
+      experiencePointsGained: 190,
+      streakplierMultiplier: 1.35,
+      lessonDuration: lessonDuration,
+      keysLooted: 2,
+    );
+  }
+
+  // Handle continue from reward screen
+  void handleRewardScreenContinue() {
+    Navigator.of(context).pop(); // Close reward screen
+    navigateToMainScreen(); // Return to main navigation
   }
 
   // Handle star tap to favorite current slide

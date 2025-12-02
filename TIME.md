@@ -5,18 +5,21 @@
 ## The Honest Breakdown
 
 ### Week 1-2: Getting Your Shit Together
+
 - **Figure out what you're building**: Look at the app, understand the flow, sketch some wireframes
 - **Set up the project**: Flutter setup, folder structure, basic navigation
 - **Build the foundation**: Main screens, routing, basic UI structure
 - **Reality check**: You'll spend half the time just figuring out Flutter if you're new to it
 
 ### Week 3-4: The Boring Infrastructure Stuff
+
 - **JSON data structure**: Design how courses/lessons/questions are stored
 - **Content widgets**: Basic text display, intro/outro screens
 - **Navigation flow**: Course selection → lesson view → progress tracking
 - **Utility widgets**: All those Div, Spacing, Typography helpers (this shit takes longer than you think)
 
 ### Week 5-6: Question Hell
+
 - **Multiple choice questions**: The "easy" ones
 - **True/false questions**: Also easy but you need different UI
 - **Estimate percentage**: Slider input, validation logic
@@ -25,6 +28,7 @@
 - **The factory pattern**: So you don't copy-paste question code everywhere
 
 ### Week 7-8: Making It Actually Work
+
 - **Progress tracking**: Where the user is, what they've completed
 - **Answer validation**: Checking if answers are right/wrong
 - **Explanations**: Showing feedback after questions
@@ -32,12 +36,14 @@
 - **Bug fixing**: Because nothing works the first time
 
 ### Week 9-10: Polish & Content
+
 - **Make it not look like shit**: Colors, spacing, animations
 - **Write actual course content**: This takes FOREVER if you want it to be good
 - **Edge cases**: What happens when there's no internet, empty data, etc.
 - **Testing on real devices**: Simulator lies to you
 
 ### Week 11-12: App Store BS
+
 - **Icons, screenshots, descriptions**: More annoying than you think
 - **Final testing**: Finding bugs you somehow missed
 - **Submission process**: Apple will reject it at least once
@@ -63,6 +69,7 @@
 ## Skill Level Impact
 
 ### Programming Skills
+
 **Experienced Flutter dev**: Could knock out the core app in 6-8 weeks
 **Competent programmer, new to Flutter**: 10-12 weeks  
 **Decent at coding but mobile newbie**: 14-16 weeks
@@ -76,22 +83,26 @@
 Here's what happens when developers try to design:
 
 #### Week 1-2: The Denial Phase
+
 - "How hard can UI be? I'll just copy some apps"
 - Spends way too long picking colors and fonts
 - Everything looks like a Windows 95 dialog box
 
-#### Week 3-4: The YouTube Tutorial Phase  
+#### Week 3-4: The YouTube Tutorial Phase
+
 - "10 Best Flutter UI Components 2024"
 - Downloads 47 different icon packs
 - Still can't make anything look good together
 
 #### Week 5-8: The Dribbble Rabbit Hole
+
 - Finds beautiful designs on Dribbble/Behance
 - Tries to recreate them pixel-perfect
 - Realizes the designer didn't think about edge cases
 - Spends 3 days trying to make a button look "just right"
 
 #### Week 9-12: The Acceptance Phase
+
 - Finally accepts they need help
 - Either pays a designer or uses a design system
 - Could have saved 2 months by doing this from the start
@@ -108,6 +119,7 @@ Here's what happens when developers try to design:
 ### The Solutions
 
 **Option 1: Learn Design (3-6 months extra)**
+
 - Take a UI/UX course
 - Study good apps obsessively
 - Practice with design tools (Figma, Sketch)
@@ -115,18 +127,21 @@ Here's what happens when developers try to design:
 - Build 5-10 throwaway projects to practice
 
 **Option 2: Copy Shamelessly (2-4 weeks extra)**
+
 - Find apps with similar flows
 - Use existing design systems (Material, Human Interface)
 - Copy layouts, spacing, typography exactly
 - Focus on making it functional, not original
 
 **Option 3: Hire/Partner with Designer (0 extra time)**
+
 - Pay a freelancer $2-5k for designs
 - Partner with a designer friend
 - Use AI tools for initial concepts then iterate
 - Most cost-effective if you value your time
 
 **Option 4: Use Templates/UI Kits ($100-500, 1-2 weeks)**
+
 - Buy a Flutter template that's close to what you want
 - Customize it for your needs
 - Still need to understand design principles for customization
@@ -147,6 +162,7 @@ Here's what happens when developers try to design:
 ### The Harsh Truth
 
 Most developers will:
+
 1. Underestimate design complexity by 300%
 2. Spend weeks making it "pixel perfect" when users don't care
 3. Rebuild the UI 3-4 times because they keep changing their mind

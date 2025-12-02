@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:readlock/constants/RLTheme.dart';
 import 'package:readlock/utility_widgets/Utility.dart';
+import 'package:readlock/services/SoundService.dart';
+import 'package:readlock/services/HapticsService.dart';
 
 class RLDesignSystem {
   static Widget BlockButton({
@@ -43,7 +45,11 @@ class RLDesignSystem {
       margin: finalMargin,
       decoration: buttonDecoration,
       mainAxisAlignment: MainAxisAlignment.center,
-      onTap: onTap,
+      onTap: () {
+        HapticsService.mediumImpact();
+        SoundService.playContinueClick();
+        onTap();
+      },
     );
   }
 }

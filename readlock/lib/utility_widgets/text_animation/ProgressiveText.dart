@@ -5,6 +5,8 @@ import 'package:flutter/material.dart' hide Typography;
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/utility_widgets/Utility.dart';
 import 'package:readlock/utility_widgets/visual_effects/BlurOverlay.dart';
+import 'package:readlock/services/SoundService.dart';
+import 'package:readlock/services/HapticsService.dart';
 
 // Class to represent a segment of text with optional highlighting
 class TextSegmentWithHighlighting {
@@ -180,6 +182,9 @@ class ProgressiveTextState extends State<ProgressiveText>
         currentCharacterPosition = 0;
         revealedText = '';
       });
+
+      // Start typewriter sound
+      SoundService.playTypewriter();
     }
 
     int characterIndex = 0;
@@ -216,6 +221,9 @@ class ProgressiveTextState extends State<ProgressiveText>
       setState(() {
         isRevealingCurrentSentence = false;
       });
+
+      // Stop typewriter sound
+      SoundService.stopTypewriter();
 
       // Check if all sentences have been revealed
       final bool isLastSentence =
@@ -274,6 +282,9 @@ class ProgressiveTextState extends State<ProgressiveText>
         isRevealingCurrentSentence = false;
       });
 
+      // Stop typewriter sound (in case it was playing)
+      SoundService.stopTypewriter();
+
       // Check if all sentences have been revealed
       final bool isLastSentence =
           currentSentenceNumber == textSentences.length - 1;
@@ -330,14 +341,53 @@ class ProgressiveTextState extends State<ProgressiveText>
       return;
     }
 
-    final bool isNotCurrentlyAnimating = !isRevealingCurrentSentence;
+    final bool isCurrentlyAnimating = isRevealingCurrentSentence;
     final bool hasUnrevealedSentences =
         currentSentenceNumber < textSentences.length - 1;
-    final bool canAdvanceToNextSentenceOnTap =
-        isNotCurrentlyAnimating && hasUnrevealedSentences;
+    final bool hasInteractiveContent = isCurrentlyAnimating || hasUnrevealedSentences;
 
-    if (canAdvanceToNextSentenceOnTap) {
+    if (hasInteractiveContent) {
+      // Provide haptic feedback only for interactive taps
+      HapticsService.lightImpact();
+    }
+
+    if (isCurrentlyAnimating) {
+      // Instantly complete current sentence reveal
+      completeCurrentSentenceReveal();
+      return;
+    }
+
+    if (hasUnrevealedSentences) {
       revealNextSentence();
+    }
+  }
+
+  // Instantly completes the current sentence reveal when tapped
+  void completeCurrentSentenceReveal() {
+    final bool canCompleteReveal = mounted && isRevealingCurrentSentence;
+
+    if (!canCompleteReveal) {
+      return;
+    }
+
+    setState(() {
+      isRevealingCurrentSentence = false;
+      revealedText = currentSentenceText;
+      currentCharacterPosition = currentSentenceText.length;
+    });
+
+    // Stop typewriter sound immediately
+    SoundService.stopTypewriter();
+
+    // Check if all sentences have been revealed
+    final bool isLastSentence =
+        currentSentenceNumber == textSentences.length - 1;
+
+    final bool shouldTriggerCompletionCallback =
+        isLastSentence && widget.onAllSegmentsRevealed != null;
+
+    if (shouldTriggerCompletionCallback) {
+      widget.onAllSegmentsRevealed!();
     }
   }
 
@@ -369,6 +419,10 @@ class ProgressiveTextState extends State<ProgressiveText>
   @override
   void dispose() {
     isRevealingCurrentSentence = false;
+    
+    // Stop typewriter sound on disposal
+    SoundService.stopTypewriter();
+    
     imageRevealController?.dispose();
     super.dispose();
   }

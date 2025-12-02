@@ -34,7 +34,10 @@ const String QUESTION_TYPE_ESTIMATE_PERCENTAGE = 'estimate-percentage';
 
 class JsonContentWidgetFactory {
   // Factory method for creating content widgets from JSON data
-  static Widget createContentWidget(Map<String, dynamic> contentData) {
+  static Widget createContentWidget(
+    Map<String, dynamic> contentData, {
+    VoidCallback? onLessonComplete,
+  }) {
     final String entityType = contentData['entity-type'] ?? '';
 
     // Content type switching based on entity type
@@ -86,7 +89,10 @@ class JsonContentWidgetFactory {
 
       case 'outro':
         {
-          return JsonOutroContentWidget(contentData: contentData);
+          return JsonOutroContentWidget(
+            contentData: contentData,
+            onLessonComplete: onLessonComplete,
+          );
         }
 
       case 'design-examples-showcase':
@@ -214,8 +220,13 @@ class JsonTextContentWidget extends StatelessWidget {
 // Outro content wrapper widget
 class JsonOutroContentWidget extends StatelessWidget {
   final Map<String, dynamic> contentData;
+  final VoidCallback? onLessonComplete;
 
-  const JsonOutroContentWidget({super.key, required this.contentData});
+  const JsonOutroContentWidget({
+    super.key, 
+    required this.contentData,
+    this.onLessonComplete,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -223,7 +234,10 @@ class JsonOutroContentWidget extends StatelessWidget {
     final outroContent = createOutroContentModel();
 
     // Widget rendering
-    return CCOutro(content: outroContent);
+    return CCOutro(
+      content: outroContent,
+      onLessonComplete: onLessonComplete,
+    );
   }
 
   OutroContent createOutroContentModel() {

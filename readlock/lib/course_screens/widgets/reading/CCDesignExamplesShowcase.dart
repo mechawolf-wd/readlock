@@ -87,9 +87,10 @@ class CCDesignExamplesShowcaseState
     return Container(
       color: RLTheme.backgroundDark,
       padding: RLTheme.contentPaddingInsets,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
           RLTypography.headingMedium(
             'Design Examples',
             color: RLTheme.textPrimary,
@@ -111,7 +112,7 @@ class CCDesignExamplesShowcaseState
               crossAxisCount: 2,
               crossAxisSpacing: 12,
               mainAxisSpacing: 12,
-              childAspectRatio: 0.8,
+              childAspectRatio: 1.0,
             ),
             itemCount: examples.length,
             itemBuilder: (context, index) {
@@ -135,7 +136,8 @@ class CCDesignExamplesShowcaseState
           const Spacing.height(20),
 
           RevealProgressIndicator(),
-        ],
+          ],
+        ),
       ),
     );
   }
