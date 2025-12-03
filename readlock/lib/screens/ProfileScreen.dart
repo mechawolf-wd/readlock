@@ -5,11 +5,15 @@ import 'package:flutter/material.dart' hide Typography;
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/utility_widgets/Utility.dart';
 import 'package:readlock/constants/RLTheme.dart';
+import 'package:readlock/widgets/ExpandableCard.dart';
 
 const String PROFILE_GREETING = 'Welcome back, Alex!';
 const String DAILY_GOAL_LABEL = 'Daily Goal';
 const String ACHIEVEMENT_GALLERY_LABEL = 'Achievement Gallery';
 const String READING_LEAGUE_LABEL = 'Reading League';
+const String TYPEWRITER_SOUND = 'Typewriter';
+const String SWITCHES_SOUND = 'Switches';
+const String OIIA_SOUND = 'OIIA';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -18,24 +22,31 @@ class ProfileScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       color: RLTheme.backgroundDark,
-      child: SafeArea(
+      child: const SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(20),
-          child: Div.column([
-            ReadingLeagueCard(),
+          padding: EdgeInsets.all(20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              ReadingLeagueCard(),
 
-            const Spacing.height(20),
+              Spacing.height(20),
 
-            AchievementGallery(),
+              AchievementGallery(),
 
-            const Spacing.height(20),
+              Spacing.height(20),
 
-            LearningStatsCard(),
+              LearningStatsCard(),
 
-            const Spacing.height(24),
+              Spacing.height(20),
 
-            MenuSection(),
-          ], crossAxisAlignment: CrossAxisAlignment.stretch),
+              SoundPickerCard(),
+
+              Spacing.height(24),
+
+              MenuSection(),
+            ],
+          ),
         ),
       ),
     );
@@ -47,66 +58,48 @@ class LearningStatsCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final String totalLearningTime = GetTotalLearningTime();
+    final Widget learningContent = learningStatsContent();
 
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: RLTheme.backgroundLight,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: RLTheme.textPrimary.withValues(alpha: 0.1),
-        ),
-      ),
-      child: Div.column([
-        Div.row([
-          const Icon(
-            Icons.access_time,
-            color: RLTheme.primaryBlue,
-            size: 24,
-          ),
-
-          const Spacing.width(12),
-
-          RLTypography.bodyLarge(
-            'Learning Statistics',
-            color: RLTheme.textPrimary,
-          ),
-        ]),
-
-        const Spacing.height(16),
-
-        Div.row([
-          Expanded(
-            child: LearningStatItem(
-              label: 'Total time spent learning',
-              value: totalLearningTime,
-              icon: Icons.schedule,
-              color: RLTheme.primaryBlue,
-            ),
-          ),
-
-          const Spacing.width(16),
-
-          Expanded(
-            child: LearningStatItem(
-              label: 'Lessons completed',
-              value: '42',
-              icon: Icons.check_circle,
-              color: RLTheme.primaryGreen,
-            ),
-          ),
-        ]),
-      ]),
+    return ExpandableCard(
+      title: 'Learning Statistics',
+      icon: Icons.access_time,
+      backgroundColor: RLTheme.backgroundLight,
+      titleColor: RLTheme.textPrimary,
+      iconColor: RLTheme.primaryBlue,
+      expandedContent: learningContent,
     );
   }
 
-  // Get formatted total learning time
-  String GetTotalLearningTime() {
-    // Example calculation - in real app this would come from user data
+  Widget learningStatsContent() {
+    final String totalLearningTime = getTotalLearningTime();
+
+    return Div.row([
+      Expanded(
+        child: LearningStatItem(
+          label: 'Total time spent learning',
+          value: totalLearningTime,
+          icon: Icons.schedule,
+          color: RLTheme.primaryBlue,
+        ),
+      ),
+
+      const Spacing.width(16),
+
+      const Expanded(
+        child: LearningStatItem(
+          label: 'Lessons completed',
+          value: '42',
+          icon: Icons.check_circle,
+          color: RLTheme.primaryGreen,
+        ),
+      ),
+    ]);
+  }
+
+  String getTotalLearningTime() {
     const int totalHours = 127;
     const int totalMinutes = 34;
-    
+
     return '${totalHours}h ${totalMinutes}m';
   }
 }
@@ -137,11 +130,7 @@ class LearningStatItem extends StatelessWidget {
         width: 40,
         height: 40,
         decoration: iconDecoration,
-        child: Icon(
-          icon,
-          color: color,
-          size: 20,
-        ),
+        child: Icon(icon, color: color, size: 20),
       ),
 
       const Spacing.height(8),
@@ -172,11 +161,7 @@ class MenuSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return Div.column([
       // Account & Subscription
-      MenuItem(
-        icon: Icons.person,
-        title: 'Account',
-        onTap: () {},
-      ),
+      MenuItem(icon: Icons.person, title: 'Account', onTap: () {}),
 
       MenuItem(
         icon: Icons.card_membership,
@@ -184,7 +169,7 @@ class MenuSection extends StatelessWidget {
         onTap: () {},
       ),
 
-      MenuDivider(),
+      const MenuDivider(),
 
       // App Settings
       MenuItem(
@@ -193,32 +178,16 @@ class MenuSection extends StatelessWidget {
         onTap: () {},
       ),
 
-      MenuItem(
-        icon: Icons.volume_up,
-        title: 'Sounds',
-        onTap: () {},
-      ),
+      MenuItem(icon: Icons.volume_up, title: 'Sounds', onTap: () {}),
 
-      MenuItem(
-        icon: Icons.vibration,
-        title: 'Haptics',
-        onTap: () {},
-      ),
+      MenuItem(icon: Icons.vibration, title: 'Haptics', onTap: () {}),
 
-      MenuDivider(),
+      const MenuDivider(),
 
       // Support & Information
-      MenuItem(
-        icon: Icons.info,
-        title: 'About',
-        onTap: () {},
-      ),
+      MenuItem(icon: Icons.info, title: 'About', onTap: () {}),
 
-      MenuItem(
-        icon: Icons.help,
-        title: 'Help',
-        onTap: () {},
-      ),
+      MenuItem(icon: Icons.help, title: 'Help', onTap: () {}),
 
       MenuItem(
         icon: Icons.bug_report,
@@ -232,14 +201,10 @@ class MenuSection extends StatelessWidget {
         onTap: () {},
       ),
 
-      MenuDivider(),
+      const MenuDivider(),
 
       // Account Actions & Legal
-      MenuItem(
-        icon: Icons.gavel,
-        title: 'Legal',
-        onTap: () {},
-      ),
+      MenuItem(icon: Icons.gavel, title: 'Legal', onTap: () {}),
 
       MenuItem(
         icon: Icons.logout,
@@ -276,35 +241,31 @@ class MenuItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Div.row([
-      Icon(
-        icon,
-        color: textColor ?? RLTheme.textPrimary.withValues(alpha: 0.7),
-        size: 20,
-      ),
+    final Color iconColor =
+        textColor ?? RLTheme.textPrimary.withValues(alpha: 0.7);
+    final Color titleColor = textColor ?? RLTheme.textPrimary;
 
-      const Spacing.width(16),
+    return Div.row(
+      [
+        Icon(icon, color: iconColor, size: 20),
 
-      Expanded(
-        child: RLTypography.bodyMedium(
-          title,
-          color: textColor ?? RLTheme.textPrimary,
+        const Spacing.width(16),
+
+        Expanded(
+          child: RLTypography.bodyMedium(title, color: titleColor),
         ),
-      ),
 
-      Icon(
-        Icons.chevron_right,
-        color: RLTheme.textPrimary.withValues(alpha: 0.3),
-        size: 20,
-      ),
-    ], 
-      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 0),
+        Icon(
+          Icons.chevron_right,
+          color: RLTheme.textPrimary.withValues(alpha: 0.3),
+          size: 20,
+        ),
+      ],
+      padding: const EdgeInsets.symmetric(vertical: 16),
       onTap: onTap,
     );
   }
 }
-
-
 
 class ReadingStatsCard extends StatelessWidget {
   const ReadingStatsCard({super.key});
@@ -329,7 +290,7 @@ class ReadingStatsCard extends StatelessWidget {
 
         const Spacing.height(20),
 
-        Div.row([
+        const Div.row([
           StatisticItem(
             label: 'Books Read',
             value: '127',
@@ -404,152 +365,166 @@ class AchievementGallery extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [Color(0xFFFFD700), Color(0xFFFFA500)],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
+    final LinearGradient achievementGradient = const LinearGradient(
+      colors: [Color(0xFFFFD700), Color(0xFFFFA500)],
+      begin: Alignment.topLeft,
+      end: Alignment.bottomRight,
+    );
+
+    final Widget achievementContent = this.achievementContent();
+
+    return ExpandableCard(
+      title: ACHIEVEMENT_GALLERY_LABEL,
+      icon: Icons.emoji_events,
+      gradient: achievementGradient,
+      titleColor: Colors.white,
+      iconColor: Colors.white,
+      expandedContent: achievementContent,
+    );
+  }
+
+  Widget achievementContent() {
+    final EdgeInsets badgePadding = const EdgeInsets.symmetric(
+      horizontal: 8,
+      vertical: 4,
+    );
+
+    final BoxDecoration badgeDecoration = BoxDecoration(
+      color: Colors.white.withValues(alpha: 0.2),
+      borderRadius: BorderRadius.circular(8),
+    );
+
+    final EdgeInsets motivationPadding = const EdgeInsets.all(12);
+
+    final BoxDecoration motivationDecoration = BoxDecoration(
+      color: Colors.white.withValues(alpha: 0.1),
+      borderRadius: BorderRadius.circular(12),
+    );
+
+    return Div.column([
+      Div.row([
+        Container(
+          padding: badgePadding,
+          decoration: badgeDecoration,
+          child: RLTypography.bodyMedium('47/100', color: Colors.white),
         ),
-        borderRadius: BorderRadius.circular(16),
+      ], mainAxisAlignment: MainAxisAlignment.end),
+
+      const Spacing.height(20),
+
+      SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: getAchievementBadges(),
       ),
-      child: Div.column([
-        Div.row([
-          const Icon(Icons.emoji_events, color: Colors.white, size: 24),
 
-          const Spacing.width(12),
+      const Spacing.height(16),
 
-          RLTypography.bodyLarge(
-            ACHIEVEMENT_GALLERY_LABEL,
-            color: Colors.white,
+      Container(
+        padding: motivationPadding,
+        decoration: motivationDecoration,
+        child: RLTypography.bodyMedium(
+          'Complete 3 more chapters to unlock \'Quiz Master\' badge! 🏆',
+          color: Colors.white.withValues(alpha: 0.9),
+          textAlign: TextAlign.center,
+        ),
+      ),
+    ]);
+  }
+
+  Widget getAchievementBadges() {
+    final List<Map<String, dynamic>> badgeData = [
+      {
+        'icon': Icons.local_fire_department,
+        'title': 'Streak Master',
+        'desc': '30 day streak',
+        'earned': true,
+      },
+      {
+        'icon': Icons.school,
+        'title': 'Book Worm',
+        'desc': '10 books read',
+        'earned': true,
+      },
+      {
+        'icon': Icons.lightbulb,
+        'title': 'Insight Hunter',
+        'desc': '100 insights',
+        'earned': true,
+      },
+      {
+        'icon': Icons.speed,
+        'title': 'Speed Reader',
+        'desc': '5 books in a week',
+        'earned': false,
+      },
+      {
+        'icon': Icons.quiz,
+        'title': 'Quiz Master',
+        'desc': '50 perfect scores',
+        'earned': false,
+      },
+    ];
+
+    final List<Widget> badges = badgeData.map((badge) {
+      final bool earned = badge['earned'] as bool;
+
+      final Color badgeBackgroundColor = earned
+          ? Colors.white
+          : Colors.white.withValues(alpha: 0.2);
+
+      final Color badgeBorderColor = earned
+          ? Colors.transparent
+          : Colors.white.withValues(alpha: 0.3);
+
+      final BoxDecoration badgeDecoration = BoxDecoration(
+        color: badgeBackgroundColor,
+        borderRadius: BorderRadius.circular(30),
+        border: Border.all(color: badgeBorderColor, width: 2),
+      );
+
+      final Color iconColor = earned
+          ? const Color(0xFFFFD700)
+          : Colors.white.withValues(alpha: 0.4);
+
+      return Container(
+        width: 80,
+        margin: const EdgeInsets.only(right: 16),
+        child: Div.column([
+          Container(
+            width: 60,
+            height: 60,
+            decoration: badgeDecoration,
+            child: Icon(
+              badge['icon'] as IconData,
+              color: iconColor,
+              size: 28,
+            ),
           ),
 
-          const Spacer(),
+          const Spacing.height(8),
 
-          Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 8,
-              vertical: 4,
-            ),
-            decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.2),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: RLTypography.bodyMedium(
-              '47/100',
-              color: Colors.white,
-            ),
+          RLTypography.bodyMedium(
+            badge['title'] as String,
+            color: Colors.white,
+            textAlign: TextAlign.center,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+
+          const Spacing.height(2),
+
+          RLTypography.bodyMedium(
+            badge['desc'] as String,
+            color: Colors.white.withValues(alpha: 0.8),
+            textAlign: TextAlign.center,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
           ),
         ]),
+      );
+    }).toList();
 
-        const Spacing.height(20),
-
-        SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Div.row([
-            ...[
-              {
-                'icon': Icons.local_fire_department,
-                'title': 'Streak Master',
-                'desc': '30 day streak',
-                'earned': true,
-              },
-              {
-                'icon': Icons.school,
-                'title': 'Book Worm',
-                'desc': '10 books read',
-                'earned': true,
-              },
-              {
-                'icon': Icons.lightbulb,
-                'title': 'Insight Hunter',
-                'desc': '100 insights',
-                'earned': true,
-              },
-              {
-                'icon': Icons.speed,
-                'title': 'Speed Reader',
-                'desc': '5 books in a week',
-                'earned': false,
-              },
-              {
-                'icon': Icons.quiz,
-                'title': 'Quiz Master',
-                'desc': '50 perfect scores',
-                'earned': false,
-              },
-            ].map((badge) {
-              final bool earned = badge['earned'] as bool;
-              return Container(
-                width: 80,
-                margin: const EdgeInsets.only(right: 16),
-                child: Div.column([
-                  Container(
-                    width: 60,
-                    height: 60,
-                    decoration: BoxDecoration(
-                      color: earned
-                          ? Colors.white
-                          : Colors.white.withValues(alpha: 0.2),
-                      borderRadius: BorderRadius.circular(30),
-                      border: Border.all(
-                        color: earned
-                            ? Colors.transparent
-                            : Colors.white.withValues(alpha: 0.3),
-                        width: 2,
-                      ),
-                    ),
-                    child: Icon(
-                      badge['icon'] as IconData,
-                      color: earned
-                          ? const Color(0xFFFFD700)
-                          : Colors.white.withValues(alpha: 0.4),
-                      size: 28,
-                    ),
-                  ),
-
-                  const Spacing.height(8),
-
-                  RLTypography.bodyMedium(
-                    badge['title'] as String,
-                    color: Colors.white,
-                    textAlign: TextAlign.center,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-
-                  const Spacing.height(2),
-
-                  RLTypography.bodyMedium(
-                    badge['desc'] as String,
-                    color: Colors.white.withValues(alpha: 0.8),
-                    textAlign: TextAlign.center,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ]),
-              );
-            }),
-          ]),
-        ),
-
-        const Spacing.height(16),
-
-        Container(
-          padding: const EdgeInsets.all(12),
-          decoration: BoxDecoration(
-            color: Colors.white.withValues(alpha: 0.1),
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: RLTypography.bodyMedium(
-            'Complete 3 more chapters to unlock \'Quiz Master\' badge! 🏆',
-            color: Colors.white.withValues(alpha: 0.9),
-            textAlign: TextAlign.center,
-          ),
-        ),
-      ]),
-    );
+    return Div.row(badges);
   }
 }
 
@@ -558,130 +533,145 @@ class ReadingLeagueCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [Color(0xFF8B5CF6), Color(0xFFA855F7)],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
+    final LinearGradient leagueGradient = const LinearGradient(
+      colors: [Color(0xFF8B5CF6), Color(0xFFA855F7)],
+      begin: Alignment.topLeft,
+      end: Alignment.bottomRight,
+    );
+
+    final Widget leagueContent = readingLeagueContent();
+
+    return ExpandableCard(
+      title: READING_LEAGUE_LABEL,
+      icon: Icons.leaderboard,
+      gradient: leagueGradient,
+      titleColor: Colors.white,
+      iconColor: Colors.white,
+      expandedContent: leagueContent,
+    );
+  }
+
+  Widget readingLeagueContent() {
+    final EdgeInsets leagueBadgePadding = const EdgeInsets.symmetric(
+      horizontal: 10,
+      vertical: 4,
+    );
+
+    final BoxDecoration leagueBadgeDecoration = BoxDecoration(
+      color: Colors.white.withValues(alpha: 0.2),
+      borderRadius: BorderRadius.circular(12),
+    );
+
+    return Div.column([
+      Div.row([
+        Container(
+          padding: leagueBadgePadding,
+          decoration: leagueBadgeDecoration,
+          child: RLTypography.bodyMedium('GOLD', color: Colors.white),
         ),
-        borderRadius: BorderRadius.circular(16),
+      ], mainAxisAlignment: MainAxisAlignment.end),
+
+      const Spacing.height(16),
+
+      RLTypography.bodyMedium(
+        'You\'re #3 out of 47 in your reading group this week!',
+        color: Colors.white.withValues(alpha: 0.9),
+        textAlign: TextAlign.center,
       ),
-      child: Div.column([
-        Div.row([
-          const Icon(Icons.leaderboard, color: Colors.white, size: 24),
+
+      const Spacing.height(16),
+
+      leaderboardList(),
+    ]);
+  }
+
+  Widget leaderboardList() {
+    final List<Map<String, dynamic>> leaderboardData = [
+      {'rank': 1, 'name': 'Sarah Chen', 'aha': 2847, 'you': false},
+      {'rank': 2, 'name': 'Mike Johnson', 'aha': 2156, 'you': false},
+      {'rank': 3, 'name': 'You', 'aha': 1923, 'you': true},
+      {'rank': 4, 'name': 'Emma Davis', 'aha': 1845, 'you': false},
+    ];
+
+    final List<Widget> leaderboardItems = leaderboardData.map((person) {
+      final bool isYou = person['you'] as bool;
+      final int rank = person['rank'] as int;
+
+      final Color personBackgroundColor = isYou
+          ? Colors.white.withValues(alpha: 0.2)
+          : Colors.white.withValues(alpha: 0.05);
+
+      final Border? personBorder = isYou
+          ? Border.all(color: Colors.white.withValues(alpha: 0.3))
+          : null;
+
+      final BoxDecoration personDecoration = BoxDecoration(
+        color: personBackgroundColor,
+        borderRadius: BorderRadius.circular(8),
+        border: personBorder,
+      );
+
+      final Color rankBackgroundColor = rank == 1
+          ? const Color(0xFFFFD700)
+          : rank == 2
+          ? const Color(0xFFC0C0C0)
+          : rank == 3
+          ? const Color(0xFFCD7F32)
+          : Colors.white.withValues(alpha: 0.2);
+
+      final BoxDecoration rankDecoration = BoxDecoration(
+        color: rankBackgroundColor,
+        borderRadius: BorderRadius.circular(12),
+      );
+
+      final bool isTopThree = rank <= 3;
+      final Color rankTextColor = isTopThree
+          ? Colors.white
+          : Colors.white.withValues(alpha: 0.8);
+
+      return Container(
+        margin: const EdgeInsets.only(bottom: 8),
+        padding: const EdgeInsets.symmetric(
+          horizontal: 12,
+          vertical: 8,
+        ),
+        decoration: personDecoration,
+        child: Div.row([
+          Container(
+            width: 24,
+            height: 24,
+            decoration: rankDecoration,
+            child: Center(
+              child: RLTypography.bodyMedium(
+                '${person['rank']}',
+                color: rankTextColor,
+              ),
+            ),
+          ),
 
           const Spacing.width(12),
 
           Expanded(
-            child: RLTypography.bodyLarge(
-              READING_LEAGUE_LABEL,
+            child: RLTypography.bodyMedium(
+              person['name'] as String,
               color: Colors.white,
             ),
           ),
 
-          Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 10,
-              vertical: 4,
-            ),
-            decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.2),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: RLTypography.bodyMedium('GOLD', color: Colors.white),
+          RLTypography.bodyMedium(
+            '${person['aha']} Aha',
+            color: Colors.white.withValues(alpha: 0.8),
           ),
         ]),
+      );
+    }).toList();
 
-        const Spacing.height(16),
-
-        RLTypography.bodyMedium(
-          'You\'re #3 out of 47 in your reading group this week!',
-          color: Colors.white.withValues(alpha: 0.9),
-          textAlign: TextAlign.center,
-        ),
-
-        const Spacing.height(16),
-
-        ...[
-          {'rank': 1, 'name': 'Sarah Chen', 'aha': 2847, 'you': false},
-          {
-            'rank': 2,
-            'name': 'Mike Johnson',
-            'aha': 2156,
-            'you': false,
-          },
-          {'rank': 3, 'name': 'You', 'aha': 1923, 'you': true},
-          {'rank': 4, 'name': 'Emma Davis', 'aha': 1845, 'you': false},
-        ].asMap().entries.map((entry) {
-          final person = entry.value;
-          final bool isYou = person['you'] as bool;
-
-          return Container(
-            margin: const EdgeInsets.only(bottom: 8),
-            padding: const EdgeInsets.symmetric(
-              horizontal: 12,
-              vertical: 8,
-            ),
-            decoration: BoxDecoration(
-              color: isYou
-                  ? Colors.white.withValues(alpha: 0.2)
-                  : Colors.white.withValues(alpha: 0.05),
-              borderRadius: BorderRadius.circular(8),
-              border: isYou
-                  ? Border.all(
-                      color: Colors.white.withValues(alpha: 0.3),
-                    )
-                  : null,
-            ),
-            child: Div.row([
-              Container(
-                width: 24,
-                height: 24,
-                decoration: BoxDecoration(
-                  color: person['rank'] == 1
-                      ? const Color(0xFFFFD700)
-                      : person['rank'] == 2
-                      ? const Color(0xFFC0C0C0)
-                      : person['rank'] == 3
-                      ? const Color(0xFFCD7F32)
-                      : Colors.white.withValues(alpha: 0.2),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Center(
-                  child: RLTypography.bodyMedium(
-                    '${person['rank']}',
-                    color: (person['rank'] as int) <= 3
-                        ? Colors.white
-                        : Colors.white.withValues(alpha: 0.8),
-                  ),
-                ),
-              ),
-
-              const Spacing.width(12),
-
-              Expanded(
-                child: RLTypography.bodyMedium(
-                  person['name'] as String,
-                  color: Colors.white,
-                ),
-              ),
-
-              RLTypography.bodyMedium(
-                '${person['aha']} Aha',
-                color: Colors.white.withValues(alpha: 0.8),
-              ),
-            ]),
-          );
-        }),
-      ]),
-    );
+    return Div.column(leaderboardItems);
   }
 }
 
-class OLD_AchievementShowcase extends StatelessWidget {
-  const OLD_AchievementShowcase({super.key});
+class OldAchievementShowcase extends StatelessWidget {
+  const OldAchievementShowcase({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -833,7 +823,11 @@ class CourseProgressCard extends StatelessWidget {
             borderRadius: BorderRadius.circular(12),
           ),
           child: Div.row([
-            Icon(Icons.timer, color: RLTheme.primaryBlue, size: 16),
+            const Icon(
+              Icons.timer,
+              color: RLTheme.primaryBlue,
+              size: 16,
+            ),
 
             const Spacing.width(8),
 
@@ -929,6 +923,143 @@ class ActionButton extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       onTap: onTap,
     );
+  }
+}
+
+class SoundPickerCard extends StatefulWidget {
+  const SoundPickerCard({super.key});
+
+  @override
+  State<SoundPickerCard> createState() => _SoundPickerCardState();
+}
+
+class _SoundPickerCardState extends State<SoundPickerCard> {
+  String selectedSound = TYPEWRITER_SOUND;
+
+  @override
+  Widget build(BuildContext context) {
+    final LinearGradient soundGradient = const LinearGradient(
+      colors: [Color(0xFF6366F1), Color(0xFF8B5CF6)],
+      begin: Alignment.topLeft,
+      end: Alignment.bottomRight,
+    );
+
+    final Widget soundContent = soundPickerContent();
+
+    return ExpandableCard(
+      title: 'Sound Settings',
+      icon: Icons.volume_up,
+      gradient: soundGradient,
+      titleColor: Colors.white,
+      iconColor: Colors.white,
+      expandedContent: soundContent,
+    );
+  }
+
+  Widget soundPickerContent() {
+    final List<Map<String, dynamic>> soundOptions = [
+      {
+        'name': TYPEWRITER_SOUND,
+        'icon': Icons.keyboard,
+        'color': Colors.blue,
+      },
+      {
+        'name': SWITCHES_SOUND,
+        'icon': Icons.toggle_on,
+        'color': Colors.green,
+      },
+      {
+        'name': OIIA_SOUND,
+        'icon': Icons.music_note,
+        'color': Colors.orange,
+      },
+    ];
+
+    final List<Widget> soundBlocks = soundOptions.map((sound) {
+      final bool isSelected = selectedSound == sound['name'];
+
+      return Expanded(
+        child: soundBlock(
+          name: sound['name'] as String,
+          icon: sound['icon'] as IconData,
+          color: sound['color'] as Color,
+          isSelected: isSelected,
+          onTap: () => selectSound(sound['name'] as String),
+        ),
+      );
+    }).toList();
+
+    return Div.row(
+      soundBlocks,
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+    );
+  }
+
+  Widget soundBlock({
+    required String name,
+    required IconData icon,
+    required Color color,
+    required bool isSelected,
+    required VoidCallback onTap,
+  }) {
+    final Color backgroundColor = isSelected
+        ? Colors.white.withValues(alpha: 0.3)
+        : Colors.white.withValues(alpha: 0.1);
+
+    final Color borderColor = isSelected
+        ? Colors.white
+        : Colors.white.withValues(alpha: 0.2);
+
+    final BoxDecoration blockDecoration = BoxDecoration(
+      color: backgroundColor,
+      borderRadius: BorderRadius.circular(12),
+      border: Border.all(color: borderColor, width: isSelected ? 2 : 1),
+    );
+
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        decoration: blockDecoration,
+        padding: const EdgeInsets.all(12),
+        margin: const EdgeInsets.symmetric(horizontal: 4),
+        child: Div.column([
+          Container(
+            width: 36,
+            height: 36,
+            decoration: BoxDecoration(
+              color: Colors.white.withValues(alpha: 0.2),
+              borderRadius: BorderRadius.circular(18),
+            ),
+            child: Icon(icon, color: Colors.white, size: 20),
+          ),
+
+          const Spacing.height(8),
+
+          RLTypography.bodyMedium(
+            name,
+            color: Colors.white,
+            textAlign: TextAlign.center,
+            maxLines: 1,
+          ),
+
+          if (isSelected) ...[
+            const Spacing.height(4),
+
+            const Icon(
+              Icons.check_circle,
+              color: Colors.white,
+              size: 16,
+            ),
+          ],
+        ], crossAxisAlignment: CrossAxisAlignment.center),
+      ),
+    );
+  }
+
+  void selectSound(String soundName) {
+    setState(() {
+      selectedSound = soundName;
+    });
   }
 }
 

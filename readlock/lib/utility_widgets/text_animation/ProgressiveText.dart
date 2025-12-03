@@ -344,7 +344,8 @@ class ProgressiveTextState extends State<ProgressiveText>
     final bool isCurrentlyAnimating = isRevealingCurrentSentence;
     final bool hasUnrevealedSentences =
         currentSentenceNumber < textSentences.length - 1;
-    final bool hasInteractiveContent = isCurrentlyAnimating || hasUnrevealedSentences;
+    final bool hasInteractiveContent =
+        isCurrentlyAnimating || hasUnrevealedSentences;
 
     if (hasInteractiveContent) {
       // Provide haptic feedback only for interactive taps
@@ -364,7 +365,8 @@ class ProgressiveTextState extends State<ProgressiveText>
 
   // Instantly completes the current sentence reveal when tapped
   void completeCurrentSentenceReveal() {
-    final bool canCompleteReveal = mounted && isRevealingCurrentSentence;
+    final bool canCompleteReveal =
+        mounted && isRevealingCurrentSentence;
 
     if (!canCompleteReveal) {
       return;
@@ -419,10 +421,10 @@ class ProgressiveTextState extends State<ProgressiveText>
   @override
   void dispose() {
     isRevealingCurrentSentence = false;
-    
+
     // Stop typewriter sound on disposal
     SoundService.stopTypewriter();
-    
+
     imageRevealController?.dispose();
     super.dispose();
   }

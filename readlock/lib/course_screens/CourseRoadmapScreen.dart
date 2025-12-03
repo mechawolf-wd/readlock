@@ -180,7 +180,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
         ),
       ],
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
       padding: const [20, 16],
     );
   }
@@ -230,7 +230,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
         title: PSYCHOLOGY_OF_DESIGN_TITLE,
         subtitle: MENTAL_MODELS_SUBTITLE,
         isCompleted: true,
-        onTap: () => showLoadingScreenThenNavigate(1, 0),
+        onTap: () => showLoadingScreenThenNavigate(0, 0),
       ),
 
       // Level 3 - Polish Affordances Lesson (current level)
@@ -240,7 +240,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
         subtitle: 'Lekcja w języku polskim',
         isCompleted: false,
         isCurrentLevel: true,
-        onTap: () => showLoadingScreenThenNavigate(2, 0),
+        onTap: () => showLoadingScreenThenNavigate(0, 0),
       ),
 
       // Level 4 - Feedback Systems (locked)

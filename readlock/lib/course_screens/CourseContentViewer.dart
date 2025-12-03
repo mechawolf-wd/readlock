@@ -12,7 +12,7 @@ import 'package:readlock/screens/StreakplierRewardScreen.dart';
 
 // String constants
 const String NO_CONTENT_AVAILABLE_MESSAGE =
-    'No content available for this course';
+    'Pigeons are still gathering content for this lesson. Please check back a bit !';
 const String ERROR_LOADING_COURSE_DATA = 'Error loading course data';
 
 // Styling constants
@@ -462,7 +462,7 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
   // Create lesson reward data based on current lesson performance
   LessonReward createLessonReward() {
     // Calculate lesson duration (example: 5 minutes 30 seconds)
-    final Duration lessonDuration = Duration(minutes: 5, seconds: 30);
+    final Duration lessonDuration = const Duration(minutes: 5, seconds: 30);
     
     return LessonReward(
       experiencePointsGained: 190,

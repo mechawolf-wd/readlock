@@ -333,16 +333,6 @@
               ]
             },
             {
-              "entity-type": "outro",
-              "title": "Seeing Affordances Everywhere",
-              "text-segments": [
-                "You now understand how objects silently communicate their purpose.",
-                "Every handle, button, and switch tells a story about its intended use.",
-                "<c:g>Good affordances</c:g> guide you naturally; poor ones leave you guessing.",
-                "In our next lesson, we'll explore <c:g>natural mapping</c:g> - how controls relate logically to their effects."
-              ]
-            },
-            {
               "entity-type": "skill-check"
             },
             {

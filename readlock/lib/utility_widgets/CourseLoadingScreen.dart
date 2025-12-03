@@ -14,7 +14,7 @@ class CourseLoadingScreen extends StatelessWidget {
 
   Widget PigeonImage() {
     return Image.asset(
-      'pigeon.png',
+      'assets/pigeon.png',
       width: PIGEON_IMAGE_SIZE,
       height: PIGEON_IMAGE_SIZE,
       fit: BoxFit.contain,
