@@ -445,6 +445,18 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
     ).push(RLTheme.slideUpTransition(const MainNavigation()));
   }
 
+  // Navigate to profile screen with reading league expanded
+  void navigateToProfileWithReadingLeague() {
+    Navigator.of(context).push(
+      RLTheme.slideUpTransition(
+        const MainNavigation(
+          initialTabIndex: 2, // Profile tab index
+          showReadingLeagueExpanded: true,
+        ),
+      ),
+    );
+  }
+
   // Show Streakplier reward screen after lesson completion
   void showStreakplierRewardScreen() {
     final LessonReward reward = createLessonReward();
@@ -475,7 +487,7 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
   // Handle continue from reward screen
   void handleRewardScreenContinue() {
     Navigator.of(context).pop(); // Close reward screen
-    navigateToMainScreen(); // Return to main navigation
+    navigateToProfileWithReadingLeague(); // Navigate to profile with reading league expanded
   }
 
   // Handle star tap to favorite current slide

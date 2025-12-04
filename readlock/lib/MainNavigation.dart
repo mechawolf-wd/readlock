@@ -14,25 +14,34 @@ const String YOU_TAB_LABEL = 'You';
 const String SANDBOX_TAB_LABEL = 'Sandbox';
 
 class MainNavigation extends StatefulWidget {
-  const MainNavigation({super.key});
+  final int initialTabIndex;
+  final bool showReadingLeagueExpanded;
+
+  const MainNavigation({
+    super.key, 
+    this.initialTabIndex = 0, 
+    this.showReadingLeagueExpanded = false,
+  });
 
   @override
   State<MainNavigation> createState() => MainNavigationState();
 }
 
 class MainNavigationState extends State<MainNavigation> {
-  int currentIndex = 0;
-
-  final List<Widget> screens = [
-    const HomeScreen(),
-    const CoursesScreen(),
-    const ProfileScreen(),
-    const SandboxScreen(),
-  ];
+  late int currentIndex;
+  late List<Widget> screens;
 
   @override
   void initState() {
     super.initState();
+    currentIndex = widget.initialTabIndex;
+    
+    screens = [
+      const HomeScreen(),
+      const CoursesScreen(),
+      ProfileScreen(showReadingLeagueExpanded: widget.showReadingLeagueExpanded),
+      const SandboxScreen(),
+    ];
   }
 
   @override

@@ -31,25 +31,25 @@
             {
               "content-id": "design-of-everyday-things-c:1",
               "entity-type": "intro",
-              "title": "Drzwi, klamki i ukryte komunikaty",
+              "title": "Doors, Handles, and Hidden Messages",
               "text-segments": [
-                "Każdego dnia przedmioty w ciszy komunikują, co chcą, żebyś z nimi robił.",
-                "Klamka mówi 'pociągnij mnie', płaska metalowa płytka szepcze 'naciśnij tutaj'.",
-                "W tym kursie zbadamy trzy fundamentalne zasady designu: affordances, mapping i feedback."
+                "Every day, objects silently communicate what they want you to do with them.",
+                "A door handle says 'pull me', a flat metal plate whispers 'push here'.",
+                "In this course, we'll explore the fundamental principle of design: affordances."
               ]
             },
             {
               "entity-type": "text",
-              "title": "Zaczepka",
+              "title": "The Hook",
               "text-segments": [
-                "Spójrz na ten czajnik.",
+                "Look at this kettle.",
                 "image-link[no-blur]:assets/kettle.png",
-                "Co jest nie tak z tym projektem?",
-                "Uchwyt jest po <c:r>tej samej stronie</c:r> co dzióbek.",
-                "Kiedy próbujesz nalać gorącą wodę, twoja ręka jest bezpośrednio nad wydobywającą się parą.",
-                "To klasyczny przykład, którego Don Norman używa do pokazania <c:r>złego designu</c:r> - wygląda elegancko, ale jest niebezpieczny w użyciu.",
-                "Dobry design to nie tylko estetyka; musi przede wszystkim priorytetowo traktować <c:g>użyteczność</c:g> i <c:g>bezpieczeństwo</c:g>.",
-                "Na kolejnych slajdach przeczytamy historie, które pokazują, jak te zasady sprawdzają się w rzeczywistych wyzwaniach projektowych."
+                "What's wrong with this design?",
+                "The handle is on <c:r>the same side</c:r> as the spout.",
+                "When you try to pour hot water, your hand is directly over the escaping steam.",
+                "This is a classic example Don Norman uses to show <c:r>bad design</c:r> - it looks elegant, but it's dangerous to use.",
+                "Good design isn't just about aesthetics; it must prioritize <c:g>usability</c:g> and <c:g>safety</c:g> above all.",
+                "In the following slides, we'll read stories that show how these principles work in real design challenges."
               ]
             },
             {
@@ -184,9 +184,9 @@
               "title": "Affordances",
               "text-segments": [
                 "The first principle is <c:g>affordances</c:g> - the relationship between an object's properties and what actions they suggest to users.",
-                "A door handle naturally affords grasping and pulling, while a flat metal plate clearly affords pushing.",
+                "<c:g>A door handle</c:g> naturally affords grasping and pulling, while <c:g>a flat metal plate</c:g> clearly affords pushing.",
                 "<c:g>Good affordances</c:g> are immediately obvious - you know what to do without thinking or reading instructions.",
-                "Poor affordances mislead users into taking wrong actions, creating the illusion of user error when it's actually design failure."
+                "<c:r>Poor affordances</c:r> mislead users into taking wrong actions, creating the illusion of user error when it's actually design failure."
               ]
             },
             {
@@ -229,8 +229,8 @@
               "title": "Affordances in Practice",
               "text-segments": [
                 "<c:g>Great designers</c:g> use affordances to guide behavior without instruction.",
-                "A well-designed slider has a groove that suggests the direction of movement.",
-                "Buttons are raised to suggest pressing, while flat areas suggest they're not interactive.",
+                "<c:g>A well-designed slider</c:g> has a groove that suggests the direction of movement.",
+                "<c:g>Raised buttons</c:g> suggest pressing, while <c:r>flat areas that look clickable but aren't</c:r> confuse users.",
                 "The <c:g>best affordances</c:g> feel so natural that you don't even notice them working."
               ]
             },
@@ -307,8 +307,8 @@
               "title": "Affordance Examples",
               "text-segments": [
                 "<c:g>Great affordances</c:g> work invisibly - you use them without thinking.",
-                "Scissors have finger holes that show exactly where to place your fingers.",
-                "A zipper tab moves up and down along an obvious track.",
+                "<c:g>Scissors</c:g> have finger holes that show exactly where to place your fingers.",
+                "<c:g>A zipper tab</c:g> moves up and down along an obvious track.",
                 "Good affordances make the correct action feel <c:g>inevitable and natural</c:g>."
               ]
             },
@@ -358,46 +358,46 @@
             {
               "entity-type": "single-choice-question",
               "title": "Skill Check 2",
-              "question": "You're designing a stovetop with 4 burners arranged in a square. What's the best way to arrange the control knobs?",
+              "question": "You see a button that looks flat against the surface. What does this affordance suggest?",
               "options": [
                 {
-                  "text": "In a straight line below the burners",
-                  "consequence-message": "This creates confusion - which knob controls which burner? Users would need to guess or read labels."
+                  "text": "The button should be pressed",
+                  "consequence-message": "Flat surfaces typically suggest non-interactive areas - raised or recessed buttons afford pressing."
                 },
                 {
-                  "text": "In a square pattern matching the burner layout",
-                  "consequence-message": "Excellent! This creates natural mapping - the spatial relationship makes control obvious."
+                  "text": "This area is not interactive",
+                  "consequence-message": "Correct! Flat surfaces afford no interaction - they don't invite pressing or manipulation."
                 },
                 {
-                  "text": "In a circle around a central dial",
-                  "consequence-message": "This would be confusing and doesn't match the burner layout - poor spatial mapping."
+                  "text": "You should slide across it",
+                  "consequence-message": "Sliding is afforded by grooves or tracks, not flat surfaces."
                 }
               ],
               "correct-answer-indices": [
                 1
               ],
-              "explanation": "Natural mapping suggests arranging controls to mirror the layout of what they control. Square knobs matching square burners creates an intuitive spatial relationship.",
-              "hint": "Consider which arrangement would create the most natural mapping."
+              "explanation": "Flat surfaces that blend with their surroundings don't afford pressing. Good button design uses shadows, borders, or depth to clearly afford interaction.",
+              "hint": "Think about what visual properties make something look pressable."
             },
             {
               "entity-type": "single-choice-question",
               "title": "Skill Check 3",
-              "question": "When should a system provide feedback to the user?",
+              "question": "Which design better affords opening: a drawer with a visible handle or one with a smooth, handleless front?",
               "options": [
                 {
-                  "text": "Only when an error occurs",
-                  "consequence-message": "This leaves users wondering if the system is working - good feedback should be continuous and reassuring."
+                  "text": "The drawer with a visible handle",
+                  "consequence-message": "Exactly! A handle clearly affords pulling - its shape and position make the action obvious."
                 },
                 {
-                  "text": "Immediately when an action is initiated, during processing, and upon completion",
-                  "consequence-message": "Perfect! Comprehensive feedback keeps users informed and confident throughout the interaction."
+                  "text": "The smooth, handleless drawer",
+                  "consequence-message": "Without a handle, users must guess where and how to open it - poor affordance leads to confusion."
                 }
               ],
               "correct-answer-indices": [
-                1
+                0
               ],
-              "explanation": "Good feedback should be immediate (acknowledge the action), continuous (show progress), and conclusive (confirm completion). This keeps users informed throughout the entire interaction.",
-              "hint": "Think about when users need reassurance that the system is responding."
+              "explanation": "Handles are one of the clearest affordances - they show exactly where to grasp and suggest the pulling action. Handleless designs sacrifice clarity for aesthetics.",
+              "hint": "Consider which design immediately communicates how to interact with it."
             },
             {
               "entity-type": "outro",
@@ -406,8 +406,8 @@
                 "So what do you do when a door confuses you at the entrance? When buttons give no response?",
                 "Next time you encounter a Norman door, you'll recognize the design flaw, not user error.",
                 "When you design something – a presentation, an app, even an email – ask yourself: <c:g>Is my intent obvious?</c:g>",
-                "Remember: <c:r>affordances</c:r> reveal purpose, <c:r>mapping</c:r> creates logic, and <c:r>feedback</c:r> confirms action.",
-                "These principles apply everywhere – from the coffee machine that frustrates you each morning to the interfaces you create at work.",
+                "Remember: <c:g>good affordances</c:g> reveal purpose, while <c:r>poor affordances</c:r> hide it.",
+                "The principle of affordances applies everywhere – from <c:r>confusing coffee machines</c:r> to <c:g>intuitive smartphone interfaces</c:g>.",
                 "Good design isn't about being clever. It's about being <c:g>clear</c:g>."
               ]
             }

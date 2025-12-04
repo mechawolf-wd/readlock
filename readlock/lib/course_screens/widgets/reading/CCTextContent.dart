@@ -17,7 +17,7 @@ const double CONTINUE_BUTTON_HEIGHT = 48.0;
 const double CONTINUE_BUTTON_BOTTOM_PADDING = 32.0;
 const double BUTTON_BORDER_RADIUS = 12.0;
 const Duration PAGE_TRANSITION_DURATION = Duration(milliseconds: 300);
-const Duration CONTINUE_BUTTON_DELAY = Duration(seconds: 1);
+const Duration CONTINUE_BUTTON_DELAY = Duration(milliseconds: 700);
 
 class CCTextContent extends StatefulWidget {
   // Text content data to display

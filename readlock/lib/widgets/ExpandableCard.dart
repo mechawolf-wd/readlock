@@ -23,6 +23,7 @@ class ExpandableCard extends StatefulWidget {
   final Color? backgroundColor;
   final Color? titleColor;
   final Color? iconColor;
+  final bool initiallyExpanded;
 
   const ExpandableCard({
     super.key,
@@ -33,6 +34,7 @@ class ExpandableCard extends StatefulWidget {
     this.backgroundColor,
     this.titleColor,
     this.iconColor,
+    this.initiallyExpanded = false,
   });
 
   @override
@@ -40,7 +42,13 @@ class ExpandableCard extends StatefulWidget {
 }
 
 class ExpandableCardState extends State<ExpandableCard> {
-  bool isExpanded = false;
+  late bool isExpanded;
+
+  @override
+  void initState() {
+    super.initState();
+    isExpanded = widget.initiallyExpanded;
+  }
 
   void handleExpansionToggle() {
     setState(() {

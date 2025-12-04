@@ -16,35 +16,37 @@ const String SWITCHES_SOUND = 'Switches';
 const String OIIA_SOUND = 'OIIA';
 
 class ProfileScreen extends StatelessWidget {
-  const ProfileScreen({super.key});
+  final bool showReadingLeagueExpanded;
+
+  const ProfileScreen({super.key, this.showReadingLeagueExpanded = false});
 
   @override
   Widget build(BuildContext context) {
     return Container(
       color: RLTheme.backgroundDark,
-      child: const SafeArea(
+      child: SafeArea(
         child: SingleChildScrollView(
-          padding: EdgeInsets.all(20),
+          padding: const EdgeInsets.all(20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              ReadingLeagueCard(),
+              ReadingLeagueCard(initiallyExpanded: showReadingLeagueExpanded),
 
-              Spacing.height(20),
+              const Spacing.height(20),
 
-              AchievementGallery(),
+              const AchievementGallery(),
 
-              Spacing.height(20),
+              const Spacing.height(20),
 
-              LearningStatsCard(),
+              const LearningStatsCard(),
 
-              Spacing.height(20),
+              const Spacing.height(20),
 
-              SoundPickerCard(),
+              const SoundPickerCard(),
 
-              Spacing.height(24),
+              const Spacing.height(24),
 
-              MenuSection(),
+              const MenuSection(),
             ],
           ),
         ),
@@ -529,7 +531,9 @@ class AchievementGallery extends StatelessWidget {
 }
 
 class ReadingLeagueCard extends StatelessWidget {
-  const ReadingLeagueCard({super.key});
+  final bool initiallyExpanded;
+
+  const ReadingLeagueCard({super.key, this.initiallyExpanded = false});
 
   @override
   Widget build(BuildContext context) {
@@ -548,6 +552,7 @@ class ReadingLeagueCard extends StatelessWidget {
       titleColor: Colors.white,
       iconColor: Colors.white,
       expandedContent: leagueContent,
+      initiallyExpanded: initiallyExpanded,
     );
   }
 
