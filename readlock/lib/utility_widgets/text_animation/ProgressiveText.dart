@@ -102,10 +102,8 @@ class ProgressiveTextState extends State<ProgressiveText>
   // Current sentence reveal state
   // Full text of the sentence being animated
   String currentSentenceText = '';
-  // Current character index in the typewriter animation
+  // Current character index in the typewriter animation (used for color transition)
   int currentCharacterPosition = 0;
-  // Portion of current sentence that has been revealed so far
-  String revealedText = '';
 
   // Image reveal animation controller
   AnimationController? imageRevealController;
@@ -133,7 +131,7 @@ class ProgressiveTextState extends State<ProgressiveText>
   }
 
   // Resets the current sentence state to prepare for revealing a new sentence
-  // Sets the text, resets character position, and clears revealed text
+  // Sets the text and resets character position for color transition animation
   void initializeCurrentSentence() {
     final bool hasCurrentSentence =
         currentSentenceNumber < textSentences.length;
@@ -143,13 +141,13 @@ class ProgressiveTextState extends State<ProgressiveText>
       currentSentenceText = removeHighlightMarkersFromText(
         textSentences[currentSentenceNumber],
       );
-      currentCharacterPosition = 0;
-      revealedText = '';
+      currentCharacterPosition =
+          -1; // Start with no characters revealed
     }
   }
 
   // Begins the typewriter animation for the current sentence
-  // Reveals one character at a time with the specified delay
+  // Reveals one character at a time with stable layout using color transitions
   // Automatically triggers next sentence if automaticallyRevealNextSentence is true
   void startCurrentSentenceReveal() async {
     final bool isAlreadyRevealing = isRevealingCurrentSentence;
@@ -179,40 +177,31 @@ class ProgressiveTextState extends State<ProgressiveText>
     if (isWidgetStillMounted) {
       setState(() {
         isRevealingCurrentSentence = true;
-        currentCharacterPosition = 0;
-        revealedText = '';
+        currentCharacterPosition =
+            -1; // Start with no characters revealed
       });
 
       // Start typewriter sound
       SoundService.playTypewriter();
     }
 
-    int characterIndex = 0;
-
-    while (characterIndex < currentSentenceText.length && mounted) {
-      final bool isStillMounted = mounted;
-      final bool isStillRevealing = isRevealingCurrentSentence;
-      final bool shouldContinueAnimation =
-          isStillMounted && isStillRevealing;
-
-      if (!shouldContinueAnimation) {
+    // Simple character-by-character reveal with stable layout
+    for (
+      int charIndex = 0;
+      charIndex < currentSentenceText.length;
+      charIndex++
+    ) {
+      if (!mounted || !isRevealingCurrentSentence) {
         break;
       }
 
-      final bool canUpdateState = mounted;
-
-      if (canUpdateState) {
+      if (mounted) {
         setState(() {
-          currentCharacterPosition = characterIndex;
-          revealedText = currentSentenceText.substring(
-            0,
-            characterIndex + 1,
-          );
+          currentCharacterPosition = charIndex;
         });
       }
 
       await Future.delayed(widget.typewriterCharacterDelay);
-      characterIndex++;
     }
 
     final bool canCompleteRevealAnimation = mounted;
@@ -260,7 +249,6 @@ class ProgressiveTextState extends State<ProgressiveText>
 
     setState(() {
       isRevealingCurrentSentence = true;
-      revealedText = 'image'; // Mark as image reveal
     });
 
     // Create animation controller for image reveal
@@ -374,8 +362,7 @@ class ProgressiveTextState extends State<ProgressiveText>
 
     setState(() {
       isRevealingCurrentSentence = false;
-      revealedText = currentSentenceText;
-      currentCharacterPosition = currentSentenceText.length;
+      currentCharacterPosition = currentSentenceText.length - 1;
     });
 
     // Stop typewriter sound immediately
@@ -432,26 +419,41 @@ class ProgressiveTextState extends State<ProgressiveText>
   @override
   Widget build(BuildContext context) {
     // Main content container
-    final Widget content = Div.column([
-      RevealedTextDisplay(),
-    ], crossAxisAlignment: CrossAxisAlignment.start);
+    final Widget content = Div.column(
+      [RevealedTextDisplay()],
+      crossAxisAlignment: CrossAxisAlignment.start,
+      width: double.infinity,
+    );
 
+    // Extract condition for clarity (rule #27)
     final bool shouldDisableTapInteraction = !widget.enableTapToReveal;
 
     if (shouldDisableTapInteraction) {
       return content;
     }
 
-    // Clickable wrapper with mouse cursor hint
-    final Widget clickableContent = MouseRegion(
-      cursor: SystemMouseCursors.click,
-      child: content,
-    );
+    // Stack with content and full-screen clickable overlay
+    return Stack(
+      children: [
+        content,
 
-    return Div.column(
-      [clickableContent],
-      onTap: handleTap,
-      crossAxisAlignment: 'start',
+        // Invisible clickable overlay
+        ClickableOverlay(),
+      ],
+    );
+  }
+
+  // Extract clickable overlay widget (rule #10, #12)
+  Widget ClickableOverlay() {
+    return Positioned.fill(
+      child: MouseRegion(
+        cursor: SystemMouseCursors.click,
+        child: GestureDetector(
+          onTap: handleTap,
+          behavior: HitTestBehavior.translucent,
+          child: Container(color: Colors.transparent),
+        ),
+      ),
     );
   }
 
@@ -491,39 +493,81 @@ class ProgressiveTextState extends State<ProgressiveText>
 
   // Display widget for currently revealing sentence
   Widget CurrentSentenceDisplay() {
-    // Extract conditions above conditional logic
-    final bool hasNoRevealedText = revealedText.isEmpty;
-
-    if (hasNoRevealedText) {
-      return const SizedBox.shrink();
-    }
-
+    // Check if we should display anything
     final String originalText = textSentences[currentSentenceNumber];
     final bool isImageLinkSegment = originalText.startsWith(
       'image-link',
-    );
-    final bool containsHighlightingMarkup = originalText.contains(
-      '<c:',
     );
 
     if (isImageLinkSegment) {
       return CurrentImageDisplay(originalText);
     }
 
+    final bool containsHighlightingMarkup = originalText.contains(
+      '<c:',
+    );
+
     if (containsHighlightingMarkup) {
-      return progressiveHighlightedTextWidget(
+      return progressiveHighlightedTextWithColorTransition(
         originalText,
-        revealedText,
+        currentCharacterPosition,
       );
     }
 
-    // Simplified regular text without highlights - no unnecessary wrapping
+    // Render full text with color transition for revealed characters
+    return buildTextWithColorTransition(
+      currentSentenceText,
+      currentCharacterPosition,
+    );
+  }
+
+  // Build text with full layout, transitioning colors for revealed characters
+  Widget buildTextWithColorTransition(
+    String fullText,
+    int revealedPosition,
+  ) {
+    final TextStyle baseStyle = getConsistentTextStyle();
+    final Color textColor = baseStyle.color ?? Colors.black;
+    final List<TextSpan> spans = [];
+
+    // Add revealed characters in black
+    if (revealedPosition >= 0 && fullText.isNotEmpty) {
+      final int actualRevealedLength = (revealedPosition + 1).clamp(
+        0,
+        fullText.length,
+      );
+
+      if (actualRevealedLength > 0) {
+        spans.add(
+          TextSpan(
+            text: fullText.substring(0, actualRevealedLength),
+            style: baseStyle.copyWith(color: textColor),
+          ),
+        );
+      }
+
+      // Add remaining characters as transparent
+      if (actualRevealedLength < fullText.length) {
+        spans.add(
+          TextSpan(
+            text: fullText.substring(actualRevealedLength),
+            style: baseStyle.copyWith(color: Colors.transparent),
+          ),
+        );
+      }
+    } else {
+      // All transparent if nothing revealed yet
+      spans.add(
+        TextSpan(
+          text: fullText,
+          style: baseStyle.copyWith(color: Colors.transparent),
+        ),
+      );
+    }
+
     return RichText(
+      text: TextSpan(children: spans),
       textAlign: TextAlign.left,
-      text: TextSpan(
-        text: revealedText,
-        style: getConsistentTextStyle(),
-      ),
     );
   }
 
@@ -612,15 +656,70 @@ class ProgressiveTextState extends State<ProgressiveText>
     );
   }
 
-  // Build progressively revealed text with highlighting
-  Widget progressiveHighlightedTextWidget(
+  // Build progressively revealed text with highlighting using color transition
+  Widget progressiveHighlightedTextWithColorTransition(
     String originalText,
-    String revealedCleanText,
+    int revealedPosition,
   ) {
-    final List<TextSpan> spans = createProgressiveHighlightSpans(
-      originalText,
-      revealedCleanText,
-    );
+    final List<TextSpan> spans = [];
+    final RegExp highlightRegex = RegExp(r'<c:([gr])>([^<]*)</c:\1>');
+    String remaining = originalText;
+    int cleanTextPosition = 0;
+    final TextStyle baseStyle = getConsistentTextStyle();
+    final int actualRevealedLength = revealedPosition + 1;
+
+    // Process the full text, making characters transparent/visible based on position
+    while (remaining.isNotEmpty) {
+      final RegExpMatch? match = highlightRegex.firstMatch(remaining);
+
+      if (match == null) {
+        // Handle remaining text without highlights
+        spans.add(
+          createSpanWithColorTransition(
+            remaining,
+            baseStyle,
+            cleanTextPosition,
+            actualRevealedLength,
+          ),
+        );
+        break;
+      }
+
+      // Handle text before highlight
+      if (match.start > 0) {
+        final String beforeText = remaining.substring(0, match.start);
+        spans.add(
+          createSpanWithColorTransition(
+            beforeText,
+            baseStyle,
+            cleanTextPosition,
+            actualRevealedLength,
+          ),
+        );
+        cleanTextPosition += beforeText.length;
+      }
+
+      // Handle highlighted text
+      final String colorCode = match.group(1)!;
+      final String highlightedText = match.group(2)!;
+      final Color highlightColor = getHighlightColor(colorCode);
+      final TextStyle highlightStyle = baseStyle.copyWith(
+        color: highlightColor,
+        fontWeight: FontWeight.bold,
+      );
+
+      spans.add(
+        createSpanWithColorTransition(
+          highlightedText,
+          highlightStyle,
+          cleanTextPosition,
+          actualRevealedLength,
+        ),
+      );
+
+      cleanTextPosition += highlightedText.length;
+      remaining = remaining.substring(match.end);
+    }
 
     return RichText(
       text: TextSpan(children: spans),
@@ -628,96 +727,42 @@ class ProgressiveTextState extends State<ProgressiveText>
     );
   }
 
-  // Optimized method to build highlight spans without intermediate objects
-  List<TextSpan> createProgressiveHighlightSpans(
-    String originalText,
-    String revealedCleanText,
+  // Create text span with color transition based on reveal position
+  TextSpan createSpanWithColorTransition(
+    String text,
+    TextStyle style,
+    int startPosition,
+    int revealedLength,
   ) {
-    final List<TextSpan> spans = [];
-    final RegExp highlightRegex = RegExp(r'<c:([gr])>([^<]*)</c:\1>');
-    String remaining = originalText;
-    int cleanTextPosition = 0;
-    final int revealedLength = revealedCleanText.length;
-    final TextStyle baseStyle = getConsistentTextStyle();
+    final int endPosition = startPosition + text.length;
 
-    while (remaining.isNotEmpty && cleanTextPosition < revealedLength) {
-      final RegExpMatch? match = highlightRegex.firstMatch(remaining);
-
-      if (match == null) {
-        // Handle remaining text without highlights
-        final int remainingRevealLength =
-            revealedLength - cleanTextPosition;
-        if (remainingRevealLength > 0) {
-          final String visibleText =
-              remaining.length <= remainingRevealLength
-              ? remaining
-              : remaining.substring(0, remainingRevealLength);
-
-          spans.add(TextSpan(text: visibleText, style: baseStyle));
-        }
-        break;
-      }
-
-      // Handle text before highlight
-      final bool hasTextBeforeMatch = match.start > 0;
-
-      if (hasTextBeforeMatch) {
-        final String beforeText = remaining.substring(0, match.start);
-        final int beforeTextEnd = cleanTextPosition + beforeText.length;
-
-        if (cleanTextPosition < revealedLength) {
-          final int visibleLength = (beforeTextEnd <= revealedLength)
-              ? beforeText.length
-              : revealedLength - cleanTextPosition;
-
-          if (visibleLength > 0) {
-            spans.add(
-              TextSpan(
-                text: beforeText.substring(0, visibleLength),
-                style: baseStyle,
-              ),
-            );
-          }
-        }
-
-        cleanTextPosition += beforeText.length;
-
-        if (cleanTextPosition >= revealedLength) {
-          break;
-        }
-      }
-
-      // Handle highlighted text
-      final String colorCode = match.group(1)!;
-      final String highlightedText = match.group(2)!;
-      final int highlightEnd =
-          cleanTextPosition + highlightedText.length;
-
-      if (cleanTextPosition < revealedLength) {
-        final int visibleLength = (highlightEnd <= revealedLength)
-            ? highlightedText.length
-            : revealedLength - cleanTextPosition;
-
-        if (visibleLength > 0) {
-          final Color highlightColor = getHighlightColor(colorCode);
-
-          spans.add(
-            TextSpan(
-              text: highlightedText.substring(0, visibleLength),
-              style: baseStyle.copyWith(
-                color: highlightColor,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          );
-        }
-      }
-
-      cleanTextPosition += highlightedText.length;
-      remaining = remaining.substring(match.end);
+    // Fully revealed - use original color
+    if (endPosition <= revealedLength) {
+      return TextSpan(text: text, style: style);
     }
 
-    return spans;
+    // Fully hidden - make transparent
+    if (startPosition >= revealedLength) {
+      return TextSpan(
+        text: text,
+        style: style.copyWith(color: Colors.transparent),
+      );
+    }
+
+    // Partially revealed - split into visible and transparent parts
+    final int splitIndex = revealedLength - startPosition;
+    final String visiblePart = text.substring(0, splitIndex);
+    final String transparentPart = text.substring(splitIndex);
+
+    return TextSpan(
+      children: [
+        TextSpan(text: visiblePart, style: style),
+        TextSpan(
+          text: transparentPart,
+          style: style.copyWith(color: Colors.transparent),
+        ),
+      ],
+    );
   }
 
   // Helper methods

@@ -53,7 +53,7 @@ class CCTextContentState extends State<CCTextContent> {
 
   // Main text display with progressive reveal animation
   Widget ProgressiveTextSection() {
-    return SingleChildScrollView(
+    return ClipRect(
       child: ProgressiveText(
         textSegments: widget.content.textSegments,
         textStyle: RLTypography.bodyMediumStyle,

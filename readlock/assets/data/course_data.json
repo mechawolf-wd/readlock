@@ -33,9 +33,9 @@
               "entity-type": "intro",
               "title": "Doors, Handles, and Hidden Messages",
               "text-segments": [
-                "Every day, objects silently communicate what they want you to do with them.",
-                "A door handle says 'pull me', a flat metal plate whispers 'push here'.",
-                "In this course, we'll explore the fundamental principle of design: affordances."
+                "Objects communicate their intended use through design.",
+                "A door handle suggests pulling through its shape and position.",
+                "These design cues guide user behavior and prevent errors."
               ]
             },
             {
@@ -48,8 +48,8 @@
                 "The handle is on <c:r>the same side</c:r> as the spout.",
                 "When you try to pour hot water, your hand is directly over the escaping steam.",
                 "This is a classic example Don Norman uses to show <c:r>bad design</c:r> - it looks elegant, but it's dangerous to use.",
-                "Good design isn't just about aesthetics; it must prioritize <c:g>usability</c:g> and <c:g>safety</c:g> above all.",
-                "In the following slides, we'll read stories that show how these principles work in real design challenges."
+                "Good design puts safety before aesthetics.",
+                "The examples ahead show how bad design gets blamed on user error."
               ]
             },
             {
@@ -59,12 +59,11 @@
                 "Sarah approaches the hotel door.",
                 "Glass panel with a vertical metal plate.",
                 "The plate looks like a handle.",
-                "Her brain screams \"pull this!\"",
-                "What choice did evolution give her?",
-                "She grabs and pulls. Nothing.",
-                "Confused, she pushes. The door opens.",
-                "This is a Norman door.",
-                "It gives the wrong signal."
+                "The vertical plate suggests grasping and pulling.",
+                "She pulls. Nothing.",
+                "She pushes. The door opens.",
+                "Norman calls this a 'Norman door.'",
+                "The design contradicts the required action."
               ]
             },
             {
@@ -75,11 +74,11 @@
                 "It's entirely made of glass.",
                 "No visible handle, no obvious push point.",
                 "The surface is completely smooth.",
-                "She pushes where others have pushed.",
-                "Smudges on the glass are her only clue.",
-                "The door swings open.",
-                "Poor affordances left her guessing.",
-                "Good design would show her the way."
+                "Fingerprint smudges mark where others have pushed.",
+                "These marks indicate the correct interaction point.",
+                "She pushes there and the door opens.",
+                "The smudges reveal a pattern of confusion.",
+                "When design provides no guidance, users create their own."
               ]
             },
             {
@@ -92,9 +91,9 @@
                 "He tries clockwise. Still stuck.",
                 "Finally, he notices it's a flip-top.",
                 "The cap hinges upward, not twist.",
-                "The bottle's design suggested the wrong action.",
-                "This is what designers call false affordances.",
-                "Objects that lie about their function."
+                "The cap's design suggested twisting, but it required flipping.",
+                "This is called a false affordance.",
+                "The visual cues indicate one interaction while requiring another."
               ]
             },
             {
@@ -173,20 +172,20 @@
               "entity-type": "text",
               "title": "What Are Affordances?",
               "text-segments": [
-                "Those three scenarios reveal something profound about how objects communicate.",
-                "Each confusion wasn't random - it reveals how <c:g>design shapes our expectations and actions</c:g>.",
-                "Don Norman studied these patterns and identified <c:g>affordances</c:g> as a fundamental principle of intuitive design.",
-                "Understanding affordances transforms how you see every interface, from door handles to smartphone apps."
+                "These three examples demonstrate a consistent pattern.",
+                "Users form expectations based on design cues, but the actual operation contradicts those expectations.",
+                "Norman analyzed these design failures systematically and introduced the concept of <c:g>affordances</c:g>.",
+                "Understanding affordances reveals why certain designs succeed while others fail."
               ]
             },
             {
               "entity-type": "text",
               "title": "Affordances",
               "text-segments": [
-                "The first principle is <c:g>affordances</c:g> - the relationship between an object's properties and what actions they suggest to users.",
-                "<c:g>A door handle</c:g> naturally affords grasping and pulling, while <c:g>a flat metal plate</c:g> clearly affords pushing.",
-                "<c:g>Good affordances</c:g> are immediately obvious - you know what to do without thinking or reading instructions.",
-                "<c:r>Poor affordances</c:r> mislead users into taking wrong actions, creating the illusion of user error when it's actually design failure."
+                "An <c:g>affordance</c:g> describes the relationship between an object's properties and the actions it suggests.",
+                "<c:g>A door handle</c:g> affords grasping and pulling. <c:g>A flat metal plate</c:g> affords pushing.",
+                "<c:g>Good affordances</c:g> make the correct action immediately apparent.",
+                "<c:r>Poor affordances</c:r> suggest incorrect actions, leading to user confusion and frustration."
               ]
             },
             {
