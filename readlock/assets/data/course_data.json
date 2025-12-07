@@ -29,8 +29,7 @@
           "lesson-version": "story-based",
           "content": [
             {
-              "content-id": "design-of-everyday-things-c:1",
-              "entity-type": "intro",
+              "entity-type": "text",
               "title": "Doors, Handles, and Hidden Messages",
               "text-segments": [
                 "Objects communicate their intended use through design.",
@@ -254,25 +253,6 @@
               "hint": "Think about the best-designed objects you use - do they need labels?"
             },
             {
-              "entity-type": "fill-gap-question",
-              "title": "Complete the Principle",
-              "question": "Fill in the blanks: Affordances are the _____ between object properties and the _____ they suggest.",
-              "options": [
-                {
-                  "text": "relationship"
-                },
-                {
-                  "text": "actions"
-                }
-              ],
-              "correct-answer-indices": [
-                0,
-                1
-              ],
-              "explanation": "Affordances are the relationship between object properties and the actions they suggest. This fundamental definition shows how design communicates function.",
-              "hint": "Think back to Norman's original definition of affordances."
-            },
-            {
               "entity-type": "true-false-question",
               "title": "Design Principle Check",
               "question": "Good design should require extensive user manuals to understand.",
@@ -399,7 +379,7 @@
               "hint": "Consider which design immediately communicates how to interact with it."
             },
             {
-              "entity-type": "outro",
+              "entity-type": "text",
               "title": "The Conversation Continues",
               "text-segments": [
                 "So what do you do when a door confuses you at the entrance? When buttons give no response?",

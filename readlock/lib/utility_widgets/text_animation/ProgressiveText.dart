@@ -109,6 +109,11 @@ class ProgressiveTextState extends State<ProgressiveText>
   AnimationController? imageRevealController;
   Animation<double>? imageRevealAnimation;
 
+  // Double tap tracking for unblur all functionality
+  DateTime? lastTapTime;
+  int tapCount = 0;
+  static const Duration doubleTapTimeout = Duration(milliseconds: 500);
+
   // Initializes the widget state when first created
   // Sets up text data and starts the typewriter animation for the first sentence
   @override
@@ -254,13 +259,13 @@ class ProgressiveTextState extends State<ProgressiveText>
     // Create animation controller for image reveal
     imageRevealController?.dispose();
     imageRevealController = AnimationController(
-      duration: const Duration(milliseconds: 800),
+      duration: const Duration(milliseconds: 500),
       vsync: this,
     );
 
     imageRevealAnimation = CurvedAnimation(
       parent: imageRevealController!,
-      curve: Curves.easeOutCubic,
+      curve: Curves.linear,
     );
 
     await imageRevealController!.forward();
@@ -351,6 +356,70 @@ class ProgressiveTextState extends State<ProgressiveText>
     }
   }
 
+  // Handles taps on the reveal/toggle button area
+  void handleRevealOrToggleTap(
+    bool hasRevealableContent,
+    bool shouldToggleBlur,
+  ) {
+    final bool hasCustomCallback = widget.onTapCallback != null;
+
+    if (hasCustomCallback) {
+      widget.onTapCallback!();
+      return;
+    }
+
+    if (hasRevealableContent) {
+      // Standard reveal behavior
+      handleTap();
+    } else if (shouldToggleBlur) {
+      // Handle double tap for blur toggle
+      handleDoubleTapForBlurToggle();
+    }
+  }
+
+  // Handles double tap detection for blur toggle functionality
+  void handleDoubleTapForBlurToggle() {
+    final DateTime currentTime = DateTime.now();
+    final bool hasLastTapTime = lastTapTime != null;
+
+    if (hasLastTapTime) {
+      final Duration timeSinceLastTap = currentTime.difference(
+        lastTapTime!,
+      );
+
+      final bool isWithinDoubleTapWindow =
+          timeSinceLastTap <= doubleTapTimeout;
+
+      if (isWithinDoubleTapWindow) {
+        tapCount++;
+
+        if (tapCount >= 2) {
+          // Execute double tap action
+          HapticsService.lightImpact();
+          toggleBlurAllSegments();
+
+          // Reset tap tracking
+          resetTapTracking();
+          return;
+        }
+      } else {
+        // Reset if outside double tap window
+        tapCount = 1;
+      }
+    } else {
+      // First tap
+      tapCount = 1;
+    }
+
+    lastTapTime = currentTime;
+  }
+
+  // Resets double tap tracking state
+  void resetTapTracking() {
+    lastTapTime = null;
+    tapCount = 0;
+  }
+
   // Instantly completes the current sentence reveal when tapped
   void completeCurrentSentenceReveal() {
     final bool canCompleteReveal =
@@ -403,6 +472,34 @@ class ProgressiveTextState extends State<ProgressiveText>
     }
   }
 
+  // Toggles blur state for all segments that can be toggled (excluding no-blur flagged ones)
+  void toggleBlurAllSegments() {
+    final bool canToggleSegments = mounted;
+
+    if (!canToggleSegments) {
+      return;
+    }
+
+    // Determine if we should blur or unblur based on current state
+    // If any segments are unblurred, we blur all. If all are blurred, we unblur all.
+    final bool hasAnyUnblurredSegments = sentenceBlurStates.any(
+      (isBlurred) => !isBlurred,
+    );
+    final bool shouldBlurAll = hasAnyUnblurredSegments;
+
+    setState(() {
+      for (int i = 0; i < sentenceBlurStates.length; i++) {
+        // Only toggle if the segment doesn't have no-blur flag
+        final bool hasNoBlurFlag =
+            i < sentenceNoBlurFlags.length && sentenceNoBlurFlags[i];
+
+        if (!hasNoBlurFlag) {
+          sentenceBlurStates[i] = shouldBlurAll;
+        }
+      }
+    });
+  }
+
   // Cleanup method called when widget is removed from the widget tree
   // Ensures animation state is properly reset
   @override
@@ -418,40 +515,104 @@ class ProgressiveTextState extends State<ProgressiveText>
 
   @override
   Widget build(BuildContext context) {
-    // Main content container
-    final Widget content = Div.column(
-      [RevealedTextDisplay()],
-      crossAxisAlignment: CrossAxisAlignment.start,
-      width: double.infinity,
-    );
-
     // Extract condition for clarity (rule #27)
     final bool shouldDisableTapInteraction = !widget.enableTapToReveal;
 
     if (shouldDisableTapInteraction) {
-      return content;
+      return Div.column(
+        [RevealedTextDisplay()],
+        crossAxisAlignment: CrossAxisAlignment.start,
+        width: double.infinity,
+      );
     }
 
-    // Stack with content and full-screen clickable overlay
-    return Stack(
-      children: [
-        content,
+    // Main layout with text content and reveal button area
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final bool hasUnboundedHeight =
+            constraints.maxHeight == double.infinity;
 
-        // Invisible clickable overlay
-        ClickableOverlay(),
-      ],
+        if (hasUnboundedHeight) {
+          // In scrollable context, use fixed layout
+          return Div.column(
+            [
+              // Text content area
+              RevealedTextDisplay(),
+
+              // Reveal button with fixed height
+              RevealButtonArea(constraints),
+            ],
+            crossAxisAlignment: CrossAxisAlignment.start,
+            width: double.infinity,
+          );
+        } else {
+          // In bounded context, use flexible layout to fill remaining space
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Text content area
+              RevealedTextDisplay(),
+
+              // Reveal button fills remaining space
+              Flexible(child: RevealButtonArea(constraints)),
+            ],
+          );
+        }
+      },
     );
   }
 
-  // Extract clickable overlay widget (rule #10, #12)
-  Widget ClickableOverlay() {
-    return Positioned.fill(
+  // Reveal button area widget (rule #10, #12)
+  Widget RevealButtonArea(BoxConstraints constraints) {
+    // Check if there's more content to reveal or if we should show unblur button
+    final bool isCurrentlyAnimating = isRevealingCurrentSentence;
+    final bool hasMoreSentences =
+        currentSentenceNumber < textSentences.length - 1;
+    final bool hasRevealableContent =
+        isCurrentlyAnimating || hasMoreSentences;
+
+    // Check if all segments are revealed and we can toggle blur states
+    final bool allSegmentsRevealed =
+        currentSentenceNumber >= textSentences.length - 1 &&
+        !isCurrentlyAnimating;
+    final bool hasToggleableSegments = sentenceBlurStates.isNotEmpty;
+    final bool shouldShowToggleButton =
+        allSegmentsRevealed && hasToggleableSegments;
+
+    final bool shouldShowButton =
+        hasRevealableContent || shouldShowToggleButton;
+
+    if (!shouldShowButton) {
+      return const SizedBox.shrink();
+    }
+
+    // Extract style constants above widget (rule #16)
+    const double buttonMarginTop = 16.0;
+    const double minButtonHeight = 120.0;
+
+    // Extract margin for clarity
+    final EdgeInsets buttonMargin = const EdgeInsets.only(
+      top: buttonMarginTop,
+    );
+
+    // Calculate button height based on constraints
+    final bool hasUnboundedHeight =
+        constraints.maxHeight == double.infinity;
+
+    return Container(
+      margin: buttonMargin,
+      height: hasUnboundedHeight ? minButtonHeight : double.infinity,
       child: MouseRegion(
         cursor: SystemMouseCursors.click,
         child: GestureDetector(
-          onTap: handleTap,
-          behavior: HitTestBehavior.translucent,
-          child: Container(color: Colors.transparent),
+          onTap: () => handleRevealOrToggleTap(
+            hasRevealableContent,
+            shouldShowToggleButton,
+          ),
+          child: Container(
+            width: double.infinity,
+            color: Colors.transparent,
+          ),
         ),
       ),
     );
@@ -508,21 +669,21 @@ class ProgressiveTextState extends State<ProgressiveText>
     );
 
     if (containsHighlightingMarkup) {
-      return progressiveHighlightedTextWithColorTransition(
+      return ProgressiveHighlightedTextWithColorTransition(
         originalText,
         currentCharacterPosition,
       );
     }
 
     // Render full text with color transition for revealed characters
-    return buildTextWithColorTransition(
+    return BuildTextWithColorTransition(
       currentSentenceText,
       currentCharacterPosition,
     );
   }
 
   // Build text with full layout, transitioning colors for revealed characters
-  Widget buildTextWithColorTransition(
+  Widget BuildTextWithColorTransition(
     String fullText,
     int revealedPosition,
   ) {
@@ -657,7 +818,7 @@ class ProgressiveTextState extends State<ProgressiveText>
   }
 
   // Build progressively revealed text with highlighting using color transition
-  Widget progressiveHighlightedTextWithColorTransition(
+  Widget ProgressiveHighlightedTextWithColorTransition(
     String originalText,
     int revealedPosition,
   ) {
@@ -688,6 +849,7 @@ class ProgressiveTextState extends State<ProgressiveText>
       // Handle text before highlight
       if (match.start > 0) {
         final String beforeText = remaining.substring(0, match.start);
+
         spans.add(
           createSpanWithColorTransition(
             beforeText,
@@ -696,6 +858,7 @@ class ProgressiveTextState extends State<ProgressiveText>
             actualRevealedLength,
           ),
         );
+
         cleanTextPosition += beforeText.length;
       }
 
