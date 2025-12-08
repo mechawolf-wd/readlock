@@ -492,6 +492,11 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
 
   // Handle star tap to favorite current slide
   void handleStarTap() {
+    // Check if PageController is attached to a PageView
+    if (!pageController.hasClients) {
+      return; // PageController not attached yet
+    }
+    
     // Get current page index
     final double? currentPageDouble = pageController.page;
     final bool hasCurrentPage = currentPageDouble != null;

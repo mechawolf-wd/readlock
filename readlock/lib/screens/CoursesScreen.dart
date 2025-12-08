@@ -81,7 +81,7 @@ class CoursesScreenState extends State<CoursesScreen> {
       final List<Course> loadedCourses = courseData
           .map(
             (data) => Course(
-              id: data['id'] ?? '',
+              id: data['course-id'] ?? '',
               title: data['title'] ?? '',
               description: data['description'] ?? '',
               coverImagePath: data['cover-image-path'] ?? '',
