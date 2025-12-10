@@ -71,7 +71,7 @@ class HomeScreenState extends State<HomeScreen> {
   List<Course> getFeaturedCourses() {
     return [
       const Course(
-        id: 'design-everyday-things',
+        id: 'design-everyday-things-comprehensive',
         title: 'The Design of Everyday Things',
         description:
             'Extraordinary design is not done by geniuses.',

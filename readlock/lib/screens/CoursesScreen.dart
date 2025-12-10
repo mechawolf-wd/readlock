@@ -154,7 +154,7 @@ class CourseCard extends StatelessWidget {
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Icon(
-                course.id == 'design-everyday-things'
+                course.id == 'design-everyday-things-comprehensive'
                     ? Icons.psychology_outlined
                     : Icons.trending_up_outlined,
                 color: courseColor,

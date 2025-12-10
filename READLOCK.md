@@ -160,6 +160,54 @@ Based on the course data structure, strategically use these content types:
 10. Summary cards (2/3 good & 2/3 bad examples) (CCDesignExamplesShowcase.dart)
 11. Outro + introduction to the next lesson: "In the next lesson we will learn..." (CCOutro.dart)
 
+### **First-Person Story Guidelines**
+
+When implementing first-person narratives in lessons, particularly for the **Imaginative Scenario** and **Single Story Line** formats:
+
+**Writing Style:**
+- Use direct address: "You walk into the office..." instead of "Sarah walks into the office..."
+- Present tense for immediacy: "You notice the door handle" not "You noticed"
+- Include sensory details: "You feel the cold metal handle under your palm"
+- Create relatable scenarios that match the target audience's likely experiences
+
+**Character Perspective:**
+- Maintain consistent point of view throughout the entire lesson
+- Use professional/everyday contexts that learners can identify with
+- Include internal thoughts and decision-making processes: "You wonder which button to press"
+- Show emotional responses: "You feel frustrated when nothing happens"
+
+**Educational Integration:**
+- Questions should be phrased as self-reflection: "What would you do next?" instead of "What should someone do?"
+- Realizations come from personal experience: "You realize that the design was misleading you"
+- Connect learning to personal responsibility: "Now you understand why you struggled with this interface"
+
+**Engagement Benefits:**
+- Higher emotional investment in the learning outcome
+- Improved retention through personal involvement
+- Natural bridge to real-world application
+- Reduced psychological distance between theory and practice
+
+### **Research-Based Evidence for First-Person Learning**
+
+**Kompaktowy wynik researchu:**
+
+✔️ **1. Self-reference effect**  
+Lepiej zapamiętujemy informacje, które odnoszą się do nas samych niż do innych.  
+→ Bezpośrednie wejście w sytuację zwiększa pamięć i zaangażowanie.
+
+✔️ **2. Mental simulation / narrative transportation**  
+Kiedy musimy wyobrazić sobie sytuację i „wejść w historię", zapamiętujemy więcej i głębiej.  
+→ Scenariusze wymagające wizualizacji siebie = mocniejszy ślad pamięciowy.
+
+✔️ **3. Historie o innych też mają wartość**  
+W niektórych kontekstach (analiza błędów, dystans poznawczy) perspektywa obserwatora działa lepiej.  
+→ Dobre jako uzupełnienie, nie główna forma.
+
+✔️ **4. Praktyczny wniosek dla aplikacji**  
+Dominująca forma: bezpośrednie wejście w sytuację bez wprowadzających fraz.  
+Dodatek: historie o innych do analizy i przełamania monotonii.  
+**Najlepsza proporcja na start: 70–80% self / 20–30% other.**
+
 ---
 
 ### **Content Metrics**

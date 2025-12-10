@@ -50,7 +50,7 @@ class CourseRoadmapScreen extends StatefulWidget {
 
 class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
   Map<String, dynamic>? courseData;
-  List<Map<String, dynamic>> courseLessons = [];
+  List<Map<String, dynamic>> courseSegments = [];
   bool isLoading = true;
 
   @override
@@ -66,8 +66,8 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
       );
 
       if (courseData != null) {
-        courseLessons = List<Map<String, dynamic>>.from(
-          courseData!['lessons'] ?? [],
+        courseSegments = List<Map<String, dynamic>>.from(
+          courseData!['segments'] ?? [],
         );
       }
     } on Exception {
@@ -214,53 +214,54 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
   }
 
   List<Widget> LessonCards() {
-    return [
-      // Level 1 - Design Principles (completed)
-      LessonCard(
-        levelNumber: 1,
-        title: DESIGN_PRINCIPLES_TITLE,
-        subtitle: CORE_FUNDAMENTALS_SUBTITLE,
-        isCompleted: true,
-        onTap: () => showLoadingScreenThenNavigate(0, 0),
-      ),
+    final List<Widget> cards = [];
+    int cardIndex = 0;
 
-      // Level 2 - Psychology of Design (completed)
-      LessonCard(
-        levelNumber: 2,
-        title: PSYCHOLOGY_OF_DESIGN_TITLE,
-        subtitle: MENTAL_MODELS_SUBTITLE,
-        isCompleted: true,
-        onTap: () => showLoadingScreenThenNavigate(0, 0),
-      ),
+    // Loop through each segment
+    for (int segmentIndex = 0; segmentIndex < courseSegments.length; segmentIndex++) {
+      final Map<String, dynamic> segment = courseSegments[segmentIndex];
+      final String segmentTitle = segment['segment-title'] ?? 'Unnamed Segment';
+      final String segmentDescription = segment['segment-description'] ?? '';
+      final List<dynamic> lessons = segment['lessons'] ?? [];
 
-      // Level 3 - Polish Affordances Lesson (current level)
-      LessonCard(
-        levelNumber: 3,
-        title: 'Projekt Przedmiotów Codziennych',
-        subtitle: 'Lekcja w języku polskim',
-        isCompleted: false,
-        isCurrentLevel: true,
-        onTap: () => showLoadingScreenThenNavigate(0, 0),
-      ),
+      // Add segment header
+      cards.add(SegmentHeader(
+        title: segmentTitle,
+        description: segmentDescription,
+      ));
 
-      // Level 4 - Feedback Systems (locked)
-      LessonCard(
-        levelNumber: 4,
-        title: FEEDBACK_SYSTEMS_TITLE,
-        subtitle: USER_RESPONSES_SUBTITLE,
-        isCompleted: false,
-        onTap: () => showLoadingScreenThenNavigate(0, 0),
-      ),
+      // Add lessons for this segment
+      for (int lessonIndex = 0; lessonIndex < lessons.length; lessonIndex++) {
+        final Map<String, dynamic> lesson = lessons[lessonIndex];
+        final String lessonTitle = lesson['title'] ?? 'Unnamed Lesson';
+        final String subsegment = lesson['subsegment'] ?? '${lessonIndex + 1}';
+        final String lessonId = lesson['lesson-id'] ?? '';
 
-      // Level 5 - Advanced Concepts (locked)
-      LessonCard(
-        levelNumber: 5,
-        title: ADVANCED_CONCEPTS_TITLE,
-        subtitle: MASTER_LEVEL_SUBTITLE,
-        isCompleted: false,
-        onTap: () => showLoadingScreenThenNavigate(0, 0),
-      ),
-    ];
+        // Determine lesson state (mocked for now)
+        final bool isCompleted = segmentIndex == 0 && lessonIndex < 3; // First 3 lessons of first segment are completed
+        final bool isCurrentLevel = segmentIndex == 0 && lessonIndex == 3; // 4th lesson of first segment is current
+        final bool isLocked = segmentIndex > 0; // All other segments are locked
+
+        cards.add(LessonCard(
+          levelNumber: cardIndex + 1,
+          title: lessonTitle,
+          subtitle: '$lessonId - Subsegment $subsegment',
+          isCompleted: isCompleted,
+          isCurrentLevel: isCurrentLevel,
+          isLocked: isLocked,
+          onTap: () => showLoadingScreenThenNavigate(lessonIndex, 0),
+        ));
+
+        cardIndex++;
+      }
+
+      // Add spacing between segments
+      if (segmentIndex < courseSegments.length - 1) {
+        cards.add(const Spacing.height(20));
+      }
+    }
+
+    return cards;
   }
 
   Color getColorFromString(String colorName) {
@@ -289,11 +290,6 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
   }
 
   void showExperiencePointsDialog(int lessonIndex, int contentIndex) {
-    final Widget ExperienceIcon = const Icon(
-      Icons.lightbulb,
-      color: Colors.white,
-      size: 20,
-    );
 
     showModalBottomSheet(
       context: context,
@@ -370,12 +366,95 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
   }
 }
 
+class SegmentHeader extends StatelessWidget {
+  final String title;
+  final String description;
+
+  const SegmentHeader({
+    super.key,
+    required this.title,
+    required this.description,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final String segmentLetter = getSegmentLetter();
+    final String segmentTitle = getSegmentTitle();
+    final Color segmentColor = getSegmentColor();
+    
+    final BoxDecoration letterDecoration = BoxDecoration(
+      color: segmentColor.withValues(alpha: 0.15),
+      borderRadius: BorderRadius.circular(12),
+      border: Border.all(
+        color: segmentColor.withValues(alpha: 0.3),
+      ),
+    );
+
+    final Widget StyledLetter = Div.column(
+      [
+        RLTypography.headingLarge(
+          segmentLetter,
+          color: segmentColor,
+          textAlign: TextAlign.center,
+        ),
+      ],
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      decoration: letterDecoration,
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+    );
+
+    return Div.column([
+      const Spacing.height(24),
+
+      // Letter and title row
+      Div.row([
+        StyledLetter,
+        
+        const Spacing.width(12),
+        
+        RLTypography.headingLarge(
+          segmentTitle,
+          color: RLTheme.textPrimary,
+          textAlign: TextAlign.left,
+        ),
+      ], mainAxisAlignment: MainAxisAlignment.center),
+
+      const Spacing.height(16),
+    ], crossAxisAlignment: CrossAxisAlignment.center);
+  }
+
+  String getSegmentLetter() {
+    return title.split(' ').first; // Get first word (the letter)
+  }
+
+  String getSegmentTitle() {
+    final List<String> parts = title.split(' ');
+    return parts.skip(1).join(' '); // Get everything after the first word
+  }
+
+  Color getSegmentColor() {
+    final String letter = getSegmentLetter();
+    switch (letter) {
+      case 'A':
+        return RLTheme.primaryGreen;
+      case 'B':
+        return RLTheme.primaryBlue;
+      case 'C':
+        return Colors.purple;
+      default:
+        return RLTheme.primaryGreen;
+    }
+  }
+}
+
 class LessonCard extends StatelessWidget {
   final int levelNumber;
   final String title;
   final String subtitle;
   final bool isCompleted;
   final bool isCurrentLevel;
+  final bool isLocked;
   final VoidCallback onTap;
 
   const LessonCard({
@@ -385,6 +464,7 @@ class LessonCard extends StatelessWidget {
     required this.subtitle,
     required this.isCompleted,
     this.isCurrentLevel = false,
+    this.isLocked = false,
     required this.onTap,
   });
 
@@ -413,7 +493,7 @@ class LessonCard extends StatelessWidget {
       margin: 8,
       padding: 16,
       decoration: cardDecoration,
-      onTap: onTap,
+      onTap: isLocked ? () {} : onTap,
       radius: 36,
     );
   }
@@ -429,6 +509,9 @@ class LessonCard extends StatelessWidget {
   }
 
   Color getCardColor() {
+    if (isLocked) {
+      return Colors.grey.withValues(alpha: 0.02);
+    }
     if (isCurrentLevel) {
       return RLTheme.primaryGreen.withValues(alpha: 0.1);
     }
@@ -436,6 +519,9 @@ class LessonCard extends StatelessWidget {
   }
 
   Color getBorderColor() {
+    if (isLocked) {
+      return Colors.grey.withValues(alpha: 0.05);
+    }
     if (isCurrentLevel) {
       return RLTheme.primaryGreen.withValues(alpha: 0.3);
     }
@@ -457,14 +543,15 @@ class LessonCard extends StatelessWidget {
   }
 
   Color getBadgeColor() {
+    if (isLocked) {
+      return Colors.grey.withValues(alpha: 0.1);
+    }
     if (isCompleted) {
       return RLTheme.primaryGreen;
     }
-
     if (isCurrentLevel) {
       return RLTheme.primaryGreen.withValues(alpha: 0.2);
     }
-
     return Colors.grey.withValues(alpha: 0.2);
   }
 
@@ -474,6 +561,16 @@ class LessonCard extends StatelessWidget {
       color: Colors.white,
       size: 20,
     );
+
+    final Widget LockIcon = const Icon(
+      Icons.lock,
+      color: Colors.grey,
+      size: 16,
+    );
+
+    if (isLocked) {
+      return LockIcon;
+    }
 
     return RenderIf.condition(
       isCompleted,
