@@ -387,10 +387,27 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
       return [];
     }
 
-    final List<Map<String, dynamic>> lessons =
-        List<Map<String, dynamic>>.from(courseData!['lessons'] ?? []);
+    // Navigate through segments to find lessons
+    final List<Map<String, dynamic>> segments =
+        List<Map<String, dynamic>>.from(courseData!['segments'] ?? []);
 
-    return getContentFromCurrentLesson(lessons);
+    return getContentFromCurrentLessonInSegments(segments);
+  }
+
+  // Get content from current lesson by navigating through segments
+  List<Map<String, dynamic>> getContentFromCurrentLessonInSegments(
+    List<Map<String, dynamic>> segments,
+  ) {
+    // Flatten all lessons from all segments
+    final List<Map<String, dynamic>> allLessons = [];
+    
+    for (final segment in segments) {
+      final List<Map<String, dynamic>> segmentLessons =
+          List<Map<String, dynamic>>.from(segment['lessons'] ?? []);
+      allLessons.addAll(segmentLessons);
+    }
+
+    return getContentFromCurrentLesson(allLessons);
   }
 
   // Get content from the current lesson only
@@ -480,7 +497,6 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
       experiencePointsGained: 190,
       streakplierMultiplier: 1.35,
       lessonDuration: lessonDuration,
-      keysLooted: 2,
     );
   }
 

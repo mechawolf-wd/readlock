@@ -15,10 +15,18 @@ const String TYPEWRITER_SOUND = 'Typewriter';
 const String SWITCHES_SOUND = 'Switches';
 const String OIIA_SOUND = 'OIIA';
 
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends StatefulWidget {
   final bool showReadingLeagueExpanded;
 
   const ProfileScreen({super.key, this.showReadingLeagueExpanded = false});
+
+  @override
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
+  bool soundsEnabled = true;
+  bool hapticsEnabled = true;
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +38,7 @@ class ProfileScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              ReadingLeagueCard(initiallyExpanded: showReadingLeagueExpanded),
+              ReadingLeagueCard(initiallyExpanded: widget.showReadingLeagueExpanded),
 
               const Spacing.height(20),
 
@@ -46,7 +54,12 @@ class ProfileScreen extends StatelessWidget {
 
               const Spacing.height(24),
 
-              const MenuSection(),
+              MenuSection(
+                soundsEnabled: soundsEnabled,
+                hapticsEnabled: hapticsEnabled,
+                onSoundsToggled: (value) => setState(() => soundsEnabled = value),
+                onHapticsToggled: (value) => setState(() => hapticsEnabled = value),
+              ),
             ],
           ),
         ),
@@ -157,7 +170,18 @@ class LearningStatItem extends StatelessWidget {
 }
 
 class MenuSection extends StatelessWidget {
-  const MenuSection({super.key});
+  final bool soundsEnabled;
+  final bool hapticsEnabled;
+  final ValueChanged<bool> onSoundsToggled;
+  final ValueChanged<bool> onHapticsToggled;
+
+  const MenuSection({
+    super.key,
+    required this.soundsEnabled,
+    required this.hapticsEnabled,
+    required this.onSoundsToggled,
+    required this.onHapticsToggled,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -174,19 +198,29 @@ class MenuSection extends StatelessWidget {
       const MenuDivider(),
 
       // App Settings
+      SwitchMenuItem(
+        icon: Icons.volume_up,
+        title: 'Sounds',
+        value: soundsEnabled,
+        onChanged: onSoundsToggled,
+      ),
+
+      SwitchMenuItem(
+        icon: Icons.vibration,
+        title: 'Haptics',
+        value: hapticsEnabled,
+        onChanged: onHapticsToggled,
+      ),
+
+      const MenuDivider(),
+
+      // Support & Information
       MenuItem(
         icon: Icons.notifications,
         title: 'Notifications',
         onTap: () {},
       ),
 
-      MenuItem(icon: Icons.volume_up, title: 'Sounds', onTap: () {}),
-
-      MenuItem(icon: Icons.vibration, title: 'Haptics', onTap: () {}),
-
-      const MenuDivider(),
-
-      // Support & Information
       MenuItem(icon: Icons.info, title: 'About', onTap: () {}),
 
       MenuItem(icon: Icons.help, title: 'Help', onTap: () {}),
@@ -1065,6 +1099,49 @@ class _SoundPickerCardState extends State<SoundPickerCard> {
     setState(() {
       selectedSound = soundName;
     });
+  }
+}
+
+class SwitchMenuItem extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final bool value;
+  final ValueChanged<bool> onChanged;
+
+  const SwitchMenuItem({
+    super.key,
+    required this.icon,
+    required this.title,
+    required this.value,
+    required this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final Color iconColor = RLTheme.textPrimary.withValues(alpha: 0.7);
+    final Color titleColor = RLTheme.textPrimary;
+    
+    return Div.row(
+      [
+        Icon(icon, color: iconColor, size: 20),
+
+        const Spacing.width(16),
+
+        Expanded(
+          child: RLTypography.bodyMedium(title, color: titleColor),
+        ),
+
+        Switch(
+          value: value,
+          onChanged: onChanged,
+          activeThumbColor: RLTheme.primaryBlue,
+          activeTrackColor: RLTheme.primaryBlue.withValues(alpha: 0.3),
+          inactiveThumbColor: RLTheme.textPrimary.withValues(alpha: 0.5),
+          inactiveTrackColor: RLTheme.textPrimary.withValues(alpha: 0.1),
+        ),
+      ],
+      padding: const EdgeInsets.symmetric(vertical: 16),
+    );
   }
 }
 

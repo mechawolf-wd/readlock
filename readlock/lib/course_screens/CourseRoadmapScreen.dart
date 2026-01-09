@@ -218,39 +218,63 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
     int cardIndex = 0;
 
     // Loop through each segment
-    for (int segmentIndex = 0; segmentIndex < courseSegments.length; segmentIndex++) {
+    for (
+      int segmentIndex = 0;
+      segmentIndex < courseSegments.length;
+      segmentIndex++
+    ) {
       final Map<String, dynamic> segment = courseSegments[segmentIndex];
-      final String segmentTitle = segment['segment-title'] ?? 'Unnamed Segment';
-      final String segmentDescription = segment['segment-description'] ?? '';
+      final String segmentTitle =
+          segment['segment-title'] ?? 'Unnamed Segment';
+      final String segmentDescription =
+          segment['segment-description'] ?? '';
       final List<dynamic> lessons = segment['lessons'] ?? [];
 
       // Add segment header
-      cards.add(SegmentHeader(
-        title: segmentTitle,
-        description: segmentDescription,
-      ));
+      cards.add(
+        SegmentHeader(
+          title: segmentTitle,
+          description: segmentDescription,
+        ),
+      );
 
       // Add lessons for this segment
-      for (int lessonIndex = 0; lessonIndex < lessons.length; lessonIndex++) {
+      for (
+        int lessonIndex = 0;
+        lessonIndex < lessons.length;
+        lessonIndex++
+      ) {
         final Map<String, dynamic> lesson = lessons[lessonIndex];
         final String lessonTitle = lesson['title'] ?? 'Unnamed Lesson';
-        final String subsegment = lesson['subsegment'] ?? '${lessonIndex + 1}';
         final String lessonId = lesson['lesson-id'] ?? '';
 
         // Determine lesson state (mocked for now)
-        final bool isCompleted = segmentIndex == 0 && lessonIndex < 3; // First 3 lessons of first segment are completed
-        final bool isCurrentLevel = segmentIndex == 0 && lessonIndex == 3; // 4th lesson of first segment is current
-        final bool isLocked = segmentIndex > 0; // All other segments are locked
+        final bool isCompleted =
+            segmentIndex == 0 &&
+            lessonIndex <
+                3; // First 3 lessons of first segment are completed
+        final bool isCurrentLevel =
+            segmentIndex == 0 &&
+            lessonIndex == 3; // 4th lesson of first segment is current
+        final bool isLocked =
+            segmentIndex > 0; // All other segments are locked
 
-        cards.add(LessonCard(
-          levelNumber: cardIndex + 1,
-          title: lessonTitle,
-          subtitle: '$lessonId - Subsegment $subsegment',
-          isCompleted: isCompleted,
-          isCurrentLevel: isCurrentLevel,
-          isLocked: isLocked,
-          onTap: () => showLoadingScreenThenNavigate(lessonIndex, 0),
-        ));
+        // Mock completion data for demonstration
+        final int skillCheckQuestionsCompleted =
+            getMockSkillCheckProgress(segmentIndex, lessonIndex);
+
+        cards.add(
+          LessonCard(
+            levelNumber: cardIndex + 1,
+            title: lessonTitle,
+            subtitle: lessonId,
+            isCompleted: isCompleted,
+            isCurrentLevel: isCurrentLevel,
+            isLocked: isLocked,
+            skillCheckQuestionsCompleted: skillCheckQuestionsCompleted,
+            onTap: () => showLoadingScreenThenNavigate(lessonIndex, 0),
+          ),
+        );
 
         cardIndex++;
       }
@@ -281,6 +305,32 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
     }
   }
 
+  // Mock skill check progress data for demonstration
+  int getMockSkillCheckProgress(int segmentIndex, int lessonIndex) {
+    // First segment lessons: varied skill check progress emphasizing 2/3 completion
+    if (segmentIndex == 0) {
+      switch (lessonIndex) {
+        case 0:
+          return 3; // Lesson 1: all 3 skill check questions completed
+        case 1:
+          return 2; // Lesson 2: 2 out of 3 skill check questions completed
+        case 2:
+          return 2; // Lesson 3: 2 out of 3 skill check questions completed
+        case 3:
+          return 2; // Lesson 4: current lesson, 2 out of 3 completed
+        case 4:
+          return 1; // Lesson 5: 1 out of 3 skill check questions completed
+        case 5:
+          return 0; // Lesson 6: no skill check progress yet
+        default:
+          return 0;
+      }
+    }
+
+    // Other segments: no progress (locked)
+    return 0;
+  }
+
   void showLoadingScreenThenNavigate(
     int lessonIndex,
     int contentIndex,
@@ -290,7 +340,6 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
   }
 
   void showExperiencePointsDialog(int lessonIndex, int contentIndex) {
-
     showModalBottomSheet(
       context: context,
       backgroundColor: RLTheme.backgroundDark,
@@ -381,13 +430,11 @@ class SegmentHeader extends StatelessWidget {
     final String segmentLetter = getSegmentLetter();
     final String segmentTitle = getSegmentTitle();
     final Color segmentColor = getSegmentColor();
-    
+
     final BoxDecoration letterDecoration = BoxDecoration(
       color: segmentColor.withValues(alpha: 0.15),
       borderRadius: BorderRadius.circular(12),
-      border: Border.all(
-        color: segmentColor.withValues(alpha: 0.3),
-      ),
+      border: Border.all(color: segmentColor.withValues(alpha: 0.3)),
     );
 
     final Widget StyledLetter = Div.column(
@@ -410,9 +457,9 @@ class SegmentHeader extends StatelessWidget {
       // Letter and title row
       Div.row([
         StyledLetter,
-        
+
         const Spacing.width(12),
-        
+
         RLTypography.headingLarge(
           segmentTitle,
           color: RLTheme.textPrimary,
@@ -430,7 +477,9 @@ class SegmentHeader extends StatelessWidget {
 
   String getSegmentTitle() {
     final List<String> parts = title.split(' ');
-    return parts.skip(1).join(' '); // Get everything after the first word
+    return parts
+        .skip(1)
+        .join(' '); // Get everything after the first word
   }
 
   Color getSegmentColor() {
@@ -455,6 +504,7 @@ class LessonCard extends StatelessWidget {
   final bool isCompleted;
   final bool isCurrentLevel;
   final bool isLocked;
+  final int skillCheckQuestionsCompleted; // 0-3 questions completed
   final VoidCallback onTap;
 
   const LessonCard({
@@ -465,6 +515,7 @@ class LessonCard extends StatelessWidget {
     required this.isCompleted,
     this.isCurrentLevel = false,
     this.isLocked = false,
+    this.skillCheckQuestionsCompleted = 0,
     required this.onTap,
   });
 
@@ -477,18 +528,27 @@ class LessonCard extends StatelessWidget {
       size: 20,
     );
 
-    return Div.row(
+    return Div.column(
       [
-        // Level number badge
-        LevelBadge(),
+        // Main card content row
+        Div.row([
+          // Level number badge
+          LevelBadge(),
 
-        const Spacing.width(16),
+          const Spacing.width(16),
 
-        // Level title and description
-        Expanded(child: LevelContent()),
+          // Level title and description
+          Expanded(child: LevelContent()),
 
-        // Navigation arrow
-        ArrowIcon,
+          // Navigation arrow
+          ArrowIcon,
+        ]),
+
+        // Progress indicators (show only if not locked)
+        if (!isLocked) ...[
+          const Spacing.height(16),
+          ProgressIndicators(),
+        ],
       ],
       margin: 8,
       padding: 16,
@@ -592,6 +652,61 @@ class LessonCard extends StatelessWidget {
       // Level description
       RLTypography.bodyMedium(subtitle),
     ], crossAxisAlignment: CrossAxisAlignment.start);
+  }
+
+  // Progress indicators showing skill check progress only
+  Widget ProgressIndicators() {
+    return Div.row([
+      const Spacer(),
+      
+      // Skill check progress with wrapped container
+      Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        decoration: BoxDecoration(
+          color: Colors.grey.withValues(alpha: 0.05),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: SkillCheckProgressIndicator(),
+      ),
+    ]);
+  }
+
+  // Skill check progress indicator with 3 boxes
+  Widget SkillCheckProgressIndicator() {
+    return Div.row([
+      RLTypography.bodyMedium(
+        'Skills:',
+        color: Colors.grey.withValues(alpha: 0.8),
+      ),
+
+      const Spacing.width(10),
+
+      // Three skill check boxes with improved styling
+      ...List.generate(3, (index) {
+        final bool isCompleted = index < skillCheckQuestionsCompleted;
+        return Padding(
+          padding: EdgeInsets.only(left: index > 0 ? 6 : 0),
+          child: Container(
+            width: 18,
+            height: 14,
+            decoration: BoxDecoration(
+              color: isCompleted
+                  ? RLTheme.primaryGreen
+                  : Colors.grey.withValues(alpha: 0.2),
+              borderRadius: BorderRadius.circular(4),
+              border: Border.all(
+                color: isCompleted
+                    ? RLTheme.primaryGreen
+                    : Colors.grey.withValues(alpha: 0.4),
+              ),
+            ),
+            child: isCompleted
+                ? const Icon(Icons.check, color: Colors.white, size: 10)
+                : null,
+          ),
+        );
+      }),
+    ]);
   }
 }
 

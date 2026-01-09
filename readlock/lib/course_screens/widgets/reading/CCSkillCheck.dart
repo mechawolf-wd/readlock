@@ -6,6 +6,7 @@ import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLTheme.dart';
 import 'package:readlock/utility_widgets/Utility.dart';
 import 'package:readlock/course_screens/CourseContentViewer.dart';
+import 'package:readlock/course_screens/widgets/reading/CCRetentionBottomSheet.dart';
 
 // String constants
 const String SKILL_CHECK_TITLE = 'Skill Check';
@@ -13,6 +14,7 @@ const String SKILL_CHECK_SUBTITLE = 'Test Your Understanding';
 const String SKILL_CHECK_DESCRIPTION =
     'You\'ve completed the lesson! Now let\'s check your understanding with a few questions.';
 const String READY_BUTTON_TEXT = 'I\'m Ready';
+const String MOCK_BUTTON_TEXT = 'Quick Assessment';
 
 // Styling constants
 const double ICON_SIZE = 48.0;
@@ -75,6 +77,11 @@ class CCSkillCheckState extends State<CCSkillCheck>
 
           // Ready button
           ReadyButton(context),
+
+          const Spacing.height(16.0),
+
+          // Mock button for demonstration
+          MockAssessmentButton(context),
         ],
       ),
     );
@@ -153,6 +160,31 @@ class CCSkillCheckState extends State<CCSkillCheck>
     );
   }
 
+  // Mock assessment button with retention modal
+  Widget MockAssessmentButton(BuildContext context) {
+    // Button decoration
+    final BoxDecoration buttonDecoration = BoxDecoration(
+      color: RLTheme.primaryBlue,
+      borderRadius: BorderRadius.circular(BUTTON_BORDER_RADIUS),
+      border: Border.all(color: RLTheme.primaryBlue, width: 2),
+    );
+
+    // Button text
+    final Widget buttonText = RLTypography.bodyMedium(
+      MOCK_BUTTON_TEXT,
+      color: Colors.white,
+    );
+
+    return Div.column(
+      [buttonText],
+      width: double.infinity,
+      height: BUTTON_HEIGHT,
+      decoration: buttonDecoration,
+      mainAxisAlignment: MainAxisAlignment.center,
+      onTap: () => showRetentionModal(context),
+    );
+  }
+
   // Navigate to next content (skill check questions)
   void navigateToNextContent(BuildContext context) {
     // Import CourseContentViewer to access state
@@ -185,6 +217,23 @@ class CCSkillCheckState extends State<CCSkillCheck>
       nextPage,
       duration: const Duration(milliseconds: 300),
       curve: Curves.easeInOut,
+    );
+  }
+
+  // Show retention motivation modal
+  void showRetentionModal(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (BuildContext context) {
+        return CCRetentionBottomSheet(
+          onStartAssessment: () {
+            Navigator.of(context).pop();
+            navigateToNextContent(context);
+          },
+        );
+      },
     );
   }
 }

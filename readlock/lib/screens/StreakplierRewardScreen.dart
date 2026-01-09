@@ -12,23 +12,20 @@ class LessonReward {
   final int experiencePointsGained;
   final double streakplierMultiplier;
   final Duration lessonDuration;
-  final int keysLooted;
 
   const LessonReward({
     required this.experiencePointsGained,
     required this.streakplierMultiplier,
     required this.lessonDuration,
-    required this.keysLooted,
   });
 }
 
 // String constants
-const String CONGRATULATIONS_MESSAGE = 'Congratulations!';
+const String CONGRATULATIONS_MESSAGE = 'Reader time';
 const String LESSON_COMPLETE_MESSAGE = 'Lesson Complete';
-const String EXPERIENCE_POINTS_LABEL = 'Experience Points';
+const String EXPERIENCE_POINTS_LABEL = 'Collected';
 const String STREAKPLIER_LABEL = 'Streakplier';
 const String LESSON_TIME_LABEL = 'Lesson Time';
-const String KEYS_LOOTED_LABEL = 'Keys Looted';
 const String CONTINUE_BUTTON_TEXT = 'Continue';
 
 // Styling constants
@@ -69,18 +66,15 @@ class StreakplierRewardScreenState
   // Animation controllers for counting effects only
   late AnimationController experiencePointsController;
   late AnimationController streakplierController;
-  late AnimationController keysController;
 
   // Animations for counting effects
   late Animation<int> experiencePointsCountAnimation;
   late Animation<double> streakplierCountAnimation;
-  late Animation<int> keysCountAnimation;
 
   // Track which items are revealed with simple opacity
   double experiencePointsOpacity = 0.0;
   double streakplierOpacity = 0.0;
   double lessonTimeOpacity = 0.0;
-  double keysOpacity = 0.0;
   double continueButtonOpacity = 0.0;
 
   @override
@@ -95,7 +89,6 @@ class StreakplierRewardScreenState
   void dispose() {
     experiencePointsController.dispose();
     streakplierController.dispose();
-    keysController.dispose();
     super.dispose();
   }
 
@@ -106,10 +99,6 @@ class StreakplierRewardScreenState
       vsync: this,
     );
     streakplierController = AnimationController(
-      duration: COUNTING_ANIMATION_DURATION,
-      vsync: this,
-    );
-    keysController = AnimationController(
       duration: COUNTING_ANIMATION_DURATION,
       vsync: this,
     );
@@ -138,27 +127,18 @@ class StreakplierRewardScreenState
             curve: Curves.easeOut,
           ),
         );
-
-    keysCountAnimation =
-        IntTween(begin: 0, end: widget.reward.keysLooted).animate(
-          CurvedAnimation(
-            parent: keysController,
-            curve: Curves.easeOut,
-          ),
-        );
   }
 
   // Start the sequential reveal with simple opacity changes
   void startRevealSequence() {
-    // Experience points reveal
+    // Lesson time reveal (now first)
     Future.delayed(INITIAL_DELAY, () {
       if (mounted) {
-        setState(() => experiencePointsOpacity = 1.0);
-        experiencePointsController.forward();
+        setState(() => lessonTimeOpacity = 1.0);
       }
     });
 
-    // Streakplier reveal
+    // Streakplier reveal (now second)
     Future.delayed(INITIAL_DELAY + ITEM_REVEAL_DELAY, () {
       if (mounted) {
         setState(() => streakplierOpacity = 1.0);
@@ -166,23 +146,16 @@ class StreakplierRewardScreenState
       }
     });
 
-    // Lesson time reveal
+    // Experience points reveal (now third)
     Future.delayed(INITIAL_DELAY + ITEM_REVEAL_DELAY * 2, () {
       if (mounted) {
-        setState(() => lessonTimeOpacity = 1.0);
-      }
-    });
-
-    // Keys reveal
-    Future.delayed(INITIAL_DELAY + ITEM_REVEAL_DELAY * 3, () {
-      if (mounted) {
-        setState(() => keysOpacity = 1.0);
-        keysController.forward();
+        setState(() => experiencePointsOpacity = 1.0);
+        experiencePointsController.forward();
       }
     });
 
     // Continue button reveal
-    Future.delayed(INITIAL_DELAY + ITEM_REVEAL_DELAY * 4, () {
+    Future.delayed(INITIAL_DELAY + ITEM_REVEAL_DELAY * 3, () {
       if (mounted) {
         setState(() => continueButtonOpacity = 1.0);
       }
@@ -270,53 +243,7 @@ class StreakplierRewardScreenState
       padding: const EdgeInsets.all(REWARD_CARD_PADDING),
       decoration: RewardCardDecoration(),
       child: Div.column([
-        // Experience points gained with animation
-        AnimatedOpacity(
-          opacity: experiencePointsOpacity,
-          duration: const Duration(milliseconds: 300),
-          child: RewardStatisticItem(
-            icon: Icons.auto_awesome,
-            label: EXPERIENCE_POINTS_LABEL,
-            animatedValue: AnimatedBuilder(
-              animation: experiencePointsCountAnimation,
-              builder: (context, child) {
-                return RLTypography.headingMedium(
-                  '+${experiencePointsCountAnimation.value} XP',
-                  color: RLTheme.primaryBlue,
-                  textAlign: TextAlign.left,
-                );
-              },
-            ),
-            color: RLTheme.primaryBlue,
-          ),
-        ),
-
-        const Spacing.height(REWARD_ITEM_SPACING),
-
-        // Streak multiplier increase with animation
-        AnimatedOpacity(
-          opacity: streakplierOpacity,
-          duration: const Duration(milliseconds: 300),
-          child: RewardStatisticItem(
-            icon: Icons.trending_up,
-            label: STREAKPLIER_LABEL,
-            animatedValue: AnimatedBuilder(
-              animation: streakplierCountAnimation,
-              builder: (context, child) {
-                return RLTypography.headingMedium(
-                  '${streakplierCountAnimation.value.toStringAsFixed(2)}x',
-                  color: RLTheme.primaryGreen,
-                  textAlign: TextAlign.left,
-                );
-              },
-            ),
-            color: RLTheme.primaryGreen,
-          ),
-        ),
-
-        const Spacing.height(REWARD_ITEM_SPACING),
-
-        // Lesson completion time (no counting animation needed)
+        // Lesson completion time at the top
         AnimatedOpacity(
           opacity: lessonTimeOpacity,
           duration: const Duration(milliseconds: 300),
@@ -334,33 +261,62 @@ class StreakplierRewardScreenState
 
         const Spacing.height(REWARD_ITEM_SPACING),
 
-        // Keys collected with animation
-        AnimatedOpacity(
-          opacity: keysOpacity,
-          duration: const Duration(milliseconds: 300),
-          child: RewardStatisticItem(
-            icon: Icons.vpn_key,
-            label: KEYS_LOOTED_LABEL,
-            animatedValue: AnimatedBuilder(
-              animation: keysCountAnimation,
-              builder: (context, child) {
-                return RLTypography.headingMedium(
-                  '${keysCountAnimation.value} keys',
-                  color: Colors.amber,
-                  textAlign: TextAlign.left,
-                );
-              },
+        // Row with Streakplier and Experience side by side
+        Div.row([
+          // Streakplier on the left
+          Expanded(
+            child: AnimatedOpacity(
+              opacity: streakplierOpacity,
+              duration: const Duration(milliseconds: 300),
+              child: RewardStatisticItem(
+                icon: Icons.trending_up,
+                label: STREAKPLIER_LABEL,
+                animatedValue: AnimatedBuilder(
+                  animation: streakplierCountAnimation,
+                  builder: (context, child) {
+                    return RLTypography.headingMedium(
+                      '${streakplierCountAnimation.value.toStringAsFixed(2)}x',
+                      color: RLTheme.primaryGreen,
+                      textAlign: TextAlign.left,
+                    );
+                  },
+                ),
+                color: RLTheme.primaryGreen,
+              ),
             ),
-            color: Colors.amber,
           ),
-        ),
+
+          const Spacing.width(16),
+
+          // Experience points on the right
+          Expanded(
+            child: AnimatedOpacity(
+              opacity: experiencePointsOpacity,
+              duration: const Duration(milliseconds: 300),
+              child: RewardStatisticItem(
+                label: EXPERIENCE_POINTS_LABEL,
+                animatedValue: AnimatedBuilder(
+                  animation: experiencePointsCountAnimation,
+                  builder: (context, child) {
+                    return RLTypography.headingMedium(
+                      '+${experiencePointsCountAnimation.value} XP',
+                      color: RLTheme.primaryBlue,
+                      textAlign: TextAlign.left,
+                    );
+                  },
+                ),
+                color: RLTheme.primaryBlue,
+              ),
+            ),
+          ),
+        ]),
       ], crossAxisAlignment: CrossAxisAlignment.stretch),
     );
   }
 
   // Simple reward statistic display item with animated counting
   Widget RewardStatisticItem({
-    required IconData icon,
+    IconData? icon,
     required String label,
     required Widget animatedValue,
     required Color color,
@@ -370,16 +326,20 @@ class StreakplierRewardScreenState
       borderRadius: BorderRadius.circular(12),
     );
 
-    return Div.row([
-      // Icon container
-      Container(
-        width: 48,
-        height: 48,
-        decoration: iconContainerDecoration,
-        child: Icon(icon, color: color, size: ICON_SIZE),
-      ),
+    final bool hasIcon = icon != null;
 
-      const Spacing.width(16),
+    return Div.row([
+      // Icon container (optional)
+      if (hasIcon) ...[
+        Container(
+          width: 48,
+          height: 48,
+          decoration: iconContainerDecoration,
+          child: Icon(icon, color: color, size: ICON_SIZE),
+        ),
+
+        const Spacing.width(16),
+      ],
 
       // Label and animated value column
       Expanded(
