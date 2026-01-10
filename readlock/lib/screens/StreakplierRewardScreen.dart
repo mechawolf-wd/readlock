@@ -6,6 +6,7 @@ import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLTheme.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/utility_widgets/Utility.dart';
+import 'package:readlock/services/SoundService.dart';
 
 // Reward data model
 class LessonReward {
@@ -89,6 +90,7 @@ class StreakplierRewardScreenState
   void dispose() {
     experiencePointsController.dispose();
     streakplierController.dispose();
+    SoundService.stopSlowDownClock();
     super.dispose();
   }
 
@@ -129,9 +131,12 @@ class StreakplierRewardScreenState
         );
   }
 
-  // Start the sequential reveal with simple opacity changes
+  // Start the sequential reveal with simple opacity changes and audio
   void startRevealSequence() {
-    // Lesson time reveal (now first)
+    // Start audio playback for stats reveal animation
+    SoundService.playSlowDownClock();
+
+    // Lesson time reveal (now first with emphasis)
     Future.delayed(INITIAL_DELAY, () {
       if (mounted) {
         setState(() => lessonTimeOpacity = 1.0);
@@ -154,10 +159,11 @@ class StreakplierRewardScreenState
       }
     });
 
-    // Continue button reveal
+    // Continue button reveal and stop audio
     Future.delayed(INITIAL_DELAY + ITEM_REVEAL_DELAY * 3, () {
       if (mounted) {
         setState(() => continueButtonOpacity = 1.0);
+        SoundService.stopSlowDownClock();
       }
     });
   }
@@ -239,79 +245,177 @@ class StreakplierRewardScreenState
   Widget RewardStatistics() {
     final String formattedLessonTime = FormatLessonDuration();
 
+    return Div.column([
+      // Featured lesson time card - larger and more prominent
+      FeaturedReadingTimeCard(formattedLessonTime),
+
+      const Spacing.height(24),
+
+      // Secondary stats row
+      SecondaryStatsRow(),
+    ], crossAxisAlignment: CrossAxisAlignment.stretch);
+  }
+
+  // Featured reading time card with enhanced visual prominence
+  Widget FeaturedReadingTimeCard(String formattedLessonTime) {
+    final BoxDecoration featuredCardDecoration = BoxDecoration(
+      color: Colors.orange.withValues(alpha: 0.1),
+      borderRadius: BorderRadius.circular(20),
+      border: Border.all(
+        color: Colors.orange.withValues(alpha: 0.3),
+        width: 2,
+      ),
+      boxShadow: [
+        BoxShadow(
+          color: Colors.orange.withValues(alpha: 0.1),
+          blurRadius: 12,
+          offset: const Offset(0, 4),
+        ),
+      ],
+    );
+
+    return AnimatedOpacity(
+      opacity: lessonTimeOpacity,
+      duration: const Duration(milliseconds: 300),
+      child: Container(
+        padding: const EdgeInsets.all(32),
+        decoration: featuredCardDecoration,
+        child: Div.column([
+          // Large timer icon
+          Container(
+            width: 80,
+            height: 80,
+            decoration: BoxDecoration(
+              color: Colors.orange.withValues(alpha: 0.2),
+              borderRadius: BorderRadius.circular(40),
+            ),
+            child: const Icon(
+              Icons.timer_rounded,
+              color: Colors.orange,
+              size: 40,
+            ),
+          ),
+
+          const Spacing.height(16),
+
+          // Reading time label
+          RLTypography.bodyLarge(
+            LESSON_TIME_LABEL,
+            color: RLTheme.textPrimary,
+            textAlign: TextAlign.center,
+          ),
+
+          const Spacing.height(8),
+
+          // Featured large time display
+          Text(
+            formattedLessonTime,
+            style: RLTypography.headingLargeStyle.copyWith(
+              color: Colors.orange,
+              fontSize: 36,
+              fontWeight: FontWeight.bold,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ], crossAxisAlignment: CrossAxisAlignment.center),
+      ),
+    );
+  }
+
+  // Secondary stats in a row layout
+  Widget SecondaryStatsRow() {
     return Container(
       padding: const EdgeInsets.all(REWARD_CARD_PADDING),
       decoration: RewardCardDecoration(),
-      child: Div.column([
-        // Lesson completion time at the top
-        AnimatedOpacity(
-          opacity: lessonTimeOpacity,
-          duration: const Duration(milliseconds: 300),
-          child: RewardStatisticItem(
-            icon: Icons.timer,
-            label: LESSON_TIME_LABEL,
-            animatedValue: RLTypography.headingMedium(
-              formattedLessonTime,
-              color: Colors.orange,
-              textAlign: TextAlign.left,
+      child: Div.row([
+        // Streakplier on the left
+        Expanded(
+          child: AnimatedOpacity(
+            opacity: streakplierOpacity,
+            duration: const Duration(milliseconds: 300),
+            child: CompactRewardStatisticItem(
+              icon: Icons.trending_up,
+              label: STREAKPLIER_LABEL,
+              animatedValue: AnimatedBuilder(
+                animation: streakplierCountAnimation,
+                builder: (context, child) {
+                  return RLTypography.bodyLarge(
+                    '${streakplierCountAnimation.value.toStringAsFixed(2)}x',
+                    color: RLTheme.primaryGreen,
+                    textAlign: TextAlign.center,
+                  );
+                },
+              ),
+              color: RLTheme.primaryGreen,
             ),
-            color: Colors.orange,
           ),
         ),
 
-        const Spacing.height(REWARD_ITEM_SPACING),
+        const Spacing.width(24),
 
-        // Row with Streakplier and Experience side by side
-        Div.row([
-          // Streakplier on the left
-          Expanded(
-            child: AnimatedOpacity(
-              opacity: streakplierOpacity,
-              duration: const Duration(milliseconds: 300),
-              child: RewardStatisticItem(
-                icon: Icons.trending_up,
-                label: STREAKPLIER_LABEL,
-                animatedValue: AnimatedBuilder(
-                  animation: streakplierCountAnimation,
-                  builder: (context, child) {
-                    return RLTypography.headingMedium(
-                      '${streakplierCountAnimation.value.toStringAsFixed(2)}x',
-                      color: RLTheme.primaryGreen,
-                      textAlign: TextAlign.left,
-                    );
-                  },
-                ),
-                color: RLTheme.primaryGreen,
+        // Experience points on the right
+        Expanded(
+          child: AnimatedOpacity(
+            opacity: experiencePointsOpacity,
+            duration: const Duration(milliseconds: 300),
+            child: CompactRewardStatisticItem(
+              label: EXPERIENCE_POINTS_LABEL,
+              animatedValue: AnimatedBuilder(
+                animation: experiencePointsCountAnimation,
+                builder: (context, child) {
+                  return RLTypography.bodyLarge(
+                    '+${experiencePointsCountAnimation.value} XP',
+                    color: RLTheme.primaryBlue,
+                    textAlign: TextAlign.center,
+                  );
+                },
               ),
+              color: RLTheme.primaryBlue,
             ),
           ),
-
-          const Spacing.width(16),
-
-          // Experience points on the right
-          Expanded(
-            child: AnimatedOpacity(
-              opacity: experiencePointsOpacity,
-              duration: const Duration(milliseconds: 300),
-              child: RewardStatisticItem(
-                label: EXPERIENCE_POINTS_LABEL,
-                animatedValue: AnimatedBuilder(
-                  animation: experiencePointsCountAnimation,
-                  builder: (context, child) {
-                    return RLTypography.headingMedium(
-                      '+${experiencePointsCountAnimation.value} XP',
-                      color: RLTheme.primaryBlue,
-                      textAlign: TextAlign.left,
-                    );
-                  },
-                ),
-                color: RLTheme.primaryBlue,
-              ),
-            ),
-          ),
-        ]),
-      ], crossAxisAlignment: CrossAxisAlignment.stretch),
+        ),
+      ]),
     );
+  }
+
+  // Compact reward statistic item for secondary stats
+  Widget CompactRewardStatisticItem({
+    IconData? icon,
+    required String label,
+    required Widget animatedValue,
+    required Color color,
+  }) {
+    final BoxDecoration iconContainerDecoration = BoxDecoration(
+      color: color.withValues(alpha: 0.1),
+      borderRadius: BorderRadius.circular(8),
+    );
+
+    final bool hasIcon = icon != null;
+
+    return Div.column([
+      // Icon (optional)
+      if (hasIcon) ...[
+        Container(
+          width: 32,
+          height: 32,
+          decoration: iconContainerDecoration,
+          child: Icon(icon, color: color, size: 18),
+        ),
+        const Spacing.height(8),
+      ],
+
+      // Label
+      RLTypography.bodyMedium(
+        label,
+        color: RLTheme.textSecondary,
+        textAlign: TextAlign.center,
+      ),
+
+      const Spacing.height(4),
+
+      // Animated value
+      animatedValue,
+    ], crossAxisAlignment: CrossAxisAlignment.center);
   }
 
   // Simple reward statistic display item with animated counting

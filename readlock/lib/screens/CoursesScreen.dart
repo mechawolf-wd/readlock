@@ -40,15 +40,29 @@ class CoursesScreenState extends State<CoursesScreen> {
               child: StatisticsTopBar(),
             ),
 
-            // Title
+            // Search bar
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24),
-              child: Div.row([
-                RLTypography.headingLarge('Choose Your Course'),
-              ], mainAxisAlignment: MainAxisAlignment.start),
+              child: MockSearchBar(),
             ),
 
             const Spacing.height(24),
+
+            // Categories
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24),
+              child: CategoriesSection(),
+            ),
+
+            const Spacing.height(32),
+
+            // Trending section
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24),
+              child: TrendingHeader(),
+            ),
+
+            const Spacing.height(16),
 
             // Courses list
             if (isLoading)
@@ -68,9 +82,127 @@ class CoursesScreenState extends State<CoursesScreen> {
                       CourseCard(course: courses[index]),
                 ),
               ),
+
+            // All Titles button
+            Padding(
+              padding: const EdgeInsets.all(24),
+              child: AllTitlesButton(),
+            ),
           ],
         ),
       ),
+    );
+  }
+
+  Widget MockSearchBar() {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      decoration: BoxDecoration(
+        color: RLTheme.backgroundLight.withValues(alpha: 0.08),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: RLTheme.grey300.withValues(alpha: 0.3),
+        ),
+      ),
+      child: Div.row([
+        const Icon(
+          Icons.search,
+          color: RLTheme.textSecondary,
+          size: 20,
+        ),
+
+        const Spacing.width(12),
+
+        RLTypography.text(
+          'Search for books...',
+          color: RLTheme.textSecondary,
+        ),
+      ]),
+    );
+  }
+
+  Widget CategoriesSection() {
+    final List<String> categories = [
+      'Design',
+      'Psychology',
+      'Business',
+      'Technology',
+    ];
+
+    return Div.column([
+      Div.row([
+        RLTypography.text('Categories', color: RLTheme.textSecondary),
+      ], mainAxisAlignment: MainAxisAlignment.start),
+
+      const Spacing.height(12),
+
+      Wrap(
+        spacing: 8,
+        runSpacing: 8,
+        children: CategoryChips(categories),
+      ),
+    ], crossAxisAlignment: CrossAxisAlignment.start);
+  }
+
+  List<Widget> CategoryChips(List<String> categories) {
+    final BoxDecoration chipDecoration = BoxDecoration(
+      color: RLTheme.backgroundLight.withValues(alpha: 0.08),
+      borderRadius: BorderRadius.circular(20),
+      border: Border.all(
+        color: RLTheme.primaryBlue.withValues(alpha: 0.3),
+      ),
+    );
+
+    return categories
+        .map(
+          (category) => Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            decoration: chipDecoration,
+            child: RLTypography.text(category, color: RLTheme.primaryBlue),
+          ),
+        )
+        .toList();
+  }
+
+  Widget TrendingHeader() {
+    return Div.column([
+      Div.row([
+        RLTypography.headingMedium('Trending'),
+      ], mainAxisAlignment: MainAxisAlignment.start),
+
+      const Spacing.height(4),
+
+      Div.row([
+        RLTypography.text(
+          'Popular books this week',
+          color: RLTheme.textSecondary,
+        ),
+      ], mainAxisAlignment: MainAxisAlignment.start),
+    ], crossAxisAlignment: CrossAxisAlignment.start);
+  }
+
+  Widget AllTitlesButton() {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(vertical: 12),
+      decoration: BoxDecoration(
+        color: RLTheme.backgroundLight.withValues(alpha: 0.08),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: RLTheme.primaryBlue.withValues(alpha: 0.3),
+        ),
+      ),
+      child: Div.row([
+        RLTypography.text('View All Titles', color: RLTheme.primaryBlue),
+
+        const Spacing.width(8),
+
+        const Icon(
+          Icons.arrow_forward_ios,
+          color: RLTheme.primaryBlue,
+          size: 14,
+        ),
+      ], mainAxisAlignment: MainAxisAlignment.center),
     );
   }
 

@@ -420,50 +420,12 @@ class AchievementGallery extends StatelessWidget {
   }
 
   Widget achievementContent() {
-    final EdgeInsets badgePadding = const EdgeInsets.symmetric(
-      horizontal: 8,
-      vertical: 4,
-    );
-
-    final BoxDecoration badgeDecoration = BoxDecoration(
-      color: Colors.white.withValues(alpha: 0.2),
-      borderRadius: BorderRadius.circular(8),
-    );
-
-    final EdgeInsets motivationPadding = const EdgeInsets.all(12);
-
-    final BoxDecoration motivationDecoration = BoxDecoration(
-      color: Colors.white.withValues(alpha: 0.1),
-      borderRadius: BorderRadius.circular(12),
-    );
-
     return Div.column([
-      Div.row([
-        Container(
-          padding: badgePadding,
-          decoration: badgeDecoration,
-          child: RLTypography.bodyMedium('47/100', color: Colors.white),
-        ),
-      ], mainAxisAlignment: MainAxisAlignment.end),
-
-      const Spacing.height(20),
-
       SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: getAchievementBadges(),
       ),
 
-      const Spacing.height(16),
-
-      Container(
-        padding: motivationPadding,
-        decoration: motivationDecoration,
-        child: RLTypography.bodyMedium(
-          'Complete 3 more chapters to unlock \'Quiz Master\' badge! 🏆',
-          color: Colors.white.withValues(alpha: 0.9),
-          textAlign: TextAlign.center,
-        ),
-      ),
     ]);
   }
 
@@ -491,12 +453,6 @@ class AchievementGallery extends StatelessWidget {
         'icon': Icons.speed,
         'title': 'Speed Reader',
         'desc': '5 books in a week',
-        'earned': false,
-      },
-      {
-        'icon': Icons.quiz,
-        'title': 'Quiz Master',
-        'desc': '50 perfect scores',
         'earned': false,
       },
     ];

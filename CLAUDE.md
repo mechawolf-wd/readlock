@@ -11,15 +11,7 @@ Coding conventions and architectural patterns for the Readlock Flutter applicati
 Examples:
 
 - ✅ CORRECT: `FeedbackSnackbar.dart`
-- ✅ CORRECT: `BottomNavigationBar.dart`
-- ✅ CORRECT: `CourseLoadingScreen.dart`
-- ✅ CORRECT: `ProgressiveText.dart`
-- ✅ CORRECT: `Utility.dart`
 - ❌ WRONG: `feedback_snackbar.dart`
-- ❌ WRONG: `bottom_navigation_bar.dart`
-- ❌ WRONG: `course_loading_screen.dart`
-- ❌ WRONG: `progressive_text.dart`
-- ❌ WRONG: `utility.dart`
 
 This applies to ALL Dart files in the project - widgets, models, services, utilities, constants - everything. No exceptions.
 

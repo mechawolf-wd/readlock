@@ -4,11 +4,13 @@ import 'dart:developer' as developer;
 const String CONTINUE_CLICK_AUDIO_PATH = 'audio/continue_click.mp3';
 const String CORRECT_ANSWER_AUDIO_PATH = 'audio/correct_answer.wav';
 const String TYPEWRITER_AUDIO_PATH = 'audio/typewriter.mp3';
+const String SLOW_DOWN_CLOCK_AUDIO_PATH = 'audio/slow_down_clock.mp3';
 
 class SoundService {
   static final AudioPlayer continueClickAudioPlayer = AudioPlayer();
   static final AudioPlayer correctAnswerAudioPlayer = AudioPlayer();
   static final AudioPlayer typewriterAudioPlayer = AudioPlayer();
+  static final AudioPlayer slowDownClockAudioPlayer = AudioPlayer();
   static bool isAudioEnabled = true;
 
   static Future<void> playContinueClick() async {
@@ -87,11 +89,38 @@ class SoundService {
     }
   }
 
+  static Future<void> playSlowDownClock() async {
+    final bool canPlayAudio = isAudioEnabled;
+
+    if (!canPlayAudio) {
+      return;
+    }
+
+    try {
+      await slowDownClockAudioPlayer.stop();
+      await slowDownClockAudioPlayer.play(
+        AssetSource(SLOW_DOWN_CLOCK_AUDIO_PATH),
+      );
+    } on Exception catch (error) {
+      developer.log('Failed to play slow down clock sound: $error');
+      isAudioEnabled = false;
+    }
+  }
+
+  static Future<void> stopSlowDownClock() async {
+    try {
+      await slowDownClockAudioPlayer.stop();
+    } on Exception catch (error) {
+      developer.log('Failed to stop slow down clock sound: $error');
+    }
+  }
+
   static Future<void> dispose() async {
     try {
       await continueClickAudioPlayer.dispose();
       await correctAnswerAudioPlayer.dispose();
       await typewriterAudioPlayer.dispose();
+      await slowDownClockAudioPlayer.dispose();
     } on Exception catch (error) {
       developer.log('Failed to dispose audio players: $error');
     }

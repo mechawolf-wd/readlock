@@ -48,15 +48,28 @@ class CourseRoadmapScreen extends StatefulWidget {
       CourseRoadmapScreenState();
 }
 
-class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
+class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
+    with SingleTickerProviderStateMixin {
   Map<String, dynamic>? courseData;
   List<Map<String, dynamic>> courseSegments = [];
   bool isLoading = true;
 
+  TabController? tabController;
+  late PageController pageController;
+  int currentSegmentIndex = 0;
+
   @override
   void initState() {
     super.initState();
+    pageController = PageController();
     loadCourseData();
+  }
+
+  @override
+  void dispose() {
+    tabController?.dispose();
+    pageController.dispose();
+    super.dispose();
   }
 
   Future<void> loadCourseData() async {
@@ -69,6 +82,15 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
         courseSegments = List<Map<String, dynamic>>.from(
           courseData!['segments'] ?? [],
         );
+
+        // Create tab controller with correct segment count
+        if (mounted && courseSegments.isNotEmpty) {
+          tabController = TabController(
+            length: courseSegments.length,
+            vsync: this,
+            initialIndex: currentSegmentIndex,
+          );
+        }
       }
     } on Exception {
       // Handle error silently
@@ -92,15 +114,15 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
           // Header section with back button and course info
           RoadmapHeader(),
 
+          const Spacing.height(16),
+
+          // Segment page indicators
+          SegmentPageIndicators(),
+
           const Spacing.height(24),
 
-          // Scrollable lesson cards list
-          Expanded(
-            child: ListView(
-              padding: Style.listViewPadding,
-              children: LessonCards(),
-            ),
-          ),
+          // Horizontal page view for segments
+          Expanded(child: SegmentPageView()),
         ]),
       ),
     );
@@ -213,80 +235,97 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
     ];
   }
 
-  List<Widget> LessonCards() {
-    final List<Widget> cards = [];
-    int cardIndex = 0;
+  // Page indicators showing segment position
+  Widget SegmentPageIndicators() {
+    final bool hasMultipleSegments = courseSegments.length > 1;
+    final bool hasTabController = tabController != null;
+    final bool shouldShowIndicators = hasMultipleSegments && hasTabController;
 
-    // Loop through each segment
-    for (
-      int segmentIndex = 0;
-      segmentIndex < courseSegments.length;
-      segmentIndex++
-    ) {
-      final Map<String, dynamic> segment = courseSegments[segmentIndex];
-      final String segmentTitle =
-          segment['segment-title'] ?? 'Unnamed Segment';
-      final String segmentDescription =
-          segment['segment-description'] ?? '';
-      final List<dynamic> lessons = segment['lessons'] ?? [];
-
-      // Add segment header
-      cards.add(
-        SegmentHeader(
-          title: segmentTitle,
-          description: segmentDescription,
-        ),
-      );
-
-      // Add lessons for this segment
-      for (
-        int lessonIndex = 0;
-        lessonIndex < lessons.length;
-        lessonIndex++
-      ) {
-        final Map<String, dynamic> lesson = lessons[lessonIndex];
-        final String lessonTitle = lesson['title'] ?? 'Unnamed Lesson';
-        final String lessonId = lesson['lesson-id'] ?? '';
-
-        // Determine lesson state (mocked for now)
-        final bool isCompleted =
-            segmentIndex == 0 &&
-            lessonIndex <
-                3; // First 3 lessons of first segment are completed
-        final bool isCurrentLevel =
-            segmentIndex == 0 &&
-            lessonIndex == 3; // 4th lesson of first segment is current
-        final bool isLocked =
-            segmentIndex > 0; // All other segments are locked
-
-        // Mock completion data for demonstration
-        final int skillCheckQuestionsCompleted =
-            getMockSkillCheckProgress(segmentIndex, lessonIndex);
-
-        cards.add(
-          LessonCard(
-            levelNumber: cardIndex + 1,
-            title: lessonTitle,
-            subtitle: lessonId,
-            isCompleted: isCompleted,
-            isCurrentLevel: isCurrentLevel,
-            isLocked: isLocked,
-            skillCheckQuestionsCompleted: skillCheckQuestionsCompleted,
-            onTap: () => showLoadingScreenThenNavigate(lessonIndex, 0),
-          ),
-        );
-
-        cardIndex++;
-      }
-
-      // Add spacing between segments
-      if (segmentIndex < courseSegments.length - 1) {
-        cards.add(const Spacing.height(20));
-      }
+    if (!shouldShowIndicators) {
+      return const SizedBox.shrink();
     }
 
-    return cards;
+    return Div.row(
+      getSegmentIndicators(),
+      mainAxisAlignment: MainAxisAlignment.center,
+    );
   }
+
+  List<Widget> getSegmentIndicators() {
+    const double activeIndicatorWidth = 24.0;
+    const double inactiveIndicatorWidth = 16.0;
+    const double indicatorHeight = 8.0;
+    const double indicatorBorderRadius = 4.0;
+
+    final Color activeIndicatorColor = RLTheme.primaryGreen;
+    final Color inactiveIndicatorColor = Colors.grey.withValues(alpha: 0.3);
+
+    final List<Widget> indicators = [];
+
+    for (int segmentIndex = 0; segmentIndex < courseSegments.length; segmentIndex++) {
+      final bool isActive = segmentIndex == currentSegmentIndex;
+      final bool isNotFirstIndicator = segmentIndex > 0;
+
+      if (isNotFirstIndicator) {
+        indicators.add(const Spacing.width(6));
+      }
+
+      final Color indicatorColor = isActive ? activeIndicatorColor : inactiveIndicatorColor;
+      final double indicatorWidth = isActive ? activeIndicatorWidth : inactiveIndicatorWidth;
+
+      final BoxDecoration indicatorDecoration = BoxDecoration(
+        color: indicatorColor,
+        borderRadius: BorderRadius.circular(indicatorBorderRadius),
+      );
+
+      indicators.add(
+        Container(
+          width: indicatorWidth,
+          height: indicatorHeight,
+          decoration: indicatorDecoration,
+        ),
+      );
+    }
+
+    return indicators;
+  }
+
+  // Horizontal page view for segments
+  Widget SegmentPageView() {
+    return PageView.builder(
+      controller: pageController,
+      itemCount: courseSegments.length,
+      onPageChanged: handleSegmentPageChanged,
+      itemBuilder: getSegmentPage,
+    );
+  }
+
+  // Handle segment page change events
+  void handleSegmentPageChanged(int segmentIndex) {
+    if (mounted) {
+      setState(() {
+        currentSegmentIndex = segmentIndex;
+
+        final bool hasTabController = tabController != null;
+
+        if (hasTabController) {
+          tabController!.index = segmentIndex;
+        }
+      });
+    }
+  }
+
+  // Get single segment page with its lessons
+  Widget getSegmentPage(BuildContext context, int segmentIndex) {
+    final Map<String, dynamic> segment = courseSegments[segmentIndex];
+
+    return SegmentPage(
+      segment: segment,
+      segmentIndex: segmentIndex,
+      onLessonTap: showLoadingScreenThenNavigate,
+    );
+  }
+
 
   Color getColorFromString(String colorName) {
     switch (colorName.toLowerCase()) {
@@ -303,32 +342,6 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
       default:
         return RLTheme.primaryGreen;
     }
-  }
-
-  // Mock skill check progress data for demonstration
-  int getMockSkillCheckProgress(int segmentIndex, int lessonIndex) {
-    // First segment lessons: varied skill check progress emphasizing 2/3 completion
-    if (segmentIndex == 0) {
-      switch (lessonIndex) {
-        case 0:
-          return 3; // Lesson 1: all 3 skill check questions completed
-        case 1:
-          return 2; // Lesson 2: 2 out of 3 skill check questions completed
-        case 2:
-          return 2; // Lesson 3: 2 out of 3 skill check questions completed
-        case 3:
-          return 2; // Lesson 4: current lesson, 2 out of 3 completed
-        case 4:
-          return 1; // Lesson 5: 1 out of 3 skill check questions completed
-        case 5:
-          return 0; // Lesson 6: no skill check progress yet
-        default:
-          return 0;
-      }
-    }
-
-    // Other segments: no progress (locked)
-    return 0;
   }
 
   void showLoadingScreenThenNavigate(
@@ -412,6 +425,104 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
     }
 
     Future.delayed(const Duration(milliseconds: 500), routeToCourse);
+  }
+}
+
+// Single segment page with header and lessons
+class SegmentPage extends StatelessWidget {
+  final Map<String, dynamic> segment;
+  final int segmentIndex;
+  final Function(int, int) onLessonTap;
+
+  const SegmentPage({
+    super.key,
+    required this.segment,
+    required this.segmentIndex,
+    required this.onLessonTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final String segmentTitle = segment['segment-title'] ?? 'Unnamed Segment';
+    final String segmentDescription = segment['segment-description'] ?? '';
+    final List<dynamic> lessons = segment['lessons'] ?? [];
+
+    return ListView(
+      padding: Style.listViewPadding,
+      children: getLessonCards(segmentTitle, segmentDescription, lessons),
+    );
+  }
+
+  List<Widget> getLessonCards(
+    String segmentTitle,
+    String segmentDescription,
+    List<dynamic> lessons,
+  ) {
+    final List<Widget> cards = [];
+
+    // Add segment header
+    cards.add(
+      SegmentHeader(
+        title: segmentTitle,
+        description: segmentDescription,
+      ),
+    );
+
+    // Add lessons for this segment
+    for (int lessonIndex = 0; lessonIndex < lessons.length; lessonIndex++) {
+      final Map<String, dynamic> lesson = lessons[lessonIndex];
+      final String lessonTitle = lesson['title'] ?? 'Unnamed Lesson';
+      final String lessonId = lesson['lesson-id'] ?? '';
+
+      // Determine lesson state (mocked for now)
+      final bool isCompleted =
+          segmentIndex == 0 && lessonIndex < 3;
+      final bool isCurrentLevel =
+          segmentIndex == 0 && lessonIndex == 3;
+      final bool isLocked = segmentIndex > 0;
+
+      // Mock completion data for demonstration
+      final int skillCheckQuestionsCompleted =
+          getMockSkillCheckProgress(segmentIndex, lessonIndex);
+
+      cards.add(
+        LessonCard(
+          levelNumber: lessonIndex + 1,
+          title: lessonTitle,
+          subtitle: lessonId,
+          isCompleted: isCompleted,
+          isCurrentLevel: isCurrentLevel,
+          isLocked: isLocked,
+          skillCheckQuestionsCompleted: skillCheckQuestionsCompleted,
+          onTap: () => onLessonTap(lessonIndex, 0),
+        ),
+      );
+    }
+
+    return cards;
+  }
+
+  // Mock skill check progress data for demonstration
+  int getMockSkillCheckProgress(int segmentIndex, int lessonIndex) {
+    if (segmentIndex == 0) {
+      switch (lessonIndex) {
+        case 0:
+          return 3;
+        case 1:
+          return 2;
+        case 2:
+          return 2;
+        case 3:
+          return 2;
+        case 4:
+          return 1;
+        case 5:
+          return 0;
+        default:
+          return 0;
+      }
+    }
+    return 0;
   }
 }
 

@@ -9,7 +9,7 @@ import 'package:readlock/screens/ProfileScreen.dart';
 import 'package:readlock/screens/SandboxScreen.dart';
 
 const String HOME_TAB_LABEL = 'Home';
-const String COURSES_TAB_LABEL = 'Courses';
+const String SEARCH_TAB_LABEL = 'Search';
 const String YOU_TAB_LABEL = 'You';
 const String SANDBOX_TAB_LABEL = 'Sandbox';
 
@@ -18,8 +18,8 @@ class MainNavigation extends StatefulWidget {
   final bool showReadingLeagueExpanded;
 
   const MainNavigation({
-    super.key, 
-    this.initialTabIndex = 0, 
+    super.key,
+    this.initialTabIndex = 0,
     this.showReadingLeagueExpanded = false,
   });
 
@@ -35,11 +35,13 @@ class MainNavigationState extends State<MainNavigation> {
   void initState() {
     super.initState();
     currentIndex = widget.initialTabIndex;
-    
+
     screens = [
       const HomeScreen(),
       const CoursesScreen(),
-      ProfileScreen(showReadingLeagueExpanded: widget.showReadingLeagueExpanded),
+      ProfileScreen(
+        showReadingLeagueExpanded: widget.showReadingLeagueExpanded,
+      ),
       const SandboxScreen(),
     ];
   }
@@ -79,8 +81,8 @@ class MainNavigationState extends State<MainNavigation> {
         label: HOME_TAB_LABEL,
       ),
       const BottomNavigationBarItem(
-        icon: Icon(Icons.book_rounded),
-        label: COURSES_TAB_LABEL,
+        icon: Icon(Icons.search),
+        label: SEARCH_TAB_LABEL,
       ),
       const BottomNavigationBarItem(
         icon: Icon(Icons.person_rounded),
