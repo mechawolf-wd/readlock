@@ -6,23 +6,14 @@ import 'package:readlock/course_screens/data/courseData.dart';
 import 'package:readlock/utility_widgets/Utility.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLTheme.dart';
-import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/utility_widgets/CourseLoadingScreen.dart';
 
 // Constants
 const String COURSE_ROADMAP_DEFAULT_TITLE = 'Course Roadmap';
-const String COURSE_DEFAULT_COLOR = 'green';
 const String COURSE_SUBTITLE_TEXT =
     'Master design psychology fundamentals';
 const String EXPERIENCE_COUNTER_TEXT = '30 xp';
 const String QUESTIONS_COUNTER_TEXT = '29 questions';
-
-// Dialog constants
-const String DIALOG_TITLE = 'Ready to Learn?';
-const String DIALOG_MESSAGE =
-    'Start your journey into design psychology';
-const String CONTINUE_BUTTON = 'Start';
-const String POINTS_TEXT = ' +20 XP';
 
 // Level constants
 const String LEVEL_PREFIX = 'Level ';
@@ -131,14 +122,6 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
   Widget RoadmapHeader() {
     final String courseTitle =
         courseData?['title'] ?? COURSE_ROADMAP_DEFAULT_TITLE;
-    final String courseColor =
-        courseData?['color'] ?? COURSE_DEFAULT_COLOR;
-
-    final BoxDecoration courseIconDecoration = Style
-        .courseIconDecoration
-        .copyWith(
-          color: getColorFromString(courseColor).withValues(alpha: 0.2),
-        );
 
     final Widget BackArrowIcon = const Icon(
       Icons.arrow_back,
@@ -146,10 +129,14 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
       size: 24,
     );
 
-    final Widget CourseIcon = Icon(
-      Icons.psychology_outlined,
-      color: getColorFromString(courseColor),
-      size: 48,
+    final Widget BookCover = ClipRRect(
+      borderRadius: BorderRadius.circular(12),
+      child: Image.asset(
+        'covers/doet-cover.png',
+        width: 120,
+        height: 160,
+        fit: BoxFit.cover,
+      ),
     );
 
     return Div.column(
@@ -173,12 +160,8 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
 
         // Course information section
         Div.column([
-          // Course icon container
-          Div.column(
-            [CourseIcon],
-            padding: Style.courseIconPadding,
-            decoration: courseIconDecoration,
-          ),
+          // Book cover
+          BookCover,
 
           const Spacing.height(16),
 
@@ -332,13 +315,13 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
       case 'green':
         return RLTheme.primaryGreen;
       case 'purple':
-        return Colors.purple;
+        return RLTheme.accentPurple;
       case 'blue':
         return RLTheme.primaryBlue;
       case 'red':
-        return Colors.red;
+        return RLTheme.errorColor;
       case 'orange':
-        return Colors.orange;
+        return RLTheme.warningColor;
       default:
         return RLTheme.primaryGreen;
     }
@@ -348,58 +331,8 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
     int lessonIndex,
     int contentIndex,
   ) {
-    // Show experience points dialog first
-    showExperiencePointsDialog(lessonIndex, contentIndex);
-  }
-
-  void showExperiencePointsDialog(int lessonIndex, int contentIndex) {
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: RLTheme.backgroundDark,
-      isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-      ),
-      builder: (BuildContext context) {
-        return Wrap(
-          children: [
-            Div.column(
-              [
-                // Continue button
-                RLDesignSystem.BlockButton(
-                  children: [
-                    RLTypography.bodyMedium(
-                      CONTINUE_BUTTON,
-                      color: Colors.white,
-                    ),
-
-                    // Experience points badge
-                    RLTypography.bodyMedium(
-                      POINTS_TEXT,
-                      color: Colors.white,
-                    ),
-                  ],
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 16,
-                    horizontal: 16,
-                  ),
-                  onTap: () {
-                    Navigator.of(context).pop();
-                    navigateToCourseWithLoading(
-                      lessonIndex,
-                      contentIndex,
-                    );
-                  },
-                ),
-              ],
-              padding: EdgeInsets.only(
-                bottom: MediaQuery.of(context).viewInsets.bottom,
-              ),
-            ),
-          ],
-        );
-      },
-    );
+    // Navigate directly to course without showing XP dialog
+    navigateToCourseWithLoading(lessonIndex, contentIndex);
   }
 
   void navigateToCourseWithLoading(int lessonIndex, int contentIndex) {
@@ -601,7 +534,7 @@ class SegmentHeader extends StatelessWidget {
       case 'B':
         return RLTheme.primaryBlue;
       case 'C':
-        return Colors.purple;
+        return RLTheme.accentPurple;
       default:
         return RLTheme.primaryGreen;
     }
@@ -822,15 +755,9 @@ class LessonCard extends StatelessWidget {
 }
 
 class Style {
-  static final BoxDecoration courseIconDecoration = BoxDecoration(
-    borderRadius: BorderRadius.circular(36),
-  );
-
   static final BorderRadius backButtonRadius = BorderRadius.circular(
     36,
   );
-
-  static const double courseIconPadding = 16;
 
   static const EdgeInsets listViewPadding = EdgeInsets.symmetric(
     horizontal: 20,

@@ -18,52 +18,80 @@ const String OIIA_SOUND = 'OIIA';
 class ProfileScreen extends StatefulWidget {
   final bool showReadingLeagueExpanded;
 
-  const ProfileScreen({super.key, this.showReadingLeagueExpanded = false});
+  const ProfileScreen({
+    super.key,
+    this.showReadingLeagueExpanded = false,
+  });
 
   @override
-  State<ProfileScreen> createState() => _ProfileScreenState();
+  State<ProfileScreen> createState() => ProfileScreenState();
 }
 
-class _ProfileScreenState extends State<ProfileScreen> {
+class ProfileScreenState extends State<ProfileScreen> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: RLTheme.backgroundDark,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(20),
+          child: ProfileContent(
+            showReadingLeagueExpanded: widget.showReadingLeagueExpanded,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class ProfileContent extends StatefulWidget {
+  final bool showReadingLeagueExpanded;
+
+  const ProfileContent({
+    super.key,
+    this.showReadingLeagueExpanded = false,
+  });
+
+  @override
+  State<ProfileContent> createState() => ProfileContentState();
+}
+
+class ProfileContentState extends State<ProfileContent> {
   bool soundsEnabled = true;
   bool hapticsEnabled = true;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: RLTheme.backgroundDark,
-      child: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              ReadingLeagueCard(initiallyExpanded: widget.showReadingLeagueExpanded),
-
-              const Spacing.height(20),
-
-              const AchievementGallery(),
-
-              const Spacing.height(20),
-
-              const LearningStatsCard(),
-
-              const Spacing.height(20),
-
-              const SoundPickerCard(),
-
-              const Spacing.height(24),
-
-              MenuSection(
-                soundsEnabled: soundsEnabled,
-                hapticsEnabled: hapticsEnabled,
-                onSoundsToggled: (value) => setState(() => soundsEnabled = value),
-                onHapticsToggled: (value) => setState(() => hapticsEnabled = value),
-              ),
-            ],
-          ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        ReadingLeagueCard(
+          initiallyExpanded: widget.showReadingLeagueExpanded,
         ),
-      ),
+
+        const Spacing.height(20),
+
+        const AchievementGallery(),
+
+        const Spacing.height(20),
+
+        const LearningStatsCard(),
+
+        const Spacing.height(20),
+
+        const SoundPickerCard(),
+
+        const Spacing.height(24),
+
+        MenuSection(
+          soundsEnabled: soundsEnabled,
+          hapticsEnabled: hapticsEnabled,
+          onSoundsToggled: (value) =>
+              setState(() => soundsEnabled = value),
+          onHapticsToggled: (value) =>
+              setState(() => hapticsEnabled = value),
+        ),
+      ],
     );
   }
 }
@@ -246,7 +274,7 @@ class MenuSection extends StatelessWidget {
         icon: Icons.logout,
         title: 'Log out',
         onTap: () {},
-        textColor: Colors.red,
+        textColor: RLTheme.errorColor,
       ),
 
       const Spacing.height(24),
@@ -328,7 +356,7 @@ class ReadingStatsCard extends StatelessWidget {
 
         const Div.row([
           StatisticItem(
-            label: 'Books Read',
+            label: 'Titles Read',
             value: '127',
             icon: Icons.menu_book,
             color: RLTheme.primaryBlue,
@@ -345,7 +373,7 @@ class ReadingStatsCard extends StatelessWidget {
             label: 'Avg. Rating',
             value: '4.6★',
             icon: Icons.star,
-            color: Colors.orange,
+            color: RLTheme.warningColor,
           ),
         ], mainAxisAlignment: MainAxisAlignment.spaceBetween),
       ]),
@@ -425,7 +453,6 @@ class AchievementGallery extends StatelessWidget {
         scrollDirection: Axis.horizontal,
         child: getAchievementBadges(),
       ),
-
     ]);
   }
 
@@ -452,7 +479,7 @@ class AchievementGallery extends StatelessWidget {
       {
         'icon': Icons.speed,
         'title': 'Speed Reader',
-        'desc': '5 books in a week',
+        'desc': '5 titles in a week',
         'earned': false,
       },
     ];
@@ -874,7 +901,7 @@ class QuickActionsSection extends StatelessWidget {
       ActionButton(
         label: 'View All Achievements',
         icon: Icons.emoji_events,
-        color: Colors.orange,
+        color: RLTheme.warningColor,
         onTap: () {},
         fullWidth: true,
       ),
@@ -925,10 +952,10 @@ class SoundPickerCard extends StatefulWidget {
   const SoundPickerCard({super.key});
 
   @override
-  State<SoundPickerCard> createState() => _SoundPickerCardState();
+  State<SoundPickerCard> createState() => SoundPickerCardState();
 }
 
-class _SoundPickerCardState extends State<SoundPickerCard> {
+class SoundPickerCardState extends State<SoundPickerCard> {
   String selectedSound = TYPEWRITER_SOUND;
 
   @override
@@ -956,17 +983,17 @@ class _SoundPickerCardState extends State<SoundPickerCard> {
       {
         'name': TYPEWRITER_SOUND,
         'icon': Icons.keyboard,
-        'color': Colors.blue,
+        'color': RLTheme.primaryBlue,
       },
       {
         'name': SWITCHES_SOUND,
         'icon': Icons.toggle_on,
-        'color': Colors.green,
+        'color': RLTheme.primaryGreen,
       },
       {
         'name': OIIA_SOUND,
         'icon': Icons.music_note,
-        'color': Colors.orange,
+        'color': RLTheme.warningColor,
       },
     ];
 
@@ -1076,28 +1103,25 @@ class SwitchMenuItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final Color iconColor = RLTheme.textPrimary.withValues(alpha: 0.7);
     final Color titleColor = RLTheme.textPrimary;
-    
-    return Div.row(
-      [
-        Icon(icon, color: iconColor, size: 20),
 
-        const Spacing.width(16),
+    return Div.row([
+      Icon(icon, color: iconColor, size: 20),
 
-        Expanded(
-          child: RLTypography.bodyMedium(title, color: titleColor),
-        ),
+      const Spacing.width(16),
 
-        Switch(
-          value: value,
-          onChanged: onChanged,
-          activeThumbColor: RLTheme.primaryBlue,
-          activeTrackColor: RLTheme.primaryBlue.withValues(alpha: 0.3),
-          inactiveThumbColor: RLTheme.textPrimary.withValues(alpha: 0.5),
-          inactiveTrackColor: RLTheme.textPrimary.withValues(alpha: 0.1),
-        ),
-      ],
-      padding: const EdgeInsets.symmetric(vertical: 16),
-    );
+      Expanded(
+        child: RLTypography.bodyMedium(title, color: titleColor),
+      ),
+
+      Switch(
+        value: value,
+        onChanged: onChanged,
+        activeThumbColor: RLTheme.primaryBlue,
+        activeTrackColor: RLTheme.primaryBlue.withValues(alpha: 0.3),
+        inactiveThumbColor: RLTheme.textPrimary.withValues(alpha: 0.5),
+        inactiveTrackColor: RLTheme.textPrimary.withValues(alpha: 0.1),
+      ),
+    ], padding: const EdgeInsets.symmetric(vertical: 16));
   }
 }
 

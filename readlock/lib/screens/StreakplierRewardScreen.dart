@@ -259,15 +259,15 @@ class StreakplierRewardScreenState
   // Featured reading time card with enhanced visual prominence
   Widget FeaturedReadingTimeCard(String formattedLessonTime) {
     final BoxDecoration featuredCardDecoration = BoxDecoration(
-      color: Colors.orange.withValues(alpha: 0.1),
+      color: RLTheme.warningColor.withValues(alpha: 0.1),
       borderRadius: BorderRadius.circular(20),
       border: Border.all(
-        color: Colors.orange.withValues(alpha: 0.3),
+        color: RLTheme.warningColor.withValues(alpha: 0.3),
         width: 2,
       ),
       boxShadow: [
         BoxShadow(
-          color: Colors.orange.withValues(alpha: 0.1),
+          color: RLTheme.warningColor.withValues(alpha: 0.1),
           blurRadius: 12,
           offset: const Offset(0, 4),
         ),
@@ -286,12 +286,12 @@ class StreakplierRewardScreenState
             width: 80,
             height: 80,
             decoration: BoxDecoration(
-              color: Colors.orange.withValues(alpha: 0.2),
+              color: RLTheme.warningColor.withValues(alpha: 0.2),
               borderRadius: BorderRadius.circular(40),
             ),
             child: const Icon(
               Icons.timer_rounded,
-              color: Colors.orange,
+              color: RLTheme.warningColor,
               size: 40,
             ),
           ),
@@ -311,7 +311,7 @@ class StreakplierRewardScreenState
           Text(
             formattedLessonTime,
             style: RLTypography.headingLargeStyle.copyWith(
-              color: Colors.orange,
+              color: RLTheme.warningColor,
               fontSize: 36,
               fontWeight: FontWeight.bold,
             ),

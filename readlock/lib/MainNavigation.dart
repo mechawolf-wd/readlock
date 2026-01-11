@@ -5,22 +5,20 @@ import 'package:flutter/material.dart';
 import 'package:readlock/constants/RLTheme.dart';
 import 'package:readlock/screens/CoursesScreen.dart';
 import 'package:readlock/screens/HomeScreen.dart';
-import 'package:readlock/screens/ProfileScreen.dart';
+import 'package:readlock/screens/MyBookshelfScreen.dart';
 import 'package:readlock/screens/SandboxScreen.dart';
 
 const String HOME_TAB_LABEL = 'Home';
 const String SEARCH_TAB_LABEL = 'Search';
-const String YOU_TAB_LABEL = 'You';
+const String BOOKSHELF_TAB_LABEL = 'My Bookshelf';
 const String SANDBOX_TAB_LABEL = 'Sandbox';
 
 class MainNavigation extends StatefulWidget {
   final int initialTabIndex;
-  final bool showReadingLeagueExpanded;
 
   const MainNavigation({
     super.key,
     this.initialTabIndex = 0,
-    this.showReadingLeagueExpanded = false,
   });
 
   @override
@@ -39,9 +37,7 @@ class MainNavigationState extends State<MainNavigation> {
     screens = [
       const HomeScreen(),
       const CoursesScreen(),
-      ProfileScreen(
-        showReadingLeagueExpanded: widget.showReadingLeagueExpanded,
-      ),
+      const MyBookshelfScreen(),
       const SandboxScreen(),
     ];
   }
@@ -50,7 +46,21 @@ class MainNavigationState extends State<MainNavigation> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: RLTheme.backgroundDark,
-      body: IndexedStack(index: currentIndex, children: screens),
+      body: AnimatedSwitcher(
+        duration: const Duration(milliseconds: 200),
+        switchInCurve: Curves.easeInOut,
+        switchOutCurve: Curves.easeInOut,
+        transitionBuilder: (Widget child, Animation<double> animation) {
+          return FadeTransition(
+            opacity: animation,
+            child: child,
+          );
+        },
+        child: KeyedSubtree(
+          key: ValueKey<int>(currentIndex),
+          child: screens[currentIndex],
+        ),
+      ),
       bottomNavigationBar: ClipRRect(
         borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(20),
@@ -85,8 +95,8 @@ class MainNavigationState extends State<MainNavigation> {
         label: SEARCH_TAB_LABEL,
       ),
       const BottomNavigationBarItem(
-        icon: Icon(Icons.person_rounded),
-        label: YOU_TAB_LABEL,
+        icon: Icon(Icons.book_rounded),
+        label: BOOKSHELF_TAB_LABEL,
       ),
       const BottomNavigationBarItem(
         icon: Icon(Icons.science_rounded),

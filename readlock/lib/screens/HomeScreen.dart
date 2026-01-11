@@ -2,12 +2,12 @@
 // Features top bar with streak and experience counters
 
 import 'package:flutter/material.dart' hide Typography;
-import 'package:readlock/utility_widgets/StatisticsTopBar.dart';
+import 'package:readlock/course_screens/CourseRoadmapScreen.dart';
 import 'package:readlock/utility_widgets/Utility.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLTheme.dart';
 
-const String HOME_TITLE = 'Welcome Back';
+const String HOME_TITLE = 'Home';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -17,6 +17,35 @@ class HomeScreen extends StatefulWidget {
 }
 
 class HomeScreenState extends State<HomeScreen> {
+  void navigateToCourse(String courseId) {
+    Navigator.push(
+      context,
+      PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) =>
+            CourseRoadmapScreen(courseId: courseId),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          const Offset begin = Offset(0.0, 1.0);
+          const Offset end = Offset.zero;
+          const Curve curve = Curves.easeInOut;
+
+          final Animatable<Offset> tween = Tween(begin: begin, end: end)
+              .chain(CurveTween(curve: curve));
+
+          final Animation<Offset> offsetAnimation = animation.drive(tween);
+
+          return SlideTransition(
+            position: offsetAnimation,
+            child: child,
+          );
+        },
+      ),
+    );
+  }
+
+  void handleContinueReading() {
+    navigateToCourse('design-everyday-things-comprehensive');
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,11 +54,6 @@ class HomeScreenState extends State<HomeScreen> {
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(24),
           child: Div.column([
-            // Top stats bar
-            const StatisticsTopBar(),
-
-            const Spacing.height(32),
-
             // Welcome header
             HomeWelcomeHeader(),
 
@@ -59,33 +83,19 @@ class HomeScreenState extends State<HomeScreen> {
     return Div.column([
       // Main welcome title
       RLTypography.headingLarge(HOME_TITLE),
-
-      const Spacing.height(8),
-
-      // Subtitle text
-      RLTypography.text('Continue your learning journey'),
-    ], crossAxisAlignment: CrossAxisAlignment.center);
+    ], crossAxisAlignment: CrossAxisAlignment.start);
   }
 
   Widget ContinueReadingSection() {
+    final double bookProgress = 0.45;
+    final int progressPercent = (bookProgress * 100).toInt();
+
     final BoxDecoration cardDecoration = BoxDecoration(
       color: RLTheme.backgroundLight.withValues(alpha: 0.08),
       borderRadius: BorderRadius.circular(12),
       border: Border.all(
         color: RLTheme.primaryGreen.withValues(alpha: 0.3),
       ),
-    );
-
-    final BoxDecoration bookCoverDecoration = BoxDecoration(
-      gradient: LinearGradient(
-        begin: Alignment.topLeft,
-        end: Alignment.bottomRight,
-        colors: [
-          RLTheme.primaryGreen,
-          RLTheme.primaryGreen.withValues(alpha: 0.7),
-        ],
-      ),
-      borderRadius: BorderRadius.circular(8),
     );
 
     final BoxDecoration buttonDecoration = BoxDecoration(
@@ -100,7 +110,7 @@ class HomeScreenState extends State<HomeScreen> {
         const Spacing.height(4),
 
         RLTypography.text(
-          'Pick up where you left',
+          'Continue the title you\'ve been reading',
           color: RLTheme.textSecondary,
         ),
       ], crossAxisAlignment: CrossAxisAlignment.start),
@@ -112,10 +122,14 @@ class HomeScreenState extends State<HomeScreen> {
         decoration: cardDecoration,
         child: Div.column([
           Div.row([
-            Container(
-              width: 60,
-              height: 80,
-              decoration: bookCoverDecoration,
+            ClipRRect(
+              borderRadius: BorderRadius.circular(8),
+              child: Image.asset(
+                'covers/doet-cover.png',
+                width: 60,
+                height: 80,
+                fit: BoxFit.cover,
+              ),
             ),
 
             const Spacing.width(16),
@@ -127,28 +141,71 @@ class HomeScreenState extends State<HomeScreen> {
                 const Spacing.height(4),
 
                 RLTypography.text(
-                  'Chapter 3 - 45% complete',
+                  'Don Norman',
                   color: RLTheme.textSecondary,
                 ),
+
+                const Spacing.height(12),
+
+                Div.row([
+                  Expanded(
+                    child: ProgressBar(
+                      progress: bookProgress,
+                      color: RLTheme.primaryGreen,
+                    ),
+                  ),
+
+                  const Spacing.width(8),
+
+                  RLTypography.text(
+                    '$progressPercent%',
+                    color: RLTheme.primaryGreen,
+                  ),
+                ]),
               ], crossAxisAlignment: CrossAxisAlignment.start),
             ),
           ]),
 
           const Spacing.height(12),
 
-          Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 16,
-              vertical: 8,
+          GestureDetector(
+            onTap: handleContinueReading,
+            child: Container(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 8,
+              ),
+              decoration: buttonDecoration,
+              child: Div.row([
+                RLTypography.text('Continue', color: Colors.white),
+              ], mainAxisAlignment: MainAxisAlignment.center),
             ),
-            decoration: buttonDecoration,
-            child: Div.row([
-              RLTypography.text('Continue', color: Colors.white),
-            ], mainAxisAlignment: MainAxisAlignment.center),
           ),
         ]),
       ),
     ], crossAxisAlignment: CrossAxisAlignment.start);
+  }
+
+  Widget ProgressBar({required double progress, required Color color}) {
+    final BoxDecoration trackDecoration = BoxDecoration(
+      color: color.withValues(alpha: 0.2),
+      borderRadius: BorderRadius.circular(4),
+    );
+
+    final BoxDecoration fillDecoration = BoxDecoration(
+      color: color,
+      borderRadius: BorderRadius.circular(4),
+    );
+
+    return Container(
+      height: 4,
+      decoration: trackDecoration,
+      child: FractionallySizedBox(
+        alignment: Alignment.centerLeft,
+        widthFactor: progress,
+        child: Container(decoration: fillDecoration),
+      ),
+    );
   }
 
   Widget ForYourPersonalitySection() {
@@ -165,7 +222,7 @@ class HomeScreenState extends State<HomeScreen> {
         const Spacing.height(4),
 
         RLTypography.text(
-          'Curated based on your interests',
+          'Picked based on your unique choices',
           color: RLTheme.textSecondary,
         ),
       ], crossAxisAlignment: CrossAxisAlignment.start),
@@ -222,6 +279,16 @@ class HomeScreenState extends State<HomeScreen> {
               ),
             ], crossAxisAlignment: CrossAxisAlignment.start),
           ),
+
+          // Bookmark icon
+          Container(
+            margin: const EdgeInsets.only(top: 8),
+            child: const Icon(
+              Icons.bookmark_border,
+              color: RLTheme.primaryBlue,
+              size: 24,
+            ),
+          ),
         ]),
       );
     }).toList();
@@ -229,14 +296,6 @@ class HomeScreenState extends State<HomeScreen> {
 
   Widget RandomLessonSection() {
     final BoxDecoration cardDecoration = BoxDecoration(
-      gradient: LinearGradient(
-        begin: Alignment.topLeft,
-        end: Alignment.bottomRight,
-        colors: [
-          RLTheme.primaryBlue.withValues(alpha: 0.1),
-          RLTheme.primaryGreen.withValues(alpha: 0.1),
-        ],
-      ),
       borderRadius: BorderRadius.circular(12),
       border: Border.all(
         color: RLTheme.primaryBlue.withValues(alpha: 0.3),
@@ -250,12 +309,12 @@ class HomeScreenState extends State<HomeScreen> {
 
     return Div.column([
       Div.column([
-        RLTypography.headingMedium('Random Lesson'),
+        RLTypography.headingMedium('Any Lesson'),
 
         const Spacing.height(4),
 
         RLTypography.text(
-          'Discover something new today',
+          'Next bite that could change your perspective',
           color: RLTheme.textSecondary,
         ),
       ], crossAxisAlignment: CrossAxisAlignment.start),
@@ -284,7 +343,7 @@ class HomeScreenState extends State<HomeScreen> {
             ),
             decoration: buttonDecoration,
             child: Div.row([
-              RLTypography.text('Start Lesson', color: Colors.white),
+              RLTypography.text('Let\'s Go', color: Colors.white),
             ], mainAxisAlignment: MainAxisAlignment.center),
           ),
         ], crossAxisAlignment: CrossAxisAlignment.start),

@@ -20,6 +20,17 @@ class RLTheme {
   static const Color warningColor = Colors.orange;
   static const Color warningColorGentle = Color(0xFFFF9800);
 
+  // Additional accent colors
+  static const Color accentPurple = Colors.purple;
+  static const Color accentTeal = Colors.teal;
+  static const Color accentIndigo = Colors.indigo;
+  static const Color accentPink = Colors.pink;
+  static const Color accentCyan = Colors.cyan;
+  static const Color accentAmber = Colors.amber;
+  static const Color accentBrown = Colors.brown;
+  static const Color accentYellow = Colors.yellow;
+  static const Color accentLime = Colors.lime;
+
   // Essential extended colors for content widgets
   static final Color grey300 =
       Colors.grey[300] ?? const Color(0xFFE0E0E0);

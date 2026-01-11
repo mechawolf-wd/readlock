@@ -2,6 +2,7 @@
 // Provides Div widget for layout and Spacing widget for consistent spacing
 
 import 'package:flutter/material.dart' hide Typography;
+import 'package:readlock/constants/RLTheme.dart';
 
 // String constants for directions
 const String DIRECTION_VERTICAL = 'vertical';
@@ -557,31 +558,31 @@ class Div extends StatelessWidget {
   Color? getColorFromString(String colorString) {
     switch (colorString.toLowerCase()) {
       case 'red':
-        return Colors.red;
+        return RLTheme.errorColor;
       case 'blue':
-        return Colors.blue;
+        return RLTheme.primaryBlue;
       case 'green':
-        return Colors.green;
+        return RLTheme.primaryGreen;
       case 'yellow':
-        return Colors.yellow;
+        return RLTheme.accentYellow;
       case 'orange':
-        return Colors.orange;
+        return RLTheme.warningColor;
       case 'purple':
-        return Colors.purple;
+        return RLTheme.accentPurple;
       case 'pink':
-        return Colors.pink;
+        return RLTheme.accentPink;
       case 'cyan':
-        return Colors.cyan;
+        return RLTheme.accentCyan;
       case 'teal':
-        return Colors.teal;
+        return RLTheme.accentTeal;
       case 'lime':
-        return Colors.lime;
+        return RLTheme.accentLime;
       case 'indigo':
-        return Colors.indigo;
+        return RLTheme.accentIndigo;
       case 'amber':
-        return Colors.amber;
+        return RLTheme.accentAmber;
       case 'brown':
-        return Colors.brown;
+        return RLTheme.accentBrown;
       case 'grey':
         return Colors.grey;
       case 'black':

@@ -45,7 +45,7 @@ class CCReflectionState extends State<CCReflection> {
       height: 1.6,
     );
 
-    cardColors = [RLTheme.primaryBlue, Colors.purple, Colors.orange];
+    cardColors = [RLTheme.primaryBlue, RLTheme.accentPurple, RLTheme.warningColor];
   }
 
   @override

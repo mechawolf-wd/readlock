@@ -69,7 +69,7 @@ class Style {
 
   static Icon FireIcon = const Icon(
     Icons.local_fire_department,
-    color: Colors.orange,
+    color: RLTheme.warningColor,
     size: 20,
   );
 }

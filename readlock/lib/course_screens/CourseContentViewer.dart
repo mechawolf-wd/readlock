@@ -9,6 +9,7 @@ import 'package:readlock/utility_widgets/Utility.dart';
 import 'package:readlock/MainNavigation.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/screens/StreakplierRewardScreen.dart';
+import 'package:readlock/screens/ProfileScreen.dart';
 
 // String constants
 const String NO_CONTENT_AVAILABLE_MESSAGE =
@@ -68,7 +69,7 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
 
   static const Icon blazeIcon = Icon(
     Icons.local_fire_department_rounded,
-    color: Colors.orange,
+    color: RLTheme.warningColor,
     size: 24,
   );
 
@@ -400,7 +401,7 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
   ) {
     // Flatten all lessons from all segments
     final List<Map<String, dynamic>> allLessons = [];
-    
+
     for (final segment in segments) {
       final List<Map<String, dynamic>> segmentLessons =
           List<Map<String, dynamic>>.from(segment['lessons'] ?? []);
@@ -466,10 +467,7 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
   void navigateToProfileWithReadingLeague() {
     Navigator.of(context).push(
       RLTheme.slideUpTransition(
-        const MainNavigation(
-          initialTabIndex: 2, // Profile tab index
-          showReadingLeagueExpanded: true,
-        ),
+        const ProfileScreen(showReadingLeagueExpanded: true),
       ),
     );
   }
@@ -491,8 +489,11 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
   // Create lesson reward data based on current lesson performance
   LessonReward createLessonReward() {
     // Calculate lesson duration (example: 5 minutes 30 seconds)
-    final Duration lessonDuration = const Duration(minutes: 5, seconds: 30);
-    
+    final Duration lessonDuration = const Duration(
+      minutes: 5,
+      seconds: 30,
+    );
+
     return LessonReward(
       experiencePointsGained: 190,
       streakplierMultiplier: 1.35,
@@ -503,7 +504,6 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
   // Handle continue from reward screen
   void handleRewardScreenContinue() {
     Navigator.of(context).pop(); // Close reward screen
-    navigateToProfileWithReadingLeague(); // Navigate to profile with reading league expanded
   }
 
   // Handle star tap to favorite current slide
@@ -512,7 +512,7 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
     if (!pageController.hasClients) {
       return; // PageController not attached yet
     }
-    
+
     // Get current page index
     final double? currentPageDouble = pageController.page;
     final bool hasCurrentPage = currentPageDouble != null;

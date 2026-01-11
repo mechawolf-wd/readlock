@@ -2,10 +2,6 @@
 // Clean card-based layout with course selection
 
 import 'package:flutter/material.dart' hide Typography;
-import 'package:readlock/course_screens/CourseRoadmapScreen.dart';
-import 'package:readlock/course_screens/data/courseData.dart';
-import 'package:readlock/course_screens/models/courseModel.dart';
-import 'package:readlock/utility_widgets/StatisticsTopBar.dart';
 import 'package:readlock/utility_widgets/Utility.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLTheme.dart';
@@ -18,105 +14,225 @@ class CoursesScreen extends StatefulWidget {
 }
 
 class CoursesScreenState extends State<CoursesScreen> {
-  List<Course> courses = [];
-  bool isLoading = true;
+  bool isSearchActive = false;
+  String? selectedGenre;
+  int displayedItemsCount = 7;
+  final int itemsPerLoad = 7;
+  final TextEditingController searchController =
+      TextEditingController();
+  final FocusNode searchFocusNode = FocusNode();
 
   @override
-  void initState() {
-    super.initState();
-    loadCourses();
+  void dispose() {
+    searchController.dispose();
+    searchFocusNode.dispose();
+    super.dispose();
+  }
+
+  void activateSearch() {
+    setState(() {
+      isSearchActive = true;
+      selectedGenre = null;
+      displayedItemsCount = 7;
+    });
+    searchFocusNode.requestFocus();
+  }
+
+  void deactivateSearch() {
+    setState(() {
+      isSearchActive = false;
+      displayedItemsCount = 7;
+      searchController.clear();
+    });
+    searchFocusNode.unfocus();
+  }
+
+  void selectGenre(String genre) {
+    setState(() {
+      selectedGenre = genre;
+      isSearchActive = false;
+      displayedItemsCount = 7;
+      searchController.clear();
+    });
+    searchFocusNode.unfocus();
+  }
+
+  void clearGenreSelection() {
+    setState(() {
+      selectedGenre = null;
+      displayedItemsCount = 7;
+    });
+  }
+
+  void loadMoreResults() {
+    setState(() {
+      displayedItemsCount += itemsPerLoad;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+    final bool hasSearchText = searchController.text.isNotEmpty;
+    final bool shouldShowSearchResults =
+        hasSearchText || selectedGenre != null;
+    final bool isGenreSelected = selectedGenre != null;
+    final bool shouldShowSearchBar = !isGenreSelected;
+    final bool shouldShowCategories = !hasSearchText;
+
     return Scaffold(
       backgroundColor: RLTheme.backgroundDark,
       body: SafeArea(
-        child: Column(
-          children: [
-            // Header with stats
-            const Padding(
-              padding: EdgeInsets.all(24),
-              child: StatisticsTopBar(),
-            ),
-
-            // Search bar
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
-              child: MockSearchBar(),
-            ),
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(24),
+          child: Div.column([
+            // Search heading
+            RLTypography.headingLarge('Search'),
 
             const Spacing.height(24),
 
-            // Categories
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
-              child: CategoriesSection(),
+            // Search bar (hidden when genre is selected)
+            RenderIf.condition(
+              shouldShowSearchBar,
+              Div.column([
+                MockSearchBar(),
+
+                const Spacing.height(24),
+              ], crossAxisAlignment: CrossAxisAlignment.stretch),
+              const SizedBox.shrink(),
             ),
 
-            const Spacing.height(32),
+            // Categories (visible unless searching)
+            RenderIf.condition(
+              shouldShowCategories,
+              Div.column([
+                CategoriesSection(),
 
-            // Trending section
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
-              child: TrendingHeader(),
+                const Spacing.height(32),
+              ], crossAxisAlignment: CrossAxisAlignment.stretch),
+              const SizedBox.shrink(),
             ),
 
-            const Spacing.height(16),
-
-            // Courses list
-            if (isLoading)
-              const Expanded(
-                child: Center(
-                  child: CircularProgressIndicator(
-                    color: RLTheme.primaryBlue,
-                  ),
-                ),
-              )
-            else
-              Expanded(
-                child: ListView.builder(
-                  padding: const EdgeInsets.symmetric(horizontal: 24),
-                  itemCount: courses.length,
-                  itemBuilder: (context, index) =>
-                      CourseCard(course: courses[index]),
-                ),
-              ),
-
-            // All Titles button
-            Padding(
-              padding: const EdgeInsets.all(24),
-              child: AllTitlesButton(),
+            // Conditional content based on search state or genre selection
+            RenderIf.condition(
+              shouldShowSearchResults,
+              SearchResults(),
+              TrendingSection(),
             ),
-          ],
+          ], crossAxisAlignment: CrossAxisAlignment.stretch),
         ),
       ),
     );
   }
 
   Widget MockSearchBar() {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      decoration: BoxDecoration(
-        color: RLTheme.backgroundLight.withValues(alpha: 0.08),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: RLTheme.grey300.withValues(alpha: 0.3),
-        ),
+    final BoxDecoration searchBarDecoration = BoxDecoration(
+      color: RLTheme.backgroundLight.withValues(alpha: 0.08),
+      borderRadius: BorderRadius.circular(12),
+      border: Border.all(color: RLTheme.grey300.withValues(alpha: 0.3)),
+    );
+
+    final Widget searchIcon = const Icon(
+      Icons.search,
+      color: RLTheme.textSecondary,
+      size: 20,
+    );
+
+    return RenderIf.condition(
+      isSearchActive,
+      ActiveSearchBar(
+        searchBarDecoration: searchBarDecoration,
+        searchIcon: searchIcon,
       ),
+      InactiveSearchBar(
+        searchBarDecoration: searchBarDecoration,
+        searchIcon: searchIcon,
+      ),
+    );
+  }
+
+  Widget InactiveSearchBar({
+    required BoxDecoration searchBarDecoration,
+    required Widget searchIcon,
+  }) {
+    return GestureDetector(
+      onTap: activateSearch,
+      child: Container(
+        padding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 12,
+        ),
+        decoration: searchBarDecoration,
+        child: Div.row([
+          searchIcon,
+
+          const Spacing.width(12),
+
+          RLTypography.text(
+            'Title or author...',
+            color: RLTheme.textSecondary,
+          ),
+        ]),
+      ),
+    );
+  }
+
+  Widget ActiveSearchBar({
+    required BoxDecoration searchBarDecoration,
+    required Widget searchIcon,
+  }) {
+    final Widget closeIcon = const Icon(
+      Icons.close,
+      color: RLTheme.textSecondary,
+      size: 20,
+    );
+
+    final bool hasSearchText = searchController.text.isNotEmpty;
+
+    final Color borderColor = hasSearchText
+        ? RLTheme.primaryBlue
+        : RLTheme.grey300.withValues(alpha: 0.3);
+
+    final BoxDecoration activeSearchBarDecoration = BoxDecoration(
+      color: RLTheme.backgroundLight.withValues(alpha: 0.08),
+      borderRadius: BorderRadius.circular(12),
+      border: Border.all(
+        color: borderColor,
+        width: hasSearchText ? 1.5 : 1,
+      ),
+    );
+
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 200),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      decoration: activeSearchBarDecoration,
       child: Div.row([
-        const Icon(
-          Icons.search,
-          color: RLTheme.textSecondary,
-          size: 20,
+        searchIcon,
+
+        const Spacing.width(12),
+
+        Expanded(
+          child: TextField(
+            controller: searchController,
+            focusNode: searchFocusNode,
+            style: RLTypography.bodyMediumStyle,
+            decoration: InputDecoration(
+              hintText: 'Title or author...',
+              hintStyle: RLTypography.bodyMediumStyle.copyWith(
+                color: RLTheme.textSecondary,
+              ),
+              border: InputBorder.none,
+              isDense: true,
+              contentPadding: EdgeInsets.zero,
+            ),
+            onChanged: (searchText) {
+              setState(() {});
+            },
+          ),
         ),
 
         const Spacing.width(12),
 
-        RLTypography.text(
-          'Search for books...',
-          color: RLTheme.textSecondary,
-        ),
+        GestureDetector(onTap: deactivateSearch, child: closeIcon),
       ]),
     );
   }
@@ -127,11 +243,15 @@ class CoursesScreenState extends State<CoursesScreen> {
       'Psychology',
       'Business',
       'Technology',
+      'Self-Help',
+      'Fiction',
+      'Science',
+      'History',
     ];
 
     return Div.column([
       Div.row([
-        RLTypography.text('Categories', color: RLTheme.textSecondary),
+        RLTypography.text('Genres', color: RLTheme.textSecondary),
       ], mainAxisAlignment: MainAxisAlignment.start),
 
       const Spacing.height(12),
@@ -145,206 +265,417 @@ class CoursesScreenState extends State<CoursesScreen> {
   }
 
   List<Widget> CategoryChips(List<String> categories) {
-    final BoxDecoration chipDecoration = BoxDecoration(
-      color: RLTheme.backgroundLight.withValues(alpha: 0.08),
-      borderRadius: BorderRadius.circular(20),
-      border: Border.all(
-        color: RLTheme.primaryBlue.withValues(alpha: 0.3),
-      ),
-    );
+    return categories.map((category) {
+      final bool isSelected = selectedGenre == category;
 
-    return categories
-        .map(
-          (category) => Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            decoration: chipDecoration,
-            child: RLTypography.text(category, color: RLTheme.primaryBlue),
+      final BoxDecoration chipDecoration = BoxDecoration(
+        color: isSelected
+            ? RLTheme.primaryBlue
+            : RLTheme.backgroundLight.withValues(alpha: 0.08),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: RLTheme.primaryBlue.withValues(alpha: 0.3),
+        ),
+      );
+
+      final Color chipTextColor = isSelected
+          ? Colors.white
+          : RLTheme.primaryBlue;
+
+      return GestureDetector(
+        onTap: () {
+          if (isSelected) {
+            clearGenreSelection();
+          } else {
+            selectGenre(category);
+          }
+        },
+        child: Container(
+          padding: const EdgeInsets.symmetric(
+            horizontal: 16,
+            vertical: 8,
           ),
-        )
-        .toList();
+          decoration: chipDecoration,
+          child: RLTypography.text(category, color: chipTextColor),
+        ),
+      );
+    }).toList();
   }
 
   Widget TrendingHeader() {
     return Div.column([
       Div.row([
-        RLTypography.headingMedium('Trending'),
+        RLTypography.headingMedium('Others are reading'),
       ], mainAxisAlignment: MainAxisAlignment.start),
 
       const Spacing.height(4),
 
       Div.row([
         RLTypography.text(
-          'Popular books this week',
+          'Popular titles this week',
           color: RLTheme.textSecondary,
         ),
       ], mainAxisAlignment: MainAxisAlignment.start),
     ], crossAxisAlignment: CrossAxisAlignment.start);
   }
 
-  Widget AllTitlesButton() {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.symmetric(vertical: 12),
-      decoration: BoxDecoration(
+  Widget TrendingBooksList() {
+    final List<Map<String, dynamic>> trendingBooks = [
+      {
+        'title': 'Design of Everyday Things',
+        'author': 'Don Norman',
+        'progress': 0.65,
+        'coverImage': 'covers/doet-cover.png',
+      },
+      {
+        'title': 'Atomic Habits',
+        'author': 'James Clear',
+        'progress': 0.40,
+        'coverImage': null,
+      },
+      {
+        'title': 'Deep Work',
+        'author': 'Cal Newport',
+        'progress': 0.85,
+        'coverImage': null,
+      },
+      {
+        'title': 'Thinking, Fast and Slow',
+        'author': 'Daniel Kahneman',
+        'progress': 0.22,
+        'coverImage': null,
+      },
+      {
+        'title': 'Hooked',
+        'author': 'Nir Eyal',
+        'progress': 0.55,
+        'coverImage': null,
+      },
+    ];
+
+    return Div.column(
+      TrendingBookCards(trendingBooks),
+      crossAxisAlignment: CrossAxisAlignment.start,
+    );
+  }
+
+  List<Widget> TrendingBookCards(List<Map<String, dynamic>> books) {
+    return books.map((book) {
+      final String bookTitle = book['title'] ?? '';
+      final String bookAuthor = book['author'] ?? '';
+      final String? coverImagePath = book['coverImage'];
+
+      final BoxDecoration cardDecoration = BoxDecoration(
         color: RLTheme.backgroundLight.withValues(alpha: 0.08),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: RLTheme.primaryBlue.withValues(alpha: 0.3),
+          color: RLTheme.grey300.withValues(alpha: 0.3),
         ),
+      );
+
+      final BoxDecoration coverPlaceholderDecoration = BoxDecoration(
+        color: RLTheme.primaryBlue.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(6),
+        border: Border.all(
+          color: RLTheme.primaryBlue.withValues(alpha: 0.2),
+        ),
+      );
+
+      return Container(
+        margin: const EdgeInsets.only(bottom: 12),
+        padding: const EdgeInsets.all(12),
+        decoration: cardDecoration,
+        child: Div.row([
+          // Book cover
+          BookCoverWidget(
+            coverImagePath: coverImagePath,
+            coverPlaceholderDecoration: coverPlaceholderDecoration,
+          ),
+
+          const Spacing.width(12),
+
+          // Book info
+          Expanded(
+            child: Div.column([
+              RLTypography.bodyLarge(bookTitle),
+
+              const Spacing.height(4),
+
+              RLTypography.text(
+                bookAuthor,
+                color: RLTheme.textSecondary,
+              ),
+            ], crossAxisAlignment: CrossAxisAlignment.start),
+          ),
+
+          // Bookmark icon
+          Container(
+            margin: const EdgeInsets.only(top: 8),
+            child: const Icon(
+              Icons.bookmark_border,
+              color: Colors.grey,
+              size: 24,
+            ),
+          ),
+        ]),
+      );
+    }).toList();
+  }
+
+  Widget BookCoverWidget({
+    required String? coverImagePath,
+    required BoxDecoration coverPlaceholderDecoration,
+  }) {
+    final bool hasCover = coverImagePath != null;
+
+    if (hasCover) {
+      return ClipRRect(
+        borderRadius: BorderRadius.circular(6),
+        child: Image.asset(
+          coverImagePath,
+          width: 40,
+          height: 60,
+          fit: BoxFit.cover,
+        ),
+      );
+    }
+
+    return Container(
+      width: 40,
+      height: 60,
+      decoration: coverPlaceholderDecoration,
+      child: const Icon(
+        Icons.book,
+        color: RLTheme.primaryBlue,
+        size: 20,
       ),
-      child: Div.row([
-        RLTypography.text('View All Titles', color: RLTheme.primaryBlue),
-
-        const Spacing.width(8),
-
-        const Icon(
-          Icons.arrow_forward_ios,
-          color: RLTheme.primaryBlue,
-          size: 14,
-        ),
-      ], mainAxisAlignment: MainAxisAlignment.center),
     );
   }
 
-  Future<void> loadCourses() async {
-    try {
-      final List<Map<String, dynamic>> courseData =
-          await CourseDataService.availableCourses;
-      final List<Course> loadedCourses = courseData
-          .map(
-            (data) => Course(
-              id: data['course-id'] ?? '',
-              title: data['title'] ?? '',
-              description: data['description'] ?? '',
-              coverImagePath: data['cover-image-path'] ?? '',
-              color: data['color'] ?? 'blue',
-              lessons: [], // Lessons loaded separately when needed
-            ),
-          )
-          .toList();
+  Widget TrendingSection() {
+    return Div.column([
+      // Trending section
+      TrendingHeader(),
 
-      setState(() {
-        courses = loadedCourses;
-        isLoading = false;
-      });
-    } on Exception {
-      setState(() {
-        isLoading = false;
-      });
-    }
+      const Spacing.height(16),
+
+      // Books list
+      TrendingBooksList(),
+    ], crossAxisAlignment: CrossAxisAlignment.stretch);
   }
-}
 
-class CourseCard extends StatelessWidget {
-  final Course course;
+  Widget SearchResults() {
+    final List<Map<String, dynamic>> allSearchResults = [
+      {
+        'title': 'The Design of Everyday Things',
+        'author': 'Don Norman',
+        'coverImage': 'covers/doet-cover.png',
+        'category': 'Design',
+      },
+      {
+        'title': 'Thinking, Fast and Slow',
+        'author': 'Daniel Kahneman',
+        'coverImage': null,
+        'category': 'Psychology',
+      },
+      {
+        'title': 'The Lean Startup',
+        'author': 'Eric Ries',
+        'coverImage': null,
+        'category': 'Business',
+      },
+      {
+        'title': 'Hooked',
+        'author': 'Nir Eyal',
+        'coverImage': null,
+        'category': 'Design',
+      },
+      {
+        'title': 'Clean Code',
+        'author': 'Robert C. Martin',
+        'coverImage': null,
+        'category': 'Technology',
+      },
+      {
+        'title': 'Atomic Habits',
+        'author': 'James Clear',
+        'coverImage': null,
+        'category': 'Self-Help',
+      },
+      {
+        'title': 'Deep Work',
+        'author': 'Cal Newport',
+        'coverImage': null,
+        'category': 'Psychology',
+      },
+    ];
 
-  const CourseCard({super.key, required this.course});
+    final int totalResults = allSearchResults.length;
+    final int itemsToShow = displayedItemsCount.clamp(0, totalResults);
+    final List<Map<String, dynamic>> displayedResults = allSearchResults
+        .sublist(0, itemsToShow);
 
-  @override
-  Widget build(BuildContext context) {
-    final Color courseColor = getColorFromString(course.color);
+    final bool hasMoreResults = itemsToShow < totalResults;
+
+    final String headerTitle = getHeaderTitle();
+
+    return Div.column([
+      RLTypography.headingMedium(headerTitle),
+
+      const Spacing.height(4),
+
+      RLTypography.text(
+        '$totalResults books found',
+        color: RLTheme.textSecondary,
+      ),
+
+      const Spacing.height(16),
+
+      Div.column(
+        SearchResultCards(displayedResults),
+        crossAxisAlignment: CrossAxisAlignment.start,
+      ),
+
+      const Spacing.height(16),
+
+      RenderIf.condition(
+        hasMoreResults,
+        LoadNextButton(),
+        const SizedBox.shrink(),
+      ),
+    ], crossAxisAlignment: CrossAxisAlignment.start);
+  }
+
+  String getHeaderTitle() {
+    final bool isGenreFilter = selectedGenre != null;
+
+    if (isGenreFilter) {
+      return selectedGenre!;
+    }
+
+    return 'Search Results';
+  }
+
+  List<Widget> SearchResultCards(List<Map<String, dynamic>> books) {
+    return books.map((book) {
+      final String bookTitle = book['title'] ?? '';
+      final String bookAuthor = book['author'] ?? '';
+      final String? coverImagePath = book['coverImage'];
+
+      final BoxDecoration cardDecoration = BoxDecoration(
+        color: RLTheme.backgroundLight.withValues(alpha: 0.08),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: RLTheme.grey300.withValues(alpha: 0.3),
+        ),
+      );
+
+      final BoxDecoration coverPlaceholderDecoration = BoxDecoration(
+        color: RLTheme.primaryBlue.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(6),
+        border: Border.all(
+          color: RLTheme.primaryBlue.withValues(alpha: 0.2),
+        ),
+      );
+
+      return Container(
+        margin: const EdgeInsets.only(bottom: 12),
+        padding: const EdgeInsets.all(12),
+        decoration: cardDecoration,
+        child: Div.row([
+          // Book cover
+          SearchResultBookCover(
+            coverImagePath: coverImagePath,
+            coverPlaceholderDecoration: coverPlaceholderDecoration,
+          ),
+
+          const Spacing.width(12),
+
+          // Book info
+          Expanded(
+            child: Div.column([
+              RLTypography.bodyLarge(bookTitle),
+
+              const Spacing.height(4),
+
+              RLTypography.text(
+                bookAuthor,
+                color: RLTheme.textSecondary,
+              ),
+            ], crossAxisAlignment: CrossAxisAlignment.start),
+          ),
+
+          // Bookmark icon
+          Container(
+            margin: const EdgeInsets.only(top: 8),
+            child: const Icon(
+              Icons.bookmark_border,
+              color: Colors.grey,
+              size: 24,
+            ),
+          ),
+        ]),
+      );
+    }).toList();
+  }
+
+  Widget SearchResultBookCover({
+    required String? coverImagePath,
+    required BoxDecoration coverPlaceholderDecoration,
+  }) {
+    final bool hasCover = coverImagePath != null;
+
+    if (hasCover) {
+      return ClipRRect(
+        borderRadius: BorderRadius.circular(6),
+        child: Image.asset(
+          coverImagePath,
+          width: 40,
+          height: 60,
+          fit: BoxFit.cover,
+        ),
+      );
+    }
+
+    return Container(
+      width: 40,
+      height: 60,
+      decoration: coverPlaceholderDecoration,
+      child: const Icon(
+        Icons.book,
+        color: RLTheme.primaryBlue,
+        size: 20,
+      ),
+    );
+  }
+
+  Widget LoadNextButton() {
+    final BoxDecoration buttonDecoration = BoxDecoration(
+      color: RLTheme.backgroundLight.withValues(alpha: 0.08),
+      borderRadius: BorderRadius.circular(12),
+      border: Border.all(
+        color: RLTheme.primaryBlue.withValues(alpha: 0.3),
+      ),
+    );
 
     return GestureDetector(
-      onTap: () => Navigator.push(
-        context,
-        RLTheme.slideUpTransition(
-          CourseRoadmapScreen(courseId: course.id),
-        ),
-      ),
+      onTap: loadMoreResults,
       child: Container(
-        margin: const EdgeInsets.only(bottom: 20),
-        padding: const EdgeInsets.all(24),
-        decoration: BoxDecoration(
-          color: RLTheme.backgroundLight.withValues(alpha: 0.08),
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(
-            color: courseColor.withValues(alpha: 0.2),
-            width: 1.5,
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(vertical: 12),
+        decoration: buttonDecoration,
+        child: Div.row([
+          RLTypography.text('Load next', color: RLTheme.primaryBlue),
+
+          const Spacing.width(8),
+
+          const Icon(
+            Icons.arrow_downward,
+            color: RLTheme.primaryBlue,
+            size: 16,
           ),
-        ),
-        child: Div.column([
-          // Course header
-          Div.row([
-            // Course info
-            Expanded(
-              child: Div.column([
-                RLTypography.headingMedium(course.title),
-
-                const Spacing.height(8),
-
-                RLTypography.text(course.description),
-              ], crossAxisAlignment: CrossAxisAlignment.start),
-            ),
-
-            const Spacing.width(16),
-
-            // Course icon
-            Container(
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: courseColor.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Icon(
-                course.id == 'design-everyday-things-comprehensive'
-                    ? Icons.psychology_outlined
-                    : Icons.trending_up_outlined,
-                color: courseColor,
-                size: 24,
-              ),
-            ),
-          ], crossAxisAlignment: CrossAxisAlignment.start),
-
-          const Spacing.height(20),
-
-          // Footer with start button
-          Div.row([
-            const Spacer(),
-
-            Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 16,
-                vertical: 8,
-              ),
-              decoration: BoxDecoration(
-                color: courseColor.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(
-                  color: courseColor.withValues(alpha: 0.3),
-                ),
-              ),
-              child: Div.row([
-                RLTypography.text('Start Course'),
-
-                const Spacing.width(8),
-
-                Icon(
-                  Icons.arrow_forward_ios,
-                  color: courseColor,
-                  size: 12,
-                ),
-              ]),
-            ),
-          ]),
-        ]),
+        ], mainAxisAlignment: MainAxisAlignment.center),
       ),
     );
-  }
-
-  Color getColorFromString(String colorName) {
-    switch (colorName.toLowerCase()) {
-      case 'green':
-        return RLTheme.primaryGreen;
-      case 'purple':
-        return Colors.purple;
-      case 'blue':
-        return RLTheme.primaryBlue;
-      case 'red':
-        return Colors.red;
-      case 'orange':
-        return Colors.orange;
-      default:
-        return RLTheme.primaryBlue;
-    }
   }
 }

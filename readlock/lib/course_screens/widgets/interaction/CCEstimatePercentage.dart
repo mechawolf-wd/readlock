@@ -370,7 +370,7 @@ class CCEstimatePercentageState extends State<CCEstimatePercentage>
   BoxDecoration getResultCardDecoration(bool isClose) {
     final Color backgroundColor = isClose
         ? RLTheme.primaryGreen.withValues(alpha: 0.08)
-        : Colors.orange.withValues(alpha: 0.08);
+        : RLTheme.warningColor.withValues(alpha: 0.08);
     final Color borderColor = isClose
         ? RLTheme.primaryGreen.withValues(alpha: 0.3)
         : Colors.orange.shade400.withValues(alpha: 0.3);

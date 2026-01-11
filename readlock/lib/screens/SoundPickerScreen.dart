@@ -11,10 +11,10 @@ class SoundPickerScreen extends StatefulWidget {
   const SoundPickerScreen({super.key});
 
   @override
-  State<SoundPickerScreen> createState() => _SoundPickerScreenState();
+  State<SoundPickerScreen> createState() => SoundPickerScreenState();
 }
 
-class _SoundPickerScreenState extends State<SoundPickerScreen> {
+class SoundPickerScreenState extends State<SoundPickerScreen> {
   String selectedSound = TYPEWRITER_SOUND;
 
   @override
@@ -65,7 +65,7 @@ class _SoundPickerScreenState extends State<SoundPickerScreen> {
         'name': OIIA_SOUND,
         'icon': Icons.music_note,
         'description': 'OIIA sound effects',
-        'color': Colors.orange,
+        'color': RLTheme.warningColor,
       },
     ];
 

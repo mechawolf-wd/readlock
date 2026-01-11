@@ -25,7 +25,7 @@ class CCQuoteState extends State<CCQuote> {
     final BoxDecoration quoteContainerDecoration = BoxDecoration(
       color: RLTheme.backgroundLight,
       borderRadius: BorderRadius.circular(16),
-      border: Border.all(color: Colors.orange.withValues(alpha: 0.2)),
+      border: Border.all(color: RLTheme.warningColor.withValues(alpha: 0.2)),
     );
 
     return Container(
@@ -53,7 +53,7 @@ class CCQuoteState extends State<CCQuote> {
 
   Widget QuoteHeader() {
     return Div.row([
-      Icon(Icons.format_quote, color: Colors.orange, size: 24),
+      Icon(Icons.format_quote, color: RLTheme.warningColor, size: 24),
 
       const Spacing.width(12),
 
@@ -63,7 +63,7 @@ class CCQuoteState extends State<CCQuote> {
         [
           Icon(
             isBookmarked ? Icons.bookmark : Icons.bookmark_border,
-            color: Colors.orange,
+            color: RLTheme.warningColor,
             size: 24,
           ),
         ],
@@ -78,10 +78,10 @@ class CCQuoteState extends State<CCQuote> {
 
   Widget QuoteText() {
     final BoxDecoration quoteTextDecoration = BoxDecoration(
-      color: Colors.orange.withValues(alpha: 0.05),
+      color: RLTheme.warningColor.withValues(alpha: 0.05),
       borderRadius: BorderRadius.circular(12),
       border: Border.all(
-        color: Colors.orange.withValues(alpha: 0.2),
+        color: RLTheme.warningColor.withValues(alpha: 0.2),
         width: 2,
       ),
     );
@@ -104,7 +104,7 @@ class CCQuoteState extends State<CCQuote> {
 
       RenderIf.condition(
         isBookmarked,
-        RLTypography.bodyMedium('Bookmarked ✓', color: Colors.orange),
+        RLTypography.bodyMedium('Bookmarked ✓', color: RLTheme.warningColor),
       ),
     ]);
   }

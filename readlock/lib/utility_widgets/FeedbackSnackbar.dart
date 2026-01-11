@@ -28,6 +28,11 @@ class FeedbackSnackBar {
 
     // Extract button press handler
     void handleExplanationButtonPress() {
+      // Check if context is still mounted before using it
+      if (!context.mounted) {
+        return;
+      }
+
       // Dismiss snackbar first
       ScaffoldMessenger.of(context).hideCurrentSnackBar();
 
@@ -93,6 +98,11 @@ class FeedbackSnackBar {
 
     // Extract button press handler
     void handleHintButtonPress() {
+      // Check if context is still mounted before using it
+      if (!context.mounted) {
+        return;
+      }
+
       // Dismiss snackbar first
       ScaffoldMessenger.of(context).hideCurrentSnackBar();
 
