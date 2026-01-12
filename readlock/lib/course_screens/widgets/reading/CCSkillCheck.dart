@@ -7,19 +7,7 @@ import 'package:readlock/constants/RLTheme.dart';
 import 'package:readlock/utility_widgets/Utility.dart';
 import 'package:readlock/course_screens/CourseContentViewer.dart';
 
-// String constants
-const String SKILL_CHECK_TITLE = 'Skill Check';
-const String SKILL_CHECK_SUBTITLE = 'Test Your Understanding';
-const String SKILL_CHECK_DESCRIPTION =
-    'You\'ve completed the lesson! Now let\'s check your understanding with a few questions.';
-const String READY_BUTTON_TEXT = 'I\'m Ready';
-
-// Styling constants
-const double ICON_SIZE = 48.0;
-const double TITLE_SPACING = 16.0;
 const double CONTENT_SPACING = 24.0;
-const double BUTTON_HEIGHT = 48.0;
-const double BUTTON_BORDER_RADIUS = 12.0;
 
 class CCSkillCheck extends StatefulWidget {
   const CCSkillCheck({super.key});
@@ -61,7 +49,7 @@ class CCSkillCheckState extends State<CCSkillCheck>
           // Spinning icon
           SkillCheckIcon(),
 
-          const Spacing.height(TITLE_SPACING),
+          const Spacing.height(16),
 
           // Title section
           TitleSection(),
@@ -90,7 +78,7 @@ class CCSkillCheckState extends State<CCSkillCheck>
           child: const Icon(
             Icons.quiz_outlined,
             color: RLTheme.primaryGreen,
-            size: ICON_SIZE,
+            size: 48,
           ),
         );
       },
@@ -102,14 +90,14 @@ class CCSkillCheckState extends State<CCSkillCheck>
     return Column(
       children: [
         RLTypography.headingLarge(
-          SKILL_CHECK_TITLE,
+          'Skill Check',
           textAlign: TextAlign.center,
         ),
 
-        const Spacing.height(8.0),
+        const Spacing.height(8),
 
         RLTypography.bodyLarge(
-          SKILL_CHECK_SUBTITLE,
+          'Test Your Understanding',
           color: RLTheme.textSecondary,
           textAlign: TextAlign.center,
         ),
@@ -122,7 +110,7 @@ class CCSkillCheckState extends State<CCSkillCheck>
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24.0),
       child: RLTypography.bodyMedium(
-        SKILL_CHECK_DESCRIPTION,
+        'You\'ve completed the lesson! Now let\'s check your understanding with a few questions.',
         textAlign: TextAlign.center,
         color: RLTheme.textPrimary,
       ),
@@ -131,22 +119,20 @@ class CCSkillCheckState extends State<CCSkillCheck>
 
   // Ready button to continue to questions
   Widget ReadyButton(BuildContext context) {
-    // Button decoration
     final BoxDecoration buttonDecoration = BoxDecoration(
       color: RLTheme.primaryGreen,
-      borderRadius: BorderRadius.circular(BUTTON_BORDER_RADIUS),
+      borderRadius: BorderRadius.circular(12),
     );
 
-    // Button text
     final Widget buttonText = RLTypography.bodyMedium(
-      READY_BUTTON_TEXT,
-      color: Colors.white,
+      'I\'m Ready',
+      color: RLTheme.white,
     );
 
     return Div.column(
       [buttonText],
       width: double.infinity,
-      height: BUTTON_HEIGHT,
+      height: 48,
       decoration: buttonDecoration,
       mainAxisAlignment: MainAxisAlignment.center,
       onTap: () => navigateToNextContent(context),

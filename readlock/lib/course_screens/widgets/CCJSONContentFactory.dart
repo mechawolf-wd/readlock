@@ -4,7 +4,7 @@
 import 'package:flutter/material.dart' hide Typography;
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/utility_widgets/Utility.dart';
-import 'package:readlock/course_screens/models/courseModel.dart';
+import 'package:readlock/models/CourseModel.dart';
 import 'package:readlock/course_screens/widgets/reading/CCIntro.dart';
 import 'package:readlock/course_screens/widgets/reading/CCTextContent.dart';
 import 'package:readlock/course_screens/widgets/reading/CCOutro.dart';
@@ -478,9 +478,13 @@ class JsonEstimatePercentageQuestionWidget extends StatelessWidget {
       id: contentData['id'] ?? '',
       title: contentData['title'] ?? '',
       question: contentData['question'] ?? '',
-      correctPercentage: contentData['correct-answer-indices']?.isNotEmpty == true
-          ? contentData['correct-answer-indices'][0]
-          : 50,
+      correctPercentage: () {
+        final List<dynamic>? indices = contentData['correct-answer-indices'] as List<dynamic>?;
+        if (indices != null && indices.isNotEmpty) {
+          return indices[0] as int;
+        }
+        return 50;
+      }(),
       explanation: contentData['explanation'] ?? '',
       hint: contentData['hint'],
       closeThreshold: contentData['close-threshold'] ?? 10,

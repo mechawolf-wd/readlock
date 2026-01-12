@@ -23,7 +23,7 @@ class MyBookshelfScreenState extends State<MyBookshelfScreen> {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (context) => AllTitlesBottomSheet(),
+      builder: (context) => const AllTitlesBottomSheet(),
     );
   }
 
@@ -143,7 +143,6 @@ class MyBookshelfScreenState extends State<MyBookshelfScreen> {
       final double bookProgress = book['progress'] ?? 0.0;
       final String? coverImagePath = book['coverImage'];
       final int progressPercent = (bookProgress * 100).toInt();
-      final bool hasCoverImage = coverImagePath != null;
 
       final BoxDecoration cardDecoration = BoxDecoration(
         color: RLTheme.backgroundLight.withValues(alpha: 0.08),
@@ -396,7 +395,7 @@ class MyBookshelfScreenState extends State<MyBookshelfScreen> {
       topRight: Radius.circular(20),
     );
 
-    final BoxDecoration sheetDecoration = BoxDecoration(
+    const BoxDecoration sheetDecoration = BoxDecoration(
       color: RLTheme.backgroundDark,
       borderRadius: sheetBorderRadius,
     );
@@ -476,7 +475,7 @@ class AllTitlesBottomSheetState extends State<AllTitlesBottomSheet> {
       topRight: Radius.circular(20),
     );
 
-    final BoxDecoration sheetDecoration = BoxDecoration(
+    const BoxDecoration sheetDecoration = BoxDecoration(
       color: RLTheme.backgroundDark,
       borderRadius: sheetBorderRadius,
     );

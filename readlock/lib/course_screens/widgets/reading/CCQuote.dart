@@ -2,8 +2,7 @@
 // Clean design highlighting important insights from authors
 
 import 'package:flutter/material.dart' hide Typography;
-import 'package:readlock/constants/RLConstants.dart';
-import 'package:readlock/course_screens/models/courseModel.dart';
+import 'package:readlock/models/CourseModel.dart';
 import 'package:readlock/utility_widgets/Utility.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLTheme.dart';
@@ -53,7 +52,7 @@ class CCQuoteState extends State<CCQuote> {
 
   Widget QuoteHeader() {
     return Div.row([
-      Icon(Icons.format_quote, color: RLTheme.warningColor, size: 24),
+      const Icon(Icons.format_quote, color: RLTheme.warningColor, size: 24),
 
       const Spacing.width(12),
 

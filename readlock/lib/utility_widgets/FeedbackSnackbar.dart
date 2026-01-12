@@ -55,7 +55,7 @@ class FeedbackSnackBar {
 
             RLTypography.bodyLarge(
               CORRECT_ANSWER_MESSAGE,
-              color: Colors.white,
+              color: RLTheme.white,
             ),
 
             // Show "Why?" button if explanation is available
@@ -70,7 +70,7 @@ class FeedbackSnackBar {
                       child: Text(
                         'Why?',
                         style: RLTypography.bodyMediumStyle.copyWith(
-                          color: Colors.white,
+                          color: RLTheme.white,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
@@ -122,7 +122,7 @@ class FeedbackSnackBar {
 
             RLTypography.bodyLarge(
               WRONG_ANSWER_TITLE,
-              color: Colors.white,
+              color: RLTheme.white,
             ),
 
             // Show "Hint" button if hint is available
@@ -137,7 +137,7 @@ class FeedbackSnackBar {
                       child: Text(
                         'Hint',
                         style: RLTypography.bodyMediumStyle.copyWith(
-                          color: Colors.white,
+                          color: RLTheme.white,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
@@ -164,7 +164,7 @@ class FeedbackSnackBar {
   ) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: RLTypography.bodyMedium(message, color: Colors.white),
+        content: RLTypography.bodyMedium(message, color: RLTheme.white),
         backgroundColor: CustomFeedbackColor(isCorrect),
         duration: CUSTOM_FEEDBACK_DURATION,
         behavior: SnackBarBehavior.floating,
@@ -187,13 +187,13 @@ class FeedbackSnackBar {
 class Style {
   static const Icon StarIcon = Icon(
     Icons.star,
-    color: Colors.white,
+    color: RLTheme.white,
     size: 16,
   );
 
   static const Icon LightbulbIcon = Icon(
     Icons.lightbulb_outline,
-    color: Colors.white,
+    color: RLTheme.white,
     size: 16,
   );
 

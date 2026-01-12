@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart' hide Typography;
-import 'package:readlock/constants/RLConstants.dart';
-import 'package:readlock/course_screens/models/courseModel.dart';
+import 'package:readlock/models/CourseModel.dart';
 import 'package:readlock/utility_widgets/Utility.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLTheme.dart';
@@ -66,7 +65,7 @@ class CCTrueFalseQuestionState extends State<CCTrueFalseQuestion> {
     );
 
     final BoxDecoration selectedFalseDecoration = BoxDecoration(
-      border: Border.all(color: Colors.red.shade600, width: 2),
+      border: Border.all(color: RLTheme.errorDark, width: 2),
       borderRadius: BorderRadius.circular(12),
     );
 
@@ -252,7 +251,7 @@ class CCTrueFalseQuestionState extends State<CCTrueFalseQuestion> {
       shouldShowCorrect: shouldShowCorrect,
       isSelected: isSelected,
       shouldMute: shouldMute,
-      baseColor: Colors.red.shade600,
+      baseColor: RLTheme.errorDark,
     );
 
     final BoxDecoration decoration = getDecorationForState(
@@ -296,10 +295,13 @@ class CCTrueFalseQuestionState extends State<CCTrueFalseQuestion> {
   Widget explanationSectionWidget() {
     final bool shouldShowExplanation = hasAnswered;
 
-    if (!shouldShowExplanation) {
-      return const SizedBox.shrink();
-    }
+    return RenderIf.condition(
+      shouldShowExplanation,
+      ExplanationContent(),
+    );
+  }
 
+  Widget ExplanationContent() {
     final TextStyle headerStyle = RLTypography.bodyLargeStyle.copyWith(
       fontWeight: FontWeight.w600,
       fontSize: 14,

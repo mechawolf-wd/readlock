@@ -2,16 +2,13 @@
 // Users select which statement is incorrect with visual feedback
 
 import 'package:flutter/material.dart' hide Typography;
-import 'package:readlock/constants/RLConstants.dart';
-import 'package:readlock/course_screens/models/courseModel.dart';
+import 'package:readlock/models/CourseModel.dart';
 import 'package:readlock/utility_widgets/Utility.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLTheme.dart';
 import 'package:readlock/utility_widgets/text_animation/ProgressiveText.dart';
 
-const double STATEMENT_ITEM_SPACING = 12.0;
 const double STATEMENT_SECTION_SPACING = 24.0;
-const int SHAKE_DURATION_MS = 500;
 
 class StatementStyle {
   final Color backgroundColor;
@@ -139,7 +136,7 @@ class CCIncorrectStatementState extends State<CCIncorrectStatement>
       return Div.column([
         StatementItemWidget(statementIndex: statementIndex),
 
-        if (!isLastItem) const Spacing.height(STATEMENT_ITEM_SPACING),
+        if (!isLastItem) const Spacing.height(12),
       ]);
     }).toList();
   }
@@ -202,9 +199,8 @@ class CCIncorrectStatementState extends State<CCIncorrectStatement>
 
   StatementStyle getSelectedStatementStyle() {
     return StatementStyle(
-      backgroundColor: Colors.orange.shade50,
-      borderColor: Colors.orange.shade400,
-      feedbackIcon: null,
+      backgroundColor: RLTheme.warningColor.withValues(alpha: 0.1),
+      borderColor: RLTheme.warningLight,
     );
   }
 
@@ -212,7 +208,6 @@ class CCIncorrectStatementState extends State<CCIncorrectStatement>
     return StatementStyle(
       backgroundColor: RLTheme.backgroundLight,
       borderColor: RLTheme.textPrimary.withValues(alpha: 0.2),
-      feedbackIcon: null,
     );
   }
 
@@ -388,7 +383,7 @@ class CCIncorrectStatementState extends State<CCIncorrectStatement>
 
   void triggerShakeAnimation() {
     shakeController = AnimationController(
-      duration: const Duration(milliseconds: SHAKE_DURATION_MS),
+      duration: const Duration(milliseconds: 500),
       vsync: this,
     );
 

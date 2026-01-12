@@ -2,8 +2,7 @@
 // Handles user answer selection and shows explanations after answering
 
 import 'package:flutter/material.dart' hide Typography;
-import 'package:readlock/constants/RLConstants.dart';
-import 'package:readlock/course_screens/models/courseModel.dart';
+import 'package:readlock/models/CourseModel.dart';
 import 'package:readlock/utility_widgets/Utility.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLTheme.dart';
@@ -41,13 +40,13 @@ class CCQuestionState extends State<CCQuestion> {
   // Icon definitions
   static const Icon LightbulbIcon = Icon(
     Icons.lightbulb_outline,
-    color: Colors.white,
+    color: RLTheme.white,
     size: 16,
   );
 
   static const Icon StarIcon = Icon(
     Icons.star,
-    color: Colors.white,
+    color: RLTheme.white,
     size: 16,
   );
 
@@ -232,11 +231,11 @@ class CCQuestionState extends State<CCQuestion> {
           onPressed: showHintDialog,
           child: RLTypography.bodyMedium(
             'Hint it?',
-            color: Colors.white,
+            color: RLTheme.white,
           ),
         ),
       ]),
-      backgroundColor: Colors.grey.shade600,
+      backgroundColor: RLTheme.grey600,
       behavior: SnackBarBehavior.floating,
       shape: Style.snackbarShape,
       margin: Style.snackbarMargin,
@@ -283,7 +282,7 @@ class CCQuestionState extends State<CCQuestion> {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: Colors.transparent,
+      backgroundColor: RLTheme.backgroundDark.withValues(alpha: 0),
       builder: (BuildContext context) {
         return ExplanationDialog(title: title, content: content);
       },
@@ -313,10 +312,10 @@ class CCQuestionState extends State<CCQuestion> {
 
         TextButton(
           onPressed: showExplanationDialog,
-          child: RLTypography.bodyMedium('Why?', color: Colors.white),
+          child: RLTypography.bodyMedium('Why?', color: RLTheme.white),
         ),
       ]),
-      backgroundColor: Colors.green.shade600,
+      backgroundColor: RLTheme.successDark,
       duration: const Duration(seconds: 5),
       behavior: SnackBarBehavior.floating,
       shape: Style.snackbarShape,

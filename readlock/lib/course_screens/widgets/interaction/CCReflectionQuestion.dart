@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart' hide Typography;
-import 'package:readlock/constants/RLConstants.dart';
-import 'package:readlock/course_screens/models/courseModel.dart';
+import 'package:readlock/models/CourseModel.dart';
 import 'package:readlock/utility_widgets/Utility.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLTheme.dart';
 import 'package:readlock/utility_widgets/FeedbackSnackbar.dart';
 
 const double REFLECTION_SECTION_SPACING = 28.0;
-const double REFLECTION_OPTION_SPACING = 16.0;
-const double REFLECTION_THOUGHT_SPACING = 12.0;
 
 class ThoughtTextStyleConfig {
   final Color color;
@@ -68,7 +65,6 @@ class CCReflectionQuestionState extends State<CCReflectionQuestion> {
       borderRadius: BorderRadius.circular(16),
       border: Border.all(
         color: RLTheme.textPrimary.withValues(alpha: 0.1),
-        width: 1,
       ),
     );
 
@@ -120,7 +116,7 @@ class CCReflectionQuestionState extends State<CCReflectionQuestion> {
       size: 32,
     );
 
-    CheckIcon = Icon(
+    CheckIcon = const Icon(
       Icons.check_circle_outline,
       color: RLTheme.primaryGreen,
       size: 20,
@@ -194,7 +190,7 @@ class CCReflectionQuestionState extends State<CCReflectionQuestion> {
       return Div.column([
         ThoughtOptionWidget(optionIndex: optionIndex, option: option),
 
-        const Spacing.height(REFLECTION_OPTION_SPACING),
+        const Spacing.height(16),
       ]);
     }).toList();
   }
@@ -238,10 +234,13 @@ class CCReflectionQuestionState extends State<CCReflectionQuestion> {
   }
 
   Widget ReflectionInsightSection() {
-    if (!hasReflected) {
-      return const SizedBox.shrink();
-    }
+    return RenderIf.condition(
+      hasReflected,
+      ReflectionInsightContent(),
+    );
+  }
 
+  Widget ReflectionInsightContent() {
     final Widget InsightIcon = Icon(
       Icons.auto_awesome,
       color: RLTheme.primaryGreen.withValues(alpha: 0.8),

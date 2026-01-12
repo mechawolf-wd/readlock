@@ -3,7 +3,6 @@
 
 import 'package:flutter/material.dart' hide Typography;
 import 'package:readlock/constants/RLTypography.dart';
-import 'package:readlock/utility_widgets/text_animation/ProgressiveText.dart';
 import 'package:readlock/utility_widgets/Utility.dart';
 import 'package:readlock/constants/RLTheme.dart';
 
@@ -112,7 +111,6 @@ class CCDesignExamplesShowcaseState
               crossAxisCount: 2,
               crossAxisSpacing: 12,
               mainAxisSpacing: 12,
-              childAspectRatio: 1.0,
             ),
             itemCount: examples.length,
             itemBuilder: (context, index) {
@@ -151,7 +149,7 @@ class CCDesignExamplesShowcaseState
       ),
       child: Row(
         children: [
-          Icon(
+          const Icon(
             Icons.lightbulb,
             color: RLTheme.primaryGreen,
             size: 20,
@@ -175,7 +173,7 @@ class CCDesignExamplesShowcaseState
               ),
               child: RLTypography.bodyMedium(
                 'Complete!',
-                color: Colors.white,
+                color: RLTheme.white,
               ),
             ),
         ],

@@ -2,7 +2,7 @@
 // Users drag answers to fill blanks in sentences with visual feedback
 
 import 'package:flutter/material.dart' hide Typography;
-import 'package:readlock/course_screens/models/courseModel.dart';
+import 'package:readlock/models/CourseModel.dart';
 import 'package:readlock/utility_widgets/Utility.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLTheme.dart';

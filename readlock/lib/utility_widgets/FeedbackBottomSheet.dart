@@ -65,7 +65,7 @@ class FeedbackBottomSheets {
   }) {
     showModalBottomSheet(
       context: context,
-      backgroundColor: Colors.transparent,
+      backgroundColor: RLTheme.backgroundDark.withValues(alpha: 0),
       builder: (BuildContext context) {
         return FeedbackSheet(
           title: title,
@@ -176,7 +176,7 @@ class FeedbackSheet extends StatelessWidget {
           children: [
             RLTypography.bodyMedium(
               CLOSE_BUTTON_LABEL,
-              color: Colors.white,
+              color: RLTheme.white,
             ),
           ],
           backgroundColor: buttonColor,

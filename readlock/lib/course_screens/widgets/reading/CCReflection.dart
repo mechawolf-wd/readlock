@@ -2,8 +2,7 @@
 // Encourages users to pause and think about design concepts
 
 import 'package:flutter/material.dart' hide Typography;
-import 'package:readlock/constants/RLConstants.dart';
-import 'package:readlock/course_screens/models/courseModel.dart';
+import 'package:readlock/models/CourseModel.dart';
 import 'package:readlock/utility_widgets/Utility.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLTheme.dart';
@@ -270,7 +269,7 @@ class CCReflectionState extends State<CCReflection> {
     final IconData indicatorIcon = isSelected
         ? Icons.check
         : Icons.arrow_forward_ios;
-    final Color iconColor = isSelected ? Colors.white : cardColor;
+    final Color iconColor = isSelected ? RLTheme.white : cardColor;
 
     return AnimatedContainer(
       duration: const Duration(milliseconds: 200),

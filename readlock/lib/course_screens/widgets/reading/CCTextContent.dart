@@ -2,22 +2,14 @@
 // Shows a continue button at the bottom when all text segments are fully revealed
 
 import 'package:flutter/material.dart' hide Typography;
-import 'package:readlock/course_screens/models/courseModel.dart';
+import 'package:readlock/models/CourseModel.dart';
 import 'package:readlock/utility_widgets/text_animation/ProgressiveText.dart';
+import 'package:readlock/utility_widgets/Utility.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLTheme.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/course_screens/CourseContentViewer.dart';
 
-// String constants
-const String CONTINUE_BUTTON_TEXT = 'Continue';
-
-// Styling constants
-const double CONTINUE_BUTTON_HEIGHT = 48.0;
-const double CONTINUE_BUTTON_BOTTOM_PADDING = 32.0;
-const double BUTTON_BORDER_RADIUS = 12.0;
-const Duration PAGE_TRANSITION_DURATION = Duration(milliseconds: 300);
-const Duration CONTINUE_BUTTON_DELAY = Duration(milliseconds: 700);
 
 class CCTextContent extends StatefulWidget {
   // Text content data to display
@@ -65,11 +57,10 @@ class CCTextContentState extends State<CCTextContent> {
   Widget ContinueButtonContainer() {
     final bool shouldShowContinueButton = isAllTextRevealed;
 
-    if (!shouldShowContinueButton) {
-      return const SizedBox.shrink();
-    }
-
-    return ContinueButtonSection();
+    return RenderIf.condition(
+      shouldShowContinueButton,
+      ContinueButtonSection(),
+    );
   }
 
   // Continue button section with spacing
@@ -81,8 +72,8 @@ class CCTextContentState extends State<CCTextContent> {
   Widget ContinueButton() {
     // Button text style
     final Widget buttonText = RLTypography.bodyMedium(
-      CONTINUE_BUTTON_TEXT,
-      color: Colors.white,
+      'Continue',
+      color: RLTheme.white,
     );
 
     return RLDesignSystem.BlockButton(
@@ -103,7 +94,7 @@ class CCTextContentState extends State<CCTextContent> {
     }
 
     // Wait for user to read the last segment
-    await Future.delayed(CONTINUE_BUTTON_DELAY);
+    await Future.delayed(const Duration(milliseconds: 700));
 
     // Check mounted again after delay
     final bool stillMounted = mounted;
@@ -148,7 +139,7 @@ class CCTextContentState extends State<CCTextContent> {
     // Animate to next page
     pageController.animateToPage(
       nextPage,
-      duration: PAGE_TRANSITION_DURATION,
+      duration: const Duration(milliseconds: 300),
       curve: Curves.easeInOut,
     );
   }

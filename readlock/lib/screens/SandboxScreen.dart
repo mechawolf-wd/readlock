@@ -17,77 +17,77 @@ class SandboxScreen extends StatelessWidget {
       color: RLTheme.backgroundDark,
       child: const SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(20),
+          padding: EdgeInsets.all(20),
           child: Div.column([
-            const SandboxHeader(),
+            SandboxHeader(),
 
-            const Spacing.height(32),
+            Spacing.height(32),
 
-            const ThoughtPrompWidget(),
+            ThoughtPrompWidget(),
 
-            const Spacing.height(24),
+            Spacing.height(24),
 
-            const BookmarkHighlightWidget(),
+            BookmarkHighlightWidget(),
 
-            const Spacing.height(24),
+            Spacing.height(24),
 
-            const SwipeToRevealWidget(),
+            SwipeToRevealWidget(),
 
-            const Spacing.height(24),
+            Spacing.height(24),
 
-            const ConceptConnectionWidget(),
+            ConceptConnectionWidget(),
 
-            const Spacing.height(24),
+            Spacing.height(24),
 
-            const MicroQuizWidget(),
+            MicroQuizWidget(),
 
-            const Spacing.height(24),
+            Spacing.height(24),
 
-            const ProgressCelebrationWidget(),
+            ProgressCelebrationWidget(),
 
-            const Spacing.height(24),
+            Spacing.height(24),
 
-            const SliderRevealWidget(),
+            SliderRevealWidget(),
 
-            const Spacing.height(24),
+            Spacing.height(24),
 
-            const MemoryCardMatchWidget(),
+            MemoryCardMatchWidget(),
 
-            const Spacing.height(24),
+            Spacing.height(24),
 
-            const PriorityRankingWidget(),
+            PriorityRankingWidget(),
 
-            const Spacing.height(24),
+            Spacing.height(24),
 
-            const BeforeAfterComparisonWidget(),
+            BeforeAfterComparisonWidget(),
 
-            const Spacing.height(24),
+            Spacing.height(24),
 
-            const ReactionPickerWidget(),
+            ReactionPickerWidget(),
 
-            const Spacing.height(24),
+            Spacing.height(24),
 
-            const KnowledgeBuilderWidget(),
+            KnowledgeBuilderWidget(),
 
-            const Spacing.height(24),
+            Spacing.height(24),
 
-            const TimelineBuilderWidget(),
+            TimelineBuilderWidget(),
 
-            const Spacing.height(24),
+            Spacing.height(24),
 
-            const WordAssociationWidget(),
+            WordAssociationWidget(),
 
-            const Spacing.height(24),
+            Spacing.height(24),
 
-            const DialAdjustmentWidget(),
+            DialAdjustmentWidget(),
 
-            const Spacing.height(24),
+            Spacing.height(24),
 
-            const StoryBranchingWidget(),
+            StoryBranchingWidget(),
 
-            const Spacing.height(24),
+            Spacing.height(24),
 
-            const PatternRecognitionWidget(),
+            PatternRecognitionWidget(),
           ], crossAxisAlignment: CrossAxisAlignment.stretch),
         ),
       ),
@@ -690,7 +690,7 @@ class ConceptConnectionWidgetState
                     ),
                   ),
                 );
-              }).toList(),
+              }),
             ]),
           ),
 
@@ -761,7 +761,7 @@ class ConceptConnectionWidgetState
                     ),
                   ),
                 );
-              }).toList(),
+              }),
             ]),
           ),
         ]),
@@ -1024,7 +1024,7 @@ class MicroQuizWidgetState extends State<MicroQuizWidget>
               ),
             ),
           );
-        }).toList(),
+        }),
 
         RenderIf.condition(
           hasAnswered,
@@ -1201,8 +1201,6 @@ class ProgressCelebrationWidgetState
                           Colors.amber.shade400,
                           Colors.amber.shade600,
                         ],
-                        begin: Alignment.centerLeft,
-                        end: Alignment.centerRight,
                       ),
                       borderRadius: BorderRadius.circular(4),
                     ),
@@ -1620,9 +1618,7 @@ class MemoryCardMatchWidgetState extends State<MemoryCardMatchWidget>
     });
 
     if (selectedCards.length == 2) {
-      Future.delayed(const Duration(milliseconds: 1000), () {
-        checkMatch();
-      });
+      Future.delayed(const Duration(milliseconds: 1000), checkMatch);
     }
   }
 
@@ -2480,7 +2476,7 @@ class KnowledgeBuilderWidgetState extends State<KnowledgeBuilderWidget>
               ),
             ),
           );
-        }).toList(),
+        }),
 
         const Spacing.height(8),
 
@@ -2585,7 +2581,6 @@ class TimelineBuilderWidgetState extends State<TimelineBuilderWidget> {
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
               color: Colors.brown.withValues(alpha: 0.2),
-              style: BorderStyle.solid,
             ),
           ),
           child: timelineEvents.isEmpty

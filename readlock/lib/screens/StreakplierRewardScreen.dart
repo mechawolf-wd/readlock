@@ -418,50 +418,6 @@ class StreakplierRewardScreenState
     ], crossAxisAlignment: CrossAxisAlignment.center);
   }
 
-  // Simple reward statistic display item with animated counting
-  Widget RewardStatisticItem({
-    IconData? icon,
-    required String label,
-    required Widget animatedValue,
-    required Color color,
-  }) {
-    final BoxDecoration iconContainerDecoration = BoxDecoration(
-      color: color.withValues(alpha: 0.1),
-      borderRadius: BorderRadius.circular(12),
-    );
-
-    final bool hasIcon = icon != null;
-
-    return Div.row([
-      // Icon container (optional)
-      if (hasIcon) ...[
-        Container(
-          width: 48,
-          height: 48,
-          decoration: iconContainerDecoration,
-          child: Icon(icon, color: color, size: ICON_SIZE),
-        ),
-
-        const Spacing.width(16),
-      ],
-
-      // Label and animated value column
-      Expanded(
-        child: Div.column([
-          RLTypography.bodyLarge(
-            label,
-            color: RLTheme.textPrimary,
-            textAlign: TextAlign.left,
-          ),
-
-          const Spacing.height(4),
-
-          animatedValue,
-        ], crossAxisAlignment: CrossAxisAlignment.start),
-      ),
-    ], crossAxisAlignment: CrossAxisAlignment.center);
-  }
-
   // Continue button with simple opacity animation
   Widget ContinueButton() {
     return AnimatedOpacity(

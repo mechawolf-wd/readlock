@@ -2,18 +2,14 @@
 // Shows completion icon, title, progressive text animation, and Fin button when complete
 
 import 'package:flutter/material.dart' hide Typography;
-import 'package:readlock/course_screens/models/courseModel.dart';
+import 'package:readlock/models/CourseModel.dart';
 import 'package:readlock/utility_widgets/Utility.dart';
 import 'package:readlock/utility_widgets/text_animation/TextAnimation.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLTheme.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 
-// Styling constants
-const double COMPLETION_ICON_SIZE = 24.0;
-const double HEADER_SPACING = 12.0;
 const double CONTENT_SPACING = 20.0;
-const Duration TYPEWRITER_CHARACTER_DELAY = Duration(milliseconds: 15);
 
 class CCOutro extends StatefulWidget {
   // Course outro content data
@@ -71,7 +67,7 @@ class CCOutroState extends State<CCOutro> {
       // Completion icon
       CompletionIcon(),
 
-      const Spacing.width(HEADER_SPACING),
+      const Spacing.width(12),
 
       // Title text
       Expanded(
@@ -89,7 +85,7 @@ class CCOutroState extends State<CCOutro> {
     return const Icon(
       Icons.check_circle,
       color: RLTheme.primaryGreen,
-      size: COMPLETION_ICON_SIZE,
+      size: 24,
     );
   }
 
@@ -98,16 +94,15 @@ class CCOutroState extends State<CCOutro> {
     final bool hasOutroTextSegments =
         widget.content.outroTextSegments.isNotEmpty;
 
-    if (!hasOutroTextSegments) {
-      return const SizedBox.shrink();
-    }
-
-    return ProgressiveText(
-      textSegments: widget.content.outroTextSegments,
-      textStyle: RLTypography.bodyLargeStyle,
-      typewriterCharacterDelay: TYPEWRITER_CHARACTER_DELAY,
-      textAlignment: CrossAxisAlignment.start,
-      onAllSegmentsRevealed: HandleAllTextRevealed,
+    return RenderIf.condition(
+      hasOutroTextSegments,
+      ProgressiveText(
+        textSegments: widget.content.outroTextSegments,
+        textStyle: RLTypography.bodyLargeStyle,
+        typewriterCharacterDelay: const Duration(milliseconds: 15),
+        textAlignment: CrossAxisAlignment.start,
+        onAllSegmentsRevealed: HandleAllTextRevealed,
+      ),
     );
   }
 
@@ -121,10 +116,10 @@ class CCOutroState extends State<CCOutro> {
   // Finish button using RLDesignSystem
   Widget FinishButton() {
     return RLDesignSystem.BlockButton(
-      children: [RLTypography.bodyLarge('Fin', color: Colors.white)],
+      children: [RLTypography.bodyLarge('Fin', color: RLTheme.white)],
       onTap: HandleFinishButtonTapped,
       backgroundColor: RLTheme.primaryGreen,
-      margin: EdgeInsets.all(0),
+      margin: EdgeInsets.zero,
     );
   }
 

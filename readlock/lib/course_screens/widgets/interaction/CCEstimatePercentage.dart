@@ -2,20 +2,12 @@
 // Users slide to guess the percentage before revealing the actual answer
 
 import 'package:flutter/material.dart' hide Typography;
-import 'package:readlock/constants/RLConstants.dart';
-import 'package:readlock/course_screens/models/courseModel.dart';
+import 'package:readlock/models/CourseModel.dart';
 import 'package:readlock/utility_widgets/Utility.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLTheme.dart';
 import 'package:readlock/utility_widgets/text_animation/ProgressiveText.dart';
 
-// Constants
-const double ESTIMATE_SECTION_SPACING = 24.0;
-const double SLIDER_HEIGHT = 60.0;
-const int ANIMATION_DURATION_MS = 300;
-const int CLOSE_ESTIMATE_THRESHOLD = 10;
-const String YOUR_ESTIMATE_LABEL = 'Your Estimate';
-const String SUBMIT_BUTTON_TEXT = 'Estimate';
 
 class CCEstimatePercentage extends StatefulWidget {
   final EstimatePercentageContent content;
@@ -49,7 +41,7 @@ class CCEstimatePercentageState extends State<CCEstimatePercentage>
   static const Icon InfoIcon = Icon(Icons.info_outline, size: 20);
   static const Icon StarIcon = Icon(
     Icons.star,
-    color: Colors.white,
+    color: RLTheme.white,
     size: 16,
   );
 
@@ -62,7 +54,7 @@ class CCEstimatePercentageState extends State<CCEstimatePercentage>
     super.initState();
 
     revealController = AnimationController(
-      duration: const Duration(milliseconds: ANIMATION_DURATION_MS),
+      duration: const Duration(milliseconds: 300),
       vsync: this,
     );
 
@@ -219,13 +211,13 @@ class CCEstimatePercentageState extends State<CCEstimatePercentage>
       shouldShow,
       Div.row(
         [
-          const Icon(Icons.touch_app, color: Colors.white, size: 20),
+          const Icon(Icons.touch_app, color: RLTheme.white, size: 20),
 
           const Spacing.width(8),
 
           RLTypography.bodyLarge(
             'Submit Estimate',
-            color: Colors.white,
+            color: RLTheme.white,
           ),
         ],
         height: 52,
@@ -278,13 +270,13 @@ class CCEstimatePercentageState extends State<CCEstimatePercentage>
       Div.row([
         Icon(
           Icons.lightbulb_outline,
-          color: Colors.orange.shade600,
+          color: RLTheme.warningDark,
           size: 20,
         ),
         const Spacing.width(12),
         RLTypography.headingMedium(
           difference > 30 ? 'Keep learning!' : 'Getting closer!',
-          color: Colors.orange.shade600,
+          color: RLTheme.warningDark,
         ),
       ]),
 
@@ -373,7 +365,7 @@ class CCEstimatePercentageState extends State<CCEstimatePercentage>
         : RLTheme.warningColor.withValues(alpha: 0.08);
     final Color borderColor = isClose
         ? RLTheme.primaryGreen.withValues(alpha: 0.3)
-        : Colors.orange.shade400.withValues(alpha: 0.3);
+        : RLTheme.warningLight.withValues(alpha: 0.3);
 
     return BoxDecoration(
       color: backgroundColor,
@@ -425,11 +417,11 @@ class CCEstimatePercentageState extends State<CCEstimatePercentage>
 
               RLTypography.bodyLarge(
                 '+8 experience',
-                color: Colors.white,
+                color: RLTheme.white,
               ),
             ],
           ),
-          backgroundColor: Colors.green.shade600,
+          backgroundColor: RLTheme.successDark,
           duration: const Duration(seconds: 2),
           behavior: SnackBarBehavior.floating,
           shape: RoundedRectangleBorder(

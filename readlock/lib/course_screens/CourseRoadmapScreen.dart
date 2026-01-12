@@ -8,26 +8,6 @@ import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLTheme.dart';
 import 'package:readlock/utility_widgets/CourseLoadingScreen.dart';
 
-// Constants
-const String COURSE_ROADMAP_DEFAULT_TITLE = 'Course Roadmap';
-const String COURSE_SUBTITLE_TEXT =
-    'Master design psychology fundamentals';
-const String EXPERIENCE_COUNTER_TEXT = '30 xp';
-const String QUESTIONS_COUNTER_TEXT = '29 questions';
-
-// Level constants
-const String LEVEL_PREFIX = 'Level ';
-const String DESIGN_PRINCIPLES_TITLE = 'Design Principles';
-const String PSYCHOLOGY_OF_DESIGN_TITLE = 'Psychology of Design';
-const String AFFORDANCES_TITLE = 'Affordances';
-const String FEEDBACK_SYSTEMS_TITLE = 'Feedback Systems';
-const String ADVANCED_CONCEPTS_TITLE = 'Advanced Concepts';
-
-const String CORE_FUNDAMENTALS_SUBTITLE = 'Core fundamentals';
-const String MENTAL_MODELS_SUBTITLE = 'Mental models';
-const String VISUAL_CUES_SUBTITLE = 'Visual cues';
-const String USER_RESPONSES_SUBTITLE = 'User responses';
-const String MASTER_LEVEL_SUBTITLE = 'Master level';
 
 class CourseRoadmapScreen extends StatefulWidget {
   final String courseId;
@@ -123,7 +103,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
 
   Widget RoadmapHeader() {
     final String courseTitle =
-        courseData?['title'] ?? COURSE_ROADMAP_DEFAULT_TITLE;
+        courseData?['title'] ?? 'Course Roadmap';
 
     final Widget BackArrowIcon = const Icon(
       Icons.arrow_back,
@@ -174,7 +154,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
 
           // Course subtitle
           RLTypography.bodyMedium(
-            COURSE_SUBTITLE_TEXT,
+            'Master design psychology fundamentals',
             textAlign: TextAlign.center,
           ),
         ], crossAxisAlignment: CrossAxisAlignment.center),
@@ -202,7 +182,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
 
         const Spacing.width(4),
 
-        RLTypography.bodyMedium(EXPERIENCE_COUNTER_TEXT),
+        RLTypography.bodyMedium('30 xp'),
       ]),
 
       const Spacing.width(20),
@@ -213,7 +193,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
 
         const Spacing.width(4),
 
-        RLTypography.bodyMedium(QUESTIONS_COUNTER_TEXT),
+        RLTypography.bodyMedium('29 questions'),
       ]),
 
       const Spacer(),
@@ -226,13 +206,12 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
     final bool hasTabController = tabController != null;
     final bool shouldShowIndicators = hasMultipleSegments && hasTabController;
 
-    if (!shouldShowIndicators) {
-      return const SizedBox.shrink();
-    }
-
-    return Div.row(
-      getSegmentIndicators(),
-      mainAxisAlignment: MainAxisAlignment.center,
+    return RenderIf.condition(
+      shouldShowIndicators,
+      Div.row(
+        getSegmentIndicators(),
+        mainAxisAlignment: MainAxisAlignment.center,
+      ),
     );
   }
 
