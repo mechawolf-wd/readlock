@@ -103,10 +103,14 @@ class SoundPickerScreenState extends State<SoundPickerScreen> {
         ? color
         : RLTheme.textPrimary.withValues(alpha: 0.1);
 
+    final double borderWidth = isSelected ? 2 : 1;
+
+    final Color nameColor = isSelected ? color : RLTheme.textPrimary;
+
     final BoxDecoration blockDecoration = BoxDecoration(
       color: backgroundColor,
       borderRadius: BorderRadius.circular(16),
-      border: Border.all(color: borderColor, width: isSelected ? 2 : 1),
+      border: Border.all(color: borderColor, width: borderWidth),
     );
 
     return GestureDetector(
@@ -129,7 +133,7 @@ class SoundPickerScreenState extends State<SoundPickerScreen> {
 
           RLTypography.headingMedium(
             name,
-            color: isSelected ? color : RLTheme.textPrimary,
+            color: nameColor,
             textAlign: TextAlign.center,
           ),
 

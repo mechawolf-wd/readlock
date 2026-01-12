@@ -101,7 +101,7 @@ class LearningStatsCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Widget learningContent = learningStatsContent();
+    final Widget learningContent = LearningStatsContent();
 
     return ExpandableCard(
       title: 'Learning Statistics',
@@ -113,7 +113,7 @@ class LearningStatsCard extends StatelessWidget {
     );
   }
 
-  Widget learningStatsContent() {
+  Widget LearningStatsContent() {
     final String totalLearningTime = getTotalLearningTime();
 
     return Div.row([
@@ -1032,10 +1032,12 @@ class SoundPickerCardState extends State<SoundPickerCard> {
         ? Colors.white
         : Colors.white.withValues(alpha: 0.2);
 
+    final double borderWidth = isSelected ? 2 : 1;
+
     final BoxDecoration blockDecoration = BoxDecoration(
       color: backgroundColor,
       borderRadius: BorderRadius.circular(12),
-      border: Border.all(color: borderColor, width: isSelected ? 2 : 1),
+      border: Border.all(color: borderColor, width: borderWidth),
     );
 
     return GestureDetector(

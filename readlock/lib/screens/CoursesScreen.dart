@@ -2,6 +2,7 @@
 // Clean card-based layout with course selection
 
 import 'package:flutter/material.dart' hide Typography;
+import 'package:readlock/screens/ReaderPassScreen.dart';
 import 'package:readlock/utility_widgets/Utility.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLTheme.dart';
@@ -70,6 +71,36 @@ class CoursesScreenState extends State<CoursesScreen> {
     });
   }
 
+  void handlePromoBannerTap() {
+    Navigator.push(
+      context,
+      PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) =>
+            const ReaderPassScreen(),
+        transitionsBuilder:
+            (context, animation, secondaryAnimation, child) {
+              const Offset begin = Offset(0.0, 1.0);
+              const Offset end = Offset.zero;
+              const Curve curve = Curves.easeInOut;
+
+              final Animatable<Offset> tween = Tween(
+                begin: begin,
+                end: end,
+              ).chain(CurveTween(curve: curve));
+
+              final Animation<Offset> offsetAnimation = animation.drive(
+                tween,
+              );
+
+              return SlideTransition(
+                position: offsetAnimation,
+                child: child,
+              );
+            },
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final bool hasSearchText = searchController.text.isNotEmpty;
@@ -82,7 +113,32 @@ class CoursesScreenState extends State<CoursesScreen> {
     return Scaffold(
       backgroundColor: RLTheme.backgroundDark,
       body: SafeArea(
-        child: SingleChildScrollView(
+        child: RenderIf.condition(
+          shouldShowSearchResults,
+          SearchResultsLayout(
+            shouldShowSearchBar: shouldShowSearchBar,
+            shouldShowCategories: shouldShowCategories,
+          ),
+          DefaultLayout(
+            shouldShowSearchBar: shouldShowSearchBar,
+            shouldShowCategories: shouldShowCategories,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget DefaultLayout({
+    required bool shouldShowSearchBar,
+    required bool shouldShowCategories,
+  }) {
+    return SingleChildScrollView(
+      child: Div.column([
+        // Promotional banner (no padding)
+        SeasonPromoBanner(),
+
+        // Main content (with padding)
+        Padding(
           padding: const EdgeInsets.all(24),
           child: Div.column([
             // Search heading
@@ -112,14 +168,84 @@ class CoursesScreenState extends State<CoursesScreen> {
               const SizedBox.shrink(),
             ),
 
-            // Conditional content based on search state or genre selection
+            // Trending section
+            TrendingSection(),
+          ], crossAxisAlignment: CrossAxisAlignment.stretch),
+        ),
+      ], crossAxisAlignment: CrossAxisAlignment.stretch),
+    );
+  }
+
+  Widget SearchResultsLayout({
+    required bool shouldShowSearchBar,
+    required bool shouldShowCategories,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        // Promotional banner (no padding)
+        SeasonPromoBanner(),
+
+        // Fixed header content (with padding)
+        Padding(
+          padding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
+          child: Div.column([
+            // Search heading
+            RLTypography.headingLarge('Search'),
+
+            const Spacing.height(24),
+
+            // Search bar (hidden when genre is selected)
             RenderIf.condition(
-              shouldShowSearchResults,
-              SearchResults(),
-              TrendingSection(),
+              shouldShowSearchBar,
+              Div.column([
+                MockSearchBar(),
+
+                const Spacing.height(24),
+              ], crossAxisAlignment: CrossAxisAlignment.stretch),
+              const SizedBox.shrink(),
+            ),
+
+            // Categories (visible unless typing in search)
+            RenderIf.condition(
+              shouldShowCategories,
+              Div.column([
+                CategoriesSection(),
+
+                const Spacing.height(24),
+              ], crossAxisAlignment: CrossAxisAlignment.stretch),
+              const SizedBox.shrink(),
             ),
           ], crossAxisAlignment: CrossAxisAlignment.stretch),
         ),
+
+        // Expanded search results (scrollable)
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24),
+            child: SearchResults(),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget SeasonPromoBanner() {
+    return GestureDetector(
+      onTap: handlePromoBannerTap,
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(
+          vertical: 12,
+          horizontal: 16,
+        ),
+        color: Colors.black,
+        child: Div.row([
+          RLTypography.bodyMedium(
+            'Outperformers do not start tomorrow - Reader Pass -25%',
+            color: Colors.white,
+          ),
+        ], mainAxisAlignment: MainAxisAlignment.center),
       ),
     );
   }
@@ -131,7 +257,7 @@ class CoursesScreenState extends State<CoursesScreen> {
       border: Border.all(color: RLTheme.grey300.withValues(alpha: 0.3)),
     );
 
-    final Widget searchIcon = const Icon(
+    final Widget SearchIcon = const Icon(
       Icons.search,
       color: RLTheme.textSecondary,
       size: 20,
@@ -141,11 +267,11 @@ class CoursesScreenState extends State<CoursesScreen> {
       isSearchActive,
       ActiveSearchBar(
         searchBarDecoration: searchBarDecoration,
-        searchIcon: searchIcon,
+        searchIcon: SearchIcon,
       ),
       InactiveSearchBar(
         searchBarDecoration: searchBarDecoration,
-        searchIcon: searchIcon,
+        searchIcon: SearchIcon,
       ),
     );
   }
@@ -180,7 +306,7 @@ class CoursesScreenState extends State<CoursesScreen> {
     required BoxDecoration searchBarDecoration,
     required Widget searchIcon,
   }) {
-    final Widget closeIcon = const Icon(
+    final Widget CloseIcon = const Icon(
       Icons.close,
       color: RLTheme.textSecondary,
       size: 20,
@@ -192,13 +318,12 @@ class CoursesScreenState extends State<CoursesScreen> {
         ? RLTheme.primaryBlue
         : RLTheme.grey300.withValues(alpha: 0.3);
 
+    final double borderWidth = hasSearchText ? 1.5 : 1;
+
     final BoxDecoration activeSearchBarDecoration = BoxDecoration(
       color: RLTheme.backgroundLight.withValues(alpha: 0.08),
       borderRadius: BorderRadius.circular(12),
-      border: Border.all(
-        color: borderColor,
-        width: hasSearchText ? 1.5 : 1,
-      ),
+      border: Border.all(color: borderColor, width: borderWidth),
     );
 
     return AnimatedContainer(
@@ -232,7 +357,7 @@ class CoursesScreenState extends State<CoursesScreen> {
 
         const Spacing.width(12),
 
-        GestureDetector(onTap: deactivateSearch, child: closeIcon),
+        GestureDetector(onTap: deactivateSearch, child: CloseIcon),
       ]),
     );
   }
@@ -519,31 +644,39 @@ class CoursesScreenState extends State<CoursesScreen> {
 
     final String headerTitle = getHeaderTitle();
 
-    return Div.column([
-      RLTypography.headingMedium(headerTitle),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        RLTypography.headingMedium(headerTitle),
 
-      const Spacing.height(4),
+        const Spacing.height(4),
 
-      RLTypography.text(
-        '$totalResults books found',
-        color: RLTheme.textSecondary,
-      ),
+        RLTypography.text(
+          '$totalResults titles found',
+          color: RLTheme.textSecondary,
+        ),
 
-      const Spacing.height(16),
+        const Spacing.height(16),
 
-      Div.column(
-        SearchResultCards(displayedResults),
-        crossAxisAlignment: CrossAxisAlignment.start,
-      ),
+        // Scrollable results list
+        Expanded(
+          child: ListView(
+            padding: EdgeInsets.zero,
+            children: [
+              ...SearchResultCards(displayedResults),
 
-      const Spacing.height(16),
+              const Spacing.height(16),
 
-      RenderIf.condition(
-        hasMoreResults,
-        LoadNextButton(),
-        const SizedBox.shrink(),
-      ),
-    ], crossAxisAlignment: CrossAxisAlignment.start);
+              RenderIf.condition(
+                hasMoreResults,
+                LoadNextButton(),
+                const SizedBox.shrink(),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
   }
 
   String getHeaderTitle() {

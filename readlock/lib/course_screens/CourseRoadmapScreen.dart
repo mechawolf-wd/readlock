@@ -113,7 +113,9 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
           const Spacing.height(24),
 
           // Horizontal page view for segments
-          Expanded(child: SegmentPageView()),
+          Expanded(
+            child: SegmentPageView(),
+          ),
         ]),
       ),
     );
@@ -582,7 +584,9 @@ class LessonCard extends StatelessWidget {
           const Spacing.width(16),
 
           // Level title and description
-          Expanded(child: LevelContent()),
+          Expanded(
+            child: LevelContent(),
+          ),
 
           // Navigation arrow
           ArrowIcon,

@@ -74,7 +74,7 @@ class MyBookshelfScreenState extends State<MyBookshelfScreen> {
 
           const Spacing.height(4),
 
-          RLTypography.text('12 books', color: RLTheme.textSecondary),
+          RLTypography.text('12 titles', color: RLTheme.textSecondary),
         ], crossAxisAlignment: CrossAxisAlignment.start),
       ),
 
@@ -268,16 +268,24 @@ class MyBookshelfScreenState extends State<MyBookshelfScreen> {
     final BoxDecoration buttonDecoration = BoxDecoration(
       color: RLTheme.backgroundLight.withValues(alpha: 0.08),
       borderRadius: BorderRadius.circular(8),
-      border: Border.all(color: RLTheme.primaryBlue.withValues(alpha: 0.3)),
+      border: Border.all(
+        color: RLTheme.primaryBlue.withValues(alpha: 0.3),
+      ),
     );
 
     return GestureDetector(
       onTap: showAllTitlesBottomSheet,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        padding: const EdgeInsets.symmetric(
+          horizontal: 12,
+          vertical: 8,
+        ),
         decoration: buttonDecoration,
         child: Div.row([
-          RLTypography.text('View My Titles', color: RLTheme.primaryBlue),
+          RLTypography.text(
+            'Titles and history',
+            color: RLTheme.primaryBlue,
+          ),
 
           const Spacing.width(4),
 
@@ -408,7 +416,11 @@ class MyBookshelfScreenState extends State<MyBookshelfScreen> {
           const Spacing.height(12),
 
           Center(
-            child: Container(width: 40, height: 4, decoration: handleDecoration),
+            child: Container(
+              width: 40,
+              height: 4,
+              decoration: handleDecoration,
+            ),
           ),
 
           const Spacing.height(16),
@@ -440,7 +452,8 @@ class AllTitlesBottomSheet extends StatefulWidget {
   const AllTitlesBottomSheet({super.key});
 
   @override
-  State<AllTitlesBottomSheet> createState() => AllTitlesBottomSheetState();
+  State<AllTitlesBottomSheet> createState() =>
+      AllTitlesBottomSheetState();
 }
 
 class AllTitlesBottomSheetState extends State<AllTitlesBottomSheet> {
@@ -522,8 +535,8 @@ class AllTitlesBottomSheetState extends State<AllTitlesBottomSheet> {
 
     final List<Map<String, dynamic>> filteredBooks = hasSelectedCategory
         ? allBooks
-            .where((book) => book['category'] == selectedCategory)
-            .toList()
+              .where((book) => book['category'] == selectedCategory)
+              .toList()
         : allBooks;
 
     return ClipRRect(
@@ -536,7 +549,11 @@ class AllTitlesBottomSheetState extends State<AllTitlesBottomSheet> {
           const Spacing.height(12),
 
           Center(
-            child: Container(width: 40, height: 4, decoration: handleDecoration),
+            child: Container(
+              width: 40,
+              height: 4,
+              decoration: handleDecoration,
+            ),
           ),
 
           const Spacing.height(16),
@@ -605,12 +622,17 @@ class AllTitlesBottomSheetState extends State<AllTitlesBottomSheet> {
           ),
         );
 
-        final Color chipTextColor = isSelected ? Colors.white : RLTheme.primaryBlue;
+        final Color chipTextColor = isSelected
+            ? Colors.white
+            : RLTheme.primaryBlue;
 
         return GestureDetector(
           onTap: () => onCategorySelected(category),
           child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 8,
+            ),
             decoration: chipDecoration,
             child: RLTypography.text(category, color: chipTextColor),
           ),

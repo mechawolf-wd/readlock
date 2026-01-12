@@ -3,6 +3,7 @@
 
 import 'package:flutter/material.dart' hide Typography;
 import 'package:readlock/course_screens/CourseRoadmapScreen.dart';
+import 'package:readlock/screens/ReaderPassScreen.dart';
 import 'package:readlock/utility_widgets/Utility.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLTheme.dart';
@@ -23,13 +24,49 @@ class HomeScreenState extends State<HomeScreen> {
       PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) =>
             CourseRoadmapScreen(courseId: courseId),
+        transitionsBuilder:
+            (context, animation, secondaryAnimation, child) {
+              const Offset begin = Offset(0.0, 1.0);
+              const Offset end = Offset.zero;
+              const Curve curve = Curves.easeInOut;
+
+              final Animatable<Offset> tween = Tween(
+                begin: begin,
+                end: end,
+              ).chain(CurveTween(curve: curve));
+
+              final Animation<Offset> offsetAnimation = animation.drive(
+                tween,
+              );
+
+              return SlideTransition(
+                position: offsetAnimation,
+                child: child,
+              );
+            },
+      ),
+    );
+  }
+
+  void handleContinueReading() {
+    navigateToCourse('design-everyday-things-comprehensive');
+  }
+
+  void handlePromoBannerTap() {
+    Navigator.push(
+      context,
+      PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) =>
+            const ReaderPassScreen(),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           const Offset begin = Offset(0.0, 1.0);
           const Offset end = Offset.zero;
           const Curve curve = Curves.easeInOut;
 
-          final Animatable<Offset> tween = Tween(begin: begin, end: end)
-              .chain(CurveTween(curve: curve));
+          final Animatable<Offset> tween = Tween(
+            begin: begin,
+            end: end,
+          ).chain(CurveTween(curve: curve));
 
           final Animation<Offset> offsetAnimation = animation.drive(tween);
 
@@ -42,39 +79,60 @@ class HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  void handleContinueReading() {
-    navigateToCourse('design-everyday-things-comprehensive');
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: RLTheme.backgroundDark,
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(24),
           child: Div.column([
-            // Welcome header
-            HomeWelcomeHeader(),
+            // Promotional banner (no padding)
+            SeasonPromoBanner(),
 
-            const Spacing.height(24),
+            // Main content (with padding)
+            Padding(
+              padding: const EdgeInsets.all(24),
+              child: Div.column([
+                // Welcome header
+                HomeWelcomeHeader(),
 
-            // Continue reading section
-            ContinueReadingSection(),
+                const Spacing.height(24),
 
-            const Spacing.height(24),
+                // Continue reading section
+                ContinueReadingSection(),
 
-            // For your personality section
-            ForYourPersonalitySection(),
+                const Spacing.height(24),
 
-            const Spacing.height(24),
+                // For your personality section
+                ForYourPersonalitySection(),
 
-            // Random lesson section
-            RandomLessonSection(),
+                const Spacing.height(24),
 
-            const Spacing.height(24),
+                // Random lesson section
+                RandomLessonSection(),
+
+                const Spacing.height(24),
+              ], crossAxisAlignment: CrossAxisAlignment.stretch),
+            ),
           ], crossAxisAlignment: CrossAxisAlignment.stretch),
         ),
+      ),
+    );
+  }
+
+  Widget SeasonPromoBanner() {
+    return GestureDetector(
+      onTap: handlePromoBannerTap,
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+        color: Colors.black,
+        child: Div.row([
+          RLTypography.bodyMedium(
+            'Outperformers do not start tomorrow - Reader Pass -25%',
+            color: Colors.white,
+          ),
+        ], mainAxisAlignment: MainAxisAlignment.center),
       ),
     );
   }
