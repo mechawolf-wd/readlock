@@ -6,6 +6,7 @@ import 'package:readlock/course_screens/data/courseData.dart';
 import 'package:readlock/utility_widgets/Utility.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLTheme.dart';
+import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/utility_widgets/CourseLoadingScreen.dart';
 
 class CourseRoadmapScreen extends StatefulWidget {
@@ -80,20 +81,36 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
     return Material(
       color: RLTheme.backgroundDark,
       child: SafeArea(
-        child: Div.column([
-          // Header section with back button and course info
-          RoadmapHeader(),
+        child: Stack(
+          children: [
+            // Main content
+            Div.column([
+              // Header section with back button and course info
+              RoadmapHeader(),
 
-          const Spacing.height(16),
+              const Spacing.height(16),
 
-          // Segment page indicators
-          SegmentPageIndicators(),
+              // Segment page indicators
+              SegmentPageIndicators(),
 
-          const Spacing.height(24),
+              const Spacing.height(24),
 
-          // Horizontal page view for segments
-          Expanded(child: SegmentPageView()),
-        ]),
+              // Horizontal page view for segments
+              Expanded(child: SegmentPageView()),
+
+              // Bottom spacing for floating button
+              const Spacing.height(80),
+            ]),
+
+            // Floating continue button
+            Positioned(
+              left: 20,
+              right: 20,
+              bottom: 16,
+              child: ContinueButton(),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -111,8 +128,8 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
       borderRadius: BorderRadius.circular(12),
       child: Image.asset(
         'covers/doet-cover.png',
-        width: 120,
-        height: 160,
+        width: 100,
+        height: 140,
         fit: BoxFit.cover,
       ),
     );
@@ -134,66 +151,75 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
           const Spacer(),
         ]),
 
-        const Spacing.height(20),
-
-        // Course information section
-        Div.column([
-          // Book cover
-          BookCover,
-
-          const Spacing.height(16),
-
-          // Course title
-          RLTypography.headingLarge(courseTitle),
-
-          const Spacing.height(4),
-
-          // Course subtitle
-          RLTypography.bodyMedium(
-            'Master design psychology fundamentals',
-            textAlign: TextAlign.center,
-          ),
-        ], crossAxisAlignment: CrossAxisAlignment.center),
-
         const Spacing.height(16),
 
-        // Course statistics row
-        Div.row(
-          getCounterRow(),
-          mainAxisAlignment: MainAxisAlignment.center,
-        ),
+        // Course information section - horizontal layout
+        Div.row([
+          // Book cover on left
+          BookCover,
+
+          const Spacing.width(16),
+
+          // Title and info on right
+          Expanded(
+            child: Div.column([
+              // Course title
+              RLTypography.headingLarge(courseTitle),
+
+              const Spacing.height(4),
+
+              // Course subtitle
+              RLTypography.bodyMedium(
+                'Master design psychology fundamentals',
+                color: RLTheme.textSecondary,
+              ),
+
+              const Spacing.height(12),
+
+              // Course statistics row
+              Div.row([
+                Style.ExperienceIcon,
+
+                const Spacing.width(4),
+
+                RLTypography.bodyMedium('37 lessons'),
+
+                const Spacing.width(16),
+
+                Style.QuestionIcon,
+
+                const Spacing.width(4),
+
+                RLTypography.bodyMedium('29 retentors'),
+              ]),
+            ], crossAxisAlignment: CrossAxisAlignment.start),
+          ),
+        ], crossAxisAlignment: CrossAxisAlignment.start),
       ],
-      crossAxisAlignment: CrossAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.start,
       padding: const [20, 16],
     );
   }
 
-  List<Widget> getCounterRow() {
-    return [
-      const Spacer(),
+  // Floating continue button
+  Widget ContinueButton() {
+    return RLDesignSystem.BlockButton(
+      children: [
+        RLTypography.bodyLarge('Continue', color: RLTheme.white),
+      ],
+      backgroundColor: RLTheme.primaryGreen,
+      margin: EdgeInsets.zero,
+      onTap: handleContinueTap,
+    );
+  }
 
-      // Experience moments counter
-      Div.row([
-        Style.ExperienceIcon,
+  // Handle continue button tap - navigate to current lesson
+  void handleContinueTap() {
+    // Current lesson is index 3 in segment 0 (mocked)
+    const int currentLessonIndex = 3;
+    const int currentContentIndex = 0;
 
-        const Spacing.width(4),
-
-        RLTypography.bodyMedium('37 lessons'),
-      ]),
-
-      const Spacing.width(20),
-
-      // Questions counter
-      Div.row([
-        Style.QuestionIcon,
-
-        const Spacing.width(4),
-
-        RLTypography.bodyMedium('29 questions'),
-      ]),
-
-      const Spacer(),
-    ];
+    showLoadingScreenThenNavigate(currentLessonIndex, currentContentIndex);
   }
 
   // Page indicators showing segment position
@@ -323,16 +349,16 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
   }
 
   void navigateToCourseWithLoading(int lessonIndex, int contentIndex) {
-    // Show loading screen first
+    // Show loading screen with slow fade transition
     Navigator.push(
       context,
-      RLTheme.slideUpTransition(const CourseLoadingScreen()),
+      RLTheme.slowFadeTransition(const CourseLoadingScreen()),
     );
 
     // Navigate to course detail after delay
     void routeToCourse() {
       if (mounted) {
-        final slideUpTransition = RLTheme.slideUpTransition(
+        final fadeTransition = RLTheme.slowFadeTransition(
           CourseDetailScreen(
             courseId: widget.courseId,
             initialLessonIndex: lessonIndex,
@@ -340,7 +366,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
           ),
         );
 
-        Navigator.pushReplacement(context, slideUpTransition);
+        Navigator.pushReplacement(context, fadeTransition);
       }
     }
 
@@ -400,20 +426,46 @@ class SegmentPage extends StatelessWidget {
     final bool isCompleted = segmentIndex == 0 && lessonIndex < 3;
     final bool isCurrentLevel = segmentIndex == 0 && lessonIndex == 3;
     final bool isLocked = segmentIndex > 0;
+    final bool isFirstLesson = lessonIndex == 0;
 
     // Mock completion data for demonstration
-    final int skillCheckQuestionsCompleted =
-        getMockSkillCheckProgress(segmentIndex, lessonIndex);
+    final int skillCheckQuestionsCompleted = getMockSkillCheckProgress(
+      segmentIndex,
+      lessonIndex,
+    );
 
-    return LessonCard(
-      levelNumber: lessonIndex + 1,
-      title: lessonTitle,
-      subtitle: lessonId,
-      isCompleted: isCompleted,
-      isCurrentLevel: isCurrentLevel,
-      isLocked: isLocked,
-      skillCheckQuestionsCompleted: skillCheckQuestionsCompleted,
-      onTap: () => onLessonTap(lessonIndex, 0),
+    return Column(
+      children: [
+        // Arrow connector (except for first lesson)
+        RenderIf.condition(
+          !isFirstLesson,
+          LessonConnectorArrow(),
+        ),
+
+        // Lesson card
+        LessonCard(
+          title: lessonTitle,
+          subtitle: lessonId,
+          isCompleted: isCompleted,
+          isCurrentLevel: isCurrentLevel,
+          isLocked: isLocked,
+          skillCheckQuestionsCompleted: skillCheckQuestionsCompleted,
+          onTap: () => onLessonTap(lessonIndex, 0),
+        ),
+      ],
+    );
+  }
+
+  Widget LessonConnectorArrow() {
+    final Icon ArrowIcon = Icon(
+      Icons.keyboard_arrow_down,
+      color: RLTheme.textSecondary.withValues(alpha: 0.4),
+      size: 24,
+    );
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 4),
+      child: Center(child: ArrowIcon),
     );
   }
 
@@ -524,18 +576,16 @@ class SegmentHeader extends StatelessWidget {
 }
 
 class LessonCard extends StatelessWidget {
-  final int levelNumber;
   final String title;
   final String subtitle;
   final bool isCompleted;
   final bool isCurrentLevel;
   final bool isLocked;
-  final int skillCheckQuestionsCompleted; // 0-3 questions completed
+  final int skillCheckQuestionsCompleted;
   final VoidCallback onTap;
 
   const LessonCard({
     super.key,
-    required this.levelNumber,
     required this.title,
     required this.subtitle,
     required this.isCompleted,
@@ -547,195 +597,234 @@ class LessonCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final BoxDecoration cardDecoration = getCardDecoration();
-    final Widget ArrowIcon = const Icon(
-      Icons.arrow_forward_ios,
-      color: Colors.white54,
-      size: 20,
-    );
+    final double cardOpacity = getCardOpacity();
+    final Color borderColor = getCardBorderColor();
+    final VoidCallback? tapHandler = isLocked ? null : onTap;
 
-    return Div.column(
-      [
-        // Main card content row
-        Div.row([
-          // Level number badge
-          LevelBadge(),
+    return Opacity(
+      opacity: cardOpacity,
+      child: GestureDetector(
+        onTap: tapHandler,
+        child: Container(
+          margin: const EdgeInsets.only(bottom: 12),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: borderColor),
+          ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(11),
+            child: IntrinsicHeight(
+              child: Row(
+                children: [
+                  // Status accent bar
+                  AccentBar(),
 
-          const Spacing.width(16),
-
-          // Level title and description
-          Expanded(child: LevelContent()),
-
-          // Navigation arrow
-          ArrowIcon,
-        ]),
-
-        // Progress indicators (show only if not locked)
-        if (!isLocked) ...[
-          const Spacing.height(16),
-          ProgressIndicators(),
-        ],
-      ],
-      margin: 8,
-      padding: 16,
-      decoration: cardDecoration,
-      onTap: isLocked ? () {} : onTap,
-      radius: 36,
-    );
-  }
-
-  BoxDecoration getCardDecoration() {
-    final Color cardColor = getCardColor();
-    final Color borderColor = getBorderColor();
-
-    return LevelCardStyle.cardDecoration.copyWith(
-      color: cardColor,
-      border: Border.all(color: borderColor),
+                  // Card content
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: CardContent(),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
     );
   }
 
-  Color getCardColor() {
+  double getCardOpacity() {
     if (isLocked) {
-      return Colors.grey.withValues(alpha: 0.02);
+      return 0.5;
     }
+    return 1.0;
+  }
+
+  Color getCardBorderColor() {
     if (isCurrentLevel) {
-      return RLTheme.primaryGreen.withValues(alpha: 0.1);
+      return RLTheme.primaryGreen.withValues(alpha: 0.4);
     }
-    return Colors.grey.withValues(alpha: 0.05);
+    return RLTheme.textSecondary.withValues(alpha: 0.1);
   }
 
-  Color getBorderColor() {
-    if (isLocked) {
-      return Colors.grey.withValues(alpha: 0.05);
-    }
-    if (isCurrentLevel) {
-      return RLTheme.primaryGreen.withValues(alpha: 0.3);
-    }
-    return Colors.grey.withValues(alpha: 0.1);
-  }
+  Widget AccentBar() {
+    final Color accentColor = getAccentColor();
 
-  Widget LevelBadge() {
-    final BoxDecoration badgeDecoration = LevelCardStyle.badgeDecoration
-        .copyWith(color: getBadgeColor());
-
-    return Div.column(
-      [BadgeContent()],
-      width: LevelCardStyle.badgeSize,
-      height: LevelCardStyle.badgeSize,
-      decoration: badgeDecoration,
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
+    return Container(
+      width: 4,
+      color: accentColor,
     );
   }
 
-  Color getBadgeColor() {
-    if (isLocked) {
-      return Colors.grey.withValues(alpha: 0.1);
-    }
+  Color getAccentColor() {
     if (isCompleted) {
       return RLTheme.primaryGreen;
     }
     if (isCurrentLevel) {
-      return RLTheme.primaryGreen.withValues(alpha: 0.2);
+      return RLTheme.primaryGreen.withValues(alpha: 0.6);
     }
-    return Colors.grey.withValues(alpha: 0.2);
-  }
-
-  Widget BadgeContent() {
-    final Widget CheckIcon = const Icon(
-      Icons.check,
-      color: Colors.white,
-      size: 20,
-    );
-
-    final Widget LockIcon = const Icon(
-      Icons.lock,
-      color: Colors.grey,
-      size: 16,
-    );
-
     if (isLocked) {
-      return LockIcon;
+      return RLTheme.textSecondary.withValues(alpha: 0.2);
     }
+    return RLTheme.textSecondary.withValues(alpha: 0.3);
+  }
 
-    return RenderIf.condition(
-      isCompleted,
-      CheckIcon,
-      RLTypography.bodyMedium(
-        levelNumber.toString(),
-        textAlign: TextAlign.center,
-      ),
+  Widget CardContent() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Top row: number + title + status icon
+        Row(
+          children: [
+            // Lesson book badge
+            LessonBadge(),
+
+            const Spacing.width(12),
+
+            // Title
+            Expanded(
+              child: RLTypography.bodyLarge(title),
+            ),
+
+            // Status icon
+            StatusIcon(),
+          ],
+        ),
+
+        const Spacing.height(6),
+
+        // Subtitle
+        RLTypography.bodyMedium(
+          subtitle,
+          color: RLTheme.textSecondary,
+        ),
+
+        // Skill dots (only if not locked and has progress)
+        RenderIf.condition(
+          !isLocked,
+          Padding(
+            padding: const EdgeInsets.only(top: 12),
+            child: SkillDots(),
+          ),
+        ),
+      ],
     );
   }
 
-  Widget LevelContent() {
-    return Div.column([
-      // Level title with number
-      RLTypography.headingMedium(title),
+  Widget LessonBadge() {
+    final Color badgeColor = getBadgeColor();
+    final Color badgeBorderColor = getBadgeBorderColor();
+    final Color iconColor = getIconColor();
 
-      const Spacing.height(4),
+    final BoxDecoration badgeDecoration = BoxDecoration(
+      color: badgeColor,
+      borderRadius: BorderRadius.circular(10),
+      border: Border.all(color: badgeBorderColor),
+    );
 
-      // Level description
-      RLTypography.bodyMedium(subtitle),
-    ], crossAxisAlignment: CrossAxisAlignment.start);
+    final Icon BookIcon = Icon(
+      Icons.auto_stories,
+      color: iconColor,
+      size: 18,
+    );
+
+    return Container(
+      width: 36,
+      height: 36,
+      decoration: badgeDecoration,
+      child: Center(child: BookIcon),
+    );
   }
 
-  // Progress indicators showing skill check progress only
-  Widget ProgressIndicators() {
-    return Div.row([
-      const Spacer(),
-
-      // Skill check progress with wrapped container
-      Container(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 12,
-          vertical: 6,
-        ),
-        decoration: BoxDecoration(
-          color: Colors.grey.withValues(alpha: 0.05),
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: SkillCheckProgressIndicator(),
-      ),
-    ]);
+  Color getIconColor() {
+    if (isCompleted) {
+      return RLTheme.white;
+    }
+    if (isCurrentLevel) {
+      return RLTheme.primaryGreen;
+    }
+    return RLTheme.textSecondary;
   }
 
-  // Skill check progress indicator with 3 boxes
-  Widget SkillCheckProgressIndicator() {
-    return Div.row([
-      RLTypography.bodyMedium(
-        'Skills:',
-        color: Colors.grey.withValues(alpha: 0.8),
+  Color getBadgeColor() {
+    if (isCompleted) {
+      return RLTheme.primaryGreen;
+    }
+    if (isCurrentLevel) {
+      return RLTheme.primaryGreen.withValues(alpha: 0.15);
+    }
+    return RLTheme.textSecondary.withValues(alpha: 0.1);
+  }
+
+  Color getBadgeBorderColor() {
+    if (isCompleted) {
+      return RLTheme.primaryGreen;
+    }
+    if (isCurrentLevel) {
+      return RLTheme.primaryGreen.withValues(alpha: 0.4);
+    }
+    return RLTheme.textSecondary.withValues(alpha: 0.2);
+  }
+
+  Widget StatusIcon() {
+    if (!isLocked) {
+      return const SizedBox.shrink();
+    }
+
+    final Icon LockIcon = Icon(
+      Icons.lock_outline,
+      color: RLTheme.textSecondary.withValues(alpha: 0.5),
+      size: 18,
+    );
+
+    return LockIcon;
+  }
+
+  Widget SkillDots() {
+    return Row(
+      children: [
+        RLTypography.text(
+          'Mastery',
+          color: RLTheme.textSecondary,
+        ),
+
+        const Spacing.width(8),
+
+        // Three dots for skill progress
+        SkillDotIndicator(dotIndex: 0),
+        SkillDotIndicator(dotIndex: 1),
+        SkillDotIndicator(dotIndex: 2),
+      ],
+    );
+  }
+
+  Widget SkillDotIndicator({required int dotIndex}) {
+    final bool isDotCompleted = dotIndex < skillCheckQuestionsCompleted;
+    final bool isNotFirstDot = dotIndex > 0;
+
+    final Color dotColor = isDotCompleted
+        ? RLTheme.primaryGreen
+        : RLTheme.textSecondary.withValues(alpha: 0.2);
+
+    final EdgeInsets dotPadding = isNotFirstDot
+        ? const EdgeInsets.only(left: 4)
+        : EdgeInsets.zero;
+
+    final BoxDecoration dotDecoration = BoxDecoration(
+      color: dotColor,
+      shape: BoxShape.circle,
+    );
+
+    return Padding(
+      padding: dotPadding,
+      child: Container(
+        width: 8,
+        height: 8,
+        decoration: dotDecoration,
       ),
-
-      const Spacing.width(10),
-
-      // Three skill check boxes with improved styling
-      ...List.generate(3, (index) {
-        final bool isCompleted = index < skillCheckQuestionsCompleted;
-        return Padding(
-          padding: EdgeInsets.only(left: index > 0 ? 6 : 0),
-          child: Container(
-            width: 18,
-            height: 14,
-            decoration: BoxDecoration(
-              color: isCompleted
-                  ? RLTheme.primaryGreen
-                  : Colors.grey.withValues(alpha: 0.2),
-              borderRadius: BorderRadius.circular(4),
-              border: Border.all(
-                color: isCompleted
-                    ? RLTheme.primaryGreen
-                    : Colors.grey.withValues(alpha: 0.4),
-              ),
-            ),
-            child: isCompleted
-                ? const Icon(Icons.check, color: Colors.white, size: 10)
-                : null,
-          ),
-        );
-      }),
-    ]);
+    );
   }
 }
 
@@ -759,16 +848,4 @@ class Style {
     color: RLTheme.primaryBlue,
     size: 16,
   );
-}
-
-class LevelCardStyle {
-  static final BoxDecoration cardDecoration = BoxDecoration(
-    borderRadius: BorderRadius.circular(36),
-  );
-
-  static final BoxDecoration badgeDecoration = BoxDecoration(
-    borderRadius: BorderRadius.circular(36),
-  );
-
-  static const double badgeSize = 40.0;
 }

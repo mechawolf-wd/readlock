@@ -8,10 +8,14 @@ class StatisticsTopBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Div.row([XPCounter(), const Spacer(), StreakCounter()]);
+    return Div.row([
+      XPCounter(),
+      const Spacer(),
+      StreakCounter(context),
+    ]);
   }
 
-  Widget StreakCounter() {
+  Widget StreakCounter(BuildContext context) {
     return Div.row(
       [
         Style.FireIcon,
@@ -25,6 +29,15 @@ class StatisticsTopBar extends StatelessWidget {
       color: Style.backgroundColor,
       padding: Style.padding,
       radius: 16,
+      onTap: () => showStreakBottomSheet(context),
+    );
+  }
+
+  void showStreakBottomSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (sheetContext) => const StreakBottomSheet(),
     );
   }
 
@@ -72,4 +85,141 @@ class Style {
     color: RLTheme.warningColor,
     size: 20,
   );
+}
+
+class StreakBottomSheet extends StatelessWidget {
+  const StreakBottomSheet({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    const BoxDecoration sheetDecoration = BoxDecoration(
+      color: RLTheme.backgroundDark,
+      borderRadius: BorderRadius.only(
+        topLeft: Radius.circular(16),
+        topRight: Radius.circular(16),
+      ),
+    );
+
+    final BoxDecoration handleDecoration = BoxDecoration(
+      color: RLTheme.textSecondary.withValues(alpha: 0.3),
+      borderRadius: BorderRadius.circular(2),
+    );
+
+    return Container(
+      decoration: sheetDecoration,
+      padding: const EdgeInsets.fromLTRB(24, 12, 24, 32),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // Drag handle
+          Center(
+            child: Container(
+              width: 36,
+              height: 4,
+              decoration: handleDecoration,
+            ),
+          ),
+
+          const Spacing.height(24),
+
+          // Fire icon
+          LargeFireIcon(),
+
+          const Spacing.height(16),
+
+          // Title
+          RLTypography.headingLarge('3 Day Combo!'),
+
+          const Spacing.height(8),
+
+          // Message
+          RLTypography.bodyMedium(
+            'Keep learning daily to build your combo.',
+            color: RLTheme.textSecondary,
+            textAlign: TextAlign.center,
+          ),
+
+          const Spacing.height(24),
+
+          // Week progress
+          WeekStreakProgress(),
+        ],
+      ),
+    );
+  }
+
+  Widget LargeFireIcon() {
+    return const Icon(
+      Icons.local_fire_department,
+      color: RLTheme.warningColor,
+      size: 48,
+    );
+  }
+
+  Widget WeekStreakProgress() {
+    final List<String> weekDays = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
+    final List<bool> completedDays = [
+      true,
+      true,
+      true,
+      false,
+      false,
+      false,
+      false,
+    ];
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: DayIndicators(weekDays, completedDays),
+    );
+  }
+
+  List<Widget> DayIndicators(List<String> days, List<bool> completed) {
+    final List<Widget> indicators = [];
+
+    for (int dayIndex = 0; dayIndex < days.length; dayIndex++) {
+      final bool isCompleted = completed[dayIndex];
+      final Color dayColor = getDayColor(isCompleted);
+      final Color textColor = getDayTextColor(isCompleted);
+
+      final BoxDecoration dayDecoration = BoxDecoration(
+        color: dayColor,
+        shape: BoxShape.circle,
+      );
+
+      indicators.add(
+        Column(
+          children: [
+            Container(
+              width: 36,
+              height: 36,
+              decoration: dayDecoration,
+              child: Center(
+                child: RLTypography.bodyMedium(
+                  days[dayIndex],
+                  color: textColor,
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    return indicators;
+  }
+
+  Color getDayColor(bool isCompleted) {
+    if (isCompleted) {
+      return RLTheme.warningColor;
+    }
+    return RLTheme.textSecondary.withValues(alpha: 0.2);
+  }
+
+  Color getDayTextColor(bool isCompleted) {
+    if (isCompleted) {
+      return RLTheme.white;
+    }
+    return RLTheme.textSecondary;
+  }
 }

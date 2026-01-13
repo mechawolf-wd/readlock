@@ -2,6 +2,7 @@
 // Simple bookshelf layout with settings access
 
 import 'package:flutter/material.dart' hide Typography;
+import 'package:readlock/MainNavigation.dart';
 import 'package:readlock/screens/ProfileScreen.dart';
 import 'package:readlock/utility_widgets/StatisticsTopBar.dart';
 import 'package:readlock/utility_widgets/Utility.dart';
@@ -52,6 +53,9 @@ class MyBookshelfScreenState extends State<MyBookshelfScreen> {
 
             // Learning statistics
             const LearningStatsCard(),
+
+            // Bottom spacing for floating navigation
+            const Spacing.height(FLOATING_NAV_BOTTOM_OFFSET),
           ], crossAxisAlignment: CrossAxisAlignment.stretch),
         ),
       ),

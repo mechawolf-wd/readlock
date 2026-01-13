@@ -2,6 +2,7 @@
 // Clean card-based layout with course selection
 
 import 'package:flutter/material.dart' hide Typography;
+import 'package:readlock/MainNavigation.dart';
 import 'package:readlock/screens/ReaderPassScreen.dart';
 import 'package:readlock/utility_widgets/Utility.dart';
 import 'package:readlock/constants/RLTypography.dart';
@@ -170,6 +171,9 @@ class CoursesScreenState extends State<CoursesScreen> {
 
             // Trending section
             TrendingSection(),
+
+            // Bottom spacing for floating navigation
+            const Spacing.height(FLOATING_NAV_BOTTOM_OFFSET),
           ], crossAxisAlignment: CrossAxisAlignment.stretch),
         ),
       ], crossAxisAlignment: CrossAxisAlignment.stretch),
@@ -222,7 +226,7 @@ class CoursesScreenState extends State<CoursesScreen> {
         // Expanded search results (scrollable)
         Expanded(
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24),
+            padding: const EdgeInsets.fromLTRB(24, 0, 24, FLOATING_NAV_BOTTOM_OFFSET),
             child: SearchResults(),
           ),
         ),

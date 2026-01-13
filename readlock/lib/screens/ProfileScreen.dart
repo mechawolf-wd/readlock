@@ -62,6 +62,7 @@ class ProfileContentState extends State<ProfileContent> {
   bool hapticsEnabled = true;
   bool revealAllTrueFalse = false;
   bool blurEnabled = true;
+  bool coloredTextEnabled = true;
   String textSpeed = 'Classic';
 
   @override
@@ -85,7 +86,6 @@ class ProfileContentState extends State<ProfileContent> {
         // const LearningStatsCard(),
         //
         // const Spacing.height(20),
-
         const SoundPickerCard(),
 
         const Spacing.height(24),
@@ -95,6 +95,7 @@ class ProfileContentState extends State<ProfileContent> {
           hapticsEnabled: hapticsEnabled,
           revealAllTrueFalse: revealAllTrueFalse,
           blurEnabled: blurEnabled,
+          coloredTextEnabled: coloredTextEnabled,
           textSpeed: textSpeed,
           onSoundsToggled: (value) =>
               setState(() => soundsEnabled = value),
@@ -102,8 +103,9 @@ class ProfileContentState extends State<ProfileContent> {
               setState(() => hapticsEnabled = value),
           onRevealAllTrueFalseToggled: (value) =>
               setState(() => revealAllTrueFalse = value),
-          onBlurToggled: (value) =>
-              setState(() => blurEnabled = value),
+          onBlurToggled: (value) => setState(() => blurEnabled = value),
+          onColoredTextToggled: (value) =>
+              setState(() => coloredTextEnabled = value),
           onTextSpeedChanged: (value) =>
               setState(() => textSpeed = value),
         ),
@@ -145,10 +147,7 @@ class LearningStatsCard extends StatelessWidget {
 
           const Spacer(),
 
-          GestureDetector(
-            onTap: handleShareTap,
-            child: ShareIcon,
-          ),
+          GestureDetector(onTap: handleShareTap, child: ShareIcon),
         ]),
 
         const Spacing.height(20),
@@ -164,9 +163,9 @@ class LearningStatsCard extends StatelessWidget {
       // Days equivalent stat
       const Expanded(
         child: StatItem(
-          value: '127',
+          value: '320',
           unit: 'days',
-          label: 'at 1h/day',
+          label: 'at 10 minutes/day',
         ),
       ),
 
@@ -205,10 +204,7 @@ class StatItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Div.column([
       Div.row([
-        RLTypography.headingLarge(
-          value,
-          color: Colors.white,
-        ),
+        RLTypography.headingLarge(value, color: Colors.white),
 
         const Spacing.width(4),
 
@@ -234,11 +230,13 @@ class MenuSection extends StatelessWidget {
   final bool hapticsEnabled;
   final bool revealAllTrueFalse;
   final bool blurEnabled;
+  final bool coloredTextEnabled;
   final String textSpeed;
   final ValueChanged<bool> onSoundsToggled;
   final ValueChanged<bool> onHapticsToggled;
   final ValueChanged<bool> onRevealAllTrueFalseToggled;
   final ValueChanged<bool> onBlurToggled;
+  final ValueChanged<bool> onColoredTextToggled;
   final ValueChanged<String> onTextSpeedChanged;
 
   const MenuSection({
@@ -247,11 +245,13 @@ class MenuSection extends StatelessWidget {
     required this.hapticsEnabled,
     required this.revealAllTrueFalse,
     required this.blurEnabled,
+    required this.coloredTextEnabled,
     required this.textSpeed,
     required this.onSoundsToggled,
     required this.onHapticsToggled,
     required this.onRevealAllTrueFalseToggled,
     required this.onBlurToggled,
+    required this.onColoredTextToggled,
     required this.onTextSpeedChanged,
   });
 
@@ -293,7 +293,7 @@ class MenuSection extends StatelessWidget {
       // Reading Settings
       SwitchMenuItem(
         icon: Icons.visibility,
-        title: 'Reveal all true false',
+        title: 'Reveal',
         value: revealAllTrueFalse,
         onChanged: onRevealAllTrueFalseToggled,
       ),
@@ -303,6 +303,13 @@ class MenuSection extends StatelessWidget {
         title: 'Blur',
         value: blurEnabled,
         onChanged: onBlurToggled,
+      ),
+
+      SwitchMenuItem(
+        icon: Icons.format_color_text,
+        title: 'Colored text',
+        value: coloredTextEnabled,
+        onChanged: onColoredTextToggled,
       ),
 
       SegmentedMenuItem(
@@ -698,18 +705,9 @@ class SoundPickerCardState extends State<SoundPickerCard> {
 
   Widget soundPickerContent() {
     final List<Map<String, dynamic>> soundOptions = [
-      {
-        'name': TYPEWRITER_SOUND,
-        'icon': Icons.keyboard,
-      },
-      {
-        'name': SWITCHES_SOUND,
-        'icon': Icons.toggle_on,
-      },
-      {
-        'name': OIIA_SOUND,
-        'icon': Icons.music_note,
-      },
+      {'name': TYPEWRITER_SOUND, 'icon': Icons.keyboard},
+      {'name': SWITCHES_SOUND, 'icon': Icons.toggle_on},
+      {'name': OIIA_SOUND, 'icon': Icons.music_note},
     ];
 
     final List<Widget> soundBlocks = soundOptions.map((sound) {
@@ -860,7 +858,7 @@ class SegmentedMenuItem extends StatelessWidget {
         ),
       ]),
 
-      const Spacing.height(12),
+      const Spacing.height(16),
 
       // Segmented options
       SegmentedOptions(
@@ -868,7 +866,7 @@ class SegmentedMenuItem extends StatelessWidget {
         selectedOption: selectedOption,
         onChanged: onChanged,
       ),
-    ], padding: const EdgeInsets.symmetric(vertical: 16));
+    ], padding: const EdgeInsets.only(top: 32, bottom: 16));
   }
 
   Widget SegmentedOptions({

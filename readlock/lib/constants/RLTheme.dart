@@ -69,6 +69,26 @@ class RLTheme {
     );
   }
 
+  static PageRouteBuilder<T> slowFadeTransition<T>(Widget page) {
+    return PageRouteBuilder<T>(
+      transitionDuration: const Duration(milliseconds: 450),
+      reverseTransitionDuration: const Duration(milliseconds: 450),
+      pageBuilder: (context, animation, secondaryAnimation) => page,
+      transitionsBuilder:
+          (context, animation, secondaryAnimation, child) {
+            final Animation<double> fadeAnimation =
+                Tween<double>(begin: 0.0, end: 1.0).animate(
+                  CurvedAnimation(
+                    parent: animation,
+                    curve: transitionCurve,
+                  ),
+                );
+
+            return FadeTransition(opacity: fadeAnimation, child: child);
+          },
+    );
+  }
+
   static PageRouteBuilder<T> slideUpTransition<T>(Widget page) {
     return PageRouteBuilder<T>(
       pageBuilder: (context, animation, secondaryAnimation) => page,

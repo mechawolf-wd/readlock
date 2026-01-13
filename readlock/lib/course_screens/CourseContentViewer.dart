@@ -7,6 +7,7 @@ import 'package:readlock/course_screens/data/courseData.dart';
 import 'package:readlock/constants/RLTheme.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/utility_widgets/Utility.dart';
+import 'package:readlock/utility_widgets/FeedbackSnackbar.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/screens/StreakplierRewardScreen.dart';
 // TODO: Re-enable when Reading League is ready
@@ -441,8 +442,8 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
 
   // Handle page change events
   void handlePageChanged(int contentItemIndex) {
-    // Clear all snackbars when user scrolls to next content (prevents queue buildup)
-    ScaffoldMessenger.of(context).clearSnackBars();
+    // Clear any feedback snackbar when user scrolls to next content
+    FeedbackSnackBar.clearSnackbars();
 
     if (mounted) {
       setState(() {
@@ -468,7 +469,7 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
   // Navigate back to course roadmap
   void navigateBackToRoadmap() {
     // Clear any lingering snackbars before leaving
-    ScaffoldMessenger.of(context).clearSnackBars();
+    FeedbackSnackBar.clearSnackbars();
 
     Navigator.of(context).pop();
   }
@@ -501,7 +502,7 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
   // Show Streakplier reward screen after lesson completion
   void showStreakplierRewardScreen() {
     // Clear any lingering snackbars before showing rewards
-    ScaffoldMessenger.of(context).clearSnackBars();
+    FeedbackSnackBar.clearSnackbars();
 
     final LessonReward reward = createLessonReward();
 
@@ -532,7 +533,9 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
 
   // Handle continue from reward screen
   void handleRewardScreenContinue() {
+    // Pop reward screen and course content viewer to return to roadmap
     Navigator.of(context).pop(); // Close reward screen
+    Navigator.of(context).pop(); // Close course content viewer
   }
 
   // Handle bookmark tap to favorite current slide
@@ -550,35 +553,11 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
       return;
     }
 
-    // Extract styling above method logic
-    final Color starredSnackBarBackgroundColor = const Color.fromARGB(
-      255,
-      10,
-      35,
-      87,
-    ).withValues(alpha: 0.9);
-
-    final RoundedRectangleBorder starredSnackBarShape =
-        RoundedRectangleBorder(borderRadius: BorderRadius.circular(12));
-
-    final EdgeInsets starredSnackBarMargin = const EdgeInsets.all(16);
-
-    // Clear any existing snackbars to prevent stacking
-    ScaffoldMessenger.of(context).clearSnackBars();
-
-    // Show feedback that slide was starred (mockup)
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: RLTypography.bodyMedium(
-          'Saved to your nest! Saved by: 339 birds.',
-          color: Colors.white,
-        ),
-        backgroundColor: starredSnackBarBackgroundColor,
-        duration: const Duration(seconds: 2),
-        behavior: SnackBarBehavior.floating,
-        shape: starredSnackBarShape,
-        margin: starredSnackBarMargin,
-      ),
+    // Show bookmark feedback using custom snackbar
+    FeedbackSnackBar.showCustomFeedback(
+      context,
+      'Saved to your nest! Saved by: 339 birds.',
+      true,
     );
   }
 

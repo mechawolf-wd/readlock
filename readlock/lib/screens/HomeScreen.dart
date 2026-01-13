@@ -3,6 +3,7 @@
 
 import 'package:flutter/material.dart' hide Typography;
 import 'package:readlock/course_screens/CourseRoadmapScreen.dart';
+import 'package:readlock/MainNavigation.dart';
 import 'package:readlock/screens/ReaderPassScreen.dart';
 import 'package:readlock/utility_widgets/StatisticsTopBar.dart';
 import 'package:readlock/utility_widgets/Utility.dart';
@@ -117,7 +118,8 @@ class HomeScreenState extends State<HomeScreen> {
                 // For your personality section
                 ForYourPersonalitySection(),
 
-                const Spacing.height(24),
+                // Bottom spacing for floating navigation
+                const Spacing.height(FLOATING_NAV_BOTTOM_OFFSET),
               ], crossAxisAlignment: CrossAxisAlignment.stretch),
             ),
           ], crossAxisAlignment: CrossAxisAlignment.stretch),

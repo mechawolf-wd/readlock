@@ -72,12 +72,13 @@ class CCEstimatePercentageState extends State<CCEstimatePercentage>
 
   @override
   Widget build(BuildContext context) {
-    return Div.column(
-      MainContent(),
-      color: RLTheme.backgroundDark,
-      padding: 24,
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      mainAxisAlignment: MainAxisAlignment.center,
+    return SingleChildScrollView(
+      child: Div.column(
+        MainContent(),
+        color: RLTheme.backgroundDark,
+        padding: [20, 16],
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+      ),
     );
   }
 
@@ -87,15 +88,15 @@ class CCEstimatePercentageState extends State<CCEstimatePercentage>
     return [
       QuestionText(),
 
-      const Spacing.height(32),
+      const Spacing.height(20),
 
       CurrentEstimateDisplay(),
 
-      const Spacing.height(24),
+      const Spacing.height(16),
 
       EstimationSlider(),
 
-      const Spacing.height(32),
+      const Spacing.height(20),
 
       SubmitButton(),
 
@@ -105,9 +106,12 @@ class CCEstimatePercentageState extends State<CCEstimatePercentage>
 
   Widget ResultsContent() {
     return Div.column([
-      const Spacing.height(24),
+      const Spacing.height(16),
+
       ResultSection(),
-      const Spacing.height(24),
+
+      const Spacing.height(16),
+
       ExplanationSection(),
     ]);
   }
@@ -120,26 +124,24 @@ class CCEstimatePercentageState extends State<CCEstimatePercentage>
   }
 
   Widget CurrentEstimateDisplay() {
-    return Div.column([
+    return Div.row([
       RLTypography.bodyMedium(
-        'Your estimate',
+        'Your estimate:',
         color: RLTheme.textPrimary.withValues(alpha: 0.7),
       ),
 
-      const Spacing.height(8),
+      const Spacing.width(12),
 
-      Div.row([
-        RLTypography.headingLarge(
-          '${currentEstimate.round()}',
-          color: RLTheme.primaryBlue,
-        ),
+      RLTypography.headingLarge(
+        '${currentEstimate.round()}',
+        color: RLTheme.primaryBlue,
+      ),
 
-        RLTypography.headingMedium(
-          '%',
-          color: RLTheme.primaryBlue.withValues(alpha: 0.7),
-        ),
-      ], mainAxisAlignment: MainAxisAlignment.center),
-    ], crossAxisAlignment: CrossAxisAlignment.center);
+      RLTypography.headingMedium(
+        '%',
+        color: RLTheme.primaryBlue.withValues(alpha: 0.7),
+      ),
+    ], mainAxisAlignment: MainAxisAlignment.center);
   }
 
   // Helper methods
@@ -184,7 +186,7 @@ class CCEstimatePercentageState extends State<CCEstimatePercentage>
           padding: const [12, 0],
         ),
       ],
-      padding: const [24, 0],
+      padding: const [16, 0],
     );
   }
 
@@ -211,16 +213,16 @@ class CCEstimatePercentageState extends State<CCEstimatePercentage>
       shouldShow,
       Div.row(
         [
-          const Icon(Icons.touch_app, color: RLTheme.white, size: 20),
+          const Icon(Icons.touch_app, color: RLTheme.white, size: 18),
 
           const Spacing.width(8),
 
-          RLTypography.bodyLarge(
+          RLTypography.bodyMedium(
             'Submit Estimate',
             color: RLTheme.white,
           ),
         ],
-        height: 52,
+        height: 44,
         decoration: Style.submitButtonDecoration,
         mainAxisAlignment: MainAxisAlignment.center,
         onTap: submitEstimate,
@@ -238,13 +240,13 @@ class CCEstimatePercentageState extends State<CCEstimatePercentage>
       child: Div.column([
         // Result feedback card
         Container(
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.all(16),
           decoration: getResultCardDecoration(isClose),
           child: Div.column([
             // Result header
             getResultHeader(isClose, difference),
 
-            const Spacing.height(20),
+            const Spacing.height(12),
 
             // Comparison display
             getComparisonDisplay(difference),
@@ -446,15 +448,15 @@ class Style {
       thumbColor: RLTheme.primaryBlue,
       overlayColor: RLTheme.primaryBlue.withValues(alpha: 0.1),
       thumbShape: const RoundSliderThumbShape(
-        enabledThumbRadius: 12,
+        enabledThumbRadius: 10,
         pressedElevation: 4,
       ),
-      trackHeight: 6,
+      trackHeight: 4,
       tickMarkShape: const RoundSliderTickMarkShape(),
     );
   }
 
-  static const double submitButtonHeight = 52.0;
+  static const double submitButtonHeight = 44.0;
 
   static final BoxDecoration submitButtonDecoration = BoxDecoration(
     color: RLTheme.primaryBlue,
