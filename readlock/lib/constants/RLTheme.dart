@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 class RLTheme {
   // Base colors
   static const Color white = Colors.white;
-  static const Color black = Colors.black;
 
   // Primary colors
   static const Color primaryBlue = Color.fromARGB(255, 59, 154, 233);
@@ -40,68 +39,57 @@ class RLTheme {
   static const Color accentLime = Colors.lime;
 
   // Grey shades
-  static final Color grey300 = Colors.grey[300] ?? const Color(0xFFE0E0E0);
-  static final Color grey400 = Colors.grey[400] ?? const Color(0xFFBDBDBD);
-  static final Color grey600 = Colors.grey[600] ?? const Color(0xFF757575);
-
-  // Border radius
-  static const double radiusMedium = 12.0;
-
-  // Card properties
-  static const double cardBorderRadius = 8.0;
-  static const double cardPadding = 16.0;
-  static const double cardMarginBottom = 12.0;
-  static final Color cardBackgroundColor =
-      Colors.grey[50] ?? const Color(0xFFFAFAFA);
-  static final Color cardBorderColor =
+  static final Color grey300 =
       Colors.grey[300] ?? const Color(0xFFE0E0E0);
-  static const double cardBorderWidth = 1.0;
+  static final Color grey600 =
+      Colors.grey[600] ?? const Color(0xFF757575);
 
   // Content padding values
   static const double contentPadding = 24.0;
-  static const double contentPaddingSmall = 20.0;
   static const double contentPaddingMedium = 12.0;
-  static const double contentPaddingTiny = 4.0;
-  static const double contentPaddingSmaller = 8.0;
 
   // Navigation transitions
-  static const Duration transitionDuration = Duration(milliseconds: 300);
   static const Curve transitionCurve = Curves.easeInOut;
 
   static PageRouteBuilder<T> fadeTransition<T>(Widget page) {
     return PageRouteBuilder<T>(
       pageBuilder: (context, animation, secondaryAnimation) => page,
-      transitionsBuilder: (context, animation, secondaryAnimation, child) {
-        return FadeTransition(
-          opacity: Tween<double>(begin: 0.0, end: 1.0).animate(
-            CurvedAnimation(
-              parent: animation,
-              curve: transitionCurve,
-            ),
-          ),
-          child: child,
-        );
-      },
+      transitionsBuilder:
+          (context, animation, secondaryAnimation, child) {
+            final Animation<double> fadeAnimation =
+                Tween<double>(begin: 0.0, end: 1.0).animate(
+                  CurvedAnimation(
+                    parent: animation,
+                    curve: transitionCurve,
+                  ),
+                );
+
+            return FadeTransition(opacity: fadeAnimation, child: child);
+          },
     );
   }
 
   static PageRouteBuilder<T> slideUpTransition<T>(Widget page) {
     return PageRouteBuilder<T>(
       pageBuilder: (context, animation, secondaryAnimation) => page,
-      transitionsBuilder: (context, animation, secondaryAnimation, child) {
-        return SlideTransition(
-          position: Tween<Offset>(
-            begin: const Offset(0.0, 1.0),
-            end: Offset.zero,
-          ).animate(
-            CurvedAnimation(
-              parent: animation,
-              curve: transitionCurve,
-            ),
-          ),
-          child: child,
-        );
-      },
+      transitionsBuilder:
+          (context, animation, secondaryAnimation, child) {
+            final Animation<Offset> slideAnimation =
+                Tween<Offset>(
+                  begin: const Offset(0.0, 1.0),
+                  end: Offset.zero,
+                ).animate(
+                  CurvedAnimation(
+                    parent: animation,
+                    curve: transitionCurve,
+                  ),
+                );
+
+            return SlideTransition(
+              position: slideAnimation,
+              child: child,
+            );
+          },
     );
   }
 

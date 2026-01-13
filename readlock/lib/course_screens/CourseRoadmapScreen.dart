@@ -8,7 +8,6 @@ import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLTheme.dart';
 import 'package:readlock/utility_widgets/CourseLoadingScreen.dart';
 
-
 class CourseRoadmapScreen extends StatefulWidget {
   final String courseId;
 
@@ -93,17 +92,14 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
           const Spacing.height(24),
 
           // Horizontal page view for segments
-          Expanded(
-            child: SegmentPageView(),
-          ),
+          Expanded(child: SegmentPageView()),
         ]),
       ),
     );
   }
 
   Widget RoadmapHeader() {
-    final String courseTitle =
-        courseData?['title'] ?? 'Course Roadmap';
+    final String courseTitle = courseData?['title'] ?? 'Course Roadmap';
 
     final Widget BackArrowIcon = const Icon(
       Icons.arrow_back,
@@ -182,7 +178,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
 
         const Spacing.width(4),
 
-        RLTypography.bodyMedium('30 xp'),
+        RLTypography.bodyMedium('37 lessons'),
       ]),
 
       const Spacing.width(20),
@@ -204,7 +200,8 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
   Widget SegmentPageIndicators() {
     final bool hasMultipleSegments = courseSegments.length > 1;
     final bool hasTabController = tabController != null;
-    final bool shouldShowIndicators = hasMultipleSegments && hasTabController;
+    final bool shouldShowIndicators =
+        hasMultipleSegments && hasTabController;
 
     return RenderIf.condition(
       shouldShowIndicators,
@@ -222,11 +219,17 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
     const double indicatorBorderRadius = 4.0;
 
     final Color activeIndicatorColor = RLTheme.primaryGreen;
-    final Color inactiveIndicatorColor = Colors.grey.withValues(alpha: 0.3);
+    final Color inactiveIndicatorColor = Colors.grey.withValues(
+      alpha: 0.3,
+    );
 
     final List<Widget> indicators = [];
 
-    for (int segmentIndex = 0; segmentIndex < courseSegments.length; segmentIndex++) {
+    for (
+      int segmentIndex = 0;
+      segmentIndex < courseSegments.length;
+      segmentIndex++
+    ) {
       final bool isActive = segmentIndex == currentSegmentIndex;
       final bool isNotFirstIndicator = segmentIndex > 0;
 
@@ -234,8 +237,12 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
         indicators.add(const Spacing.width(6));
       }
 
-      final Color indicatorColor = isActive ? activeIndicatorColor : inactiveIndicatorColor;
-      final double indicatorWidth = isActive ? activeIndicatorWidth : inactiveIndicatorWidth;
+      final Color indicatorColor = isActive
+          ? activeIndicatorColor
+          : inactiveIndicatorColor;
+      final double indicatorWidth = isActive
+          ? activeIndicatorWidth
+          : inactiveIndicatorWidth;
 
       final BoxDecoration indicatorDecoration = BoxDecoration(
         color: indicatorColor,
@@ -290,7 +297,6 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
     );
   }
 
-
   Color getColorFromString(String colorName) {
     switch (colorName.toLowerCase()) {
       case 'green':
@@ -342,7 +348,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
   }
 }
 
-// Single segment page with header and lessons
+// Single segment page with sticky header and scrollable lessons
 class SegmentPage extends StatelessWidget {
   final Map<String, dynamic> segment;
   final int segmentIndex;
@@ -357,63 +363,58 @@ class SegmentPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final String segmentTitle = segment['segment-title'] ?? 'Unnamed Segment';
-    final String segmentDescription = segment['segment-description'] ?? '';
+    final String segmentTitle =
+        segment['segment-title'] ?? 'Unnamed Segment';
+    final String segmentDescription =
+        segment['segment-description'] ?? '';
     final List<dynamic> lessons = segment['lessons'] ?? [];
 
-    return ListView(
-      padding: Style.listViewPadding,
-      children: getLessonCards(segmentTitle, segmentDescription, lessons),
+    return Column(
+      children: [
+        // Sticky segment header
+        SegmentHeader(
+          title: segmentTitle,
+          description: segmentDescription,
+        ),
+
+        // Scrollable lessons list
+        Expanded(
+          child: ListView.builder(
+            padding: Style.listViewPadding,
+            itemCount: lessons.length,
+            itemBuilder: (context, lessonIndex) {
+              return getLessonCard(lessons, lessonIndex);
+            },
+          ),
+        ),
+      ],
     );
   }
 
-  List<Widget> getLessonCards(
-    String segmentTitle,
-    String segmentDescription,
-    List<dynamic> lessons,
-  ) {
-    final List<Widget> cards = [];
+  Widget getLessonCard(List<dynamic> lessons, int lessonIndex) {
+    final Map<String, dynamic> lesson = lessons[lessonIndex];
+    final String lessonTitle = lesson['title'] ?? 'Unnamed Lesson';
+    final String lessonId = lesson['lesson-id'] ?? '';
 
-    // Add segment header
-    cards.add(
-      SegmentHeader(
-        title: segmentTitle,
-        description: segmentDescription,
-      ),
+    // Determine lesson state (mocked for now)
+    final bool isCompleted = segmentIndex == 0 && lessonIndex < 3;
+    final bool isCurrentLevel = segmentIndex == 0 && lessonIndex == 3;
+    final bool isLocked = segmentIndex > 0;
+
+    // Mock completion data for demonstration
+    final int skillCheckQuestionsCompleted =
+        getMockSkillCheckProgress(segmentIndex, lessonIndex);
+
+    return LessonCard(
+      levelNumber: lessonIndex + 1,
+      title: lessonTitle,
+      subtitle: lessonId,
+      isCompleted: isCompleted,
+      isCurrentLevel: isCurrentLevel,
+      isLocked: isLocked,
+      skillCheckQuestionsCompleted: skillCheckQuestionsCompleted,
+      onTap: () => onLessonTap(lessonIndex, 0),
     );
-
-    // Add lessons for this segment
-    for (int lessonIndex = 0; lessonIndex < lessons.length; lessonIndex++) {
-      final Map<String, dynamic> lesson = lessons[lessonIndex];
-      final String lessonTitle = lesson['title'] ?? 'Unnamed Lesson';
-      final String lessonId = lesson['lesson-id'] ?? '';
-
-      // Determine lesson state (mocked for now)
-      final bool isCompleted =
-          segmentIndex == 0 && lessonIndex < 3;
-      final bool isCurrentLevel =
-          segmentIndex == 0 && lessonIndex == 3;
-      final bool isLocked = segmentIndex > 0;
-
-      // Mock completion data for demonstration
-      final int skillCheckQuestionsCompleted =
-          getMockSkillCheckProgress(segmentIndex, lessonIndex);
-
-      cards.add(
-        LessonCard(
-          levelNumber: lessonIndex + 1,
-          title: lessonTitle,
-          subtitle: lessonId,
-          isCompleted: isCompleted,
-          isCurrentLevel: isCurrentLevel,
-          isLocked: isLocked,
-          skillCheckQuestionsCompleted: skillCheckQuestionsCompleted,
-          onTap: () => onLessonTap(lessonIndex, 0),
-        ),
-      );
-    }
-
-    return cards;
   }
 
   // Mock skill check progress data for demonstration
@@ -458,41 +459,41 @@ class SegmentHeader extends StatelessWidget {
 
     final BoxDecoration letterDecoration = BoxDecoration(
       color: segmentColor.withValues(alpha: 0.15),
-      borderRadius: BorderRadius.circular(12),
+      borderRadius: BorderRadius.circular(8),
       border: Border.all(color: segmentColor.withValues(alpha: 0.3)),
     );
 
     final Widget StyledLetter = Div.column(
       [
-        RLTypography.headingLarge(
+        RLTypography.headingMedium(
           segmentLetter,
           color: segmentColor,
           textAlign: TextAlign.center,
         ),
       ],
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       decoration: letterDecoration,
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
     );
 
     return Div.column([
-      const Spacing.height(24),
+      const Spacing.height(8),
 
       // Letter and title row
       Div.row([
         StyledLetter,
 
-        const Spacing.width(12),
+        const Spacing.width(10),
 
-        RLTypography.headingLarge(
+        RLTypography.headingMedium(
           segmentTitle,
           color: RLTheme.textPrimary,
-          textAlign: TextAlign.left,
+          textAlign: TextAlign.center,
         ),
       ], mainAxisAlignment: MainAxisAlignment.center),
 
-      const Spacing.height(16),
+      const Spacing.height(12),
     ], crossAxisAlignment: CrossAxisAlignment.center);
   }
 
@@ -563,9 +564,7 @@ class LessonCard extends StatelessWidget {
           const Spacing.width(16),
 
           // Level title and description
-          Expanded(
-            child: LevelContent(),
-          ),
+          Expanded(child: LevelContent()),
 
           // Navigation arrow
           ArrowIcon,
@@ -685,10 +684,13 @@ class LessonCard extends StatelessWidget {
   Widget ProgressIndicators() {
     return Div.row([
       const Spacer(),
-      
+
       // Skill check progress with wrapped container
       Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        padding: const EdgeInsets.symmetric(
+          horizontal: 12,
+          vertical: 6,
+        ),
         decoration: BoxDecoration(
           color: Colors.grey.withValues(alpha: 0.05),
           borderRadius: BorderRadius.circular(8),

@@ -45,6 +45,9 @@ class FeedbackSnackBar {
       }
     }
 
+    // Clear any existing snackbars to prevent stacking
+    ScaffoldMessenger.of(context).clearSnackBars();
+
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Row(
@@ -112,6 +115,9 @@ class FeedbackSnackBar {
       }
     }
 
+    // Clear any existing snackbars to prevent stacking
+    ScaffoldMessenger.of(context).clearSnackBars();
+
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Row(
@@ -162,6 +168,9 @@ class FeedbackSnackBar {
     String message,
     bool isCorrect,
   ) {
+    // Clear any existing snackbars to prevent stacking
+    ScaffoldMessenger.of(context).clearSnackBars();
+
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: RLTypography.bodyMedium(message, color: RLTheme.white),

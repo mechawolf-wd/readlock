@@ -5,16 +5,22 @@ import 'package:flutter/material.dart' hide Typography;
 import 'package:readlock/course_screens/widgets/CCJSONContentFactory.dart';
 import 'package:readlock/course_screens/data/courseData.dart';
 import 'package:readlock/constants/RLTheme.dart';
+import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/utility_widgets/Utility.dart';
-import 'package:readlock/MainNavigation.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/screens/StreakplierRewardScreen.dart';
-import 'package:readlock/screens/ProfileScreen.dart';
+// TODO: Re-enable when Reading League is ready
+// import 'package:readlock/screens/ProfileScreen.dart';
 
 // String constants
 const String NO_CONTENT_AVAILABLE_MESSAGE =
     'Pigeons are still gathering content for this lesson. Please check back a bit !';
 const String ERROR_LOADING_COURSE_DATA = 'Error loading course data';
+const String QUIT_CONFIRMATION_TITLE = 'Wait';
+const String QUIT_CONFIRMATION_MESSAGE =
+    'If you quit you will lose your progress.';
+const String QUIT_CONFIRMATION_LEARN_BUTTON = 'Learn';
+const String QUIT_CONFIRMATION_QUIT_BUTTON = 'Quit';
 
 // Styling constants
 const double TOP_BAR_PADDING = 16.0;
@@ -73,8 +79,8 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
     size: 24,
   );
 
-  static const Icon starIcon = Icon(
-    Icons.save_rounded,
+  static const Icon BookmarkIcon = Icon(
+    Icons.bookmark_rounded,
     color: Colors.amber,
     size: 24,
   );
@@ -179,8 +185,8 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
 
       const Spacing.width(NAVIGATION_SPACING),
 
-      // Star slide icon
-      StarButton(),
+      // Bookmark slide icon
+      BookmarkButton(),
 
       const Spacing.width(8),
 
@@ -192,7 +198,7 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
   // Back button for navigation
   Widget BackNavigationButton() {
     return GestureDetector(
-      onTap: navigateToMainScreen,
+      onTap: showQuitConfirmationSheet,
       child: backNavigationIcon,
     );
   }
@@ -202,9 +208,12 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
     return blazeIcon;
   }
 
-  // Star button for slide favoriting
-  Widget StarButton() {
-    return GestureDetector(onTap: handleStarTap, child: starIcon);
+  // Bookmark button for slide favoriting
+  Widget BookmarkButton() {
+    return GestureDetector(
+      onTap: handleBookmarkTap,
+      child: BookmarkIcon,
+    );
   }
 
   // Progress indicator with individual segments for skill check questions
@@ -432,8 +441,8 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
 
   // Handle page change events
   void handlePageChanged(int contentItemIndex) {
-    // Dismiss any active snackbar when user scrolls to next content
-    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+    // Clear all snackbars when user scrolls to next content (prevents queue buildup)
+    ScaffoldMessenger.of(context).clearSnackBars();
 
     if (mounted) {
       setState(() {
@@ -456,24 +465,44 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
     return completedItems / totalItems;
   }
 
-  // Navigate back to main navigation screen
-  void navigateToMainScreen() {
-    Navigator.of(
-      context,
-    ).push(RLTheme.slideUpTransition(const MainNavigation()));
+  // Navigate back to course roadmap
+  void navigateBackToRoadmap() {
+    // Clear any lingering snackbars before leaving
+    ScaffoldMessenger.of(context).clearSnackBars();
+
+    Navigator.of(context).pop();
   }
 
-  // Navigate to profile screen with reading league expanded
-  void navigateToProfileWithReadingLeague() {
-    Navigator.of(context).push(
-      RLTheme.slideUpTransition(
-        const ProfileScreen(showReadingLeagueExpanded: true),
+  // Show quit confirmation bottom sheet
+  void showQuitConfirmationSheet() {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (sheetContext) => QuitConfirmationSheet(
+        onLearnTap: () => Navigator.of(sheetContext).pop(),
+        onQuitTap: () {
+          Navigator.of(sheetContext).pop();
+          navigateBackToRoadmap();
+        },
       ),
     );
   }
 
+  // TODO: Re-enable when Reading League is ready
+  // Navigate to profile screen with reading league expanded
+  // void navigateToProfileWithReadingLeague() {
+  //   Navigator.of(context).push(
+  //     RLTheme.slideUpTransition(
+  //       const ProfileScreen(showReadingLeagueExpanded: true),
+  //     ),
+  //   );
+  // }
+
   // Show Streakplier reward screen after lesson completion
   void showStreakplierRewardScreen() {
+    // Clear any lingering snackbars before showing rewards
+    ScaffoldMessenger.of(context).clearSnackBars();
+
     final LessonReward reward = createLessonReward();
 
     Navigator.of(context).push(
@@ -506,8 +535,8 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
     Navigator.of(context).pop(); // Close reward screen
   }
 
-  // Handle star tap to favorite current slide
-  void handleStarTap() {
+  // Handle bookmark tap to favorite current slide
+  void handleBookmarkTap() {
     // Check if PageController is attached to a PageView
     if (!pageController.hasClients) {
       return; // PageController not attached yet
@@ -533,6 +562,9 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
         RoundedRectangleBorder(borderRadius: BorderRadius.circular(12));
 
     final EdgeInsets starredSnackBarMargin = const EdgeInsets.all(16);
+
+    // Clear any existing snackbars to prevent stacking
+    ScaffoldMessenger.of(context).clearSnackBars();
 
     // Show feedback that slide was starred (mockup)
     ScaffoldMessenger.of(context).showSnackBar(
@@ -823,5 +855,101 @@ class ProgressSegmentWidget extends StatelessWidget {
     // This is a simplified approach - in a real implementation,
     // you might pass this as a parameter to avoid recalculation
     return 3; // We know there are 3 skill check questions from the JSON
+  }
+}
+
+// Bottom sheet for quit confirmation
+class QuitConfirmationSheet extends StatelessWidget {
+  final VoidCallback onLearnTap;
+  final VoidCallback onQuitTap;
+
+  const QuitConfirmationSheet({
+    super.key,
+    required this.onLearnTap,
+    required this.onQuitTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    const BoxDecoration sheetDecoration = BoxDecoration(
+      color: RLTheme.backgroundDark,
+      borderRadius: BorderRadius.only(
+        topLeft: Radius.circular(16),
+        topRight: Radius.circular(16),
+      ),
+    );
+
+    return Container(
+      decoration: sheetDecoration,
+      padding: const EdgeInsets.fromLTRB(24, 12, 24, 24),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          // Drag handle
+          Center(
+            child: Container(
+              width: 36,
+              height: 4,
+              decoration: BoxDecoration(
+                color: RLTheme.textSecondary.withValues(alpha: 0.3),
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+          ),
+
+          const Spacing.height(24),
+
+          // Title
+          RLTypography.headingMedium(QUIT_CONFIRMATION_TITLE),
+
+          const Spacing.height(8),
+
+          // Message
+          RLTypography.bodyMedium(
+            QUIT_CONFIRMATION_MESSAGE,
+            color: RLTheme.textSecondary,
+          ),
+
+          const Spacing.height(24),
+
+          // Learn button
+          LearnButton(onTap: onLearnTap),
+
+          const Spacing.height(12),
+
+          // Quit text button
+          QuitTextButton(onTap: onQuitTap),
+        ],
+      ),
+    );
+  }
+
+  // Primary button to continue learning
+  Widget LearnButton({required VoidCallback onTap}) {
+    return RLDesignSystem.BlockButton(
+      children: [
+        RLTypography.bodyMedium(
+          QUIT_CONFIRMATION_LEARN_BUTTON,
+          color: RLTheme.white,
+        ),
+      ],
+      backgroundColor: RLTheme.primaryGreen,
+      margin: EdgeInsets.zero,
+      onTap: onTap,
+    );
+  }
+
+  // Red text button to quit
+  Widget QuitTextButton({required VoidCallback onTap}) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Center(
+        child: RLTypography.bodyMedium(
+          QUIT_CONFIRMATION_QUIT_BUTTON,
+          color: RLTheme.errorColor,
+        ),
+      ),
+    );
   }
 }

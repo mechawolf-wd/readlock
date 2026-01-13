@@ -54,12 +54,14 @@ class Lesson {
   final String lessonId;
   final String title;
   final String lessonVersion;
+  final bool isFree;
   final List<LessonContent> content;
 
   const Lesson({
     required this.lessonId,
     required this.title,
     required this.lessonVersion,
+    required this.isFree,
     required this.content,
   });
 }

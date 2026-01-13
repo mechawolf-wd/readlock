@@ -50,10 +50,8 @@ class MyBookshelfScreenState extends State<MyBookshelfScreen> {
 
             const Spacing.height(24),
 
-            // Bookshelf collections
-            BookshelfCollections(),
-
-            const Spacing.height(24),
+            // Learning statistics
+            const LearningStatsCard(),
           ], crossAxisAlignment: CrossAxisAlignment.stretch),
         ),
       ),
@@ -296,97 +294,6 @@ class MyBookshelfScreenState extends State<MyBookshelfScreen> {
         ]),
       ),
     );
-  }
-
-  Widget BookshelfCollections() {
-    final List<Map<String, dynamic>> categories = [
-      {'name': 'Business', 'count': 8},
-      {'name': 'Self-Help', 'count': 15},
-      {'name': 'Design', 'count': 12},
-      {'name': 'Psychology', 'count': 6},
-      {'name': 'Technology', 'count': 10},
-      {'name': 'Fiction', 'count': 4},
-    ];
-
-    return Div.column([
-      Div.row([
-        RLTypography.headingMedium('Categories'),
-      ], mainAxisAlignment: MainAxisAlignment.start),
-
-      const Spacing.height(16),
-
-      Div.column(
-        CategoryCards(categories),
-        crossAxisAlignment: CrossAxisAlignment.start,
-      ),
-    ], crossAxisAlignment: CrossAxisAlignment.start);
-  }
-
-  List<Widget> CategoryCards(List<Map<String, dynamic>> categories) {
-    final List<Color> colors = [
-      RLTheme.primaryBlue,
-      RLTheme.errorColor,
-      RLTheme.primaryGreen,
-      RLTheme.accentPurple,
-      RLTheme.warningColor,
-      RLTheme.accentTeal,
-    ];
-
-    return categories.asMap().entries.map((entry) {
-      final int categoryIndex = entry.key;
-      final String categoryName = entry.value['name'] ?? '';
-      final int categoryCount = entry.value['count'] ?? 0;
-      final Color categoryColor = colors[categoryIndex % colors.length];
-
-      final BoxDecoration categoryCardDecoration = BoxDecoration(
-        color: RLTheme.backgroundLight.withValues(alpha: 0.08),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: categoryColor.withValues(alpha: 0.3)),
-      );
-
-      return Container(
-        margin: const EdgeInsets.only(bottom: 12),
-        padding: const EdgeInsets.all(16),
-        decoration: categoryCardDecoration,
-        child: Div.row([
-          Container(
-            width: 8,
-            height: 8,
-            decoration: BoxDecoration(
-              color: categoryColor,
-              shape: BoxShape.circle,
-            ),
-          ),
-
-          const Spacing.width(12),
-
-          Expanded(child: RLTypography.text(categoryName)),
-
-          Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 8,
-              vertical: 4,
-            ),
-            decoration: BoxDecoration(
-              color: categoryColor.withValues(alpha: 0.2),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: RLTypography.text(
-              '$categoryCount',
-              color: categoryColor,
-            ),
-          ),
-
-          const Spacing.width(8),
-
-          const Icon(
-            Icons.arrow_forward_ios,
-            size: 16,
-            color: RLTheme.textSecondary,
-          ),
-        ]),
-      );
-    }).toList();
   }
 
   Widget SettingsBottomSheet() {

@@ -35,6 +35,7 @@
               "lesson-id": "design-of-everyday-things-l:1",
               "title": "The Design of Everyday Things",
               "lesson-version": "story-based",
+              "isFree": true,
               "content": [
                 {
                   "entity-type": "text",
@@ -404,6 +405,7 @@
               "lesson-id": "doet-l:1",
               "title": "The Psychology of Everyday Actions",
               "lesson-version": "story-based",
+              "isFree": false,
               "content": [
                 {
                   "entity-type": "intro",
@@ -602,6 +604,7 @@
               "lesson-id": "doet-l:2",
               "title": "The Six Principles of Design",
               "lesson-version": "story-based",
+              "isFree": false,
               "content": [
                 {
                   "entity-type": "intro",
@@ -795,6 +798,7 @@
               "lesson-id": "doet-l:3",
               "title": "Mental Models and User Understanding",
               "lesson-version": "story-based",
+              "isFree": false,
               "content": [
                 {
                   "entity-type": "intro",
@@ -978,6 +982,7 @@
               "lesson-id": "doet-l:4",
               "title": "Natural Mappings and Intuitive Design",
               "lesson-version": "story-based",
+              "isFree": false,
               "content": [
                 {
                   "entity-type": "intro",
@@ -1168,6 +1173,7 @@
               "lesson-id": "doet-l:5",
               "title": "The Art of Feedback",
               "lesson-version": "story-based",
+              "isFree": false,
               "content": [
                 {
                   "entity-type": "text",
@@ -1222,6 +1228,7 @@
               "lesson-id": "doet-l:6",
               "title": "How Constraints Actually Help",
               "lesson-version": "story-based",
+              "isFree": false,
               "content": [
                 {
                   "entity-type": "text",
@@ -1274,6 +1281,7 @@
               "lesson-id": "doet-l:7",
               "title": "The Psychology of User Actions",
               "lesson-version": "story-based",
+              "isFree": false,
               "content": [
                 {
                   "entity-type": "text",
@@ -1331,6 +1339,7 @@
               "lesson-id": "doet-l:8",
               "title": "The Seven Stages of Action",
               "lesson-version": "story-based",
+              "isFree": false,
               "content": [
                 {
                   "entity-type": "text",
@@ -1379,6 +1388,7 @@
               "lesson-id": "doet-l:9",
               "title": "Error-Tolerant Design",
               "lesson-version": "story-based",
+              "isFree": false,
               "content": [
                 {
                   "entity-type": "text",
@@ -1430,6 +1440,7 @@
               "lesson-id": "doet-l:10",
               "title": "Simplicity Through Smart Hierarchy",
               "lesson-version": "story-based",
+              "isFree": false,
               "content": [
                 {
                   "entity-type": "text",
@@ -1483,6 +1494,7 @@
               "lesson-id": "doet-l:11",
               "title": "The Future of Human-Centered Design",
               "lesson-version": "story-based",
+              "isFree": false,
               "content": [
                 {
                   "entity-type": "text",
@@ -1521,6 +1533,7 @@
               "lesson-id": "doet-l:12",
               "title": "The Key Message",
               "lesson-version": "story-based",
+              "isFree": false,
               "content": [
                 {
                   "entity-type": "text",
@@ -1581,42 +1594,49 @@
               "lesson-id": "doet-l:13",
               "title": "Designing for Emotions",
               "lesson-version": "story-based",
+              "isFree": false,
               "content": []
             },
             {
               "lesson-id": "doet-l:14",
               "title": "Cultural Design Patterns",
               "lesson-version": "story-based",
+              "isFree": false,
               "content": []
             },
             {
               "lesson-id": "doet-l:15",
               "title": "Technology and Human Behavior",
               "lesson-version": "story-based",
+              "isFree": false,
               "content": []
             },
             {
               "lesson-id": "doet-l:16",
               "title": "Design Ethics and Responsibility",
               "lesson-version": "story-based",
+              "isFree": false,
               "content": []
             },
             {
               "lesson-id": "doet-l:17",
               "title": "Accessibility and Inclusive Design",
               "lesson-version": "story-based",
+              "isFree": false,
               "content": []
             },
             {
               "lesson-id": "doet-l:18",
               "title": "Design for Different Contexts",
               "lesson-version": "story-based",
+              "isFree": false,
               "content": []
             },
             {
               "lesson-id": "doet-l:19",
               "title": "Future-Proofing Design",
               "lesson-version": "story-based",
+              "isFree": false,
               "content": []
             }
           ]
@@ -1630,42 +1650,49 @@
               "lesson-id": "doet-l:20",
               "title": "Design Research Methods",
               "lesson-version": "story-based",
+              "isFree": false,
               "content": []
             },
             {
               "lesson-id": "doet-l:21",
               "title": "Prototyping and Testing",
               "lesson-version": "story-based",
+              "isFree": false,
               "content": []
             },
             {
               "lesson-id": "doet-l:22",
               "title": "Design Systems at Scale",
               "lesson-version": "story-based",
+              "isFree": false,
               "content": []
             },
             {
               "lesson-id": "doet-l:23",
               "title": "Innovation Through Constraints",
               "lesson-version": "story-based",
+              "isFree": false,
               "content": []
             },
             {
               "lesson-id": "doet-l:24",
               "title": "Cross-Platform Design Thinking",
               "lesson-version": "story-based",
+              "isFree": false,
               "content": []
             },
             {
               "lesson-id": "doet-l:25",
               "title": "Design Leadership",
               "lesson-version": "story-based",
+              "isFree": false,
               "content": []
             },
             {
               "lesson-id": "doet-l:26",
               "title": "The Future of Design",
               "lesson-version": "story-based",
+              "isFree": false,
               "content": []
             }
           ]

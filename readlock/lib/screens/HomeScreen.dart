@@ -4,6 +4,7 @@
 import 'package:flutter/material.dart' hide Typography;
 import 'package:readlock/course_screens/CourseRoadmapScreen.dart';
 import 'package:readlock/screens/ReaderPassScreen.dart';
+import 'package:readlock/utility_widgets/StatisticsTopBar.dart';
 import 'package:readlock/utility_widgets/Utility.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLTheme.dart';
@@ -93,6 +94,11 @@ class HomeScreenState extends State<HomeScreen> {
             Padding(
               padding: const EdgeInsets.all(24),
               child: Div.column([
+                // Top stats bar
+                const StatisticsTopBar(),
+
+                const Spacing.height(24),
+
                 // Welcome header
                 HomeWelcomeHeader(),
 
@@ -103,13 +109,13 @@ class HomeScreenState extends State<HomeScreen> {
 
                 const Spacing.height(24),
 
-                // For your personality section
-                ForYourPersonalitySection(),
+                // Surprise me section
+                RandomLessonSection(),
 
                 const Spacing.height(24),
 
-                // Random lesson section
-                RandomLessonSection(),
+                // For your personality section
+                ForYourPersonalitySection(),
 
                 const Spacing.height(24),
               ], crossAxisAlignment: CrossAxisAlignment.stretch),
@@ -354,58 +360,37 @@ class HomeScreenState extends State<HomeScreen> {
 
   Widget RandomLessonSection() {
     final BoxDecoration cardDecoration = BoxDecoration(
+      color: RLTheme.backgroundLight,
       borderRadius: BorderRadius.circular(12),
-      border: Border.all(
-        color: RLTheme.primaryBlue.withValues(alpha: 0.3),
-      ),
     );
 
-    final BoxDecoration buttonDecoration = BoxDecoration(
+    final Widget ShuffleIcon = const Icon(
+      Icons.shuffle_rounded,
       color: RLTheme.primaryBlue,
-      borderRadius: BorderRadius.circular(8),
+      size: 24,
     );
 
-    return Div.column([
-      Div.column([
-        RLTypography.headingMedium('Any Lesson'),
-
-        const Spacing.height(4),
-
-        RLTypography.text(
-          'Next bite that could change your perspective',
-          color: RLTheme.textSecondary,
-        ),
-      ], crossAxisAlignment: CrossAxisAlignment.start),
-
-      const Spacing.height(16),
-
-      Container(
+    return GestureDetector(
+      onTap: () {},
+      child: Container(
         padding: const EdgeInsets.all(16),
         decoration: cardDecoration,
-        child: Div.column([
-          RLTypography.headingMedium('Affordances in Design'),
+        child: Div.row([
+          ShuffleIcon,
 
-          const Spacing.height(8),
+          const Spacing.width(12),
 
-          RLTypography.text(
-            'From: Emotional Design by Don Norman',
+          Expanded(
+            child: RLTypography.bodyLarge('Surprise Me'),
+          ),
+
+          const Icon(
+            Icons.chevron_right,
             color: RLTheme.textSecondary,
+            size: 24,
           ),
-
-          const Spacing.height(12),
-
-          Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 16,
-              vertical: 8,
-            ),
-            decoration: buttonDecoration,
-            child: Div.row([
-              RLTypography.text('Let\'s Go', color: Colors.white),
-            ], mainAxisAlignment: MainAxisAlignment.center),
-          ),
-        ], crossAxisAlignment: CrossAxisAlignment.start),
+        ], crossAxisAlignment: CrossAxisAlignment.center),
       ),
-    ], crossAxisAlignment: CrossAxisAlignment.start);
+    );
   }
 }

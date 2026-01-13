@@ -6,6 +6,7 @@ import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/utility_widgets/Utility.dart';
 import 'package:readlock/constants/RLTheme.dart';
 import 'package:readlock/widgets/ExpandableCard.dart';
+import 'package:readlock/utility_widgets/AccountBottomSheet.dart';
 
 const String PROFILE_GREETING = 'Welcome back, Alex!';
 const String DAILY_GOAL_LABEL = 'Daily Goal';
@@ -59,25 +60,31 @@ class ProfileContent extends StatefulWidget {
 class ProfileContentState extends State<ProfileContent> {
   bool soundsEnabled = true;
   bool hapticsEnabled = true;
+  bool revealAllTrueFalse = false;
+  bool blurEnabled = true;
+  String textSpeed = 'Classic';
 
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        ReadingLeagueCard(
-          initiallyExpanded: widget.showReadingLeagueExpanded,
-        ),
+        // TODO: Re-enable Reading League when ready
+        // ReadingLeagueCard(
+        //   initiallyExpanded: widget.showReadingLeagueExpanded,
+        // ),
+        //
+        // const Spacing.height(20),
 
-        const Spacing.height(20),
+        // TODO: Re-enable Achievement Gallery when ready
+        // const AchievementGallery(),
+        //
+        // const Spacing.height(20),
 
-        const AchievementGallery(),
-
-        const Spacing.height(20),
-
-        const LearningStatsCard(),
-
-        const Spacing.height(20),
+        // TODO: Re-enable Learning Statistics when ready
+        // const LearningStatsCard(),
+        //
+        // const Spacing.height(20),
 
         const SoundPickerCard(),
 
@@ -86,10 +93,19 @@ class ProfileContentState extends State<ProfileContent> {
         MenuSection(
           soundsEnabled: soundsEnabled,
           hapticsEnabled: hapticsEnabled,
+          revealAllTrueFalse: revealAllTrueFalse,
+          blurEnabled: blurEnabled,
+          textSpeed: textSpeed,
           onSoundsToggled: (value) =>
               setState(() => soundsEnabled = value),
           onHapticsToggled: (value) =>
               setState(() => hapticsEnabled = value),
+          onRevealAllTrueFalseToggled: (value) =>
+              setState(() => revealAllTrueFalse = value),
+          onBlurToggled: (value) =>
+              setState(() => blurEnabled = value),
+          onTextSpeedChanged: (value) =>
+              setState(() => textSpeed = value),
         ),
       ],
     );
@@ -99,99 +115,115 @@ class ProfileContentState extends State<ProfileContent> {
 class LearningStatsCard extends StatelessWidget {
   const LearningStatsCard({super.key});
 
+  static const Widget ShareIcon = Icon(
+    Icons.share,
+    color: RLTheme.white,
+    size: 20,
+  );
+
   @override
   Widget build(BuildContext context) {
-    final Widget learningContent = LearningStatsContent();
+    final BoxDecoration cardDecoration = BoxDecoration(
+      color: RLTheme.primaryBlue,
+      borderRadius: BorderRadius.circular(16),
+    );
 
-    return ExpandableCard(
-      title: 'Learning Statistics',
-      icon: Icons.access_time,
-      backgroundColor: RLTheme.backgroundLight,
-      titleColor: RLTheme.textPrimary,
-      iconColor: RLTheme.primaryBlue,
-      expandedContent: learningContent,
+    void handleShareTap() {
+      // Share functionality
+    }
+
+    return Container(
+      decoration: cardDecoration,
+      padding: const EdgeInsets.all(20),
+      child: Div.column([
+        // Header row
+        Div.row([
+          RLTypography.headingMedium(
+            'Learning Statistics',
+            color: RLTheme.white,
+          ),
+
+          const Spacer(),
+
+          GestureDetector(
+            onTap: handleShareTap,
+            child: ShareIcon,
+          ),
+        ]),
+
+        const Spacing.height(20),
+
+        // Stats row
+        StatsRow(),
+      ]),
     );
   }
 
-  Widget LearningStatsContent() {
-    final String totalLearningTime = getTotalLearningTime();
-
+  Widget StatsRow() {
     return Div.row([
-      Expanded(
-        child: LearningStatItem(
-          label: 'Total time spent learning',
-          value: totalLearningTime,
-          icon: Icons.schedule,
-          color: RLTheme.primaryBlue,
+      // Days equivalent stat
+      const Expanded(
+        child: StatItem(
+          value: '127',
+          unit: 'days',
+          label: 'at 1h/day',
         ),
       ),
 
-      const Spacing.width(16),
+      // Divider
+      Container(
+        width: 1,
+        height: 48,
+        color: Colors.white.withValues(alpha: 0.2),
+      ),
 
+      // Lessons completed stat
       const Expanded(
-        child: LearningStatItem(
-          label: 'Lessons completed',
+        child: StatItem(
           value: '42',
-          icon: Icons.check_circle,
-          color: RLTheme.primaryGreen,
+          unit: 'lessons',
+          label: 'completed',
         ),
       ),
     ]);
   }
-
-  String getTotalLearningTime() {
-    const int totalHours = 127;
-    const int totalMinutes = 34;
-
-    return '${totalHours}h ${totalMinutes}m';
-  }
 }
 
-class LearningStatItem extends StatelessWidget {
-  final String label;
+class StatItem extends StatelessWidget {
   final String value;
-  final IconData icon;
-  final Color color;
+  final String unit;
+  final String label;
 
-  const LearningStatItem({
+  const StatItem({
     super.key,
-    required this.label,
     required this.value,
-    required this.icon,
-    required this.color,
+    required this.unit,
+    required this.label,
   });
 
   @override
   Widget build(BuildContext context) {
-    final BoxDecoration iconDecoration = BoxDecoration(
-      color: color.withValues(alpha: 0.1),
-      borderRadius: BorderRadius.circular(8),
-    );
-
     return Div.column([
-      Container(
-        width: 40,
-        height: 40,
-        decoration: iconDecoration,
-        child: Icon(icon, color: color, size: 20),
-      ),
+      Div.row([
+        RLTypography.headingLarge(
+          value,
+          color: Colors.white,
+        ),
 
-      const Spacing.height(8),
+        const Spacing.width(4),
 
-      RLTypography.headingMedium(
-        value,
-        color: color,
-        textAlign: TextAlign.center,
-      ),
+        RLTypography.bodyMedium(
+          unit,
+          color: Colors.white.withValues(alpha: 0.8),
+        ),
+      ], mainAxisAlignment: MainAxisAlignment.center),
 
       const Spacing.height(4),
 
       RLTypography.bodyMedium(
         label,
-        color: RLTheme.textPrimary.withValues(alpha: 0.7),
+        color: Colors.white.withValues(alpha: 0.6),
         textAlign: TextAlign.center,
-        maxLines: 2,
-        overflow: TextOverflow.ellipsis,
       ),
     ], crossAxisAlignment: CrossAxisAlignment.center);
   }
@@ -200,22 +232,38 @@ class LearningStatItem extends StatelessWidget {
 class MenuSection extends StatelessWidget {
   final bool soundsEnabled;
   final bool hapticsEnabled;
+  final bool revealAllTrueFalse;
+  final bool blurEnabled;
+  final String textSpeed;
   final ValueChanged<bool> onSoundsToggled;
   final ValueChanged<bool> onHapticsToggled;
+  final ValueChanged<bool> onRevealAllTrueFalseToggled;
+  final ValueChanged<bool> onBlurToggled;
+  final ValueChanged<String> onTextSpeedChanged;
 
   const MenuSection({
     super.key,
     required this.soundsEnabled,
     required this.hapticsEnabled,
+    required this.revealAllTrueFalse,
+    required this.blurEnabled,
+    required this.textSpeed,
     required this.onSoundsToggled,
     required this.onHapticsToggled,
+    required this.onRevealAllTrueFalseToggled,
+    required this.onBlurToggled,
+    required this.onTextSpeedChanged,
   });
 
   @override
   Widget build(BuildContext context) {
     return Div.column([
       // Account & Subscription
-      MenuItem(icon: Icons.person, title: 'Account', onTap: () {}),
+      MenuItem(
+        icon: Icons.person,
+        title: 'Account',
+        onTap: () => AccountBottomSheet.show(context),
+      ),
 
       MenuItem(
         icon: Icons.card_membership,
@@ -238,6 +286,31 @@ class MenuSection extends StatelessWidget {
         title: 'Haptics',
         value: hapticsEnabled,
         onChanged: onHapticsToggled,
+      ),
+
+      const MenuDivider(),
+
+      // Reading Settings
+      SwitchMenuItem(
+        icon: Icons.visibility,
+        title: 'Reveal all true false',
+        value: revealAllTrueFalse,
+        onChanged: onRevealAllTrueFalseToggled,
+      ),
+
+      SwitchMenuItem(
+        icon: Icons.blur_on,
+        title: 'Blur',
+        value: blurEnabled,
+        onChanged: onBlurToggled,
+      ),
+
+      SegmentedMenuItem(
+        icon: Icons.speed,
+        title: 'Text speed',
+        options: const ['Careful', 'Classic', 'Speed'],
+        selectedOption: textSpeed,
+        onChanged: onTextSpeedChanged,
       ),
 
       const MenuDivider(),
@@ -611,20 +684,14 @@ class SoundPickerCardState extends State<SoundPickerCard> {
 
   @override
   Widget build(BuildContext context) {
-    final LinearGradient soundGradient = const LinearGradient(
-      colors: [Color(0xFF6366F1), Color(0xFF8B5CF6)],
-      begin: Alignment.topLeft,
-      end: Alignment.bottomRight,
-    );
-
     final Widget soundContent = soundPickerContent();
 
     return ExpandableCard(
       title: 'Sound Settings',
       icon: Icons.volume_up,
-      gradient: soundGradient,
-      titleColor: Colors.white,
-      iconColor: Colors.white,
+      backgroundColor: RLTheme.backgroundLight,
+      titleColor: RLTheme.textPrimary,
+      iconColor: RLTheme.textSecondary,
       expandedContent: soundContent,
     );
   }
@@ -634,17 +701,14 @@ class SoundPickerCardState extends State<SoundPickerCard> {
       {
         'name': TYPEWRITER_SOUND,
         'icon': Icons.keyboard,
-        'color': RLTheme.primaryBlue,
       },
       {
         'name': SWITCHES_SOUND,
         'icon': Icons.toggle_on,
-        'color': RLTheme.primaryGreen,
       },
       {
         'name': OIIA_SOUND,
         'icon': Icons.music_note,
-        'color': RLTheme.warningColor,
       },
     ];
 
@@ -655,7 +719,6 @@ class SoundPickerCardState extends State<SoundPickerCard> {
         child: soundBlock(
           name: sound['name'] as String,
           icon: sound['icon'] as IconData,
-          color: sound['color'] as Color,
           isSelected: isSelected,
           onTap: () => selectSound(sound['name'] as String),
         ),
@@ -671,24 +734,29 @@ class SoundPickerCardState extends State<SoundPickerCard> {
   Widget soundBlock({
     required String name,
     required IconData icon,
-    required Color color,
     required bool isSelected,
     required VoidCallback onTap,
   }) {
     final Color backgroundColor = isSelected
-        ? Colors.white.withValues(alpha: 0.3)
-        : Colors.white.withValues(alpha: 0.1);
+        ? RLTheme.primaryBlue.withValues(alpha: 0.1)
+        : Colors.transparent;
 
     final Color borderColor = isSelected
-        ? Colors.white
-        : Colors.white.withValues(alpha: 0.2);
+        ? RLTheme.primaryBlue
+        : RLTheme.textPrimary.withValues(alpha: 0.2);
 
-    final double borderWidth = isSelected ? 2 : 1;
+    final Color iconColor = isSelected
+        ? RLTheme.primaryBlue
+        : RLTheme.textSecondary;
+
+    final Color textColor = isSelected
+        ? RLTheme.primaryBlue
+        : RLTheme.textPrimary;
 
     final BoxDecoration blockDecoration = BoxDecoration(
       color: backgroundColor,
       borderRadius: BorderRadius.circular(12),
-      border: Border.all(color: borderColor, width: borderWidth),
+      border: Border.all(color: borderColor),
     );
 
     return GestureDetector(
@@ -698,34 +766,16 @@ class SoundPickerCardState extends State<SoundPickerCard> {
         padding: const EdgeInsets.all(12),
         margin: const EdgeInsets.symmetric(horizontal: 4),
         child: Div.column([
-          Container(
-            width: 36,
-            height: 36,
-            decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.2),
-              borderRadius: BorderRadius.circular(18),
-            ),
-            child: Icon(icon, color: Colors.white, size: 20),
-          ),
+          Icon(icon, color: iconColor, size: 24),
 
           const Spacing.height(8),
 
           RLTypography.bodyMedium(
             name,
-            color: Colors.white,
+            color: textColor,
             textAlign: TextAlign.center,
             maxLines: 1,
           ),
-
-          if (isSelected) ...[
-            const Spacing.height(4),
-
-            const Icon(
-              Icons.check_circle,
-              color: Colors.white,
-              size: 16,
-            ),
-          ],
         ], crossAxisAlignment: CrossAxisAlignment.center),
       ),
     );
@@ -775,6 +825,101 @@ class SwitchMenuItem extends StatelessWidget {
         inactiveTrackColor: RLTheme.textPrimary.withValues(alpha: 0.1),
       ),
     ], padding: const EdgeInsets.symmetric(vertical: 16));
+  }
+}
+
+class SegmentedMenuItem extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final List<String> options;
+  final String selectedOption;
+  final ValueChanged<String> onChanged;
+
+  const SegmentedMenuItem({
+    super.key,
+    required this.icon,
+    required this.title,
+    required this.options,
+    required this.selectedOption,
+    required this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final Color iconColor = RLTheme.textPrimary.withValues(alpha: 0.7);
+    final Color titleColor = RLTheme.textPrimary;
+
+    return Div.column([
+      Div.row([
+        Icon(icon, color: iconColor, size: 20),
+
+        const Spacing.width(16),
+
+        Expanded(
+          child: RLTypography.bodyMedium(title, color: titleColor),
+        ),
+      ]),
+
+      const Spacing.height(12),
+
+      // Segmented options
+      SegmentedOptions(
+        options: options,
+        selectedOption: selectedOption,
+        onChanged: onChanged,
+      ),
+    ], padding: const EdgeInsets.symmetric(vertical: 16));
+  }
+
+  Widget SegmentedOptions({
+    required List<String> options,
+    required String selectedOption,
+    required ValueChanged<String> onChanged,
+  }) {
+    final BoxDecoration containerDecoration = BoxDecoration(
+      color: RLTheme.textPrimary.withValues(alpha: 0.05),
+      borderRadius: BorderRadius.circular(8),
+    );
+
+    return Container(
+      decoration: containerDecoration,
+      padding: const EdgeInsets.all(4),
+      child: Row(
+        children: OptionButtons(options, selectedOption, onChanged),
+      ),
+    );
+  }
+
+  List<Widget> OptionButtons(
+    List<String> options,
+    String selectedOption,
+    ValueChanged<String> onChanged,
+  ) {
+    return options.map((option) {
+      final bool isSelected = option == selectedOption;
+
+      final BoxDecoration optionDecoration = BoxDecoration(
+        color: isSelected ? RLTheme.primaryBlue : Colors.transparent,
+        borderRadius: BorderRadius.circular(6),
+      );
+
+      final Color textColor = isSelected
+          ? RLTheme.white
+          : RLTheme.textPrimary.withValues(alpha: 0.6);
+
+      return Expanded(
+        child: GestureDetector(
+          onTap: () => onChanged(option),
+          child: Container(
+            padding: const EdgeInsets.symmetric(vertical: 8),
+            decoration: optionDecoration,
+            child: Center(
+              child: RLTypography.bodyMedium(option, color: textColor),
+            ),
+          ),
+        ),
+      );
+    }).toList();
   }
 }
 
