@@ -75,12 +75,24 @@ class RLDimensions {
   static const double radiusCircle = 36.0;
 
   // Common BorderRadius
-  static final BorderRadius borderRadiusXS = BorderRadius.circular(radiusXS);
-  static final BorderRadius borderRadiusS = BorderRadius.circular(radiusS);
-  static final BorderRadius borderRadiusM = BorderRadius.circular(radiusM);
-  static final BorderRadius borderRadiusL = BorderRadius.circular(radiusL);
-  static final BorderRadius borderRadiusXL = BorderRadius.circular(radiusXL);
-  static final BorderRadius borderRadiusXXL = BorderRadius.circular(radiusXXL);
+  static final BorderRadius borderRadiusXS = BorderRadius.circular(
+    radiusXS,
+  );
+  static final BorderRadius borderRadiusS = BorderRadius.circular(
+    radiusS,
+  );
+  static final BorderRadius borderRadiusM = BorderRadius.circular(
+    radiusM,
+  );
+  static final BorderRadius borderRadiusL = BorderRadius.circular(
+    radiusL,
+  );
+  static final BorderRadius borderRadiusXL = BorderRadius.circular(
+    radiusXL,
+  );
+  static final BorderRadius borderRadiusXXL = BorderRadius.circular(
+    radiusXXL,
+  );
   static final BorderRadius borderRadiusRound = BorderRadius.circular(
     radiusRound,
   );
