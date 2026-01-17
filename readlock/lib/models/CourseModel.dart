@@ -4,10 +4,7 @@ class CourseData {
   final String language;
   final List<Course> courses;
 
-  const CourseData({
-    required this.language,
-    required this.courses,
-  });
+  const CourseData({required this.language, required this.courses});
 }
 
 class Course {
@@ -19,7 +16,6 @@ class Course {
   final String color;
   final List<String> relevantFor;
   final List<String> genres;
-  final List<String> preloadedAssets;
   final List<CourseSegment> segments;
 
   const Course({
@@ -31,7 +27,6 @@ class Course {
     required this.color,
     required this.relevantFor,
     required this.genres,
-    required this.preloadedAssets,
     required this.segments,
   });
 }
@@ -168,10 +163,7 @@ abstract class CourseContent {
   final String id;
   final String title;
 
-  const CourseContent({
-    required this.id,
-    required this.title,
-  });
+  const CourseContent({required this.id, required this.title});
 }
 
 class IntroContent extends CourseContent {

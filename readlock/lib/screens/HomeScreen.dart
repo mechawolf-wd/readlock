@@ -1,7 +1,7 @@
 // Home screen with latest courses and user stats
 // Features top bar with streak and experience counters
 
-import 'package:flutter/material.dart' hide Typography;
+import 'package:flutter/material.dart';
 import 'package:readlock/course_screens/CourseRoadmapScreen.dart';
 import 'package:readlock/MainNavigation.dart';
 import 'package:readlock/screens/ReaderPassScreen.dart';
@@ -9,6 +9,7 @@ import 'package:readlock/utility_widgets/StatisticsTopBar.dart';
 import 'package:readlock/utility_widgets/Utility.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLTheme.dart';
+import 'package:readlock/constants/RLDimensions.dart';
 
 const String HOME_TITLE = 'Home';
 
@@ -86,6 +87,7 @@ class HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       backgroundColor: RLTheme.backgroundDark,
       body: SafeArea(
+        bottom: false,
         child: SingleChildScrollView(
           child: Div.column([
             // Promotional banner (no padding)
@@ -93,7 +95,7 @@ class HomeScreenState extends State<HomeScreen> {
 
             // Main content (with padding)
             Padding(
-              padding: const EdgeInsets.all(24),
+              padding: RLDimensions.paddingAllXXL,
               child: Div.column([
                 // Top stats bar
                 const StatisticsTopBar(),
@@ -133,12 +135,18 @@ class HomeScreenState extends State<HomeScreen> {
       onTap: handlePromoBannerTap,
       child: Container(
         width: double.infinity,
-        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+        padding: const EdgeInsets.symmetric(
+          vertical: RLDimensions.paddingM,
+          horizontal: RLDimensions.paddingL,
+        ),
         color: Colors.black,
         child: Div.row([
-          RLTypography.bodyMedium(
-            'Outperformers do not start tomorrow - Reader Pass -25%',
-            color: Colors.white,
+          Flexible(
+            child: RLTypography.bodyMedium(
+              'Outperformers do not start tomorrow - Reader Pass -25%',
+              color: Colors.white,
+              textAlign: TextAlign.center,
+            ),
           ),
         ], mainAxisAlignment: MainAxisAlignment.center),
       ),
@@ -157,16 +165,16 @@ class HomeScreenState extends State<HomeScreen> {
     final int progressPercent = (bookProgress * 100).toInt();
 
     final BoxDecoration cardDecoration = BoxDecoration(
-      color: RLTheme.backgroundLight.withValues(alpha: 0.08),
-      borderRadius: BorderRadius.circular(12),
+      color: RLTheme.backgroundLight.withValues(alpha: RLDimensions.alphaLight),
+      borderRadius: RLDimensions.borderRadiusL,
       border: Border.all(
-        color: RLTheme.primaryGreen.withValues(alpha: 0.3),
+        color: RLTheme.primaryGreen.withValues(alpha: RLDimensions.alphaDark),
       ),
     );
 
     final BoxDecoration buttonDecoration = BoxDecoration(
       color: RLTheme.primaryGreen,
-      borderRadius: BorderRadius.circular(8),
+      borderRadius: RLDimensions.borderRadiusM,
     );
 
     return Div.column([
@@ -184,16 +192,16 @@ class HomeScreenState extends State<HomeScreen> {
       const Spacing.height(16),
 
       Container(
-        padding: const EdgeInsets.all(16),
+        padding: RLDimensions.paddingAllL,
         decoration: cardDecoration,
         child: Div.column([
           Div.row([
             ClipRRect(
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: RLDimensions.borderRadiusM,
               child: Image.asset(
-                'covers/doet-cover.png',
-                width: 60,
-                height: 80,
+                'assets/covers/doet-cover.png',
+                width: RLDimensions.thumbnailWidthM,
+                height: RLDimensions.thumbnailHeightM,
                 fit: BoxFit.cover,
               ),
             ),
@@ -238,8 +246,8 @@ class HomeScreenState extends State<HomeScreen> {
             onTap: handleContinueReading,
             child: Container(
               padding: const EdgeInsets.symmetric(
-                horizontal: 16,
-                vertical: 8,
+                horizontal: RLDimensions.paddingL,
+                vertical: RLDimensions.paddingS,
               ),
               decoration: buttonDecoration,
               child: Div.row([
@@ -254,17 +262,17 @@ class HomeScreenState extends State<HomeScreen> {
 
   Widget ProgressBar({required double progress, required Color color}) {
     final BoxDecoration trackDecoration = BoxDecoration(
-      color: color.withValues(alpha: 0.2),
-      borderRadius: BorderRadius.circular(4),
+      color: color.withValues(alpha: RLDimensions.alphaMedium),
+      borderRadius: RLDimensions.borderRadiusXS,
     );
 
     final BoxDecoration fillDecoration = BoxDecoration(
       color: color,
-      borderRadius: BorderRadius.circular(4),
+      borderRadius: RLDimensions.borderRadiusXS,
     );
 
     return Container(
-      height: 4,
+      height: RLDimensions.progressBarHeight,
       decoration: trackDecoration,
       child: FractionallySizedBox(
         alignment: Alignment.centerLeft,
@@ -304,16 +312,16 @@ class HomeScreenState extends State<HomeScreen> {
 
   List<Widget> PersonalityBookCards(List<Map<String, String>> books) {
     final BoxDecoration bookCardDecoration = BoxDecoration(
-      color: RLTheme.backgroundLight.withValues(alpha: 0.08),
-      borderRadius: BorderRadius.circular(12),
+      color: RLTheme.backgroundLight.withValues(alpha: RLDimensions.alphaLight),
+      borderRadius: RLDimensions.borderRadiusL,
       border: Border.all(
-        color: RLTheme.primaryBlue.withValues(alpha: 0.2),
+        color: RLTheme.primaryBlue.withValues(alpha: RLDimensions.alphaMedium),
       ),
     );
 
     final BoxDecoration bookCoverDecoration = BoxDecoration(
-      color: RLTheme.primaryBlue.withValues(alpha: 0.3),
-      borderRadius: BorderRadius.circular(6),
+      color: RLTheme.primaryBlue.withValues(alpha: RLDimensions.alphaDark),
+      borderRadius: RLDimensions.borderRadiusS,
     );
 
     return books.map((book) {
@@ -321,13 +329,13 @@ class HomeScreenState extends State<HomeScreen> {
       final String bookAuthor = book['author'] ?? '';
 
       return Container(
-        margin: const EdgeInsets.only(bottom: 12),
-        padding: const EdgeInsets.all(12),
+        margin: const EdgeInsets.only(bottom: RLDimensions.spacing12),
+        padding: RLDimensions.paddingAllM,
         decoration: bookCardDecoration,
         child: Div.row([
           Container(
-            width: 40,
-            height: 60,
+            width: RLDimensions.thumbnailWidthS,
+            height: RLDimensions.thumbnailWidthM,
             decoration: bookCoverDecoration,
           ),
 
@@ -348,11 +356,11 @@ class HomeScreenState extends State<HomeScreen> {
 
           // Bookmark icon
           Container(
-            margin: const EdgeInsets.only(top: 8),
+            margin: const EdgeInsets.only(top: RLDimensions.spacing8),
             child: const Icon(
               Icons.bookmark_border,
               color: RLTheme.primaryBlue,
-              size: 24,
+              size: RLDimensions.iconL,
             ),
           ),
         ]),
@@ -363,24 +371,24 @@ class HomeScreenState extends State<HomeScreen> {
   Widget RandomLessonSection() {
     final BoxDecoration cardDecoration = BoxDecoration(
       color: RLTheme.backgroundLight,
-      borderRadius: BorderRadius.circular(12),
+      borderRadius: RLDimensions.borderRadiusL,
     );
 
     final Widget ShuffleIcon = const Icon(
       Icons.shuffle_rounded,
       color: RLTheme.primaryBlue,
-      size: 24,
+      size: RLDimensions.iconL,
     );
 
     return GestureDetector(
       onTap: () {},
       child: Container(
-        padding: const EdgeInsets.all(16),
+        padding: RLDimensions.paddingAllL,
         decoration: cardDecoration,
         child: Div.row([
           ShuffleIcon,
 
-          const Spacing.width(12),
+          const Spacing.width(RLDimensions.spacing12),
 
           Expanded(
             child: RLTypography.bodyLarge('Surprise Me'),
@@ -389,7 +397,7 @@ class HomeScreenState extends State<HomeScreen> {
           const Icon(
             Icons.chevron_right,
             color: RLTheme.textSecondary,
-            size: 24,
+            size: RLDimensions.iconL,
           ),
         ], crossAxisAlignment: CrossAxisAlignment.center),
       ),

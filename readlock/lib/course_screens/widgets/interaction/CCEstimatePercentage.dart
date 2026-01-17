@@ -76,7 +76,7 @@ class CCEstimatePercentageState extends State<CCEstimatePercentage>
       child: Div.column(
         MainContent(),
         color: RLTheme.backgroundDark,
-        padding: [20, 16],
+        padding: const [20, 16],
         crossAxisAlignment: CrossAxisAlignment.stretch,
       ),
     );
@@ -447,10 +447,7 @@ class Style {
       inactiveTrackColor: RLTheme.textPrimary.withValues(alpha: 0.1),
       thumbColor: RLTheme.primaryBlue,
       overlayColor: RLTheme.primaryBlue.withValues(alpha: 0.1),
-      thumbShape: const RoundSliderThumbShape(
-        enabledThumbRadius: 10,
-        pressedElevation: 4,
-      ),
+      thumbShape: const RoundSliderThumbShape(),
       trackHeight: 4,
       tickMarkShape: const RoundSliderTickMarkShape(),
     );

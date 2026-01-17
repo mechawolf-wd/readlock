@@ -8,6 +8,10 @@
 
 Based on the course data structure, strategically use these content types:
 
+(the text content widgets include images from time to time when stories or first explanations are introduced -
+when generating course contents, mock the exact precise name of the image ideas so that we can design them later but with
+already existing mockups)
+
 1. **Intro** - Opening hook establishing relevance and curiosity
 2. **Text** - Story segments, examples, and conceptual explanations
 3. **Question** - Multiple choice, true/false, application challenges, imaginative scenarios ("Imagine you are...")

@@ -1,7 +1,7 @@
 import 'package:readlock/constants/RLTheme.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/utility_widgets/Utility.dart';
-import 'package:flutter/material.dart' hide Typography;
+import 'package:flutter/material.dart';
 
 class StatisticsTopBar extends StatelessWidget {
   const StatisticsTopBar({super.key});
@@ -100,11 +100,6 @@ class StreakBottomSheet extends StatelessWidget {
       ),
     );
 
-    final BoxDecoration handleDecoration = BoxDecoration(
-      color: RLTheme.textSecondary.withValues(alpha: 0.3),
-      borderRadius: BorderRadius.circular(2),
-    );
-
     return Container(
       decoration: sheetDecoration,
       padding: const EdgeInsets.fromLTRB(24, 12, 24, 32),
@@ -112,13 +107,7 @@ class StreakBottomSheet extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           // Drag handle
-          Center(
-            child: Container(
-              width: 36,
-              height: 4,
-              decoration: handleDecoration,
-            ),
-          ),
+          const BottomSheetGrabber(),
 
           const Spacing.height(24),
 

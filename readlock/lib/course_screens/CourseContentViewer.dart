@@ -1,7 +1,7 @@
 // Course detail screen displaying individual course content with navigation
 // Supports various content types including text, questions, intro/outro, and design examples
 
-import 'package:flutter/material.dart' hide Typography;
+import 'package:flutter/material.dart';
 import 'package:readlock/course_screens/widgets/CCJSONContentFactory.dart';
 import 'package:readlock/course_screens/data/courseData.dart';
 import 'package:readlock/constants/RLTheme.dart';
@@ -10,8 +10,6 @@ import 'package:readlock/utility_widgets/Utility.dart';
 import 'package:readlock/utility_widgets/FeedbackSnackbar.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/screens/StreakplierRewardScreen.dart';
-// TODO: Re-enable when Reading League is ready
-// import 'package:readlock/screens/ProfileScreen.dart';
 
 // String constants
 const String NO_CONTENT_AVAILABLE_MESSAGE =
@@ -489,16 +487,6 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
     );
   }
 
-  // TODO: Re-enable when Reading League is ready
-  // Navigate to profile screen with reading league expanded
-  // void navigateToProfileWithReadingLeague() {
-  //   Navigator.of(context).push(
-  //     RLTheme.slideUpTransition(
-  //       const ProfileScreen(showReadingLeagueExpanded: true),
-  //     ),
-  //   );
-  // }
-
   // Show Streakplier reward screen after lesson completion
   void showStreakplierRewardScreen() {
     // Clear any lingering snackbars before showing rewards
@@ -858,48 +846,42 @@ class QuitConfirmationSheet extends StatelessWidget {
       ),
     );
 
-    return Container(
-      decoration: sheetDecoration,
-      padding: const EdgeInsets.fromLTRB(24, 12, 24, 24),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          // Drag handle
-          Center(
-            child: Container(
-              width: 36,
-              height: 4,
-              decoration: BoxDecoration(
-                color: RLTheme.textSecondary.withValues(alpha: 0.3),
-                borderRadius: BorderRadius.circular(2),
-              ),
+    return SafeArea(
+      top: false,
+      child: Container(
+        decoration: sheetDecoration,
+        padding: const EdgeInsets.fromLTRB(24, 12, 24, 24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            // Drag handle
+            const BottomSheetGrabber(),
+
+            const Spacing.height(24),
+
+            // Title
+            RLTypography.headingMedium(QUIT_CONFIRMATION_TITLE),
+
+            const Spacing.height(8),
+
+            // Message
+            RLTypography.bodyMedium(
+              QUIT_CONFIRMATION_MESSAGE,
+              color: RLTheme.textSecondary,
             ),
-          ),
 
-          const Spacing.height(24),
+            const Spacing.height(24),
 
-          // Title
-          RLTypography.headingMedium(QUIT_CONFIRMATION_TITLE),
+            // Learn button
+            LearnButton(onTap: onLearnTap),
 
-          const Spacing.height(8),
+            const Spacing.height(12),
 
-          // Message
-          RLTypography.bodyMedium(
-            QUIT_CONFIRMATION_MESSAGE,
-            color: RLTheme.textSecondary,
-          ),
-
-          const Spacing.height(24),
-
-          // Learn button
-          LearnButton(onTap: onLearnTap),
-
-          const Spacing.height(12),
-
-          // Quit text button
-          QuitTextButton(onTap: onQuitTap),
-        ],
+            // Quit text button
+            QuitTextButton(onTap: onQuitTap),
+          ],
+        ),
       ),
     );
   }

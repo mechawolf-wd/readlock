@@ -1,12 +1,13 @@
+enum SoundType { typewriter, switches, oiia }
+
+enum TextSpeed { careful, classic, speed }
+
 class User {
   final String id;
   final String displayName;
   final String email;
   final DateTime registrationDate;
   final UserPreferences preferences;
-  final String? latestTitleRead;
-  final List<String>? savedTitles;
-  final List<CourseProgress>? courseProgressList;
 
   const User({
     required this.id,
@@ -14,32 +15,32 @@ class User {
     required this.email,
     required this.registrationDate,
     required this.preferences,
-    this.latestTitleRead,
-    required this.savedTitles,
-    this.courseProgressList,
   });
 }
 
 class UserPreferences {
-  final String selectedSoundType;
+  // Sound settings
+  final bool soundsEnabled;
+  final SoundType selectedSoundType;
+
+  // Feedback settings
   final bool hapticsEnabled;
   final bool notificationsEnabled;
 
+  // Reading experience settings
+  final bool revealEnabled;
+  final bool blurEnabled;
+  final bool coloredTextEnabled;
+  final TextSpeed textSpeed;
+
   const UserPreferences({
-    required this.selectedSoundType,
-    required this.hapticsEnabled,
-    required this.notificationsEnabled,
-  });
-}
-
-class CourseProgress {
-  final String courseId;
-  final double progressPercentage;
-  final DateTime lastAccessed;
-
-  const CourseProgress({
-    required this.courseId,
-    required this.progressPercentage,
-    required this.lastAccessed,
+    this.soundsEnabled = true,
+    this.selectedSoundType = SoundType.typewriter,
+    this.hapticsEnabled = true,
+    this.notificationsEnabled = true,
+    this.revealEnabled = false,
+    this.blurEnabled = true,
+    this.coloredTextEnabled = true,
+    this.textSpeed = TextSpeed.classic,
   });
 }

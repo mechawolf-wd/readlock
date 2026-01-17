@@ -1,7 +1,7 @@
 // My Bookshelf screen showing user's saved and in-progress books
 // Simple bookshelf layout with settings access
 
-import 'package:flutter/material.dart' hide Typography;
+import 'package:flutter/material.dart';
 import 'package:readlock/MainNavigation.dart';
 import 'package:readlock/screens/ProfileScreen.dart';
 import 'package:readlock/utility_widgets/StatisticsTopBar.dart';
@@ -33,6 +33,7 @@ class MyBookshelfScreenState extends State<MyBookshelfScreen> {
     return Scaffold(
       backgroundColor: RLTheme.backgroundDark,
       body: SafeArea(
+        bottom: false,
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(24),
           child: Div.column([
@@ -106,7 +107,7 @@ class MyBookshelfScreenState extends State<MyBookshelfScreen> {
         'title': 'Design of Everyday Things',
         'author': 'Don Norman',
         'progress': 0.45,
-        'coverImage': 'covers/doet-cover.png',
+        'coverImage': 'assets/covers/doet-cover.png',
       },
       {
         'title': 'Thinking, Fast and Slow',
@@ -311,10 +312,7 @@ class MyBookshelfScreenState extends State<MyBookshelfScreen> {
       borderRadius: sheetBorderRadius,
     );
 
-    final BoxDecoration handleDecoration = BoxDecoration(
-      color: RLTheme.textSecondary.withValues(alpha: 0.3),
-      borderRadius: BorderRadius.circular(4),
-    );
+    final double bottomSafeArea = MediaQuery.of(context).padding.bottom;
 
     return ClipRRect(
       borderRadius: sheetBorderRadius,
@@ -325,13 +323,7 @@ class MyBookshelfScreenState extends State<MyBookshelfScreen> {
           // Drag handle
           const Spacing.height(12),
 
-          Center(
-            child: Container(
-              width: 40,
-              height: 4,
-              decoration: handleDecoration,
-            ),
-          ),
+          const BottomSheetGrabber(),
 
           const Spacing.height(16),
 
@@ -346,10 +338,10 @@ class MyBookshelfScreenState extends State<MyBookshelfScreen> {
           const Spacing.height(20),
 
           // Settings content
-          const Expanded(
+          Expanded(
             child: SingleChildScrollView(
-              padding: EdgeInsets.symmetric(horizontal: 20),
-              child: ProfileContent(),
+              padding: EdgeInsets.fromLTRB(20, 0, 20, bottomSafeArea),
+              child: const ProfileContent(),
             ),
           ),
         ], crossAxisAlignment: CrossAxisAlignment.stretch),
@@ -391,17 +383,12 @@ class AllTitlesBottomSheetState extends State<AllTitlesBottomSheet> {
       borderRadius: sheetBorderRadius,
     );
 
-    final BoxDecoration handleDecoration = BoxDecoration(
-      color: RLTheme.textSecondary.withValues(alpha: 0.3),
-      borderRadius: BorderRadius.circular(4),
-    );
-
     final List<Map<String, dynamic>> allBooks = [
       {
         'title': 'Design of Everyday Things',
         'author': 'Don Norman',
         'category': 'Design',
-        'coverImage': 'covers/doet-cover.png',
+        'coverImage': 'assets/covers/doet-cover.png',
       },
       {
         'title': 'Thinking, Fast and Slow',
@@ -458,13 +445,7 @@ class AllTitlesBottomSheetState extends State<AllTitlesBottomSheet> {
           // Drag handle
           const Spacing.height(12),
 
-          Center(
-            child: Container(
-              width: 40,
-              height: 4,
-              decoration: handleDecoration,
-            ),
-          ),
+          const BottomSheetGrabber(),
 
           const Spacing.height(16),
 

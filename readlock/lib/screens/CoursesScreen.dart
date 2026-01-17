@@ -1,12 +1,13 @@
 // Courses list screen showing available courses
 // Clean card-based layout with course selection
 
-import 'package:flutter/material.dart' hide Typography;
+import 'package:flutter/material.dart';
 import 'package:readlock/MainNavigation.dart';
 import 'package:readlock/screens/ReaderPassScreen.dart';
 import 'package:readlock/utility_widgets/Utility.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLTheme.dart';
+import 'package:readlock/constants/RLDimensions.dart';
 
 class CoursesScreen extends StatefulWidget {
   const CoursesScreen({super.key});
@@ -114,6 +115,7 @@ class CoursesScreenState extends State<CoursesScreen> {
     return Scaffold(
       backgroundColor: RLTheme.backgroundDark,
       body: SafeArea(
+        bottom: false,
         child: RenderIf.condition(
           shouldShowSearchResults,
           SearchResultsLayout(
@@ -140,7 +142,7 @@ class CoursesScreenState extends State<CoursesScreen> {
 
         // Main content (with padding)
         Padding(
-          padding: const EdgeInsets.all(24),
+          padding: RLDimensions.paddingAllXXL,
           child: Div.column([
             // Search heading
             RLTypography.headingLarge('Search'),
@@ -245,9 +247,12 @@ class CoursesScreenState extends State<CoursesScreen> {
         ),
         color: Colors.black,
         child: Div.row([
-          RLTypography.bodyMedium(
-            'Outperformers do not start tomorrow - Reader Pass -25%',
-            color: Colors.white,
+          Flexible(
+            child: RLTypography.bodyMedium(
+              'Outperformers do not start tomorrow - Reader Pass -25%',
+              color: Colors.white,
+              textAlign: TextAlign.center,
+            ),
           ),
         ], mainAxisAlignment: MainAxisAlignment.center),
       ),
@@ -256,15 +261,15 @@ class CoursesScreenState extends State<CoursesScreen> {
 
   Widget MockSearchBar() {
     final BoxDecoration searchBarDecoration = BoxDecoration(
-      color: RLTheme.backgroundLight.withValues(alpha: 0.08),
-      borderRadius: BorderRadius.circular(12),
-      border: Border.all(color: RLTheme.grey300.withValues(alpha: 0.3)),
+      color: RLTheme.backgroundLight.withValues(alpha: RLDimensions.alphaLight),
+      borderRadius: RLDimensions.borderRadiusL,
+      border: Border.all(color: RLTheme.grey300.withValues(alpha: RLDimensions.alphaDark)),
     );
 
     final Widget SearchIcon = const Icon(
       Icons.search,
       color: RLTheme.textSecondary,
-      size: 20,
+      size: RLDimensions.iconM,
     );
 
     return RenderIf.condition(
@@ -454,7 +459,7 @@ class CoursesScreenState extends State<CoursesScreen> {
         'title': 'Design of Everyday Things',
         'author': 'Don Norman',
         'progress': 0.65,
-        'coverImage': 'covers/doet-cover.png',
+        'coverImage': 'assets/covers/doet-cover.png',
       },
       {
         'title': 'Atomic Habits',
@@ -598,7 +603,7 @@ class CoursesScreenState extends State<CoursesScreen> {
       {
         'title': 'The Design of Everyday Things',
         'author': 'Don Norman',
-        'coverImage': 'covers/doet-cover.png',
+        'coverImage': 'assets/covers/doet-cover.png',
         'category': 'Design',
       },
       {

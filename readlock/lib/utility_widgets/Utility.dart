@@ -1,7 +1,7 @@
 // Utility widgets for simplified Flutter UI development
 // Provides Div widget for layout and Spacing widget for consistent spacing
 
-import 'package:flutter/material.dart' hide Typography;
+import 'package:flutter/material.dart';
 import 'package:readlock/constants/RLTheme.dart';
 
 // String constants for directions
@@ -684,5 +684,25 @@ class RenderIf {
     } else {
       return ifFalse ?? const SizedBox.shrink();
     }
+  }
+}
+
+class BottomSheetGrabber extends StatelessWidget {
+  const BottomSheetGrabber({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final BoxDecoration grabberDecoration = BoxDecoration(
+      color: RLTheme.textSecondary.withValues(alpha: 0.3),
+      borderRadius: BorderRadius.circular(4),
+    );
+
+    return Center(
+      child: Container(
+        width: 40,
+        height: 4,
+        decoration: grabberDecoration,
+      ),
+    );
   }
 }

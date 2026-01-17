@@ -15,8 +15,9 @@ class SandboxScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       color: RLTheme.backgroundDark,
-      child: const SafeArea(
-        child: SingleChildScrollView(
+      child: SafeArea(
+        bottom: false,
+        child: const SingleChildScrollView(
           padding: EdgeInsets.all(20),
           child: Div.column([
             SandboxHeader(),

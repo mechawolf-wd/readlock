@@ -2,11 +2,13 @@
 // Provides navigation between course roadmap and profile screens
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:readlock/constants/RLTheme.dart';
 import 'package:readlock/screens/CoursesScreen.dart';
 import 'package:readlock/screens/HomeScreen.dart';
 import 'package:readlock/screens/MyBookshelfScreen.dart';
 import 'package:readlock/screens/SandboxScreen.dart';
+import 'package:readlock/utility_widgets/LoginBottomSheet.dart';
 
 const String HOME_TAB_LABEL = 'Home';
 const String SEARCH_TAB_LABEL = 'Search';
@@ -43,9 +45,23 @@ class MainNavigationState extends State<MainNavigation> {
       const MyBookshelfScreen(),
       const SandboxScreen(),
     ];
+
+    WidgetsBinding.instance.addPostFrameCallback(showLoginSheet);
+  }
+
+  void showLoginSheet(Duration timestamp) {
+    LoginBottomSheet.show(context);
   }
 
   void handleNavigationTap(int navigationItemIndex) {
+    final bool isSameTab = navigationItemIndex == currentIndex;
+
+    if (isSameTab) {
+      return;
+    }
+
+    HapticFeedback.lightImpact();
+
     setState(() {
       currentIndex = navigationItemIndex;
     });
@@ -59,7 +75,7 @@ class MainNavigationState extends State<MainNavigation> {
         children: [
           // Main content
           AnimatedSwitcher(
-            duration: const Duration(milliseconds: 300),
+            duration: const Duration(milliseconds: 150),
             switchInCurve: Curves.easeInOut,
             switchOutCurve: Curves.easeInOut,
             transitionBuilder:
@@ -88,13 +104,21 @@ class MainNavigationState extends State<MainNavigation> {
   }
 
   Widget FloatingNavigationBar() {
+    const BorderRadius navBarBorderRadius = BorderRadius.all(
+      Radius.circular(28),
+    );
+
     final BoxDecoration navBarDecoration = BoxDecoration(
-      color: Colors.white,
-      borderRadius: BorderRadius.circular(24),
+      color: RLTheme.white,
+      borderRadius: navBarBorderRadius,
+      border: Border.all(
+        color: RLTheme.textPrimary.withValues(alpha: 0.08),
+        width: 1,
+      ),
       boxShadow: [
         BoxShadow(
-          color: Colors.black.withValues(alpha: 0.1),
-          blurRadius: 20,
+          color: Colors.black.withValues(alpha: 0.06),
+          blurRadius: 16,
           offset: const Offset(0, 4),
         ),
       ],
@@ -102,8 +126,9 @@ class MainNavigationState extends State<MainNavigation> {
 
     return Container(
       decoration: navBarDecoration,
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(24),
+      child: MediaQuery.removePadding(
+        context: context,
+        removeBottom: true,
         child: Theme(
           data: ThemeData(
             splashColor: Colors.transparent,
@@ -112,9 +137,9 @@ class MainNavigationState extends State<MainNavigation> {
           child: BottomNavigationBar(
             currentIndex: currentIndex,
             onTap: handleNavigationTap,
-            backgroundColor: Colors.white,
+            backgroundColor: Colors.transparent,
             selectedItemColor: RLTheme.primaryGreen,
-            unselectedItemColor: const Color.fromARGB(255, 180, 180, 180),
+            unselectedItemColor: RLTheme.textSecondary,
             type: BottomNavigationBarType.fixed,
             items: NavigationItems(),
             selectedFontSize: 11,
