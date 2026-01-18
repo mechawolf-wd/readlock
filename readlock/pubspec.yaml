@@ -37,6 +37,7 @@ dependencies:
   google_fonts: ^6.2.1
   lottie: ^3.3.2
   audioplayers: ^6.0.0
+  sliver_tools: ^0.2.12
 
 dev_dependencies:
   flutter_test:

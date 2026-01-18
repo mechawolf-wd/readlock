@@ -3,6 +3,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:sliver_tools/sliver_tools.dart';
 import 'package:readlock/course_screens/CourseContentViewer.dart';
 import 'package:readlock/course_screens/data/CourseData.dart';
 import 'package:readlock/utility_widgets/Utility.dart';
@@ -20,6 +21,26 @@ const double NODE_VERTICAL_SPACING = 96.0;
 const double MASTERY_DOT_SIZE = 8.0;
 const double MASTERY_DOT_SPACING = 4.0;
 const int MASTERY_DOTS_PER_LESSON = 3;
+
+// Sticky header constants
+const double STICKY_HEADER_PADDING = 8.0;
+const double STICKY_HEADER_CONTENT_PADDING = 12.0;
+const double STICKY_HEADER_LETTER_SIZE = 40.0;
+const double STICKY_HEADER_HEIGHT =
+    (STICKY_HEADER_PADDING * 2) +
+    (STICKY_HEADER_CONTENT_PADDING * 2) +
+    STICKY_HEADER_LETTER_SIZE;
+
+// Segment content constants
+const double SEGMENT_CONTENT_TOP_SPACING = 16.0;
+
+// Shared shadow constant
+const double SOLID_SHADOW_OFFSET = 4.0;
+const Color SOLID_SHADOW_COLOR = Color(0xFFD0D0D0);
+const BoxShadow SOLID_SHADOW = BoxShadow(
+  color: SOLID_SHADOW_COLOR,
+  offset: Offset(0, SOLID_SHADOW_OFFSET),
+);
 
 // Segment color mapping
 Color getColorForLetter(String letter) {
@@ -60,6 +81,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
   int activeSegmentIndex = 0;
   int lastLessonAtThreshold = -1;
   bool isProgrammaticScroll = false;
+  bool showBackToTop = false;
 
   List<GlobalKey> segmentKeys = [];
   List<GlobalKey> lessonKeys = [];
@@ -78,6 +100,18 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
   void handleScrollUpdate() {
     updateActiveSegment();
     checkLessonHaptic();
+    updateBackToTopVisibility();
+  }
+
+  void updateBackToTopVisibility() {
+    const double scrollThreshold = 100.0;
+    final bool shouldShow = scrollController.offset > scrollThreshold;
+
+    if (shouldShow != showBackToTop) {
+      setState(() {
+        showBackToTop = shouldShow;
+      });
+    }
   }
 
   void checkLessonHaptic() {
@@ -210,6 +244,12 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
   int scrollGeneration = 0;
 
   void handleSegmentTap(int segmentIndex) {
+    final bool isAlreadyActive = segmentIndex == activeSegmentIndex;
+
+    if (isAlreadyActive) {
+      return;
+    }
+
     HapticFeedback.lightImpact();
     isProgrammaticScroll = true;
     scrollGeneration++;
@@ -230,11 +270,32 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
         curve: Curves.easeOutCubic,
       );
     } else {
-      Scrollable.ensureVisible(
-        segmentKeys[segmentIndex].currentContext!,
-        duration: const Duration(milliseconds: 400),
-        curve: Curves.easeOutCubic,
-      );
+      // Calculate scroll position manually to account for sticky header
+      final RenderBox? targetBox =
+          segmentKeys[segmentIndex].currentContext?.findRenderObject()
+              as RenderBox?;
+
+      if (targetBox != null) {
+        final double currentScroll = scrollController.offset;
+        final double targetY = targetBox.localToGlobal(Offset.zero).dy;
+
+        // Calculate offset to position content just below pinned header
+        // targetY = current position of content (Padding widget)
+        // We want content to end up at: safeAreaTop + STICKY_HEADER_HEIGHT
+        final double safeAreaTop = MediaQuery.of(context).padding.top;
+        final double headerOffset = safeAreaTop + STICKY_HEADER_HEIGHT;
+        final double newScrollPosition =
+            currentScroll + targetY - headerOffset;
+
+        scrollController.animateTo(
+          newScrollPosition.clamp(
+            0,
+            scrollController.position.maxScrollExtent,
+          ),
+          duration: const Duration(milliseconds: 400),
+          curve: Curves.easeOutCubic,
+        );
+      }
     }
 
     // Only clear flag if no new scroll was started
@@ -262,29 +323,43 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
       child: SafeArea(
         child: Stack(
           children: [
-            // Scrollable content
-            SingleChildScrollView(
+            // Scrollable content with sticky headers
+            CustomScrollView(
               controller: scrollController,
-              child: Div.column([
+              slivers: [
                 // Header
-                RoadmapHeader(),
+                SliverToBoxAdapter(child: RoadmapHeader()),
 
-                const Spacing.height(24),
+                const SliverToBoxAdapter(child: Spacing.height(24)),
 
-                // All segments
-                AllSegmentsList(),
+                // All segments with sticky headers
+                ...AllSegmentSlivers(),
 
                 // Bottom padding for floating buttons
-                const Spacing.height(180),
-              ]),
+                const SliverToBoxAdapter(child: Spacing.height(180)),
+              ],
             ),
 
-            // Floating bottom bar with tiles + continue button
+            // Bottom floating section
             Positioned(
               left: 20,
               right: 20,
               bottom: 16,
-              child: BottomFloatingBar(),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // Back to top button (above the bar, only when scrolled)
+                  if (showBackToTop) ...[
+                    BackToTopButton(),
+
+                    const Spacing.height(12),
+                  ],
+
+                  // Navigation bar
+                  BottomFloatingBar(),
+                ],
+              ),
             ),
           ],
         ),
@@ -292,10 +367,54 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
     );
   }
 
+  Widget BackToTopButton() {
+    const BoxDecoration buttonDecoration = BoxDecoration(
+      color: RLTheme.backgroundLight,
+      shape: BoxShape.circle,
+      boxShadow: [SOLID_SHADOW],
+    );
+
+    final Widget ChevronUpIcon = const Icon(
+      Icons.keyboard_arrow_up,
+      color: RLTheme.textPrimary,
+      size: 28,
+    );
+
+    return GestureDetector(
+      onTap: handleBackToTop,
+      child: Container(
+        width: 48,
+        height: 48,
+        decoration: buttonDecoration,
+        child: Center(child: ChevronUpIcon),
+      ),
+    );
+  }
+
+  void handleBackToTop() {
+    HapticFeedback.lightImpact();
+    isProgrammaticScroll = true;
+
+    setState(() {
+      activeSegmentIndex = 0;
+    });
+
+    scrollController.animateTo(
+      0,
+      duration: const Duration(milliseconds: 400),
+      curve: Curves.easeOutCubic,
+    );
+
+    Future.delayed(const Duration(milliseconds: 450), () {
+      isProgrammaticScroll = false;
+    });
+  }
+
   Widget BottomFloatingBar() {
     final BoxDecoration barDecoration = BoxDecoration(
       color: RLTheme.backgroundLight,
       borderRadius: BorderRadius.circular(20),
+      boxShadow: const [SOLID_SHADOW],
     );
 
     return Container(
@@ -361,24 +480,24 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
 
             const Spacing.width(16),
 
-            // Title, author, subtitle
+            // Title, description, author
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  RLTypography.headingMedium(courseTitle),
+                  RLTypography.headingLarge(courseTitle),
+
+                  const Spacing.height(4),
+
+                  RLTypography.bodyMedium(
+                    'Master design psychology fundamentals',
+                    color: RLTheme.textSecondary,
+                  ),
 
                   const Spacing.height(4),
 
                   RLTypography.bodyMedium(
                     'by $courseAuthor',
-                    color: RLTheme.textSecondary,
-                  ),
-
-                  const Spacing.height(8),
-
-                  RLTypography.bodyMedium(
-                    'Master design psychology fundamentals',
                     color: RLTheme.textSecondary,
                   ),
                 ],
@@ -453,15 +572,8 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
     return tiles;
   }
 
-  Widget AllSegmentsList() {
-    return Div.column(
-      SegmentSections(),
-      crossAxisAlignment: CrossAxisAlignment.center,
-    );
-  }
-
-  List<Widget> SegmentSections() {
-    final List<Widget> sections = [];
+  List<Widget> AllSegmentSlivers() {
+    final List<Widget> slivers = [];
     int lessonOffset = 0;
 
     for (
@@ -471,29 +583,59 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
     ) {
       final Map<String, dynamic> segment = courseSegments[segmentIndex];
       final List<dynamic> lessons = segment['lessons'] ?? [];
+      final String segmentTitle = segment['segment-title'] ?? 'Segment';
       final bool isNotFirst = segmentIndex > 0;
 
+      // Spacing between segments
       if (isNotFirst) {
-        sections.add(const Spacing.height(48));
+        slivers.add(
+          const SliverToBoxAdapter(child: Spacing.height(48)),
+        );
       }
 
-      sections.add(
-        SegmentSection(
-          key: segmentKeys[segmentIndex],
-          segment: segment,
-          segmentIndex: segmentIndex,
-          lessonKeys: lessonKeys.sublist(
-            lessonOffset,
-            lessonOffset + lessons.length,
-          ),
-          onLessonTap: showLoadingScreenThenNavigate,
+      // Segment with sticky header that pushes out previous headers
+      slivers.add(
+        MultiSliver(
+          pushPinnedChildren: true,
+          children: [
+            // Sticky segment header
+            SliverPersistentHeader(
+              pinned: true,
+              delegate: StickySegmentHeaderDelegate(
+                title: segmentTitle,
+              ),
+            ),
+
+            // Segment lessons
+            SliverToBoxAdapter(
+              child: Padding(
+                key: segmentKeys[segmentIndex],
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Column(
+                  children: [
+                    const Spacing.height(SEGMENT_CONTENT_TOP_SPACING),
+
+                    PathWithNodes(
+                      lessons: lessons,
+                      segmentIndex: segmentIndex,
+                      lessonKeys: lessonKeys.sublist(
+                        lessonOffset,
+                        lessonOffset + lessons.length,
+                      ),
+                      onLessonTap: showLoadingScreenThenNavigate,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
         ),
       );
 
       lessonOffset += lessons.length;
     }
 
-    return sections;
+    return slivers;
   }
 
   Widget ContinueButton() {
@@ -508,14 +650,22 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
   }
 
   Widget CourseStatsRow() {
+    final BoxDecoration chipDecoration = BoxDecoration(
+      color: Colors.transparent,
+      borderRadius: BorderRadius.circular(8),
+      border: Border.all(
+        color: RLTheme.textSecondary.withValues(alpha: 0.2),
+      ),
+    );
+
     final Widget MasterclassIcon = const Icon(
-      Icons.lightbulb,
+      Icons.lightbulb_outline,
       color: RLTheme.primaryGreen,
       size: 16,
     );
 
     final Widget MemorizersIcon = const Icon(
-      Icons.quiz,
+      Icons.psychology_outlined,
       color: RLTheme.primaryBlue,
       size: 16,
     );
@@ -523,33 +673,37 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
     return Row(
       children: [
         // Masterclasses chip
-        Div.row(
-          [
-            MasterclassIcon,
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          decoration: chipDecoration,
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              MasterclassIcon,
 
-            const Spacing.width(6),
+              const Spacing.width(6),
 
-            RLTypography.bodyMedium('37 masterclasses'),
-          ],
-          padding: const [8, 12],
-          radius: BorderRadius.circular(8),
-          color: RLTheme.backgroundLight,
+              RLTypography.bodyMedium('37 masterclasses'),
+            ],
+          ),
         ),
 
         const Spacing.width(8),
 
         // Memorizers chip
-        Div.row(
-          [
-            MemorizersIcon,
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          decoration: chipDecoration,
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              MemorizersIcon,
 
-            const Spacing.width(6),
+              const Spacing.width(6),
 
-            RLTypography.bodyMedium('32 memorizers'),
-          ],
-          padding: const [8, 12],
-          radius: BorderRadius.circular(8),
-          color: RLTheme.backgroundLight,
+              RLTypography.bodyMedium('32 memorizers'),
+            ],
+          ),
         ),
       ],
     );
@@ -601,57 +755,25 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
   }
 }
 
-// Single segment section with header and lessons
-class SegmentSection extends StatelessWidget {
-  final Map<String, dynamic> segment;
-  final int segmentIndex;
-  final List<GlobalKey> lessonKeys;
-  final Function(int, int) onLessonTap;
-
-  const SegmentSection({
-    super.key,
-    required this.segment,
-    required this.segmentIndex,
-    required this.lessonKeys,
-    required this.onLessonTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final String segmentTitle =
-        segment['segment-title'] ?? 'Unnamed Segment';
-    final List<dynamic> lessons = segment['lessons'] ?? [];
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: Column(
-        children: [
-          // Segment header
-          PathSegmentHeader(title: segmentTitle),
-
-          const Spacing.height(24),
-
-          // Winding path with nodes
-          PathWithNodes(
-            lessons: lessons,
-            segmentIndex: segmentIndex,
-            lessonKeys: lessonKeys,
-            onLessonTap: onLessonTap,
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-// Segment header for the path
-class PathSegmentHeader extends StatelessWidget {
+// Sticky header delegate for segment titles
+class StickySegmentHeaderDelegate
+    extends SliverPersistentHeaderDelegate {
   final String title;
 
-  const PathSegmentHeader({super.key, required this.title});
+  const StickySegmentHeaderDelegate({required this.title});
 
   @override
-  Widget build(BuildContext context) {
+  double get minExtent => STICKY_HEADER_HEIGHT;
+
+  @override
+  double get maxExtent => STICKY_HEADER_HEIGHT;
+
+  @override
+  Widget build(
+    BuildContext context,
+    double shrinkOffset,
+    bool overlapsContent,
+  ) {
     final String letter = title.split(' ').first;
     final String name = title.split(' ').skip(1).join(' ');
     final Color color = getColorForLetter(letter);
@@ -662,20 +784,45 @@ class PathSegmentHeader extends StatelessWidget {
       border: Border.all(color: color.withValues(alpha: 0.3)),
     );
 
-    return Div.row([
-      Container(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 16,
-          vertical: 8,
-        ),
-        decoration: letterDecoration,
-        child: RLTypography.headingMedium(letter, color: color),
+    final BoxDecoration headerDecoration = BoxDecoration(
+      color: RLTheme.backgroundLight,
+      borderRadius: BorderRadius.circular(20),
+      boxShadow: const [SOLID_SHADOW],
+    );
+
+    return Container(
+      color: Colors.transparent,
+      padding: const EdgeInsets.symmetric(
+        horizontal: 16,
+        vertical: STICKY_HEADER_PADDING,
       ),
+      child: Container(
+        decoration: headerDecoration,
+        padding: const EdgeInsets.all(STICKY_HEADER_CONTENT_PADDING),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              width: STICKY_HEADER_LETTER_SIZE,
+              height: STICKY_HEADER_LETTER_SIZE,
+              decoration: letterDecoration,
+              child: Center(
+                child: RLTypography.headingMedium(letter, color: color),
+              ),
+            ),
 
-      const Spacing.width(12),
+            const Spacing.width(12),
 
-      RLTypography.headingMedium(name),
-    ], mainAxisAlignment: MainAxisAlignment.center);
+            RLTypography.headingMedium(name),
+          ],
+        ),
+      ),
+    );
+  }
+
+  @override
+  bool shouldRebuild(StickySegmentHeaderDelegate oldDelegate) {
+    return title != oldDelegate.title;
   }
 }
 
@@ -885,13 +1032,11 @@ class PathLessonNode extends StatelessWidget {
     final Color bgColor = getBackgroundColor();
     final Color borderColor = getBorderColor();
     final Widget icon = NodeIcon();
-    final List<BoxShadow>? nodeShadow = getNodeShadow();
 
     final BoxDecoration nodeDecoration = BoxDecoration(
       color: bgColor,
       shape: BoxShape.circle,
       border: Border.all(color: borderColor, width: 3),
-      boxShadow: nodeShadow,
     );
 
     return Container(
@@ -900,20 +1045,6 @@ class PathLessonNode extends StatelessWidget {
       decoration: nodeDecoration,
       child: Center(child: icon),
     );
-  }
-
-  List<BoxShadow>? getNodeShadow() {
-    if (isCurrent) {
-      return [
-        BoxShadow(
-          color: RLTheme.primaryGreen.withValues(alpha: 0.3),
-          blurRadius: 12,
-          spreadRadius: 2,
-        ),
-      ];
-    }
-
-    return null;
   }
 
   Color getBackgroundColor() {

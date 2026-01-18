@@ -2,6 +2,7 @@
 // Showcases mockups of engaging learning patterns adapted for book reading
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLDimensions.dart';
 import 'package:readlock/utility_widgets/Utility.dart';
@@ -480,6 +481,8 @@ class SoundPickerCardState extends State<SoundPickerCard> {
   }
 
   void selectSound(String soundName) {
+    HapticFeedback.lightImpact();
+
     setState(() {
       selectedSound = soundName;
     });
@@ -516,7 +519,10 @@ class SwitchMenuItem extends StatelessWidget {
 
       Switch(
         value: value,
-        onChanged: onChanged,
+        onChanged: (newValue) {
+          HapticFeedback.lightImpact();
+          onChanged(newValue);
+        },
         activeThumbColor: RLTheme.primaryBlue,
         activeTrackColor: RLTheme.primaryBlue.withValues(alpha: RLDimensions.alphaDark),
         inactiveThumbColor: RLTheme.textPrimary.withValues(alpha: RLDimensions.opacityMuted),
@@ -607,7 +613,10 @@ class SegmentedMenuItem extends StatelessWidget {
 
       return Expanded(
         child: GestureDetector(
-          onTap: () => onChanged(option),
+          onTap: () {
+            HapticFeedback.lightImpact();
+            onChanged(option);
+          },
           child: Container(
             padding: const EdgeInsets.symmetric(vertical: RLDimensions.spacing8),
             decoration: optionDecoration,

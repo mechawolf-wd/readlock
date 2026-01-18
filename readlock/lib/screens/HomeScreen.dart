@@ -2,6 +2,7 @@
 // Features top bar with streak and experience counters
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:readlock/course_screens/CourseRoadmapScreen.dart';
 import 'package:readlock/MainNavigation.dart';
 import 'package:readlock/screens/ReaderPassScreen.dart';
@@ -52,6 +53,7 @@ class HomeScreenState extends State<HomeScreen> {
   }
 
   void handleContinueReading() {
+    HapticFeedback.lightImpact();
     navigateToCourse('design-everyday-things-comprehensive');
   }
 
