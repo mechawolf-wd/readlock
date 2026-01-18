@@ -114,7 +114,7 @@ class CCSingleChoiceState extends State<CCSingleChoice> {
       final QuestionOption option = widget.content.options[optionIndex];
 
       optionWidgets.add(
-        OptionButtonWidget(optionIndex: optionIndex, option: option),
+        OptionButton(optionIndex: optionIndex, option: option),
       );
 
       // Add spacing after each option except the last one
@@ -136,7 +136,7 @@ class CCSingleChoiceState extends State<CCSingleChoice> {
     return optionWidgets;
   }
 
-  Widget OptionButtonWidget({
+  Widget OptionButton({
     required int optionIndex,
     required QuestionOption option,
   }) {

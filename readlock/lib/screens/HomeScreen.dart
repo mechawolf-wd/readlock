@@ -357,16 +357,24 @@ class HomeScreenState extends State<HomeScreen> {
           // Bookmark icon
           Container(
             margin: const EdgeInsets.only(top: RLDimensions.spacing8),
-            child: const Icon(
-              Icons.bookmark_border,
-              color: RLTheme.primaryBlue,
-              size: RLDimensions.iconL,
-            ),
+            child: BookmarkIcon,
           ),
         ]),
       );
     }).toList();
   }
+
+  static const Widget BookmarkIcon = Icon(
+    Icons.bookmark_border,
+    color: RLTheme.primaryBlue,
+    size: RLDimensions.iconL,
+  );
+
+  static const Widget ChevronRightIcon = Icon(
+    Icons.chevron_right,
+    color: RLTheme.textSecondary,
+    size: RLDimensions.iconL,
+  );
 
   Widget RandomLessonSection() {
     final BoxDecoration cardDecoration = BoxDecoration(
@@ -394,11 +402,7 @@ class HomeScreenState extends State<HomeScreen> {
             child: RLTypography.bodyLarge('Surprise Me'),
           ),
 
-          const Icon(
-            Icons.chevron_right,
-            color: RLTheme.textSecondary,
-            size: RLDimensions.iconL,
-          ),
+          ChevronRightIcon,
         ], crossAxisAlignment: CrossAxisAlignment.center),
       ),
     );

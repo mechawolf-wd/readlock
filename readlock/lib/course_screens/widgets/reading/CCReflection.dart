@@ -88,12 +88,12 @@ class CCReflectionState extends State<CCReflection> {
 
     return Div.column([
       // Instructions header
-      buildInstructionsHeader(),
+      InstructionsHeader(),
 
       const Spacing.height(16),
 
       // Thinking cards list
-      ...buildThinkingCardsList(limitedPoints),
+      ...ThinkingCardsList(limitedPoints),
     ], crossAxisAlignment: CrossAxisAlignment.stretch);
   }
 
@@ -101,19 +101,19 @@ class CCReflectionState extends State<CCReflection> {
     return widget.content.thinkingPoints.take(3).toList();
   }
 
-  Widget buildInstructionsHeader() {
+  Widget InstructionsHeader() {
     return RLTypography.bodyMedium(
       'Consider these aspects:',
       color: RLTheme.textPrimary.withValues(alpha: 0.7),
     );
   }
 
-  List<Widget> buildThinkingCardsList(List<String> points) {
+  List<Widget> ThinkingCardsList(List<String> points) {
     return points.asMap().entries.map((entry) {
       final int index = entry.key;
       final String point = entry.value;
 
-      return ThinkingCardWidget(
+      return ThinkingCard(
         point: point,
         index: index,
         isSelected: selectedPoints.contains(index),
@@ -123,7 +123,7 @@ class CCReflectionState extends State<CCReflection> {
     }).toList();
   }
 
-  Widget ThinkingCardWidget({
+  Widget ThinkingCard({
     required String point,
     required int index,
     required bool isSelected,
@@ -138,7 +138,7 @@ class CCReflectionState extends State<CCReflection> {
 
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
-      child: buildSwipeGestureDetector(
+      child: SwipeGestureDetector(
         onSwipeComplete: onSwipeComplete,
         index: index,
         cardDecoration: cardDecoration,
@@ -172,7 +172,7 @@ class CCReflectionState extends State<CCReflection> {
     );
   }
 
-  Widget buildSwipeGestureDetector({
+  Widget SwipeGestureDetector({
     required VoidCallback onSwipeComplete,
     required int index,
     required BoxDecoration cardDecoration,
@@ -187,7 +187,7 @@ class CCReflectionState extends State<CCReflection> {
       onHorizontalDragUpdate: (details) =>
           handleSwipeUpdate(details, index),
       onHorizontalDragStart: (details) => handleSwipeStart(index),
-      child: buildAnimatedCardContainer(
+      child: AnimatedCardContainer(
         cardDecoration: cardDecoration,
         cardColor: cardColor,
         point: point,
@@ -224,7 +224,7 @@ class CCReflectionState extends State<CCReflection> {
     });
   }
 
-  Widget buildAnimatedCardContainer({
+  Widget AnimatedCardContainer({
     required BoxDecoration cardDecoration,
     required Color cardColor,
     required String point,
@@ -237,7 +237,7 @@ class CCReflectionState extends State<CCReflection> {
       decoration: cardDecoration,
       child: Div.row([
         // Swipe indicator section
-        buildSwipeIndicatorSection(
+        SwipeIndicatorSection(
           cardColor: cardColor,
           isSelected: isSelected,
           isSwiping: isSwiping,
@@ -246,7 +246,7 @@ class CCReflectionState extends State<CCReflection> {
         const Spacing.width(12),
 
         // Content section
-        buildCardContentSection(
+        CardContentSection(
           point: point,
           cardColor: cardColor,
           isSelected: isSelected,
@@ -255,7 +255,7 @@ class CCReflectionState extends State<CCReflection> {
     );
   }
 
-  Widget buildSwipeIndicatorSection({
+  Widget SwipeIndicatorSection({
     required Color cardColor,
     required bool isSelected,
     required bool isSwiping,
@@ -299,7 +299,7 @@ class CCReflectionState extends State<CCReflection> {
     return RLTheme.textPrimary.withValues(alpha: 0.1);
   }
 
-  Widget buildCardContentSection({
+  Widget CardContentSection({
     required String point,
     required Color cardColor,
     required bool isSelected,

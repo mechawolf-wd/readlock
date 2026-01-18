@@ -158,7 +158,7 @@ class CCFillGapQuestionState extends State<CCFillGapQuestion>
       }
 
       if (!isLastPart) {
-        questionWidgets.add(GapWidget(gapIndex: partIndex));
+        questionWidgets.add(Gap(gapIndex: partIndex));
       }
     }
 
@@ -170,7 +170,7 @@ class CCFillGapQuestionState extends State<CCFillGapQuestion>
     );
   }
 
-  Widget GapWidget({required int gapIndex}) {
+  Widget Gap({required int gapIndex}) {
     final int? selectedOptionIndex = selectedOptionsForGaps[gapIndex];
     final bool hasSelection = selectedOptionIndex != null;
     final bool isCorrect = getIsGapCorrect(gapIndex, selectedOptionIndex);
@@ -193,7 +193,7 @@ class CCFillGapQuestionState extends State<CCFillGapQuestion>
     final double gapWidth = calculateGapWidth(displayText, hasSelection);
 
     // Build gap container
-    final Widget gapContainer = buildGapContainer(
+    final Widget gapContainer = GapContainer(
       displayText: displayText,
       gapWidth: gapWidth,
       styling: styling,
@@ -274,7 +274,7 @@ class CCFillGapQuestionState extends State<CCFillGapQuestion>
     return calculatedWidth.clamp(FILL_GAP_MIN_BLANK_WIDTH, FILL_GAP_MAX_BLANK_WIDTH);
   }
 
-  Widget buildGapContainer({
+  Widget GapContainer({
     required String displayText,
     required double gapWidth,
     required GapStyling styling,

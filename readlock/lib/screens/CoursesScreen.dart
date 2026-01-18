@@ -521,7 +521,7 @@ class CoursesScreenState extends State<CoursesScreen> {
         decoration: cardDecoration,
         child: Div.row([
           // Book cover
-          BookCoverWidget(
+          BookCover(
             coverImagePath: coverImagePath,
             coverPlaceholderDecoration: coverPlaceholderDecoration,
           ),
@@ -545,22 +545,30 @@ class CoursesScreenState extends State<CoursesScreen> {
           // Bookmark icon
           Container(
             margin: const EdgeInsets.only(top: 8),
-            child: const Icon(
-              Icons.bookmark_border,
-              color: Colors.grey,
-              size: 24,
-            ),
+            child: BookmarkIcon,
           ),
         ]),
       );
     }).toList();
   }
 
-  Widget BookCoverWidget({
+  static const Widget BookmarkIcon = Icon(
+    Icons.bookmark_border,
+    color: Colors.grey,
+    size: 24,
+  );
+
+  Widget BookCover({
     required String? coverImagePath,
     required BoxDecoration coverPlaceholderDecoration,
   }) {
     final bool hasCover = coverImagePath != null;
+
+    const Widget BookIcon = Icon(
+      Icons.book,
+      color: RLTheme.primaryBlue,
+      size: 20,
+    );
 
     if (hasCover) {
       return ClipRRect(
@@ -578,11 +586,7 @@ class CoursesScreenState extends State<CoursesScreen> {
       width: 40,
       height: 60,
       decoration: coverPlaceholderDecoration,
-      child: const Icon(
-        Icons.book,
-        color: RLTheme.primaryBlue,
-        size: 20,
-      ),
+      child: BookIcon,
     );
   }
 
@@ -750,22 +754,30 @@ class CoursesScreenState extends State<CoursesScreen> {
           // Bookmark icon
           Container(
             margin: const EdgeInsets.only(top: 8),
-            child: const Icon(
-              Icons.bookmark_border,
-              color: Colors.grey,
-              size: 24,
-            ),
+            child: SearchBookmarkIcon,
           ),
         ]),
       );
     }).toList();
   }
 
+  static const Widget SearchBookmarkIcon = Icon(
+    Icons.bookmark_border,
+    color: Colors.grey,
+    size: 24,
+  );
+
   Widget SearchResultBookCover({
     required String? coverImagePath,
     required BoxDecoration coverPlaceholderDecoration,
   }) {
     final bool hasCover = coverImagePath != null;
+
+    const Widget BookIcon = Icon(
+      Icons.book,
+      color: RLTheme.primaryBlue,
+      size: 20,
+    );
 
     if (hasCover) {
       return ClipRRect(
@@ -783,13 +795,15 @@ class CoursesScreenState extends State<CoursesScreen> {
       width: 40,
       height: 60,
       decoration: coverPlaceholderDecoration,
-      child: const Icon(
-        Icons.book,
-        color: RLTheme.primaryBlue,
-        size: 20,
-      ),
+      child: BookIcon,
     );
   }
+
+  static const Widget ArrowDownIcon = Icon(
+    Icons.arrow_downward,
+    color: RLTheme.primaryBlue,
+    size: 16,
+  );
 
   Widget LoadNextButton() {
     final BoxDecoration buttonDecoration = BoxDecoration(
@@ -811,11 +825,7 @@ class CoursesScreenState extends State<CoursesScreen> {
 
           const Spacing.width(8),
 
-          const Icon(
-            Icons.arrow_downward,
-            color: RLTheme.primaryBlue,
-            size: 16,
-          ),
+          ArrowDownIcon,
         ], mainAxisAlignment: MainAxisAlignment.center),
       ),
     );

@@ -3,7 +3,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:readlock/course_screens/widgets/CCJSONContentFactory.dart';
-import 'package:readlock/course_screens/data/courseData.dart';
+import 'package:readlock/course_screens/data/CourseData.dart';
 import 'package:readlock/constants/RLTheme.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/utility_widgets/Utility.dart';

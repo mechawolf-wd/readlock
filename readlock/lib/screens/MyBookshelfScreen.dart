@@ -63,6 +63,18 @@ class MyBookshelfScreenState extends State<MyBookshelfScreen> {
     );
   }
 
+  static const Widget ArrowForwardIcon = Icon(
+    Icons.arrow_forward_ios,
+    color: RLTheme.primaryBlue,
+    size: 12,
+  );
+
+  static const Widget SettingsIcon = Icon(
+    Icons.settings,
+    color: RLTheme.textSecondary,
+    size: 20,
+  );
+
   Widget BookshelfHeaderWithSettings() {
     final BoxDecoration settingsIconDecoration = BoxDecoration(
       color: RLTheme.backgroundLight.withValues(alpha: 0.08),
@@ -91,11 +103,7 @@ class MyBookshelfScreenState extends State<MyBookshelfScreen> {
         child: Container(
           padding: const EdgeInsets.all(12),
           decoration: settingsIconDecoration,
-          child: const Icon(
-            Icons.settings,
-            color: RLTheme.textSecondary,
-            size: 20,
-          ),
+          child: SettingsIcon,
         ),
       ),
     ], crossAxisAlignment: CrossAxisAlignment.start);
@@ -169,7 +177,7 @@ class MyBookshelfScreenState extends State<MyBookshelfScreen> {
         decoration: cardDecoration,
         child: Div.row([
           // Book cover
-          BookCoverWidget(
+          BookCover(
             coverImagePath: coverImagePath,
             coverPlaceholderDecoration: coverPlaceholderDecoration,
           ),
@@ -214,11 +222,17 @@ class MyBookshelfScreenState extends State<MyBookshelfScreen> {
     }).toList();
   }
 
-  Widget BookCoverWidget({
+  Widget BookCover({
     required String? coverImagePath,
     required BoxDecoration coverPlaceholderDecoration,
   }) {
     final bool hasCover = coverImagePath != null;
+
+    const Widget BookIcon = Icon(
+      Icons.book,
+      color: RLTheme.primaryBlue,
+      size: 24,
+    );
 
     if (hasCover) {
       return ClipRRect(
@@ -236,11 +250,7 @@ class MyBookshelfScreenState extends State<MyBookshelfScreen> {
       width: 60,
       height: 80,
       decoration: coverPlaceholderDecoration,
-      child: const Icon(
-        Icons.book,
-        color: RLTheme.primaryBlue,
-        size: 24,
-      ),
+      child: BookIcon,
     );
   }
 
@@ -291,11 +301,7 @@ class MyBookshelfScreenState extends State<MyBookshelfScreen> {
 
           const Spacing.width(4),
 
-          const Icon(
-            Icons.arrow_forward_ios,
-            color: RLTheme.primaryBlue,
-            size: 12,
-          ),
+          ArrowForwardIcon,
         ]),
       ),
     );
@@ -603,15 +609,17 @@ class AllTitlesBottomSheetState extends State<AllTitlesBottomSheet> {
       );
     }
 
+    const Widget BookIcon = Icon(
+      Icons.book,
+      color: RLTheme.primaryBlue,
+      size: 20,
+    );
+
     return Container(
       width: 40,
       height: 60,
       decoration: coverPlaceholderDecoration,
-      child: const Icon(
-        Icons.book,
-        color: RLTheme.primaryBlue,
-        size: 20,
-      ),
+      child: BookIcon,
     );
   }
 }

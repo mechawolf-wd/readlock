@@ -134,14 +134,14 @@ class CCIncorrectStatementState extends State<CCIncorrectStatement>
           statementIndex == widget.content.options.length - 1;
 
       return Div.column([
-        StatementItemWidget(statementIndex: statementIndex),
+        StatementItem(statementIndex: statementIndex),
 
         if (!isLastItem) const Spacing.height(12),
       ]);
     }).toList();
   }
 
-  Widget StatementItemWidget({required int statementIndex}) {
+  Widget StatementItem({required int statementIndex}) {
     final bool isSelected = selectedStatementIndex == statementIndex;
     final bool isIncorrectStatement = widget
         .content
@@ -153,7 +153,7 @@ class CCIncorrectStatementState extends State<CCIncorrectStatement>
       isIncorrectStatement: isIncorrectStatement,
     );
 
-    final Widget statementContainer = buildStatementContainer(
+    final Widget statementContainer = StatementContainer(
       statementIndex: statementIndex,
       isSelected: isSelected,
       statementStyle: statementStyle,
@@ -211,7 +211,7 @@ class CCIncorrectStatementState extends State<CCIncorrectStatement>
     );
   }
 
-  Widget buildStatementContainer({
+  Widget StatementContainer({
     required int statementIndex,
     required bool isSelected,
     required StatementStyle statementStyle,
@@ -225,10 +225,10 @@ class CCIncorrectStatementState extends State<CCIncorrectStatement>
     return Div.row(
       [
         // Feedback icon section
-        buildFeedbackIconSection(statementIndex, statementStyle),
+        FeedbackIconSection(statementIndex, statementStyle),
 
         // Statement text section
-        buildStatementTextSection(statementIndex, isSelected),
+        StatementTextSection(statementIndex, isSelected),
       ],
       padding: 16,
       decoration: containerDecoration,
@@ -237,7 +237,7 @@ class CCIncorrectStatementState extends State<CCIncorrectStatement>
     );
   }
 
-  Widget buildFeedbackIconSection(
+  Widget FeedbackIconSection(
     int statementIndex,
     StatementStyle statementStyle,
   ) {
@@ -264,7 +264,7 @@ class CCIncorrectStatementState extends State<CCIncorrectStatement>
     ]);
   }
 
-  Widget buildStatementTextSection(
+  Widget StatementTextSection(
     int statementIndex,
     bool isSelected,
   ) {

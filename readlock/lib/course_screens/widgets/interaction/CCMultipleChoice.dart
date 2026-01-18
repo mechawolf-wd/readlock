@@ -113,14 +113,14 @@ class CCMultipleChoiceState extends State<CCMultipleChoice> {
       final QuestionOption option = entry.value;
 
       return Div.column([
-        OptionButtonWidget(optionIndex: optionIndex, option: option),
+        OptionButton(optionIndex: optionIndex, option: option),
 
         const Spacing.height(OPTION_BUTTON_SPACING),
       ]);
     }).toList();
   }
 
-  Widget OptionButtonWidget({
+  Widget OptionButton({
     required int optionIndex,
     required QuestionOption option,
   }) {

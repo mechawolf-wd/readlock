@@ -3,7 +3,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:readlock/course_screens/CourseContentViewer.dart';
-import 'package:readlock/course_screens/data/courseData.dart';
+import 'package:readlock/course_screens/data/CourseData.dart';
 import 'package:readlock/utility_widgets/Utility.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLTheme.dart';
@@ -145,8 +145,8 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
       borderRadius: BorderRadius.circular(12),
       child: Image.asset(
         'assets/covers/doet-cover.png',
-        width: 100,
-        height: 140,
+        width: 120,
+        height: 168,
         fit: BoxFit.cover,
       ),
     );
@@ -165,34 +165,34 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
           const Spacer(),
         ]),
 
+        const Spacing.height(20),
+
+        // Centered book cover
+        BookCover,
+
         const Spacing.height(16),
 
-        // Course info
-        Div.row([
-          BookCover,
+        // Course title
+        RLTypography.headingLarge(
+          courseTitle,
+          textAlign: TextAlign.center,
+        ),
 
-          const Spacing.width(16),
+        const Spacing.height(8),
 
-          Expanded(
-            child: Div.column([
-              RLTypography.headingLarge(courseTitle),
-
-              const Spacing.height(4),
-
-              RLTypography.bodyMedium(
-                'Master design psychology fundamentals',
-                color: RLTheme.textSecondary,
-              ),
-            ], crossAxisAlignment: CrossAxisAlignment.start),
-          ),
-        ], crossAxisAlignment: CrossAxisAlignment.start),
+        // Course subtitle
+        RLTypography.bodyMedium(
+          'Master design psychology fundamentals',
+          color: RLTheme.textSecondary,
+          textAlign: TextAlign.center,
+        ),
 
         const Spacing.height(16),
 
         // Course stats
         CourseStatsRow(),
       ],
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
       padding: const [20, 16],
     );
   }

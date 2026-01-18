@@ -188,14 +188,14 @@ class CCReflectionQuestionState extends State<CCReflectionQuestion> {
       final QuestionOption option = entry.value;
 
       return Div.column([
-        ThoughtOptionWidget(optionIndex: optionIndex, option: option),
+        ThoughtOption(optionIndex: optionIndex, option: option),
 
         const Spacing.height(16),
       ]);
     }).toList();
   }
 
-  Widget ThoughtOptionWidget({
+  Widget ThoughtOption({
     required int optionIndex,
     required QuestionOption option,
   }) {
