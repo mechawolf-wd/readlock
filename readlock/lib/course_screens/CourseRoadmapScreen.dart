@@ -1,8 +1,8 @@
 // Course roadmap screen with Duolingo-style winding path
-// Circular nodes connected by a zigzag path
-// Simple unified scroll - whole page scrolls together
+// One long scrollable list with sticky segment tiles
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:readlock/course_screens/CourseContentViewer.dart';
 import 'package:readlock/course_screens/data/CourseData.dart';
 import 'package:readlock/utility_widgets/Utility.dart';
@@ -14,15 +14,34 @@ import 'package:readlock/utility_widgets/CourseLoadingScreen.dart';
 // Layout constants
 const double NODE_SIZE = 72.0;
 const double PATH_HORIZONTAL_OFFSET = 60.0;
-const double NODE_VERTICAL_SPACING = 64.0;
+const double NODE_VERTICAL_SPACING = 96.0;
 
 // Mastery dots constants
 const double MASTERY_DOT_SIZE = 8.0;
 const double MASTERY_DOT_SPACING = 4.0;
 const int MASTERY_DOTS_PER_LESSON = 3;
 
-// Height per lesson node (node + spacing + title area)
-const double LESSON_NODE_HEIGHT = NODE_SIZE + 8 + 8 + 8 + 40 + NODE_VERTICAL_SPACING;
+// Segment color mapping
+Color getColorForLetter(String letter) {
+  switch (letter) {
+    case 'A':
+      {
+        return RLTheme.primaryGreen;
+      }
+    case 'B':
+      {
+        return RLTheme.primaryBlue;
+      }
+    case 'C':
+      {
+        return RLTheme.accentPurple;
+      }
+    default:
+      {
+        return RLTheme.primaryGreen;
+      }
+  }
+}
 
 class CourseRoadmapScreen extends StatefulWidget {
   final String courseId;
@@ -34,30 +53,118 @@ class CourseRoadmapScreen extends StatefulWidget {
       CourseRoadmapScreenState();
 }
 
-class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
-    with SingleTickerProviderStateMixin {
+class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
   Map<String, dynamic>? courseData;
   List<Map<String, dynamic>> courseSegments = [];
   bool isLoading = true;
+  int activeSegmentIndex = 0;
+  int lastLessonAtThreshold = -1;
+  bool isProgrammaticScroll = false;
 
-  TabController? tabController;
-  late PageController pageController;
-  int currentSegmentIndex = 0;
+  List<GlobalKey> segmentKeys = [];
+  List<GlobalKey> lessonKeys = [];
+  late ScrollController scrollController;
+
+  double? screenHeight;
 
   @override
   void initState() {
     super.initState();
-
-    pageController = PageController();
-
+    scrollController = ScrollController();
+    scrollController.addListener(handleScrollUpdate);
     loadCourseData();
+  }
+
+  void handleScrollUpdate() {
+    updateActiveSegment();
+    checkLessonHaptic();
+  }
+
+  void checkLessonHaptic() {
+    if (isProgrammaticScroll) {
+      return;
+    }
+
+    final int currentLesson = findLessonAtThreshold();
+    final bool hasLessonChanged =
+        currentLesson != lastLessonAtThreshold;
+    final bool isValidLesson = currentLesson >= 0;
+
+    if (hasLessonChanged && isValidLesson) {
+      lastLessonAtThreshold = currentLesson;
+      HapticFeedback.lightImpact();
+    }
+  }
+
+  int findLessonAtThreshold() {
+    final double threshold = (screenHeight ?? 800) / 2;
+
+    for (
+      int lessonIndex = lessonKeys.length - 1;
+      lessonIndex >= 0;
+      lessonIndex--
+    ) {
+      final RenderBox? box =
+          lessonKeys[lessonIndex].currentContext?.findRenderObject()
+              as RenderBox?;
+
+      if (box != null) {
+        final double y = box.localToGlobal(Offset.zero).dy;
+        final bool hasPassedThreshold = y < threshold;
+
+        if (hasPassedThreshold) {
+          return lessonIndex;
+        }
+      }
+    }
+
+    return -1;
   }
 
   @override
   void dispose() {
-    tabController?.dispose();
-    pageController.dispose();
+    scrollController.removeListener(handleScrollUpdate);
+    scrollController.dispose();
     super.dispose();
+  }
+
+  void updateActiveSegment() {
+    if (isProgrammaticScroll) {
+      return;
+    }
+
+    final int visible = findVisibleSegment();
+
+    if (visible != activeSegmentIndex) {
+      setState(() {
+        activeSegmentIndex = visible;
+      });
+    }
+  }
+
+  int findVisibleSegment() {
+    const double visibilityThreshold = 300;
+
+    for (
+      int segmentIndex = segmentKeys.length - 1;
+      segmentIndex >= 0;
+      segmentIndex--
+    ) {
+      final RenderBox? box =
+          segmentKeys[segmentIndex].currentContext?.findRenderObject()
+              as RenderBox?;
+
+      if (box != null) {
+        final double y = box.localToGlobal(Offset.zero).dy;
+        final bool isSegmentVisible = y < visibilityThreshold;
+
+        if (isSegmentVisible) {
+          return segmentIndex;
+        }
+      }
+    }
+
+    return 0;
   }
 
   Future<void> loadCourseData() async {
@@ -73,16 +180,23 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
           courseData!['segments'] ?? [],
         );
 
-        final bool canInitializeTabController =
-            mounted && courseSegments.isNotEmpty;
+        segmentKeys = List.generate(
+          courseSegments.length,
+          (index) => GlobalKey(),
+        );
 
-        if (canInitializeTabController) {
-          tabController = TabController(
-            length: courseSegments.length,
-            vsync: this,
-            initialIndex: currentSegmentIndex,
-          );
+        // Count total lessons across all segments
+        int totalLessons = 0;
+
+        for (final segment in courseSegments) {
+          final List<dynamic> lessons = segment['lessons'] ?? [];
+          totalLessons += lessons.length;
         }
+
+        lessonKeys = List.generate(
+          totalLessons,
+          (index) => GlobalKey(),
+        );
       }
     } on Exception {
       // Handle error silently
@@ -93,8 +207,50 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
     }
   }
 
+  int scrollGeneration = 0;
+
+  void handleSegmentTap(int segmentIndex) {
+    HapticFeedback.lightImpact();
+    isProgrammaticScroll = true;
+    scrollGeneration++;
+    final int currentGeneration = scrollGeneration;
+
+    // Instantly highlight the tapped segment
+    setState(() {
+      activeSegmentIndex = segmentIndex;
+    });
+
+    // First segment scrolls to top
+    final bool isFirstSegment = segmentIndex == 0;
+
+    if (isFirstSegment) {
+      scrollController.animateTo(
+        0,
+        duration: const Duration(milliseconds: 400),
+        curve: Curves.easeOutCubic,
+      );
+    } else {
+      Scrollable.ensureVisible(
+        segmentKeys[segmentIndex].currentContext!,
+        duration: const Duration(milliseconds: 400),
+        curve: Curves.easeOutCubic,
+      );
+    }
+
+    // Only clear flag if no new scroll was started
+    Future.delayed(const Duration(milliseconds: 450), () {
+      final bool isLatestScroll = currentGeneration == scrollGeneration;
+
+      if (isLatestScroll) {
+        isProgrammaticScroll = false;
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    screenHeight = MediaQuery.of(context).size.height;
+
     final bool shouldShowLoadingIndicator = isLoading;
 
     if (shouldShowLoadingIndicator) {
@@ -106,33 +262,29 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
       child: SafeArea(
         child: Stack(
           children: [
-            // Single scrollable page - everything scrolls together
+            // Scrollable content
             SingleChildScrollView(
+              controller: scrollController,
               child: Div.column([
-                // Header with book, title, author, stats
+                // Header
                 RoadmapHeader(),
 
-                const Spacing.height(16),
+                const Spacing.height(24),
 
-                // Segment indicators
-                SegmentPageIndicators(),
+                // All segments
+                AllSegmentsList(),
 
-                const Spacing.height(8),
-
-                // Lessons content with horizontal swipe
-                SegmentPagesContainer(),
-
-                // Bottom padding for continue button
-                const Spacing.height(100),
+                // Bottom padding for floating buttons
+                const Spacing.height(180),
               ]),
             ),
 
-            // Continue button
+            // Floating bottom bar with tiles + continue button
             Positioned(
               left: 20,
               right: 20,
               bottom: 16,
-              child: ContinueButton(),
+              child: BottomFloatingBar(),
             ),
           ],
         ),
@@ -140,9 +292,37 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
     );
   }
 
+  Widget BottomFloatingBar() {
+    final BoxDecoration barDecoration = BoxDecoration(
+      color: RLTheme.backgroundLight,
+      borderRadius: BorderRadius.circular(20),
+    );
+
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: barDecoration,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // Segment tiles
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: SegmentTiles(),
+          ),
+
+          const Spacing.height(12),
+
+          // Continue button
+          ContinueButton(),
+        ],
+      ),
+    );
+  }
+
   Widget RoadmapHeader() {
     final String courseTitle = courseData?['title'] ?? 'Course Roadmap';
-    final String courseAuthor = courseData?['author'] ?? 'Unknown Author';
+    final String courseAuthor =
+        courseData?['author'] ?? 'Unknown Author';
 
     final Widget BackArrowIcon = const Icon(
       Icons.arrow_back,
@@ -151,53 +331,60 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
     );
 
     final Widget BookCover = ClipRRect(
-      borderRadius: BorderRadius.circular(12),
+      borderRadius: BorderRadius.circular(8),
       child: Image.asset(
         'assets/covers/doet-cover.png',
-        width: 120,
-        height: 168,
+        width: 80,
+        height: 112,
         fit: BoxFit.cover,
       ),
     );
 
     return Div.column(
       [
-        // Back button row
-        Div.row([
-          Div.row(
-            [BackArrowIcon],
-            padding: 8,
-            radius: BorderRadius.circular(36),
-            onTap: handleBackTap,
-          ),
-
-          const Spacer(),
-        ]),
-
-        const Spacing.height(20),
-
-        // Centered book cover
-        Center(child: BookCover),
-
-        const Spacing.height(16),
-
-        // Course title
-        RLTypography.headingLarge(courseTitle),
-
-        const Spacing.height(4),
-
-        // Course author
-        RLTypography.bodyMedium(
-          'by $courseAuthor',
-          color: RLTheme.textSecondary,
+        // Back button
+        Div.row(
+          [BackArrowIcon],
+          padding: 8,
+          radius: BorderRadius.circular(36),
+          onTap: handleBackTap,
         ),
 
-        const Spacing.height(8),
+        const Spacing.height(12),
 
-        // Course subtitle
-        RLTypography.bodyMedium(
-          'Master design psychology fundamentals',
-          color: RLTheme.textSecondary,
+        // Book + info row
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Book cover
+            BookCover,
+
+            const Spacing.width(16),
+
+            // Title, author, subtitle
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  RLTypography.headingMedium(courseTitle),
+
+                  const Spacing.height(4),
+
+                  RLTypography.bodyMedium(
+                    'by $courseAuthor',
+                    color: RLTheme.textSecondary,
+                  ),
+
+                  const Spacing.height(8),
+
+                  RLTypography.bodyMedium(
+                    'Master design psychology fundamentals',
+                    color: RLTheme.textSecondary,
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
 
         const Spacing.height(16),
@@ -210,46 +397,109 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
     );
   }
 
-  Widget SegmentPagesContainer() {
-    // Calculate height based on max lessons in any segment
-    final double pageHeight = calculateSegmentPageHeight();
+  List<Widget> SegmentTiles() {
+    final List<Widget> tiles = [];
 
-    return SizedBox(
-      height: pageHeight,
-      child: PageView.builder(
-        controller: pageController,
-        itemCount: courseSegments.length,
-        onPageChanged: handleSegmentPageChanged,
-        itemBuilder: SegmentPage,
-      ),
+    for (
+      int segmentIndex = 0;
+      segmentIndex < courseSegments.length;
+      segmentIndex++
+    ) {
+      final Map<String, dynamic> segment = courseSegments[segmentIndex];
+      final String title = segment['segment-title'] ?? 'Segment';
+      final String letter = title.split(' ').first;
+      final bool isActive = segmentIndex == activeSegmentIndex;
+      final bool isNotFirst = segmentIndex > 0;
+
+      if (isNotFirst) {
+        tiles.add(const Spacing.width(12));
+      }
+
+      final Color segmentColor = getColorForLetter(letter);
+
+      Color backgroundColor = RLTheme.textSecondary.withValues(
+        alpha: 0.08,
+      );
+      Color borderColor = RLTheme.textSecondary.withValues(alpha: 0.15);
+      Color textColor = RLTheme.textSecondary;
+
+      if (isActive) {
+        backgroundColor = segmentColor.withValues(alpha: 0.15);
+        borderColor = segmentColor.withValues(alpha: 0.3);
+        textColor = segmentColor;
+      }
+
+      final BoxDecoration tileDecoration = BoxDecoration(
+        color: backgroundColor,
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: borderColor),
+      );
+
+      tiles.add(
+        GestureDetector(
+          onTap: () => handleSegmentTap(segmentIndex),
+          child: Container(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 8,
+            ),
+            decoration: tileDecoration,
+            child: RLTypography.headingMedium(letter, color: textColor),
+          ),
+        ),
+      );
+    }
+
+    return tiles;
+  }
+
+  Widget AllSegmentsList() {
+    return Div.column(
+      SegmentSections(),
+      crossAxisAlignment: CrossAxisAlignment.center,
     );
   }
 
-  double calculateSegmentPageHeight() {
-    int maxLessons = 0;
+  List<Widget> SegmentSections() {
+    final List<Widget> sections = [];
+    int lessonOffset = 0;
 
-    for (final segment in courseSegments) {
+    for (
+      int segmentIndex = 0;
+      segmentIndex < courseSegments.length;
+      segmentIndex++
+    ) {
+      final Map<String, dynamic> segment = courseSegments[segmentIndex];
       final List<dynamic> lessons = segment['lessons'] ?? [];
-      final int lessonCount = lessons.length;
+      final bool isNotFirst = segmentIndex > 0;
 
-      final bool hasMoreLessons = lessonCount > maxLessons;
-
-      if (hasMoreLessons) {
-        maxLessons = lessonCount;
+      if (isNotFirst) {
+        sections.add(const Spacing.height(48));
       }
+
+      sections.add(
+        SegmentSection(
+          key: segmentKeys[segmentIndex],
+          segment: segment,
+          segmentIndex: segmentIndex,
+          lessonKeys: lessonKeys.sublist(
+            lessonOffset,
+            lessonOffset + lessons.length,
+          ),
+          onLessonTap: showLoadingScreenThenNavigate,
+        ),
+      );
+
+      lessonOffset += lessons.length;
     }
 
-    // Header + lessons + padding
-    const double segmentHeaderHeight = 60.0;
-    final double lessonsHeight = maxLessons * LESSON_NODE_HEIGHT;
-
-    return segmentHeaderHeight + lessonsHeight + 40;
+    return sections;
   }
 
   Widget ContinueButton() {
     return RLDesignSystem.BlockButton(
       children: [
-        RLTypography.bodyLarge('Continue', color: RLTheme.white),
+        RLTypography.bodyLarge('Continue latest', color: RLTheme.white),
       ],
       backgroundColor: RLTheme.primaryGreen,
       margin: EdgeInsets.zero,
@@ -258,37 +508,50 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
   }
 
   Widget CourseStatsRow() {
-    const Icon MasterclassesIcon = Icon(
+    final Widget MasterclassIcon = const Icon(
       Icons.lightbulb,
       color: RLTheme.primaryGreen,
       size: 16,
     );
 
-    const Icon MemorizersIcon = Icon(
+    final Widget MemorizersIcon = const Icon(
       Icons.quiz,
       color: RLTheme.primaryBlue,
       size: 16,
     );
 
-    return Div.row(
-      [
-        MasterclassesIcon,
+    return Row(
+      children: [
+        // Masterclasses chip
+        Div.row(
+          [
+            MasterclassIcon,
 
-        const Spacing.width(4),
+            const Spacing.width(6),
 
-        RLTypography.bodyMedium('37 masterclasses'),
+            RLTypography.bodyMedium('37 masterclasses'),
+          ],
+          padding: const [8, 12],
+          radius: BorderRadius.circular(8),
+          color: RLTheme.backgroundLight,
+        ),
 
-        const Spacing.width(16),
+        const Spacing.width(8),
 
-        MemorizersIcon,
+        // Memorizers chip
+        Div.row(
+          [
+            MemorizersIcon,
 
-        const Spacing.width(4),
+            const Spacing.width(6),
 
-        RLTypography.bodyMedium('32 memorizers'),
+            RLTypography.bodyMedium('32 memorizers'),
+          ],
+          padding: const [8, 12],
+          radius: BorderRadius.circular(8),
+          color: RLTheme.backgroundLight,
+        ),
       ],
-      padding: const [12, 16],
-      radius: BorderRadius.circular(12),
-      color: RLTheme.backgroundLight,
     );
   }
 
@@ -305,94 +568,10 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
     Navigator.of(context).pop();
   }
 
-  Widget SegmentPageIndicators() {
-    final bool hasMultipleSegments = courseSegments.length > 1;
-    final bool hasTabController = tabController != null;
-    final bool shouldShow = hasMultipleSegments && hasTabController;
-
-    return RenderIf.condition(
-      shouldShow,
-      Div.row(
-        SegmentIndicators(),
-        mainAxisAlignment: MainAxisAlignment.center,
-      ),
-    );
-  }
-
-  List<Widget> SegmentIndicators() {
-    final List<Widget> indicators = [];
-
-    for (int segmentIndex = 0; segmentIndex < courseSegments.length; segmentIndex++) {
-      final bool isActive = segmentIndex == currentSegmentIndex;
-      final bool isNotFirstIndicator = segmentIndex > 0;
-
-      if (isNotFirstIndicator) {
-        indicators.add(const Spacing.width(6));
-      }
-
-      final Color color = isActive
-          ? RLTheme.primaryGreen
-          : Colors.grey.withValues(alpha: 0.3);
-      final double width = isActive ? 24.0 : 16.0;
-
-      indicators.add(
-        Container(
-          width: width,
-          height: 8,
-          decoration: BoxDecoration(
-            color: color,
-            borderRadius: BorderRadius.circular(4),
-          ),
-        ),
-      );
-    }
-
-    return indicators;
-  }
-
-  Widget SegmentPageView() {
-    return PageView.builder(
-      controller: pageController,
-      itemCount: courseSegments.length,
-      onPageChanged: handleSegmentPageChanged,
-      itemBuilder: SegmentPage,
-    );
-  }
-
-  void handleSegmentPageChanged(int index) {
-    final bool isWidgetMounted = mounted;
-
-    if (isWidgetMounted) {
-      setState(() {
-        currentSegmentIndex = index;
-
-        final bool hasTabController = tabController != null;
-
-        if (hasTabController) {
-          tabController!.index = index;
-        }
-      });
-    }
-  }
-
-  Widget SegmentPage(BuildContext context, int segmentIndex) {
-    final Map<String, dynamic> segment = courseSegments[segmentIndex];
-
-    return DuolingoPathView(
-      segment: segment,
-      segmentIndex: segmentIndex,
-      onLessonTap: showLoadingScreenThenNavigate,
-    );
-  }
-
   void showLoadingScreenThenNavigate(
     int lessonIndex,
     int contentIndex,
   ) {
-    navigateToCourseWithLoading(lessonIndex, contentIndex);
-  }
-
-  void navigateToCourseWithLoading(int lessonIndex, int contentIndex) {
     Navigator.push(
       context,
       RLTheme.slowFadeTransition(const CourseLoadingScreen()),
@@ -422,16 +601,18 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
   }
 }
 
-// Duolingo-style winding path view - non-scrollable Column
-class DuolingoPathView extends StatelessWidget {
+// Single segment section with header and lessons
+class SegmentSection extends StatelessWidget {
   final Map<String, dynamic> segment;
   final int segmentIndex;
+  final List<GlobalKey> lessonKeys;
   final Function(int, int) onLessonTap;
 
-  const DuolingoPathView({
+  const SegmentSection({
     super.key,
     required this.segment,
     required this.segmentIndex,
+    required this.lessonKeys,
     required this.onLessonTap,
   });
 
@@ -454,6 +635,7 @@ class DuolingoPathView extends StatelessWidget {
           PathWithNodes(
             lessons: lessons,
             segmentIndex: segmentIndex,
+            lessonKeys: lessonKeys,
             onLessonTap: onLessonTap,
           ),
         ],
@@ -483,30 +665,17 @@ class PathSegmentHeader extends StatelessWidget {
     return Div.row([
       Container(
         padding: const EdgeInsets.symmetric(
-          horizontal: 10,
-          vertical: 6,
+          horizontal: 16,
+          vertical: 8,
         ),
         decoration: letterDecoration,
         child: RLTypography.headingMedium(letter, color: color),
       ),
 
-      const Spacing.width(10),
+      const Spacing.width(12),
 
       RLTypography.headingMedium(name),
     ], mainAxisAlignment: MainAxisAlignment.center);
-  }
-
-  Color getColorForLetter(String letter) {
-    switch (letter) {
-      case 'A':
-        return RLTheme.primaryGreen;
-      case 'B':
-        return RLTheme.primaryBlue;
-      case 'C':
-        return RLTheme.accentPurple;
-      default:
-        return RLTheme.primaryGreen;
-    }
   }
 }
 
@@ -514,12 +683,14 @@ class PathSegmentHeader extends StatelessWidget {
 class PathWithNodes extends StatelessWidget {
   final List<dynamic> lessons;
   final int segmentIndex;
+  final List<GlobalKey> lessonKeys;
   final Function(int, int) onLessonTap;
 
   const PathWithNodes({
     super.key,
     required this.lessons,
     required this.segmentIndex,
+    required this.lessonKeys,
     required this.onLessonTap,
   });
 
@@ -531,7 +702,11 @@ class PathWithNodes extends StatelessWidget {
   List<Widget> PathNodes() {
     final List<Widget> nodes = [];
 
-    for (int lessonIndex = 0; lessonIndex < lessons.length; lessonIndex++) {
+    for (
+      int lessonIndex = 0;
+      lessonIndex < lessons.length;
+      lessonIndex++
+    ) {
       final Map<String, dynamic> lesson =
           lessons[lessonIndex] as Map<String, dynamic>;
       final bool isCompleted = segmentIndex == 0 && lessonIndex < 3;
@@ -539,7 +714,9 @@ class PathWithNodes extends StatelessWidget {
       final bool isLocked = segmentIndex > 0;
 
       // Determine horizontal alignment (zigzag pattern)
-      final PathNodeAlignment alignment = getAlignmentForIndex(lessonIndex);
+      final PathNodeAlignment alignment = getAlignmentForIndex(
+        lessonIndex,
+      );
 
       // Get mastery count based on lesson state
       final int masteryCount = getMasteryCount(
@@ -558,6 +735,7 @@ class PathWithNodes extends StatelessWidget {
       // Add the lesson node
       nodes.add(
         PathLessonNode(
+          key: lessonKeys[lessonIndex],
           lesson: lesson,
           lessonIndex: lessonIndex,
           alignment: alignment,
@@ -574,20 +752,29 @@ class PathWithNodes extends StatelessWidget {
   }
 
   PathNodeAlignment getAlignmentForIndex(int index) {
-    // Create zigzag: center, right, center, left, center, right...
     final int pattern = index % 4;
 
     switch (pattern) {
       case 0:
-        return PathNodeAlignment.center;
+        {
+          return PathNodeAlignment.center;
+        }
       case 1:
-        return PathNodeAlignment.right;
+        {
+          return PathNodeAlignment.right;
+        }
       case 2:
-        return PathNodeAlignment.center;
+        {
+          return PathNodeAlignment.center;
+        }
       case 3:
-        return PathNodeAlignment.left;
+        {
+          return PathNodeAlignment.left;
+        }
       default:
-        return PathNodeAlignment.center;
+        {
+          return PathNodeAlignment.center;
+        }
     }
   }
 
@@ -638,7 +825,8 @@ class PathLessonNode extends StatelessWidget {
     final String title = lesson['title'] ?? 'Lesson';
     final double offsetX = getOffsetForAlignment();
     final Color titleColor = getTitleColor();
-    final VoidCallback? tapHandler = isLocked ? null : onTap;
+    final bool canTap = !isLocked;
+    final VoidCallback? tapHandler = canTap ? onTap : null;
 
     return Transform.translate(
       offset: Offset(offsetX, 0),
@@ -671,11 +859,17 @@ class PathLessonNode extends StatelessWidget {
   double getOffsetForAlignment() {
     switch (alignment) {
       case PathNodeAlignment.left:
-        return -PATH_HORIZONTAL_OFFSET;
+        {
+          return -PATH_HORIZONTAL_OFFSET;
+        }
       case PathNodeAlignment.right:
-        return PATH_HORIZONTAL_OFFSET;
+        {
+          return PATH_HORIZONTAL_OFFSET;
+        }
       case PathNodeAlignment.center:
-        return 0;
+        {
+          return 0;
+        }
     }
   }
 
@@ -731,10 +925,6 @@ class PathLessonNode extends StatelessWidget {
       return RLTheme.primaryGreen.withValues(alpha: 0.15);
     }
 
-    if (isLocked) {
-      return RLTheme.backgroundLight;
-    }
-
     return RLTheme.backgroundLight;
   }
 
@@ -757,7 +947,11 @@ class PathLessonNode extends StatelessWidget {
   Widget MasteryDots() {
     final List<Widget> dots = [];
 
-    for (int dotIndex = 0; dotIndex < MASTERY_DOTS_PER_LESSON; dotIndex++) {
+    for (
+      int dotIndex = 0;
+      dotIndex < MASTERY_DOTS_PER_LESSON;
+      dotIndex++
+    ) {
       final bool isFilled = dotIndex < masteryCount;
       final bool isNotFirstDot = dotIndex > 0;
 
@@ -773,7 +967,12 @@ class PathLessonNode extends StatelessWidget {
 
   Widget MasteryDot({required bool isFilled}) {
     final Color dotColor = getDotColor(isFilled);
-    final Color fillColor = isFilled ? dotColor : Colors.transparent;
+
+    Color fillColor = Colors.transparent;
+
+    if (isFilled) {
+      fillColor = dotColor;
+    }
 
     final BoxDecoration dotDecoration = BoxDecoration(
       color: fillColor,
@@ -802,11 +1001,7 @@ class PathLessonNode extends StatelessWidget {
 
   Widget NodeIcon() {
     if (isCompleted) {
-      return const Icon(
-        Icons.check,
-        color: RLTheme.white,
-        size: 32,
-      );
+      return const Icon(Icons.check, color: RLTheme.white, size: 32);
     }
 
     if (isCurrent) {
