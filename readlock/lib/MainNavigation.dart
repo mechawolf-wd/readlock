@@ -113,7 +113,6 @@ class MainNavigationState extends State<MainNavigation> {
       borderRadius: navBarBorderRadius,
       border: Border.all(
         color: RLTheme.textPrimary.withValues(alpha: 0.08),
-        width: 1,
       ),
       boxShadow: [
         BoxShadow(

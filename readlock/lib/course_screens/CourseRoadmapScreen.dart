@@ -1,5 +1,6 @@
 // Course roadmap screen with Duolingo-style winding path
 // Circular nodes connected by a zigzag path
+// Simple unified scroll - whole page scrolls together
 
 import 'package:flutter/material.dart';
 import 'package:readlock/course_screens/CourseContentViewer.dart';
@@ -19,6 +20,9 @@ const double NODE_VERTICAL_SPACING = 64.0;
 const double MASTERY_DOT_SIZE = 8.0;
 const double MASTERY_DOT_SPACING = 4.0;
 const int MASTERY_DOTS_PER_LESSON = 3;
+
+// Height per lesson node (node + spacing + title area)
+const double LESSON_NODE_HEIGHT = NODE_SIZE + 8 + 8 + 8 + 40 + NODE_VERTICAL_SPACING;
 
 class CourseRoadmapScreen extends StatefulWidget {
   final String courseId;
@@ -43,7 +47,9 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
   @override
   void initState() {
     super.initState();
+
     pageController = PageController();
+
     loadCourseData();
   }
 
@@ -100,24 +106,26 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
       child: SafeArea(
         child: Stack(
           children: [
-            // Main content
-            Div.column([
-              // Header section
-              RoadmapHeader(),
+            // Single scrollable page - everything scrolls together
+            SingleChildScrollView(
+              child: Div.column([
+                // Header with book, title, author, stats
+                RoadmapHeader(),
 
-              const Spacing.height(16),
+                const Spacing.height(16),
 
-              // Segment indicators
-              SegmentPageIndicators(),
+                // Segment indicators
+                SegmentPageIndicators(),
 
-              const Spacing.height(8),
+                const Spacing.height(8),
 
-              // Path view
-              Expanded(child: SegmentPageView()),
+                // Lessons content with horizontal swipe
+                SegmentPagesContainer(),
 
-              // Bottom spacing
-              const Spacing.height(80),
-            ]),
+                // Bottom padding for continue button
+                const Spacing.height(100),
+              ]),
+            ),
 
             // Continue button
             Positioned(
@@ -134,6 +142,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
 
   Widget RoadmapHeader() {
     final String courseTitle = courseData?['title'] ?? 'Course Roadmap';
+    final String courseAuthor = courseData?['author'] ?? 'Unknown Author';
 
     final Widget BackArrowIcon = const Icon(
       Icons.arrow_back,
@@ -153,7 +162,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
 
     return Div.column(
       [
-        // Header navigation
+        // Back button row
         Div.row([
           Div.row(
             [BackArrowIcon],
@@ -173,22 +182,22 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
         const Spacing.height(16),
 
         // Course title
-        FractionallySizedBox(
-          widthFactor: 2 / 3,
-          alignment: Alignment.centerLeft,
-          child: RLTypography.headingLarge(courseTitle),
+        RLTypography.headingLarge(courseTitle),
+
+        const Spacing.height(4),
+
+        // Course author
+        RLTypography.bodyMedium(
+          'by $courseAuthor',
+          color: RLTheme.textSecondary,
         ),
 
         const Spacing.height(8),
 
         // Course subtitle
-        FractionallySizedBox(
-          widthFactor: 2 / 3,
-          alignment: Alignment.centerLeft,
-          child: RLTypography.bodyMedium(
-            'Master design psychology fundamentals',
-            color: RLTheme.textSecondary,
-          ),
+        RLTypography.bodyMedium(
+          'Master design psychology fundamentals',
+          color: RLTheme.textSecondary,
         ),
 
         const Spacing.height(16),
@@ -199,6 +208,42 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
       crossAxisAlignment: CrossAxisAlignment.start,
       padding: const [20, 16],
     );
+  }
+
+  Widget SegmentPagesContainer() {
+    // Calculate height based on max lessons in any segment
+    final double pageHeight = calculateSegmentPageHeight();
+
+    return SizedBox(
+      height: pageHeight,
+      child: PageView.builder(
+        controller: pageController,
+        itemCount: courseSegments.length,
+        onPageChanged: handleSegmentPageChanged,
+        itemBuilder: SegmentPage,
+      ),
+    );
+  }
+
+  double calculateSegmentPageHeight() {
+    int maxLessons = 0;
+
+    for (final segment in courseSegments) {
+      final List<dynamic> lessons = segment['lessons'] ?? [];
+      final int lessonCount = lessons.length;
+
+      final bool hasMoreLessons = lessonCount > maxLessons;
+
+      if (hasMoreLessons) {
+        maxLessons = lessonCount;
+      }
+    }
+
+    // Header + lessons + padding
+    const double segmentHeaderHeight = 60.0;
+    final double lessonsHeight = maxLessons * LESSON_NODE_HEIGHT;
+
+    return segmentHeaderHeight + lessonsHeight + 40;
   }
 
   Widget ContinueButton() {
@@ -377,7 +422,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
   }
 }
 
-// Duolingo-style winding path view
+// Duolingo-style winding path view - non-scrollable Column
 class DuolingoPathView extends StatelessWidget {
   final Map<String, dynamic> segment;
   final int segmentIndex;
@@ -396,7 +441,7 @@ class DuolingoPathView extends StatelessWidget {
         segment['segment-title'] ?? 'Unnamed Segment';
     final List<dynamic> lessons = segment['lessons'] ?? [];
 
-    return SingleChildScrollView(
+    return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Column(
         children: [
@@ -411,8 +456,6 @@ class DuolingoPathView extends StatelessWidget {
             segmentIndex: segmentIndex,
             onLessonTap: onLessonTap,
           ),
-
-          const Spacing.height(40),
         ],
       ),
     );
