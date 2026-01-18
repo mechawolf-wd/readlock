@@ -168,23 +168,27 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
         const Spacing.height(20),
 
         // Centered book cover
-        BookCover,
+        Center(child: BookCover),
 
         const Spacing.height(16),
 
         // Course title
-        RLTypography.headingLarge(
-          courseTitle,
-          textAlign: TextAlign.center,
+        FractionallySizedBox(
+          widthFactor: 2 / 3,
+          alignment: Alignment.centerLeft,
+          child: RLTypography.headingLarge(courseTitle),
         ),
 
         const Spacing.height(8),
 
         // Course subtitle
-        RLTypography.bodyMedium(
-          'Master design psychology fundamentals',
-          color: RLTheme.textSecondary,
-          textAlign: TextAlign.center,
+        FractionallySizedBox(
+          widthFactor: 2 / 3,
+          alignment: Alignment.centerLeft,
+          child: RLTypography.bodyMedium(
+            'Master design psychology fundamentals',
+            color: RLTheme.textSecondary,
+          ),
         ),
 
         const Spacing.height(16),
@@ -192,7 +196,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
         // Course stats
         CourseStatsRow(),
       ],
-      crossAxisAlignment: CrossAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.start,
       padding: const [20, 16],
     );
   }
@@ -209,7 +213,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
   }
 
   Widget CourseStatsRow() {
-    const Icon LessonsIcon = Icon(
+    const Icon MasterclassesIcon = Icon(
       Icons.lightbulb,
       color: RLTheme.primaryGreen,
       size: 16,
@@ -221,21 +225,26 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
       size: 16,
     );
 
-    return Div.row([
-      LessonsIcon,
+    return Div.row(
+      [
+        MasterclassesIcon,
 
-      const Spacing.width(4),
+        const Spacing.width(4),
 
-      RLTypography.bodyMedium('37 masterclasses'),
+        RLTypography.bodyMedium('37 masterclasses'),
 
-      const Spacing.width(16),
+        const Spacing.width(16),
 
-      MemorizersIcon,
+        MemorizersIcon,
 
-      const Spacing.width(4),
+        const Spacing.width(4),
 
-      RLTypography.bodyMedium('32 memorizers'),
-    ], mainAxisAlignment: MainAxisAlignment.center);
+        RLTypography.bodyMedium('32 memorizers'),
+      ],
+      padding: const [12, 16],
+      radius: BorderRadius.circular(12),
+      color: RLTheme.backgroundLight,
+    );
   }
 
   void handleContinueTap() {
