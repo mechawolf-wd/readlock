@@ -61,7 +61,7 @@ class StatisticsTopBar extends StatelessWidget {
 
 class Style {
   static BoxDecoration decoration = BoxDecoration(
-    border: Border.all(color: Colors.grey.withValues(alpha: 0.2)),
+    border: Border.all(color: Colors.grey.withValues(alpha: 0.2), width: 1.5),
     boxShadow: [
       BoxShadow(
         color: Colors.grey.withAlpha(70),
@@ -100,41 +100,44 @@ class StreakBottomSheet extends StatelessWidget {
       ),
     );
 
-    return SafeArea(
-      top: false,
-      child: Container(
-        decoration: sheetDecoration,
-        padding: const EdgeInsets.fromLTRB(24, 12, 24, 32),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            // Drag handle
-            const BottomSheetGrabber(),
+    return Container(
+      color: RLTheme.white,
+      child: SafeArea(
+        top: false,
+        child: Container(
+          decoration: sheetDecoration,
+          padding: const EdgeInsets.fromLTRB(24, 12, 24, 32),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Drag handle
+              const BottomSheetGrabber(),
 
-            const Spacing.height(24),
+              const Spacing.height(24),
 
-            // Fire icon
-            LargeFireIcon(),
+              // Fire icon
+              LargeFireIcon(),
 
-            const Spacing.height(16),
+              const Spacing.height(16),
 
-            // Title
-            RLTypography.headingLarge('3 Day Combo!'),
+              // Title
+              RLTypography.headingLarge('3 Day Combo!'),
 
-            const Spacing.height(8),
+              const Spacing.height(8),
 
-            // Message
-            RLTypography.bodyMedium(
-              'Keep learning daily to build your combo.',
-              color: RLTheme.textSecondary,
-              textAlign: TextAlign.center,
-            ),
+              // Message
+              RLTypography.bodyMedium(
+                'Keep learning daily to build your combo.',
+                color: RLTheme.textSecondary,
+                textAlign: TextAlign.center,
+              ),
 
-            const Spacing.height(24),
+              const Spacing.height(24),
 
-            // Week progress
-            WeekStreakProgress(),
-          ],
+              // Week progress
+              WeekStreakProgress(),
+            ],
+          ),
         ),
       ),
     );

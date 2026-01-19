@@ -115,10 +115,12 @@ class FeedbackSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      top: false,
-      child: Container(
-        decoration: modalDecoration,
+    return Container(
+      color: RLTheme.white,
+      child: SafeArea(
+        top: false,
+        child: Container(
+          decoration: modalDecoration,
         padding: const EdgeInsets.only(bottom: 16),
         child: Wrap(
           children: [
@@ -138,6 +140,7 @@ class FeedbackSheet extends StatelessWidget {
               FooterButton(),
             ]),
           ],
+        ),
         ),
       ),
     );

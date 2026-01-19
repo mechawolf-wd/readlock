@@ -72,14 +72,13 @@ class MyBookshelfScreenState extends State<MyBookshelfScreen> {
   static const Widget SettingsIcon = Icon(
     Icons.settings,
     color: RLTheme.textSecondary,
-    size: 20,
+    size: 24,
   );
 
   Widget BookshelfHeaderWithSettings() {
     final BoxDecoration settingsIconDecoration = BoxDecoration(
       color: RLTheme.backgroundLight.withValues(alpha: 0.08),
       borderRadius: BorderRadius.circular(12),
-      border: Border.all(color: RLTheme.grey300.withValues(alpha: 0.3)),
     );
 
     return Div.row([
@@ -101,7 +100,7 @@ class MyBookshelfScreenState extends State<MyBookshelfScreen> {
           builder: (context) => SettingsBottomSheet(),
         ),
         child: Container(
-          padding: const EdgeInsets.all(12),
+          padding: const EdgeInsets.only(top: 8, right: 12),
           decoration: settingsIconDecoration,
           child: SettingsIcon,
         ),
@@ -280,9 +279,6 @@ class MyBookshelfScreenState extends State<MyBookshelfScreen> {
     final BoxDecoration buttonDecoration = BoxDecoration(
       color: RLTheme.backgroundLight.withValues(alpha: 0.08),
       borderRadius: BorderRadius.circular(8),
-      border: Border.all(
-        color: RLTheme.primaryBlue.withValues(alpha: 0.3),
-      ),
     );
 
     return GestureDetector(

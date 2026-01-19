@@ -445,69 +445,227 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
     final String courseAuthor =
         courseData?['author'] ?? 'Unknown Author';
 
-    final Widget BackArrowIcon = const Icon(
-      Icons.arrow_back,
+    final Widget BackChevronIcon = const Icon(
+      Icons.keyboard_arrow_down,
       color: RLTheme.textPrimary,
-      size: 24,
-    );
-
-    final Widget BookCover = ClipRRect(
-      borderRadius: BorderRadius.circular(8),
-      child: Image.asset(
-        'assets/covers/doet-cover.png',
-        width: 80,
-        height: 112,
-        fit: BoxFit.cover,
-      ),
+      size: 28,
     );
 
     return Div.column(
       [
         // Back button
         Div.row(
-          [BackArrowIcon],
+          [BackChevronIcon],
           padding: 8,
           radius: BorderRadius.circular(36),
           onTap: handleBackTap,
         ),
 
-        const Spacing.height(12),
-
-        // Book cover centered
-        Center(child: BookCover),
-
         const Spacing.height(16),
 
-        // Title centered
-        Center(child: RLTypography.headingLarge(courseTitle)),
+        // Hero card with book and info
+        HeroCard(courseTitle: courseTitle, courseAuthor: courseAuthor),
 
-        const Spacing.height(4),
+        const Spacing.height(24),
 
-        // Description centered
+        // Subtitle below card
         Center(
           child: RLTypography.bodyMedium(
             'Master design psychology fundamentals',
             color: RLTheme.textSecondary,
-          ),
-        ),
-
-        const Spacing.height(4),
-
-        // Author centered
-        Center(
-          child: RLTypography.bodyMedium(
-            'by $courseAuthor',
-            color: RLTheme.textSecondary,
+            textAlign: TextAlign.center,
           ),
         ),
 
         const Spacing.height(16),
-
-        // Course stats
-        Center(child: CourseStatsRow()),
       ],
       crossAxisAlignment: CrossAxisAlignment.start,
-      padding: const [20, 16],
+      padding: const [20, 12],
+    );
+  }
+
+  Widget HeroCard({
+    required String courseTitle,
+    required String courseAuthor,
+  }) {
+    final BoxDecoration cardDecoration = BoxDecoration(
+      color: RLTheme.white,
+      borderRadius: BorderRadius.circular(20),
+      border: Border.all(color: SOLID_SHADOW_COLOR, width: 1.5),
+      boxShadow: const [SOLID_SHADOW],
+    );
+
+    final BoxDecoration progressRingDecoration = BoxDecoration(
+      shape: BoxShape.circle,
+      border: Border.all(
+        color: RLTheme.primaryGreen.withValues(alpha: 0.2),
+        width: 3,
+      ),
+    );
+
+    final BoxDecoration bookShadowDecoration = BoxDecoration(
+      borderRadius: BorderRadius.circular(8),
+      boxShadow: [
+        BoxShadow(
+          color: Colors.black.withValues(alpha: 0.15),
+          blurRadius: 12,
+          offset: const Offset(0, 4),
+        ),
+      ],
+    );
+
+    final Widget BookCover = Container(
+      decoration: bookShadowDecoration,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(6),
+        child: Image.asset(
+          'assets/covers/doet-cover.png',
+          width: 52,
+          height: 72,
+          fit: BoxFit.cover,
+        ),
+      ),
+    );
+
+    final Widget ProgressRing = SizedBox(
+      width: 128,
+      height: 128,
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          // Background ring
+          Container(
+            width: 128,
+            height: 128,
+            decoration: progressRingDecoration,
+          ),
+
+          // Progress arc (using CustomPaint for partial circle)
+          SizedBox(
+            width: 128,
+            height: 128,
+            child: CustomPaint(
+              painter: ProgressArcPainter(
+                progress: 0.35,
+                color: RLTheme.primaryGreen,
+                strokeWidth: 3,
+              ),
+            ),
+          ),
+
+          // Book cover in center
+          BookCover,
+        ],
+      ),
+    );
+
+    final Widget PercentageChip = Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(
+        color: RLTheme.primaryGreen,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: RLTypography.bodyMedium('35%', color: RLTheme.white),
+    );
+
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: cardDecoration,
+      child: Row(
+        children: [
+          // Progress ring with book
+          Stack(
+            clipBehavior: Clip.none,
+            children: [
+              ProgressRing,
+
+              // Percentage badge
+              Positioned(
+                bottom: -8,
+                left: 0,
+                right: 0,
+                child: Center(child: PercentageChip),
+              ),
+            ],
+          ),
+
+          const Spacing.width(16),
+
+          // Course info
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                RLTypography.headingMedium(
+                  courseTitle,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+
+                const Spacing.height(4),
+
+                RLTypography.bodyMedium(
+                  courseAuthor,
+                  color: RLTheme.textSecondary,
+                ),
+
+                const Spacing.height(12),
+
+                // Mini stats row
+                MiniStatsRow(),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget MiniStatsRow() {
+    final Widget LessonIcon = const Icon(
+      Icons.auto_stories,
+      color: RLTheme.primaryGreen,
+      size: 14,
+    );
+
+    final Widget QuizIcon = const Icon(
+      Icons.psychology_outlined,
+      color: RLTheme.primaryBlue,
+      size: 14,
+    );
+
+    return Wrap(
+      spacing: 12,
+      runSpacing: 4,
+      children: [
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            LessonIcon,
+
+            const Spacing.width(4),
+
+            RLTypography.bodyMedium(
+              '37 masterclasses',
+              color: RLTheme.textSecondary,
+            ),
+          ],
+        ),
+
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            QuizIcon,
+
+            const Spacing.width(4),
+
+            RLTypography.bodyMedium(
+              '32 memorizers',
+              color: RLTheme.textSecondary,
+            ),
+          ],
+        ),
+      ],
     );
   }
 
@@ -633,62 +791,6 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
       backgroundColor: RLTheme.primaryGreen,
       margin: EdgeInsets.zero,
       onTap: handleContinueTap,
-    );
-  }
-
-  Widget CourseStatsRow() {
-    final Widget MasterclassIcon = const Icon(
-      Icons.lightbulb_outline,
-      color: RLTheme.primaryGreen,
-      size: 16,
-    );
-
-    final Widget MemorizersIcon = const Icon(
-      Icons.psychology_outlined,
-      color: RLTheme.primaryBlue,
-      size: 16,
-    );
-
-    return Row(
-      children: [
-        // Masterclasses chip
-        Container(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 12,
-            vertical: 8,
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              MasterclassIcon,
-
-              const Spacing.width(6),
-
-              RLTypography.bodyMedium('37 masterclasses'),
-            ],
-          ),
-        ),
-
-        const Spacing.width(8),
-
-        // Memorizers chip
-        Container(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 12,
-            vertical: 8,
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              MemorizersIcon,
-
-              const Spacing.width(6),
-
-              RLTypography.bodyMedium('32 memorizers'),
-            ],
-          ),
-        ),
-      ],
     );
   }
 
@@ -1144,5 +1246,50 @@ class PathLessonNode extends StatelessWidget {
       color: RLTheme.textSecondary,
       size: 28,
     );
+  }
+}
+
+// Custom painter for progress arc
+class ProgressArcPainter extends CustomPainter {
+  final double progress;
+  final Color color;
+  final double strokeWidth;
+
+  ProgressArcPainter({
+    required this.progress,
+    required this.color,
+    required this.strokeWidth,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final Paint paint = Paint()
+      ..color = color
+      ..strokeWidth = strokeWidth
+      ..style = PaintingStyle.stroke
+      ..strokeCap = StrokeCap.round;
+
+    final double radius = (size.width - strokeWidth) / 2;
+    final Offset center = Offset(size.width / 2, size.height / 2);
+
+    // Start from top (-90 degrees) and sweep based on progress
+    const double startAngle = -1.5708;
+    final double sweepAngle = 2 * 3.14159 * progress;
+
+    canvas.drawArc(
+      Rect.fromCircle(center: center, radius: radius),
+      startAngle,
+      sweepAngle,
+      false,
+      paint,
+    );
+  }
+
+  @override
+  bool shouldRepaint(ProgressArcPainter oldDelegate) {
+    final bool hasProgressChanged = progress != oldDelegate.progress;
+    final bool hasColorChanged = color != oldDelegate.color;
+
+    return hasProgressChanged || hasColorChanged;
   }
 }

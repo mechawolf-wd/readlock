@@ -102,9 +102,12 @@ class LoginSheetState extends State<LoginSheet> {
   Widget build(BuildContext context) {
     return BackdropFilter(
       filter: ImageFilter.blur(sigmaX: BLUR_SIGMA, sigmaY: BLUR_SIGMA),
-      child: SafeArea(
-        top: false,
-        child: ModalContent(),
+      child: Container(
+        color: RLTheme.white,
+        child: SafeArea(
+          top: false,
+          child: ModalContent(),
+        ),
       ),
     );
   }
