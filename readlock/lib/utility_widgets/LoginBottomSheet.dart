@@ -102,7 +102,10 @@ class LoginSheetState extends State<LoginSheet> {
   Widget build(BuildContext context) {
     return BackdropFilter(
       filter: ImageFilter.blur(sigmaX: BLUR_SIGMA, sigmaY: BLUR_SIGMA),
-      child: SafeArea(child: ModalContent()),
+      child: SafeArea(
+        top: false,
+        child: ModalContent(),
+      ),
     );
   }
 
@@ -147,7 +150,7 @@ class LoginSheetState extends State<LoginSheet> {
   Widget HeaderSection() {
     return Div.column([
       // Drag handle
-      DragHandle(),
+      const BottomSheetGrabber(),
 
       const Spacing.height(16),
 
@@ -162,21 +165,6 @@ class LoginSheetState extends State<LoginSheet> {
         color: RLTheme.textSecondary,
       ),
     ], padding: const EdgeInsets.all(24));
-  }
-
-  Widget DragHandle() {
-    final BoxDecoration handleDecoration = BoxDecoration(
-      color: RLTheme.textPrimary.withValues(alpha: 0.2),
-      borderRadius: BorderRadius.circular(2),
-    );
-
-    return Center(
-      child: Container(
-        width: 36,
-        height: 4,
-        decoration: handleDecoration,
-      ),
-    );
   }
 
   Widget SocialLoginSection() {

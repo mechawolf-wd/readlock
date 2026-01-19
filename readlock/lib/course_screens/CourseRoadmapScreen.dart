@@ -1,4 +1,4 @@
-// Course roadmap screen with Duolingo-style winding path
+// Course roadmap screen with winding path
 // One long scrollable list with sticky segment tiles
 
 import 'package:flutter/material.dart';
@@ -33,14 +33,6 @@ const double STICKY_HEADER_HEIGHT =
 
 // Segment content constants
 const double SEGMENT_CONTENT_TOP_SPACING = 16.0;
-
-// Shared shadow constant
-const double SOLID_SHADOW_OFFSET = 4.0;
-const Color SOLID_SHADOW_COLOR = Color(0xFFD0D0D0);
-const BoxShadow SOLID_SHADOW = BoxShadow(
-  color: SOLID_SHADOW_COLOR,
-  offset: Offset(0, SOLID_SHADOW_OFFSET),
-);
 
 // Segment color mapping
 Color getColorForLetter(String letter) {
@@ -77,7 +69,7 @@ class CourseRoadmapScreen extends StatefulWidget {
 class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
   Map<String, dynamic>? courseData;
   List<Map<String, dynamic>> courseSegments = [];
-  bool isLoading = true;
+  bool isCourseDataLoading = true;
   int activeSegmentIndex = 0;
   int lastLessonAtThreshold = -1;
   bool isProgrammaticScroll = false;
@@ -236,7 +228,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
       // Handle error silently
     } finally {
       setState(() {
-        isLoading = false;
+        isCourseDataLoading = false;
       });
     }
   }
@@ -312,11 +304,23 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
   Widget build(BuildContext context) {
     screenHeight = MediaQuery.of(context).size.height;
 
-    final bool shouldShowLoadingIndicator = isLoading;
+    final bool shouldShowLoadingIndicator = isCourseDataLoading;
 
     if (shouldShowLoadingIndicator) {
       return const Center(child: CircularProgressIndicator());
     }
+
+    // Build slivers list explicitly (avoiding spread operator per rule @4.31)
+    final List<Widget> slivers = [
+      // Header
+      SliverToBoxAdapter(child: RoadmapHeader()),
+    ];
+
+    // Add all segment slivers
+    slivers.addAll(AllSegmentSlivers());
+
+    // Bottom padding for floating buttons
+    slivers.add(const SliverToBoxAdapter(child: Spacing.height(180)));
 
     return Material(
       color: RLTheme.backgroundDark,
@@ -326,18 +330,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
             // Scrollable content with sticky headers
             CustomScrollView(
               controller: scrollController,
-              slivers: [
-                // Header
-                SliverToBoxAdapter(child: RoadmapHeader()),
-
-                const SliverToBoxAdapter(child: Spacing.height(24)),
-
-                // All segments with sticky headers
-                ...AllSegmentSlivers(),
-
-                // Bottom padding for floating buttons
-                const SliverToBoxAdapter(child: Spacing.height(180)),
-              ],
+              slivers: slivers,
             ),
 
             // Bottom floating section
@@ -350,11 +343,18 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   // Back to top button (above the bar, only when scrolled)
-                  if (showBackToTop) ...[
-                    BackToTopButton(),
+                  RenderIf.condition(
+                    showBackToTop,
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        BackToTopButton(),
 
-                    const Spacing.height(12),
-                  ],
+                        const Spacing.height(12),
+                      ],
+                    ),
+                  ),
 
                   // Navigation bar
                   BottomFloatingBar(),
@@ -368,10 +368,11 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
   }
 
   Widget BackToTopButton() {
-    const BoxDecoration buttonDecoration = BoxDecoration(
-      color: RLTheme.backgroundLight,
+    final BoxDecoration buttonDecoration = BoxDecoration(
+      color: RLTheme.white,
       shape: BoxShape.circle,
-      boxShadow: [SOLID_SHADOW],
+      border: Border.all(color: SOLID_SHADOW_COLOR, width: 1.5),
+      boxShadow: const [SOLID_SHADOW],
     );
 
     final Widget ChevronUpIcon = const Icon(
@@ -412,8 +413,9 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
 
   Widget BottomFloatingBar() {
     final BoxDecoration barDecoration = BoxDecoration(
-      color: RLTheme.backgroundLight,
+      color: RLTheme.white,
       borderRadius: BorderRadius.circular(20),
+      border: Border.all(color: SOLID_SHADOW_COLOR, width: 1.5),
       boxShadow: const [SOLID_SHADOW],
     );
 
@@ -471,45 +473,38 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
 
         const Spacing.height(12),
 
-        // Book + info row
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Book cover
-            BookCover,
+        // Book cover centered
+        Center(child: BookCover),
 
-            const Spacing.width(16),
+        const Spacing.height(16),
 
-            // Title, description, author
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  RLTypography.headingLarge(courseTitle),
+        // Title centered
+        Center(child: RLTypography.headingLarge(courseTitle)),
 
-                  const Spacing.height(4),
+        const Spacing.height(4),
 
-                  RLTypography.bodyMedium(
-                    'Master design psychology fundamentals',
-                    color: RLTheme.textSecondary,
-                  ),
+        // Description centered
+        Center(
+          child: RLTypography.bodyMedium(
+            'Master design psychology fundamentals',
+            color: RLTheme.textSecondary,
+          ),
+        ),
 
-                  const Spacing.height(4),
+        const Spacing.height(4),
 
-                  RLTypography.bodyMedium(
-                    'by $courseAuthor',
-                    color: RLTheme.textSecondary,
-                  ),
-                ],
-              ),
-            ),
-          ],
+        // Author centered
+        Center(
+          child: RLTypography.bodyMedium(
+            'by $courseAuthor',
+            color: RLTheme.textSecondary,
+          ),
         ),
 
         const Spacing.height(16),
 
         // Course stats
-        CourseStatsRow(),
+        Center(child: CourseStatsRow()),
       ],
       crossAxisAlignment: CrossAxisAlignment.start,
       padding: const [20, 16],
@@ -539,32 +534,24 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
       Color backgroundColor = RLTheme.textSecondary.withValues(
         alpha: 0.08,
       );
-      Color borderColor = RLTheme.textSecondary.withValues(alpha: 0.15);
       Color textColor = RLTheme.textSecondary;
 
       if (isActive) {
         backgroundColor = segmentColor.withValues(alpha: 0.15);
-        borderColor = segmentColor.withValues(alpha: 0.3);
         textColor = segmentColor;
       }
 
       final BoxDecoration tileDecoration = BoxDecoration(
         color: backgroundColor,
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: borderColor),
       );
 
       tiles.add(
-        GestureDetector(
+        Div.row(
+          [RLTypography.headingMedium(letter, color: textColor)],
+          padding: const [8, 16],
+          decoration: tileDecoration,
           onTap: () => handleSegmentTap(segmentIndex),
-          child: Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 16,
-              vertical: 8,
-            ),
-            decoration: tileDecoration,
-            child: RLTypography.headingMedium(letter, color: textColor),
-          ),
         ),
       );
     }
@@ -650,14 +637,6 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
   }
 
   Widget CourseStatsRow() {
-    final BoxDecoration chipDecoration = BoxDecoration(
-      color: Colors.transparent,
-      borderRadius: BorderRadius.circular(8),
-      border: Border.all(
-        color: RLTheme.textSecondary.withValues(alpha: 0.2),
-      ),
-    );
-
     final Widget MasterclassIcon = const Icon(
       Icons.lightbulb_outline,
       color: RLTheme.primaryGreen,
@@ -674,8 +653,10 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
       children: [
         // Masterclasses chip
         Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-          decoration: chipDecoration,
+          padding: const EdgeInsets.symmetric(
+            horizontal: 12,
+            vertical: 8,
+          ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -692,8 +673,10 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
 
         // Memorizers chip
         Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-          decoration: chipDecoration,
+          padding: const EdgeInsets.symmetric(
+            horizontal: 12,
+            vertical: 8,
+          ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -781,12 +764,12 @@ class StickySegmentHeaderDelegate
     final BoxDecoration letterDecoration = BoxDecoration(
       color: color.withValues(alpha: 0.15),
       borderRadius: BorderRadius.circular(8),
-      border: Border.all(color: color.withValues(alpha: 0.3)),
     );
 
     final BoxDecoration headerDecoration = BoxDecoration(
-      color: RLTheme.backgroundLight,
+      color: RLTheme.white,
       borderRadius: BorderRadius.circular(20),
+      border: Border.all(color: SOLID_SHADOW_COLOR, width: 1.5),
       boxShadow: const [SOLID_SHADOW],
     );
 
@@ -796,25 +779,30 @@ class StickySegmentHeaderDelegate
         horizontal: 16,
         vertical: STICKY_HEADER_PADDING,
       ),
-      child: Container(
-        decoration: headerDecoration,
-        padding: const EdgeInsets.all(STICKY_HEADER_CONTENT_PADDING),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              width: STICKY_HEADER_LETTER_SIZE,
-              height: STICKY_HEADER_LETTER_SIZE,
-              decoration: letterDecoration,
-              child: Center(
-                child: RLTypography.headingMedium(letter, color: color),
+      child: Center(
+        child: Container(
+          decoration: headerDecoration,
+          padding: const EdgeInsets.all(STICKY_HEADER_CONTENT_PADDING),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: STICKY_HEADER_LETTER_SIZE,
+                height: STICKY_HEADER_LETTER_SIZE,
+                decoration: letterDecoration,
+                child: Center(
+                  child: RLTypography.headingMedium(
+                    letter,
+                    color: color,
+                  ),
+                ),
               ),
-            ),
 
-            const Spacing.width(12),
+              const Spacing.width(12),
 
-            RLTypography.headingMedium(name),
-          ],
+              RLTypography.headingMedium(name),
+            ],
+          ),
         ),
       ),
     );

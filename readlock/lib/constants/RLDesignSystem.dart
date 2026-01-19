@@ -4,6 +4,14 @@ import 'package:readlock/utility_widgets/Utility.dart';
 import 'package:readlock/services/SoundService.dart';
 import 'package:readlock/services/HapticsService.dart';
 
+// Shared shadow constants for consistent card/container styling
+const double SOLID_SHADOW_OFFSET = 4.0;
+const Color SOLID_SHADOW_COLOR = Color(0xFFD0D0D0);
+const BoxShadow SOLID_SHADOW = BoxShadow(
+  color: Color(0x80D0D0D0),
+  offset: Offset(0, SOLID_SHADOW_OFFSET),
+);
+
 class RLDesignSystem {
   static Widget BlockButton({
     required List<Widget> children,

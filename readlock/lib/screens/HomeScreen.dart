@@ -11,6 +11,7 @@ import 'package:readlock/utility_widgets/Utility.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLTheme.dart';
 import 'package:readlock/constants/RLDimensions.dart';
+import 'package:readlock/constants/RLDesignSystem.dart';
 
 const String HOME_TITLE = 'Home';
 
@@ -96,35 +97,35 @@ class HomeScreenState extends State<HomeScreen> {
             SeasonPromoBanner(),
 
             // Main content (with padding)
-            Padding(
+            Div.column([
+              // Top stats bar
+              const StatisticsTopBar(),
+
+              const Spacing.height(24),
+
+              // Welcome header
+              HomeWelcomeHeader(),
+
+              const Spacing.height(24),
+
+              // Continue reading section
+              ContinueReadingSection(),
+
+              const Spacing.height(24),
+
+              // Surprise me section
+              RandomLessonSection(),
+
+              const Spacing.height(24),
+
+              // For your personality section
+              ForYourPersonalitySection(),
+
+              // Bottom spacing for floating navigation
+              const Spacing.height(FLOATING_NAV_BOTTOM_OFFSET),
+            ],
               padding: RLDimensions.paddingAllXXL,
-              child: Div.column([
-                // Top stats bar
-                const StatisticsTopBar(),
-
-                const Spacing.height(24),
-
-                // Welcome header
-                HomeWelcomeHeader(),
-
-                const Spacing.height(24),
-
-                // Continue reading section
-                ContinueReadingSection(),
-
-                const Spacing.height(24),
-
-                // Surprise me section
-                RandomLessonSection(),
-
-                const Spacing.height(24),
-
-                // For your personality section
-                ForYourPersonalitySection(),
-
-                // Bottom spacing for floating navigation
-                const Spacing.height(FLOATING_NAV_BOTTOM_OFFSET),
-              ], crossAxisAlignment: CrossAxisAlignment.stretch),
+              crossAxisAlignment: CrossAxisAlignment.stretch,
             ),
           ], crossAxisAlignment: CrossAxisAlignment.stretch),
         ),
@@ -133,25 +134,25 @@ class HomeScreenState extends State<HomeScreen> {
   }
 
   Widget SeasonPromoBanner() {
-    return GestureDetector(
-      onTap: handlePromoBannerTap,
-      child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.symmetric(
-          vertical: RLDimensions.paddingM,
-          horizontal: RLDimensions.paddingL,
+    final EdgeInsets bannerPadding = const EdgeInsets.symmetric(
+      vertical: RLDimensions.paddingM,
+      horizontal: RLDimensions.paddingL,
+    );
+
+    return Div.row([
+      Flexible(
+        child: RLTypography.bodyMedium(
+          'Outperformers do not start tomorrow - Reader Pass -25%',
+          color: Colors.white,
+          textAlign: TextAlign.center,
         ),
-        color: Colors.black,
-        child: Div.row([
-          Flexible(
-            child: RLTypography.bodyMedium(
-              'Outperformers do not start tomorrow - Reader Pass -25%',
-              color: Colors.white,
-              textAlign: TextAlign.center,
-            ),
-          ),
-        ], mainAxisAlignment: MainAxisAlignment.center),
       ),
+    ],
+      width: 'full',
+      padding: bannerPadding,
+      color: Colors.black,
+      mainAxisAlignment: MainAxisAlignment.center,
+      onTap: handlePromoBannerTap,
     );
   }
 
@@ -167,16 +168,20 @@ class HomeScreenState extends State<HomeScreen> {
     final int progressPercent = (bookProgress * 100).toInt();
 
     final BoxDecoration cardDecoration = BoxDecoration(
-      color: RLTheme.backgroundLight.withValues(alpha: RLDimensions.alphaLight),
+      color: RLTheme.white,
       borderRadius: RLDimensions.borderRadiusL,
-      border: Border.all(
-        color: RLTheme.primaryGreen.withValues(alpha: RLDimensions.alphaDark),
-      ),
+      border: Border.all(color: SOLID_SHADOW_COLOR, width: 1.5),
+      boxShadow: const [SOLID_SHADOW],
     );
 
     final BoxDecoration buttonDecoration = BoxDecoration(
       color: RLTheme.primaryGreen,
       borderRadius: RLDimensions.borderRadiusM,
+    );
+
+    final EdgeInsets buttonPadding = const EdgeInsets.symmetric(
+      horizontal: RLDimensions.paddingL,
+      vertical: RLDimensions.paddingS,
     );
 
     return Div.column([
@@ -193,71 +198,65 @@ class HomeScreenState extends State<HomeScreen> {
 
       const Spacing.height(16),
 
-      Container(
-        padding: RLDimensions.paddingAllL,
-        decoration: cardDecoration,
-        child: Div.column([
-          Div.row([
-            ClipRRect(
-              borderRadius: RLDimensions.borderRadiusM,
-              child: Image.asset(
-                'assets/covers/doet-cover.png',
-                width: RLDimensions.thumbnailWidthM,
-                height: RLDimensions.thumbnailHeightM,
-                fit: BoxFit.cover,
-              ),
-            ),
-
-            const Spacing.width(16),
-
-            Expanded(
-              child: Div.column([
-                RLTypography.text('The Design of Everyday Things'),
-
-                const Spacing.height(4),
-
-                RLTypography.text(
-                  'Don Norman',
-                  color: RLTheme.textSecondary,
-                ),
-
-                const Spacing.height(12),
-
-                Div.row([
-                  Expanded(
-                    child: ProgressBar(
-                      progress: bookProgress,
-                      color: RLTheme.primaryGreen,
-                    ),
-                  ),
-
-                  const Spacing.width(8),
-
-                  RLTypography.text(
-                    '$progressPercent%',
-                    color: RLTheme.primaryGreen,
-                  ),
-                ]),
-              ], crossAxisAlignment: CrossAxisAlignment.start),
-            ),
-          ]),
-
-          const Spacing.height(12),
-
-          GestureDetector(
-            onTap: handleContinueReading,
-            child: Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: RLDimensions.paddingL,
-                vertical: RLDimensions.paddingS,
-              ),
-              decoration: buttonDecoration,
-              child: Div.row([
-                RLTypography.text('Continue', color: Colors.white),
-              ], mainAxisAlignment: MainAxisAlignment.center),
+      Div.column([
+        Div.row([
+          ClipRRect(
+            borderRadius: RLDimensions.borderRadiusM,
+            child: Image.asset(
+              'assets/covers/doet-cover.png',
+              width: RLDimensions.thumbnailWidthM,
+              height: RLDimensions.thumbnailHeightM,
+              fit: BoxFit.cover,
             ),
           ),
+
+          const Spacing.width(16),
+
+          Expanded(
+            child: Div.column([
+              RLTypography.text('The Design of Everyday Things'),
+
+              const Spacing.height(4),
+
+              RLTypography.text(
+                'Don Norman',
+                color: RLTheme.textSecondary,
+              ),
+
+              const Spacing.height(12),
+
+              Div.row([
+                Expanded(
+                  child: ProgressBar(
+                    progress: bookProgress,
+                    color: RLTheme.primaryGreen,
+                  ),
+                ),
+
+                const Spacing.width(8),
+
+                RLTypography.text(
+                  '$progressPercent%',
+                  color: RLTheme.primaryGreen,
+                ),
+              ]),
+            ], crossAxisAlignment: CrossAxisAlignment.start),
+          ),
         ]),
+
+        const Spacing.height(12),
+
+        Div.row([
+          RLTypography.text('Continue', color: Colors.white),
+        ],
+          padding: buttonPadding,
+          decoration: buttonDecoration,
+          mainAxisAlignment: MainAxisAlignment.center,
+          onTap: handleContinueReading,
+        ),
+      ],
+        padding: RLDimensions.paddingAllL,
+        decoration: cardDecoration,
       ),
     ], crossAxisAlignment: CrossAxisAlignment.start);
   }
@@ -326,42 +325,49 @@ class HomeScreenState extends State<HomeScreen> {
       borderRadius: RLDimensions.borderRadiusS,
     );
 
+    final EdgeInsets cardMargin = const EdgeInsets.only(
+      bottom: RLDimensions.spacing12,
+    );
+
+    final EdgeInsets iconMargin = const EdgeInsets.only(
+      top: RLDimensions.spacing8,
+    );
+
     return books.map((book) {
       final String bookTitle = book['title'] ?? '';
       final String bookAuthor = book['author'] ?? '';
 
-      return Container(
-        margin: const EdgeInsets.only(bottom: RLDimensions.spacing12),
+      return Div.row([
+        Div.emptyColumn(
+          width: RLDimensions.thumbnailWidthS,
+          height: RLDimensions.thumbnailWidthM,
+          decoration: bookCoverDecoration,
+        ),
+
+        const Spacing.width(12),
+
+        Expanded(
+          child: Div.column([
+            RLTypography.text(bookTitle),
+
+            const Spacing.height(4),
+
+            RLTypography.text(
+              bookAuthor,
+              color: RLTheme.textSecondary,
+            ),
+          ], crossAxisAlignment: CrossAxisAlignment.start),
+        ),
+
+        // Bookmark icon
+        Div.column(
+          const [BookmarkIcon],
+          margin: iconMargin,
+        ),
+      ],
+        margin: cardMargin,
         padding: RLDimensions.paddingAllM,
         decoration: bookCardDecoration,
-        child: Div.row([
-          Container(
-            width: RLDimensions.thumbnailWidthS,
-            height: RLDimensions.thumbnailWidthM,
-            decoration: bookCoverDecoration,
-          ),
-
-          const Spacing.width(12),
-
-          Expanded(
-            child: Div.column([
-              RLTypography.text(bookTitle),
-
-              const Spacing.height(4),
-
-              RLTypography.text(
-                bookAuthor,
-                color: RLTheme.textSecondary,
-              ),
-            ], crossAxisAlignment: CrossAxisAlignment.start),
-          ),
-
-          // Bookmark icon
-          Container(
-            margin: const EdgeInsets.only(top: RLDimensions.spacing8),
-            child: BookmarkIcon,
-          ),
-        ]),
       );
     }).toList();
   }
@@ -378,35 +384,33 @@ class HomeScreenState extends State<HomeScreen> {
     size: RLDimensions.iconL,
   );
 
+  static const Widget ShuffleIcon = Icon(
+    Icons.shuffle_rounded,
+    color: RLTheme.primaryBlue,
+    size: RLDimensions.iconL,
+  );
+
   Widget RandomLessonSection() {
     final BoxDecoration cardDecoration = BoxDecoration(
       color: RLTheme.backgroundLight,
       borderRadius: RLDimensions.borderRadiusL,
     );
 
-    final Widget ShuffleIcon = const Icon(
-      Icons.shuffle_rounded,
-      color: RLTheme.primaryBlue,
-      size: RLDimensions.iconL,
-    );
+    return Div.row([
+      ShuffleIcon,
 
-    return GestureDetector(
-      onTap: () {},
-      child: Container(
-        padding: RLDimensions.paddingAllL,
-        decoration: cardDecoration,
-        child: Div.row([
-          ShuffleIcon,
+      const Spacing.width(RLDimensions.spacing12),
 
-          const Spacing.width(RLDimensions.spacing12),
-
-          Expanded(
-            child: RLTypography.bodyLarge('Surprise Me'),
-          ),
-
-          ChevronRightIcon,
-        ], crossAxisAlignment: CrossAxisAlignment.center),
+      Expanded(
+        child: RLTypography.bodyLarge('Surprise Me'),
       ),
+
+      ChevronRightIcon,
+    ],
+      padding: RLDimensions.paddingAllL,
+      decoration: cardDecoration,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      onTap: () {},
     );
   }
 }

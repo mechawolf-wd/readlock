@@ -111,17 +111,23 @@ class FeedbackSheet extends StatelessWidget {
 
   EdgeInsets get buttonMargin => const EdgeInsets.all(MODAL_PADDING);
 
-  EdgeInsets get headerPadding => const EdgeInsets.all(MODAL_PADDING);
+  EdgeInsets get headerPadding => const EdgeInsets.fromLTRB(MODAL_PADDING, 16, MODAL_PADDING, MODAL_PADDING);
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
+      top: false,
       child: Container(
         decoration: modalDecoration,
         padding: const EdgeInsets.only(bottom: 16),
         child: Wrap(
           children: [
             Div.column([
+              // Drag handle
+              Div.column([
+                const BottomSheetGrabber(),
+              ], padding: const EdgeInsets.only(top: 12)),
+
               // Header section
               HeaderSection(),
 

@@ -1,4 +1,4 @@
-// Duolingo-inspired gamified profile screen
+// Gamified profile screen
 // Showcases mockups of engaging learning patterns adapted for book reading
 
 import 'package:flutter/material.dart';
@@ -180,7 +180,9 @@ class StatItem extends StatelessWidget {
 
         RLTypography.bodyMedium(
           unit,
-          color: Colors.white.withValues(alpha: RLDimensions.opacitySoft),
+          color: Colors.white.withValues(
+            alpha: RLDimensions.opacitySoft,
+          ),
         ),
       ], mainAxisAlignment: MainAxisAlignment.center),
 
@@ -188,7 +190,9 @@ class StatItem extends StatelessWidget {
 
       RLTypography.bodyMedium(
         label,
-        color: Colors.white.withValues(alpha: RLDimensions.opacitySubtle),
+        color: Colors.white.withValues(
+          alpha: RLDimensions.opacitySubtle,
+        ),
         textAlign: TextAlign.center,
       ),
     ], crossAxisAlignment: CrossAxisAlignment.center);
@@ -320,18 +324,16 @@ class MenuSection extends StatelessWidget {
       // Account Actions & Legal
       MenuItem(icon: Icons.gavel, title: 'Legal', onTap: () {}),
 
-      MenuItem(
-        icon: Icons.logout,
-        title: 'Log out',
-        onTap: () {},
-      ),
+      MenuItem(icon: Icons.logout, title: 'Log out', onTap: () {}),
 
       const Spacing.height(24),
 
       Center(
         child: RLTypography.bodyMedium(
           'Version 1.0.0',
-          color: RLTheme.textPrimary.withValues(alpha: RLDimensions.opacityMuted),
+          color: RLTheme.textPrimary.withValues(
+            alpha: RLDimensions.opacityMuted,
+          ),
         ),
       ),
     ]);
@@ -355,7 +357,10 @@ class MenuItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final Color iconColor =
-        textColor ?? RLTheme.textPrimary.withValues(alpha: RLDimensions.opacityLight);
+        textColor ??
+        RLTheme.textPrimary.withValues(
+          alpha: RLDimensions.opacityLight,
+        );
     final Color titleColor = textColor ?? RLTheme.textPrimary;
 
     return Div.row(
@@ -370,7 +375,9 @@ class MenuItem extends StatelessWidget {
 
         Icon(
           Icons.chevron_right,
-          color: RLTheme.textPrimary.withValues(alpha: RLDimensions.alphaDark),
+          color: RLTheme.textPrimary.withValues(
+            alpha: RLDimensions.alphaDark,
+          ),
           size: RLDimensions.iconM,
         ),
       ],
@@ -442,7 +449,9 @@ class SoundPickerCardState extends State<SoundPickerCard> {
 
     final Color borderColor = isSelected
         ? RLTheme.primaryBlue
-        : RLTheme.textPrimary.withValues(alpha: RLDimensions.alphaMedium);
+        : RLTheme.textPrimary.withValues(
+            alpha: RLDimensions.alphaMedium,
+          );
 
     final Color iconColor = isSelected
         ? RLTheme.primaryBlue
@@ -463,7 +472,9 @@ class SoundPickerCardState extends State<SoundPickerCard> {
       child: Container(
         decoration: blockDecoration,
         padding: RLDimensions.paddingAllM,
-        margin: const EdgeInsets.symmetric(horizontal: RLDimensions.spacing4),
+        margin: const EdgeInsets.symmetric(
+          horizontal: RLDimensions.spacing4,
+        ),
         child: Div.column([
           Icon(icon, color: iconColor, size: RLDimensions.iconL),
 
@@ -505,7 +516,9 @@ class SwitchMenuItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Color iconColor = RLTheme.textPrimary.withValues(alpha: RLDimensions.opacityLight);
+    final Color iconColor = RLTheme.textPrimary.withValues(
+      alpha: RLDimensions.opacityLight,
+    );
     final Color titleColor = RLTheme.textPrimary;
 
     return Div.row([
@@ -524,9 +537,15 @@ class SwitchMenuItem extends StatelessWidget {
           onChanged(newValue);
         },
         activeThumbColor: RLTheme.primaryBlue,
-        activeTrackColor: RLTheme.primaryBlue.withValues(alpha: RLDimensions.alphaDark),
-        inactiveThumbColor: RLTheme.textPrimary.withValues(alpha: RLDimensions.opacityMuted),
-        inactiveTrackColor: RLTheme.textPrimary.withValues(alpha: RLDimensions.alphaLight),
+        activeTrackColor: RLTheme.primaryBlue.withValues(
+          alpha: RLDimensions.alphaDark,
+        ),
+        inactiveThumbColor: RLTheme.textPrimary.withValues(
+          alpha: RLDimensions.opacityMuted,
+        ),
+        inactiveTrackColor: RLTheme.textPrimary.withValues(
+          alpha: RLDimensions.alphaLight,
+        ),
       ),
     ], padding: RLDimensions.paddingVerticalL);
   }
@@ -550,29 +569,37 @@ class SegmentedMenuItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Color iconColor = RLTheme.textPrimary.withValues(alpha: RLDimensions.opacityLight);
+    final Color iconColor = RLTheme.textPrimary.withValues(
+      alpha: RLDimensions.opacityLight,
+    );
     final Color titleColor = RLTheme.textPrimary;
 
-    return Div.column([
-      Div.row([
-        Icon(icon, color: iconColor, size: RLDimensions.iconM),
+    return Div.column(
+      [
+        Div.row([
+          Icon(icon, color: iconColor, size: RLDimensions.iconM),
 
-        const Spacing.width(RLDimensions.spacing16),
+          const Spacing.width(RLDimensions.spacing16),
 
-        Expanded(
-          child: RLTypography.bodyMedium(title, color: titleColor),
+          Expanded(
+            child: RLTypography.bodyMedium(title, color: titleColor),
+          ),
+        ]),
+
+        const Spacing.height(RLDimensions.spacing16),
+
+        // Segmented options
+        SegmentedOptions(
+          options: options,
+          selectedOption: selectedOption,
+          onChanged: onChanged,
         ),
-      ]),
-
-      const Spacing.height(RLDimensions.spacing16),
-
-      // Segmented options
-      SegmentedOptions(
-        options: options,
-        selectedOption: selectedOption,
-        onChanged: onChanged,
+      ],
+      padding: const EdgeInsets.only(
+        top: RLDimensions.spacing32,
+        bottom: RLDimensions.spacing16,
       ),
-    ], padding: const EdgeInsets.only(top: RLDimensions.spacing32, bottom: RLDimensions.spacing16));
+    );
   }
 
   Widget SegmentedOptions({
@@ -581,7 +608,9 @@ class SegmentedMenuItem extends StatelessWidget {
     required ValueChanged<String> onChanged,
   }) {
     final BoxDecoration containerDecoration = BoxDecoration(
-      color: RLTheme.textPrimary.withValues(alpha: RLDimensions.alphaVeryLight),
+      color: RLTheme.textPrimary.withValues(
+        alpha: RLDimensions.alphaVeryLight,
+      ),
       borderRadius: RLDimensions.borderRadiusM,
     );
 
@@ -609,7 +638,9 @@ class SegmentedMenuItem extends StatelessWidget {
 
       final Color textColor = isSelected
           ? RLTheme.white
-          : RLTheme.textPrimary.withValues(alpha: RLDimensions.opacitySubtle);
+          : RLTheme.textPrimary.withValues(
+              alpha: RLDimensions.opacitySubtle,
+            );
 
       return Expanded(
         child: GestureDetector(
@@ -618,7 +649,9 @@ class SegmentedMenuItem extends StatelessWidget {
             onChanged(option);
           },
           child: Container(
-            padding: const EdgeInsets.symmetric(vertical: RLDimensions.spacing8),
+            padding: const EdgeInsets.symmetric(
+              vertical: RLDimensions.spacing8,
+            ),
             decoration: optionDecoration,
             child: Center(
               child: RLTypography.bodyMedium(option, color: textColor),
@@ -637,8 +670,12 @@ class MenuDivider extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       height: RLDimensions.dividerNormal,
-      margin: const EdgeInsets.symmetric(vertical: RLDimensions.spacing8),
-      color: RLTheme.textPrimary.withValues(alpha: RLDimensions.alphaLight),
+      margin: const EdgeInsets.symmetric(
+        vertical: RLDimensions.spacing8,
+      ),
+      color: RLTheme.textPrimary.withValues(
+        alpha: RLDimensions.alphaLight,
+      ),
     );
   }
 }

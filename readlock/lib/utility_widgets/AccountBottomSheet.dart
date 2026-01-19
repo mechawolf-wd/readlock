@@ -51,12 +51,18 @@ class AccountSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
+      top: false,
       child: Container(
         decoration: modalDecoration,
         padding: const EdgeInsets.only(bottom: 16),
         child: Wrap(
           children: [
             Div.column([
+              // Drag handle
+              Div.column([
+                const BottomSheetGrabber(),
+              ], padding: const EdgeInsets.only(top: 12)),
+
               // Header section
               HeaderSection(),
 
@@ -79,7 +85,7 @@ class AccountSheet extends StatelessWidget {
       const Spacing.width(12),
 
       RLTypography.headingMedium(ACCOUNT_TITLE),
-    ], padding: headerPadding);
+    ], padding: const EdgeInsets.fromLTRB(MODAL_PADDING, 16, MODAL_PADDING, MODAL_PADDING));
   }
 
   Widget BodySection() {

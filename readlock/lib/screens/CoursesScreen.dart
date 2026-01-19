@@ -2,6 +2,7 @@
 // Clean card-based layout with course selection
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:readlock/MainNavigation.dart';
 import 'package:readlock/screens/ReaderPassScreen.dart';
 import 'package:readlock/utility_widgets/Utility.dart';
@@ -418,6 +419,8 @@ class CoursesScreenState extends State<CoursesScreen> {
 
       return GestureDetector(
         onTap: () {
+          HapticFeedback.lightImpact();
+
           if (isSelected) {
             clearGenreSelection();
           } else {

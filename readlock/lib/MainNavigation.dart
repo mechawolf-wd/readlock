@@ -4,6 +4,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:readlock/constants/RLTheme.dart';
+import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/screens/CoursesScreen.dart';
 import 'package:readlock/screens/HomeScreen.dart';
 import 'package:readlock/screens/MyBookshelfScreen.dart';
@@ -91,12 +92,17 @@ class MainNavigationState extends State<MainNavigation> {
             ),
           ),
 
-          // Floating bottom navigation
+          // Floating bottom navigation with SafeArea
           Positioned(
             left: 16,
             right: 16,
-            bottom: 16,
-            child: FloatingNavigationBar(),
+            bottom: 0,
+            child: SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 16),
+                child: FloatingNavigationBar(),
+              ),
+            ),
           ),
         ],
       ),
@@ -111,16 +117,8 @@ class MainNavigationState extends State<MainNavigation> {
     final BoxDecoration navBarDecoration = BoxDecoration(
       color: RLTheme.white,
       borderRadius: navBarBorderRadius,
-      border: Border.all(
-        color: RLTheme.textPrimary.withValues(alpha: 0.08),
-      ),
-      boxShadow: [
-        BoxShadow(
-          color: Colors.black.withValues(alpha: 0.06),
-          blurRadius: 16,
-          offset: const Offset(0, 4),
-        ),
-      ],
+      border: Border.all(color: SOLID_SHADOW_COLOR, width: 1.5),
+      boxShadow: const [SOLID_SHADOW],
     );
 
     return Container(
