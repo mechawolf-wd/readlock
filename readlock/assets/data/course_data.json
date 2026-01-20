@@ -2,12 +2,12 @@
   "language": "EN",
   "courses": [
     {
-      "course-id": "design-everyday-things-comprehensive",
+      "course-id": "book:design-everyday-things",
       "title": "The Design of Everyday Things",
       "author": "Donald A. Norman",
       "description": "Master the fundamental principles that separate good design from bad design.",
-      "cover-image-path": "https://example.com/doet-cover.jpg",
-      "color": "blue",
+      "cover-image-path": "https://example.com/design-of-everyday-things-cover.jpg",
+      "color": "#348283",
       "relevant-for": [
         "Anyone - who wants to understand why everyday objects work (or don't work)",
         "Entrepreneurs - building products that users intuitively understand",
@@ -27,9 +27,10 @@
       ],
       "segments": [
         {
-          "segment-id": "doet-segment-a",
+          "segment-id": "design-of-everyday-things-segment-a",
           "segment-title": "A Design Fundamentals",
           "segment-description": "Core principles and psychology behind effective design",
+          "segment-symbol": "A",
           "lessons": [
             {
               "lesson-id": "design-of-everyday-things-l:1",
@@ -402,7 +403,7 @@
               ]
             },
             {
-              "lesson-id": "doet-l:1",
+              "lesson-id": "design-of-everyday-things-l:1",
               "title": "The Psychology of Everyday Actions",
               "lesson-version": "story-based",
               "isFree": false,
@@ -601,7 +602,7 @@
               ]
             },
             {
-              "lesson-id": "doet-l:2",
+              "lesson-id": "design-of-everyday-things-l:2",
               "title": "The Six Principles of Design",
               "lesson-version": "story-based",
               "isFree": false,
@@ -795,7 +796,7 @@
               ]
             },
             {
-              "lesson-id": "doet-l:3",
+              "lesson-id": "design-of-everyday-things-l:3",
               "title": "Mental Models and User Understanding",
               "lesson-version": "story-based",
               "isFree": false,
@@ -979,7 +980,7 @@
               ]
             },
             {
-              "lesson-id": "doet-l:4",
+              "lesson-id": "design-of-everyday-things-l:4",
               "title": "Natural Mappings and Intuitive Design",
               "lesson-version": "story-based",
               "isFree": false,
@@ -1170,7 +1171,7 @@
               ]
             },
             {
-              "lesson-id": "doet-l:5",
+              "lesson-id": "design-of-everyday-things-l:5",
               "title": "The Art of Feedback",
               "lesson-version": "story-based",
               "isFree": false,
@@ -1225,7 +1226,7 @@
               ]
             },
             {
-              "lesson-id": "doet-l:6",
+              "lesson-id": "design-of-everyday-things-l:6",
               "title": "How Constraints Actually Help",
               "lesson-version": "story-based",
               "isFree": false,
@@ -1278,7 +1279,7 @@
               ]
             },
             {
-              "lesson-id": "doet-l:7",
+              "lesson-id": "design-of-everyday-things-l:7",
               "title": "The Psychology of User Actions",
               "lesson-version": "story-based",
               "isFree": false,
@@ -1336,7 +1337,7 @@
               ]
             },
             {
-              "lesson-id": "doet-l:8",
+              "lesson-id": "design-of-everyday-things-l:8",
               "title": "The Seven Stages of Action",
               "lesson-version": "story-based",
               "isFree": false,
@@ -1385,7 +1386,7 @@
               ]
             },
             {
-              "lesson-id": "doet-l:9",
+              "lesson-id": "design-of-everyday-things-l:9",
               "title": "Error-Tolerant Design",
               "lesson-version": "story-based",
               "isFree": false,
@@ -1437,7 +1438,7 @@
               ]
             },
             {
-              "lesson-id": "doet-l:10",
+              "lesson-id": "design-of-everyday-things-l:10",
               "title": "Simplicity Through Smart Hierarchy",
               "lesson-version": "story-based",
               "isFree": false,
@@ -1491,7 +1492,7 @@
               ]
             },
             {
-              "lesson-id": "doet-l:11",
+              "lesson-id": "design-of-everyday-things-l:11",
               "title": "The Future of Human-Centered Design",
               "lesson-version": "story-based",
               "isFree": false,
@@ -1530,7 +1531,7 @@
               ]
             },
             {
-              "lesson-id": "doet-l:12",
+              "lesson-id": "design-of-everyday-things-l:12",
               "title": "The Key Message",
               "lesson-version": "story-based",
               "isFree": false,
@@ -1586,54 +1587,54 @@
           ]
         },
         {
-          "segment-id": "doet-segment-b",
+          "segment-id": "design-of-everyday-things-segment-b",
           "segment-title": "B Advanced Applications",
           "segment-description": "Applying design principles to complex real-world scenarios",
           "lessons": [
             {
-              "lesson-id": "doet-l:13",
+              "lesson-id": "design-of-everyday-things-l:13",
               "title": "Designing for Emotions",
               "lesson-version": "story-based",
               "isFree": false,
               "content": []
             },
             {
-              "lesson-id": "doet-l:14",
+              "lesson-id": "design-of-everyday-things-l:14",
               "title": "Cultural Design Patterns",
               "lesson-version": "story-based",
               "isFree": false,
               "content": []
             },
             {
-              "lesson-id": "doet-l:15",
+              "lesson-id": "design-of-everyday-things-l:15",
               "title": "Technology and Human Behavior",
               "lesson-version": "story-based",
               "isFree": false,
               "content": []
             },
             {
-              "lesson-id": "doet-l:16",
+              "lesson-id": "design-of-everyday-things-l:16",
               "title": "Design Ethics and Responsibility",
               "lesson-version": "story-based",
               "isFree": false,
               "content": []
             },
             {
-              "lesson-id": "doet-l:17",
+              "lesson-id": "design-of-everyday-things-l:17",
               "title": "Accessibility and Inclusive Design",
               "lesson-version": "story-based",
               "isFree": false,
               "content": []
             },
             {
-              "lesson-id": "doet-l:18",
+              "lesson-id": "design-of-everyday-things-l:18",
               "title": "Design for Different Contexts",
               "lesson-version": "story-based",
               "isFree": false,
               "content": []
             },
             {
-              "lesson-id": "doet-l:19",
+              "lesson-id": "design-of-everyday-things-l:19",
               "title": "Future-Proofing Design",
               "lesson-version": "story-based",
               "isFree": false,
@@ -1642,54 +1643,54 @@
           ]
         },
         {
-          "segment-id": "doet-segment-c",
+          "segment-id": "design-of-everyday-things-segment-c",
           "segment-title": "C Mastery and Innovation",
           "segment-description": "Advanced techniques and creating breakthrough design solutions",
           "lessons": [
             {
-              "lesson-id": "doet-l:20",
+              "lesson-id": "design-of-everyday-things-l:20",
               "title": "Design Research Methods",
               "lesson-version": "story-based",
               "isFree": false,
               "content": []
             },
             {
-              "lesson-id": "doet-l:21",
+              "lesson-id": "design-of-everyday-things-l:21",
               "title": "Prototyping and Testing",
               "lesson-version": "story-based",
               "isFree": false,
               "content": []
             },
             {
-              "lesson-id": "doet-l:22",
+              "lesson-id": "design-of-everyday-things-l:22",
               "title": "Design Systems at Scale",
               "lesson-version": "story-based",
               "isFree": false,
               "content": []
             },
             {
-              "lesson-id": "doet-l:23",
+              "lesson-id": "design-of-everyday-things-l:23",
               "title": "Innovation Through Constraints",
               "lesson-version": "story-based",
               "isFree": false,
               "content": []
             },
             {
-              "lesson-id": "doet-l:24",
+              "lesson-id": "design-of-everyday-things-l:24",
               "title": "Cross-Platform Design Thinking",
               "lesson-version": "story-based",
               "isFree": false,
               "content": []
             },
             {
-              "lesson-id": "doet-l:25",
+              "lesson-id": "design-of-everyday-things-l:25",
               "title": "Design Leadership",
               "lesson-version": "story-based",
               "isFree": false,
               "content": []
             },
             {
-              "lesson-id": "doet-l:26",
+              "lesson-id": "design-of-everyday-things-l:26",
               "title": "The Future of Design",
               "lesson-version": "story-based",
               "isFree": false,

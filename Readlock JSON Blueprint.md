@@ -207,10 +207,10 @@ GOOD (Human, Readlock-style):
 **Example:**
 
 ```
-"Look at this kettle."
+"Take a look at this kettle."
 "image-link:assets/kettle.png"
-"The handle is on the same side as the spout."
-"When you pour, steam burns your hand."
+"Looks like the handle is on the same side as the spout."
+"When you pour, would steam burn your hand?"
 ```
 
 ### 3. Progressive Engagement Patterns

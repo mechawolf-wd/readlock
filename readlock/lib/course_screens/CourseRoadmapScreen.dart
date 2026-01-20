@@ -34,7 +34,7 @@ const double STICKY_HEADER_HEIGHT =
 // Segment content constants
 const double SEGMENT_CONTENT_TOP_SPACING = 16.0;
 
-// Segment color mapping
+// Segment color mapping (Temporary) - each course will have its own color
 Color getColorForLetter(String letter) {
   switch (letter) {
     case 'A':
