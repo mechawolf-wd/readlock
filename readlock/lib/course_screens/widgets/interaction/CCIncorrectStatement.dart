@@ -6,9 +6,8 @@ import 'package:readlock/models/CourseModel.dart';
 import 'package:readlock/utility_widgets/Utility.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLTheme.dart';
+import 'package:readlock/constants/RLConstants.dart';
 import 'package:readlock/utility_widgets/text_animation/ProgressiveText.dart';
-
-const double STATEMENT_SECTION_SPACING = 24.0;
 
 class StatementStyle {
   final Color backgroundColor;
@@ -90,12 +89,12 @@ class CCIncorrectStatementState extends State<CCIncorrectStatement>
             // Question prompt section
             QuestionTextSection(),
 
-            const Spacing.height(STATEMENT_SECTION_SPACING),
+            const Spacing.height(INCORRECT_STATEMENT_SECTION_SPACING),
 
             // Statements list to identify incorrect one
             StatementsListSection(),
 
-            const Spacing.height(STATEMENT_SECTION_SPACING),
+            const Spacing.height(INCORRECT_STATEMENT_SECTION_SPACING),
 
             // Explanation after answer
             ExplanationSection(),
@@ -118,9 +117,13 @@ class CCIncorrectStatementState extends State<CCIncorrectStatement>
   }
 
   String getQuestionText() {
-    return widget.content.question.isNotEmpty
-        ? widget.content.question
-        : 'Which statement is incorrect?';
+    final bool hasQuestionText = widget.content.question.isNotEmpty;
+
+    if (hasQuestionText) {
+      return widget.content.question;
+    }
+
+    return INCORRECT_STATEMENT_PROMPT;
   }
 
   Widget StatementsListSection() {
@@ -132,11 +135,15 @@ class CCIncorrectStatementState extends State<CCIncorrectStatement>
       final int statementIndex = entry.key;
       final bool isLastItem =
           statementIndex == widget.content.options.length - 1;
+      final bool shouldAddSpacing = !isLastItem;
 
       return Div.column([
         StatementItem(statementIndex: statementIndex),
 
-        if (!isLastItem) const Spacing.height(12),
+        RenderIf.condition(
+          shouldAddSpacing,
+          const Spacing.height(12),
+        ),
       ]);
     }).toList();
   }
@@ -222,6 +229,10 @@ class CCIncorrectStatementState extends State<CCIncorrectStatement>
           statementStyle.borderColor,
         );
 
+    final VoidCallback? tapCallback = hasAnswered
+        ? null
+        : () => selectStatement(statementIndex);
+
     return Div.row(
       [
         // Feedback icon section
@@ -233,7 +244,7 @@ class CCIncorrectStatementState extends State<CCIncorrectStatement>
       padding: 16,
       decoration: containerDecoration,
       radius: BorderRadius.circular(12),
-      onTap: hasAnswered ? null : () => selectStatement(statementIndex),
+      onTap: tapCallback,
     );
   }
 
@@ -253,12 +264,20 @@ class CCIncorrectStatementState extends State<CCIncorrectStatement>
         .correctAnswerIndices
         .contains(statementIndex);
 
-    final Color iconColor = isIncorrectStatement
-        ? RLTheme.primaryGreen
-        : RLTheme.textPrimary.withValues(alpha: 0.4);
+    Color iconColor = RLTheme.textPrimary.withValues(alpha: 0.4);
+
+    if (isIncorrectStatement) {
+      iconColor = RLTheme.primaryGreen;
+    }
+
+    final Widget FeedbackIcon = Icon(
+      statementStyle.feedbackIcon!,
+      color: iconColor,
+      size: 20,
+    );
 
     return Div.row([
-      Icon(statementStyle.feedbackIcon!, color: iconColor, size: 20),
+      FeedbackIcon,
 
       const Spacing.width(12),
     ]);

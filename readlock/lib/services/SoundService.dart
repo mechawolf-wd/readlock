@@ -1,10 +1,6 @@
 import 'package:audioplayers/audioplayers.dart';
+import 'package:readlock/constants/RLConstants.dart';
 import 'dart:developer' as developer;
-
-const String CONTINUE_CLICK_AUDIO_PATH = 'audio/continue_click.mp3';
-const String CORRECT_ANSWER_AUDIO_PATH = 'audio/correct_answer.wav';
-const String TYPEWRITER_AUDIO_PATH = 'audio/typewriter.mp3';
-const String SLOW_DOWN_CLOCK_AUDIO_PATH = 'audio/slow_down_clock.mp3';
 
 class SoundService {
   static final AudioPlayer continueClickAudioPlayer = AudioPlayer();

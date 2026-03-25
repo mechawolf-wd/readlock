@@ -117,9 +117,8 @@ When implementing first-person narratives in lessons, particularly for the **Ima
 
 **Writing Style:**
 
-- Use direct address: "You walk into the office..." instead of "Sarah walks into the office..."
 - Present tense for immediacy: "You notice the door handle" not "You noticed"
-- Include sensory details: "You feel the cold metal handle under your palm" (don't make it way too immersive)
+- Include sensory details: "You feel the cold metal handle under your palm"
 - Create relatable scenarios that match the target audience's likely experiences
 
 **Character Perspective:**
@@ -334,40 +333,6 @@ Use `<c:g>` tags for essential concepts users must retain:
 - **Surprise Moments**: Unexpected insights and bonus content (400% dopamine increase)
 
 ### **Daily Rewards & Achievement System**
-
-**Achievement Badge System:**
-
-**Streak Achievements:**
-
-- **🔥 Fire Starter** (3-day streak): "Your learning flame is igniting"
-- **🌟 Consistency Star** (7-day streak): "One week of dedicated growth"
-- **💎 Diamond Learner** (30-day streak): "A month of intellectual commitment"
-- **👑 Knowledge Royalty** (100-day streak): "You've achieved learning mastery"
-- **🏆 Legendary Scholar** (365-day streak): "A full year of continuous learning"
-
-**Progress Achievements:**
-
-- **📚 Chapter Champion** (Complete 10 chapters): "Building your knowledge foundation"
-- **🎓 Course Conqueror** (Complete 3 full courses): "Diverse learning expertise"
-- **🧠 Knowledge Architect** (Complete 10 courses): "You're building an impressive knowledge library"
-- **🌍 Universal Scholar** (Complete courses across 5 different domains): "Interdisciplinary mastery"
-- **📖 Bookworm Elite** (Complete 25 courses): "You've become a true learning addict"
-
-**Skill Achievements:**
-
-- **🎯 Sharpshooter** (95% average question accuracy): "Precision in learning"
-- **⚡ Speed Reader** (Complete courses 20% faster than average): "Efficient knowledge absorption"
-- **💡 Insight Master** (Collect 100 highlighted concepts): "Capturing wisdom effectively"
-- **🔗 Connection Genius** (Make 50 cross-course connections): "Seeing patterns across knowledge"
-- **🏃 Marathon Learner** (Complete 3+ hour learning session): "Endurance and dedication"
-
-**Special Event Achievements:**
-
-- **🎃 October Scholar** (Complete Halloween-themed learning challenges)
-- **🎄 Holiday Learner** (Maintain streak through December holidays)
-- **🎊 New Year Resolver** (Start learning journey in January)
-- **📅 Weekend Warrior** (Complete learning sessions on 10 consecutive weekends)
-- **🌙 Night Owl** (Complete 20 learning sessions after 9 PM)
 
 **Exclusive Content (experience Store):**
 

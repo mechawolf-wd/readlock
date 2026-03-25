@@ -2,18 +2,10 @@
 // Expands to show full content when tapped
 
 import 'package:flutter/material.dart' hide Typography;
+import 'package:readlock/constants/RLConstants.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/utility_widgets/Utility.dart';
 import 'package:readlock/constants/RLTheme.dart';
-
-const double CARD_BORDER_RADIUS = 16.0;
-const double HEADER_PADDING = 20.0;
-const double ICON_SIZE_MAIN = 24.0;
-const double ICON_SIZE_ARROW = 20.0;
-const double DIVIDER_HEIGHT = 1.0;
-const double CONTENT_PADDING_HORIZONTAL = 20.0;
-const double CONTENT_PADDING_TOP = 16.0;
-const double CONTENT_PADDING_BOTTOM = 20.0;
 
 class ExpandableCard extends StatefulWidget {
   final String title;
@@ -72,8 +64,7 @@ class ExpandableCardState extends State<ExpandableCard> {
 
   BoxDecoration getCardDecoration() {
     final bool hasGradient = widget.gradient != null;
-    final Color fallbackColor =
-        widget.backgroundColor ?? RLTheme.backgroundLight;
+    final Color fallbackColor = widget.backgroundColor ?? RLTheme.backgroundLight;
 
     final Border? cardBorder = hasGradient
         ? null
@@ -117,15 +108,7 @@ class ExpandableCardState extends State<ExpandableCard> {
     final Widget arrowIcon = ArrowIcon(titleColor);
 
     return Div.row(
-      [
-        mainIcon,
-
-        const Spacing.width(12),
-
-        Expanded(child: titleText),
-
-        arrowIcon,
-      ],
+      [mainIcon, const Spacing.width(12), Expanded(child: titleText), arrowIcon],
       padding: const EdgeInsets.all(HEADER_PADDING),
       onTap: handleExpansionToggle,
     );
@@ -140,15 +123,9 @@ class ExpandableCardState extends State<ExpandableCard> {
   }
 
   Widget ArrowIcon(Color titleColor) {
-    final IconData chevronIcon = isExpanded
-        ? Icons.expand_less
-        : Icons.expand_more;
+    final IconData chevronIcon = isExpanded ? Icons.expand_less : Icons.expand_more;
 
-    return Icon(
-      chevronIcon,
-      color: titleColor.withValues(alpha: 0.7),
-      size: ICON_SIZE_ARROW,
-    );
+    return Icon(chevronIcon, color: titleColor.withValues(alpha: 0.7), size: ICON_SIZE_ARROW);
   }
 
   Widget ExpandedSection(Color titleColor) {
@@ -163,9 +140,7 @@ class ExpandableCardState extends State<ExpandableCard> {
     return Container(
       height: DIVIDER_HEIGHT,
       color: titleColor.withValues(alpha: 0.1),
-      margin: const EdgeInsets.symmetric(
-        horizontal: CONTENT_PADDING_HORIZONTAL,
-      ),
+      margin: const EdgeInsets.symmetric(horizontal: CONTENT_PADDING_HORIZONTAL),
     );
   }
 

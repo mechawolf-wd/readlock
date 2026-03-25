@@ -113,10 +113,10 @@ class RLTheme {
     );
   }
 
-  // EdgeInsets getters
-  static EdgeInsets get contentPaddingInsets =>
-      const EdgeInsets.all(contentPadding);
+  // EdgeInsets constants
+  static const EdgeInsets contentPaddingInsets =
+      EdgeInsets.all(contentPadding);
 
-  static EdgeInsets get contentPaddingMediumInsets =>
-      const EdgeInsets.all(contentPaddingMedium);
+  static const EdgeInsets contentPaddingMediumInsets =
+      EdgeInsets.all(contentPaddingMedium);
 }

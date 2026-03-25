@@ -4,7 +4,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:readlock/course_screens/CourseRoadmapScreen.dart';
-import 'package:readlock/MainNavigation.dart';
+import 'package:readlock/constants/RLConstants.dart';
 import 'package:readlock/screens/ReaderPassScreen.dart';
 import 'package:readlock/utility_widgets/StatisticsTopBar.dart';
 import 'package:readlock/utility_widgets/Utility.dart';
@@ -12,8 +12,6 @@ import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLTheme.dart';
 import 'package:readlock/constants/RLDimensions.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
-
-const String HOME_TITLE = 'Home';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -55,7 +53,7 @@ class HomeScreenState extends State<HomeScreen> {
 
   void handleContinueReading() {
     HapticFeedback.lightImpact();
-    navigateToCourse('design-everyday-things-comprehensive');
+    navigateToCourse('book:design-everyday-things');
   }
 
   void handlePromoBannerTap() {

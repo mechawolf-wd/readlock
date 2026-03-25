@@ -3,12 +3,12 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:readlock/MainNavigation.dart';
 import 'package:readlock/screens/ReaderPassScreen.dart';
 import 'package:readlock/utility_widgets/Utility.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLTheme.dart';
 import 'package:readlock/constants/RLDimensions.dart';
+import 'package:readlock/constants/RLConstants.dart';
 
 class CoursesScreen extends StatefulWidget {
   const CoursesScreen({super.key});
@@ -678,21 +678,33 @@ class CoursesScreenState extends State<CoursesScreen> {
         Expanded(
           child: ListView(
             padding: EdgeInsets.zero,
-            children: [
-              ...SearchResultCards(displayedResults),
-
-              const Spacing.height(16),
-
-              RenderIf.condition(
-                hasMoreResults,
-                LoadNextButton(),
-                const SizedBox.shrink(),
-              ),
-            ],
+            children: SearchResultsListContent(
+              displayedResults,
+              hasMoreResults,
+            ),
           ),
         ),
       ],
     );
+  }
+
+  List<Widget> SearchResultsListContent(
+    List<Map<String, dynamic>> displayedResults,
+    bool hasMoreResults,
+  ) {
+    final List<Widget> content = SearchResultCards(displayedResults);
+
+    content.add(const Spacing.height(16));
+
+    content.add(
+      RenderIf.condition(
+        hasMoreResults,
+        LoadNextButton(),
+        const SizedBox.shrink(),
+      ),
+    );
+
+    return content;
   }
 
   String getHeaderTitle() {

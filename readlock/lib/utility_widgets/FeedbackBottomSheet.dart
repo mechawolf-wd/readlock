@@ -6,12 +6,7 @@ import 'package:readlock/utility_widgets/Utility.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLTheme.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
-
-const String DIALOG_TITLE = 'Explanation';
-const String HINT_DIALOG_TITLE = 'Hint';
-const String CLOSE_BUTTON_LABEL = 'Got it';
-const double MODAL_PADDING = 24.0;
-const double BORDER_RADIUS = 12.0;
+import 'package:readlock/constants/RLConstants.dart';
 
 class FeedbackBottomSheets {
   // Icon definitions
@@ -34,7 +29,7 @@ class FeedbackBottomSheets {
   }) {
     showFeedbackSheet(
       context: context,
-      title: DIALOG_TITLE,
+      title: FEEDBACK_DIALOG_TITLE,
       content: explanation,
       buttonColor: RLTheme.primaryGreen,
       icon: ExperienceIcon,
@@ -93,7 +88,7 @@ class FeedbackSheet extends StatelessWidget {
   });
 
   // Style definitions
-  BoxDecoration get modalDecoration => const BoxDecoration(
+  static const BoxDecoration modalDecoration = BoxDecoration(
     color: RLTheme.backgroundLight,
     borderRadius: BorderRadius.only(
       topLeft: Radius.circular(20),
@@ -101,17 +96,18 @@ class FeedbackSheet extends StatelessWidget {
     ),
   );
 
-  EdgeInsets get bodyPadding =>
-      const EdgeInsets.symmetric(horizontal: MODAL_PADDING);
-
-  BoxDecoration get buttonDecoration => BoxDecoration(
-    color: buttonColor,
-    borderRadius: BorderRadius.circular(BORDER_RADIUS),
+  static const EdgeInsets bodyPadding = EdgeInsets.symmetric(
+    horizontal: MODAL_PADDING,
   );
 
-  EdgeInsets get buttonMargin => const EdgeInsets.all(MODAL_PADDING);
+  static const EdgeInsets buttonMargin = EdgeInsets.all(MODAL_PADDING);
 
-  EdgeInsets get headerPadding => const EdgeInsets.fromLTRB(MODAL_PADDING, 16, MODAL_PADDING, MODAL_PADDING);
+  static const EdgeInsets headerPadding = EdgeInsets.fromLTRB(
+    MODAL_PADDING,
+    16,
+    MODAL_PADDING,
+    MODAL_PADDING,
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -176,20 +172,15 @@ class FeedbackSheet extends StatelessWidget {
   Widget FooterButton() {
     return Builder(
       builder: (context) {
-        // Extract navigation handler
-        void handleCloseButtonTap() {
-          Navigator.of(context).pop();
-        }
-
         return RLDesignSystem.BlockButton(
           children: [
             RLTypography.bodyMedium(
-              CLOSE_BUTTON_LABEL,
+              FEEDBACK_GOT_IT_LABEL,
               color: RLTheme.white,
             ),
           ],
           backgroundColor: buttonColor,
-          onTap: handleCloseButtonTap,
+          onTap: () => Navigator.of(context).pop(),
         );
       },
     );

@@ -3,9 +3,8 @@ import 'package:readlock/models/CourseModel.dart';
 import 'package:readlock/utility_widgets/Utility.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLTheme.dart';
+import 'package:readlock/constants/RLConstants.dart';
 import 'package:readlock/utility_widgets/FeedbackSnackbar.dart';
-
-const double REFLECTION_SECTION_SPACING = 28.0;
 
 class ThoughtTextStyleConfig {
   final Color color;
@@ -136,17 +135,17 @@ class CCReflectionQuestionState extends State<CCReflectionQuestion> {
         // Reflection header with icon and title
         ReflectionHeaderSection(),
 
-        const Spacing.height(REFLECTION_SECTION_SPACING),
+        const Spacing.height(REFLECTION_QUESTION_SECTION_SPACING),
 
         // Reflection question prompt
         ReflectionPromptSection(),
 
-        const Spacing.height(REFLECTION_SECTION_SPACING),
+        const Spacing.height(REFLECTION_QUESTION_SECTION_SPACING),
 
         // Thought options for selection
         ThoughtOptionsSection(),
 
-        const Spacing.height(REFLECTION_SECTION_SPACING),
+        const Spacing.height(REFLECTION_QUESTION_SECTION_SPACING),
 
         // Reflection insight after selection
         ReflectionInsightSection(),
@@ -215,21 +214,28 @@ class CCReflectionQuestionState extends State<CCReflectionQuestion> {
       isCorrect: isCorrectAnswer,
     );
 
+    final bool shouldShowCheckIcon = hasReflected && isCorrectAnswer;
+
+    final VoidCallback? tapCallback = hasReflected
+        ? null
+        : () => handleThoughtSelection(optionIndex);
+
     return Div.row(
       [
         // Show check icon for correct answer after reflection
-        if (hasReflected && isCorrectAnswer) ...[
-          CheckIcon,
-          const Spacing.width(12),
-        ],
+        RenderIf.condition(
+          shouldShowCheckIcon,
+          Div.row([
+            CheckIcon,
+            const Spacing.width(12),
+          ]),
+        ),
 
         Expanded(child: Text(option.text, style: textStyle)),
       ],
       padding: 20,
       decoration: decoration,
-      onTap: hasReflected
-          ? null
-          : () => handleThoughtSelection(optionIndex),
+      onTap: tapCallback,
     );
   }
 

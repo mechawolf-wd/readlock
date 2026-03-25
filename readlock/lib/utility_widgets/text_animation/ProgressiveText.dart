@@ -6,6 +6,7 @@ import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/utility_widgets/Utility.dart';
 import 'package:readlock/utility_widgets/visual_effects/BlurOverlay.dart';
 import 'package:readlock/services/SoundService.dart';
+import 'package:readlock/constants/RLConstants.dart';
 import 'package:readlock/services/HapticsService.dart';
 
 // Class to represent a segment of text with optional highlighting
@@ -26,9 +27,6 @@ class TextSegmentWithHighlighting {
 }
 
 class ProgressiveText extends StatefulWidget {
-  static const double DEFAULT_BOTTOM_SPACING = 8.0;
-  static const Duration AUTO_REVEAL_DELAY = Duration(milliseconds: 7);
-
   // Required properties
   // List of text sentences to reveal progressively
   final List<String> textSegments;
@@ -112,7 +110,6 @@ class ProgressiveTextState extends State<ProgressiveText>
   // Double tap tracking for unblur all functionality
   DateTime? lastTapTime;
   int tapCount = 0;
-  static const Duration doubleTapTimeout = Duration(milliseconds: 500);
 
   // Initializes the widget state when first created
   // Sets up text data and starts the typewriter animation for the first sentence
@@ -238,7 +235,7 @@ class ProgressiveTextState extends State<ProgressiveText>
             currentSentenceNumber < textSentences.length - 1;
 
         if (hasMoreSentencesToReveal) {
-          await Future.delayed(ProgressiveText.AUTO_REVEAL_DELAY);
+          await Future.delayed(PROGRESSIVE_TEXT_AUTO_REVEAL_DELAY);
 
           revealNextSentence();
         }
@@ -297,7 +294,7 @@ class ProgressiveTextState extends State<ProgressiveText>
             currentSentenceNumber < textSentences.length - 1;
 
         if (hasMoreSentencesToReveal) {
-          await Future.delayed(ProgressiveText.AUTO_REVEAL_DELAY);
+          await Future.delayed(PROGRESSIVE_TEXT_AUTO_REVEAL_DELAY);
           revealNextSentence();
         }
       }
@@ -388,7 +385,7 @@ class ProgressiveTextState extends State<ProgressiveText>
       );
 
       final bool isWithinDoubleTapWindow =
-          timeSinceLastTap <= doubleTapTimeout;
+          timeSinceLastTap <= PROGRESSIVE_TEXT_DOUBLE_TAP_TIMEOUT;
 
       if (isWithinDoubleTapWindow) {
         tapCount++;
@@ -1027,7 +1024,7 @@ class CompletedSentenceWidget extends StatelessWidget {
     Widget sentenceWidget = Div.column(
       [SentenceText()],
       crossAxisAlignment: CrossAxisAlignment.start,
-      padding: const [0, 0, ProgressiveText.DEFAULT_BOTTOM_SPACING, 0],
+      padding: const [0, 0, PROGRESSIVE_TEXT_DEFAULT_BOTTOM_SPACING, 0],
     );
 
     if (shouldBlur) {

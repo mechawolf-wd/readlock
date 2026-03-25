@@ -2,12 +2,9 @@
 // Features bird icon and indexing message for smooth user experience
 
 import 'package:flutter/material.dart' hide Typography;
+import 'package:readlock/constants/RLConstants.dart';
 import 'package:readlock/utility_widgets/Utility.dart';
 import 'package:readlock/constants/RLTheme.dart';
-
-const String LOADING_MESSAGE = 'Birds are indexing the course';
-const double PIGEON_IMAGE_SIZE = 240.0;
-const double SPACING_HEIGHT = 24.0;
 
 class CourseLoadingScreen extends StatelessWidget {
   const CourseLoadingScreen({super.key});

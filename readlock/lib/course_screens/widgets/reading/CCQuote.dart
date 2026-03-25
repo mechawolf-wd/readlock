@@ -6,6 +6,7 @@ import 'package:readlock/models/CourseModel.dart';
 import 'package:readlock/utility_widgets/Utility.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLTheme.dart';
+import 'package:readlock/constants/RLConstants.dart';
 
 class CCQuote extends StatefulWidget {
   final QuoteContent content;
@@ -51,28 +52,40 @@ class CCQuoteState extends State<CCQuote> {
   }
 
   Widget QuoteHeader() {
+    const Widget QuoteIcon = Icon(
+      Icons.format_quote,
+      color: RLTheme.warningColor,
+      size: 24,
+    );
+
+    final IconData bookmarkIconData = isBookmarked
+        ? Icons.bookmark
+        : Icons.bookmark_border;
+
+    final Widget BookmarkToggleIcon = Icon(
+      bookmarkIconData,
+      color: RLTheme.warningColor,
+      size: 24,
+    );
+
     return Div.row([
-      const Icon(Icons.format_quote, color: RLTheme.warningColor, size: 24),
+      QuoteIcon,
 
       const Spacing.width(12),
 
-      Expanded(child: RLTypography.bodyLarge('Notable Quote')),
+      Expanded(child: RLTypography.bodyLarge(NOTABLE_QUOTE_TITLE)),
 
       Div.row(
-        [
-          Icon(
-            isBookmarked ? Icons.bookmark : Icons.bookmark_border,
-            color: RLTheme.warningColor,
-            size: 24,
-          ),
-        ],
-        onTap: () {
-          setState(() {
-            isBookmarked = !isBookmarked;
-          });
-        },
+        [BookmarkToggleIcon],
+        onTap: handleBookmarkToggle,
       ),
     ]);
+  }
+
+  void handleBookmarkToggle() {
+    setState(() {
+      isBookmarked = !isBookmarked;
+    });
   }
 
   Widget QuoteText() {

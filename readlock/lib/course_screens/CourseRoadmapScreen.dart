@@ -10,29 +10,8 @@ import 'package:readlock/utility_widgets/Utility.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLTheme.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
+import 'package:readlock/constants/RLConstants.dart';
 import 'package:readlock/utility_widgets/CourseLoadingScreen.dart';
-
-// Layout constants
-const double NODE_SIZE = 72.0;
-const double PATH_HORIZONTAL_OFFSET = 60.0;
-const double NODE_VERTICAL_SPACING = 96.0;
-
-// Mastery dots constants
-const double MASTERY_DOT_SIZE = 8.0;
-const double MASTERY_DOT_SPACING = 4.0;
-const int MASTERY_DOTS_PER_LESSON = 3;
-
-// Sticky header constants
-const double STICKY_HEADER_PADDING = 8.0;
-const double STICKY_HEADER_CONTENT_PADDING = 12.0;
-const double STICKY_HEADER_LETTER_SIZE = 40.0;
-const double STICKY_HEADER_HEIGHT =
-    (STICKY_HEADER_PADDING * 2) +
-    (STICKY_HEADER_CONTENT_PADDING * 2) +
-    STICKY_HEADER_LETTER_SIZE;
-
-// Segment content constants
-const double SEGMENT_CONTENT_TOP_SPACING = 16.0;
 
 // Segment color mapping (Temporary) - each course will have its own color
 Color getColorForLetter(String letter) {
@@ -273,9 +252,9 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
 
         // Calculate offset to position content just below pinned header
         // targetY = current position of content (Padding widget)
-        // We want content to end up at: safeAreaTop + STICKY_HEADER_HEIGHT
+        // We want content to end up at: safeAreaTop + ROADMAP_STICKY_HEADER_HEIGHT
         final double safeAreaTop = MediaQuery.of(context).padding.top;
-        final double headerOffset = safeAreaTop + STICKY_HEADER_HEIGHT;
+        final double headerOffset = safeAreaTop + ROADMAP_STICKY_HEADER_HEIGHT;
         final double newScrollPosition =
             currentScroll + targetY - headerOffset;
 
@@ -758,7 +737,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Column(
                   children: [
-                    const Spacing.height(SEGMENT_CONTENT_TOP_SPACING),
+                    const Spacing.height(ROADMAP_SEGMENT_CONTENT_TOP_SPACING),
 
                     PathWithNodes(
                       lessons: lessons,
@@ -848,10 +827,10 @@ class StickySegmentHeaderDelegate
   const StickySegmentHeaderDelegate({required this.title});
 
   @override
-  double get minExtent => STICKY_HEADER_HEIGHT;
+  double get minExtent => ROADMAP_STICKY_HEADER_HEIGHT;
 
   @override
-  double get maxExtent => STICKY_HEADER_HEIGHT;
+  double get maxExtent => ROADMAP_STICKY_HEADER_HEIGHT;
 
   @override
   Widget build(
@@ -879,18 +858,18 @@ class StickySegmentHeaderDelegate
       color: Colors.transparent,
       padding: const EdgeInsets.symmetric(
         horizontal: 16,
-        vertical: STICKY_HEADER_PADDING,
+        vertical: ROADMAP_STICKY_HEADER_PADDING,
       ),
       child: Center(
         child: Container(
           decoration: headerDecoration,
-          padding: const EdgeInsets.all(STICKY_HEADER_CONTENT_PADDING),
+          padding: const EdgeInsets.all(ROADMAP_STICKY_HEADER_CONTENT_PADDING),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
               Container(
-                width: STICKY_HEADER_LETTER_SIZE,
-                height: STICKY_HEADER_LETTER_SIZE,
+                width: ROADMAP_STICKY_HEADER_LETTER_SIZE,
+                height: ROADMAP_STICKY_HEADER_LETTER_SIZE,
                 decoration: letterDecoration,
                 child: Center(
                   child: RLTypography.headingMedium(
@@ -966,7 +945,7 @@ class PathWithNodes extends StatelessWidget {
       final bool isNotFirstNode = lessonIndex > 0;
 
       if (isNotFirstNode) {
-        nodes.add(const Spacing.height(NODE_VERTICAL_SPACING));
+        nodes.add(const Spacing.height(ROADMAP_NODE_VERTICAL_SPACING));
       }
 
       // Add the lesson node
@@ -1021,7 +1000,7 @@ class PathWithNodes extends StatelessWidget {
     required bool isLocked,
   }) {
     if (isCompleted) {
-      return MASTERY_DOTS_PER_LESSON;
+      return ROADMAP_MASTERY_DOTS_PER_LESSON;
     }
 
     if (isCurrent) {
@@ -1097,11 +1076,11 @@ class PathLessonNode extends StatelessWidget {
     switch (alignment) {
       case PathNodeAlignment.left:
         {
-          return -PATH_HORIZONTAL_OFFSET;
+          return -ROADMAP_PATH_HORIZONTAL_OFFSET;
         }
       case PathNodeAlignment.right:
         {
-          return PATH_HORIZONTAL_OFFSET;
+          return ROADMAP_PATH_HORIZONTAL_OFFSET;
         }
       case PathNodeAlignment.center:
         {
@@ -1130,8 +1109,8 @@ class PathLessonNode extends StatelessWidget {
     );
 
     return Container(
-      width: NODE_SIZE,
-      height: NODE_SIZE,
+      width: ROADMAP_NODE_SIZE,
+      height: ROADMAP_NODE_SIZE,
       decoration: nodeDecoration,
       child: Center(child: icon),
     );
@@ -1170,14 +1149,14 @@ class PathLessonNode extends StatelessWidget {
 
     for (
       int dotIndex = 0;
-      dotIndex < MASTERY_DOTS_PER_LESSON;
+      dotIndex < ROADMAP_MASTERY_DOTS_PER_LESSON;
       dotIndex++
     ) {
       final bool isFilled = dotIndex < masteryCount;
       final bool isNotFirstDot = dotIndex > 0;
 
       if (isNotFirstDot) {
-        dots.add(const Spacing.width(MASTERY_DOT_SPACING));
+        dots.add(const Spacing.width(ROADMAP_MASTERY_DOT_SPACING));
       }
 
       dots.add(MasteryDot(isFilled: isFilled));
@@ -1202,8 +1181,8 @@ class PathLessonNode extends StatelessWidget {
     );
 
     return Container(
-      width: MASTERY_DOT_SIZE,
-      height: MASTERY_DOT_SIZE,
+      width: ROADMAP_MASTERY_DOT_SIZE,
+      height: ROADMAP_MASTERY_DOT_SIZE,
       decoration: dotDecoration,
     );
   }
@@ -1221,31 +1200,43 @@ class PathLessonNode extends StatelessWidget {
   }
 
   Widget NodeIcon() {
-    if (isCompleted) {
-      return const Icon(Icons.check, color: RLTheme.white, size: 32);
-    }
+    const Widget CompletedCheckIcon = Icon(
+      Icons.check,
+      color: RLTheme.white,
+      size: 32,
+    );
 
-    if (isCurrent) {
-      return const Icon(
-        Icons.play_arrow,
-        color: RLTheme.primaryGreen,
-        size: 32,
-      );
-    }
+    const Widget CurrentPlayIcon = Icon(
+      Icons.play_arrow,
+      color: RLTheme.primaryGreen,
+      size: 32,
+    );
 
-    if (isLocked) {
-      return Icon(
-        Icons.lock,
-        color: RLTheme.textSecondary.withValues(alpha: 0.4),
-        size: 28,
-      );
-    }
+    final Widget LockedIcon = Icon(
+      Icons.lock,
+      color: RLTheme.textSecondary.withValues(alpha: 0.4),
+      size: 28,
+    );
 
-    return const Icon(
+    const Widget DefaultIcon = Icon(
       Icons.auto_stories,
       color: RLTheme.textSecondary,
       size: 28,
     );
+
+    if (isCompleted) {
+      return CompletedCheckIcon;
+    }
+
+    if (isCurrent) {
+      return CurrentPlayIcon;
+    }
+
+    if (isLocked) {
+      return LockedIcon;
+    }
+
+    return DefaultIcon;
   }
 }
 

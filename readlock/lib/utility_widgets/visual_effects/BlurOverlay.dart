@@ -20,7 +20,9 @@ class BlurOverlay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (!enabled) {
+    final bool isBlurDisabled = !enabled;
+
+    if (isBlurDisabled) {
       return child;
     }
 

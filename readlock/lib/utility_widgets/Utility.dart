@@ -3,20 +3,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:readlock/constants/RLTheme.dart';
-
-// String constants for directions
-const String DIRECTION_VERTICAL = 'vertical';
-const String DIRECTION_HORIZONTAL = 'horizontal';
-
-// String constants for alignments
-const String ALIGNMENT_START = 'start';
-const String ALIGNMENT_END = 'end';
-const String ALIGNMENT_CENTER = 'center';
-const String ALIGNMENT_SPACE_BETWEEN = 'spaceBetween';
-const String ALIGNMENT_SPACE_AROUND = 'spaceAround';
-const String ALIGNMENT_SPACE_EVENLY = 'spaceEvenly';
-const String ALIGNMENT_STRETCH = 'stretch';
-const String ALIGNMENT_BASELINE = 'baseline';
+import 'package:readlock/constants/RLConstants.dart';
 
 class Div extends StatelessWidget {
   /// List of child widgets to display

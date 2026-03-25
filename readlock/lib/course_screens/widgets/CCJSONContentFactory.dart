@@ -3,6 +3,7 @@
 
 import 'package:flutter/material.dart' hide Typography;
 import 'package:readlock/constants/RLTypography.dart';
+import 'package:readlock/constants/RLConstants.dart';
 import 'package:readlock/utility_widgets/Utility.dart';
 import 'package:readlock/models/CourseModel.dart';
 import 'package:readlock/course_screens/widgets/reading/CCIntro.dart';
@@ -20,17 +21,6 @@ import 'package:readlock/course_screens/widgets/interaction/CCMultipleChoice.dar
 import 'package:readlock/course_screens/widgets/interaction/CCSingleChoiceQuestion.dart';
 import 'package:readlock/course_screens/widgets/interaction/CCReflectionQuestion.dart';
 import 'package:readlock/course_screens/widgets/interaction/CCEmotionalSlide.dart';
-
-const String UNKNOWN_CONTENT_TYPE_MESSAGE = 'Unknown content type: ';
-
-// Question type constants
-const String QUESTION_TYPE_MULTIPLE_CHOICE = 'multiple-choice';
-const String QUESTION_TYPE_TRUE_OR_FALSE = 'true-or-false';
-const String QUESTION_TYPE_SCENARIO = 'scenario';
-const String QUESTION_TYPE_REFLECTION = 'reflection';
-const String QUESTION_TYPE_FILL_GAP = 'fill-gap';
-const String QUESTION_TYPE_INCORRECT_STATEMENT = 'incorrect-statement';
-const String QUESTION_TYPE_ESTIMATE_PERCENTAGE = 'estimate-percentage';
 
 class JsonContentWidgetFactory {
   // Factory method for creating content widgets from JSON data
@@ -375,9 +365,13 @@ class JsonMultipleChoiceQuestionWidget extends StatelessWidget {
   }
 
   List<String>? createFollowUpPrompts() {
-    return contentData['followUpPrompts'] != null
-        ? List<String>.from(contentData['followUpPrompts'])
-        : null;
+    final bool hasFollowUpPrompts = contentData['followUpPrompts'] != null;
+
+    if (hasFollowUpPrompts) {
+      return List<String>.from(contentData['followUpPrompts']);
+    }
+
+    return null;
   }
 }
 
@@ -474,26 +468,34 @@ class JsonEstimatePercentageQuestionWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final int correctPercentage = getCorrectPercentage();
+
     final estimateContent = EstimatePercentageContent(
       id: contentData['id'] ?? '',
       title: contentData['title'] ?? '',
       question: contentData['question'] ?? '',
-      correctPercentage: () {
-        final List<dynamic>? indices = contentData['correct-answer-indices'] as List<dynamic>?;
-        if (indices != null && indices.isNotEmpty) {
-          return indices[0] as int;
-        }
-        return 50;
-      }(),
+      correctPercentage: correctPercentage,
       explanation: contentData['explanation'] ?? '',
       hint: contentData['hint'],
       closeThreshold: contentData['close-threshold'] ?? 10,
     );
-    
+
     return CCEstimatePercentage(
       content: estimateContent,
       onAnswerSelected: (int index, bool isCorrect) {},
     );
+  }
+
+  int getCorrectPercentage() {
+    final List<dynamic>? indices =
+        contentData['correct-answer-indices'] as List<dynamic>?;
+    final bool hasValidIndices = indices != null && indices.isNotEmpty;
+
+    if (hasValidIndices) {
+      return indices[0] as int;
+    }
+
+    return 50;
   }
 }
 

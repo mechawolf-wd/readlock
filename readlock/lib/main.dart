@@ -12,13 +12,13 @@ class ReadlockApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: Theme(),
+      theme: getTheme(),
       home: const MainNavigation(),
       debugShowCheckedModeBanner: false,
     );
   }
 
-  ThemeData Theme() {
+  ThemeData getTheme() {
     return ThemeData(
       colorScheme: ColorScheme.fromSeed(seedColor: Colors.tealAccent),
       scaffoldBackgroundColor: Colors.white,
@@ -29,9 +29,7 @@ class ReadlockApp extends StatelessWidget {
         iconTheme: IconThemeData(color: Colors.black),
       ),
       useMaterial3: true,
-      textTheme: GoogleFonts.poppinsTextTheme(
-        ThemeData.light().textTheme,
-      ),
+      textTheme: GoogleFonts.poppinsTextTheme(ThemeData.light().textTheme),
     );
   }
 }

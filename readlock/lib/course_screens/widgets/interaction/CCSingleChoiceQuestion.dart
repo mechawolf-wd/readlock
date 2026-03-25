@@ -3,6 +3,7 @@ import 'package:readlock/models/CourseModel.dart';
 import 'package:readlock/utility_widgets/Utility.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLTheme.dart';
+import 'package:readlock/constants/RLConstants.dart';
 import 'package:readlock/utility_widgets/FeedbackSnackbar.dart';
 import 'package:readlock/services/SoundService.dart';
 import 'package:readlock/services/HapticsService.dart';
@@ -13,9 +14,6 @@ enum SingleChoiceButtonState {
   correctAndAnswered,
   incorrectAndAnswered,
 }
-
-const double SINGLE_CHOICE_OPTION_SPACING = 16.0;
-const double SINGLE_CHOICE_SECTION_SPACING = 32.0;
 
 class CCSingleChoice extends StatefulWidget {
   final QuestionContent content;
@@ -99,11 +97,11 @@ class CCSingleChoiceState extends State<CCSingleChoice> {
   }
 
   Widget OptionsListSection() {
-    final List<Widget> optionWidgets = buildOptionWidgets();
+    final List<Widget> optionWidgets = OptionWidgetsList();
     return Div.column(optionWidgets);
   }
 
-  List<Widget> buildOptionWidgets() {
+  List<Widget> OptionWidgetsList() {
     final List<Widget> optionWidgets = [];
 
     for (
@@ -171,6 +169,18 @@ class CCSingleChoiceState extends State<CCSingleChoice> {
 
     final Widget optionText = Text(option.text, style: optionTextStyle);
 
+    const Widget CorrectCheckIcon = Icon(
+      Icons.check_circle,
+      color: RLTheme.primaryGreen,
+      size: 20,
+    );
+
+    final Widget IncorrectCancelIcon = Icon(
+      Icons.cancel,
+      color: RLTheme.textPrimary.withValues(alpha: 0.6),
+      size: 20,
+    );
+
     return Div.row(
       [
         Expanded(child: optionText),
@@ -179,11 +189,7 @@ class CCSingleChoiceState extends State<CCSingleChoice> {
         RenderIf.condition(
           shouldShowCorrect,
 
-          const Icon(
-            Icons.check_circle,
-            color: RLTheme.primaryGreen,
-            size: 20,
-          ),
+          CorrectCheckIcon,
 
           const SizedBox.shrink(),
         ),
@@ -191,11 +197,7 @@ class CCSingleChoiceState extends State<CCSingleChoice> {
         RenderIf.condition(
           shouldShowIncorrect,
 
-          Icon(
-            Icons.cancel,
-            color: RLTheme.textPrimary.withValues(alpha: 0.6),
-            size: 20,
-          ),
+          IncorrectCancelIcon,
 
           const SizedBox.shrink(),
         ),
@@ -238,23 +240,41 @@ class CCSingleChoiceState extends State<CCSingleChoice> {
     final QuestionOption selectedOption =
         widget.content.options[optionIndex];
     final String consequenceMessage =
-        selectedOption.consequenceMessage ??
-        widget.content.hint ??
-        'Try again and think about the design principle.';
+        getIncorrectConsequenceMessage(selectedOption);
 
     FeedbackSnackBar.showWrongAnswer(context, hint: consequenceMessage);
+  }
+
+  String getIncorrectConsequenceMessage(QuestionOption selectedOption) {
+    if (selectedOption.consequenceMessage != null) {
+      return selectedOption.consequenceMessage!;
+    }
+
+    if (widget.content.hint != null) {
+      return widget.content.hint!;
+    }
+
+    return 'Try again and think about the design principle.';
   }
 
   void showCorrectAnswerFeedback(int optionIndex) {
     final QuestionOption selectedOption =
         widget.content.options[optionIndex];
     final String feedbackMessage =
-        selectedOption.consequenceMessage ?? widget.content.explanation;
+        getCorrectFeedbackMessage(selectedOption);
 
     FeedbackSnackBar.showCorrectAnswer(
       context,
       explanation: feedbackMessage,
     );
+  }
+
+  String getCorrectFeedbackMessage(QuestionOption selectedOption) {
+    if (selectedOption.consequenceMessage != null) {
+      return selectedOption.consequenceMessage!;
+    }
+
+    return widget.content.explanation;
   }
 
   void markQuestionAsAnswered(int selectedIndex) {

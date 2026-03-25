@@ -2,11 +2,9 @@
 // Supports email, password, and general text input types
 
 import 'package:flutter/material.dart';
+import 'package:readlock/constants/RLConstants.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLTheme.dart';
-
-const double TEXT_FIELD_BORDER_RADIUS = 12.0;
-const double TEXT_FIELD_HORIZONTAL_PADDING = 16.0;
 
 class RLTextField extends StatelessWidget {
   final TextEditingController? controller;

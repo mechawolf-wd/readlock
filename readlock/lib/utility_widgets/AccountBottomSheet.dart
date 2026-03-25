@@ -6,10 +6,7 @@ import 'package:readlock/utility_widgets/Utility.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLTheme.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
-
-const String ACCOUNT_TITLE = 'Account';
-const String CLOSE_BUTTON_LABEL = 'Done';
-const double MODAL_PADDING = 24.0;
+import 'package:readlock/constants/RLConstants.dart';
 
 class AccountBottomSheet {
   static void show(BuildContext context) {
@@ -35,7 +32,7 @@ class AccountSheet extends StatelessWidget {
   );
 
   // Style definitions
-  BoxDecoration get modalDecoration => const BoxDecoration(
+  static const BoxDecoration modalDecoration = BoxDecoration(
     color: RLTheme.backgroundLight,
     borderRadius: BorderRadius.only(
       topLeft: Radius.circular(20),
@@ -43,10 +40,11 @@ class AccountSheet extends StatelessWidget {
     ),
   );
 
-  EdgeInsets get headerPadding => const EdgeInsets.all(MODAL_PADDING);
+  static const EdgeInsets headerPadding = EdgeInsets.all(MODAL_PADDING);
 
-  EdgeInsets get bodyPadding =>
-      const EdgeInsets.symmetric(horizontal: MODAL_PADDING);
+  static const EdgeInsets bodyPadding = EdgeInsets.symmetric(
+    horizontal: MODAL_PADDING,
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -137,19 +135,15 @@ class AccountSheet extends StatelessWidget {
   Widget FooterButton() {
     return Builder(
       builder: (context) {
-        void handleCloseButtonTap() {
-          Navigator.of(context).pop();
-        }
-
         return RLDesignSystem.BlockButton(
           children: [
             RLTypography.bodyMedium(
-              CLOSE_BUTTON_LABEL,
+              ACCOUNT_DONE_LABEL,
               color: RLTheme.white,
             ),
           ],
           backgroundColor: RLTheme.primaryBlue,
-          onTap: handleCloseButtonTap,
+          onTap: () => Navigator.of(context).pop(),
         );
       },
     );
@@ -197,16 +191,18 @@ class DangerRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final Color textColor = color ?? RLTheme.warningColor;
 
+    final Widget ChevronIcon = Icon(
+      Icons.chevron_right,
+      color: textColor.withValues(alpha: 0.5),
+      size: 20,
+    );
+
     return Div.row([
       Expanded(
         child: RLTypography.bodyMedium(label, color: textColor),
       ),
 
-      Icon(
-        Icons.chevron_right,
-        color: textColor.withValues(alpha: 0.5),
-        size: 20,
-      ),
+      ChevronIcon,
     ], onTap: onTap);
   }
 }

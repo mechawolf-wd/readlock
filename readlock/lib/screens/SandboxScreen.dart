@@ -5,8 +5,7 @@ import 'package:flutter/material.dart' hide Typography;
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/utility_widgets/Utility.dart';
 import 'package:readlock/constants/RLTheme.dart';
-
-const String SANDBOX_TITLE = 'Widget Sandbox';
+import 'package:readlock/constants/RLConstants.dart';
 
 class SandboxScreen extends StatelessWidget {
   const SandboxScreen({super.key});
@@ -637,61 +636,7 @@ class ConceptConnectionWidgetState
                 ),
               ),
               const Spacing.height(8),
-              ...concepts.asMap().entries.map((entry) {
-                final int index = entry.key;
-                final String concept = entry.value;
-                final bool isSelected = selectedConcept == index;
-
-                return Padding(
-                  padding: const EdgeInsets.only(bottom: 8),
-                  child: GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        selectedConcept = selectedConcept == index
-                            ? null
-                            : index;
-                        if (selectedApplication != null &&
-                            selectedConcept != null) {
-                          checkMatch();
-                        }
-                      });
-                    },
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 10,
-                      ),
-                      decoration: BoxDecoration(
-                        color: isSelected
-                            ? RLTheme.accentTeal.withValues(alpha: 0.1)
-                            : RLTheme.backgroundDark.withValues(
-                                alpha: 0.5,
-                              ),
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(
-                          color: isSelected
-                              ? RLTheme.accentTeal
-                              : RLTheme.textPrimary.withValues(
-                                  alpha: 0.2,
-                                ),
-                        ),
-                      ),
-                      child: Text(
-                        concept,
-                        style: RLTypography.bodyMediumStyle.copyWith(
-                          fontSize: 13,
-                          fontWeight: isSelected
-                              ? FontWeight.w500
-                              : FontWeight.normal,
-                          color: isSelected
-                              ? RLTheme.accentTeal
-                              : RLTheme.textPrimary,
-                        ),
-                      ),
-                    ),
-                  ),
-                );
-              }),
+              Div.column(ConceptItemsList()),
             ]),
           ),
 
@@ -708,61 +653,7 @@ class ConceptConnectionWidgetState
                 ),
               ),
               const Spacing.height(8),
-              ...applications.asMap().entries.map((entry) {
-                final int index = entry.key;
-                final String application = entry.value;
-                final bool isSelected = selectedApplication == index;
-
-                return Padding(
-                  padding: const EdgeInsets.only(bottom: 8),
-                  child: GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        selectedApplication =
-                            selectedApplication == index ? null : index;
-                        if (selectedConcept != null &&
-                            selectedApplication != null) {
-                          checkMatch();
-                        }
-                      });
-                    },
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 10,
-                      ),
-                      decoration: BoxDecoration(
-                        color: isSelected
-                            ? RLTheme.accentTeal.withValues(alpha: 0.1)
-                            : RLTheme.backgroundDark.withValues(
-                                alpha: 0.5,
-                              ),
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(
-                          color: isSelected
-                              ? RLTheme.accentTeal
-                              : RLTheme.textPrimary.withValues(
-                                  alpha: 0.2,
-                                ),
-                        ),
-                      ),
-                      child: Text(
-                        application,
-                        style: RLTypography.bodyMediumStyle.copyWith(
-                          fontSize: 12,
-                          fontWeight: isSelected
-                              ? FontWeight.w500
-                              : FontWeight.normal,
-                          color: isSelected
-                              ? RLTheme.accentTeal
-                              : RLTheme.textPrimary,
-                          height: 1.3,
-                        ),
-                      ),
-                    ),
-                  ),
-                );
-              }),
+              Div.column(ApplicationItemsList()),
             ]),
           ),
         ]),
@@ -799,8 +690,124 @@ class ConceptConnectionWidgetState
     );
   }
 
+  List<Widget> ConceptItemsList() {
+    return concepts.asMap().entries.map((entry) {
+      final int index = entry.key;
+      final String concept = entry.value;
+      final bool isSelected = selectedConcept == index;
+
+      return Padding(
+        padding: const EdgeInsets.only(bottom: 8),
+        child: GestureDetector(
+          onTap: () {
+            setState(() {
+              selectedConcept = selectedConcept == index
+                  ? null
+                  : index;
+
+              final bool shouldCheckMatch = selectedApplication != null &&
+                  selectedConcept != null;
+
+              if (shouldCheckMatch) {
+                checkMatch();
+              }
+            });
+          },
+          child: Container(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 12,
+              vertical: 10,
+            ),
+            decoration: BoxDecoration(
+              color: isSelected
+                  ? RLTheme.accentTeal.withValues(alpha: 0.1)
+                  : RLTheme.backgroundDark.withValues(alpha: 0.5),
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(
+                color: isSelected
+                    ? RLTheme.accentTeal
+                    : RLTheme.textPrimary.withValues(alpha: 0.2),
+              ),
+            ),
+            child: Text(
+              concept,
+              style: RLTypography.bodyMediumStyle.copyWith(
+                fontSize: 13,
+                fontWeight: isSelected
+                    ? FontWeight.w500
+                    : FontWeight.normal,
+                color: isSelected
+                    ? RLTheme.accentTeal
+                    : RLTheme.textPrimary,
+              ),
+            ),
+          ),
+        ),
+      );
+    }).toList();
+  }
+
+  List<Widget> ApplicationItemsList() {
+    return applications.asMap().entries.map((entry) {
+      final int index = entry.key;
+      final String application = entry.value;
+      final bool isSelected = selectedApplication == index;
+
+      return Padding(
+        padding: const EdgeInsets.only(bottom: 8),
+        child: GestureDetector(
+          onTap: () {
+            setState(() {
+              selectedApplication =
+                  selectedApplication == index ? null : index;
+
+              final bool shouldCheckMatch = selectedConcept != null &&
+                  selectedApplication != null;
+
+              if (shouldCheckMatch) {
+                checkMatch();
+              }
+            });
+          },
+          child: Container(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 12,
+              vertical: 10,
+            ),
+            decoration: BoxDecoration(
+              color: isSelected
+                  ? RLTheme.accentTeal.withValues(alpha: 0.1)
+                  : RLTheme.backgroundDark.withValues(alpha: 0.5),
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(
+                color: isSelected
+                    ? RLTheme.accentTeal
+                    : RLTheme.textPrimary.withValues(alpha: 0.2),
+              ),
+            ),
+            child: Text(
+              application,
+              style: RLTypography.bodyMediumStyle.copyWith(
+                fontSize: 12,
+                fontWeight: isSelected
+                    ? FontWeight.w500
+                    : FontWeight.normal,
+                color: isSelected
+                    ? RLTheme.accentTeal
+                    : RLTheme.textPrimary,
+                height: 1.3,
+              ),
+            ),
+          ),
+        ),
+      );
+    }).toList();
+  }
+
   void checkMatch() {
-    if (selectedConcept == selectedApplication) {
+    final bool conceptsMatched = selectedConcept == selectedApplication;
+
+    if (conceptsMatched) {
       setState(() {
         hasMatched = true;
       });
@@ -901,131 +908,7 @@ class MicroQuizWidgetState extends State<MicroQuizWidget>
 
         const Spacing.height(16),
 
-        ...options.asMap().entries.map((entry) {
-          final int index = entry.key;
-          final String option = entry.value;
-          final bool isSelected = selectedAnswer == index;
-          final bool isCorrect = hasAnswered && index == correctAnswer;
-          final bool isWrong =
-              hasAnswered && isSelected && index != correctAnswer;
-
-          Color backgroundColor;
-          Color borderColor;
-          Color textColor;
-
-          if (isCorrect) {
-            backgroundColor = RLTheme.primaryGreen.withValues(
-              alpha: 0.1,
-            );
-            borderColor = RLTheme.primaryGreen;
-            textColor = RLTheme.primaryGreen;
-          } else if (isWrong) {
-            backgroundColor = RLTheme.errorColor.withValues(alpha: 0.1);
-            borderColor = RLTheme.errorColor;
-            textColor = RLTheme.errorColor;
-          } else if (isSelected) {
-            backgroundColor = RLTheme.accentIndigo.withValues(alpha: 0.1);
-            borderColor = RLTheme.accentIndigo;
-            textColor = RLTheme.accentIndigo;
-          } else {
-            backgroundColor = RLTheme.backgroundDark.withValues(
-              alpha: 0.5,
-            );
-            borderColor = RLTheme.textPrimary.withValues(alpha: 0.2);
-            textColor = RLTheme.textPrimary;
-          }
-
-          return Padding(
-            padding: const EdgeInsets.only(bottom: 8),
-            child: AnimatedBuilder(
-              animation: bounceAnimation,
-              builder: (context, child) {
-                return Transform.scale(
-                  scale: (isCorrect && hasAnswered)
-                      ? bounceAnimation.value
-                      : 1.0,
-                  child: child,
-                );
-              },
-              child: GestureDetector(
-                onTap: hasAnswered ? null : () => selectAnswer(index),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 12,
-                  ),
-                  decoration: BoxDecoration(
-                    color: backgroundColor,
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: borderColor, width: 1.5),
-                  ),
-                  child: Div.row([
-                    Container(
-                      width: 24,
-                      height: 24,
-                      decoration: BoxDecoration(
-                        color: isCorrect || isWrong || isSelected
-                            ? (isCorrect
-                                  ? RLTheme.primaryGreen
-                                  : isWrong
-                                  ? RLTheme.errorColor
-                                  : RLTheme.accentIndigo)
-                            : Colors.transparent,
-                        shape: BoxShape.circle,
-                        border: Border.all(
-                          color: isCorrect
-                              ? RLTheme.primaryGreen
-                              : isWrong
-                              ? RLTheme.errorColor
-                              : isSelected
-                              ? RLTheme.accentIndigo
-                              : RLTheme.textPrimary.withValues(
-                                  alpha: 0.3,
-                                ),
-                        ),
-                      ),
-                      child: isCorrect
-                          ? const Icon(
-                              Icons.check,
-                              color: Colors.white,
-                              size: 16,
-                            )
-                          : isWrong
-                          ? const Icon(
-                              Icons.close,
-                              color: Colors.white,
-                              size: 16,
-                            )
-                          : isSelected
-                          ? const Icon(
-                              Icons.circle,
-                              color: Colors.white,
-                              size: 8,
-                            )
-                          : null,
-                    ),
-
-                    const Spacing.width(12),
-
-                    Expanded(
-                      child: Text(
-                        option,
-                        style: RLTypography.bodyMediumStyle.copyWith(
-                          fontSize: 14,
-                          color: textColor,
-                          fontWeight: (isCorrect || isSelected)
-                              ? FontWeight.w500
-                              : FontWeight.normal,
-                          height: 1.3,
-                        ),
-                      ),
-                    ),
-                  ]),
-                ),
-              ),
-            ),
-          );
-        }),
+        Div.column(QuizOptionsList()),
 
         RenderIf.condition(
           hasAnswered,
@@ -1049,6 +932,127 @@ class MicroQuizWidgetState extends State<MicroQuizWidget>
         ),
       ]),
     );
+  }
+
+  List<Widget> QuizOptionsList() {
+    return options.asMap().entries.map((entry) {
+      final int index = entry.key;
+      final String option = entry.value;
+      final bool isSelected = selectedAnswer == index;
+      final bool isCorrect = hasAnswered && index == correctAnswer;
+      final bool isWrong =
+          hasAnswered && isSelected && index != correctAnswer;
+
+      Color backgroundColor;
+      Color borderColor;
+      Color textColor;
+
+      if (isCorrect) {
+        backgroundColor = RLTheme.primaryGreen.withValues(alpha: 0.1);
+        borderColor = RLTheme.primaryGreen;
+        textColor = RLTheme.primaryGreen;
+      } else if (isWrong) {
+        backgroundColor = RLTheme.errorColor.withValues(alpha: 0.1);
+        borderColor = RLTheme.errorColor;
+        textColor = RLTheme.errorColor;
+      } else if (isSelected) {
+        backgroundColor = RLTheme.accentIndigo.withValues(alpha: 0.1);
+        borderColor = RLTheme.accentIndigo;
+        textColor = RLTheme.accentIndigo;
+      } else {
+        backgroundColor = RLTheme.backgroundDark.withValues(alpha: 0.5);
+        borderColor = RLTheme.textPrimary.withValues(alpha: 0.2);
+        textColor = RLTheme.textPrimary;
+      }
+
+      final bool shouldBounce = isCorrect && hasAnswered;
+      final VoidCallback? tapCallback = hasAnswered
+          ? null
+          : () => selectAnswer(index);
+      final bool hasActiveState = isCorrect || isWrong || isSelected;
+
+      final Color circleColor = hasActiveState
+          ? (isCorrect
+              ? RLTheme.primaryGreen
+              : isWrong
+              ? RLTheme.errorColor
+              : RLTheme.accentIndigo)
+          : Colors.transparent;
+
+      final Color circleBorderColor = isCorrect
+          ? RLTheme.primaryGreen
+          : isWrong
+          ? RLTheme.errorColor
+          : isSelected
+          ? RLTheme.accentIndigo
+          : RLTheme.textPrimary.withValues(alpha: 0.3);
+
+      Widget? circleChild;
+      if (isCorrect) {
+        circleChild = const Icon(Icons.check, color: Colors.white, size: 16);
+      } else if (isWrong) {
+        circleChild = const Icon(Icons.close, color: Colors.white, size: 16);
+      } else if (isSelected) {
+        circleChild = const Icon(Icons.circle, color: Colors.white, size: 8);
+      }
+
+      final FontWeight optionFontWeight = (isCorrect || isSelected)
+          ? FontWeight.w500
+          : FontWeight.normal;
+
+      return Padding(
+        padding: const EdgeInsets.only(bottom: 8),
+        child: AnimatedBuilder(
+          animation: bounceAnimation,
+          builder: (context, child) {
+            return Transform.scale(
+              scale: shouldBounce ? bounceAnimation.value : 1.0,
+              child: child,
+            );
+          },
+          child: GestureDetector(
+            onTap: tapCallback,
+            child: Container(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 12,
+              ),
+              decoration: BoxDecoration(
+                color: backgroundColor,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: borderColor, width: 1.5),
+              ),
+              child: Div.row([
+                Container(
+                  width: 24,
+                  height: 24,
+                  decoration: BoxDecoration(
+                    color: circleColor,
+                    shape: BoxShape.circle,
+                    border: Border.all(color: circleBorderColor),
+                  ),
+                  child: circleChild,
+                ),
+
+                const Spacing.width(12),
+
+                Expanded(
+                  child: Text(
+                    option,
+                    style: RLTypography.bodyMediumStyle.copyWith(
+                      fontSize: 14,
+                      color: textColor,
+                      fontWeight: optionFontWeight,
+                      height: 1.3,
+                    ),
+                  ),
+                ),
+              ]),
+            ),
+          ),
+        ),
+      );
+    }).toList();
   }
 
   void selectAnswer(int index) {
@@ -2338,146 +2342,7 @@ class KnowledgeBuilderWidgetState extends State<KnowledgeBuilderWidget>
 
         const Spacing.height(16),
 
-        ...levels.asMap().entries.map((entry) {
-          final int index = entry.key;
-          final Map<String, String> level = entry.value;
-          final bool isUnlocked = unlockedLevels[index];
-          final bool isCurrent = currentLevel == index;
-          final bool isCompleted = currentLevel > index;
-
-          return Padding(
-            padding: const EdgeInsets.only(bottom: 12),
-            child: GestureDetector(
-              onTap: isUnlocked ? () => selectLevel(index) : null,
-              child: AnimatedBuilder(
-                animation: pulseAnimation,
-                builder: (context, child) {
-                  return Transform.scale(
-                    scale: (isCurrent && isUnlocked)
-                        ? pulseAnimation.value
-                        : 1.0,
-                    child: child,
-                  );
-                },
-                child: Container(
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: isCompleted
-                        ? RLTheme.primaryGreen.withValues(alpha: 0.1)
-                        : isCurrent
-                        ? RLTheme.accentIndigo.withValues(alpha: 0.1)
-                        : isUnlocked
-                        ? RLTheme.backgroundDark.withValues(alpha: 0.5)
-                        : RLTheme.textPrimary.withValues(alpha: 0.05),
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(
-                      color: isCompleted
-                          ? RLTheme.primaryGreen
-                          : isCurrent
-                          ? RLTheme.accentIndigo
-                          : isUnlocked
-                          ? RLTheme.accentIndigo.withValues(alpha: 0.3)
-                          : RLTheme.textPrimary.withValues(alpha: 0.1),
-                      width: (isCurrent || isCompleted) ? 2 : 1,
-                    ),
-                  ),
-                  child: Div.row([
-                    Container(
-                      width: 32,
-                      height: 32,
-                      decoration: BoxDecoration(
-                        color: isCompleted
-                            ? RLTheme.primaryGreen
-                            : isCurrent
-                            ? RLTheme.accentIndigo
-                            : isUnlocked
-                            ? RLTheme.accentIndigo.withValues(alpha: 0.3)
-                            : RLTheme.textPrimary.withValues(
-                                alpha: 0.2,
-                              ),
-                        shape: BoxShape.circle,
-                      ),
-                      child: Center(
-                        child: isCompleted
-                            ? const Icon(
-                                Icons.check,
-                                color: Colors.white,
-                                size: 16,
-                              )
-                            : isUnlocked
-                            ? Text(
-                                '${index + 1}',
-                                style: RLTypography.bodyLargeStyle
-                                    .copyWith(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.bold,
-                                      color: isCurrent
-                                          ? Colors.white
-                                          : RLTheme.accentIndigo,
-                                    ),
-                              )
-                            : const Icon(
-                                Icons.lock,
-                                color: Colors.white,
-                                size: 16,
-                              ),
-                      ),
-                    ),
-
-                    const Spacing.width(12),
-
-                    Expanded(
-                      child: Div.column([
-                        Text(
-                          level['title']!,
-                          style: RLTypography.bodyLargeStyle.copyWith(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
-                            color: isCompleted
-                                ? RLTheme.primaryGreen
-                                : isCurrent
-                                ? RLTheme.accentIndigo
-                                : isUnlocked
-                                ? RLTheme.textPrimary
-                                : RLTheme.textPrimary.withValues(
-                                    alpha: 0.4,
-                                  ),
-                          ),
-                        ),
-
-                        const Spacing.height(2),
-
-                        Text(
-                          level['description']!,
-                          style: RLTypography.bodyMediumStyle.copyWith(
-                            fontSize: 12,
-                            color: isUnlocked
-                                ? RLTheme.textPrimary.withValues(
-                                    alpha: 0.7,
-                                  )
-                                : RLTheme.textPrimary.withValues(
-                                    alpha: 0.3,
-                                  ),
-                            height: 1.3,
-                          ),
-                        ),
-                      ], crossAxisAlignment: CrossAxisAlignment.start),
-                    ),
-
-                    RenderIf.condition(
-                      isCurrent && isUnlocked,
-                      const Icon(
-                        Icons.play_arrow,
-                        color: RLTheme.accentIndigo,
-                        size: 20,
-                      ),
-                    ),
-                  ]),
-                ),
-              ),
-            ),
-          );
-        }),
+        Div.column(LevelItemsList()),
 
         const Spacing.height(8),
 
@@ -2505,11 +2370,159 @@ class KnowledgeBuilderWidgetState extends State<KnowledgeBuilderWidget>
     );
   }
 
+  List<Widget> LevelItemsList() {
+    return levels.asMap().entries.map((entry) {
+      final int index = entry.key;
+      final Map<String, String> level = entry.value;
+      final bool isUnlocked = unlockedLevels[index];
+      final bool isCurrent = currentLevel == index;
+      final bool isCompleted = currentLevel > index;
+
+      final VoidCallback? tapCallback = isUnlocked
+          ? () => selectLevel(index)
+          : null;
+
+      final bool shouldPulse = isCurrent && isUnlocked;
+
+      final Color containerColor = isCompleted
+          ? RLTheme.primaryGreen.withValues(alpha: 0.1)
+          : isCurrent
+          ? RLTheme.accentIndigo.withValues(alpha: 0.1)
+          : isUnlocked
+          ? RLTheme.backgroundDark.withValues(alpha: 0.5)
+          : RLTheme.textPrimary.withValues(alpha: 0.05);
+
+      final Color containerBorderColor = isCompleted
+          ? RLTheme.primaryGreen
+          : isCurrent
+          ? RLTheme.accentIndigo
+          : isUnlocked
+          ? RLTheme.accentIndigo.withValues(alpha: 0.3)
+          : RLTheme.textPrimary.withValues(alpha: 0.1);
+
+      final double borderWidth = (isCurrent || isCompleted) ? 2 : 1;
+
+      final Color circleColor = isCompleted
+          ? RLTheme.primaryGreen
+          : isCurrent
+          ? RLTheme.accentIndigo
+          : isUnlocked
+          ? RLTheme.accentIndigo.withValues(alpha: 0.3)
+          : RLTheme.textPrimary.withValues(alpha: 0.2);
+
+      Widget circleChild;
+      if (isCompleted) {
+        circleChild = const Icon(Icons.check, color: Colors.white, size: 16);
+      } else if (isUnlocked) {
+        circleChild = Text(
+          '${index + 1}',
+          style: RLTypography.bodyLargeStyle.copyWith(
+            fontSize: 14,
+            fontWeight: FontWeight.bold,
+            color: isCurrent ? Colors.white : RLTheme.accentIndigo,
+          ),
+        );
+      } else {
+        circleChild = const Icon(Icons.lock, color: Colors.white, size: 16);
+      }
+
+      final Color titleColor = isCompleted
+          ? RLTheme.primaryGreen
+          : isCurrent
+          ? RLTheme.accentIndigo
+          : isUnlocked
+          ? RLTheme.textPrimary
+          : RLTheme.textPrimary.withValues(alpha: 0.4);
+
+      final Color descriptionColor = isUnlocked
+          ? RLTheme.textPrimary.withValues(alpha: 0.7)
+          : RLTheme.textPrimary.withValues(alpha: 0.3);
+
+      return Padding(
+        padding: const EdgeInsets.only(bottom: 12),
+        child: GestureDetector(
+          onTap: tapCallback,
+          child: AnimatedBuilder(
+            animation: pulseAnimation,
+            builder: (context, child) {
+              return Transform.scale(
+                scale: shouldPulse ? pulseAnimation.value : 1.0,
+                child: child,
+              );
+            },
+            child: Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: containerColor,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                  color: containerBorderColor,
+                  width: borderWidth,
+                ),
+              ),
+              child: Div.row([
+                Container(
+                  width: 32,
+                  height: 32,
+                  decoration: BoxDecoration(
+                    color: circleColor,
+                    shape: BoxShape.circle,
+                  ),
+                  child: Center(child: circleChild),
+                ),
+
+                const Spacing.width(12),
+
+                Expanded(
+                  child: Div.column([
+                    Text(
+                      level['title']!,
+                      style: RLTypography.bodyLargeStyle.copyWith(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        color: titleColor,
+                      ),
+                    ),
+
+                    const Spacing.height(2),
+
+                    Text(
+                      level['description']!,
+                      style: RLTypography.bodyMediumStyle.copyWith(
+                        fontSize: 12,
+                        color: descriptionColor,
+                        height: 1.3,
+                      ),
+                    ),
+                  ], crossAxisAlignment: CrossAxisAlignment.start),
+                ),
+
+                RenderIf.condition(
+                  shouldPulse,
+                  const Icon(
+                    Icons.play_arrow,
+                    color: RLTheme.accentIndigo,
+                    size: 20,
+                  ),
+                ),
+              ]),
+            ),
+          ),
+        ),
+      );
+    }).toList();
+  }
+
   void selectLevel(int index) {
-    if (index <= currentLevel + 1 && index < levels.length) {
+    final bool canSelectLevel = index <= currentLevel + 1 && index < levels.length;
+
+    if (canSelectLevel) {
       setState(() {
         currentLevel = index;
-        if (index < levels.length - 1) {
+
+        final bool hasNextLevel = index < levels.length - 1;
+
+        if (hasNextLevel) {
           unlockedLevels[index + 1] = true;
         }
       });
@@ -3445,116 +3458,123 @@ class StoryBranchingWidgetState extends State<StoryBranchingWidget> {
         const Spacing.height(16),
 
         // Choices or ending
-        if (isEnding) ...[
-          Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: getEndingColor(
-                currentNode['ending'],
-              ).withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(
-                color: getEndingColor(currentNode['ending']),
+        RenderIf.condition(
+          isEnding,
+          EndingSection(currentNode),
+          Div.column(ChoiceItemsList(choices)),
+        ),
+      ]),
+    );
+  }
+
+  Widget EndingSection(Map<String, dynamic> currentNode) {
+    final String ending = currentNode['ending'] as String;
+    final Color endingColor = getEndingColor(ending);
+
+    return Div.column([
+      Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: endingColor.withValues(alpha: 0.1),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: endingColor),
+        ),
+        child: Div.column([
+          Div.row([
+            Icon(getEndingIcon(ending), color: endingColor, size: 20),
+
+            const Spacing.width(8),
+
+            Text(
+              getEndingTitle(ending),
+              style: RLTypography.bodyLargeStyle.copyWith(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: endingColor,
               ),
             ),
-            child: Div.column([
-              Div.row([
-                Icon(
-                  getEndingIcon(currentNode['ending']),
-                  color: getEndingColor(currentNode['ending']),
-                  size: 20,
-                ),
-                const Spacing.width(8),
-                Text(
-                  getEndingTitle(currentNode['ending']),
-                  style: RLTypography.bodyLargeStyle.copyWith(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                    color: getEndingColor(currentNode['ending']),
+          ]),
+
+          const Spacing.height(8),
+
+          Text(
+            getEndingMessage(ending),
+            style: RLTypography.bodyMediumStyle.copyWith(
+              fontSize: 12,
+              color: RLTheme.textPrimary.withValues(alpha: 0.8),
+              height: 1.3,
+            ),
+          ),
+        ]),
+      ),
+
+      const Spacing.height(12),
+
+      GestureDetector(
+        onTap: resetStory,
+        child: Container(
+          height: 40,
+          decoration: BoxDecoration(
+            color: Colors.teal.shade600,
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Center(
+            child: Text(
+              'Try Different Choices',
+              style: RLTypography.bodyLargeStyle.copyWith(
+                color: Colors.white,
+                fontWeight: FontWeight.w600,
+                fontSize: 14,
+              ),
+            ),
+          ),
+        ),
+      ),
+    ]);
+  }
+
+  List<Widget> ChoiceItemsList(List<dynamic> choices) {
+    return choices.map<Widget>((choice) {
+      final Map<String, dynamic> choiceMap =
+          choice as Map<String, dynamic>;
+
+      return Padding(
+        padding: const EdgeInsets.only(bottom: 8),
+        child: GestureDetector(
+          onTap: () => makeChoice(choiceMap),
+          child: Container(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 12,
+            ),
+            decoration: BoxDecoration(
+              color: RLTheme.backgroundDark.withValues(alpha: 0.5),
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(
+                color: RLTheme.accentTeal.withValues(alpha: 0.3),
+              ),
+            ),
+            child: Div.row([
+              Expanded(
+                child: Text(
+                  choiceMap['text'] as String,
+                  style: RLTypography.bodyMediumStyle.copyWith(
+                    fontSize: 13,
+                    color: RLTheme.textPrimary,
                   ),
                 ),
-              ]),
+              ),
 
-              const Spacing.height(8),
-
-              Text(
-                getEndingMessage(currentNode['ending']),
-                style: RLTypography.bodyMediumStyle.copyWith(
-                  fontSize: 12,
-                  color: RLTheme.textPrimary.withValues(alpha: 0.8),
-                  height: 1.3,
-                ),
+              const Icon(
+                Icons.arrow_forward_ios,
+                size: 16,
+                color: RLTheme.accentTeal,
               ),
             ]),
           ),
-
-          const Spacing.height(12),
-
-          GestureDetector(
-            onTap: resetStory,
-            child: Container(
-              height: 40,
-              decoration: BoxDecoration(
-                color: Colors.teal.shade600,
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Center(
-                child: Text(
-                  'Try Different Choices',
-                  style: RLTypography.bodyLargeStyle.copyWith(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w600,
-                    fontSize: 14,
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ] else ...[
-          ...choices.map<Widget>((choice) {
-            final Map<String, dynamic> choiceMap =
-                choice as Map<String, dynamic>;
-            return Padding(
-              padding: const EdgeInsets.only(bottom: 8),
-              child: GestureDetector(
-                onTap: () => makeChoice(choiceMap),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 12,
-                  ),
-                  decoration: BoxDecoration(
-                    color: RLTheme.backgroundDark.withValues(
-                      alpha: 0.5,
-                    ),
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(
-                      color: RLTheme.accentTeal.withValues(alpha: 0.3),
-                    ),
-                  ),
-                  child: Div.row([
-                    Expanded(
-                      child: Text(
-                        choiceMap['text'] as String,
-                        style: RLTypography.bodyMediumStyle.copyWith(
-                          fontSize: 13,
-                          color: RLTheme.textPrimary,
-                        ),
-                      ),
-                    ),
-                    const Icon(
-                      Icons.arrow_forward_ios,
-                      size: 16,
-                      color: RLTheme.accentTeal,
-                    ),
-                  ]),
-                ),
-              ),
-            );
-          }),
-        ],
-      ]),
-    );
+        ),
+      );
+    }).toList();
   }
 
   Color getEndingColor(String ending) {

@@ -2,10 +2,7 @@ import 'package:flutter/material.dart' hide Typography;
 import 'package:readlock/utility_widgets/Utility.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLTheme.dart';
-
-const double EMOTIONAL_SLIDE_ICON_SIZE = 32.0;
-const double EMOTIONAL_SLIDE_SPACING = 16.0;
-const double EMOTIONAL_SLIDE_VERTICAL_PADDING = 40.0;
+import 'package:readlock/constants/RLConstants.dart';
 
 class CCEmotionalSlide extends StatelessWidget {
   final String text;
@@ -69,11 +66,13 @@ class CCEmotionalSlide extends StatelessWidget {
       alpha: 0.8,
     );
 
-    return Icon(
+    final Widget MotivationalIconWidget = Icon(
       motivationalIconData,
       size: EMOTIONAL_SLIDE_ICON_SIZE,
       color: motivationalIconColor,
     );
+
+    return MotivationalIconWidget;
   }
 
   Widget MotivationalText({required TextStyle textStyle}) {

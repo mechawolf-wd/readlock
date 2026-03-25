@@ -9,21 +9,7 @@ import 'package:readlock/utility_widgets/RLTextField.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLTheme.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
-
-const String LOGIN_TITLE = 'Welcome Reader';
-const String LOGIN_SUBTITLE = 'Sign in to continue reading';
-const String EMAIL_PLACEHOLDER = 'Email';
-const String PASSWORD_PLACEHOLDER = 'Password';
-const String SIGN_IN_BUTTON_LABEL = 'Sign In';
-const String FORGOT_PASSWORD_LABEL = 'Reset password';
-const String SIGN_UP_LABEL = 'Sign up';
-const String OR_DIVIDER_LABEL = 'or';
-const String APPLE_LOGIN_LABEL = 'Apple';
-const String GOOGLE_LOGIN_LABEL = 'Google';
-
-const double BLUR_SIGMA = 10.0;
-const double MODAL_BORDER_RADIUS = 24.0;
-const double SOCIAL_BUTTON_HEIGHT = 48.0;
+import 'package:readlock/constants/RLConstants.dart';
 
 class LoginBottomSheet {
   static void show(BuildContext context) {
@@ -116,8 +102,8 @@ class LoginSheetState extends State<LoginSheet> {
     const BoxDecoration modalDecoration = BoxDecoration(
       color: RLTheme.backgroundLight,
       borderRadius: BorderRadius.only(
-        topLeft: Radius.circular(MODAL_BORDER_RADIUS),
-        topRight: Radius.circular(MODAL_BORDER_RADIUS),
+        topLeft: Radius.circular(LOGIN_MODAL_BORDER_RADIUS),
+        topRight: Radius.circular(LOGIN_MODAL_BORDER_RADIUS),
       ),
     );
 

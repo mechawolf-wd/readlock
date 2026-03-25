@@ -6,36 +6,9 @@ import 'package:readlock/models/CourseModel.dart';
 import 'package:readlock/utility_widgets/Utility.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLTheme.dart';
+import 'package:readlock/constants/RLConstants.dart';
 import 'package:readlock/utility_widgets/text_animation/ProgressiveText.dart';
 import 'package:readlock/utility_widgets/FeedbackSnackbar.dart';
-
-// Design constants
-const double FILL_GAP_OPTION_SPACING = 12.0;
-const double FILL_GAP_SECTION_SPACING = 24.0;
-const double FILL_GAP_MIN_BLANK_WIDTH = 96.0;
-const double FILL_GAP_MAX_BLANK_WIDTH = 200.0;
-const double FILL_GAP_BLANK_HEIGHT = 40.0;
-const int FILL_GAP_SHAKE_DURATION_MS = 500;
-
-// Typography constants
-const double QUESTION_TEXT_SIZE = 18.0;
-const double OPTION_TEXT_SIZE = 14.0;
-const double LABEL_TEXT_SIZE = 14.0;
-const double BUTTON_TEXT_SIZE = 16.0;
-
-// Spacing constants
-const double ICON_SPACING = 8.0;
-const double CONTENT_PADDING = 20.0;
-const double OPTION_CHIP_PADDING_H = 16.0;
-const double OPTION_CHIP_PADDING_V = 10.0;
-const double GAP_PADDING_H = 12.0;
-const double GAP_PADDING_V = 8.0;
-
-// Border constants
-const double BORDER_WIDTH = 1.5;
-const double CHIP_RADIUS = 20.0;
-const double GAP_RADIUS = 8.0;
-const double BUTTON_RADIUS = 12.0;
 
 // Helper classes for styling
 class GapStyling {
@@ -131,7 +104,7 @@ class CCFillGapQuestionState extends State<CCFillGapQuestion>
         ExplanationSection(),
       ],
       color: RLTheme.backgroundDark,
-      padding: CONTENT_PADDING,
+      padding: FILL_GAP_CONTENT_PADDING,
       crossAxisAlignment: CrossAxisAlignment.stretch,
     );
   }
@@ -144,12 +117,14 @@ class CCFillGapQuestionState extends State<CCFillGapQuestion>
       final String part = questionParts[partIndex];
       final bool isLastPart = partIndex == questionParts.length - 1;
 
-      if (part.isNotEmpty) {
+      final bool hasPartText = part.isNotEmpty;
+
+      if (hasPartText) {
         questionWidgets.add(
           Text(
             part,
             style: RLTypography.bodyLargeStyle.copyWith(
-              fontSize: QUESTION_TEXT_SIZE,
+              fontSize: FILL_GAP_QUESTION_TEXT_SIZE,
               height: 1.6,
               fontWeight: FontWeight.w500,
             ),
@@ -185,9 +160,11 @@ class CCFillGapQuestionState extends State<CCFillGapQuestion>
     );
 
     // Get display text
-    final String displayText = hasSelection
-        ? widget.content.options[selectedOptionIndex].text
-        : '______';
+    String displayText = '______';
+
+    if (hasSelection) {
+      displayText = widget.content.options[selectedOptionIndex].text;
+    }
 
     // Calculate dynamic width
     final double gapWidth = calculateGapWidth(displayText, hasSelection);
@@ -283,7 +260,7 @@ class CCFillGapQuestionState extends State<CCFillGapQuestion>
   }) {
     // Text style for gap content
     final TextStyle gapTextStyle = RLTypography.bodyLargeStyle.copyWith(
-      fontSize: OPTION_TEXT_SIZE,
+      fontSize: FILL_GAP_OPTION_TEXT_SIZE,
       fontWeight: hasSelection ? FontWeight.w600 : FontWeight.normal,
       color: hasSelection
           ? RLTheme.textPrimary
@@ -293,10 +270,10 @@ class CCFillGapQuestionState extends State<CCFillGapQuestion>
     // Gap decoration
     final BoxDecoration gapDecoration = BoxDecoration(
       color: styling.backgroundColor,
-      borderRadius: BorderRadius.circular(GAP_RADIUS),
+      borderRadius: BorderRadius.circular(FILL_GAP_GAP_RADIUS),
       border: Border.all(
         color: styling.borderColor,
-        width: BORDER_WIDTH,
+        width: FILL_GAP_BORDER_WIDTH,
       ),
     );
 
@@ -314,17 +291,17 @@ class CCFillGapQuestionState extends State<CCFillGapQuestion>
       ],
       width: gapWidth,
       height: FILL_GAP_BLANK_HEIGHT,
-      padding: const [GAP_PADDING_H, GAP_PADDING_V],
+      padding: const [FILL_GAP_GAP_PADDING_H, FILL_GAP_GAP_PADDING_V],
       decoration: gapDecoration,
       mainAxisAlignment: MainAxisAlignment.center,
-      onTap: hasAnswered ? null : () => clearGapSelection(gapIndex),
+      onTap: hasAnswered ? null : () => clearGapSelection(gapIndex), // Simple null guard
     );
   }
 
   Widget AvailableOptions() {
     // Section label style
     final TextStyle labelStyle = RLTypography.bodyLargeStyle.copyWith(
-      fontSize: LABEL_TEXT_SIZE,
+      fontSize: FILL_GAP_LABEL_TEXT_SIZE,
       fontWeight: FontWeight.w600,
       color: RLTheme.textPrimary.withValues(alpha: 0.8),
     );
@@ -367,7 +344,7 @@ class CCFillGapQuestionState extends State<CCFillGapQuestion>
 
     // Build chip text style
     final TextStyle chipTextStyle = RLTypography.bodyLargeStyle.copyWith(
-      fontSize: OPTION_TEXT_SIZE,
+      fontSize: FILL_GAP_OPTION_TEXT_SIZE,
       color: styling.textColor,
       fontWeight: isCorrectOption ? FontWeight.w600 : FontWeight.w500,
       decoration: isUsed && !isCorrectOption
@@ -378,10 +355,10 @@ class CCFillGapQuestionState extends State<CCFillGapQuestion>
     // Build chip decoration
     final BoxDecoration chipDecoration = BoxDecoration(
       color: styling.backgroundColor,
-      borderRadius: BorderRadius.circular(CHIP_RADIUS),
+      borderRadius: BorderRadius.circular(FILL_GAP_CHIP_RADIUS),
       border: Border.all(
         color: styling.borderColor,
-        width: BORDER_WIDTH,
+        width: FILL_GAP_BORDER_WIDTH,
       ),
     );
 
@@ -394,9 +371,9 @@ class CCFillGapQuestionState extends State<CCFillGapQuestion>
           maxLines: 1,
         ),
       ],
-      padding: const [OPTION_CHIP_PADDING_H, OPTION_CHIP_PADDING_V],
+      padding: const [FILL_GAP_OPTION_CHIP_PADDING_H, FILL_GAP_OPTION_CHIP_PADDING_V],
       decoration: chipDecoration,
-      onTap: isDisabled ? null : () => selectOption(optionIndex),
+      onTap: isDisabled ? null : () => selectOption(optionIndex), // Simple null guard
     );
   }
 
@@ -445,33 +422,46 @@ class CCFillGapQuestionState extends State<CCFillGapQuestion>
     final bool canSubmit = allGapsFilled && !hasAnswered;
 
     // Button text
-    final String buttonText = hasAnswered ? 'Submitted' : 'Submit Answer';
+    String buttonText = 'Submit Answer';
+
+    if (hasAnswered) {
+      buttonText = 'Submitted';
+    }
+
+    // Button text color
+    Color buttonTextColor = RLTheme.textPrimary.withValues(alpha: 0.4);
+
+    if (canSubmit) {
+      buttonTextColor = Colors.white;
+    }
 
     // Button text style
     final TextStyle buttonTextStyle = RLTypography.bodyLargeStyle.copyWith(
-      color: canSubmit
-          ? Colors.white
-          : RLTheme.textPrimary.withValues(alpha: 0.4),
+      color: buttonTextColor,
       fontWeight: FontWeight.w600,
-      fontSize: BUTTON_TEXT_SIZE,
+      fontSize: FILL_GAP_BUTTON_TEXT_SIZE,
     );
 
     // Button colors
-    final Color buttonColor = canSubmit
-        ? RLTheme.primaryBlue
-        : RLTheme.backgroundLight;
-    
-    final Color buttonBorderColor = canSubmit
-        ? RLTheme.primaryBlue
-        : RLTheme.textPrimary.withValues(alpha: 0.2);
+    Color buttonColor = RLTheme.backgroundLight;
+
+    if (canSubmit) {
+      buttonColor = RLTheme.primaryBlue;
+    }
+
+    Color buttonBorderColor = RLTheme.textPrimary.withValues(alpha: 0.2);
+
+    if (canSubmit) {
+      buttonBorderColor = RLTheme.primaryBlue;
+    }
 
     // Button decoration
     final BoxDecoration buttonDecoration = BoxDecoration(
       color: buttonColor,
-      borderRadius: BorderRadius.circular(BUTTON_RADIUS),
+      borderRadius: BorderRadius.circular(FILL_GAP_BUTTON_RADIUS),
       border: Border.all(
         color: buttonBorderColor,
-        width: BORDER_WIDTH,
+        width: FILL_GAP_BORDER_WIDTH,
       ),
     );
 
@@ -485,7 +475,7 @@ class CCFillGapQuestionState extends State<CCFillGapQuestion>
       height: 48,
       decoration: buttonDecoration,
       mainAxisAlignment: MainAxisAlignment.center,
-      onTap: canSubmit ? checkAnswer : null,
+      onTap: canSubmit ? checkAnswer : null, // Simple null guard
     );
   }
 
@@ -512,7 +502,7 @@ class CCFillGapQuestionState extends State<CCFillGapQuestion>
           ProgressiveText(
             textSegments: [widget.content.explanation],
             textStyle: RLTypography.bodyLargeStyle.copyWith(
-              fontSize: LABEL_TEXT_SIZE,
+              fontSize: FILL_GAP_LABEL_TEXT_SIZE,
               height: 1.6,
             ),
           ),
@@ -528,7 +518,7 @@ class CCFillGapQuestionState extends State<CCFillGapQuestion>
 
   Widget ExplanationHeader() {
     // Icon
-    const Icon explanationIcon = Icon(
+    const Icon ExplanationIcon = Icon(
       Icons.lightbulb_outline,
       color: RLTheme.warningColor,
       size: 20,
@@ -537,14 +527,14 @@ class CCFillGapQuestionState extends State<CCFillGapQuestion>
     // Title style
     final TextStyle titleStyle = RLTypography.bodyLargeStyle.copyWith(
       fontWeight: FontWeight.w600,
-      fontSize: LABEL_TEXT_SIZE,
+      fontSize: FILL_GAP_LABEL_TEXT_SIZE,
       color: RLTheme.textPrimary,
     );
 
     return Div.row([
-      explanationIcon,
+      ExplanationIcon,
 
-      const Spacing.width(ICON_SPACING),
+      const Spacing.width(FILL_GAP_ICON_SPACING),
 
       Text(
         'Explanation',

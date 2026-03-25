@@ -1588,8 +1588,9 @@
         },
         {
           "segment-id": "design-of-everyday-things-segment-b",
-          "segment-title": "B Advanced Applications",
+          "segment-title": "Advanced Applications",
           "segment-description": "Applying design principles to complex real-world scenarios",
+          "segment-symbol": "B",
           "lessons": [
             {
               "lesson-id": "design-of-everyday-things-l:13",
@@ -1644,8 +1645,9 @@
         },
         {
           "segment-id": "design-of-everyday-things-segment-c",
-          "segment-title": "C Mastery and Innovation",
+          "segment-title": "Mastery and Innovation",
           "segment-description": "Advanced techniques and creating breakthrough design solutions",
+          "segment-symbol": "C",
           "lessons": [
             {
               "lesson-id": "design-of-everyday-things-l:20",

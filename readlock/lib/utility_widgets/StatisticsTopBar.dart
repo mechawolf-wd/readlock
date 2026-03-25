@@ -18,16 +18,16 @@ class StatisticsTopBar extends StatelessWidget {
   Widget StreakCounter(BuildContext context) {
     return Div.row(
       [
-        Style.FireIcon,
+        StatisticsTopBarStyle.FireIcon,
         const Spacing.width(8),
         RLTypography.bodyLarge(
           '3',
           color: Colors.grey.withValues(alpha: 0.8),
         ),
       ],
-      decoration: Style.decoration,
-      color: Style.backgroundColor,
-      padding: Style.padding,
+      decoration: StatisticsTopBarStyle.decoration,
+      color: StatisticsTopBarStyle.backgroundColor,
+      padding: StatisticsTopBarStyle.padding,
       radius: 16,
       onTap: () => showStreakBottomSheet(context),
     );
@@ -44,22 +44,22 @@ class StatisticsTopBar extends StatelessWidget {
   Widget XPCounter() {
     return Div.row(
       [
-        Style.KeyIcon,
+        StatisticsTopBarStyle.KeyIcon,
         const Spacing.width(8),
         RLTypography.bodyLarge(
           '17',
           color: Colors.grey.withValues(alpha: 0.8),
         ),
       ],
-      decoration: Style.decoration,
-      color: Style.backgroundColor,
-      padding: Style.padding,
+      decoration: StatisticsTopBarStyle.decoration,
+      color: StatisticsTopBarStyle.backgroundColor,
+      padding: StatisticsTopBarStyle.padding,
       radius: 16,
     );
   }
 }
 
-class Style {
+class StatisticsTopBarStyle {
   static BoxDecoration decoration = BoxDecoration(
     border: Border.all(color: Colors.grey.withValues(alpha: 0.2), width: 1.5),
     boxShadow: [
@@ -116,7 +116,7 @@ class StreakBottomSheet extends StatelessWidget {
               const Spacing.height(24),
 
               // Fire icon
-              LargeFireIcon(),
+              LargeFireIcon,
 
               const Spacing.height(16),
 
@@ -143,13 +143,11 @@ class StreakBottomSheet extends StatelessWidget {
     );
   }
 
-  Widget LargeFireIcon() {
-    return const Icon(
-      Icons.local_fire_department,
-      color: RLTheme.warningColor,
-      size: 48,
-    );
-  }
+  static const Widget LargeFireIcon = Icon(
+    Icons.local_fire_department,
+    color: RLTheme.warningColor,
+    size: 48,
+  );
 
   Widget WeekStreakProgress() {
     final List<String> weekDays = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];

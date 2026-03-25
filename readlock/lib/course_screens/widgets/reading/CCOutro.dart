@@ -8,8 +8,7 @@ import 'package:readlock/utility_widgets/text_animation/TextAnimation.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLTheme.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
-
-const double CONTENT_SPACING = 20.0;
+import 'package:readlock/constants/RLConstants.dart';
 
 class CCOutro extends StatefulWidget {
   // Course outro content data
@@ -43,17 +42,20 @@ class CCOutroState extends State<CCOutro> {
         // Header section with icon and title
         HeaderSection(titleTextStyle),
 
-        const Spacing.height(CONTENT_SPACING),
+        const Spacing.height(COURSE_OUTRO_CONTENT_SPACING),
 
         // Progressive text content
         ProgressiveTextSection(),
 
         const Spacer(),
 
-        const Spacing.height(CONTENT_SPACING),
+        const Spacing.height(COURSE_OUTRO_CONTENT_SPACING),
 
         // Fin button when text is complete
-        if (isAllTextRevealed) ...[FinishButton()],
+        RenderIf.condition(
+          isAllTextRevealed,
+          FinishButton(),
+        ),
       ],
       color: RLTheme.backgroundDark,
       padding: RLTheme.contentPaddingInsets,
@@ -101,13 +103,13 @@ class CCOutroState extends State<CCOutro> {
         textStyle: RLTypography.bodyLargeStyle,
         typewriterCharacterDelay: const Duration(milliseconds: 15),
         textAlignment: CrossAxisAlignment.start,
-        onAllSegmentsRevealed: HandleAllTextRevealed,
+        onAllSegmentsRevealed: handleAllTextRevealed,
       ),
     );
   }
 
   // Handle completion of all text segments
-  void HandleAllTextRevealed() {
+  void handleAllTextRevealed() {
     setState(() {
       isAllTextRevealed = true;
     });
@@ -117,14 +119,14 @@ class CCOutroState extends State<CCOutro> {
   Widget FinishButton() {
     return RLDesignSystem.BlockButton(
       children: [RLTypography.bodyLarge('Fin', color: RLTheme.white)],
-      onTap: HandleFinishButtonTapped,
+      onTap: handleFinishButtonTapped,
       backgroundColor: RLTheme.primaryGreen,
       margin: EdgeInsets.zero,
     );
   }
 
   // Handle Fin button tap to navigate to reward screen
-  void HandleFinishButtonTapped() {
+  void handleFinishButtonTapped() {
     final VoidCallback? lessonCompleteCallback =
         widget.onLessonComplete;
 

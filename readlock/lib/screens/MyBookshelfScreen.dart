@@ -2,14 +2,12 @@
 // Simple bookshelf layout with settings access
 
 import 'package:flutter/material.dart';
-import 'package:readlock/MainNavigation.dart';
 import 'package:readlock/screens/ProfileScreen.dart';
 import 'package:readlock/utility_widgets/StatisticsTopBar.dart';
 import 'package:readlock/utility_widgets/Utility.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLTheme.dart';
-
-const String BOOKSHELF_TITLE = 'My Bookshelf';
+import 'package:readlock/constants/RLConstants.dart';
 
 class MyBookshelfScreen extends StatefulWidget {
   const MyBookshelfScreen({super.key});

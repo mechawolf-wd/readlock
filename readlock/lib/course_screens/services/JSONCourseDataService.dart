@@ -11,7 +11,9 @@ class JSONCourseDataService {
 
   static Future<List<Map<String, dynamic>>> getCourses() async {
     // Try to load from actual JSON file first
-    if (cachedData == null) {
+    final bool hasNoCache = cachedData == null;
+
+    if (hasNoCache) {
       final String jsonString = await rootBundle.loadString(
         'assets/data/course_data.json',
       );

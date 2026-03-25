@@ -3,6 +3,7 @@ import 'package:readlock/models/CourseModel.dart';
 import 'package:readlock/utility_widgets/Utility.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLTheme.dart';
+import 'package:readlock/constants/RLConstants.dart';
 import 'package:readlock/utility_widgets/FeedbackSnackbar.dart';
 
 enum OptionButtonState {
@@ -11,9 +12,6 @@ enum OptionButtonState {
   correctAndAnswered,
   incorrectAndAnswered,
 }
-
-const double OPTION_BUTTON_SPACING = 16.0;
-const double QUESTION_SECTION_SPACING = 24.0;
 
 class CCMultipleChoice extends StatefulWidget {
   final QuestionContent content;
@@ -85,12 +83,12 @@ class CCMultipleChoiceState extends State<CCMultipleChoice> {
         // Question text section
         QuestionTextSection(),
 
-        const Spacing.height(QUESTION_SECTION_SPACING),
+        const Spacing.height(MULTIPLE_CHOICE_QUESTION_SECTION_SPACING),
 
         // Multiple choice options
         OptionsListSection(),
 
-        const Spacing.height(QUESTION_SECTION_SPACING),
+        const Spacing.height(MULTIPLE_CHOICE_QUESTION_SECTION_SPACING),
       ],
       color: RLTheme.backgroundDark,
       padding: 24,
@@ -115,7 +113,7 @@ class CCMultipleChoiceState extends State<CCMultipleChoice> {
       return Div.column([
         OptionButton(optionIndex: optionIndex, option: option),
 
-        const Spacing.height(OPTION_BUTTON_SPACING),
+        const Spacing.height(MULTIPLE_CHOICE_OPTION_BUTTON_SPACING),
       ]);
     }).toList();
   }
@@ -148,13 +146,15 @@ class CCMultipleChoiceState extends State<CCMultipleChoice> {
       shouldMute: shouldMute,
     );
 
+    final VoidCallback? optionTapHandler = hasAnsweredQuestion
+        ? null
+        : () => handleOptionSelection(optionIndex);
+
     return Div.row(
       [Expanded(child: Text(option.text, style: textStyle))],
       padding: RLTheme.contentPaddingMediumInsets,
       decoration: decoration,
-      onTap: hasAnsweredQuestion
-          ? null
-          : () => handleOptionSelection(optionIndex),
+      onTap: optionTapHandler,
     );
   }
 
@@ -172,7 +172,9 @@ class CCMultipleChoiceState extends State<CCMultipleChoice> {
       return incorrectOptionDecoration;
     }
 
-    if (isSelected && !hasAnsweredQuestion) {
+    final bool isSelectedBeforeAnswer = isSelected && !hasAnsweredQuestion;
+
+    if (isSelectedBeforeAnswer) {
       return selectedOptionDecoration;
     }
 
@@ -210,12 +212,16 @@ class CCMultipleChoiceState extends State<CCMultipleChoice> {
     final bool isCorrectAnswer = widget.content.correctAnswerIndices
         .contains(optionIndex);
 
-    if (!isCorrectAnswer && !hasAnsweredQuestion) {
+    final bool isWrongAnswerAttempt = !isCorrectAnswer && !hasAnsweredQuestion;
+
+    if (isWrongAnswerAttempt) {
       showIncorrectAnswerFeedback();
       return;
     }
 
-    if (isCorrectAnswer && !hasAnsweredQuestion) {
+    final bool isCorrectAnswerAttempt = isCorrectAnswer && !hasAnsweredQuestion;
+
+    if (isCorrectAnswerAttempt) {
       updateSelectedAnswer(optionIndex);
 
       notifyAnswerSelected(optionIndex, isCorrectAnswer);

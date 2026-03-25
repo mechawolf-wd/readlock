@@ -6,28 +6,11 @@ import 'package:readlock/course_screens/widgets/CCJSONContentFactory.dart';
 import 'package:readlock/course_screens/data/CourseData.dart';
 import 'package:readlock/constants/RLTheme.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
+import 'package:readlock/constants/RLConstants.dart';
 import 'package:readlock/utility_widgets/Utility.dart';
 import 'package:readlock/utility_widgets/FeedbackSnackbar.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/screens/StreakplierRewardScreen.dart';
-
-// String constants
-const String NO_CONTENT_AVAILABLE_MESSAGE =
-    'Pigeons are still gathering content for this lesson. Please check back a bit !';
-const String ERROR_LOADING_COURSE_DATA = 'Error loading course data';
-const String QUIT_CONFIRMATION_TITLE = 'Wait';
-const String QUIT_CONFIRMATION_MESSAGE =
-    'If you quit you will lose your progress.';
-const String QUIT_CONFIRMATION_LEARN_BUTTON = 'Learn';
-const String QUIT_CONFIRMATION_QUIT_BUTTON = 'Quit';
-
-// Styling constants
-const double TOP_BAR_PADDING = 16.0;
-const double BACK_ICON_SIZE = 20.0;
-const double PROGRESS_BAR_RADIUS = 8.0;
-const double PROGRESS_BAR_HEIGHT = 12.0;
-const double NAVIGATION_SPACING = 12.0;
-const int PAGE_ANIMATION_DURATION_MS = 300;
 
 class CourseDetailScreen extends StatefulWidget {
   // Course identifier to load
@@ -66,13 +49,13 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
   bool isLoading = true;
 
   // Icon definitions
-  static const Icon backNavigationIcon = Icon(
+  static const Icon BackNavigationIcon = Icon(
     Icons.close_rounded,
     color: Color.fromARGB(255, 157, 157, 157),
-    size: BACK_ICON_SIZE,
+    size: COURSE_BACK_ICON_SIZE,
   );
 
-  static const Icon blazeIcon = Icon(
+  static const Icon BlazeIcon = Icon(
     Icons.local_fire_department_rounded,
     color: RLTheme.warningColor,
     size: 24,
@@ -177,12 +160,12 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
       // Back navigation button
       BackNavigationButton(),
 
-      const Spacing.width(NAVIGATION_SPACING),
+      const Spacing.width(COURSE_NAVIGATION_SPACING),
 
       // Course progress indicator
       Expanded(child: ProgressIndicator()),
 
-      const Spacing.width(NAVIGATION_SPACING),
+      const Spacing.width(COURSE_NAVIGATION_SPACING),
 
       // Bookmark slide icon
       BookmarkButton(),
@@ -190,21 +173,16 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
       const Spacing.width(8),
 
       // Streak blaze icon
-      BlazeIcon(),
-    ], padding: TOP_BAR_PADDING);
+      BlazeIcon,
+    ], padding: COURSE_TOP_BAR_PADDING);
   }
 
   // Back button for navigation
   Widget BackNavigationButton() {
     return GestureDetector(
       onTap: showQuitConfirmationSheet,
-      child: backNavigationIcon,
+      child: BackNavigationIcon,
     );
-  }
-
-  // Streak blaze icon
-  Widget BlazeIcon() {
-    return blazeIcon;
   }
 
   // Bookmark button for slide favoriting
@@ -231,9 +209,9 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
     final double progressValue = calculateProgress();
 
     return SizedBox(
-      height: PROGRESS_BAR_HEIGHT,
+      height: COURSE_PROGRESS_BAR_HEIGHT,
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(PROGRESS_BAR_RADIUS),
+        borderRadius: BorderRadius.circular(COURSE_PROGRESS_BAR_RADIUS),
         child: LinearProgressIndicator(
           value: progressValue,
           backgroundColor: RLTheme.backgroundLight,
@@ -249,9 +227,9 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
         createProgressSegments();
 
     return ClipRRect(
-      borderRadius: BorderRadius.circular(PROGRESS_BAR_RADIUS),
+      borderRadius: BorderRadius.circular(COURSE_PROGRESS_BAR_RADIUS),
       child: SizedBox(
-        height: PROGRESS_BAR_HEIGHT,
+        height: COURSE_PROGRESS_BAR_HEIGHT,
         child: LayoutBuilder(
           builder: (context, constraints) {
             final double availableWidth = constraints.maxWidth;
@@ -304,7 +282,7 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
         segmentWidgets.add(
           Container(
             width: segmentWidth,
-            height: PROGRESS_BAR_HEIGHT,
+            height: COURSE_PROGRESS_BAR_HEIGHT,
             decoration: BoxDecoration(
               color: isCompleted
                   ? RLTheme.primaryGreen
@@ -706,7 +684,7 @@ class RegularProgressSegment extends StatelessWidget {
 
     return SizedBox(
       width: width,
-      height: PROGRESS_BAR_HEIGHT,
+      height: COURSE_PROGRESS_BAR_HEIGHT,
       child: Stack(
         children: [
           // Background
@@ -765,12 +743,12 @@ class ProgressSegmentWidget extends StatelessWidget {
     // Extract styling above build method
     final BoxDecoration segmentDecoration = BoxDecoration(
       color: segmentColor,
-      borderRadius: BorderRadius.circular(PROGRESS_BAR_RADIUS),
+      borderRadius: BorderRadius.circular(COURSE_PROGRESS_BAR_RADIUS),
     );
 
     return Container(
       width: segmentWidth,
-      height: PROGRESS_BAR_HEIGHT,
+      height: COURSE_PROGRESS_BAR_HEIGHT,
       decoration: segmentDecoration,
     );
   }

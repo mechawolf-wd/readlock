@@ -113,22 +113,7 @@ class CCDesignExamplesShowcaseState
               mainAxisSpacing: 12,
             ),
             itemCount: examples.length,
-            itemBuilder: (context, index) {
-              return ExampleCard(
-                example: examples[index],
-                index: index,
-                isRevealed: revealedCards.contains(index),
-                onTap: () {
-                  setState(() {
-                    if (revealedCards.contains(index)) {
-                      revealedCards.remove(index);
-                    } else {
-                      revealedCards.add(index);
-                    }
-                  });
-                },
-              );
-            },
+            itemBuilder: getExampleCardItem,
           ),
 
           const Spacing.height(20),
@@ -140,20 +125,47 @@ class CCDesignExamplesShowcaseState
     );
   }
 
+  Widget getExampleCardItem(BuildContext context, int index) {
+    return ExampleCard(
+      example: examples[index],
+      index: index,
+      isRevealed: revealedCards.contains(index),
+      onTap: () => toggleCardReveal(index),
+    );
+  }
+
+  void toggleCardReveal(int index) {
+    setState(() {
+      final bool isAlreadyRevealed = revealedCards.contains(index);
+
+      if (isAlreadyRevealed) {
+        revealedCards.remove(index);
+      } else {
+        revealedCards.add(index);
+      }
+    });
+  }
+
   Widget RevealProgressIndicator() {
+    const Widget LightbulbIcon = Icon(
+      Icons.lightbulb,
+      color: RLTheme.primaryGreen,
+      size: 20,
+    );
+
+    final bool isAllRevealed = revealedCards.length == examples.length;
+
+    final BoxDecoration progressDecoration = BoxDecoration(
+      color: RLTheme.backgroundLight,
+      borderRadius: BorderRadius.circular(12),
+    );
+
     return Container(
       padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: RLTheme.backgroundLight,
-        borderRadius: BorderRadius.circular(12),
-      ),
+      decoration: progressDecoration,
       child: Row(
         children: [
-          const Icon(
-            Icons.lightbulb,
-            color: RLTheme.primaryGreen,
-            size: 20,
-          ),
+          LightbulbIcon,
 
           const Spacing.width(12),
 
@@ -164,19 +176,27 @@ class CCDesignExamplesShowcaseState
             ),
           ),
 
-          if (revealedCards.length == examples.length)
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              decoration: BoxDecoration(
-                color: RLTheme.primaryGreen,
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: RLTypography.bodyMedium(
-                'Complete!',
-                color: RLTheme.white,
-              ),
-            ),
+          RenderIf.condition(
+            isAllRevealed,
+            CompleteChip(),
+          ),
         ],
+      ),
+    );
+  }
+
+  Widget CompleteChip() {
+    final BoxDecoration chipDecoration = BoxDecoration(
+      color: RLTheme.primaryGreen,
+      borderRadius: BorderRadius.circular(8),
+    );
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: chipDecoration,
+      child: RLTypography.bodyMedium(
+        'Complete!',
+        color: RLTheme.white,
       ),
     );
   }
@@ -187,120 +207,191 @@ class CCDesignExamplesShowcaseState
     required bool isRevealed,
     required VoidCallback onTap,
   }) {
-    final themeColor = example.isGoodDesign
-        ? RLTheme.primaryGreen
-        : RLTheme.errorColor;
+    Color themeColor = RLTheme.errorColor;
+
+    if (example.isGoodDesign) {
+      themeColor = RLTheme.primaryGreen;
+    }
+
+    // Card styling
+    final BoxDecoration cardDecoration = getCardDecoration(
+      isRevealed: isRevealed,
+      themeColor: themeColor,
+    );
+
+    // Card title
+    String titleText = 'Design Example ${index + 1}';
+
+    if (isRevealed) {
+      titleText = example.title;
+    }
+
+    Color titleColor = RLTheme.textPrimary.withValues(alpha: 0.7);
+
+    if (isRevealed) {
+      titleColor = RLTheme.textPrimary;
+    }
+
+    final TextStyle titleStyle = RLTypography.bodyMediumStyle.copyWith(
+      fontWeight: FontWeight.w600,
+      color: titleColor,
+    );
 
     return GestureDetector(
       onTap: onTap,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 300),
         padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: isRevealed 
-              ? themeColor.withValues(alpha: 0.1)
-              : RLTheme.backgroundLight,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(
-            color: isRevealed 
-                ? themeColor.withValues(alpha: 0.3)
-                : RLTheme.textPrimary.withValues(alpha: 0.1),
-            width: isRevealed ? 2 : 1,
-          ),
-        ),
+        decoration: cardDecoration,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: isRevealed
-                        ? themeColor.withValues(alpha: 0.2)
-                        : RLTheme.textPrimary.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Icon(
-                    isRevealed
-                        ? (example.isGoodDesign
-                            ? Icons.check_circle
-                            : Icons.cancel)
-                        : Icons.help_outline,
-                    color: isRevealed 
-                        ? themeColor 
-                        : RLTheme.textPrimary.withValues(alpha: 0.5),
-                    size: 20,
-                  ),
-                ),
-                
-                const Spacer(),
-                
-                if (!isRevealed)
-                  Icon(
-                    Icons.touch_app,
-                    color: RLTheme.textPrimary.withValues(alpha: 0.3),
-                    size: 16,
-                  ),
-              ],
+            // Icon header row
+            CardIconRow(
+              isRevealed: isRevealed,
+              themeColor: themeColor,
+              isGoodDesign: example.isGoodDesign,
             ),
 
             const Spacing.height(12),
 
+            // Title
             Text(
-              isRevealed 
-                  ? example.title 
-                  : 'Design Example ${index + 1}',
-              style: RLTypography.bodyMediumStyle.copyWith(
-                fontWeight: FontWeight.w600,
-                color: isRevealed 
-                    ? RLTheme.textPrimary 
-                    : RLTheme.textPrimary.withValues(alpha: 0.7),
-              ),
+              titleText,
+              style: titleStyle,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
             ),
 
-            if (isRevealed) ...[
-              const Spacing.height(8),
-              
-              Expanded(
-                child: SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: example.textSegments.map((segment) => 
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 8),
-                        child: Text(
-                          segment,
-                          style: RLTypography.bodyMediumStyle.copyWith(
-                            color: RLTheme.textPrimary.withValues(alpha: 0.8),
-                            height: 1.4,
-                          ),
-                        ),
-                      ),
-                    ).toList(),
-                  ),
-                ),
+            const Spacing.height(8),
+
+            // Content area
+            Expanded(
+              child: RenderIf.condition(
+                isRevealed,
+                RevealedContent(textSegments: example.textSegments),
+                HiddenContent(),
               ),
-            ] else ...[
-              const Spacing.height(8),
-              
-              Expanded(
-                child: Center(
-                  child: Text(
-                    'Tap to reveal',
-                    style: RLTypography.bodyMediumStyle.copyWith(
-                      color: RLTheme.textPrimary.withValues(alpha: 0.5),
-                      fontStyle: FontStyle.italic,
-                    ),
-                  ),
-                ),
-              ),
-            ],
+            ),
           ],
         ),
       ),
+    );
+  }
+
+  BoxDecoration getCardDecoration({
+    required bool isRevealed,
+    required Color themeColor,
+  }) {
+    Color bgColor = RLTheme.backgroundLight;
+    Color borderColor = RLTheme.textPrimary.withValues(alpha: 0.1);
+    double borderWidth = 1;
+
+    if (isRevealed) {
+      bgColor = themeColor.withValues(alpha: 0.1);
+      borderColor = themeColor.withValues(alpha: 0.3);
+      borderWidth = 2;
+    }
+
+    return BoxDecoration(
+      color: bgColor,
+      borderRadius: BorderRadius.circular(16),
+      border: Border.all(color: borderColor, width: borderWidth),
+    );
+  }
+
+  Widget CardIconRow({
+    required bool isRevealed,
+    required Color themeColor,
+    required bool isGoodDesign,
+  }) {
+    // Icon container styling
+    Color iconBgColor = RLTheme.textPrimary.withValues(alpha: 0.1);
+
+    if (isRevealed) {
+      iconBgColor = themeColor.withValues(alpha: 0.2);
+    }
+
+    // Determine icon data
+    IconData iconData = Icons.help_outline;
+
+    if (isRevealed) {
+      iconData = isGoodDesign ? Icons.check_circle : Icons.cancel;
+    }
+
+    // Determine icon color
+    Color iconColor = RLTheme.textPrimary.withValues(alpha: 0.5);
+
+    if (isRevealed) {
+      iconColor = themeColor;
+    }
+
+    final Widget StatusIcon = Icon(iconData, color: iconColor, size: 20);
+
+    final BoxDecoration iconContainerDecoration = BoxDecoration(
+      color: iconBgColor,
+      borderRadius: BorderRadius.circular(8),
+    );
+
+    final bool shouldShowTouchHint = !isRevealed;
+
+    final Widget TouchHintIcon = Icon(
+      Icons.touch_app,
+      color: RLTheme.textPrimary.withValues(alpha: 0.3),
+      size: 16,
+    );
+
+    return Row(
+      children: [
+        Container(
+          padding: const EdgeInsets.all(8),
+          decoration: iconContainerDecoration,
+          child: StatusIcon,
+        ),
+
+        const Spacer(),
+
+        RenderIf.condition(
+          shouldShowTouchHint,
+          TouchHintIcon,
+        ),
+      ],
+    );
+  }
+
+  Widget RevealedContent({required List<String> textSegments}) {
+    final TextStyle segmentStyle = RLTypography.bodyMediumStyle.copyWith(
+      color: RLTheme.textPrimary.withValues(alpha: 0.8),
+      height: 1.4,
+    );
+
+    final List<Widget> segmentWidgets = [];
+
+    for (final segment in textSegments) {
+      segmentWidgets.add(
+        Padding(
+          padding: const EdgeInsets.only(bottom: 8),
+          child: Text(segment, style: segmentStyle),
+        ),
+      );
+    }
+
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: segmentWidgets,
+      ),
+    );
+  }
+
+  Widget HiddenContent() {
+    final TextStyle hiddenStyle = RLTypography.bodyMediumStyle.copyWith(
+      color: RLTheme.textPrimary.withValues(alpha: 0.5),
+      fontStyle: FontStyle.italic,
+    );
+
+    return Center(
+      child: Text('Tap to reveal', style: hiddenStyle),
     );
   }
 }

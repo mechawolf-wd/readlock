@@ -5,14 +5,7 @@ import 'package:flutter/material.dart' hide Typography;
 import 'package:readlock/utility_widgets/Utility.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLTheme.dart';
-
-const String READER_PASS_TITLE = 'Reader Pass';
-const String READER_PASS_SUBTITLE = 'Unlock unlimited learning';
-const String DISCOUNT_TEXT = '25% OFF';
-const String ORIGINAL_PRICE = '\$39.99';
-const String DISCOUNTED_PRICE = '\$29.99';
-const String PRICE_PERIOD = '/month';
-const String SUBSCRIBE_BUTTON_TEXT = 'Get Reader Pass';
+import 'package:readlock/constants/RLConstants.dart';
 
 class ReaderPassScreen extends StatefulWidget {
   const ReaderPassScreen({super.key});
@@ -22,6 +15,12 @@ class ReaderPassScreen extends StatefulWidget {
 }
 
 class ReaderPassScreenState extends State<ReaderPassScreen> {
+  static const Widget BackArrowIcon = Icon(
+    Icons.arrow_back,
+    color: RLTheme.textPrimary,
+    size: 24,
+  );
+
   void handleBackButton() {
     Navigator.of(context).pop();
   }
@@ -77,12 +76,6 @@ class ReaderPassScreenState extends State<ReaderPassScreen> {
   }
 
   Widget HeaderSection() {
-    final Widget BackArrowIcon = const Icon(
-      Icons.arrow_back,
-      color: RLTheme.textPrimary,
-      size: 24,
-    );
-
     final BorderRadius backButtonRadius = BorderRadius.circular(36);
 
     return Container(
@@ -196,7 +189,7 @@ class ReaderPassScreenState extends State<ReaderPassScreen> {
     ];
 
     return Div.column([
-      RLTypography.headingMedium('What you get'),
+      RLTypography.headingMedium(READER_PASS_FEATURES_TITLE),
 
       const Spacing.height(16),
 

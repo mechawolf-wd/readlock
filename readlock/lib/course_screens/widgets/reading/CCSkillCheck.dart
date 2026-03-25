@@ -4,10 +4,9 @@
 import 'package:flutter/material.dart' hide Typography;
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLTheme.dart';
+import 'package:readlock/constants/RLConstants.dart';
 import 'package:readlock/utility_widgets/Utility.dart';
 import 'package:readlock/course_screens/CourseContentViewer.dart';
-
-const double CONTENT_SPACING = 24.0;
 
 class CCSkillCheck extends StatefulWidget {
   const CCSkillCheck({super.key});
@@ -54,12 +53,12 @@ class CCSkillCheckState extends State<CCSkillCheck>
           // Title section
           TitleSection(),
 
-          const Spacing.height(CONTENT_SPACING),
+          const Spacing.height(SKILL_CHECK_CONTENT_SPACING),
 
           // Description
           DescriptionSection(),
 
-          const Spacing.height(CONTENT_SPACING * 2),
+          const Spacing.height(SKILL_CHECK_CONTENT_SPACING * 2),
 
           // Ready button
           ReadyButton(context),
@@ -70,16 +69,18 @@ class CCSkillCheckState extends State<CCSkillCheck>
 
   // Animated skill check icon display
   Widget SkillCheckIcon() {
+    const Widget QuizIcon = Icon(
+      Icons.quiz_outlined,
+      color: RLTheme.primaryGreen,
+      size: 48,
+    );
+
     return AnimatedBuilder(
       animation: iconAnimationController,
       builder: (context, child) {
         return Transform.rotate(
           angle: iconAnimationController.value * 2.0 * 3.14159,
-          child: const Icon(
-            Icons.quiz_outlined,
-            color: RLTheme.primaryGreen,
-            size: 48,
-          ),
+          child: QuizIcon,
         );
       },
     );
@@ -90,14 +91,14 @@ class CCSkillCheckState extends State<CCSkillCheck>
     return Column(
       children: [
         RLTypography.headingLarge(
-          'Skill Check',
+          SKILL_CHECK_TITLE,
           textAlign: TextAlign.center,
         ),
 
         const Spacing.height(8),
 
         RLTypography.bodyLarge(
-          'Test Your Understanding',
+          SKILL_CHECK_SUBTITLE,
           color: RLTheme.textSecondary,
           textAlign: TextAlign.center,
         ),
@@ -110,7 +111,7 @@ class CCSkillCheckState extends State<CCSkillCheck>
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24.0),
       child: RLTypography.bodyMedium(
-        'You\'ve completed the lesson! Now let\'s check your understanding with a few questions.',
+        SKILL_CHECK_DESCRIPTION,
         textAlign: TextAlign.center,
         color: RLTheme.textPrimary,
       ),
@@ -125,7 +126,7 @@ class CCSkillCheckState extends State<CCSkillCheck>
     );
 
     final Widget buttonText = RLTypography.bodyMedium(
-      'I\'m Ready',
+      SKILL_CHECK_READY_BUTTON_TEXT,
       color: RLTheme.white,
     );
 

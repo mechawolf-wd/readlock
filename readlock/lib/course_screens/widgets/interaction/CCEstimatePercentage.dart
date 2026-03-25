@@ -45,7 +45,7 @@ class CCEstimatePercentageState extends State<CCEstimatePercentage>
     size: 16,
   );
 
-  int get correctPercentage {
+  int getCorrectPercentage() {
     return widget.content.correctPercentage;
   }
 
@@ -163,30 +163,27 @@ class CCEstimatePercentageState extends State<CCEstimatePercentage>
         ),
 
         // Min/Max labels
-        Div.row(
-          [
-            Text(
-              '0%',
-              style: TextStyle(
-                fontSize: 12,
-                color: RLTheme.textPrimary.withValues(alpha: 0.5),
-              ),
-            ),
-
-            const Spacer(),
-
-            Text(
-              '100%',
-              style: TextStyle(
-                fontSize: 12,
-                color: RLTheme.textPrimary.withValues(alpha: 0.5),
-              ),
-            ),
-          ],
-          padding: const [12, 0],
-        ),
+        SliderLabelsRow(),
       ],
       padding: const [16, 0],
+    );
+  }
+
+  Widget SliderLabelsRow() {
+    final TextStyle labelStyle = TextStyle(
+      fontSize: 12,
+      color: RLTheme.textPrimary.withValues(alpha: 0.5),
+    );
+
+    return Div.row(
+      [
+        Text('0%', style: labelStyle),
+
+        const Spacer(),
+
+        Text('100%', style: labelStyle),
+      ],
+      padding: const [12, 0],
     );
   }
 
@@ -197,23 +194,29 @@ class CCEstimatePercentageState extends State<CCEstimatePercentage>
       return null;
     }
 
-    void handleSliderChange(double value) {
-      setState(() {
-        currentEstimate = value;
-      });
-    }
-
     return handleSliderChange;
+  }
+
+  void handleSliderChange(double value) {
+    setState(() {
+      currentEstimate = value;
+    });
   }
 
   Widget SubmitButton() {
     final bool shouldShow = !hasSubmittedEstimate;
 
+    const Widget TouchAppIcon = Icon(
+      Icons.touch_app,
+      color: RLTheme.white,
+      size: 18,
+    );
+
     return RenderIf.condition(
       shouldShow,
       Div.row(
         [
-          const Icon(Icons.touch_app, color: RLTheme.white, size: 18),
+          TouchAppIcon,
 
           const Spacing.width(8),
 
@@ -231,7 +234,7 @@ class CCEstimatePercentageState extends State<CCEstimatePercentage>
   }
 
   Widget ResultSection() {
-    final int difference = (currentEstimate.round() - correctPercentage)
+    final int difference = (currentEstimate.round() - getCorrectPercentage())
         .abs();
     final bool isClose = difference <= widget.content.closeThreshold;
 
@@ -268,16 +271,25 @@ class CCEstimatePercentageState extends State<CCEstimatePercentage>
       ]);
     }
 
+    final Widget LightbulbIcon = Icon(
+      Icons.lightbulb_outline,
+      color: RLTheme.warningDark,
+      size: 20,
+    );
+
+    final bool isLargeDifference = difference > 30;
+    String headerText = 'Getting closer!';
+
+    if (isLargeDifference) {
+      headerText = 'Keep learning!';
+    }
+
     return Div.column([
       Div.row([
-        Icon(
-          Icons.lightbulb_outline,
-          color: RLTheme.warningDark,
-          size: 20,
-        ),
+        LightbulbIcon,
         const Spacing.width(12),
         RLTypography.headingMedium(
-          difference > 30 ? 'Keep learning!' : 'Getting closer!',
+          headerText,
           color: RLTheme.warningDark,
         ),
       ]),
@@ -292,18 +304,26 @@ class CCEstimatePercentageState extends State<CCEstimatePercentage>
   }
 
   Widget getComparisonDisplay(int difference) {
+    final Widget ArrowForwardIcon = Icon(
+      Icons.arrow_forward,
+      color: RLTheme.textPrimary.withValues(alpha: 0.3),
+      size: 20,
+    );
+
+    final TextStyle comparisonLabelStyle = TextStyle(
+      fontSize: 11,
+      fontWeight: FontWeight.w600,
+      color: RLTheme.textPrimary.withValues(alpha: 0.5),
+      letterSpacing: 0.5,
+    );
+
     return Div.row([
       // Your estimate
       Expanded(
         child: Div.column([
           Text(
             'YOUR ESTIMATE',
-            style: TextStyle(
-              fontSize: 11,
-              fontWeight: FontWeight.w600,
-              color: RLTheme.textPrimary.withValues(alpha: 0.5),
-              letterSpacing: 0.5,
-            ),
+            style: comparisonLabelStyle,
             textAlign: TextAlign.center,
           ),
           const Spacing.height(4),
@@ -317,11 +337,7 @@ class CCEstimatePercentageState extends State<CCEstimatePercentage>
 
       // Arrow indicator
       Div.column([
-        Icon(
-          Icons.arrow_forward,
-          color: RLTheme.textPrimary.withValues(alpha: 0.3),
-          size: 20,
-        ),
+        ArrowForwardIcon,
       ]),
 
       // Actual answer
@@ -329,17 +345,12 @@ class CCEstimatePercentageState extends State<CCEstimatePercentage>
         child: Div.column([
           Text(
             'ACTUAL',
-            style: TextStyle(
-              fontSize: 11,
-              fontWeight: FontWeight.w600,
-              color: RLTheme.textPrimary.withValues(alpha: 0.5),
-              letterSpacing: 0.5,
-            ),
+            style: comparisonLabelStyle,
             textAlign: TextAlign.center,
           ),
           const Spacing.height(4),
           RLTypography.headingMedium(
-            '$correctPercentage%',
+            '${getCorrectPercentage()}%',
             color: RLTheme.primaryGreen,
             textAlign: TextAlign.center,
           ),
@@ -362,12 +373,17 @@ class CCEstimatePercentageState extends State<CCEstimatePercentage>
   }
 
   BoxDecoration getResultCardDecoration(bool isClose) {
-    final Color backgroundColor = isClose
-        ? RLTheme.primaryGreen.withValues(alpha: 0.08)
-        : RLTheme.warningColor.withValues(alpha: 0.08);
-    final Color borderColor = isClose
-        ? RLTheme.primaryGreen.withValues(alpha: 0.3)
-        : RLTheme.warningLight.withValues(alpha: 0.3);
+    Color backgroundColor = RLTheme.warningColor.withValues(alpha: 0.08);
+
+    if (isClose) {
+      backgroundColor = RLTheme.primaryGreen.withValues(alpha: 0.08);
+    }
+
+    Color borderColor = RLTheme.warningLight.withValues(alpha: 0.3);
+
+    if (isClose) {
+      borderColor = RLTheme.primaryGreen.withValues(alpha: 0.3);
+    }
 
     return BoxDecoration(
       color: backgroundColor,
@@ -395,7 +411,7 @@ class CCEstimatePercentageState extends State<CCEstimatePercentage>
 
     revealController.forward();
 
-    final int difference = (currentEstimate.round() - correctPercentage)
+    final int difference = (currentEstimate.round() - getCorrectPercentage())
         .abs();
     final bool isClose = difference <= widget.content.closeThreshold;
 

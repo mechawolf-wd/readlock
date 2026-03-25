@@ -7,14 +7,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLDimensions.dart';
+import 'package:readlock/constants/RLConstants.dart';
 import 'package:readlock/utility_widgets/Utility.dart';
 import 'package:readlock/constants/RLTheme.dart';
 import 'package:readlock/widgets/ExpandableCard.dart';
 import 'package:readlock/utility_widgets/AccountBottomSheet.dart';
-
-const String TYPEWRITER_SOUND = 'Typewriter';
-const String SWITCHES_SOUND = 'Switches';
-const String OIIA_SOUND = 'OIIA';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -95,16 +92,16 @@ class LearningStatsCard extends StatelessWidget {
     size: RLDimensions.iconM,
   );
 
+  void handleShareTap() {
+    // Share functionality
+  }
+
   @override
   Widget build(BuildContext context) {
     final BoxDecoration cardDecoration = BoxDecoration(
       color: RLTheme.primaryBlue,
       borderRadius: RLDimensions.borderRadiusXL,
     );
-
-    void handleShareTap() {
-      // Share functionality
-    }
 
     return Container(
       decoration: cardDecoration,
@@ -373,9 +370,19 @@ class MenuItem extends StatelessWidget {
         );
     final Color titleColor = textColor ?? RLTheme.textPrimary;
 
+    final Widget MenuItemIcon = Icon(icon, color: iconColor, size: RLDimensions.iconM);
+
+    final Widget ChevronRightIcon = Icon(
+      Icons.chevron_right,
+      color: RLTheme.textPrimary.withValues(
+        alpha: RLDimensions.alphaDark,
+      ),
+      size: RLDimensions.iconM,
+    );
+
     return Div.row(
       [
-        Icon(icon, color: iconColor, size: RLDimensions.iconM),
+        MenuItemIcon,
 
         const Spacing.width(RLDimensions.spacing16),
 
@@ -383,13 +390,7 @@ class MenuItem extends StatelessWidget {
           child: RLTypography.bodyMedium(title, color: titleColor),
         ),
 
-        Icon(
-          Icons.chevron_right,
-          color: RLTheme.textPrimary.withValues(
-            alpha: RLDimensions.alphaDark,
-          ),
-          size: RLDimensions.iconM,
-        ),
+        ChevronRightIcon,
       ],
       padding: RLDimensions.paddingVerticalL,
       onTap: onTap,
@@ -409,7 +410,7 @@ class SoundPickerCardState extends State<SoundPickerCard> {
 
   @override
   Widget build(BuildContext context) {
-    final Widget soundContent = soundPickerContent();
+    final Widget soundContent = SoundPickerContent();
 
     return ExpandableCard(
       title: 'Sound Settings',
@@ -421,7 +422,7 @@ class SoundPickerCardState extends State<SoundPickerCard> {
     );
   }
 
-  Widget soundPickerContent() {
+  Widget SoundPickerContent() {
     final List<Map<String, dynamic>> soundOptions = [
       {'name': TYPEWRITER_SOUND, 'icon': Icons.keyboard},
       {'name': SWITCHES_SOUND, 'icon': Icons.toggle_on},
@@ -432,7 +433,7 @@ class SoundPickerCardState extends State<SoundPickerCard> {
       final bool isSelected = selectedSound == sound['name'];
 
       return Expanded(
-        child: soundBlock(
+        child: SoundBlock(
           name: sound['name'] as String,
           icon: sound['icon'] as IconData,
           isSelected: isSelected,
@@ -447,7 +448,7 @@ class SoundPickerCardState extends State<SoundPickerCard> {
     );
   }
 
-  Widget soundBlock({
+  Widget SoundBlock({
     required String name,
     required IconData icon,
     required bool isSelected,
@@ -477,6 +478,8 @@ class SoundPickerCardState extends State<SoundPickerCard> {
       border: Border.all(color: borderColor),
     );
 
+    final Widget SoundIcon = Icon(icon, color: iconColor, size: RLDimensions.iconL);
+
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -486,7 +489,7 @@ class SoundPickerCardState extends State<SoundPickerCard> {
           horizontal: RLDimensions.spacing4,
         ),
         child: Div.column([
-          Icon(icon, color: iconColor, size: RLDimensions.iconL),
+          SoundIcon,
 
           const Spacing.height(8),
 
@@ -531,8 +534,10 @@ class SwitchMenuItem extends StatelessWidget {
     );
     final Color titleColor = RLTheme.textPrimary;
 
+    final Widget MenuItemIcon = Icon(icon, color: iconColor, size: RLDimensions.iconM);
+
     return Div.row([
-      Icon(icon, color: iconColor, size: RLDimensions.iconM),
+      MenuItemIcon,
 
       const Spacing.width(RLDimensions.spacing16),
 
@@ -584,10 +589,12 @@ class SegmentedMenuItem extends StatelessWidget {
     );
     final Color titleColor = RLTheme.textPrimary;
 
+    final Widget MenuItemIcon = Icon(icon, color: iconColor, size: RLDimensions.iconM);
+
     return Div.column(
       [
         Div.row([
-          Icon(icon, color: iconColor, size: RLDimensions.iconM),
+          MenuItemIcon,
 
           const Spacing.width(RLDimensions.spacing16),
 

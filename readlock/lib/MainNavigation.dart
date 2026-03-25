@@ -5,22 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:readlock/constants/RLTheme.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
+import 'package:readlock/constants/RLConstants.dart';
 import 'package:readlock/screens/CoursesScreen.dart';
 import 'package:readlock/screens/HomeScreen.dart';
 import 'package:readlock/screens/MyBookshelfScreen.dart';
 import 'package:readlock/screens/SandboxScreen.dart';
 import 'package:readlock/utility_widgets/LoginBottomSheet.dart';
-
-const String HOME_TAB_LABEL = 'Home';
-const String SEARCH_TAB_LABEL = 'Search';
-const String BOOKSHELF_TAB_LABEL = 'My Bookshelf';
-const String SANDBOX_TAB_LABEL = 'Sandbox';
-
-// Floating navigation bar constants
-const double FLOATING_NAV_HEIGHT = 56.0;
-const double FLOATING_NAV_MARGIN = 16.0;
-const double FLOATING_NAV_BOTTOM_OFFSET =
-    FLOATING_NAV_HEIGHT + FLOATING_NAV_MARGIN + 16.0;
 
 class MainNavigation extends StatefulWidget {
   final int initialTabIndex;
@@ -79,17 +69,10 @@ class MainNavigationState extends State<MainNavigation> {
             duration: const Duration(milliseconds: 150),
             switchInCurve: Curves.easeInOut,
             switchOutCurve: Curves.easeInOut,
-            transitionBuilder:
-                (Widget child, Animation<double> animation) {
-                  return FadeTransition(
-                    opacity: animation,
-                    child: child,
-                  );
-                },
-            child: KeyedSubtree(
-              key: ValueKey<int>(currentIndex),
-              child: screens[currentIndex],
-            ),
+            transitionBuilder: (Widget child, Animation<double> animation) {
+              return FadeTransition(opacity: animation, child: child);
+            },
+            child: KeyedSubtree(key: ValueKey<int>(currentIndex), child: screens[currentIndex]),
           ),
 
           // Floating bottom navigation with SafeArea
@@ -110,9 +93,7 @@ class MainNavigationState extends State<MainNavigation> {
   }
 
   Widget FloatingNavigationBar() {
-    const BorderRadius navBarBorderRadius = BorderRadius.all(
-      Radius.circular(28),
-    );
+    const BorderRadius navBarBorderRadius = BorderRadius.all(Radius.circular(28));
 
     final BoxDecoration navBarDecoration = BoxDecoration(
       color: RLTheme.white,
@@ -127,10 +108,7 @@ class MainNavigationState extends State<MainNavigation> {
         context: context,
         removeBottom: true,
         child: Theme(
-          data: ThemeData(
-            splashColor: Colors.transparent,
-            highlightColor: Colors.transparent,
-          ),
+          data: ThemeData(splashColor: Colors.transparent, highlightColor: Colors.transparent),
           child: BottomNavigationBar(
             currentIndex: currentIndex,
             onTap: handleNavigationTap,

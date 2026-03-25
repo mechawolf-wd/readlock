@@ -2,29 +2,16 @@
 // Shows experience gains, hints, and other feedback at the bottom of the screen
 
 import 'package:flutter/material.dart' hide Typography;
+import 'package:readlock/constants/RLConstants.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLTheme.dart';
 import 'package:readlock/utility_widgets/FeedbackBottomSheet.dart';
 import 'package:readlock/utility_widgets/Utility.dart';
 
-// Text constants
-const String CORRECT_ANSWER_MESSAGE = '+5 experience';
-const String WRONG_ANSWER_TITLE = 'Common thought';
-
-// Timing constants
-const Duration SNACKBAR_ANIMATION_DURATION = Duration(milliseconds: 250);
-const Duration DEFAULT_SNACKBAR_DURATION = Duration(milliseconds: 3000);
-const Duration HINT_SNACKBAR_DURATION = Duration(seconds: 5);
-
-// Sizing constants
-const double SNACKBAR_VERTICAL_PADDING = 16.0;
-const double SNACKBAR_HORIZONTAL_PADDING = 20.0;
-const double SNACKBAR_BOTTOM_SAFE_AREA_EXTRA = 8.0;
-
 // Snackbar controller singleton
-class _SnackbarController {
-  OverlayEntry? _entry;
-  _AnimatedSnackbarState? _state;
+class SnackbarController {
+  OverlayEntry? overlayEntry;
+  AnimatedSnackbarState? snackbarState;
 
   void show({
     required BuildContext context,
@@ -35,44 +22,48 @@ class _SnackbarController {
     // Dismiss any existing snackbar instantly
     dismiss();
 
-    final snackbar = _AnimatedSnackbar(
+    final snackbar = AnimatedSnackbar(
       content: content,
       backgroundColor: backgroundColor,
       duration: duration,
       onDismiss: dismiss,
-      onStateCreated: (state) => _state = state,
+      onStateCreated: (state) {
+        snackbarState = state;
+      },
     );
 
-    _entry = OverlayEntry(
+    overlayEntry = OverlayEntry(
       builder: (context) => snackbar,
     );
 
-    Overlay.of(context).insert(_entry!);
+    Overlay.of(context).insert(overlayEntry!);
   }
 
   void dismiss() {
-    _state = null;
-    _entry?.remove();
-    _entry = null;
+    snackbarState = null;
+    overlayEntry?.remove();
+    overlayEntry = null;
   }
 
   void animatedDismiss() {
-    final state = _state;
+    final AnimatedSnackbarState? currentState = snackbarState;
 
-    if (state == null) {
+    final bool hasNoState = currentState == null;
+
+    if (hasNoState) {
       dismiss();
       return;
     }
 
-    state.animateOut().then((_) {
-      _entry?.remove();
-      _entry = null;
-      _state = null;
+    currentState.animateOut().then((result) {
+      overlayEntry?.remove();
+      overlayEntry = null;
+      snackbarState = null;
     });
   }
 }
 
-final _snackbarController = _SnackbarController();
+final snackbarController = SnackbarController();
 
 // Public API
 class FeedbackSnackBar {
@@ -83,12 +74,12 @@ class FeedbackSnackBar {
     final bool hasExplanation =
         explanation != null && explanation.isNotEmpty;
 
-    final Widget content = _CorrectAnswerContent(
+    final Widget content = CorrectAnswerContent(
       hasExplanation: hasExplanation,
       explanation: explanation,
     );
 
-    _snackbarController.show(
+    snackbarController.show(
       context: context,
       content: content,
       backgroundColor: RLTheme.primaryGreen,
@@ -102,12 +93,12 @@ class FeedbackSnackBar {
         ? HINT_SNACKBAR_DURATION
         : DEFAULT_SNACKBAR_DURATION;
 
-    final Widget content = _WrongAnswerContent(
+    final Widget content = WrongAnswerContent(
       hasHint: hasHint,
       hint: hint,
     );
 
-    _snackbarController.show(
+    snackbarController.show(
       context: context,
       content: content,
       backgroundColor: RLTheme.primaryBlue,
@@ -129,7 +120,7 @@ class FeedbackSnackBar {
       color: RLTheme.white,
     );
 
-    _snackbarController.show(
+    snackbarController.show(
       context: context,
       content: content,
       backgroundColor: backgroundColor,
@@ -137,23 +128,23 @@ class FeedbackSnackBar {
   }
 
   static void clearSnackbars() {
-    _snackbarController.dismiss();
+    snackbarController.dismiss();
   }
 
   static void dismissAnimated() {
-    _snackbarController.animatedDismiss();
+    snackbarController.animatedDismiss();
   }
 }
 
 // Animated snackbar widget
-class _AnimatedSnackbar extends StatefulWidget {
+class AnimatedSnackbar extends StatefulWidget {
   final Widget content;
   final Color backgroundColor;
   final Duration? duration;
   final VoidCallback onDismiss;
-  final void Function(_AnimatedSnackbarState) onStateCreated;
+  final void Function(AnimatedSnackbarState) onStateCreated;
 
-  const _AnimatedSnackbar({
+  const AnimatedSnackbar({
     required this.content,
     required this.backgroundColor,
     required this.duration,
@@ -162,13 +153,13 @@ class _AnimatedSnackbar extends StatefulWidget {
   });
 
   @override
-  State<_AnimatedSnackbar> createState() => _AnimatedSnackbarState();
+  State<AnimatedSnackbar> createState() => AnimatedSnackbarState();
 }
 
-class _AnimatedSnackbarState extends State<_AnimatedSnackbar>
+class AnimatedSnackbarState extends State<AnimatedSnackbar>
     with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  late Animation<Offset> _slideAnimation;
+  late AnimationController animationController;
+  late Animation<Offset> slideAnimation;
 
   @override
   void initState() {
@@ -176,21 +167,21 @@ class _AnimatedSnackbarState extends State<_AnimatedSnackbar>
 
     widget.onStateCreated(this);
 
-    _controller = AnimationController(
+    animationController = AnimationController(
       vsync: this,
       duration: SNACKBAR_ANIMATION_DURATION,
     );
 
-    _slideAnimation = Tween<Offset>(
+    slideAnimation = Tween<Offset>(
       begin: const Offset(0, 1),
       end: Offset.zero,
     ).animate(CurvedAnimation(
-      parent: _controller,
+      parent: animationController,
       curve: Curves.easeOutCubic,
       reverseCurve: Curves.easeInCubic,
     ));
 
-    _controller.forward();
+    animationController.forward();
 
     // Auto-dismiss if duration is set
     final bool shouldAutoDismiss = widget.duration != null;
@@ -206,12 +197,12 @@ class _AnimatedSnackbarState extends State<_AnimatedSnackbar>
 
   @override
   void dispose() {
-    _controller.dispose();
+    animationController.dispose();
     super.dispose();
   }
 
   Future<void> animateOut() {
-    return _controller.reverse();
+    return animationController.reverse();
   }
 
   @override
@@ -230,7 +221,7 @@ class _AnimatedSnackbarState extends State<_AnimatedSnackbar>
       left: 0,
       right: 0,
       child: SlideTransition(
-        position: _slideAnimation,
+        position: slideAnimation,
         child: Material(
           color: widget.backgroundColor,
           child: Padding(
@@ -244,11 +235,11 @@ class _AnimatedSnackbarState extends State<_AnimatedSnackbar>
 }
 
 // Correct answer content
-class _CorrectAnswerContent extends StatelessWidget {
+class CorrectAnswerContent extends StatelessWidget {
   final bool hasExplanation;
   final String? explanation;
 
-  const _CorrectAnswerContent({
+  const CorrectAnswerContent({
     required this.hasExplanation,
     this.explanation,
   });
@@ -275,38 +266,38 @@ class _CorrectAnswerContent extends StatelessWidget {
 
       RenderIf.condition(
         hasExplanation,
-        _WhyButton(explanation: explanation),
+        WhyButton(explanation: explanation),
       ),
     ], crossAxisAlignment: CrossAxisAlignment.center);
   }
 }
 
 // Why button
-class _WhyButton extends StatelessWidget {
+class WhyButton extends StatelessWidget {
   final String? explanation;
 
-  const _WhyButton({this.explanation});
+  const WhyButton({this.explanation});
+
+  void handleTap(BuildContext context) {
+    FeedbackSnackBar.dismissAnimated();
+
+    if (explanation != null) {
+      FeedbackBottomSheets.showExplanation(
+        context: context,
+        explanation: explanation!,
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    void handleTap() {
-      FeedbackSnackBar.dismissAnimated();
-
-      if (explanation != null) {
-        FeedbackBottomSheets.showExplanation(
-          context: context,
-          explanation: explanation!,
-        );
-      }
-    }
-
     final TextStyle buttonStyle = RLTypography.bodyMediumStyle.copyWith(
       color: RLTheme.white,
       fontWeight: FontWeight.w600,
     );
 
     return GestureDetector(
-      onTap: handleTap,
+      onTap: () => handleTap(context),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
         child: Text('Why?', style: buttonStyle),
@@ -316,11 +307,11 @@ class _WhyButton extends StatelessWidget {
 }
 
 // Wrong answer content
-class _WrongAnswerContent extends StatelessWidget {
+class WrongAnswerContent extends StatelessWidget {
   final bool hasHint;
   final String? hint;
 
-  const _WrongAnswerContent({
+  const WrongAnswerContent({
     required this.hasHint,
     this.hint,
   });
@@ -347,38 +338,38 @@ class _WrongAnswerContent extends StatelessWidget {
 
       RenderIf.condition(
         hasHint,
-        _HintButton(hint: hint),
+        HintButton(hint: hint),
       ),
     ], crossAxisAlignment: CrossAxisAlignment.center);
   }
 }
 
 // Hint button
-class _HintButton extends StatelessWidget {
+class HintButton extends StatelessWidget {
   final String? hint;
 
-  const _HintButton({this.hint});
+  const HintButton({this.hint});
+
+  void handleTap(BuildContext context) {
+    FeedbackSnackBar.dismissAnimated();
+
+    if (hint != null) {
+      FeedbackBottomSheets.showHint(
+        context: context,
+        hint: hint!,
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    void handleTap() {
-      FeedbackSnackBar.dismissAnimated();
-
-      if (hint != null) {
-        FeedbackBottomSheets.showHint(
-          context: context,
-          hint: hint!,
-        );
-      }
-    }
-
     final TextStyle buttonStyle = RLTypography.bodyMediumStyle.copyWith(
       color: RLTheme.white,
       fontWeight: FontWeight.w600,
     );
 
     return GestureDetector(
-      onTap: handleTap,
+      onTap: () => handleTap(context),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
         child: Text('Hint', style: buttonStyle),

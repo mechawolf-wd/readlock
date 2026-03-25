@@ -56,7 +56,6 @@ class BlockButtonWidget extends StatefulWidget {
 
 class BlockButtonState extends State<BlockButtonWidget> {
   bool isPressed = false;
-  static const double SHADOW_OFFSET = 4.0;
 
   void handleTapDown(TapDownDetails details) {
     setState(() {
@@ -106,12 +105,12 @@ class BlockButtonState extends State<BlockButtonWidget> {
 
     // Extract shadow offset calculation (rule #30)
     final Offset shadowOffset = shouldShowShadow
-        ? const Offset(0, SHADOW_OFFSET)
+        ? const Offset(0, SOLID_SHADOW_OFFSET)
         : const Offset(0, 0);
 
     // Extract transform offset calculation (rule #30)
     final Offset transformOffset = shouldMoveButton
-        ? const Offset(0, SHADOW_OFFSET)
+        ? const Offset(0, SOLID_SHADOW_OFFSET)
         : const Offset(0, 0);
 
     // Extract decoration (rule #16)

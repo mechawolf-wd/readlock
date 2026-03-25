@@ -6,6 +6,7 @@ import 'package:readlock/models/CourseModel.dart';
 import 'package:readlock/utility_widgets/Utility.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLTheme.dart';
+import 'package:readlock/constants/RLConstants.dart';
 import 'package:readlock/utility_widgets/text_animation/ProgressiveText.dart';
 
 class CCReflection extends StatefulWidget {
@@ -86,6 +87,8 @@ class CCReflectionState extends State<CCReflection> {
   Widget ThinkingCardsSection() {
     final List<String> limitedPoints = getLimitedThinkingPoints();
 
+    final List<Widget> thinkingCards = ThinkingCardsList(limitedPoints);
+
     return Div.column([
       // Instructions header
       InstructionsHeader(),
@@ -93,7 +96,7 @@ class CCReflectionState extends State<CCReflection> {
       const Spacing.height(16),
 
       // Thinking cards list
-      ...ThinkingCardsList(limitedPoints),
+      Div.column(thinkingCards),
     ], crossAxisAlignment: CrossAxisAlignment.stretch);
   }
 
@@ -103,7 +106,7 @@ class CCReflectionState extends State<CCReflection> {
 
   Widget InstructionsHeader() {
     return RLTypography.bodyMedium(
-      'Consider these aspects:',
+      REFLECTION_ASPECTS_LABEL,
       color: RLTheme.textPrimary.withValues(alpha: 0.7),
     );
   }
@@ -158,16 +161,22 @@ class CCReflectionState extends State<CCReflection> {
     required Color cardColor,
     required bool isSelected,
   }) {
+    final Color cardBackgroundColor = isSelected
+        ? cardColor.withValues(alpha: 0.1)
+        : RLTheme.backgroundLight;
+
+    final Color cardBorderColor = isSelected
+        ? cardColor
+        : RLTheme.textPrimary.withValues(alpha: 0.1);
+
+    final double cardBorderWidth = isSelected ? 2 : 1;
+
     return BoxDecoration(
-      color: isSelected
-          ? cardColor.withValues(alpha: 0.1)
-          : RLTheme.backgroundLight,
+      color: cardBackgroundColor,
       borderRadius: BorderRadius.circular(12),
       border: Border.all(
-        color: isSelected
-            ? cardColor
-            : RLTheme.textPrimary.withValues(alpha: 0.1),
-        width: isSelected ? 2 : 1,
+        color: cardBorderColor,
+        width: cardBorderWidth,
       ),
     );
   }
@@ -211,7 +220,9 @@ class CCReflectionState extends State<CCReflection> {
   }
 
   void handleSwipeUpdate(DragUpdateDetails details, int index) {
-    if (details.delta.dx > 2) {
+    final bool isSwipingRight = details.delta.dx > 2;
+
+    if (isSwipingRight) {
       setState(() {
         swipingPoints.add(index);
       });
@@ -266,10 +277,23 @@ class CCReflectionState extends State<CCReflection> {
       isSwiping: isSwiping,
     );
 
-    final IconData indicatorIcon = isSelected
-        ? Icons.check
-        : Icons.arrow_forward_ios;
-    final Color iconColor = isSelected ? RLTheme.white : cardColor;
+    IconData indicatorIcon = Icons.arrow_forward_ios;
+
+    if (isSelected) {
+      indicatorIcon = Icons.check;
+    }
+
+    Color iconColor = cardColor;
+
+    if (isSelected) {
+      iconColor = RLTheme.white;
+    }
+
+    final Widget IndicatorIcon = Icon(
+      indicatorIcon,
+      color: iconColor,
+      size: 16,
+    );
 
     return AnimatedContainer(
       duration: const Duration(milliseconds: 200),
@@ -279,7 +303,7 @@ class CCReflectionState extends State<CCReflection> {
         color: indicatorColor,
         borderRadius: BorderRadius.circular(16),
       ),
-      child: Icon(indicatorIcon, color: iconColor, size: 16),
+      child: IndicatorIcon,
     );
   }
 
@@ -304,9 +328,13 @@ class CCReflectionState extends State<CCReflection> {
     required Color cardColor,
     required bool isSelected,
   }) {
-    final Color textColor = isSelected
-        ? cardColor
-        : RLTheme.textPrimary.withValues(alpha: 0.8);
+    Color textColor = RLTheme.textPrimary.withValues(alpha: 0.8);
+
+    if (isSelected) {
+      textColor = cardColor;
+    }
+
+    final bool shouldShowSwipeInstruction = !isSelected;
 
     return Expanded(
       child: Div.column([
@@ -314,14 +342,17 @@ class CCReflectionState extends State<CCReflection> {
         RLTypography.bodyMedium(point, color: textColor),
 
         // Swipe instruction
-        if (!isSelected) ...[
-          const Spacing.height(4),
+        RenderIf.condition(
+          shouldShowSwipeInstruction,
+          Div.column([
+            const Spacing.height(4),
 
-          RLTypography.bodyMedium(
-            'Swipe right to confirm',
-            color: RLTheme.textPrimary.withValues(alpha: 0.5),
-          ),
-        ],
+            RLTypography.bodyMedium(
+              REFLECTION_SWIPE_HINT,
+              color: RLTheme.textPrimary.withValues(alpha: 0.5),
+            ),
+          ]),
+        ),
       ], crossAxisAlignment: CrossAxisAlignment.start),
     );
   }

@@ -3,6 +3,7 @@ import 'package:readlock/models/CourseModel.dart';
 import 'package:readlock/utility_widgets/Utility.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLTheme.dart';
+import 'package:readlock/constants/RLConstants.dart';
 import 'package:readlock/utility_widgets/text_animation/ProgressiveText.dart';
 import 'package:readlock/utility_widgets/FeedbackSnackbar.dart';
 
@@ -26,11 +27,6 @@ class ButtonColors {
     required this.iconColor,
   });
 }
-
-const double TRUE_FALSE_BUTTON_HEIGHT = 60.0;
-const double TRUE_FALSE_BUTTON_SPACING = 16.0;
-const double TRUE_FALSE_SECTION_SPACING = 24.0;
-const double TRUE_FALSE_ICON_SIZE = 24.0;
 
 class CCTrueFalseQuestion extends StatefulWidget {
   final QuestionContent content;
@@ -98,12 +94,12 @@ class CCTrueFalseQuestionState extends State<CCTrueFalseQuestion> {
     return Div.column(
       [
         // Question text
-        questionTextWidget(),
+        QuestionTextWidget(),
 
         const Spacing.height(TRUE_FALSE_SECTION_SPACING),
 
         // True/False button row
-        buttonRowWidget(
+        ButtonRowWidget(
           CheckIcon,
           CancelIcon,
           correctButtonDecoration,
@@ -116,7 +112,7 @@ class CCTrueFalseQuestionState extends State<CCTrueFalseQuestion> {
         const Spacing.height(TRUE_FALSE_SECTION_SPACING),
 
         // Explanation section
-        explanationSectionWidget(),
+        ExplanationSectionWidget(),
       ],
       crossAxisAlignment: CrossAxisAlignment.stretch,
       mainAxisAlignment: MainAxisAlignment.start,
@@ -125,7 +121,7 @@ class CCTrueFalseQuestionState extends State<CCTrueFalseQuestion> {
     );
   }
 
-  Widget questionTextWidget() {
+  Widget QuestionTextWidget() {
     final TextStyle questionStyle = RLTypography.bodyLargeStyle
         .copyWith(fontWeight: FontWeight.w500, fontSize: 18);
 
@@ -136,7 +132,7 @@ class CCTrueFalseQuestionState extends State<CCTrueFalseQuestion> {
     );
   }
 
-  Widget buttonRowWidget(
+  Widget ButtonRowWidget(
     Widget checkIcon,
     Widget cancelIcon,
     BoxDecoration correctDecoration,
@@ -148,7 +144,7 @@ class CCTrueFalseQuestionState extends State<CCTrueFalseQuestion> {
     return Div.row([
       // True button
       Expanded(
-        child: trueButtonWidget(
+        child: TrueButtonWidget(
           checkIcon,
           correctDecoration,
           selectedTrueDecoration,
@@ -161,7 +157,7 @@ class CCTrueFalseQuestionState extends State<CCTrueFalseQuestion> {
 
       // False button
       Expanded(
-        child: falseButtonWidget(
+        child: FalseButtonWidget(
           cancelIcon,
           correctDecoration,
           selectedFalseDecoration,
@@ -172,7 +168,7 @@ class CCTrueFalseQuestionState extends State<CCTrueFalseQuestion> {
     ]);
   }
 
-  Widget trueButtonWidget(
+  Widget TrueButtonWidget(
     Widget checkIcon,
     BoxDecoration correctDecoration,
     BoxDecoration selectedDecoration,
@@ -210,13 +206,19 @@ class CCTrueFalseQuestionState extends State<CCTrueFalseQuestion> {
       fontSize: 16,
     );
 
+    final Widget TrueCheckIcon = Icon(
+      Icons.check_circle_outline,
+      color: colors.iconColor,
+      size: TRUE_FALSE_ICON_SIZE,
+    );
+
+    final VoidCallback? tapCallback = hasAnswered
+        ? null
+        : () => handleAnswerSelection(trueIndex);
+
     return Div.row(
       [
-        Icon(
-          Icons.check_circle_outline,
-          color: colors.iconColor,
-          size: TRUE_FALSE_ICON_SIZE,
-        ),
+        TrueCheckIcon,
 
         const Spacing.width(12),
 
@@ -226,13 +228,11 @@ class CCTrueFalseQuestionState extends State<CCTrueFalseQuestion> {
       decoration: decoration.copyWith(color: colors.backgroundColor),
       radius: BorderRadius.circular(12),
       mainAxisAlignment: MainAxisAlignment.center,
-      onTap: hasAnswered
-          ? null
-          : () => handleAnswerSelection(trueIndex),
+      onTap: tapCallback,
     );
   }
 
-  Widget falseButtonWidget(
+  Widget FalseButtonWidget(
     Widget cancelIcon,
     BoxDecoration correctDecoration,
     BoxDecoration selectedDecoration,
@@ -270,13 +270,19 @@ class CCTrueFalseQuestionState extends State<CCTrueFalseQuestion> {
       fontSize: 16,
     );
 
+    final Widget FalseCancelIcon = Icon(
+      Icons.cancel_outlined,
+      color: colors.iconColor,
+      size: TRUE_FALSE_ICON_SIZE,
+    );
+
+    final VoidCallback? tapCallback = hasAnswered
+        ? null
+        : () => handleAnswerSelection(falseIndex);
+
     return Div.row(
       [
-        Icon(
-          Icons.cancel_outlined,
-          color: colors.iconColor,
-          size: TRUE_FALSE_ICON_SIZE,
-        ),
+        FalseCancelIcon,
 
         const Spacing.width(12),
 
@@ -286,13 +292,11 @@ class CCTrueFalseQuestionState extends State<CCTrueFalseQuestion> {
       decoration: decoration.copyWith(color: colors.backgroundColor),
       radius: BorderRadius.circular(12),
       mainAxisAlignment: MainAxisAlignment.center,
-      onTap: hasAnswered
-          ? null
-          : () => handleAnswerSelection(falseIndex),
+      onTap: tapCallback,
     );
   }
 
-  Widget explanationSectionWidget() {
+  Widget ExplanationSectionWidget() {
     final bool shouldShowExplanation = hasAnswered;
 
     return RenderIf.condition(
@@ -430,24 +434,40 @@ class CCTrueFalseQuestionState extends State<CCTrueFalseQuestion> {
   void showIncorrectAnswerFeedback(int answerIndex) {
     final QuestionOption selectedOption =
         widget.content.options[answerIndex];
-    final String consequenceMessage =
-        selectedOption.consequenceMessage ??
-        widget.content.hint ??
-        'Think about the design principle and try again.';
+    final String consequenceMessage = getConsequenceMessage(selectedOption);
 
     FeedbackSnackBar.showWrongAnswer(context, hint: consequenceMessage);
+  }
+
+  String getConsequenceMessage(QuestionOption selectedOption) {
+    if (selectedOption.consequenceMessage != null) {
+      return selectedOption.consequenceMessage!;
+    }
+
+    if (widget.content.hint != null) {
+      return widget.content.hint!;
+    }
+
+    return 'Think about the design principle and try again.';
   }
 
   void showCorrectAnswerFeedback(int answerIndex) {
     final QuestionOption selectedOption =
         widget.content.options[answerIndex];
-    final String feedbackMessage =
-        selectedOption.consequenceMessage ?? widget.content.explanation;
+    final String feedbackMessage = getFeedbackMessage(selectedOption);
 
     FeedbackSnackBar.showCorrectAnswer(
       context,
       explanation: feedbackMessage,
     );
+  }
+
+  String getFeedbackMessage(QuestionOption selectedOption) {
+    if (selectedOption.consequenceMessage != null) {
+      return selectedOption.consequenceMessage!;
+    }
+
+    return widget.content.explanation;
   }
 
   void markQuestionAsAnswered(int selectedIndex) {

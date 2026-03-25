@@ -8,6 +8,7 @@ import 'package:readlock/utility_widgets/Utility.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLTheme.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
+import 'package:readlock/constants/RLConstants.dart';
 import 'package:readlock/course_screens/CourseContentViewer.dart';
 
 
@@ -72,7 +73,7 @@ class CCTextContentState extends State<CCTextContent> {
   Widget ContinueButton() {
     // Button text style
     final Widget buttonText = RLTypography.bodyMedium(
-      'Continue',
+      TEXT_CONTENT_CONTINUE_LABEL,
       color: RLTheme.white,
     );
 
