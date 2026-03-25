@@ -52,15 +52,13 @@ class CCQuoteState extends State<CCQuote> {
   }
 
   Widget QuoteHeader() {
-    const Widget QuoteIcon = Icon(
-      Icons.format_quote,
-      color: RLTheme.warningColor,
-      size: 24,
-    );
+    const Widget QuoteIcon = Icon(Icons.format_quote, color: RLTheme.warningColor, size: 24);
 
-    final IconData bookmarkIconData = isBookmarked
-        ? Icons.bookmark
-        : Icons.bookmark_border;
+    IconData bookmarkIconData = Icons.bookmark_border;
+
+    if (isBookmarked) {
+      bookmarkIconData = Icons.bookmark;
+    }
 
     final Widget BookmarkToggleIcon = Icon(
       bookmarkIconData,
@@ -75,10 +73,7 @@ class CCQuoteState extends State<CCQuote> {
 
       Expanded(child: RLTypography.bodyLarge(NOTABLE_QUOTE_TITLE)),
 
-      Div.row(
-        [BookmarkToggleIcon],
-        onTap: handleBookmarkToggle,
-      ),
+      Div.row([BookmarkToggleIcon], onTap: handleBookmarkToggle),
     ]);
   }
 
@@ -92,10 +87,7 @@ class CCQuoteState extends State<CCQuote> {
     final BoxDecoration quoteTextDecoration = BoxDecoration(
       color: RLTheme.warningColor.withValues(alpha: 0.05),
       borderRadius: BorderRadius.circular(12),
-      border: Border.all(
-        color: RLTheme.warningColor.withValues(alpha: 0.2),
-        width: 2,
-      ),
+      border: Border.all(color: RLTheme.warningColor.withValues(alpha: 0.2), width: 2),
     );
 
     return Container(

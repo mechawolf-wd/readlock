@@ -11,7 +11,7 @@ import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLTheme.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/constants/RLConstants.dart';
-import 'package:readlock/utility_widgets/CourseLoadingScreen.dart';
+import 'package:readlock/course_screens/CourseLoadingScreen.dart';
 
 // Segment color mapping (Temporary) - each course will have its own color
 Color getColorForLetter(String letter) {
@@ -41,8 +41,7 @@ class CourseRoadmapScreen extends StatefulWidget {
   const CourseRoadmapScreen({super.key, required this.courseId});
 
   @override
-  State<CourseRoadmapScreen> createState() =>
-      CourseRoadmapScreenState();
+  State<CourseRoadmapScreen> createState() => CourseRoadmapScreenState();
 }
 
 class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
@@ -91,8 +90,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
     }
 
     final int currentLesson = findLessonAtThreshold();
-    final bool hasLessonChanged =
-        currentLesson != lastLessonAtThreshold;
+    final bool hasLessonChanged = currentLesson != lastLessonAtThreshold;
     final bool isValidLesson = currentLesson >= 0;
 
     if (hasLessonChanged && isValidLesson) {
@@ -104,14 +102,9 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
   int findLessonAtThreshold() {
     final double threshold = (screenHeight ?? 800) / 2;
 
-    for (
-      int lessonIndex = lessonKeys.length - 1;
-      lessonIndex >= 0;
-      lessonIndex--
-    ) {
+    for (int lessonIndex = lessonKeys.length - 1; lessonIndex >= 0; lessonIndex--) {
       final RenderBox? box =
-          lessonKeys[lessonIndex].currentContext?.findRenderObject()
-              as RenderBox?;
+          lessonKeys[lessonIndex].currentContext?.findRenderObject() as RenderBox?;
 
       if (box != null) {
         final double y = box.localToGlobal(Offset.zero).dy;
@@ -150,14 +143,9 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
   int findVisibleSegment() {
     const double visibilityThreshold = 300;
 
-    for (
-      int segmentIndex = segmentKeys.length - 1;
-      segmentIndex >= 0;
-      segmentIndex--
-    ) {
+    for (int segmentIndex = segmentKeys.length - 1; segmentIndex >= 0; segmentIndex--) {
       final RenderBox? box =
-          segmentKeys[segmentIndex].currentContext?.findRenderObject()
-              as RenderBox?;
+          segmentKeys[segmentIndex].currentContext?.findRenderObject() as RenderBox?;
 
       if (box != null) {
         final double y = box.localToGlobal(Offset.zero).dy;
@@ -174,21 +162,14 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
 
   Future<void> loadCourseData() async {
     try {
-      courseData = await CourseDataService.getCourseById(
-        widget.courseId,
-      );
+      courseData = await CourseDataService.getCourseById(widget.courseId);
 
       final bool hasCourseData = courseData != null;
 
       if (hasCourseData) {
-        courseSegments = List<Map<String, dynamic>>.from(
-          courseData!['segments'] ?? [],
-        );
+        courseSegments = List<Map<String, dynamic>>.from(courseData!['segments'] ?? []);
 
-        segmentKeys = List.generate(
-          courseSegments.length,
-          (index) => GlobalKey(),
-        );
+        segmentKeys = List.generate(courseSegments.length, (index) => GlobalKey());
 
         // Count total lessons across all segments
         int totalLessons = 0;
@@ -198,10 +179,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
           totalLessons += lessons.length;
         }
 
-        lessonKeys = List.generate(
-          totalLessons,
-          (index) => GlobalKey(),
-        );
+        lessonKeys = List.generate(totalLessons, (index) => GlobalKey());
       }
     } on Exception {
       // Handle error silently
@@ -243,8 +221,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
     } else {
       // Calculate scroll position manually to account for sticky header
       final RenderBox? targetBox =
-          segmentKeys[segmentIndex].currentContext?.findRenderObject()
-              as RenderBox?;
+          segmentKeys[segmentIndex].currentContext?.findRenderObject() as RenderBox?;
 
       if (targetBox != null) {
         final double currentScroll = scrollController.offset;
@@ -255,14 +232,10 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
         // We want content to end up at: safeAreaTop + ROADMAP_STICKY_HEADER_HEIGHT
         final double safeAreaTop = MediaQuery.of(context).padding.top;
         final double headerOffset = safeAreaTop + ROADMAP_STICKY_HEADER_HEIGHT;
-        final double newScrollPosition =
-            currentScroll + targetY - headerOffset;
+        final double newScrollPosition = currentScroll + targetY - headerOffset;
 
         scrollController.animateTo(
-          newScrollPosition.clamp(
-            0,
-            scrollController.position.maxScrollExtent,
-          ),
+          newScrollPosition.clamp(0, scrollController.position.maxScrollExtent),
           duration: const Duration(milliseconds: 400),
           curve: Curves.easeOutCubic,
         );
@@ -307,10 +280,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
         child: Stack(
           children: [
             // Scrollable content with sticky headers
-            CustomScrollView(
-              controller: scrollController,
-              slivers: slivers,
-            ),
+            CustomScrollView(controller: scrollController, slivers: slivers),
 
             // Bottom floating section
             Positioned(
@@ -327,11 +297,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisSize: MainAxisSize.min,
-                      children: [
-                        BackToTopButton(),
-
-                        const Spacing.height(12),
-                      ],
+                      children: [BackToTopButton(), const Spacing.height(12)],
                     ),
                   ),
 
@@ -405,10 +371,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
         mainAxisSize: MainAxisSize.min,
         children: [
           // Segment tiles
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: SegmentTiles(),
-          ),
+          Row(mainAxisAlignment: MainAxisAlignment.center, children: SegmentTiles()),
 
           const Spacing.height(12),
 
@@ -421,8 +384,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
 
   Widget RoadmapHeader() {
     final String courseTitle = courseData?['title'] ?? 'Course Roadmap';
-    final String courseAuthor =
-        courseData?['author'] ?? 'Unknown Author';
+    final String courseAuthor = courseData?['author'] ?? 'Unknown Author';
 
     final Widget BackChevronIcon = const Icon(
       Icons.keyboard_arrow_down,
@@ -463,10 +425,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
     );
   }
 
-  Widget HeroCard({
-    required String courseTitle,
-    required String courseAuthor,
-  }) {
+  Widget HeroCard({required String courseTitle, required String courseAuthor}) {
     final BoxDecoration cardDecoration = BoxDecoration(
       color: RLTheme.white,
       borderRadius: BorderRadius.circular(20),
@@ -476,10 +435,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
 
     final BoxDecoration progressRingDecoration = BoxDecoration(
       shape: BoxShape.circle,
-      border: Border.all(
-        color: RLTheme.primaryGreen.withValues(alpha: 0.2),
-        width: 3,
-      ),
+      border: Border.all(color: RLTheme.primaryGreen.withValues(alpha: 0.2), width: 3),
     );
 
     final BoxDecoration bookShadowDecoration = BoxDecoration(
@@ -513,11 +469,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
         alignment: Alignment.center,
         children: [
           // Background ring
-          Container(
-            width: 128,
-            height: 128,
-            decoration: progressRingDecoration,
-          ),
+          Container(width: 128, height: 128, decoration: progressRingDecoration),
 
           // Progress arc (using CustomPaint for partial circle)
           SizedBox(
@@ -559,12 +511,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
               ProgressRing,
 
               // Percentage badge
-              Positioned(
-                bottom: -8,
-                left: 0,
-                right: 0,
-                child: Center(child: PercentageChip),
-              ),
+              Positioned(bottom: -8, left: 0, right: 0, child: Center(child: PercentageChip)),
             ],
           ),
 
@@ -583,10 +530,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
 
                 const Spacing.height(4),
 
-                RLTypography.bodyMedium(
-                  courseAuthor,
-                  color: RLTheme.textSecondary,
-                ),
+                RLTypography.bodyMedium(courseAuthor, color: RLTheme.textSecondary),
 
                 const Spacing.height(12),
 
@@ -624,10 +568,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
 
             const Spacing.width(4),
 
-            RLTypography.bodyMedium(
-              '37 masterclasses',
-              color: RLTheme.textSecondary,
-            ),
+            RLTypography.bodyMedium('37 masterclasses', color: RLTheme.textSecondary),
           ],
         ),
 
@@ -638,10 +579,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
 
             const Spacing.width(4),
 
-            RLTypography.bodyMedium(
-              '32 memorizers',
-              color: RLTheme.textSecondary,
-            ),
+            RLTypography.bodyMedium('32 memorizers', color: RLTheme.textSecondary),
           ],
         ),
       ],
@@ -651,11 +589,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
   List<Widget> SegmentTiles() {
     final List<Widget> tiles = [];
 
-    for (
-      int segmentIndex = 0;
-      segmentIndex < courseSegments.length;
-      segmentIndex++
-    ) {
+    for (int segmentIndex = 0; segmentIndex < courseSegments.length; segmentIndex++) {
       final Map<String, dynamic> segment = courseSegments[segmentIndex];
       final String title = segment['segment-title'] ?? 'Segment';
       final String letter = title.split(' ').first;
@@ -668,9 +602,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
 
       final Color segmentColor = getColorForLetter(letter);
 
-      Color backgroundColor = RLTheme.textSecondary.withValues(
-        alpha: 0.08,
-      );
+      Color backgroundColor = RLTheme.textSecondary.withValues(alpha: 0.08);
       Color textColor = RLTheme.textSecondary;
 
       if (isActive) {
@@ -700,11 +632,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
     final List<Widget> slivers = [];
     int lessonOffset = 0;
 
-    for (
-      int segmentIndex = 0;
-      segmentIndex < courseSegments.length;
-      segmentIndex++
-    ) {
+    for (int segmentIndex = 0; segmentIndex < courseSegments.length; segmentIndex++) {
       final Map<String, dynamic> segment = courseSegments[segmentIndex];
       final List<dynamic> lessons = segment['lessons'] ?? [];
       final String segmentTitle = segment['segment-title'] ?? 'Segment';
@@ -712,9 +640,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
 
       // Spacing between segments
       if (isNotFirst) {
-        slivers.add(
-          const SliverToBoxAdapter(child: Spacing.height(48)),
-        );
+        slivers.add(const SliverToBoxAdapter(child: Spacing.height(48)));
       }
 
       // Segment with sticky header that pushes out previous headers
@@ -725,9 +651,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
             // Sticky segment header
             SliverPersistentHeader(
               pinned: true,
-              delegate: StickySegmentHeaderDelegate(
-                title: segmentTitle,
-              ),
+              delegate: StickySegmentHeaderDelegate(title: segmentTitle),
             ),
 
             // Segment lessons
@@ -763,10 +687,8 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
   }
 
   Widget ContinueButton() {
-    return RLDesignSystem.BlockButton(
-      children: [
-        RLTypography.bodyLarge('Continue latest', color: RLTheme.white),
-      ],
+    return RLDS.BlockButton(
+      children: [RLTypography.bodyLarge('Continue latest', color: RLTheme.white)],
       backgroundColor: RLTheme.primaryGreen,
       margin: EdgeInsets.zero,
       onTap: handleContinueTap,
@@ -776,24 +698,15 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
   void handleContinueTap() {
     const int currentLessonIndex = 3;
     const int currentContentIndex = 0;
-    showLoadingScreenThenNavigate(
-      currentLessonIndex,
-      currentContentIndex,
-    );
+    showLoadingScreenThenNavigate(currentLessonIndex, currentContentIndex);
   }
 
   void handleBackTap() {
     Navigator.of(context).pop();
   }
 
-  void showLoadingScreenThenNavigate(
-    int lessonIndex,
-    int contentIndex,
-  ) {
-    Navigator.push(
-      context,
-      RLTheme.slowFadeTransition(const CourseLoadingScreen()),
-    );
+  void showLoadingScreenThenNavigate(int lessonIndex, int contentIndex) {
+    Navigator.push(context, RLTheme.slowFadeTransition(const CourseLoadingScreen()));
 
     Future.delayed(
       const Duration(milliseconds: 500),
@@ -820,8 +733,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
 }
 
 // Sticky header delegate for segment titles
-class StickySegmentHeaderDelegate
-    extends SliverPersistentHeaderDelegate {
+class StickySegmentHeaderDelegate extends SliverPersistentHeaderDelegate {
   final String title;
 
   const StickySegmentHeaderDelegate({required this.title});
@@ -833,11 +745,7 @@ class StickySegmentHeaderDelegate
   double get maxExtent => ROADMAP_STICKY_HEADER_HEIGHT;
 
   @override
-  Widget build(
-    BuildContext context,
-    double shrinkOffset,
-    bool overlapsContent,
-  ) {
+  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
     final String letter = title.split(' ').first;
     final String name = title.split(' ').skip(1).join(' ');
     final Color color = getColorForLetter(letter);
@@ -871,12 +779,7 @@ class StickySegmentHeaderDelegate
                 width: ROADMAP_STICKY_HEADER_LETTER_SIZE,
                 height: ROADMAP_STICKY_HEADER_LETTER_SIZE,
                 decoration: letterDecoration,
-                child: Center(
-                  child: RLTypography.headingMedium(
-                    letter,
-                    color: color,
-                  ),
-                ),
+                child: Center(child: RLTypography.headingMedium(letter, color: color)),
               ),
 
               const Spacing.width(12),
@@ -918,21 +821,14 @@ class PathWithNodes extends StatelessWidget {
   List<Widget> PathNodes() {
     final List<Widget> nodes = [];
 
-    for (
-      int lessonIndex = 0;
-      lessonIndex < lessons.length;
-      lessonIndex++
-    ) {
-      final Map<String, dynamic> lesson =
-          lessons[lessonIndex] as Map<String, dynamic>;
+    for (int lessonIndex = 0; lessonIndex < lessons.length; lessonIndex++) {
+      final Map<String, dynamic> lesson = lessons[lessonIndex] as Map<String, dynamic>;
       final bool isCompleted = segmentIndex == 0 && lessonIndex < 3;
       final bool isCurrent = segmentIndex == 0 && lessonIndex == 3;
       final bool isLocked = segmentIndex > 0;
 
       // Determine horizontal alignment (zigzag pattern)
-      final PathNodeAlignment alignment = getAlignmentForIndex(
-        lessonIndex,
-      );
+      final PathNodeAlignment alignment = getAlignmentForIndex(lessonIndex);
 
       // Get mastery count based on lesson state
       final int masteryCount = getMasteryCount(
@@ -1061,11 +957,7 @@ class PathLessonNode extends StatelessWidget {
           // Lesson title
           SizedBox(
             width: 120,
-            child: RLTypography.text(
-              title,
-              color: titleColor,
-              textAlign: TextAlign.center,
-            ),
+            child: RLTypography.text(title, color: titleColor, textAlign: TextAlign.center),
           ),
         ],
       ),
@@ -1147,11 +1039,7 @@ class PathLessonNode extends StatelessWidget {
   Widget MasteryDots() {
     final List<Widget> dots = [];
 
-    for (
-      int dotIndex = 0;
-      dotIndex < ROADMAP_MASTERY_DOTS_PER_LESSON;
-      dotIndex++
-    ) {
+    for (int dotIndex = 0; dotIndex < ROADMAP_MASTERY_DOTS_PER_LESSON; dotIndex++) {
       final bool isFilled = dotIndex < masteryCount;
       final bool isNotFirstDot = dotIndex > 0;
 
@@ -1200,11 +1088,7 @@ class PathLessonNode extends StatelessWidget {
   }
 
   Widget NodeIcon() {
-    const Widget CompletedCheckIcon = Icon(
-      Icons.check,
-      color: RLTheme.white,
-      size: 32,
-    );
+    const Widget CompletedCheckIcon = Icon(Icons.check, color: RLTheme.white, size: 32);
 
     const Widget CurrentPlayIcon = Icon(
       Icons.play_arrow,
@@ -1218,11 +1102,7 @@ class PathLessonNode extends StatelessWidget {
       size: 28,
     );
 
-    const Widget DefaultIcon = Icon(
-      Icons.auto_stories,
-      color: RLTheme.textSecondary,
-      size: 28,
-    );
+    const Widget DefaultIcon = Icon(Icons.auto_stories, color: RLTheme.textSecondary, size: 28);
 
     if (isCompleted) {
       return CompletedCheckIcon;
@@ -1246,11 +1126,7 @@ class ProgressArcPainter extends CustomPainter {
   final Color color;
   final double strokeWidth;
 
-  ProgressArcPainter({
-    required this.progress,
-    required this.color,
-    required this.strokeWidth,
-  });
+  ProgressArcPainter({required this.progress, required this.color, required this.strokeWidth});
 
   @override
   void paint(Canvas canvas, Size size) {

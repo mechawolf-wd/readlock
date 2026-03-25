@@ -1,118 +1,54 @@
-// Self-contained typography system with built-in text styles
+// Geomates Typography System
+// Centralized text styles for consistent typography across the app
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:readlock/constants/RLDesignSystem.dart';
 
 class RLTypography {
-  // Base color definitions for light theme
-  static const Color TEXT_PRIMARY = Color(0xFF212121);
-  static const Color TEXT_SECONDARY = Color(0xFF757575);
+  // * Text styles — ordered by size descending
 
-  // Typography styles
-  static final TextStyle headingLargeStyle = GoogleFonts.dmSans(
+  // * Headings
+
+  static final TextStyle headingLarge = GoogleFonts.bricolageGrotesque(
     fontSize: 28,
-    fontWeight: FontWeight.bold,
-    color: TEXT_PRIMARY,
-    height: 1.4,
+    fontWeight: FontWeight.w700,
+    color: RLDS.textPrimary,
+    height: 1.2,
+    letterSpacing: -0.5,
   );
 
-  static final TextStyle headingMediumStyle = GoogleFonts.dmSans(
-    fontSize: 20,
+  static final TextStyle headingMedium = GoogleFonts.bricolageGrotesque(
+    fontSize: 22,
     fontWeight: FontWeight.w600,
-    color: TEXT_PRIMARY,
-    height: 1.5,
+    color: RLDS.textPrimary,
+    height: 1.3,
+    letterSpacing: -0.3,
   );
 
-  static final TextStyle bodyLargeStyle = GoogleFonts.dmSans(
+  // * Body
+
+  static final TextStyle bodyLarge = GoogleFonts.bricolageGrotesque(
     fontSize: 16,
     fontWeight: FontWeight.w500,
-    color: TEXT_PRIMARY,
-    height: 1.6,
+    color: RLDS.textPrimary,
+    height: 1.5,
+    letterSpacing: 0.1,
   );
 
-  static final TextStyle bodyMediumStyle = GoogleFonts.dmSans(
+  static final TextStyle bodyMedium = GoogleFonts.bricolageGrotesque(
     fontSize: 14,
-    color: TEXT_PRIMARY,
-    height: 1.6,
+    fontWeight: FontWeight.w400,
+    color: RLDS.textPrimary,
+    height: 1.5,
+    letterSpacing: 0.15,
   );
 
-  // Text widget methods
-  static Text text(
-    String content, {
-    TextAlign? textAlign,
-    Color? color,
-  }) {
-    return Text(
-      content,
-      style: color != null
-          ? bodyMediumStyle.copyWith(color: color)
-          : bodyMediumStyle,
-      textAlign: textAlign,
-    );
-  }
-
-  static Text headingLarge(
-    String content, {
-    TextAlign? textAlign,
-    Color? color,
-  }) {
-    return Text(
-      content,
-      style: color != null
-          ? headingLargeStyle.copyWith(color: color)
-          : headingLargeStyle,
-      textAlign: textAlign,
-    );
-  }
-
-  static Text headingMedium(
-    String content, {
-    TextAlign? textAlign,
-    Color? color,
-    int? maxLines,
-    TextOverflow? overflow,
-  }) {
-    return Text(
-      content,
-      style: color != null
-          ? headingMediumStyle.copyWith(color: color)
-          : headingMediumStyle,
-      textAlign: textAlign,
-      maxLines: maxLines,
-      overflow: overflow,
-    );
-  }
-
-  static Text bodyLarge(
-    String content, {
-    TextAlign? textAlign,
-    Color? color,
-  }) {
-    return Text(
-      content,
-      style: color != null
-          ? bodyLargeStyle.copyWith(color: color)
-          : bodyLargeStyle,
-      textAlign: textAlign,
-    );
-  }
-
-  static Text bodyMedium(
-    String content, {
-    TextAlign? textAlign,
-    Color? color,
-    int? maxLines,
-    TextOverflow? overflow,
-  }) {
-    final style = color != null
-        ? bodyMediumStyle.copyWith(color: color)
-        : bodyMediumStyle;
-
-    return Text(
-      content,
-      style: style,
-      textAlign: textAlign,
-      maxLines: maxLines,
-      overflow: overflow,
-    );
-  }
+  static final TextStyle bodySmall = GoogleFonts.bricolageGrotesque(
+    fontSize: 12,
+    fontWeight: FontWeight.w400,
+    color: RLDS.textSecondary,
+    height: 1.5,
+    letterSpacing: 0.2,
+  );
 }

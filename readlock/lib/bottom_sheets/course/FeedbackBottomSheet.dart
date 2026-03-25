@@ -23,10 +23,7 @@ class FeedbackBottomSheets {
   );
 
   // Show explanation bottom sheet for correct answers
-  static void showExplanation({
-    required BuildContext context,
-    required String explanation,
-  }) {
+  static void showExplanation({required BuildContext context, required String explanation}) {
     showFeedbackSheet(
       context: context,
       title: FEEDBACK_DIALOG_TITLE,
@@ -37,10 +34,7 @@ class FeedbackBottomSheets {
   }
 
   // Show hint bottom sheet for wrong answers
-  static void showHint({
-    required BuildContext context,
-    required String hint,
-  }) {
+  static void showHint({required BuildContext context, required String hint}) {
     showFeedbackSheet(
       context: context,
       title: HINT_DIALOG_TITLE,
@@ -96,9 +90,7 @@ class FeedbackSheet extends StatelessWidget {
     ),
   );
 
-  static const EdgeInsets bodyPadding = EdgeInsets.symmetric(
-    horizontal: MODAL_PADDING,
-  );
+  static const EdgeInsets bodyPadding = EdgeInsets.symmetric(horizontal: MODAL_PADDING);
 
   static const EdgeInsets buttonMargin = EdgeInsets.all(MODAL_PADDING);
 
@@ -117,26 +109,24 @@ class FeedbackSheet extends StatelessWidget {
         top: false,
         child: Container(
           decoration: modalDecoration,
-        padding: const EdgeInsets.only(bottom: 16),
-        child: Wrap(
-          children: [
-            Div.column([
-              // Drag handle
+          padding: const EdgeInsets.only(bottom: 16),
+          child: Wrap(
+            children: [
               Div.column([
-                const BottomSheetGrabber(),
-              ], padding: const EdgeInsets.only(top: 12)),
+                // Drag handle
+                const Div.column([BottomSheetGrabber()], padding: EdgeInsets.only(top: 12)),
 
-              // Header section
-              HeaderSection(),
+                // Header section
+                HeaderSection(),
 
-              // Body content
-              BodySection(),
+                // Body content
+                BodySection(),
 
-              // Footer button
-              FooterButton(),
-            ]),
-          ],
-        ),
+                // Footer button
+                FooterButton(),
+              ]),
+            ],
+          ),
         ),
       ),
     );
@@ -145,10 +135,7 @@ class FeedbackSheet extends StatelessWidget {
   Widget BodySection() {
     return Padding(
       padding: bodyPadding,
-      child: RLTypography.bodyMedium(
-        content,
-        textAlign: TextAlign.left,
-      ),
+      child: RLTypography.bodyMedium(content, textAlign: TextAlign.left),
     );
   }
 
@@ -160,25 +147,14 @@ class FeedbackSheet extends StatelessWidget {
   }
 
   Widget TitleRow() {
-    return Div.row([
-      icon,
-
-      const Spacing.width(12),
-
-      RLTypography.headingMedium(title),
-    ]);
+    return Div.row([icon, const Spacing.width(12), RLTypography.headingMedium(title)]);
   }
 
   Widget FooterButton() {
     return Builder(
       builder: (context) {
-        return RLDesignSystem.BlockButton(
-          children: [
-            RLTypography.bodyMedium(
-              FEEDBACK_GOT_IT_LABEL,
-              color: RLTheme.white,
-            ),
-          ],
+        return RLDS.BlockButton(
+          children: [RLTypography.bodyMedium(FEEDBACK_GOT_IT_LABEL, color: RLTheme.white)],
           backgroundColor: buttonColor,
           onTap: () => Navigator.of(context).pop(),
         );

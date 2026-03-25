@@ -8,23 +8,13 @@ import 'package:readlock/utility_widgets/FeedbackSnackbar.dart';
 import 'package:readlock/services/SoundService.dart';
 import 'package:readlock/services/HapticsService.dart';
 
-enum SingleChoiceButtonState {
-  normal,
-  selected,
-  correctAndAnswered,
-  incorrectAndAnswered,
-}
+enum SingleChoiceButtonState { normal, selected, correctAndAnswered, incorrectAndAnswered }
 
 class CCSingleChoice extends StatefulWidget {
   final QuestionContent content;
-  final void Function(int selectedIndex, bool isCorrect)
-  onAnswerSelected;
+  final void Function(int selectedIndex, bool isCorrect) onAnswerSelected;
 
-  const CCSingleChoice({
-    super.key,
-    required this.content,
-    required this.onAnswerSelected,
-  });
+  const CCSingleChoice({super.key, required this.content, required this.onAnswerSelected});
 
   @override
   State<CCSingleChoice> createState() => CCSingleChoiceState();
@@ -104,20 +94,13 @@ class CCSingleChoiceState extends State<CCSingleChoice> {
   List<Widget> OptionWidgetsList() {
     final List<Widget> optionWidgets = [];
 
-    for (
-      int optionIndex = 0;
-      optionIndex < widget.content.options.length;
-      optionIndex++
-    ) {
+    for (int optionIndex = 0; optionIndex < widget.content.options.length; optionIndex++) {
       final QuestionOption option = widget.content.options[optionIndex];
 
-      optionWidgets.add(
-        OptionButton(optionIndex: optionIndex, option: option),
-      );
+      optionWidgets.add(OptionButton(optionIndex: optionIndex, option: option));
 
       // Add spacing after each option except the last one
-      final bool isLastOption =
-          optionIndex == widget.content.options.length - 1;
+      final bool isLastOption = optionIndex == widget.content.options.length - 1;
       final bool shouldAddSpacing = !isLastOption;
 
       optionWidgets.add(
@@ -134,19 +117,12 @@ class CCSingleChoiceState extends State<CCSingleChoice> {
     return optionWidgets;
   }
 
-  Widget OptionButton({
-    required int optionIndex,
-    required QuestionOption option,
-  }) {
+  Widget OptionButton({required int optionIndex, required QuestionOption option}) {
     final bool isSelected = selectedAnswerIndex == optionIndex;
-    final bool isCorrectAnswer = widget.content.correctAnswerIndices
-        .contains(optionIndex);
-    final bool shouldShowCorrect =
-        hasAnsweredQuestion && isCorrectAnswer && isSelected;
-    final bool shouldShowIncorrect =
-        hasAnsweredQuestion && !isCorrectAnswer && isSelected;
-    final bool shouldMute =
-        hasAnsweredQuestion && !isCorrectAnswer && !isSelected;
+    final bool isCorrectAnswer = widget.content.correctAnswerIndices.contains(optionIndex);
+    final bool shouldShowCorrect = hasAnsweredQuestion && isCorrectAnswer && isSelected;
+    final bool shouldShowIncorrect = hasAnsweredQuestion && !isCorrectAnswer && isSelected;
+    final bool shouldMute = hasAnsweredQuestion && !isCorrectAnswer && !isSelected;
 
     final BoxDecoration buttonDecoration = getOptionButtonDecoration(
       isSelected: isSelected,
@@ -186,21 +162,9 @@ class CCSingleChoiceState extends State<CCSingleChoice> {
         Expanded(child: optionText),
 
         // Visual feedback indicators
-        RenderIf.condition(
-          shouldShowCorrect,
+        RenderIf.condition(shouldShowCorrect, CorrectCheckIcon, const SizedBox.shrink()),
 
-          CorrectCheckIcon,
-
-          const SizedBox.shrink(),
-        ),
-
-        RenderIf.condition(
-          shouldShowIncorrect,
-
-          IncorrectCancelIcon,
-
-          const SizedBox.shrink(),
-        ),
+        RenderIf.condition(shouldShowIncorrect, IncorrectCancelIcon, const SizedBox.shrink()),
       ],
       padding: RLTheme.contentPaddingMediumInsets,
       decoration: buttonDecoration,
@@ -218,8 +182,7 @@ class CCSingleChoiceState extends State<CCSingleChoice> {
     // Provide light haptic feedback for option selection
     HapticsService.lightImpact();
 
-    final bool isCorrectAnswer = widget.content.correctAnswerIndices
-        .contains(optionIndex);
+    final bool isCorrectAnswer = widget.content.correctAnswerIndices.contains(optionIndex);
 
     if (!isCorrectAnswer) {
       showIncorrectAnswerFeedback(optionIndex);
@@ -237,10 +200,8 @@ class CCSingleChoiceState extends State<CCSingleChoice> {
   }
 
   void showIncorrectAnswerFeedback(int optionIndex) {
-    final QuestionOption selectedOption =
-        widget.content.options[optionIndex];
-    final String consequenceMessage =
-        getIncorrectConsequenceMessage(selectedOption);
+    final QuestionOption selectedOption = widget.content.options[optionIndex];
+    final String consequenceMessage = getIncorrectConsequenceMessage(selectedOption);
 
     FeedbackSnackBar.showWrongAnswer(context, hint: consequenceMessage);
   }
@@ -258,15 +219,10 @@ class CCSingleChoiceState extends State<CCSingleChoice> {
   }
 
   void showCorrectAnswerFeedback(int optionIndex) {
-    final QuestionOption selectedOption =
-        widget.content.options[optionIndex];
-    final String feedbackMessage =
-        getCorrectFeedbackMessage(selectedOption);
+    final QuestionOption selectedOption = widget.content.options[optionIndex];
+    final String feedbackMessage = getCorrectFeedbackMessage(selectedOption);
 
-    FeedbackSnackBar.showCorrectAnswer(
-      context,
-      explanation: feedbackMessage,
-    );
+    FeedbackSnackBar.showCorrectAnswer(context, explanation: feedbackMessage);
   }
 
   String getCorrectFeedbackMessage(QuestionOption selectedOption) {
@@ -312,9 +268,7 @@ class CCSingleChoiceState extends State<CCSingleChoice> {
     required bool shouldMute,
   }) {
     if (shouldShowCorrect) {
-      return RLTypography.bodyMediumStyle.copyWith(
-        color: RLTheme.primaryGreen,
-      );
+      return RLTypography.bodyMediumStyle.copyWith(color: RLTheme.primaryGreen);
     }
 
     if (shouldMute) {

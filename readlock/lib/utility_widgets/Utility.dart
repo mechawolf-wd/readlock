@@ -240,20 +240,27 @@ class Div extends StatelessWidget {
 
     if (alignment is String) {
       switch (alignment) {
-        case ALIGNMENT_START:
+        case ALIGNMENT_START: {
           return MainAxisAlignment.start;
-        case ALIGNMENT_END:
+        }
+        case ALIGNMENT_END: {
           return MainAxisAlignment.end;
-        case ALIGNMENT_CENTER:
+        }
+        case ALIGNMENT_CENTER: {
           return MainAxisAlignment.center;
-        case ALIGNMENT_SPACE_BETWEEN:
+        }
+        case ALIGNMENT_SPACE_BETWEEN: {
           return MainAxisAlignment.spaceBetween;
-        case ALIGNMENT_SPACE_AROUND:
+        }
+        case ALIGNMENT_SPACE_AROUND: {
           return MainAxisAlignment.spaceAround;
-        case ALIGNMENT_SPACE_EVENLY:
+        }
+        case ALIGNMENT_SPACE_EVENLY: {
           return MainAxisAlignment.spaceEvenly;
-        default:
+        }
+        default: {
           return MainAxisAlignment.start;
+        }
       }
     }
 
@@ -271,18 +278,24 @@ class Div extends StatelessWidget {
 
     if (alignment is String) {
       switch (alignment) {
-        case ALIGNMENT_START:
+        case ALIGNMENT_START: {
           return CrossAxisAlignment.start;
-        case ALIGNMENT_END:
+        }
+        case ALIGNMENT_END: {
           return CrossAxisAlignment.end;
-        case ALIGNMENT_CENTER:
+        }
+        case ALIGNMENT_CENTER: {
           return CrossAxisAlignment.center;
-        case ALIGNMENT_STRETCH:
+        }
+        case ALIGNMENT_STRETCH: {
           return CrossAxisAlignment.stretch;
-        case ALIGNMENT_BASELINE:
+        }
+        case ALIGNMENT_BASELINE: {
           return CrossAxisAlignment.baseline;
-        default:
+        }
+        default: {
           return CrossAxisAlignment.center;
+        }
       }
     }
 
@@ -544,42 +557,60 @@ class Div extends StatelessWidget {
 
   Color? getColorFromString(String colorString) {
     switch (colorString.toLowerCase()) {
-      case 'red':
+      case 'red': {
         return RLTheme.errorColor;
-      case 'blue':
+      }
+      case 'blue': {
         return RLTheme.primaryBlue;
-      case 'green':
+      }
+      case 'green': {
         return RLTheme.primaryGreen;
-      case 'yellow':
+      }
+      case 'yellow': {
         return RLTheme.accentYellow;
-      case 'orange':
+      }
+      case 'orange': {
         return RLTheme.warningColor;
-      case 'purple':
+      }
+      case 'purple': {
         return RLTheme.accentPurple;
-      case 'pink':
+      }
+      case 'pink': {
         return RLTheme.accentPink;
-      case 'cyan':
+      }
+      case 'cyan': {
         return RLTheme.accentCyan;
-      case 'teal':
+      }
+      case 'teal': {
         return RLTheme.accentTeal;
-      case 'lime':
+      }
+      case 'lime': {
         return RLTheme.accentLime;
-      case 'indigo':
+      }
+      case 'indigo': {
         return RLTheme.accentIndigo;
-      case 'amber':
+      }
+      case 'amber': {
         return RLTheme.accentAmber;
-      case 'brown':
+      }
+      case 'brown': {
         return RLTheme.accentBrown;
-      case 'grey':
+      }
+      case 'grey': {
         return Colors.grey;
-      case 'black':
+      }
+      case 'black': {
         return Colors.black;
-      case 'white':
+      }
+      case 'white': {
         return Colors.white;
-      case 'transparent':
+      }
+      case 'transparent': {
         return Colors.transparent;
-      default:
+      }
+      default: {
         return null;
+      }
     }
   }
 

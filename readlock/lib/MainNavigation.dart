@@ -10,7 +10,7 @@ import 'package:readlock/screens/CoursesScreen.dart';
 import 'package:readlock/screens/HomeScreen.dart';
 import 'package:readlock/screens/MyBookshelfScreen.dart';
 import 'package:readlock/screens/SandboxScreen.dart';
-import 'package:readlock/utility_widgets/LoginBottomSheet.dart';
+import 'package:readlock/bottom_sheets/user/LoginBottomSheet.dart';
 
 class MainNavigation extends StatefulWidget {
   final int initialTabIndex;

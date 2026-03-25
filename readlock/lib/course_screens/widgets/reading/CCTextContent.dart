@@ -11,7 +11,6 @@ import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/constants/RLConstants.dart';
 import 'package:readlock/course_screens/CourseContentViewer.dart';
 
-
 class CCTextContent extends StatefulWidget {
   // Text content data to display
   final TextContent content;
@@ -58,15 +57,7 @@ class CCTextContentState extends State<CCTextContent> {
   Widget ContinueButtonContainer() {
     final bool shouldShowContinueButton = isAllTextRevealed;
 
-    return RenderIf.condition(
-      shouldShowContinueButton,
-      ContinueButtonSection(),
-    );
-  }
-
-  // Continue button section with spacing
-  Widget ContinueButtonSection() {
-    return ContinueButton();
+    return RenderIf.condition(shouldShowContinueButton, ContinueButton());
   }
 
   // Button widget for continuing to next content
@@ -77,7 +68,7 @@ class CCTextContentState extends State<CCTextContent> {
       color: RLTheme.white,
     );
 
-    return RLDesignSystem.BlockButton(
+    return RLDS.BlockButton(
       children: [buttonText],
       onTap: handleContinueButtonTap,
       padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
@@ -114,8 +105,7 @@ class CCTextContentState extends State<CCTextContent> {
     // Find the PageController from CourseContentViewer
     final PageController? pageController = findPageController(context);
 
-    final bool hasValidPageController =
-        pageController != null && pageController.hasClients;
+    final bool hasValidPageController = pageController != null && pageController.hasClients;
 
     if (!hasValidPageController) {
       return;

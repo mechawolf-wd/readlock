@@ -35,8 +35,7 @@ class LoginSheet extends StatefulWidget {
 
 class LoginSheetState extends State<LoginSheet> {
   final TextEditingController emailController = TextEditingController();
-  final TextEditingController passwordController =
-      TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
   final FocusNode emailFocusNode = FocusNode();
   final FocusNode passwordFocusNode = FocusNode();
 
@@ -90,10 +89,7 @@ class LoginSheetState extends State<LoginSheet> {
       filter: ImageFilter.blur(sigmaX: BLUR_SIGMA, sigmaY: BLUR_SIGMA),
       child: Container(
         color: RLTheme.white,
-        child: SafeArea(
-          top: false,
-          child: ModalContent(),
-        ),
+        child: SafeArea(top: false, child: ModalContent()),
       ),
     );
   }
@@ -149,10 +145,7 @@ class LoginSheetState extends State<LoginSheet> {
       const Spacing.height(4),
 
       // Subtitle
-      RLTypography.bodyMedium(
-        LOGIN_SUBTITLE,
-        color: RLTheme.textSecondary,
-      ),
+      RLTypography.bodyMedium(LOGIN_SUBTITLE, color: RLTheme.textSecondary),
     ], padding: const EdgeInsets.all(24));
   }
 
@@ -169,11 +162,7 @@ class LoginSheetState extends State<LoginSheet> {
   }
 
   Widget AppleLoginButton() {
-    const Icon AppleIcon = Icon(
-      Icons.apple,
-      color: RLTheme.white,
-      size: 20,
-    );
+    const Icon AppleIcon = Icon(Icons.apple, color: RLTheme.white, size: 20);
 
     final BoxDecoration buttonDecoration = BoxDecoration(
       color: Colors.black,
@@ -190,10 +179,7 @@ class LoginSheetState extends State<LoginSheet> {
 
           const Spacing.width(8),
 
-          RLTypography.bodyMedium(
-            APPLE_LOGIN_LABEL,
-            color: RLTheme.white,
-          ),
+          RLTypography.bodyMedium(APPLE_LOGIN_LABEL, color: RLTheme.white),
         ], mainAxisAlignment: MainAxisAlignment.center),
       ),
     );
@@ -203,9 +189,7 @@ class LoginSheetState extends State<LoginSheet> {
     final BoxDecoration buttonDecoration = BoxDecoration(
       color: RLTheme.backgroundDark,
       borderRadius: BorderRadius.circular(12),
-      border: Border.all(
-        color: RLTheme.textPrimary.withValues(alpha: 0.1),
-      ),
+      border: Border.all(color: RLTheme.textPrimary.withValues(alpha: 0.1)),
     );
 
     return GestureDetector(
@@ -234,41 +218,28 @@ class LoginSheetState extends State<LoginSheet> {
       width: 20,
       height: 20,
       decoration: iconDecoration,
-      child: Center(
-        child: RLTypography.bodyLarge('G', color: Colors.red),
-      ),
+      child: Center(child: RLTypography.bodyLarge('G', color: Colors.red)),
     );
   }
 
   Widget OrDivider() {
-    final Color dividerColor = RLTheme.textPrimary.withValues(
-      alpha: 0.1,
-    );
+    final Color dividerColor = RLTheme.textPrimary.withValues(alpha: 0.1);
 
-    return Div.row(
-      [
-        Expanded(child: Container(height: 1, color: dividerColor)),
+    return Div.row([
+      Expanded(child: Container(height: 1, color: dividerColor)),
 
-        Div.row([
-          RLTypography.bodyMedium(
-            OR_DIVIDER_LABEL,
-            color: RLTheme.textSecondary,
-          ),
-        ], padding: const EdgeInsets.symmetric(horizontal: 16)),
+      Div.row([
+        RLTypography.bodyMedium(OR_DIVIDER_LABEL, color: RLTheme.textSecondary),
+      ], padding: const EdgeInsets.symmetric(horizontal: 16)),
 
-        Expanded(child: Container(height: 1, color: dividerColor)),
-      ],
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
-    );
+      Expanded(child: Container(height: 1, color: dividerColor)),
+    ], padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20));
   }
 
   Widget FormSection() {
     return Div.column([
       // Email field
-      RLTextField.email(
-        controller: emailController,
-        focusNode: emailFocusNode,
-      ),
+      RLTextField.email(controller: emailController, focusNode: emailFocusNode),
 
       // Password field (animated)
       PasswordFieldAnimated(),
@@ -278,10 +249,12 @@ class LoginSheetState extends State<LoginSheet> {
   Widget PasswordFieldAnimated() {
     final bool hasEmail = emailController.text.isNotEmpty;
 
+    final Widget passwordContent = RenderIf.condition(hasEmail, PasswordField());
+
     return AnimatedSize(
       duration: const Duration(milliseconds: 300),
       curve: Curves.easeInOut,
-      child: hasEmail ? PasswordField() : const SizedBox.shrink(),
+      child: passwordContent,
     );
   }
 
@@ -289,21 +262,13 @@ class LoginSheetState extends State<LoginSheet> {
     return Div.column([
       const Spacing.height(12),
 
-      RLTextField.password(
-        controller: passwordController,
-        focusNode: passwordFocusNode,
-      ),
+      RLTextField.password(controller: passwordController, focusNode: passwordFocusNode),
     ]);
   }
 
   Widget ActionButton() {
-    return RLDesignSystem.BlockButton(
-      children: [
-        RLTypography.bodyLarge(
-          SIGN_IN_BUTTON_LABEL,
-          color: RLTheme.white,
-        ),
-      ],
+    return RLDS.BlockButton(
+      children: [RLTypography.bodyLarge(SIGN_IN_BUTTON_LABEL, color: RLTheme.white)],
       backgroundColor: RLTheme.primaryGreen,
       onTap: handleSignInTap,
     );
@@ -314,20 +279,14 @@ class LoginSheetState extends State<LoginSheet> {
       [
         GestureDetector(
           onTap: handleForgotPasswordTap,
-          child: RLTypography.bodyMedium(
-            FORGOT_PASSWORD_LABEL,
-            color: RLTheme.textSecondary,
-          ),
+          child: RLTypography.bodyMedium(FORGOT_PASSWORD_LABEL, color: RLTheme.textSecondary),
         ),
 
         RLTypography.bodyMedium(' · ', color: RLTheme.textSecondary),
 
         GestureDetector(
           onTap: handleSignUpTap,
-          child: RLTypography.bodyMedium(
-            SIGN_UP_LABEL,
-            color: RLTheme.textSecondary,
-          ),
+          child: RLTypography.bodyMedium(SIGN_UP_LABEL, color: RLTheme.textSecondary),
         ),
       ],
       mainAxisAlignment: MainAxisAlignment.center,

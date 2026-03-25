@@ -2,12 +2,14 @@
 // Simple bookshelf layout with settings access
 
 import 'package:flutter/material.dart';
-import 'package:readlock/screens/ProfileScreen.dart';
+import 'package:readlock/screens/profile/LearningStatsCard.dart';
 import 'package:readlock/utility_widgets/StatisticsTopBar.dart';
 import 'package:readlock/utility_widgets/Utility.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLTheme.dart';
 import 'package:readlock/constants/RLConstants.dart';
+import 'package:readlock/bottom_sheets/user/SettingsBottomSheet.dart';
+import 'package:readlock/bottom_sheets/bookshelf/AllTitlesBottomSheet.dart';
 
 class MyBookshelfScreen extends StatefulWidget {
   const MyBookshelfScreen({super.key});
@@ -18,12 +20,7 @@ class MyBookshelfScreen extends StatefulWidget {
 
 class MyBookshelfScreenState extends State<MyBookshelfScreen> {
   void showAllTitlesBottomSheet() {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (context) => const AllTitlesBottomSheet(),
-    );
+    AllTitlesBottomSheet.show(context);
   }
 
   @override
@@ -91,12 +88,7 @@ class MyBookshelfScreenState extends State<MyBookshelfScreen> {
       ),
 
       GestureDetector(
-        onTap: () => showModalBottomSheet(
-          context: context,
-          isScrollControlled: true,
-          backgroundColor: Colors.transparent,
-          builder: (context) => SettingsBottomSheet(),
-        ),
+        onTap: () => SettingsBottomSheet.show(context),
         child: Container(
           padding: const EdgeInsets.only(top: 8, right: 12),
           decoration: settingsIconDecoration,
@@ -120,12 +112,7 @@ class MyBookshelfScreenState extends State<MyBookshelfScreen> {
         'progress': 0.22,
         'coverImage': null,
       },
-      {
-        'title': 'Hooked',
-        'author': 'Nir Eyal',
-        'progress': 0.67,
-        'coverImage': null,
-      },
+      {'title': 'Hooked', 'author': 'Nir Eyal', 'progress': 0.67, 'coverImage': null},
     ];
 
     return Div.column([
@@ -137,10 +124,7 @@ class MyBookshelfScreenState extends State<MyBookshelfScreen> {
 
       const Spacing.height(16),
 
-      Div.column(
-        ReadingBookCards(currentBooks),
-        crossAxisAlignment: CrossAxisAlignment.start,
-      ),
+      Div.column(ReadingBookCards(currentBooks), crossAxisAlignment: CrossAxisAlignment.start),
     ], crossAxisAlignment: CrossAxisAlignment.start);
   }
 
@@ -155,17 +139,13 @@ class MyBookshelfScreenState extends State<MyBookshelfScreen> {
       final BoxDecoration cardDecoration = BoxDecoration(
         color: RLTheme.backgroundLight.withValues(alpha: 0.08),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: RLTheme.grey300.withValues(alpha: 0.3),
-        ),
+        border: Border.all(color: RLTheme.grey300.withValues(alpha: 0.3)),
       );
 
       final BoxDecoration coverPlaceholderDecoration = BoxDecoration(
         color: RLTheme.primaryBlue.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(
-          color: RLTheme.primaryBlue.withValues(alpha: 0.2),
-        ),
+        border: Border.all(color: RLTheme.primaryBlue.withValues(alpha: 0.2)),
       );
 
       return Container(
@@ -188,28 +168,19 @@ class MyBookshelfScreenState extends State<MyBookshelfScreen> {
 
               const Spacing.height(4),
 
-              RLTypography.text(
-                bookAuthor,
-                color: RLTheme.textSecondary,
-              ),
+              RLTypography.text(bookAuthor, color: RLTheme.textSecondary),
 
               const Spacing.height(12),
 
               Div.column([
                 Div.row([
                   Expanded(
-                    child: ProgressBar(
-                      progress: bookProgress,
-                      color: RLTheme.primaryGreen,
-                    ),
+                    child: ProgressBar(progress: bookProgress, color: RLTheme.primaryGreen),
                   ),
 
                   const Spacing.width(8),
 
-                  RLTypography.text(
-                    '$progressPercent%',
-                    color: RLTheme.primaryGreen,
-                  ),
+                  RLTypography.text('$progressPercent%', color: RLTheme.primaryGreen),
                 ]),
               ]),
             ], crossAxisAlignment: CrossAxisAlignment.start),
@@ -225,21 +196,12 @@ class MyBookshelfScreenState extends State<MyBookshelfScreen> {
   }) {
     final bool hasCover = coverImagePath != null;
 
-    const Widget BookIcon = Icon(
-      Icons.book,
-      color: RLTheme.primaryBlue,
-      size: 24,
-    );
+    const Widget BookIcon = Icon(Icons.book, color: RLTheme.primaryBlue, size: 24);
 
     if (hasCover) {
       return ClipRRect(
         borderRadius: BorderRadius.circular(8),
-        child: Image.asset(
-          coverImagePath,
-          width: 60,
-          height: 80,
-          fit: BoxFit.cover,
-        ),
+        child: Image.asset(coverImagePath, width: 60, height: 80, fit: BoxFit.cover),
       );
     }
 
@@ -282,338 +244,16 @@ class MyBookshelfScreenState extends State<MyBookshelfScreen> {
     return GestureDetector(
       onTap: showAllTitlesBottomSheet,
       child: Container(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 12,
-          vertical: 8,
-        ),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         decoration: buttonDecoration,
         child: Div.row([
-          RLTypography.text(
-            'Titles and history',
-            color: RLTheme.primaryBlue,
-          ),
+          RLTypography.text('Titles and history', color: RLTheme.primaryBlue),
 
           const Spacing.width(4),
 
           ArrowForwardIcon,
         ]),
       ),
-    );
-  }
-
-  Widget SettingsBottomSheet() {
-    const BorderRadius sheetBorderRadius = BorderRadius.only(
-      topLeft: Radius.circular(20),
-      topRight: Radius.circular(20),
-    );
-
-    const BoxDecoration sheetDecoration = BoxDecoration(
-      color: RLTheme.backgroundDark,
-      borderRadius: sheetBorderRadius,
-    );
-
-    final double bottomSafeArea = MediaQuery.of(context).padding.bottom;
-
-    return ClipRRect(
-      borderRadius: sheetBorderRadius,
-      child: Container(
-        height: MediaQuery.of(context).size.height * 0.9,
-        decoration: sheetDecoration,
-        child: Div.column([
-          // Drag handle
-          const Spacing.height(12),
-
-          const BottomSheetGrabber(),
-
-          const Spacing.height(16),
-
-          // Title
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: Div.row([
-              RLTypography.headingMedium('Settings'),
-            ], mainAxisAlignment: MainAxisAlignment.start),
-          ),
-
-          const Spacing.height(20),
-
-          // Settings content
-          Expanded(
-            child: SingleChildScrollView(
-              padding: EdgeInsets.fromLTRB(20, 0, 20, bottomSafeArea),
-              child: const ProfileContent(),
-            ),
-          ),
-        ], crossAxisAlignment: CrossAxisAlignment.stretch),
-      ),
-    );
-  }
-}
-
-class AllTitlesBottomSheet extends StatefulWidget {
-  const AllTitlesBottomSheet({super.key});
-
-  @override
-  State<AllTitlesBottomSheet> createState() =>
-      AllTitlesBottomSheetState();
-}
-
-class AllTitlesBottomSheetState extends State<AllTitlesBottomSheet> {
-  String? selectedCategory;
-
-  void selectCategory(String category) {
-    setState(() {
-      if (selectedCategory == category) {
-        selectedCategory = null;
-      } else {
-        selectedCategory = category;
-      }
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    const BorderRadius sheetBorderRadius = BorderRadius.only(
-      topLeft: Radius.circular(20),
-      topRight: Radius.circular(20),
-    );
-
-    const BoxDecoration sheetDecoration = BoxDecoration(
-      color: RLTheme.backgroundDark,
-      borderRadius: sheetBorderRadius,
-    );
-
-    final List<Map<String, dynamic>> allBooks = [
-      {
-        'title': 'Design of Everyday Things',
-        'author': 'Don Norman',
-        'category': 'Design',
-        'coverImage': 'assets/covers/doet-cover.png',
-      },
-      {
-        'title': 'Thinking, Fast and Slow',
-        'author': 'Daniel Kahneman',
-        'category': 'Psychology',
-        'coverImage': null,
-      },
-      {
-        'title': 'Hooked',
-        'author': 'Nir Eyal',
-        'category': 'Design',
-        'coverImage': null,
-      },
-      {
-        'title': 'The Lean Startup',
-        'author': 'Eric Ries',
-        'category': 'Business',
-        'coverImage': null,
-      },
-      {
-        'title': 'Clean Code',
-        'author': 'Robert C. Martin',
-        'category': 'Technology',
-        'coverImage': null,
-      },
-      {
-        'title': 'Atomic Habits',
-        'author': 'James Clear',
-        'category': 'Self-Help',
-        'coverImage': null,
-      },
-      {
-        'title': 'Deep Work',
-        'author': 'Cal Newport',
-        'category': 'Psychology',
-        'coverImage': null,
-      },
-    ];
-
-    final bool hasSelectedCategory = selectedCategory != null;
-
-    final List<Map<String, dynamic>> filteredBooks = hasSelectedCategory
-        ? allBooks
-              .where((book) => book['category'] == selectedCategory)
-              .toList()
-        : allBooks;
-
-    return ClipRRect(
-      borderRadius: sheetBorderRadius,
-      child: Container(
-        height: MediaQuery.of(context).size.height * 0.9,
-        decoration: sheetDecoration,
-        child: Div.column([
-          // Drag handle
-          const Spacing.height(12),
-
-          const BottomSheetGrabber(),
-
-          const Spacing.height(16),
-
-          // Title
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: Div.row([
-              RLTypography.headingMedium('My Titles'),
-            ], mainAxisAlignment: MainAxisAlignment.start),
-          ),
-
-          const Spacing.height(16),
-
-          // Category filters
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: CategoryFilters(
-              selectedCategory: selectedCategory,
-              onCategorySelected: selectCategory,
-            ),
-          ),
-
-          const Spacing.height(20),
-
-          // Books list
-          Expanded(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Div.column(
-                AllTitlesBookCards(filteredBooks),
-                crossAxisAlignment: CrossAxisAlignment.start,
-              ),
-            ),
-          ),
-        ], crossAxisAlignment: CrossAxisAlignment.stretch),
-      ),
-    );
-  }
-
-  Widget CategoryFilters({
-    required String? selectedCategory,
-    required Function(String) onCategorySelected,
-  }) {
-    final List<String> categories = [
-      'Design',
-      'Psychology',
-      'Business',
-      'Technology',
-      'Self-Help',
-    ];
-
-    return Wrap(
-      spacing: 8,
-      runSpacing: 8,
-      children: categories.map((category) {
-        final bool isSelected = selectedCategory == category;
-
-        final BoxDecoration chipDecoration = BoxDecoration(
-          color: isSelected
-              ? RLTheme.primaryBlue
-              : RLTheme.backgroundLight.withValues(alpha: 0.08),
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(
-            color: RLTheme.primaryBlue.withValues(alpha: 0.3),
-          ),
-        );
-
-        final Color chipTextColor = isSelected
-            ? Colors.white
-            : RLTheme.primaryBlue;
-
-        return GestureDetector(
-          onTap: () => onCategorySelected(category),
-          child: Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 16,
-              vertical: 8,
-            ),
-            decoration: chipDecoration,
-            child: RLTypography.text(category, color: chipTextColor),
-          ),
-        );
-      }).toList(),
-    );
-  }
-
-  List<Widget> AllTitlesBookCards(List<Map<String, dynamic>> books) {
-    return books.map((book) {
-      final String bookTitle = book['title'] ?? '';
-      final String bookAuthor = book['author'] ?? '';
-      final String? coverImagePath = book['coverImage'];
-
-      final BoxDecoration cardDecoration = BoxDecoration(
-        color: RLTheme.backgroundLight.withValues(alpha: 0.08),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: RLTheme.grey300.withValues(alpha: 0.3),
-        ),
-      );
-
-      final BoxDecoration coverPlaceholderDecoration = BoxDecoration(
-        color: RLTheme.primaryBlue.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(6),
-        border: Border.all(
-          color: RLTheme.primaryBlue.withValues(alpha: 0.2),
-        ),
-      );
-
-      return Container(
-        margin: const EdgeInsets.only(bottom: 12),
-        padding: const EdgeInsets.all(12),
-        decoration: cardDecoration,
-        child: Div.row([
-          // Book cover
-          AllTitlesBookCover(
-            coverImagePath: coverImagePath,
-            coverPlaceholderDecoration: coverPlaceholderDecoration,
-          ),
-
-          const Spacing.width(12),
-
-          // Book info
-          Expanded(
-            child: Div.column([
-              RLTypography.bodyLarge(bookTitle),
-
-              const Spacing.height(4),
-
-              RLTypography.text(
-                bookAuthor,
-                color: RLTheme.textSecondary,
-              ),
-            ], crossAxisAlignment: CrossAxisAlignment.start),
-          ),
-        ]),
-      );
-    }).toList();
-  }
-
-  Widget AllTitlesBookCover({
-    required String? coverImagePath,
-    required BoxDecoration coverPlaceholderDecoration,
-  }) {
-    final bool hasCover = coverImagePath != null;
-
-    if (hasCover) {
-      return ClipRRect(
-        borderRadius: BorderRadius.circular(6),
-        child: Image.asset(
-          coverImagePath,
-          width: 40,
-          height: 60,
-          fit: BoxFit.cover,
-        ),
-      );
-    }
-
-    const Widget BookIcon = Icon(
-      Icons.book,
-      color: RLTheme.primaryBlue,
-      size: 20,
-    );
-
-    return Container(
-      width: 40,
-      height: 60,
-      decoration: coverPlaceholderDecoration,
-      child: BookIcon,
     );
   }
 }

@@ -33,6 +33,12 @@ class JSONCourseDataService {
         .where((course) => course['course-id'] == courseId)
         .toList();
 
-    return matchingCourses.isEmpty ? null : matchingCourses.first;
+    final bool hasNoMatchingCourse = matchingCourses.isEmpty;
+
+    if (hasNoMatchingCourse) {
+      return null;
+    }
+
+    return matchingCourses.first;
   }
 }

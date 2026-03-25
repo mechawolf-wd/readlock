@@ -10,16 +10,12 @@ class ThoughtTextStyleConfig {
   final Color color;
   final FontWeight fontWeight;
 
-  const ThoughtTextStyleConfig({
-    required this.color,
-    required this.fontWeight,
-  });
+  const ThoughtTextStyleConfig({required this.color, required this.fontWeight});
 }
 
 class CCReflectionQuestion extends StatefulWidget {
   final QuestionContent content;
-  final void Function(int selectedIndex, bool isCorrect)
-  onAnswerSelected;
+  final void Function(int selectedIndex, bool isCorrect) onAnswerSelected;
 
   const CCReflectionQuestion({
     super.key,
@@ -28,8 +24,7 @@ class CCReflectionQuestion extends StatefulWidget {
   });
 
   @override
-  State<CCReflectionQuestion> createState() =>
-      CCReflectionQuestionState();
+  State<CCReflectionQuestion> createState() => CCReflectionQuestionState();
 }
 
 class CCReflectionQuestionState extends State<CCReflectionQuestion> {
@@ -62,27 +57,19 @@ class CCReflectionQuestionState extends State<CCReflectionQuestion> {
     thoughtDecoration = BoxDecoration(
       color: RLTheme.backgroundLight,
       borderRadius: BorderRadius.circular(16),
-      border: Border.all(
-        color: RLTheme.textPrimary.withValues(alpha: 0.1),
-      ),
+      border: Border.all(color: RLTheme.textPrimary.withValues(alpha: 0.1)),
     );
 
     selectedThoughtDecoration = BoxDecoration(
       color: RLTheme.primaryBlue.withValues(alpha: 0.05),
       borderRadius: BorderRadius.circular(16),
-      border: Border.all(
-        color: RLTheme.primaryBlue.withValues(alpha: 0.5),
-        width: 2,
-      ),
+      border: Border.all(color: RLTheme.primaryBlue.withValues(alpha: 0.5), width: 2),
     );
 
     reflectedDecoration = BoxDecoration(
       color: RLTheme.primaryGreen.withValues(alpha: 0.05),
       borderRadius: BorderRadius.circular(16),
-      border: Border.all(
-        color: RLTheme.primaryGreen.withValues(alpha: 0.4),
-        width: 1.5,
-      ),
+      border: Border.all(color: RLTheme.primaryGreen.withValues(alpha: 0.4), width: 1.5),
     );
 
     headerTextStyle = RLTypography.headingMediumStyle.copyWith(
@@ -90,10 +77,7 @@ class CCReflectionQuestionState extends State<CCReflectionQuestion> {
       color: RLTheme.textPrimary.withValues(alpha: 0.9),
     );
 
-    promptTextStyle = RLTypography.bodyLargeStyle.copyWith(
-      fontSize: 16,
-      height: 1.6,
-    );
+    promptTextStyle = RLTypography.bodyLargeStyle.copyWith(fontSize: 16, height: 1.6);
 
     insightHeaderTextStyle = RLTypography.bodyLargeStyle.copyWith(
       fontWeight: FontWeight.w600,
@@ -115,11 +99,7 @@ class CCReflectionQuestionState extends State<CCReflectionQuestion> {
       size: 32,
     );
 
-    CheckIcon = const Icon(
-      Icons.check_circle_outline,
-      color: RLTheme.primaryGreen,
-      size: 20,
-    );
+    CheckIcon = const Icon(Icons.check_circle_outline, color: RLTheme.primaryGreen, size: 20);
 
     InsightIcon = Icon(
       Icons.auto_awesome,
@@ -163,18 +143,12 @@ class CCReflectionQuestionState extends State<CCReflectionQuestion> {
 
       const Spacing.height(12),
 
-      Center(
-        child: Text('Take a Moment to Reflect', style: headerTextStyle),
-      ),
+      Center(child: Text('Take a Moment to Reflect', style: headerTextStyle)),
     ]);
   }
 
   Widget ReflectionPromptSection() {
-    return Text(
-      widget.content.question,
-      style: promptTextStyle,
-      textAlign: TextAlign.center,
-    );
+    return Text(widget.content.question, style: promptTextStyle, textAlign: TextAlign.center);
   }
 
   Widget ThoughtOptionsSection() {
@@ -194,13 +168,9 @@ class CCReflectionQuestionState extends State<CCReflectionQuestion> {
     }).toList();
   }
 
-  Widget ThoughtOption({
-    required int optionIndex,
-    required QuestionOption option,
-  }) {
+  Widget ThoughtOption({required int optionIndex, required QuestionOption option}) {
     final bool isSelected = selectedAnswerIndex == optionIndex;
-    final bool isCorrectAnswer = widget.content.correctAnswerIndices
-        .contains(optionIndex);
+    final bool isCorrectAnswer = widget.content.correctAnswerIndices.contains(optionIndex);
 
     final BoxDecoration decoration = getThoughtOptionDecoration(
       isSelected: isSelected,
@@ -223,13 +193,7 @@ class CCReflectionQuestionState extends State<CCReflectionQuestion> {
     return Div.row(
       [
         // Show check icon for correct answer after reflection
-        RenderIf.condition(
-          shouldShowCheckIcon,
-          Div.row([
-            CheckIcon,
-            const Spacing.width(12),
-          ]),
-        ),
+        RenderIf.condition(shouldShowCheckIcon, Div.row([CheckIcon, const Spacing.width(12)])),
 
         Expanded(child: Text(option.text, style: textStyle)),
       ],
@@ -240,10 +204,7 @@ class CCReflectionQuestionState extends State<CCReflectionQuestion> {
   }
 
   Widget ReflectionInsightSection() {
-    return RenderIf.condition(
-      hasReflected,
-      ReflectionInsightContent(),
-    );
+    return RenderIf.condition(hasReflected, ReflectionInsightContent());
   }
 
   Widget ReflectionInsightContent() {
@@ -301,9 +262,7 @@ class CCReflectionQuestionState extends State<CCReflectionQuestion> {
     }
 
     if (hasReflected) {
-      return thoughtDecoration.copyWith(
-        color: RLTheme.backgroundLight.withValues(alpha: 0.5),
-      );
+      return thoughtDecoration.copyWith(color: RLTheme.backgroundLight.withValues(alpha: 0.5));
     }
 
     return thoughtDecoration;
@@ -326,9 +285,7 @@ class CCReflectionQuestionState extends State<CCReflectionQuestion> {
     }
 
     if (hasReflected) {
-      return normalDecoration.copyWith(
-        color: RLTheme.backgroundLight.withValues(alpha: 0.5),
-      );
+      return normalDecoration.copyWith(color: RLTheme.backgroundLight.withValues(alpha: 0.5));
     }
 
     return normalDecoration;
@@ -373,8 +330,7 @@ class CCReflectionQuestionState extends State<CCReflectionQuestion> {
   }
 
   void completeReflection(int optionIndex) {
-    final bool isCorrectAnswer = widget.content.correctAnswerIndices
-        .contains(optionIndex);
+    final bool isCorrectAnswer = widget.content.correctAnswerIndices.contains(optionIndex);
 
     setState(() {
       hasReflected = true;

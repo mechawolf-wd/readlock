@@ -81,8 +81,7 @@ class ProgressiveText extends StatefulWidget {
   State<ProgressiveText> createState() => ProgressiveTextState();
 }
 
-class ProgressiveTextState extends State<ProgressiveText>
-    with TickerProviderStateMixin {
+class ProgressiveTextState extends State<ProgressiveText> with TickerProviderStateMixin {
   // Text state management
   // All sentences to be displayed progressively
   late List<String> textSentences;
@@ -135,16 +134,14 @@ class ProgressiveTextState extends State<ProgressiveText>
   // Resets the current sentence state to prepare for revealing a new sentence
   // Sets the text and resets character position for color transition animation
   void initializeCurrentSentence() {
-    final bool hasCurrentSentence =
-        currentSentenceNumber < textSentences.length;
+    final bool hasCurrentSentence = currentSentenceNumber < textSentences.length;
 
     if (hasCurrentSentence) {
       // Use clean text for animation (without highlight markers)
       currentSentenceText = removeHighlightMarkersFromText(
         textSentences[currentSentenceNumber],
       );
-      currentCharacterPosition =
-          -1; // Start with no characters revealed
+      currentCharacterPosition = -1; // Start with no characters revealed
     }
   }
 
@@ -154,19 +151,15 @@ class ProgressiveTextState extends State<ProgressiveText>
   void startCurrentSentenceReveal() async {
     final bool isAlreadyRevealing = isRevealingCurrentSentence;
     final bool hasTextToReveal = currentSentenceText.isNotEmpty;
-    final bool canStartRevealAnimation =
-        !isAlreadyRevealing && hasTextToReveal;
+    final bool canStartRevealAnimation = !isAlreadyRevealing && hasTextToReveal;
 
     if (!canStartRevealAnimation) {
       return;
     }
 
     // Check if current sentence is an image
-    final String originalSentence =
-        textSentences[currentSentenceNumber];
-    final bool isImageSentence = originalSentence.startsWith(
-      'image-link',
-    );
+    final String originalSentence = textSentences[currentSentenceNumber];
+    final bool isImageSentence = originalSentence.startsWith('image-link');
 
     if (isImageSentence) {
       // Start image reveal animation
@@ -179,8 +172,7 @@ class ProgressiveTextState extends State<ProgressiveText>
     if (isWidgetStillMounted) {
       setState(() {
         isRevealingCurrentSentence = true;
-        currentCharacterPosition =
-            -1; // Start with no characters revealed
+        currentCharacterPosition = -1; // Start with no characters revealed
       });
 
       // Start typewriter sound
@@ -188,11 +180,7 @@ class ProgressiveTextState extends State<ProgressiveText>
     }
 
     // Simple character-by-character reveal with stable layout
-    for (
-      int charIndex = 0;
-      charIndex < currentSentenceText.length;
-      charIndex++
-    ) {
+    for (int charIndex = 0; charIndex < currentSentenceText.length; charIndex++) {
       if (!mounted || !isRevealingCurrentSentence) {
         break;
       }
@@ -217,8 +205,7 @@ class ProgressiveTextState extends State<ProgressiveText>
       SoundService.stopTypewriter();
 
       // Check if all sentences have been revealed
-      final bool isLastSentence =
-          currentSentenceNumber == textSentences.length - 1;
+      final bool isLastSentence = currentSentenceNumber == textSentences.length - 1;
 
       final bool shouldTriggerCompletionCallback =
           isLastSentence && widget.onAllSegmentsRevealed != null;
@@ -227,12 +214,10 @@ class ProgressiveTextState extends State<ProgressiveText>
         widget.onAllSegmentsRevealed!();
       }
 
-      final bool shouldAutoAdvanceToNextSentence =
-          widget.automaticallyRevealNextSentence;
+      final bool shouldAutoAdvanceToNextSentence = widget.automaticallyRevealNextSentence;
 
       if (shouldAutoAdvanceToNextSentence) {
-        final bool hasMoreSentencesToReveal =
-            currentSentenceNumber < textSentences.length - 1;
+        final bool hasMoreSentencesToReveal = currentSentenceNumber < textSentences.length - 1;
 
         if (hasMoreSentencesToReveal) {
           await Future.delayed(PROGRESSIVE_TEXT_AUTO_REVEAL_DELAY);
@@ -276,8 +261,7 @@ class ProgressiveTextState extends State<ProgressiveText>
       SoundService.stopTypewriter();
 
       // Check if all sentences have been revealed
-      final bool isLastSentence =
-          currentSentenceNumber == textSentences.length - 1;
+      final bool isLastSentence = currentSentenceNumber == textSentences.length - 1;
 
       final bool shouldTriggerCompletionCallback =
           isLastSentence && widget.onAllSegmentsRevealed != null;
@@ -286,12 +270,10 @@ class ProgressiveTextState extends State<ProgressiveText>
         widget.onAllSegmentsRevealed!();
       }
 
-      final bool shouldAutoAdvanceToNextSentence =
-          widget.automaticallyRevealNextSentence;
+      final bool shouldAutoAdvanceToNextSentence = widget.automaticallyRevealNextSentence;
 
       if (shouldAutoAdvanceToNextSentence) {
-        final bool hasMoreSentencesToReveal =
-            currentSentenceNumber < textSentences.length - 1;
+        final bool hasMoreSentencesToReveal = currentSentenceNumber < textSentences.length - 1;
 
         if (hasMoreSentencesToReveal) {
           await Future.delayed(PROGRESSIVE_TEXT_AUTO_REVEAL_DELAY);
@@ -304,11 +286,9 @@ class ProgressiveTextState extends State<ProgressiveText>
   // Advances to the next sentence in the sequence
   // Updates the sentence counter and starts revealing the new sentence
   void revealNextSentence() {
-    final bool hasMoreSentencesToReveal =
-        currentSentenceNumber < textSentences.length - 1;
+    final bool hasMoreSentencesToReveal = currentSentenceNumber < textSentences.length - 1;
     final bool canUpdateUI = mounted;
-    final bool shouldAdvanceToNextSentence =
-        hasMoreSentencesToReveal && canUpdateUI;
+    final bool shouldAdvanceToNextSentence = hasMoreSentencesToReveal && canUpdateUI;
 
     if (shouldAdvanceToNextSentence) {
       setState(() {
@@ -332,10 +312,8 @@ class ProgressiveTextState extends State<ProgressiveText>
     }
 
     final bool isCurrentlyAnimating = isRevealingCurrentSentence;
-    final bool hasUnrevealedSentences =
-        currentSentenceNumber < textSentences.length - 1;
-    final bool hasInteractiveContent =
-        isCurrentlyAnimating || hasUnrevealedSentences;
+    final bool hasUnrevealedSentences = currentSentenceNumber < textSentences.length - 1;
+    final bool hasInteractiveContent = isCurrentlyAnimating || hasUnrevealedSentences;
 
     if (hasInteractiveContent) {
       // Provide haptic feedback only for interactive taps
@@ -354,10 +332,7 @@ class ProgressiveTextState extends State<ProgressiveText>
   }
 
   // Handles taps on the reveal/toggle button area
-  void handleRevealOrToggleTap(
-    bool hasRevealableContent,
-    bool shouldToggleBlur,
-  ) {
+  void handleRevealOrToggleTap(bool hasRevealableContent, bool shouldToggleBlur) {
     final bool hasCustomCallback = widget.onTapCallback != null;
 
     if (hasCustomCallback) {
@@ -380,9 +355,7 @@ class ProgressiveTextState extends State<ProgressiveText>
     final bool hasLastTapTime = lastTapTime != null;
 
     if (hasLastTapTime) {
-      final Duration timeSinceLastTap = currentTime.difference(
-        lastTapTime!,
-      );
+      final Duration timeSinceLastTap = currentTime.difference(lastTapTime!);
 
       final bool isWithinDoubleTapWindow =
           timeSinceLastTap <= PROGRESSIVE_TEXT_DOUBLE_TAP_TIMEOUT;
@@ -419,8 +392,7 @@ class ProgressiveTextState extends State<ProgressiveText>
 
   // Instantly completes the current sentence reveal when tapped
   void completeCurrentSentenceReveal() {
-    final bool canCompleteReveal =
-        mounted && isRevealingCurrentSentence;
+    final bool canCompleteReveal = mounted && isRevealingCurrentSentence;
 
     if (!canCompleteReveal) {
       return;
@@ -435,8 +407,7 @@ class ProgressiveTextState extends State<ProgressiveText>
     SoundService.stopTypewriter();
 
     // Check if all sentences have been revealed
-    final bool isLastSentence =
-        currentSentenceNumber == textSentences.length - 1;
+    final bool isLastSentence = currentSentenceNumber == textSentences.length - 1;
 
     final bool shouldTriggerCompletionCallback =
         isLastSentence && widget.onAllSegmentsRevealed != null;
@@ -449,13 +420,11 @@ class ProgressiveTextState extends State<ProgressiveText>
   // Toggles the blur effect on/off for a specific completed sentence
   // Allows users to tap completed sentences to make them readable again
   void toggleBlurForSentence(int sentenceIndex) {
-    final bool isValidSentenceIndex =
-        sentenceIndex < sentenceBlurStates.length;
+    final bool isValidSentenceIndex = sentenceIndex < sentenceBlurStates.length;
 
     // Don't allow toggling if sentence has no-blur modifier
     final bool hasNoBlurFlag =
-        sentenceIndex < sentenceNoBlurFlags.length &&
-        sentenceNoBlurFlags[sentenceIndex];
+        sentenceIndex < sentenceNoBlurFlags.length && sentenceNoBlurFlags[sentenceIndex];
 
     if (hasNoBlurFlag) {
       return;
@@ -463,8 +432,7 @@ class ProgressiveTextState extends State<ProgressiveText>
 
     if (isValidSentenceIndex) {
       setState(() {
-        sentenceBlurStates[sentenceIndex] =
-            !sentenceBlurStates[sentenceIndex];
+        sentenceBlurStates[sentenceIndex] = !sentenceBlurStates[sentenceIndex];
       });
     }
   }
@@ -479,19 +447,17 @@ class ProgressiveTextState extends State<ProgressiveText>
 
     // Determine if we should blur or unblur based on current state
     // If any segments are unblurred, we blur all. If all are blurred, we unblur all.
-    final bool hasAnyUnblurredSegments = sentenceBlurStates.any(
-      (isBlurred) => !isBlurred,
-    );
+    final bool hasAnyUnblurredSegments = sentenceBlurStates.any((isBlurred) => !isBlurred);
     final bool shouldBlurAll = hasAnyUnblurredSegments;
 
     setState(() {
-      for (int i = 0; i < sentenceBlurStates.length; i++) {
+      for (int sentenceIndex = 0; sentenceIndex < sentenceBlurStates.length; sentenceIndex++) {
         // Only toggle if the segment doesn't have no-blur flag
         final bool hasNoBlurFlag =
-            i < sentenceNoBlurFlags.length && sentenceNoBlurFlags[i];
+            sentenceIndex < sentenceNoBlurFlags.length && sentenceNoBlurFlags[sentenceIndex];
 
         if (!hasNoBlurFlag) {
-          sentenceBlurStates[i] = shouldBlurAll;
+          sentenceBlurStates[sentenceIndex] = shouldBlurAll;
         }
       }
     });
@@ -526,8 +492,7 @@ class ProgressiveTextState extends State<ProgressiveText>
     // Main layout with text content and reveal button area
     return LayoutBuilder(
       builder: (context, constraints) {
-        final bool hasUnboundedHeight =
-            constraints.maxHeight == double.infinity;
+        final bool hasUnboundedHeight = constraints.maxHeight == double.infinity;
 
         if (hasUnboundedHeight) {
           // In scrollable context, use fixed layout
@@ -563,21 +528,16 @@ class ProgressiveTextState extends State<ProgressiveText>
   Widget RevealButtonArea(BoxConstraints constraints) {
     // Check if there's more content to reveal or if we should show unblur button
     final bool isCurrentlyAnimating = isRevealingCurrentSentence;
-    final bool hasMoreSentences =
-        currentSentenceNumber < textSentences.length - 1;
-    final bool hasRevealableContent =
-        isCurrentlyAnimating || hasMoreSentences;
+    final bool hasMoreSentences = currentSentenceNumber < textSentences.length - 1;
+    final bool hasRevealableContent = isCurrentlyAnimating || hasMoreSentences;
 
     // Check if all segments are revealed and we can toggle blur states
     final bool allSegmentsRevealed =
-        currentSentenceNumber >= textSentences.length - 1 &&
-        !isCurrentlyAnimating;
+        currentSentenceNumber >= textSentences.length - 1 && !isCurrentlyAnimating;
     final bool hasToggleableSegments = sentenceBlurStates.isNotEmpty;
-    final bool shouldShowToggleButton =
-        allSegmentsRevealed && hasToggleableSegments;
+    final bool shouldShowToggleButton = allSegmentsRevealed && hasToggleableSegments;
 
-    final bool shouldShowButton =
-        hasRevealableContent || shouldShowToggleButton;
+    final bool shouldShowButton = hasRevealableContent || shouldShowToggleButton;
 
     if (!shouldShowButton) {
       return const SizedBox.shrink();
@@ -588,28 +548,25 @@ class ProgressiveTextState extends State<ProgressiveText>
     const double minButtonHeight = 120.0;
 
     // Extract margin for clarity
-    final EdgeInsets buttonMargin = const EdgeInsets.only(
-      top: buttonMarginTop,
-    );
+    final EdgeInsets buttonMargin = const EdgeInsets.only(top: buttonMarginTop);
 
     // Calculate button height based on constraints
-    final bool hasUnboundedHeight =
-        constraints.maxHeight == double.infinity;
+    final bool hasUnboundedHeight = constraints.maxHeight == double.infinity;
+
+    double buttonHeight = double.infinity;
+
+    if (hasUnboundedHeight) {
+      buttonHeight = minButtonHeight;
+    }
 
     return Container(
       margin: buttonMargin,
-      height: hasUnboundedHeight ? minButtonHeight : double.infinity,
+      height: buttonHeight,
       child: MouseRegion(
         cursor: SystemMouseCursors.click,
         child: GestureDetector(
-          onTap: () => handleRevealOrToggleTap(
-            hasRevealableContent,
-            shouldShowToggleButton,
-          ),
-          child: Container(
-            width: double.infinity,
-            color: Colors.transparent,
-          ),
+          onTap: () => handleRevealOrToggleTap(hasRevealableContent, shouldShowToggleButton),
+          child: Container(width: double.infinity, color: Colors.transparent),
         ),
       ),
     );
@@ -620,50 +577,42 @@ class ProgressiveTextState extends State<ProgressiveText>
     final List<Widget> sentenceWidgets = [];
 
     // Add completed sentence widgets
-    for (int i = 0; i < currentSentenceNumber; i++) {
+    for (int sentenceIndex = 0; sentenceIndex < currentSentenceNumber; sentenceIndex++) {
       sentenceWidgets.add(
         CompletedSentenceWidget(
-          key: ValueKey('sentence_$i'),
-          sentenceIndex: i,
-          sentenceText: textSentences[i],
-          shouldBlur: shouldBlurSentence(i),
+          key: ValueKey('sentence_$sentenceIndex'),
+          sentenceIndex: sentenceIndex,
+          sentenceText: textSentences[sentenceIndex],
+          shouldBlur: shouldBlurSentence(sentenceIndex),
           blurIntensity: widget.completedSentenceBlurIntensity,
           blurOpacity: widget.completedSentenceOpacity,
           textStyle: getConsistentTextStyle(),
-          onTap: () => toggleBlurForSentence(i),
+          onTap: () => toggleBlurForSentence(sentenceIndex),
         ),
       );
     }
 
     // Add current sentence if it exists
-    final bool hasActiveSentenceToDisplay =
-        currentSentenceNumber < textSentences.length;
+    final bool hasActiveSentenceToDisplay = currentSentenceNumber < textSentences.length;
 
     if (hasActiveSentenceToDisplay) {
       sentenceWidgets.add(CurrentSentenceDisplay());
     }
 
-    return Div.column(
-      sentenceWidgets,
-      crossAxisAlignment: CrossAxisAlignment.start,
-    );
+    return Div.column(sentenceWidgets, crossAxisAlignment: CrossAxisAlignment.start);
   }
 
   // Display widget for currently revealing sentence
   Widget CurrentSentenceDisplay() {
     // Check if we should display anything
     final String originalText = textSentences[currentSentenceNumber];
-    final bool isImageLinkSegment = originalText.startsWith(
-      'image-link',
-    );
+    final bool isImageLinkSegment = originalText.startsWith('image-link');
 
     if (isImageLinkSegment) {
       return CurrentImageDisplay(originalText);
     }
 
-    final bool containsHighlightingMarkup = originalText.contains(
-      '<c:',
-    );
+    final bool containsHighlightingMarkup = originalText.contains('<c:');
 
     if (containsHighlightingMarkup) {
       return ProgressiveHighlightedTextWithColorTransition(
@@ -673,27 +622,18 @@ class ProgressiveTextState extends State<ProgressiveText>
     }
 
     // Render full text with color transition for revealed characters
-    return BuildTextWithColorTransition(
-      currentSentenceText,
-      currentCharacterPosition,
-    );
+    return TextWithColorTransition(currentSentenceText, currentCharacterPosition);
   }
 
   // Build text with full layout, transitioning colors for revealed characters
-  Widget BuildTextWithColorTransition(
-    String fullText,
-    int revealedPosition,
-  ) {
+  Widget TextWithColorTransition(String fullText, int revealedPosition) {
     final TextStyle baseStyle = getConsistentTextStyle();
     final Color textColor = baseStyle.color ?? Colors.black;
     final List<TextSpan> spans = [];
 
     // Add revealed characters in black
     if (revealedPosition >= 0 && fullText.isNotEmpty) {
-      final int actualRevealedLength = (revealedPosition + 1).clamp(
-        0,
-        fullText.length,
-      );
+      final int actualRevealedLength = (revealedPosition + 1).clamp(0, fullText.length);
 
       if (actualRevealedLength > 0) {
         spans.add(
@@ -731,9 +671,7 @@ class ProgressiveTextState extends State<ProgressiveText>
 
   // Display widget for current image segment
   Widget CurrentImageDisplay(String imageSegmentText) {
-    final bool hasNoBlurModifier = imageSegmentText.contains(
-      '[no-blur]',
-    );
+    final bool hasNoBlurModifier = imageSegmentText.contains('[no-blur]');
 
     // Extract the path after removing modifiers
     String cleanImageText = imageSegmentText;
@@ -741,9 +679,7 @@ class ProgressiveTextState extends State<ProgressiveText>
       cleanImageText = cleanImageText.replaceAll('[no-blur]', '');
     }
 
-    final String imageAssetPath = cleanImageText.substring(
-      'image-link:'.length,
-    );
+    final String imageAssetPath = cleanImageText.substring('image-link:'.length);
 
     // Extract styling above method
     const double maxImageHeight = 200.0;
@@ -751,9 +687,7 @@ class ProgressiveTextState extends State<ProgressiveText>
     const double imageSpacing = 16.0;
     const double cornerRadius = 8.0;
 
-    final BorderRadius imageBorderRadius = BorderRadius.circular(
-      cornerRadius,
-    );
+    final BorderRadius imageBorderRadius = BorderRadius.circular(cornerRadius);
 
     final BoxDecoration errorContainerDecoration = BoxDecoration(
       color: Colors.grey.shade300,
@@ -790,18 +724,17 @@ class ProgressiveTextState extends State<ProgressiveText>
                     imageAssetPath,
                     fit: BoxFit.contain,
                     height: maxImageHeight,
-                    errorBuilder: (context, error, stackTrace) =>
-                        Container(
-                          height: errorImageHeight,
-                          decoration: errorContainerDecoration,
-                          child: Center(
-                            child: Text(
-                              'Image not found: $imageAssetPath',
-                              style: errorTextStyle,
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
+                    errorBuilder: (context, error, stackTrace) => Container(
+                      height: errorImageHeight,
+                      decoration: errorContainerDecoration,
+                      child: Center(
+                        child: Text(
+                          'Image not found: $imageAssetPath',
+                          style: errorTextStyle,
+                          textAlign: TextAlign.center,
                         ),
+                      ),
+                    ),
                   ),
                 ),
               ),
@@ -948,13 +881,17 @@ class ProgressiveTextState extends State<ProgressiveText>
   Color getHighlightColor(String code) {
     switch (code) {
       case 'g':
-        return Colors.green.shade600;
+        {
+          return Colors.green.shade600;
+        }
       case 'r':
-        return Colors.red.shade600;
+        {
+          return Colors.red.shade600;
+        }
       default:
-        return Colors
-            .green
-            .shade600; // Fallback to green for any unknown codes
+        {
+          return Colors.green.shade600;
+        }
     }
   }
 
@@ -967,8 +904,7 @@ class ProgressiveTextState extends State<ProgressiveText>
       return false;
     }
 
-    final bool isIndexOutOfBounds =
-        sentenceIndex >= sentenceBlurStates.length;
+    final bool isIndexOutOfBounds = sentenceIndex >= sentenceBlurStates.length;
 
     if (isIndexOutOfBounds) {
       return false;
@@ -976,8 +912,7 @@ class ProgressiveTextState extends State<ProgressiveText>
 
     // Check if sentence has no-blur modifier
     final bool hasNoBlurFlag =
-        sentenceIndex < sentenceNoBlurFlags.length &&
-        sentenceNoBlurFlags[sentenceIndex];
+        sentenceIndex < sentenceNoBlurFlags.length && sentenceNoBlurFlags[sentenceIndex];
 
     if (hasNoBlurFlag) {
       return false;
@@ -990,9 +925,12 @@ class ProgressiveTextState extends State<ProgressiveText>
   // Ensures no visual jump when toggling blur state
   TextStyle getConsistentTextStyle() {
     final bool hasCustomTextStyle = widget.textStyle != null;
-    final TextStyle baseStyle = hasCustomTextStyle
-        ? widget.textStyle!
-        : RLTypography.bodyMediumStyle;
+
+    TextStyle baseStyle = RLTypography.bodyMediumStyle;
+
+    if (hasCustomTextStyle) {
+      baseStyle = widget.textStyle!;
+    }
 
     return baseStyle.copyWith(fontSize: 16, height: 1.5);
   }
@@ -1044,9 +982,7 @@ class CompletedSentenceWidget extends StatelessWidget {
 
   Widget SentenceText() {
     // Extract conditions above widget logic
-    final bool isImageLinkSegment = sentenceText.startsWith(
-      'image-link',
-    );
+    final bool isImageLinkSegment = sentenceText.startsWith('image-link');
     final bool containsHighlighting = sentenceText.contains('<c:');
 
     if (isImageLinkSegment) {
@@ -1057,11 +993,7 @@ class CompletedSentenceWidget extends StatelessWidget {
       return HighlightedTextDisplay();
     }
 
-    return Text(
-      sentenceText,
-      style: textStyle,
-      textAlign: TextAlign.left,
-    );
+    return Text(sentenceText, style: textStyle, textAlign: TextAlign.left);
   }
 
   Widget ImageDisplay() {
@@ -1073,9 +1005,7 @@ class CompletedSentenceWidget extends StatelessWidget {
     const double imageSpacing = 16.0;
     const double cornerRadius = 8.0;
 
-    final BorderRadius imageBorderRadius = BorderRadius.circular(
-      cornerRadius,
-    );
+    final BorderRadius imageBorderRadius = BorderRadius.circular(cornerRadius);
 
     final BoxDecoration errorContainerDecoration = BoxDecoration(
       color: Colors.grey.shade300,
@@ -1129,13 +1059,12 @@ class CompletedSentenceWidget extends StatelessWidget {
         imageAssetPath,
         fit: BoxFit.contain,
         height: maxImageHeight,
-        errorBuilder: (context, error, stackTrace) =>
-            ImageErrorFallback(
-              errorContainerDecoration: errorContainerDecoration,
-              errorTextStyle: errorTextStyle,
-              errorImageHeight: errorImageHeight,
-              imageAssetPath: imageAssetPath,
-            ),
+        errorBuilder: (context, error, stackTrace) => ImageErrorFallback(
+          errorContainerDecoration: errorContainerDecoration,
+          errorTextStyle: errorTextStyle,
+          errorImageHeight: errorImageHeight,
+          imageAssetPath: imageAssetPath,
+        ),
       ),
     );
   }
@@ -1187,10 +1116,7 @@ class CompletedSentenceWidget extends StatelessWidget {
     );
   }
 
-  void addRemainingTextSpan(
-    List<TextSpan> spans,
-    String remainingText,
-  ) {
+  void addRemainingTextSpan(List<TextSpan> spans, String remainingText) {
     final bool hasRemainingText = remainingText.isNotEmpty;
 
     if (hasRemainingText) {
@@ -1198,11 +1124,7 @@ class CompletedSentenceWidget extends StatelessWidget {
     }
   }
 
-  void addTextBeforeHighlight(
-    List<TextSpan> spans,
-    String text,
-    RegExpMatch match,
-  ) {
+  void addTextBeforeHighlight(List<TextSpan> spans, String text, RegExpMatch match) {
     final bool hasTextBeforeMatch = match.start > 0;
 
     if (hasTextBeforeMatch) {
@@ -1221,19 +1143,23 @@ class CompletedSentenceWidget extends StatelessWidget {
       fontWeight: FontWeight.bold,
     );
 
-    spans.add(
-      TextSpan(text: highlightedText, style: highlightedTextStyle),
-    );
+    spans.add(TextSpan(text: highlightedText, style: highlightedTextStyle));
   }
 
   Color getHighlightColor(String code) {
     switch (code) {
       case 'g':
-        return Colors.green.shade600;
+        {
+          return Colors.green.shade600;
+        }
       case 'r':
-        return Colors.red.shade600;
+        {
+          return Colors.red.shade600;
+        }
       default:
-        return Colors.grey;
+        {
+          return Colors.grey;
+        }
     }
   }
 }

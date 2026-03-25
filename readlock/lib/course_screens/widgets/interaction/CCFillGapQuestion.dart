@@ -15,10 +15,7 @@ class GapStyling {
   final Color backgroundColor;
   final Color borderColor;
 
-  GapStyling({
-    required this.backgroundColor,
-    required this.borderColor,
-  });
+  GapStyling({required this.backgroundColor, required this.borderColor});
 }
 
 class ChipStyling {
@@ -37,23 +34,18 @@ class CCFillGapQuestion extends StatefulWidget {
   final QuestionContent content;
   final void Function(int selectedIndex, bool isCorrect) onAnswerSelected;
 
-  const CCFillGapQuestion({
-    super.key,
-    required this.content,
-    required this.onAnswerSelected,
-  });
+  const CCFillGapQuestion({super.key, required this.content, required this.onAnswerSelected});
 
   @override
   State<CCFillGapQuestion> createState() => CCFillGapQuestionState();
 }
 
-class CCFillGapQuestionState extends State<CCFillGapQuestion>
-    with TickerProviderStateMixin {
+class CCFillGapQuestionState extends State<CCFillGapQuestion> with TickerProviderStateMixin {
   // State management
   Map<int, int?> selectedOptionsForGaps = {};
   bool hasAnswered = false;
   Set<int> usedOptionIndices = {};
-  
+
   // Animation controllers
   AnimationController? shakeController;
   Animation<double>? shakeAnimation;
@@ -180,7 +172,7 @@ class CCFillGapQuestionState extends State<CCFillGapQuestion>
 
     // Apply shake animation if incorrect
     final bool shouldShake = isIncorrect && shakeAnimation != null;
-    
+
     if (shouldShake) {
       return AnimatedBuilder(
         animation: shakeAnimation!,
@@ -200,11 +192,11 @@ class CCFillGapQuestionState extends State<CCFillGapQuestion>
   bool getIsGapCorrect(int gapIndex, int? selectedOptionIndex) {
     final bool hasSelection = selectedOptionIndex != null;
     final bool isAnswered = hasAnswered;
-    
+
     if (!isAnswered || !hasSelection) {
       return false;
     }
-    
+
     return widget.content.correctAnswerIndices.contains(selectedOptionIndex);
   }
 
@@ -236,17 +228,14 @@ class CCFillGapQuestionState extends State<CCFillGapQuestion>
       borderColor = RLTheme.textPrimary.withValues(alpha: 0.25);
     }
 
-    return GapStyling(
-      backgroundColor: backgroundColor,
-      borderColor: borderColor,
-    );
+    return GapStyling(backgroundColor: backgroundColor, borderColor: borderColor);
   }
 
   double calculateGapWidth(String text, bool hasSelection) {
     if (!hasSelection) {
       return FILL_GAP_MIN_BLANK_WIDTH;
     }
-    
+
     final double calculatedWidth = text.length * 9.0 + 40;
     return calculatedWidth.clamp(FILL_GAP_MIN_BLANK_WIDTH, FILL_GAP_MAX_BLANK_WIDTH);
   }
@@ -259,23 +248,32 @@ class CCFillGapQuestionState extends State<CCFillGapQuestion>
     required int gapIndex,
   }) {
     // Text style for gap content
+    final FontWeight gapFontWeight = hasSelection ? FontWeight.w600 : FontWeight.normal;
+
+    Color gapTextColor = RLTheme.textPrimary.withValues(alpha: 0.4);
+
+    if (hasSelection) {
+      gapTextColor = RLTheme.textPrimary;
+    }
+
     final TextStyle gapTextStyle = RLTypography.bodyLargeStyle.copyWith(
       fontSize: FILL_GAP_OPTION_TEXT_SIZE,
-      fontWeight: hasSelection ? FontWeight.w600 : FontWeight.normal,
-      color: hasSelection
-          ? RLTheme.textPrimary
-          : RLTheme.textPrimary.withValues(alpha: 0.4),
+      fontWeight: gapFontWeight,
+      color: gapTextColor,
     );
 
     // Gap decoration
     final BoxDecoration gapDecoration = BoxDecoration(
       color: styling.backgroundColor,
       borderRadius: BorderRadius.circular(FILL_GAP_GAP_RADIUS),
-      border: Border.all(
-        color: styling.borderColor,
-        width: FILL_GAP_BORDER_WIDTH,
-      ),
+      border: Border.all(color: styling.borderColor, width: FILL_GAP_BORDER_WIDTH),
     );
+
+    VoidCallback? gapTapHandler;
+
+    if (!hasAnswered) {
+      gapTapHandler = () => clearGapSelection(gapIndex);
+    }
 
     return Div.row(
       [
@@ -294,7 +292,7 @@ class CCFillGapQuestionState extends State<CCFillGapQuestion>
       padding: const [FILL_GAP_GAP_PADDING_H, FILL_GAP_GAP_PADDING_V],
       decoration: gapDecoration,
       mainAxisAlignment: MainAxisAlignment.center,
-      onTap: hasAnswered ? null : () => clearGapSelection(gapIndex), // Simple null guard
+      onTap: gapTapHandler,
     );
   }
 
@@ -314,10 +312,7 @@ class CCFillGapQuestionState extends State<CCFillGapQuestion>
 
     return Div.column([
       // Label
-      Text(
-        'Select words to fill the gaps:',
-        style: labelStyle,
-      ),
+      Text('Select words to fill the gaps:', style: labelStyle),
 
       const Spacing.height(16),
 
@@ -343,24 +338,34 @@ class CCFillGapQuestionState extends State<CCFillGapQuestion>
     );
 
     // Build chip text style
+    final FontWeight chipFontWeight = isCorrectOption ? FontWeight.w600 : FontWeight.w500;
+
+    final bool shouldStrikethrough = isUsed && !isCorrectOption;
+    TextDecoration? chipTextDecoration;
+
+    if (shouldStrikethrough) {
+      chipTextDecoration = TextDecoration.lineThrough;
+    }
+
     final TextStyle chipTextStyle = RLTypography.bodyLargeStyle.copyWith(
       fontSize: FILL_GAP_OPTION_TEXT_SIZE,
       color: styling.textColor,
-      fontWeight: isCorrectOption ? FontWeight.w600 : FontWeight.w500,
-      decoration: isUsed && !isCorrectOption
-          ? TextDecoration.lineThrough
-          : null,
+      fontWeight: chipFontWeight,
+      decoration: chipTextDecoration,
     );
 
     // Build chip decoration
     final BoxDecoration chipDecoration = BoxDecoration(
       color: styling.backgroundColor,
       borderRadius: BorderRadius.circular(FILL_GAP_CHIP_RADIUS),
-      border: Border.all(
-        color: styling.borderColor,
-        width: FILL_GAP_BORDER_WIDTH,
-      ),
+      border: Border.all(color: styling.borderColor, width: FILL_GAP_BORDER_WIDTH),
     );
+
+    VoidCallback? optionTapHandler;
+
+    if (!isDisabled) {
+      optionTapHandler = () => selectOption(optionIndex);
+    }
 
     return Div.row(
       [
@@ -373,17 +378,17 @@ class CCFillGapQuestionState extends State<CCFillGapQuestion>
       ],
       padding: const [FILL_GAP_OPTION_CHIP_PADDING_H, FILL_GAP_OPTION_CHIP_PADDING_V],
       decoration: chipDecoration,
-      onTap: isDisabled ? null : () => selectOption(optionIndex), // Simple null guard
+      onTap: optionTapHandler,
     );
   }
 
   bool getIsCorrectOption(int optionIndex) {
     final bool isAnswered = hasAnswered;
-    
+
     if (!isAnswered) {
       return false;
     }
-    
+
     return widget.content.correctAnswerIndices.contains(optionIndex);
   }
 
@@ -459,30 +464,26 @@ class CCFillGapQuestionState extends State<CCFillGapQuestion>
     final BoxDecoration buttonDecoration = BoxDecoration(
       color: buttonColor,
       borderRadius: BorderRadius.circular(FILL_GAP_BUTTON_RADIUS),
-      border: Border.all(
-        color: buttonBorderColor,
-        width: FILL_GAP_BORDER_WIDTH,
-      ),
+      border: Border.all(color: buttonBorderColor, width: FILL_GAP_BORDER_WIDTH),
     );
 
+    VoidCallback? submitTapHandler;
+
+    if (canSubmit) {
+      submitTapHandler = checkAnswer;
+    }
+
     return Div.row(
-      [
-        Text(
-          buttonText,
-          style: buttonTextStyle,
-        ),
-      ],
+      [Text(buttonText, style: buttonTextStyle)],
       height: 48,
       decoration: buttonDecoration,
       mainAxisAlignment: MainAxisAlignment.center,
-      onTap: canSubmit ? checkAnswer : null, // Simple null guard
+      onTap: submitTapHandler,
     );
   }
 
   bool checkAllGapsFilled() {
-    return selectedOptionsForGaps.values.every(
-      (selectedOption) => selectedOption != null,
-    );
+    return selectedOptionsForGaps.values.every((selectedOption) => selectedOption != null);
   }
 
   Widget ExplanationSection() {
@@ -490,7 +491,7 @@ class CCFillGapQuestionState extends State<CCFillGapQuestion>
 
     return RenderIf.condition(
       shouldShowExplanation,
-      
+
       Div.column(
         [
           // Header
@@ -511,7 +512,7 @@ class CCFillGapQuestionState extends State<CCFillGapQuestion>
         color: RLTheme.backgroundLight,
         radius: 12,
       ),
-      
+
       const SizedBox.shrink(),
     );
   }
@@ -536,15 +537,14 @@ class CCFillGapQuestionState extends State<CCFillGapQuestion>
 
       const Spacing.width(FILL_GAP_ICON_SPACING),
 
-      Text(
-        'Explanation',
-        style: titleStyle,
-      ),
+      Text('Explanation', style: titleStyle),
     ]);
   }
 
   void selectOption(int optionIndex) {
-    if (hasAnswered || usedOptionIndices.contains(optionIndex)) {
+    final bool shouldSkipSelection = hasAnswered || usedOptionIndices.contains(optionIndex);
+
+    if (shouldSkipSelection) {
       return;
     }
 
@@ -597,10 +597,7 @@ class CCFillGapQuestionState extends State<CCFillGapQuestion>
     } else {
       showCorrectAnswers();
       triggerShakeAnimation();
-      FeedbackSnackBar.showWrongAnswer(
-        context,
-        hint: widget.content.hint,
-      );
+      FeedbackSnackBar.showWrongAnswer(context, hint: widget.content.hint);
     }
 
     widget.onAnswerSelected(0, allCorrect);
@@ -608,18 +605,14 @@ class CCFillGapQuestionState extends State<CCFillGapQuestion>
 
   void triggerShakeAnimation() {
     shakeController = AnimationController(
-      duration: const Duration(
-        milliseconds: FILL_GAP_SHAKE_DURATION_MS,
-      ),
+      duration: const Duration(milliseconds: FILL_GAP_SHAKE_DURATION_MS),
       vsync: this,
     );
 
-    shakeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(
-        parent: shakeController!,
-        curve: Curves.elasticIn,
-      ),
-    );
+    shakeAnimation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(parent: shakeController!, curve: Curves.elasticIn));
 
     setState(() {});
 
@@ -634,7 +627,11 @@ class CCFillGapQuestionState extends State<CCFillGapQuestion>
 
   void showCorrectAnswers() {
     setState(() {
-      for (int gapIndex = 0; gapIndex < widget.content.correctAnswerIndices.length; gapIndex++) {
+      for (
+        int gapIndex = 0;
+        gapIndex < widget.content.correctAnswerIndices.length;
+        gapIndex++
+      ) {
         selectedOptionsForGaps[gapIndex] = widget.content.correctAnswerIndices[gapIndex];
         usedOptionIndices.add(widget.content.correctAnswerIndices[gapIndex]);
       }

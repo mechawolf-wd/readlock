@@ -101,7 +101,6 @@ const double TEXT_FIELD_HORIZONTAL_PADDING = 16.0;
 const String CONTINUE_CLICK_AUDIO_PATH = 'audio/continue_click.mp3';
 const String CORRECT_ANSWER_AUDIO_PATH = 'audio/correct_answer.wav';
 const String TYPEWRITER_AUDIO_PATH = 'audio/typewriter.mp3';
-const String SLOW_DOWN_CLOCK_AUDIO_PATH = 'audio/slow_down_clock.mp3';
 
 // * Expandable Card
 const double CARD_BORDER_RADIUS = 16.0;

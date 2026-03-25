@@ -29,19 +29,13 @@ class StreakplierRewardScreen extends StatefulWidget {
   // Navigation callback when user continues
   final VoidCallback onContinue;
 
-  const StreakplierRewardScreen({
-    super.key,
-    required this.reward,
-    required this.onContinue,
-  });
+  const StreakplierRewardScreen({super.key, required this.reward, required this.onContinue});
 
   @override
-  State<StreakplierRewardScreen> createState() =>
-      StreakplierRewardScreenState();
+  State<StreakplierRewardScreen> createState() => StreakplierRewardScreenState();
 }
 
-class StreakplierRewardScreenState
-    extends State<StreakplierRewardScreen>
+class StreakplierRewardScreenState extends State<StreakplierRewardScreen>
     with TickerProviderStateMixin {
   // Animation controllers for counting effects only
   late AnimationController experiencePointsController;
@@ -69,7 +63,6 @@ class StreakplierRewardScreenState
   void dispose() {
     experiencePointsController.dispose();
     streakplierController.dispose();
-    SoundService.stopSlowDownClock();
     super.dispose();
   }
 
@@ -87,34 +80,19 @@ class StreakplierRewardScreenState
 
   // Initialize counting animations for numeric values
   void initializeCountingAnimations() {
-    experiencePointsCountAnimation =
-        IntTween(
-          begin: 0,
-          end: widget.reward.experiencePointsGained,
-        ).animate(
-          CurvedAnimation(
-            parent: experiencePointsController,
-            curve: Curves.easeOut,
-          ),
-        );
+    experiencePointsCountAnimation = IntTween(
+      begin: 0,
+      end: widget.reward.experiencePointsGained,
+    ).animate(CurvedAnimation(parent: experiencePointsController, curve: Curves.easeOut));
 
-    streakplierCountAnimation =
-        Tween<double>(
-          begin: 1.0,
-          end: widget.reward.streakplierMultiplier,
-        ).animate(
-          CurvedAnimation(
-            parent: streakplierController,
-            curve: Curves.easeOut,
-          ),
-        );
+    streakplierCountAnimation = Tween<double>(
+      begin: 1.0,
+      end: widget.reward.streakplierMultiplier,
+    ).animate(CurvedAnimation(parent: streakplierController, curve: Curves.easeOut));
   }
 
   // Start the sequential reveal with simple opacity changes and audio
   void startRevealSequence() {
-    // Start audio playback for stats reveal animation
-    SoundService.playSlowDownClock();
-
     // Lesson time reveal (now first with emphasis)
     Future.delayed(REWARD_INITIAL_DELAY, () {
       if (mounted) {
@@ -142,7 +120,6 @@ class StreakplierRewardScreenState
     Future.delayed(REWARD_INITIAL_DELAY + ITEM_REVEAL_DELAY * 3, () {
       if (mounted) {
         setState(() => continueButtonOpacity = 1.0);
-        SoundService.stopSlowDownClock();
       }
     });
   }
@@ -214,12 +191,7 @@ class StreakplierRewardScreenState
       size: CELEBRATION_ICON_SIZE,
     );
 
-    return Container(
-      width: 64,
-      height: 64,
-      decoration: iconDecoration,
-      child: CheckIcon,
-    );
+    return Container(width: 64, height: 64, decoration: iconDecoration, child: CheckIcon);
   }
 
   // Statistics display for all reward components with sequential animations
@@ -242,10 +214,7 @@ class StreakplierRewardScreenState
     final BoxDecoration featuredCardDecoration = BoxDecoration(
       color: RLTheme.warningColor.withValues(alpha: 0.1),
       borderRadius: BorderRadius.circular(20),
-      border: Border.all(
-        color: RLTheme.warningColor.withValues(alpha: 0.3),
-        width: 2,
-      ),
+      border: Border.all(color: RLTheme.warningColor.withValues(alpha: 0.3), width: 2),
       boxShadow: [
         BoxShadow(
           color: RLTheme.warningColor.withValues(alpha: 0.1),
@@ -260,11 +229,7 @@ class StreakplierRewardScreenState
       borderRadius: BorderRadius.circular(40),
     );
 
-    const Widget TimerIcon = Icon(
-      Icons.timer_rounded,
-      color: RLTheme.warningColor,
-      size: 40,
-    );
+    const Widget TimerIcon = Icon(Icons.timer_rounded, color: RLTheme.warningColor, size: 40);
 
     return AnimatedOpacity(
       opacity: lessonTimeOpacity,
@@ -274,12 +239,7 @@ class StreakplierRewardScreenState
         decoration: featuredCardDecoration,
         child: Div.column([
           // Large timer icon
-          Container(
-            width: 80,
-            height: 80,
-            decoration: timerIconDecoration,
-            child: TimerIcon,
-          ),
+          Container(width: 80, height: 80, decoration: timerIconDecoration, child: TimerIcon),
 
           const Spacing.height(16),
 
@@ -379,14 +339,14 @@ class StreakplierRewardScreenState
     final List<Widget> statisticChildren = [];
 
     if (hasIcon) {
-      final Widget IconWidget = Icon(icon, color: color, size: 18);
+      final Widget StatisticIcon = Icon(icon, color: color, size: 18);
 
       statisticChildren.add(
         Container(
           width: 32,
           height: 32,
           decoration: iconContainerDecoration,
-          child: IconWidget,
+          child: StatisticIcon,
         ),
       );
 
@@ -394,11 +354,7 @@ class StreakplierRewardScreenState
     }
 
     statisticChildren.add(
-      RLTypography.bodyMedium(
-        label,
-        color: RLTheme.textSecondary,
-        textAlign: TextAlign.center,
-      ),
+      RLTypography.bodyMedium(label, color: RLTheme.textSecondary, textAlign: TextAlign.center),
     );
 
     statisticChildren.add(const Spacing.height(4));
@@ -413,13 +369,8 @@ class StreakplierRewardScreenState
     return AnimatedOpacity(
       opacity: continueButtonOpacity,
       duration: const Duration(milliseconds: 300),
-      child: RLDesignSystem.BlockButton(
-        children: [
-          RLTypography.bodyLarge(
-            REWARD_CONTINUE_BUTTON_TEXT,
-            color: Colors.white,
-          ),
-        ],
+      child: RLDS.BlockButton(
+        children: [RLTypography.bodyLarge(REWARD_CONTINUE_BUTTON_TEXT, color: Colors.white)],
         onTap: widget.onContinue,
         backgroundColor: RLTheme.primaryGreen,
         margin: EdgeInsets.zero,
@@ -432,9 +383,7 @@ class StreakplierRewardScreenState
     return BoxDecoration(
       color: RLTheme.backgroundLight,
       borderRadius: BorderRadius.circular(REWARD_CARD_BORDER_RADIUS),
-      border: Border.all(
-        color: RLTheme.textPrimary.withValues(alpha: 0.1),
-      ),
+      border: Border.all(color: RLTheme.textPrimary.withValues(alpha: 0.1)),
       boxShadow: [
         BoxShadow(
           color: Colors.black.withValues(alpha: 0.05),
@@ -448,8 +397,7 @@ class StreakplierRewardScreenState
   // Format lesson duration into readable short format
   String formatLessonDuration() {
     final int totalMinutes = widget.reward.lessonDuration.inMinutes;
-    final int remainingSeconds =
-        widget.reward.lessonDuration.inSeconds % 60;
+    final int remainingSeconds = widget.reward.lessonDuration.inSeconds % 60;
 
     final bool hasMinutes = totalMinutes > 0;
     final bool hasSeconds = remainingSeconds > 0;

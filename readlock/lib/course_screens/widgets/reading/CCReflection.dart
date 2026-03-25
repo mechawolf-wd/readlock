@@ -77,10 +77,7 @@ class CCReflectionState extends State<CCReflection> {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: promptDecoration,
-      child: ProgressiveText(
-        textSegments: [widget.content.prompt],
-        textStyle: promptTextStyle,
-      ),
+      child: ProgressiveText(textSegments: [widget.content.prompt], textStyle: promptTextStyle),
     );
   }
 
@@ -113,15 +110,15 @@ class CCReflectionState extends State<CCReflection> {
 
   List<Widget> ThinkingCardsList(List<String> points) {
     return points.asMap().entries.map((entry) {
-      final int index = entry.key;
+      final int pointIndex = entry.key;
       final String point = entry.value;
 
       return ThinkingCard(
         point: point,
-        index: index,
-        isSelected: selectedPoints.contains(index),
-        isSwiping: swipingPoints.contains(index),
-        onSwipeComplete: () => confirmPoint(index),
+        index: pointIndex,
+        isSelected: selectedPoints.contains(pointIndex),
+        isSwiping: swipingPoints.contains(pointIndex),
+        onSwipeComplete: () => confirmPoint(pointIndex),
       );
     }).toList();
   }
@@ -157,27 +154,29 @@ class CCReflectionState extends State<CCReflection> {
     return cardColors[index % cardColors.length];
   }
 
-  BoxDecoration getCardDecoration({
-    required Color cardColor,
-    required bool isSelected,
-  }) {
-    final Color cardBackgroundColor = isSelected
-        ? cardColor.withValues(alpha: 0.1)
-        : RLTheme.backgroundLight;
+  BoxDecoration getCardDecoration({required Color cardColor, required bool isSelected}) {
+    Color cardBackgroundColor = RLTheme.backgroundLight;
 
-    final Color cardBorderColor = isSelected
-        ? cardColor
-        : RLTheme.textPrimary.withValues(alpha: 0.1);
+    if (isSelected) {
+      cardBackgroundColor = cardColor.withValues(alpha: 0.1);
+    }
 
-    final double cardBorderWidth = isSelected ? 2 : 1;
+    Color cardBorderColor = RLTheme.textPrimary.withValues(alpha: 0.1);
+
+    if (isSelected) {
+      cardBorderColor = cardColor;
+    }
+
+    double cardBorderWidth = 1;
+
+    if (isSelected) {
+      cardBorderWidth = 2;
+    }
 
     return BoxDecoration(
       color: cardBackgroundColor,
       borderRadius: BorderRadius.circular(12),
-      border: Border.all(
-        color: cardBorderColor,
-        width: cardBorderWidth,
-      ),
+      border: Border.all(color: cardBorderColor, width: cardBorderWidth),
     );
   }
 
@@ -191,10 +190,8 @@ class CCReflectionState extends State<CCReflection> {
     required bool isSwiping,
   }) {
     return GestureDetector(
-      onHorizontalDragEnd: (details) =>
-          handleSwipeEnd(details, onSwipeComplete),
-      onHorizontalDragUpdate: (details) =>
-          handleSwipeUpdate(details, index),
+      onHorizontalDragEnd: (details) => handleSwipeEnd(details, onSwipeComplete),
+      onHorizontalDragUpdate: (details) => handleSwipeUpdate(details, index),
       onHorizontalDragStart: (details) => handleSwipeStart(index),
       child: AnimatedCardContainer(
         cardDecoration: cardDecoration,
@@ -206,13 +203,8 @@ class CCReflectionState extends State<CCReflection> {
     );
   }
 
-  void handleSwipeEnd(
-    DragEndDetails details,
-    VoidCallback onSwipeComplete,
-  ) {
-    final bool isValidSwipe =
-        details.primaryVelocity != null &&
-        details.primaryVelocity! > 300;
+  void handleSwipeEnd(DragEndDetails details, VoidCallback onSwipeComplete) {
+    final bool isValidSwipe = details.primaryVelocity != null && details.primaryVelocity! > 300;
 
     if (isValidSwipe) {
       onSwipeComplete();
@@ -257,11 +249,7 @@ class CCReflectionState extends State<CCReflection> {
         const Spacing.width(12),
 
         // Content section
-        CardContentSection(
-          point: point,
-          cardColor: cardColor,
-          isSelected: isSelected,
-        ),
+        CardContentSection(point: point, cardColor: cardColor, isSelected: isSelected),
       ]),
     );
   }
@@ -289,20 +277,13 @@ class CCReflectionState extends State<CCReflection> {
       iconColor = RLTheme.white;
     }
 
-    final Widget IndicatorIcon = Icon(
-      indicatorIcon,
-      color: iconColor,
-      size: 16,
-    );
+    final Widget IndicatorIcon = Icon(indicatorIcon, color: iconColor, size: 16);
 
     return AnimatedContainer(
       duration: const Duration(milliseconds: 200),
       width: 32,
       height: 32,
-      decoration: BoxDecoration(
-        color: indicatorColor,
-        borderRadius: BorderRadius.circular(16),
-      ),
+      decoration: BoxDecoration(color: indicatorColor, borderRadius: BorderRadius.circular(16)),
       child: IndicatorIcon,
     );
   }
@@ -357,11 +338,14 @@ class CCReflectionState extends State<CCReflection> {
     );
   }
 
-  void confirmPoint(int index) {
+  void confirmPoint(int pointIndex) {
     setState(() {
-      swipingPoints.remove(index);
-      if (!selectedPoints.contains(index)) {
-        selectedPoints.add(index);
+      swipingPoints.remove(pointIndex);
+
+      final bool isPointNotYetSelected = !selectedPoints.contains(pointIndex);
+
+      if (isPointNotYetSelected) {
+        selectedPoints.add(pointIndex);
       }
     });
   }

@@ -8,29 +8,22 @@ class CCEmotionalSlide extends StatelessWidget {
   final String text;
   final String? iconName;
 
-  const CCEmotionalSlide({
-    super.key,
-    required this.text,
-    this.iconName,
-  });
+  const CCEmotionalSlide({super.key, required this.text, this.iconName});
 
   @override
   Widget build(BuildContext context) {
     // Extract styling above build method
-    final TextStyle motivationalTextStyle = RLTypography.bodyLargeStyle
-        .copyWith(
-          fontSize: 16,
-          fontWeight: FontWeight.w600,
-          color: RLTheme.textPrimary.withValues(alpha: 0.7),
-          height: 1.2,
-        );
+    final TextStyle motivationalTextStyle = RLTypography.bodyLargeStyle.copyWith(
+      fontSize: 16,
+      fontWeight: FontWeight.w600,
+      color: RLTheme.textPrimary.withValues(alpha: 0.7),
+      height: 1.2,
+    );
 
     return Div.column(
       [
         // Simple motivational content on plain background
-        SimpleMotivationalContent(
-          motivationalTextStyle: motivationalTextStyle,
-        ),
+        SimpleMotivationalContent(motivationalTextStyle: motivationalTextStyle),
       ],
       color: RLTheme.backgroundDark,
       padding: const EdgeInsets.symmetric(
@@ -42,9 +35,7 @@ class CCEmotionalSlide extends StatelessWidget {
     );
   }
 
-  Widget SimpleMotivationalContent({
-    required TextStyle motivationalTextStyle,
-  }) {
+  Widget SimpleMotivationalContent({required TextStyle motivationalTextStyle}) {
     return Div.column(
       [
         // Small motivational icon
@@ -62,17 +53,15 @@ class CCEmotionalSlide extends StatelessWidget {
 
   Widget MotivationalIcon() {
     final IconData motivationalIconData = getIconDataFromName();
-    final Color motivationalIconColor = RLTheme.primaryGreen.withValues(
-      alpha: 0.8,
-    );
+    final Color motivationalIconColor = RLTheme.primaryGreen.withValues(alpha: 0.8);
 
-    final Widget MotivationalIconWidget = Icon(
+    final Widget MotivationalIcon = Icon(
       motivationalIconData,
       size: EMOTIONAL_SLIDE_ICON_SIZE,
       color: motivationalIconColor,
     );
 
-    return MotivationalIconWidget;
+    return MotivationalIcon;
   }
 
   Widget MotivationalText({required TextStyle textStyle}) {
@@ -82,31 +71,57 @@ class CCEmotionalSlide extends StatelessWidget {
   IconData getIconDataFromName() {
     switch (iconName?.toLowerCase()) {
       case 'rocket':
-        return Icons.rocket_launch;
+        {
+          return Icons.rocket_launch;
+        }
       case 'star':
-        return Icons.star;
+        {
+          return Icons.star;
+        }
       case 'fire':
-        return Icons.local_fire_department;
+        {
+          return Icons.local_fire_department;
+        }
       case 'trophy':
-        return Icons.emoji_events;
+        {
+          return Icons.emoji_events;
+        }
       case 'heart':
-        return Icons.favorite;
+        {
+          return Icons.favorite;
+        }
       case 'thumbs_up':
-        return Icons.thumb_up;
+        {
+          return Icons.thumb_up;
+        }
       case 'celebration':
-        return Icons.celebration;
+        {
+          return Icons.celebration;
+        }
       case 'target':
-        return Icons.track_changes;
+        {
+          return Icons.track_changes;
+        }
       case 'lightning':
-        return Icons.flash_on;
+        {
+          return Icons.flash_on;
+        }
       case 'crown':
-        return Icons.workspace_premium;
+        {
+          return Icons.workspace_premium;
+        }
       case 'check':
-        return Icons.check_circle_outline;
+        {
+          return Icons.check_circle_outline;
+        }
       case 'progress':
-        return Icons.trending_up;
+        {
+          return Icons.trending_up;
+        }
       default:
-        return Icons.rocket_launch; // Default icon
+        {
+          return Icons.rocket_launch;
+        }
     }
   }
 }

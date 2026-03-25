@@ -27,26 +27,20 @@ class HomeScreenState extends State<HomeScreen> {
       PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) =>
             CourseRoadmapScreen(courseId: courseId),
-        transitionsBuilder:
-            (context, animation, secondaryAnimation, child) {
-              const Offset begin = Offset(0.0, 1.0);
-              const Offset end = Offset.zero;
-              const Curve curve = Curves.easeInOut;
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          const Offset begin = Offset(0.0, 1.0);
+          const Offset end = Offset.zero;
+          const Curve curve = Curves.easeInOut;
 
-              final Animatable<Offset> tween = Tween(
-                begin: begin,
-                end: end,
-              ).chain(CurveTween(curve: curve));
+          final Animatable<Offset> tween = Tween(
+            begin: begin,
+            end: end,
+          ).chain(CurveTween(curve: curve));
 
-              final Animation<Offset> offsetAnimation = animation.drive(
-                tween,
-              );
+          final Animation<Offset> offsetAnimation = animation.drive(tween);
 
-              return SlideTransition(
-                position: offsetAnimation,
-                child: child,
-              );
-            },
+          return SlideTransition(position: offsetAnimation, child: child);
+        },
       ),
     );
   }
@@ -60,28 +54,21 @@ class HomeScreenState extends State<HomeScreen> {
     Navigator.push(
       context,
       PageRouteBuilder(
-        pageBuilder: (context, animation, secondaryAnimation) =>
-            const ReaderPassScreen(),
-        transitionsBuilder:
-            (context, animation, secondaryAnimation, child) {
-              const Offset begin = Offset(0.0, 1.0);
-              const Offset end = Offset.zero;
-              const Curve curve = Curves.easeInOut;
+        pageBuilder: (context, animation, secondaryAnimation) => const ReaderPassScreen(),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          const Offset begin = Offset(0.0, 1.0);
+          const Offset end = Offset.zero;
+          const Curve curve = Curves.easeInOut;
 
-              final Animatable<Offset> tween = Tween(
-                begin: begin,
-                end: end,
-              ).chain(CurveTween(curve: curve));
+          final Animatable<Offset> tween = Tween(
+            begin: begin,
+            end: end,
+          ).chain(CurveTween(curve: curve));
 
-              final Animation<Offset> offsetAnimation = animation.drive(
-                tween,
-              );
+          final Animation<Offset> offsetAnimation = animation.drive(tween);
 
-              return SlideTransition(
-                position: offsetAnimation,
-                child: child,
-              );
-            },
+          return SlideTransition(position: offsetAnimation, child: child);
+        },
       ),
     );
   }
@@ -222,27 +209,18 @@ class HomeScreenState extends State<HomeScreen> {
 
                 const Spacing.height(4),
 
-                RLTypography.text(
-                  'Don Norman',
-                  color: RLTheme.textSecondary,
-                ),
+                RLTypography.text('Don Norman', color: RLTheme.textSecondary),
 
                 const Spacing.height(12),
 
                 Div.row([
                   Expanded(
-                    child: ProgressBar(
-                      progress: bookProgress,
-                      color: RLTheme.primaryGreen,
-                    ),
+                    child: ProgressBar(progress: bookProgress, color: RLTheme.primaryGreen),
                   ),
 
                   const Spacing.width(8),
 
-                  RLTypography.text(
-                    '$progressPercent%',
-                    color: RLTheme.primaryGreen,
-                  ),
+                  RLTypography.text('$progressPercent%', color: RLTheme.primaryGreen),
                 ]),
               ], crossAxisAlignment: CrossAxisAlignment.start),
             ),
@@ -299,48 +277,32 @@ class HomeScreenState extends State<HomeScreen> {
 
         const Spacing.height(4),
 
-        RLTypography.text(
-          'Picked based on your unique choices',
-          color: RLTheme.textSecondary,
-        ),
+        RLTypography.text('Picked based on your unique choices', color: RLTheme.textSecondary),
       ], crossAxisAlignment: CrossAxisAlignment.start),
 
       const Spacing.height(16),
 
-      Div.column(
-        PersonalityBookCards(books),
-        crossAxisAlignment: CrossAxisAlignment.start,
-      ),
+      Div.column(PersonalityBookCards(books), crossAxisAlignment: CrossAxisAlignment.start),
     ], crossAxisAlignment: CrossAxisAlignment.start);
   }
 
   List<Widget> PersonalityBookCards(List<Map<String, String>> books) {
     final BoxDecoration bookCardDecoration = BoxDecoration(
-      color: RLTheme.backgroundLight.withValues(
-        alpha: RLDimensions.alphaLight,
-      ),
+      color: RLTheme.backgroundLight.withValues(alpha: RLDimensions.alphaLight),
       borderRadius: RLDimensions.borderRadiusL,
       border: Border.all(
-        color: RLTheme.primaryBlue.withValues(
-          alpha: RLDimensions.alphaMedium,
-        ),
+        color: RLTheme.primaryBlue.withValues(alpha: RLDimensions.alphaMedium),
       ),
     );
 
     final BoxDecoration bookCoverDecoration = BoxDecoration(
-      color: RLTheme.primaryBlue.withValues(
-        alpha: RLDimensions.alphaDark,
-      ),
+      color: RLTheme.primaryBlue.withValues(alpha: RLDimensions.alphaDark),
       borderRadius: RLDimensions.borderRadiusS,
     );
 
-    final EdgeInsets cardMargin = const EdgeInsets.only(
-      bottom: RLDimensions.spacing12,
-    );
+    final EdgeInsets cardMargin = const EdgeInsets.only(bottom: RLDimensions.spacing12);
 
-    final EdgeInsets iconMargin = const EdgeInsets.only(
-      top: RLDimensions.spacing8,
-    );
+    final EdgeInsets iconMargin = const EdgeInsets.only(top: RLDimensions.spacing8);
 
     return books.map((book) {
       final String bookTitle = book['title'] ?? '';
@@ -362,10 +324,7 @@ class HomeScreenState extends State<HomeScreen> {
 
               const Spacing.height(4),
 
-              RLTypography.text(
-                bookAuthor,
-                color: RLTheme.textSecondary,
-              ),
+              RLTypography.text(bookAuthor, color: RLTheme.textSecondary),
             ], crossAxisAlignment: CrossAxisAlignment.start),
           ),
 

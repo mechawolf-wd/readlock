@@ -15,8 +15,7 @@ class CCSkillCheck extends StatefulWidget {
   State<CCSkillCheck> createState() => CCSkillCheckState();
 }
 
-class CCSkillCheckState extends State<CCSkillCheck>
-    with SingleTickerProviderStateMixin {
+class CCSkillCheckState extends State<CCSkillCheck> with SingleTickerProviderStateMixin {
   // Animation controller for spinning icon
   late AnimationController iconAnimationController;
 
@@ -69,11 +68,7 @@ class CCSkillCheckState extends State<CCSkillCheck>
 
   // Animated skill check icon display
   Widget SkillCheckIcon() {
-    const Widget QuizIcon = Icon(
-      Icons.quiz_outlined,
-      color: RLTheme.primaryGreen,
-      size: 48,
-    );
+    const Widget QuizIcon = Icon(Icons.quiz_outlined, color: RLTheme.primaryGreen, size: 48);
 
     return AnimatedBuilder(
       animation: iconAnimationController,
@@ -90,10 +85,7 @@ class CCSkillCheckState extends State<CCSkillCheck>
   Widget TitleSection() {
     return Column(
       children: [
-        RLTypography.headingLarge(
-          SKILL_CHECK_TITLE,
-          textAlign: TextAlign.center,
-        ),
+        RLTypography.headingLarge(SKILL_CHECK_TITLE, textAlign: TextAlign.center),
 
         const Spacing.height(8),
 
@@ -143,14 +135,11 @@ class CCSkillCheckState extends State<CCSkillCheck>
   // Navigate to next content (skill check questions)
   void navigateToNextContent(BuildContext context) {
     // Import CourseContentViewer to access state
-    final courseDetailScreen = context
-        .findAncestorStateOfType<CourseDetailScreenState>();
+    final courseDetailScreen = context.findAncestorStateOfType<CourseDetailScreenState>();
 
-    final PageController? pageController =
-        courseDetailScreen?.pageController;
+    final PageController? pageController = courseDetailScreen?.pageController;
 
-    final bool hasValidPageController =
-        pageController != null && pageController.hasClients;
+    final bool hasValidPageController = pageController != null && pageController.hasClients;
 
     if (!hasValidPageController) {
       return;

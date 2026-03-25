@@ -87,9 +87,7 @@ class JsonContentWidgetFactory {
 
       case 'design-examples-showcase':
         {
-          return JsonDesignExamplesShowcaseWidget(
-            contentData: contentData,
-          );
+          return JsonDesignExamplesShowcaseWidget(contentData: contentData);
         }
 
       case 'reflection':
@@ -165,9 +163,7 @@ class JsonIntroContentWidget extends StatelessWidget {
   }
 
   IntroContent createIntroContentModel() {
-    final List<String> textSegments = List<String>.from(
-      contentData['text-segments'] ?? [],
-    );
+    final List<String> textSegments = List<String>.from(contentData['text-segments'] ?? []);
 
     return IntroContent(
       id: contentData['id'] ?? '',
@@ -193,9 +189,7 @@ class JsonTextContentWidget extends StatelessWidget {
   }
 
   TextContent createTextContentModel() {
-    final List<String> textSegments = List<String>.from(
-      contentData['text-segments'] ?? [],
-    );
+    final List<String> textSegments = List<String>.from(contentData['text-segments'] ?? []);
 
     return TextContent(
       id: contentData['id'] ?? '',
@@ -206,17 +200,12 @@ class JsonTextContentWidget extends StatelessWidget {
   }
 }
 
-
 // Outro content wrapper widget
 class JsonOutroContentWidget extends StatelessWidget {
   final Map<String, dynamic> contentData;
   final VoidCallback? onLessonComplete;
 
-  const JsonOutroContentWidget({
-    super.key, 
-    required this.contentData,
-    this.onLessonComplete,
-  });
+  const JsonOutroContentWidget({super.key, required this.contentData, this.onLessonComplete});
 
   @override
   Widget build(BuildContext context) {
@@ -224,16 +213,11 @@ class JsonOutroContentWidget extends StatelessWidget {
     final outroContent = createOutroContentModel();
 
     // Widget rendering
-    return CCOutro(
-      content: outroContent,
-      onLessonComplete: onLessonComplete,
-    );
+    return CCOutro(content: outroContent, onLessonComplete: onLessonComplete);
   }
 
   OutroContent createOutroContentModel() {
-    final List<String> textSegments = List<String>.from(
-      contentData['text-segments'] ?? [],
-    );
+    final List<String> textSegments = List<String>.from(contentData['text-segments'] ?? []);
 
     return OutroContent(
       id: contentData['id'] ?? '',
@@ -247,10 +231,7 @@ class JsonOutroContentWidget extends StatelessWidget {
 class JsonDesignExamplesShowcaseWidget extends StatelessWidget {
   final Map<String, dynamic> contentData;
 
-  const JsonDesignExamplesShowcaseWidget({
-    super.key,
-    required this.contentData,
-  });
+  const JsonDesignExamplesShowcaseWidget({super.key, required this.contentData});
 
   @override
   Widget build(BuildContext context) {
@@ -263,10 +244,7 @@ class JsonDesignExamplesShowcaseWidget extends StatelessWidget {
 class JsonReflectionContentWidget extends StatelessWidget {
   final Map<String, dynamic> contentData;
 
-  const JsonReflectionContentWidget({
-    super.key,
-    required this.contentData,
-  });
+  const JsonReflectionContentWidget({super.key, required this.contentData});
 
   @override
   Widget build(BuildContext context) {
@@ -278,9 +256,7 @@ class JsonReflectionContentWidget extends StatelessWidget {
   }
 
   ReflectionContent createReflectionContentModel() {
-    final List<String> thinkingPoints = List<String>.from(
-      contentData['thinking-points'] ?? [],
-    );
+    final List<String> thinkingPoints = List<String>.from(contentData['thinking-points'] ?? []);
 
     return ReflectionContent(
       id: contentData['id'] ?? '',
@@ -354,14 +330,19 @@ class JsonMultipleChoiceQuestionWidget extends StatelessWidget {
   }
 
   List<QuestionOption> createQuestionOptions() {
-    final List<Map<String, dynamic>> optionsData = 
-        List<Map<String, dynamic>>.from(contentData['options'] ?? []);
-    
-    return optionsData.map((option) => QuestionOption(
-      text: option['text'] ?? '',
-      hint: option['hint'],
-      consequenceMessage: option['consequence-message'],
-    )).toList();
+    final List<Map<String, dynamic>> optionsData = List<Map<String, dynamic>>.from(
+      contentData['options'] ?? [],
+    );
+
+    return optionsData
+        .map(
+          (option) => QuestionOption(
+            text: option['text'] ?? '',
+            hint: option['hint'],
+            consequenceMessage: option['consequence-message'],
+          ),
+        )
+        .toList();
   }
 
   List<String>? createFollowUpPrompts() {
@@ -383,8 +364,9 @@ class JsonSingleChoiceQuestionWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final questionContent = JsonMultipleChoiceQuestionWidget(contentData: contentData)
-        .createQuestionContentModel(QuestionType.singleChoice);
+    final questionContent = JsonMultipleChoiceQuestionWidget(
+      contentData: contentData,
+    ).createQuestionContentModel(QuestionType.singleChoice);
     return CCSingleChoice(
       content: questionContent,
       onAnswerSelected: (int index, bool isCorrect) {},
@@ -400,8 +382,9 @@ class JsonTrueFalseQuestionWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final questionContent = JsonMultipleChoiceQuestionWidget(contentData: contentData)
-        .createQuestionContentModel(QuestionType.trueOrFalse);
+    final questionContent = JsonMultipleChoiceQuestionWidget(
+      contentData: contentData,
+    ).createQuestionContentModel(QuestionType.trueOrFalse);
     return CCTrueFalseQuestion(
       content: questionContent,
       onAnswerSelected: (int index, bool isCorrect) {},
@@ -409,7 +392,7 @@ class JsonTrueFalseQuestionWidget extends StatelessWidget {
   }
 }
 
-// Fill gap question wrapper widget  
+// Fill gap question wrapper widget
 class JsonFillGapQuestionWidget extends StatelessWidget {
   final Map<String, dynamic> contentData;
 
@@ -417,8 +400,9 @@ class JsonFillGapQuestionWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final questionContent = JsonMultipleChoiceQuestionWidget(contentData: contentData)
-        .createQuestionContentModel(QuestionType.fillGap);
+    final questionContent = JsonMultipleChoiceQuestionWidget(
+      contentData: contentData,
+    ).createQuestionContentModel(QuestionType.fillGap);
     return CCFillGapQuestion(
       content: questionContent,
       onAnswerSelected: (int index, bool isCorrect) {},
@@ -434,8 +418,9 @@ class JsonIncorrectStatementQuestionWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final questionContent = JsonMultipleChoiceQuestionWidget(contentData: contentData)
-        .createQuestionContentModel(QuestionType.incorrectStatement);
+    final questionContent = JsonMultipleChoiceQuestionWidget(
+      contentData: contentData,
+    ).createQuestionContentModel(QuestionType.incorrectStatement);
     return CCIncorrectStatement(
       content: questionContent,
       onAnswerSelected: (int index, bool isCorrect) {},
@@ -451,8 +436,9 @@ class JsonReflectionQuestionWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final questionContent = JsonMultipleChoiceQuestionWidget(contentData: contentData)
-        .createQuestionContentModel(QuestionType.reflection);
+    final questionContent = JsonMultipleChoiceQuestionWidget(
+      contentData: contentData,
+    ).createQuestionContentModel(QuestionType.reflection);
     return CCReflectionQuestion(
       content: questionContent,
       onAnswerSelected: (int index, bool isCorrect) {},
@@ -487,8 +473,7 @@ class JsonEstimatePercentageQuestionWidget extends StatelessWidget {
   }
 
   int getCorrectPercentage() {
-    final List<dynamic>? indices =
-        contentData['correct-answer-indices'] as List<dynamic>?;
+    final List<dynamic>? indices = contentData['correct-answer-indices'] as List<dynamic>?;
     final bool hasValidIndices = indices != null && indices.isNotEmpty;
 
     if (hasValidIndices) {
@@ -503,10 +488,7 @@ class JsonEstimatePercentageQuestionWidget extends StatelessWidget {
 class JsonEstimatePercentageWidget extends StatelessWidget {
   final Map<String, dynamic> contentData;
 
-  const JsonEstimatePercentageWidget({
-    super.key,
-    required this.contentData,
-  });
+  const JsonEstimatePercentageWidget({super.key, required this.contentData});
 
   @override
   Widget build(BuildContext context) {
@@ -537,19 +519,13 @@ class JsonEstimatePercentageWidget extends StatelessWidget {
 class JsonEmotionalSlideWidget extends StatelessWidget {
   final Map<String, dynamic> contentData;
 
-  const JsonEmotionalSlideWidget({
-    super.key,
-    required this.contentData,
-  });
+  const JsonEmotionalSlideWidget({super.key, required this.contentData});
 
   @override
   Widget build(BuildContext context) {
     final String motivationalText = contentData['text'] ?? '';
     final String? iconName = contentData['icon'];
 
-    return CCEmotionalSlide(
-      text: motivationalText,
-      iconName: iconName,
-    );
+    return CCEmotionalSlide(text: motivationalText, iconName: iconName);
   }
 }

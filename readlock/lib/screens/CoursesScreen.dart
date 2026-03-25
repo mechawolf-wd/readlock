@@ -22,8 +22,7 @@ class CoursesScreenState extends State<CoursesScreen> {
   String? selectedGenre;
   int displayedItemsCount = 7;
   final int itemsPerLoad = 7;
-  final TextEditingController searchController =
-      TextEditingController();
+  final TextEditingController searchController = TextEditingController();
   final FocusNode searchFocusNode = FocusNode();
 
   @override
@@ -40,6 +39,10 @@ class CoursesScreenState extends State<CoursesScreen> {
       displayedItemsCount = 7;
     });
     searchFocusNode.requestFocus();
+  }
+
+  void handleSearchTextChanged(String searchText) {
+    setState(() {});
   }
 
   void deactivateSearch() {
@@ -78,28 +81,21 @@ class CoursesScreenState extends State<CoursesScreen> {
     Navigator.push(
       context,
       PageRouteBuilder(
-        pageBuilder: (context, animation, secondaryAnimation) =>
-            const ReaderPassScreen(),
-        transitionsBuilder:
-            (context, animation, secondaryAnimation, child) {
-              const Offset begin = Offset(0.0, 1.0);
-              const Offset end = Offset.zero;
-              const Curve curve = Curves.easeInOut;
+        pageBuilder: (context, animation, secondaryAnimation) => const ReaderPassScreen(),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          const Offset begin = Offset(0.0, 1.0);
+          const Offset end = Offset.zero;
+          const Curve curve = Curves.easeInOut;
 
-              final Animatable<Offset> tween = Tween(
-                begin: begin,
-                end: end,
-              ).chain(CurveTween(curve: curve));
+          final Animatable<Offset> tween = Tween(
+            begin: begin,
+            end: end,
+          ).chain(CurveTween(curve: curve));
 
-              final Animation<Offset> offsetAnimation = animation.drive(
-                tween,
-              );
+          final Animation<Offset> offsetAnimation = animation.drive(tween);
 
-              return SlideTransition(
-                position: offsetAnimation,
-                child: child,
-              );
-            },
+          return SlideTransition(position: offsetAnimation, child: child);
+        },
       ),
     );
   }
@@ -107,8 +103,7 @@ class CoursesScreenState extends State<CoursesScreen> {
   @override
   Widget build(BuildContext context) {
     final bool hasSearchText = searchController.text.isNotEmpty;
-    final bool shouldShowSearchResults =
-        hasSearchText || selectedGenre != null;
+    final bool shouldShowSearchResults = hasSearchText || selectedGenre != null;
     final bool isGenreSelected = selectedGenre != null;
     final bool shouldShowSearchBar = !isGenreSelected;
     final bool shouldShowCategories = !hasSearchText;
@@ -242,10 +237,7 @@ class CoursesScreenState extends State<CoursesScreen> {
       onTap: handlePromoBannerTap,
       child: Container(
         width: double.infinity,
-        padding: const EdgeInsets.symmetric(
-          vertical: 12,
-          horizontal: 16,
-        ),
+        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
         color: Colors.black,
         child: Div.row([
           Flexible(
@@ -275,14 +267,8 @@ class CoursesScreenState extends State<CoursesScreen> {
 
     return RenderIf.condition(
       isSearchActive,
-      ActiveSearchBar(
-        searchBarDecoration: searchBarDecoration,
-        searchIcon: SearchIcon,
-      ),
-      InactiveSearchBar(
-        searchBarDecoration: searchBarDecoration,
-        searchIcon: SearchIcon,
-      ),
+      ActiveSearchBar(searchBarDecoration: searchBarDecoration, searchIcon: SearchIcon),
+      InactiveSearchBar(searchBarDecoration: searchBarDecoration, searchIcon: SearchIcon),
     );
   }
 
@@ -293,20 +279,14 @@ class CoursesScreenState extends State<CoursesScreen> {
     return GestureDetector(
       onTap: activateSearch,
       child: Container(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 16,
-          vertical: 12,
-        ),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         decoration: searchBarDecoration,
         child: Div.row([
           searchIcon,
 
           const Spacing.width(12),
 
-          RLTypography.text(
-            'Title or author...',
-            color: RLTheme.textSecondary,
-          ),
+          RLTypography.text('Title or author...', color: RLTheme.textSecondary),
         ]),
       ),
     );
@@ -316,11 +296,7 @@ class CoursesScreenState extends State<CoursesScreen> {
     required BoxDecoration searchBarDecoration,
     required Widget searchIcon,
   }) {
-    final Widget CloseIcon = const Icon(
-      Icons.close,
-      color: RLTheme.textSecondary,
-      size: 20,
-    );
+    final Widget CloseIcon = const Icon(Icons.close, color: RLTheme.textSecondary, size: 20);
 
     final bool hasSearchText = searchController.text.isNotEmpty;
 
@@ -352,16 +328,12 @@ class CoursesScreenState extends State<CoursesScreen> {
             style: RLTypography.bodyMediumStyle,
             decoration: InputDecoration(
               hintText: 'Title or author...',
-              hintStyle: RLTypography.bodyMediumStyle.copyWith(
-                color: RLTheme.textSecondary,
-              ),
+              hintStyle: RLTypography.bodyMediumStyle.copyWith(color: RLTheme.textSecondary),
               border: InputBorder.none,
               isDense: true,
               contentPadding: EdgeInsets.zero,
             ),
-            onChanged: (searchText) {
-              setState(() {});
-            },
+            onChanged: handleSearchTextChanged,
           ),
         ),
 
@@ -391,11 +363,7 @@ class CoursesScreenState extends State<CoursesScreen> {
 
       const Spacing.height(12),
 
-      Wrap(
-        spacing: 8,
-        runSpacing: 8,
-        children: CategoryChips(categories),
-      ),
+      Wrap(spacing: 8, runSpacing: 8, children: CategoryChips(categories)),
     ], crossAxisAlignment: CrossAxisAlignment.start);
   }
 
@@ -408,30 +376,25 @@ class CoursesScreenState extends State<CoursesScreen> {
             ? RLTheme.primaryBlue
             : RLTheme.backgroundLight.withValues(alpha: 0.08),
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: RLTheme.primaryBlue.withValues(alpha: 0.3),
-        ),
+        border: Border.all(color: RLTheme.primaryBlue.withValues(alpha: 0.3)),
       );
 
-      final Color chipTextColor = isSelected
-          ? Colors.white
-          : RLTheme.primaryBlue;
+      final Color chipTextColor = isSelected ? Colors.white : RLTheme.primaryBlue;
+
+      void handleCategoryChipTap() {
+        HapticFeedback.lightImpact();
+
+        if (isSelected) {
+          clearGenreSelection();
+        } else {
+          selectGenre(category);
+        }
+      }
 
       return GestureDetector(
-        onTap: () {
-          HapticFeedback.lightImpact();
-
-          if (isSelected) {
-            clearGenreSelection();
-          } else {
-            selectGenre(category);
-          }
-        },
+        onTap: handleCategoryChipTap,
         child: Container(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 16,
-            vertical: 8,
-          ),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           decoration: chipDecoration,
           child: RLTypography.text(category, color: chipTextColor),
         ),
@@ -448,10 +411,7 @@ class CoursesScreenState extends State<CoursesScreen> {
       const Spacing.height(4),
 
       Div.row([
-        RLTypography.text(
-          'Popular titles this week',
-          color: RLTheme.textSecondary,
-        ),
+        RLTypography.text('Popular titles this week', color: RLTheme.textSecondary),
       ], mainAxisAlignment: MainAxisAlignment.start),
     ], crossAxisAlignment: CrossAxisAlignment.start);
   }
@@ -464,30 +424,15 @@ class CoursesScreenState extends State<CoursesScreen> {
         'progress': 0.65,
         'coverImage': 'assets/covers/doet-cover.png',
       },
-      {
-        'title': 'Atomic Habits',
-        'author': 'James Clear',
-        'progress': 0.40,
-        'coverImage': null,
-      },
-      {
-        'title': 'Deep Work',
-        'author': 'Cal Newport',
-        'progress': 0.85,
-        'coverImage': null,
-      },
+      {'title': 'Atomic Habits', 'author': 'James Clear', 'progress': 0.40, 'coverImage': null},
+      {'title': 'Deep Work', 'author': 'Cal Newport', 'progress': 0.85, 'coverImage': null},
       {
         'title': 'Thinking, Fast and Slow',
         'author': 'Daniel Kahneman',
         'progress': 0.22,
         'coverImage': null,
       },
-      {
-        'title': 'Hooked',
-        'author': 'Nir Eyal',
-        'progress': 0.55,
-        'coverImage': null,
-      },
+      {'title': 'Hooked', 'author': 'Nir Eyal', 'progress': 0.55, 'coverImage': null},
     ];
 
     return Div.column(
@@ -505,17 +450,13 @@ class CoursesScreenState extends State<CoursesScreen> {
       final BoxDecoration cardDecoration = BoxDecoration(
         color: RLTheme.backgroundLight.withValues(alpha: 0.08),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: RLTheme.grey300.withValues(alpha: 0.3),
-        ),
+        border: Border.all(color: RLTheme.grey300.withValues(alpha: 0.3)),
       );
 
       final BoxDecoration coverPlaceholderDecoration = BoxDecoration(
         color: RLTheme.primaryBlue.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(6),
-        border: Border.all(
-          color: RLTheme.primaryBlue.withValues(alpha: 0.2),
-        ),
+        border: Border.all(color: RLTheme.primaryBlue.withValues(alpha: 0.2)),
       );
 
       return Container(
@@ -538,28 +479,18 @@ class CoursesScreenState extends State<CoursesScreen> {
 
               const Spacing.height(4),
 
-              RLTypography.text(
-                bookAuthor,
-                color: RLTheme.textSecondary,
-              ),
+              RLTypography.text(bookAuthor, color: RLTheme.textSecondary),
             ], crossAxisAlignment: CrossAxisAlignment.start),
           ),
 
           // Bookmark icon
-          Container(
-            margin: const EdgeInsets.only(top: 8),
-            child: BookmarkIcon,
-          ),
+          Container(margin: const EdgeInsets.only(top: 8), child: BookmarkIcon),
         ]),
       );
     }).toList();
   }
 
-  static const Widget BookmarkIcon = Icon(
-    Icons.bookmark_border,
-    color: Colors.grey,
-    size: 24,
-  );
+  static const Widget BookmarkIcon = Icon(Icons.bookmark_border, color: Colors.grey, size: 24);
 
   Widget BookCover({
     required String? coverImagePath,
@@ -567,21 +498,12 @@ class CoursesScreenState extends State<CoursesScreen> {
   }) {
     final bool hasCover = coverImagePath != null;
 
-    const Widget BookIcon = Icon(
-      Icons.book,
-      color: RLTheme.primaryBlue,
-      size: 20,
-    );
+    const Widget BookIcon = Icon(Icons.book, color: RLTheme.primaryBlue, size: 20);
 
     if (hasCover) {
       return ClipRRect(
         borderRadius: BorderRadius.circular(6),
-        child: Image.asset(
-          coverImagePath,
-          width: 40,
-          height: 60,
-          fit: BoxFit.cover,
-        ),
+        child: Image.asset(coverImagePath, width: 40, height: 60, fit: BoxFit.cover),
       );
     }
 
@@ -625,12 +547,7 @@ class CoursesScreenState extends State<CoursesScreen> {
         'coverImage': null,
         'category': 'Business',
       },
-      {
-        'title': 'Hooked',
-        'author': 'Nir Eyal',
-        'coverImage': null,
-        'category': 'Design',
-      },
+      {'title': 'Hooked', 'author': 'Nir Eyal', 'coverImage': null, 'category': 'Design'},
       {
         'title': 'Clean Code',
         'author': 'Robert C. Martin',
@@ -653,8 +570,10 @@ class CoursesScreenState extends State<CoursesScreen> {
 
     final int totalResults = allSearchResults.length;
     final int itemsToShow = displayedItemsCount.clamp(0, totalResults);
-    final List<Map<String, dynamic>> displayedResults = allSearchResults
-        .sublist(0, itemsToShow);
+    final List<Map<String, dynamic>> displayedResults = allSearchResults.sublist(
+      0,
+      itemsToShow,
+    );
 
     final bool hasMoreResults = itemsToShow < totalResults;
 
@@ -667,10 +586,7 @@ class CoursesScreenState extends State<CoursesScreen> {
 
         const Spacing.height(4),
 
-        RLTypography.text(
-          '$totalResults titles found',
-          color: RLTheme.textSecondary,
-        ),
+        RLTypography.text('$totalResults titles found', color: RLTheme.textSecondary),
 
         const Spacing.height(16),
 
@@ -678,10 +594,7 @@ class CoursesScreenState extends State<CoursesScreen> {
         Expanded(
           child: ListView(
             padding: EdgeInsets.zero,
-            children: SearchResultsListContent(
-              displayedResults,
-              hasMoreResults,
-            ),
+            children: SearchResultsListContent(displayedResults, hasMoreResults),
           ),
         ),
       ],
@@ -696,13 +609,7 @@ class CoursesScreenState extends State<CoursesScreen> {
 
     content.add(const Spacing.height(16));
 
-    content.add(
-      RenderIf.condition(
-        hasMoreResults,
-        LoadNextButton(),
-        const SizedBox.shrink(),
-      ),
-    );
+    content.add(RenderIf.condition(hasMoreResults, LoadNextButton(), const SizedBox.shrink()));
 
     return content;
   }
@@ -726,17 +633,13 @@ class CoursesScreenState extends State<CoursesScreen> {
       final BoxDecoration cardDecoration = BoxDecoration(
         color: RLTheme.backgroundLight.withValues(alpha: 0.08),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: RLTheme.grey300.withValues(alpha: 0.3),
-        ),
+        border: Border.all(color: RLTheme.grey300.withValues(alpha: 0.3)),
       );
 
       final BoxDecoration coverPlaceholderDecoration = BoxDecoration(
         color: RLTheme.primaryBlue.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(6),
-        border: Border.all(
-          color: RLTheme.primaryBlue.withValues(alpha: 0.2),
-        ),
+        border: Border.all(color: RLTheme.primaryBlue.withValues(alpha: 0.2)),
       );
 
       return Container(
@@ -759,18 +662,12 @@ class CoursesScreenState extends State<CoursesScreen> {
 
               const Spacing.height(4),
 
-              RLTypography.text(
-                bookAuthor,
-                color: RLTheme.textSecondary,
-              ),
+              RLTypography.text(bookAuthor, color: RLTheme.textSecondary),
             ], crossAxisAlignment: CrossAxisAlignment.start),
           ),
 
           // Bookmark icon
-          Container(
-            margin: const EdgeInsets.only(top: 8),
-            child: SearchBookmarkIcon,
-          ),
+          Container(margin: const EdgeInsets.only(top: 8), child: SearchBookmarkIcon),
         ]),
       );
     }).toList();
@@ -788,21 +685,12 @@ class CoursesScreenState extends State<CoursesScreen> {
   }) {
     final bool hasCover = coverImagePath != null;
 
-    const Widget BookIcon = Icon(
-      Icons.book,
-      color: RLTheme.primaryBlue,
-      size: 20,
-    );
+    const Widget BookIcon = Icon(Icons.book, color: RLTheme.primaryBlue, size: 20);
 
     if (hasCover) {
       return ClipRRect(
         borderRadius: BorderRadius.circular(6),
-        child: Image.asset(
-          coverImagePath,
-          width: 40,
-          height: 60,
-          fit: BoxFit.cover,
-        ),
+        child: Image.asset(coverImagePath, width: 40, height: 60, fit: BoxFit.cover),
       );
     }
 
@@ -824,9 +712,7 @@ class CoursesScreenState extends State<CoursesScreen> {
     final BoxDecoration buttonDecoration = BoxDecoration(
       color: RLTheme.backgroundLight.withValues(alpha: 0.08),
       borderRadius: BorderRadius.circular(12),
-      border: Border.all(
-        color: RLTheme.primaryBlue.withValues(alpha: 0.3),
-      ),
+      border: Border.all(color: RLTheme.primaryBlue.withValues(alpha: 0.3)),
     );
 
     return GestureDetector(

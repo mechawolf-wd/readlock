@@ -66,9 +66,11 @@ class ExpandableCardState extends State<ExpandableCard> {
     final bool hasGradient = widget.gradient != null;
     final Color fallbackColor = widget.backgroundColor ?? RLTheme.backgroundLight;
 
-    final Border? cardBorder = hasGradient
-        ? null
-        : Border.all(color: RLTheme.textPrimary.withValues(alpha: 0.1));
+    Border? cardBorder;
+
+    if (!hasGradient) {
+      cardBorder = Border.all(color: RLTheme.textPrimary.withValues(alpha: 0.1));
+    }
 
     return BoxDecoration(
       gradient: widget.gradient,
@@ -87,7 +89,11 @@ class ExpandableCardState extends State<ExpandableCard> {
 
     final bool hasGradient = widget.gradient != null;
 
-    return hasGradient ? Colors.white : RLTheme.textPrimary;
+    if (hasGradient) {
+      return Colors.white;
+    }
+
+    return RLTheme.textPrimary;
   }
 
   Color getIconColor() {
@@ -99,7 +105,11 @@ class ExpandableCardState extends State<ExpandableCard> {
 
     final bool hasGradient = widget.gradient != null;
 
-    return hasGradient ? Colors.white : RLTheme.primaryBlue;
+    if (hasGradient) {
+      return Colors.white;
+    }
+
+    return RLTheme.primaryBlue;
   }
 
   Widget HeaderSection(Color titleColor, Color iconColor) {
@@ -123,7 +133,11 @@ class ExpandableCardState extends State<ExpandableCard> {
   }
 
   Widget ArrowIcon(Color titleColor) {
-    final IconData chevronIcon = isExpanded ? Icons.expand_less : Icons.expand_more;
+    IconData chevronIcon = Icons.expand_more;
+
+    if (isExpanded) {
+      chevronIcon = Icons.expand_less;
+    }
 
     return Icon(chevronIcon, color: titleColor.withValues(alpha: 0.7), size: ICON_SIZE_ARROW);
   }

@@ -17,11 +17,7 @@ class CCOutro extends StatefulWidget {
   // Navigation callback for lesson completion
   final VoidCallback? onLessonComplete;
 
-  const CCOutro({
-    super.key,
-    required this.content,
-    this.onLessonComplete,
-  });
+  const CCOutro({super.key, required this.content, this.onLessonComplete});
 
   @override
   State<CCOutro> createState() => CCOutroState();
@@ -34,8 +30,9 @@ class CCOutroState extends State<CCOutro> {
   @override
   Widget build(BuildContext context) {
     // Text style for title with custom font weight
-    final TextStyle titleTextStyle = RLTypography.bodyLargeStyle
-        .copyWith(fontWeight: FontWeight.w600);
+    final TextStyle titleTextStyle = RLTypography.bodyLargeStyle.copyWith(
+      fontWeight: FontWeight.w600,
+    );
 
     return Div.column(
       [
@@ -52,10 +49,7 @@ class CCOutroState extends State<CCOutro> {
         const Spacing.height(COURSE_OUTRO_CONTENT_SPACING),
 
         // Fin button when text is complete
-        RenderIf.condition(
-          isAllTextRevealed,
-          FinishButton(),
-        ),
+        RenderIf.condition(isAllTextRevealed, FinishButton()),
       ],
       color: RLTheme.backgroundDark,
       padding: RLTheme.contentPaddingInsets,
@@ -73,28 +67,19 @@ class CCOutroState extends State<CCOutro> {
 
       // Title text
       Expanded(
-        child: Text(
-          widget.content.title,
-          style: titleTextStyle,
-          textAlign: TextAlign.left,
-        ),
+        child: Text(widget.content.title, style: titleTextStyle, textAlign: TextAlign.left),
       ),
     ]);
   }
 
   // Completion check circle icon
   Widget CompletionIcon() {
-    return const Icon(
-      Icons.check_circle,
-      color: RLTheme.primaryGreen,
-      size: 24,
-    );
+    return const Icon(Icons.check_circle, color: RLTheme.primaryGreen, size: 24);
   }
 
   // Progressive text animation section
   Widget ProgressiveTextSection() {
-    final bool hasOutroTextSegments =
-        widget.content.outroTextSegments.isNotEmpty;
+    final bool hasOutroTextSegments = widget.content.outroTextSegments.isNotEmpty;
 
     return RenderIf.condition(
       hasOutroTextSegments,
@@ -117,7 +102,7 @@ class CCOutroState extends State<CCOutro> {
 
   // Finish button using RLDesignSystem
   Widget FinishButton() {
-    return RLDesignSystem.BlockButton(
+    return RLDS.BlockButton(
       children: [RLTypography.bodyLarge('Fin', color: RLTheme.white)],
       onTap: handleFinishButtonTapped,
       backgroundColor: RLTheme.primaryGreen,
@@ -127,8 +112,7 @@ class CCOutroState extends State<CCOutro> {
 
   // Handle Fin button tap to navigate to reward screen
   void handleFinishButtonTapped() {
-    final VoidCallback? lessonCompleteCallback =
-        widget.onLessonComplete;
+    final VoidCallback? lessonCompleteCallback = widget.onLessonComplete;
 
     if (lessonCompleteCallback != null) {
       lessonCompleteCallback();

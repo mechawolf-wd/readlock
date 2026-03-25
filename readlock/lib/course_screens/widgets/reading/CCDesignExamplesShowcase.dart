@@ -10,12 +10,10 @@ class CCDesignExamplesShowcase extends StatefulWidget {
   const CCDesignExamplesShowcase({super.key});
 
   @override
-  State<CCDesignExamplesShowcase> createState() =>
-      CCDesignExamplesShowcaseState();
+  State<CCDesignExamplesShowcase> createState() => CCDesignExamplesShowcaseState();
 }
 
-class CCDesignExamplesShowcaseState
-    extends State<CCDesignExamplesShowcase> {
+class CCDesignExamplesShowcaseState extends State<CCDesignExamplesShowcase> {
   Set<int> revealedCards = {};
 
   final List<DesignExample> examples = const [
@@ -90,35 +88,32 @@ class CCDesignExamplesShowcaseState
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-          RLTypography.headingMedium(
-            'Design Examples',
-            color: RLTheme.textPrimary,
-          ),
+            RLTypography.headingMedium('Design Examples', color: RLTheme.textPrimary),
 
-          const Spacing.height(8),
+            const Spacing.height(8),
 
-          RLTypography.bodyMedium(
-            'Tap cards to reveal examples of good and bad design',
-            color: RLTheme.textPrimary.withValues(alpha: 0.7),
-          ),
-
-          const Spacing.height(20),
-
-          GridView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              crossAxisSpacing: 12,
-              mainAxisSpacing: 12,
+            RLTypography.bodyMedium(
+              'Tap cards to reveal examples of good and bad design',
+              color: RLTheme.textPrimary.withValues(alpha: 0.7),
             ),
-            itemCount: examples.length,
-            itemBuilder: getExampleCardItem,
-          ),
 
-          const Spacing.height(20),
+            const Spacing.height(20),
 
-          RevealProgressIndicator(),
+            GridView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                crossAxisSpacing: 12,
+                mainAxisSpacing: 12,
+              ),
+              itemCount: examples.length,
+              itemBuilder: getExampleCardItem,
+            ),
+
+            const Spacing.height(20),
+
+            RevealProgressIndicator(),
           ],
         ),
       ),
@@ -147,11 +142,7 @@ class CCDesignExamplesShowcaseState
   }
 
   Widget RevealProgressIndicator() {
-    const Widget LightbulbIcon = Icon(
-      Icons.lightbulb,
-      color: RLTheme.primaryGreen,
-      size: 20,
-    );
+    const Widget LightbulbIcon = Icon(Icons.lightbulb, color: RLTheme.primaryGreen, size: 20);
 
     final bool isAllRevealed = revealedCards.length == examples.length;
 
@@ -176,10 +167,7 @@ class CCDesignExamplesShowcaseState
             ),
           ),
 
-          RenderIf.condition(
-            isAllRevealed,
-            CompleteChip(),
-          ),
+          RenderIf.condition(isAllRevealed, CompleteChip()),
         ],
       ),
     );
@@ -194,10 +182,7 @@ class CCDesignExamplesShowcaseState
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: chipDecoration,
-      child: RLTypography.bodyMedium(
-        'Complete!',
-        color: RLTheme.white,
-      ),
+      child: RLTypography.bodyMedium('Complete!', color: RLTheme.white),
     );
   }
 
@@ -256,12 +241,7 @@ class CCDesignExamplesShowcaseState
             const Spacing.height(12),
 
             // Title
-            Text(
-              titleText,
-              style: titleStyle,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-            ),
+            Text(titleText, style: titleStyle, maxLines: 2, overflow: TextOverflow.ellipsis),
 
             const Spacing.height(8),
 
@@ -279,10 +259,7 @@ class CCDesignExamplesShowcaseState
     );
   }
 
-  BoxDecoration getCardDecoration({
-    required bool isRevealed,
-    required Color themeColor,
-  }) {
+  BoxDecoration getCardDecoration({required bool isRevealed, required Color themeColor}) {
     Color bgColor = RLTheme.backgroundLight;
     Color borderColor = RLTheme.textPrimary.withValues(alpha: 0.1);
     double borderWidth = 1;
@@ -351,10 +328,7 @@ class CCDesignExamplesShowcaseState
 
         const Spacer(),
 
-        RenderIf.condition(
-          shouldShowTouchHint,
-          TouchHintIcon,
-        ),
+        RenderIf.condition(shouldShowTouchHint, TouchHintIcon),
       ],
     );
   }
@@ -377,10 +351,7 @@ class CCDesignExamplesShowcaseState
     }
 
     return SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: segmentWidgets,
-      ),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: segmentWidgets),
     );
   }
 
@@ -390,9 +361,7 @@ class CCDesignExamplesShowcaseState
       fontStyle: FontStyle.italic,
     );
 
-    return Center(
-      child: Text('Tap to reveal', style: hiddenStyle),
-    );
+    return Center(child: Text('Tap to reveal', style: hiddenStyle));
   }
 }
 

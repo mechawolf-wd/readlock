@@ -5,7 +5,7 @@ import 'package:flutter/material.dart' hide Typography;
 import 'package:readlock/constants/RLConstants.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLTheme.dart';
-import 'package:readlock/utility_widgets/FeedbackBottomSheet.dart';
+import 'package:readlock/bottom_sheets/course/FeedbackBottomSheet.dart';
 import 'package:readlock/utility_widgets/Utility.dart';
 
 // Snackbar controller singleton
@@ -32,9 +32,7 @@ class SnackbarController {
       },
     );
 
-    overlayEntry = OverlayEntry(
-      builder: (context) => snackbar,
-    );
+    overlayEntry = OverlayEntry(builder: (context) => snackbar);
 
     Overlay.of(context).insert(overlayEntry!);
   }
@@ -67,12 +65,8 @@ final snackbarController = SnackbarController();
 
 // Public API
 class FeedbackSnackBar {
-  static void showCorrectAnswer(
-    BuildContext context, {
-    String? explanation,
-  }) {
-    final bool hasExplanation =
-        explanation != null && explanation.isNotEmpty;
+  static void showCorrectAnswer(BuildContext context, {String? explanation}) {
+    final bool hasExplanation = explanation != null && explanation.isNotEmpty;
 
     final Widget content = CorrectAnswerContent(
       hasExplanation: hasExplanation,
@@ -89,14 +83,9 @@ class FeedbackSnackBar {
   static void showWrongAnswer(BuildContext context, {String? hint}) {
     final bool hasHint = hint != null && hint.isNotEmpty;
 
-    final Duration duration = hasHint
-        ? HINT_SNACKBAR_DURATION
-        : DEFAULT_SNACKBAR_DURATION;
+    final Duration duration = hasHint ? HINT_SNACKBAR_DURATION : DEFAULT_SNACKBAR_DURATION;
 
-    final Widget content = WrongAnswerContent(
-      hasHint: hasHint,
-      hint: hint,
-    );
+    final Widget content = WrongAnswerContent(hasHint: hasHint, hint: hint);
 
     snackbarController.show(
       context: context,
@@ -106,19 +95,10 @@ class FeedbackSnackBar {
     );
   }
 
-  static void showCustomFeedback(
-    BuildContext context,
-    String message,
-    bool isCorrect,
-  ) {
-    final Color backgroundColor = isCorrect
-        ? RLTheme.primaryGreen
-        : RLTheme.primaryBlue;
+  static void showCustomFeedback(BuildContext context, String message, bool isCorrect) {
+    final Color backgroundColor = isCorrect ? RLTheme.primaryGreen : RLTheme.primaryBlue;
 
-    final Widget content = RLTypography.bodyLarge(
-      message,
-      color: RLTheme.white,
-    );
+    final Widget content = RLTypography.bodyLarge(message, color: RLTheme.white);
 
     snackbarController.show(
       context: context,
@@ -172,14 +152,13 @@ class AnimatedSnackbarState extends State<AnimatedSnackbar>
       duration: SNACKBAR_ANIMATION_DURATION,
     );
 
-    slideAnimation = Tween<Offset>(
-      begin: const Offset(0, 1),
-      end: Offset.zero,
-    ).animate(CurvedAnimation(
-      parent: animationController,
-      curve: Curves.easeOutCubic,
-      reverseCurve: Curves.easeInCubic,
-    ));
+    slideAnimation = Tween<Offset>(begin: const Offset(0, 1), end: Offset.zero).animate(
+      CurvedAnimation(
+        parent: animationController,
+        curve: Curves.easeOutCubic,
+        reverseCurve: Curves.easeInCubic,
+      ),
+    );
 
     animationController.forward();
 
@@ -224,10 +203,7 @@ class AnimatedSnackbarState extends State<AnimatedSnackbar>
         position: slideAnimation,
         child: Material(
           color: widget.backgroundColor,
-          child: Padding(
-            padding: contentPadding,
-            child: widget.content,
-          ),
+          child: Padding(padding: contentPadding, child: widget.content),
         ),
       ),
     );
@@ -239,16 +215,9 @@ class CorrectAnswerContent extends StatelessWidget {
   final bool hasExplanation;
   final String? explanation;
 
-  const CorrectAnswerContent({
-    required this.hasExplanation,
-    this.explanation,
-  });
+  const CorrectAnswerContent({required this.hasExplanation, this.explanation});
 
-  static const Icon StarIcon = Icon(
-    Icons.star,
-    color: RLTheme.white,
-    size: 20,
-  );
+  static const Icon StarIcon = Icon(Icons.star, color: RLTheme.white, size: 20);
 
   @override
   Widget build(BuildContext context) {
@@ -257,17 +226,9 @@ class CorrectAnswerContent extends StatelessWidget {
 
       const Spacing.width(12),
 
-      Expanded(
-        child: RLTypography.bodyLarge(
-          CORRECT_ANSWER_MESSAGE,
-          color: RLTheme.white,
-        ),
-      ),
+      Expanded(child: RLTypography.bodyLarge(CORRECT_ANSWER_MESSAGE, color: RLTheme.white)),
 
-      RenderIf.condition(
-        hasExplanation,
-        WhyButton(explanation: explanation),
-      ),
+      RenderIf.condition(hasExplanation, WhyButton(explanation: explanation)),
     ], crossAxisAlignment: CrossAxisAlignment.center);
   }
 }
@@ -282,10 +243,7 @@ class WhyButton extends StatelessWidget {
     FeedbackSnackBar.dismissAnimated();
 
     if (explanation != null) {
-      FeedbackBottomSheets.showExplanation(
-        context: context,
-        explanation: explanation!,
-      );
+      FeedbackBottomSheets.showExplanation(context: context, explanation: explanation!);
     }
   }
 
@@ -311,10 +269,7 @@ class WrongAnswerContent extends StatelessWidget {
   final bool hasHint;
   final String? hint;
 
-  const WrongAnswerContent({
-    required this.hasHint,
-    this.hint,
-  });
+  const WrongAnswerContent({required this.hasHint, this.hint});
 
   static const Icon LightbulbIcon = Icon(
     Icons.lightbulb_outline,
@@ -329,17 +284,9 @@ class WrongAnswerContent extends StatelessWidget {
 
       const Spacing.width(12),
 
-      Expanded(
-        child: RLTypography.bodyLarge(
-          WRONG_ANSWER_TITLE,
-          color: RLTheme.white,
-        ),
-      ),
+      Expanded(child: RLTypography.bodyLarge(WRONG_ANSWER_TITLE, color: RLTheme.white)),
 
-      RenderIf.condition(
-        hasHint,
-        HintButton(hint: hint),
-      ),
+      RenderIf.condition(hasHint, HintButton(hint: hint)),
     ], crossAxisAlignment: CrossAxisAlignment.center);
   }
 }
@@ -354,10 +301,7 @@ class HintButton extends StatelessWidget {
     FeedbackSnackBar.dismissAnimated();
 
     if (hint != null) {
-      FeedbackBottomSheets.showHint(
-        context: context,
-        hint: hint!,
-      );
+      FeedbackBottomSheets.showHint(context: context, hint: hint!);
     }
   }
 

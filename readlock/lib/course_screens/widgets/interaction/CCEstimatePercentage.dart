@@ -8,11 +8,9 @@ import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLTheme.dart';
 import 'package:readlock/utility_widgets/text_animation/ProgressiveText.dart';
 
-
 class CCEstimatePercentage extends StatefulWidget {
   final EstimatePercentageContent content;
-  final void Function(int selectedIndex, bool isCorrect)
-  onAnswerSelected;
+  final void Function(int selectedIndex, bool isCorrect) onAnswerSelected;
 
   const CCEstimatePercentage({
     super.key,
@@ -21,8 +19,7 @@ class CCEstimatePercentage extends StatefulWidget {
   });
 
   @override
-  State<CCEstimatePercentage> createState() =>
-      CCEstimatePercentageState();
+  State<CCEstimatePercentage> createState() => CCEstimatePercentageState();
 }
 
 class CCEstimatePercentageState extends State<CCEstimatePercentage>
@@ -33,17 +30,9 @@ class CCEstimatePercentageState extends State<CCEstimatePercentage>
   late Animation<double> revealAnimation;
 
   // Icon and styling definitions
-  static const Icon CheckIcon = Icon(
-    Icons.check_circle,
-    color: RLTheme.primaryGreen,
-    size: 20,
-  );
+  static const Icon CheckIcon = Icon(Icons.check_circle, color: RLTheme.primaryGreen, size: 20);
   static const Icon InfoIcon = Icon(Icons.info_outline, size: 20);
-  static const Icon StarIcon = Icon(
-    Icons.star,
-    color: RLTheme.white,
-    size: 16,
-  );
+  static const Icon StarIcon = Icon(Icons.star, color: RLTheme.white, size: 16);
 
   int getCorrectPercentage() {
     return widget.content.correctPercentage;
@@ -58,10 +47,7 @@ class CCEstimatePercentageState extends State<CCEstimatePercentage>
       vsync: this,
     );
 
-    revealAnimation = CurvedAnimation(
-      parent: revealController,
-      curve: Curves.easeInOut,
-    );
+    revealAnimation = CurvedAnimation(parent: revealController, curve: Curves.easeInOut);
   }
 
   @override
@@ -117,10 +103,7 @@ class CCEstimatePercentageState extends State<CCEstimatePercentage>
   }
 
   Widget QuestionText() {
-    return RLTypography.bodyLarge(
-      widget.content.question,
-      textAlign: TextAlign.center,
-    );
+    return RLTypography.bodyLarge(widget.content.question, textAlign: TextAlign.center);
   }
 
   Widget CurrentEstimateDisplay() {
@@ -132,15 +115,9 @@ class CCEstimatePercentageState extends State<CCEstimatePercentage>
 
       const Spacing.width(12),
 
-      RLTypography.headingLarge(
-        '${currentEstimate.round()}',
-        color: RLTheme.primaryBlue,
-      ),
+      RLTypography.headingLarge('${currentEstimate.round()}', color: RLTheme.primaryBlue),
 
-      RLTypography.headingMedium(
-        '%',
-        color: RLTheme.primaryBlue.withValues(alpha: 0.7),
-      ),
+      RLTypography.headingMedium('%', color: RLTheme.primaryBlue.withValues(alpha: 0.7)),
     ], mainAxisAlignment: MainAxisAlignment.center);
   }
 
@@ -176,13 +153,7 @@ class CCEstimatePercentageState extends State<CCEstimatePercentage>
     );
 
     return Div.row(
-      [
-        Text('0%', style: labelStyle),
-
-        const Spacer(),
-
-        Text('100%', style: labelStyle),
-      ],
+      [Text('0%', style: labelStyle), const Spacer(), Text('100%', style: labelStyle)],
       padding: const [12, 0],
     );
   }
@@ -206,11 +177,7 @@ class CCEstimatePercentageState extends State<CCEstimatePercentage>
   Widget SubmitButton() {
     final bool shouldShow = !hasSubmittedEstimate;
 
-    const Widget TouchAppIcon = Icon(
-      Icons.touch_app,
-      color: RLTheme.white,
-      size: 18,
-    );
+    const Widget TouchAppIcon = Icon(Icons.touch_app, color: RLTheme.white, size: 18);
 
     return RenderIf.condition(
       shouldShow,
@@ -220,10 +187,7 @@ class CCEstimatePercentageState extends State<CCEstimatePercentage>
 
           const Spacing.width(8),
 
-          RLTypography.bodyMedium(
-            'Submit Estimate',
-            color: RLTheme.white,
-          ),
+          RLTypography.bodyMedium('Submit Estimate', color: RLTheme.white),
         ],
         height: 44,
         decoration: Style.submitButtonDecoration,
@@ -234,8 +198,7 @@ class CCEstimatePercentageState extends State<CCEstimatePercentage>
   }
 
   Widget ResultSection() {
-    final int difference = (currentEstimate.round() - getCorrectPercentage())
-        .abs();
+    final int difference = (currentEstimate.round() - getCorrectPercentage()).abs();
     final bool isClose = difference <= widget.content.closeThreshold;
 
     return FadeTransition(
@@ -264,10 +227,7 @@ class CCEstimatePercentageState extends State<CCEstimatePercentage>
       return Div.row([
         CheckIcon,
         const Spacing.width(12),
-        RLTypography.headingMedium(
-          'Excellent estimate!',
-          color: RLTheme.primaryGreen,
-        ),
+        RLTypography.headingMedium('Excellent estimate!', color: RLTheme.primaryGreen),
       ]);
     }
 
@@ -288,10 +248,7 @@ class CCEstimatePercentageState extends State<CCEstimatePercentage>
       Div.row([
         LightbulbIcon,
         const Spacing.width(12),
-        RLTypography.headingMedium(
-          headerText,
-          color: RLTheme.warningDark,
-        ),
+        RLTypography.headingMedium(headerText, color: RLTheme.warningDark),
       ]),
 
       const Spacing.height(8),
@@ -321,11 +278,7 @@ class CCEstimatePercentageState extends State<CCEstimatePercentage>
       // Your estimate
       Expanded(
         child: Div.column([
-          Text(
-            'YOUR ESTIMATE',
-            style: comparisonLabelStyle,
-            textAlign: TextAlign.center,
-          ),
+          Text('YOUR ESTIMATE', style: comparisonLabelStyle, textAlign: TextAlign.center),
           const Spacing.height(4),
           RLTypography.headingMedium(
             '${currentEstimate.round()}%',
@@ -336,18 +289,12 @@ class CCEstimatePercentageState extends State<CCEstimatePercentage>
       ),
 
       // Arrow indicator
-      Div.column([
-        ArrowForwardIcon,
-      ]),
+      Div.column([ArrowForwardIcon]),
 
       // Actual answer
       Expanded(
         child: Div.column([
-          Text(
-            'ACTUAL',
-            style: comparisonLabelStyle,
-            textAlign: TextAlign.center,
-          ),
+          Text('ACTUAL', style: comparisonLabelStyle, textAlign: TextAlign.center),
           const Spacing.height(4),
           RLTypography.headingMedium(
             '${getCorrectPercentage()}%',
@@ -364,10 +311,7 @@ class CCEstimatePercentageState extends State<CCEstimatePercentage>
       opacity: revealAnimation,
       child: ProgressiveText(
         textSegments: [widget.content.explanation],
-        textStyle: RLTypography.bodyLargeStyle.copyWith(
-          fontSize: 14,
-          height: 1.5,
-        ),
+        textStyle: RLTypography.bodyLargeStyle.copyWith(fontSize: 14, height: 1.5),
       ),
     );
   }
@@ -411,8 +355,7 @@ class CCEstimatePercentageState extends State<CCEstimatePercentage>
 
     revealController.forward();
 
-    final int difference = (currentEstimate.round() - getCorrectPercentage())
-        .abs();
+    final int difference = (currentEstimate.round() - getCorrectPercentage()).abs();
     final bool isClose = difference <= widget.content.closeThreshold;
 
     if (isClose) {
@@ -433,18 +376,13 @@ class CCEstimatePercentageState extends State<CCEstimatePercentage>
 
               const Spacing.width(8),
 
-              RLTypography.bodyLarge(
-                '+8 experience',
-                color: RLTheme.white,
-              ),
+              RLTypography.bodyLarge('+8 experience', color: RLTheme.white),
             ],
           ),
           backgroundColor: RLTheme.successDark,
           duration: const Duration(seconds: 2),
           behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8),
-          ),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
           margin: const EdgeInsets.all(16),
         ),
       );
@@ -453,9 +391,7 @@ class CCEstimatePercentageState extends State<CCEstimatePercentage>
 }
 
 class Style {
-  static const EdgeInsets sliderPadding = EdgeInsets.symmetric(
-    horizontal: 16,
-  );
+  static const EdgeInsets sliderPadding = EdgeInsets.symmetric(horizontal: 16);
 
   static SliderThemeData getSliderTheme() {
     return SliderThemeData(

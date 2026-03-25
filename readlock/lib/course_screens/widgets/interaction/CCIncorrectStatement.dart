@@ -23,8 +23,7 @@ class StatementStyle {
 
 class CCIncorrectStatement extends StatefulWidget {
   final QuestionContent content;
-  final void Function(int selectedIndex, bool isCorrect)
-  onAnswerSelected;
+  final void Function(int selectedIndex, bool isCorrect) onAnswerSelected;
 
   const CCIncorrectStatement({
     super.key,
@@ -33,8 +32,7 @@ class CCIncorrectStatement extends StatefulWidget {
   });
 
   @override
-  State<CCIncorrectStatement> createState() =>
-      CCIncorrectStatementState();
+  State<CCIncorrectStatement> createState() => CCIncorrectStatementState();
 }
 
 class CCIncorrectStatementState extends State<CCIncorrectStatement>
@@ -67,15 +65,9 @@ class CCIncorrectStatementState extends State<CCIncorrectStatement>
       fontSize: 18,
     );
 
-    statementTextStyle = RLTypography.bodyLargeStyle.copyWith(
-      fontSize: 15,
-      height: 1.4,
-    );
+    statementTextStyle = RLTypography.bodyLargeStyle.copyWith(fontSize: 15, height: 1.4);
 
-    explanationTextStyle = RLTypography.bodyLargeStyle.copyWith(
-      fontSize: 14,
-      height: 1.5,
-    );
+    explanationTextStyle = RLTypography.bodyLargeStyle.copyWith(fontSize: 14, height: 1.5);
   }
 
   @override
@@ -109,11 +101,7 @@ class CCIncorrectStatementState extends State<CCIncorrectStatement>
   Widget QuestionTextSection() {
     final String questionText = getQuestionText();
 
-    return Text(
-      questionText,
-      style: questionTextStyle,
-      textAlign: TextAlign.center,
-    );
+    return Text(questionText, style: questionTextStyle, textAlign: TextAlign.center);
   }
 
   String getQuestionText() {
@@ -133,27 +121,22 @@ class CCIncorrectStatementState extends State<CCIncorrectStatement>
   List<Widget> getStatementItemsList() {
     return widget.content.options.asMap().entries.map((entry) {
       final int statementIndex = entry.key;
-      final bool isLastItem =
-          statementIndex == widget.content.options.length - 1;
+      final bool isLastItem = statementIndex == widget.content.options.length - 1;
       final bool shouldAddSpacing = !isLastItem;
 
       return Div.column([
         StatementItem(statementIndex: statementIndex),
 
-        RenderIf.condition(
-          shouldAddSpacing,
-          const Spacing.height(12),
-        ),
+        RenderIf.condition(shouldAddSpacing, const Spacing.height(12)),
       ]);
     }).toList();
   }
 
   Widget StatementItem({required int statementIndex}) {
     final bool isSelected = selectedStatementIndex == statementIndex;
-    final bool isIncorrectStatement = widget
-        .content
-        .correctAnswerIndices
-        .contains(statementIndex);
+    final bool isIncorrectStatement = widget.content.correctAnswerIndices.contains(
+      statementIndex,
+    );
 
     final StatementStyle statementStyle = getStatementStyle(
       isSelected: isSelected,
@@ -223,11 +206,10 @@ class CCIncorrectStatementState extends State<CCIncorrectStatement>
     required bool isSelected,
     required StatementStyle statementStyle,
   }) {
-    final BoxDecoration containerDecoration =
-        getStatementContainerDecoration(
-          statementStyle.backgroundColor,
-          statementStyle.borderColor,
-        );
+    final BoxDecoration containerDecoration = getStatementContainerDecoration(
+      statementStyle.backgroundColor,
+      statementStyle.borderColor,
+    );
 
     final VoidCallback? tapCallback = hasAnswered
         ? null
@@ -248,21 +230,16 @@ class CCIncorrectStatementState extends State<CCIncorrectStatement>
     );
   }
 
-  Widget FeedbackIconSection(
-    int statementIndex,
-    StatementStyle statementStyle,
-  ) {
-    final bool shouldShowIcon =
-        hasAnswered && statementStyle.feedbackIcon != null;
+  Widget FeedbackIconSection(int statementIndex, StatementStyle statementStyle) {
+    final bool shouldShowIcon = hasAnswered && statementStyle.feedbackIcon != null;
 
     if (!shouldShowIcon) {
       return const Spacing.width(0);
     }
 
-    final bool isIncorrectStatement = widget
-        .content
-        .correctAnswerIndices
-        .contains(statementIndex);
+    final bool isIncorrectStatement = widget.content.correctAnswerIndices.contains(
+      statementIndex,
+    );
 
     Color iconColor = RLTheme.textPrimary.withValues(alpha: 0.4);
 
@@ -270,25 +247,13 @@ class CCIncorrectStatementState extends State<CCIncorrectStatement>
       iconColor = RLTheme.primaryGreen;
     }
 
-    final Widget FeedbackIcon = Icon(
-      statementStyle.feedbackIcon!,
-      color: iconColor,
-      size: 20,
-    );
+    final Widget FeedbackIcon = Icon(statementStyle.feedbackIcon!, color: iconColor, size: 20);
 
-    return Div.row([
-      FeedbackIcon,
-
-      const Spacing.width(12),
-    ]);
+    return Div.row([FeedbackIcon, const Spacing.width(12)]);
   }
 
-  Widget StatementTextSection(
-    int statementIndex,
-    bool isSelected,
-  ) {
-    final String statementText =
-        widget.content.options[statementIndex].text;
+  Widget StatementTextSection(int statementIndex, bool isSelected) {
+    final String statementText = widget.content.options[statementIndex].text;
     final TextStyle textStyle = getStatementTextStyle(isSelected);
 
     return Expanded(child: Text(statementText, style: textStyle));
@@ -300,10 +265,7 @@ class CCIncorrectStatementState extends State<CCIncorrectStatement>
     );
   }
 
-  BoxDecoration getStatementContainerDecoration(
-    Color backgroundColor,
-    Color borderColor,
-  ) {
+  BoxDecoration getStatementContainerDecoration(Color backgroundColor, Color borderColor) {
     return BoxDecoration(
       borderRadius: BorderRadius.circular(12),
       border: Border.all(color: borderColor, width: 2),
@@ -316,8 +278,7 @@ class CCIncorrectStatementState extends State<CCIncorrectStatement>
     required bool isSelected,
     required bool isIncorrectStatement,
   }) {
-    final bool shouldApplyShake =
-        isSelected && !isIncorrectStatement && shakeAnimation != null;
+    final bool shouldApplyShake = isSelected && !isIncorrectStatement && shakeAnimation != null;
 
     if (!shouldApplyShake) {
       return statementContainer;
@@ -326,22 +287,20 @@ class CCIncorrectStatementState extends State<CCIncorrectStatement>
     return AnimatedBuilder(
       animation: shakeAnimation!,
       builder: (context, child) {
-        return Transform.translate(
-          offset: Offset(shakeAnimation!.value * 10, 0),
-          child: child,
-        );
+        return Transform.translate(offset: Offset(shakeAnimation!.value * 10, 0), child: child);
       },
       child: statementContainer,
     );
   }
 
   Widget ExplanationSection() {
-    if (!hasAnswered) {
-      return const Spacing.height(0);
-    }
+    final bool shouldShowExplanation = hasAnswered;
 
-    final BoxDecoration explanationDecoration =
-        getExplanationDecoration();
+    return RenderIf.condition(shouldShowExplanation, ExplanationContent());
+  }
+
+  Widget ExplanationContent() {
+    final BoxDecoration explanationDecoration = getExplanationDecoration();
 
     return Container(
       padding: const EdgeInsets.all(16),
@@ -359,9 +318,7 @@ class CCIncorrectStatementState extends State<CCIncorrectStatement>
     return BoxDecoration(
       color: RLTheme.backgroundLight,
       borderRadius: BorderRadius.circular(12),
-      border: Border.all(
-        color: RLTheme.textPrimary.withValues(alpha: 0.1),
-      ),
+      border: Border.all(color: RLTheme.textPrimary.withValues(alpha: 0.1)),
     );
   }
 
@@ -406,12 +363,10 @@ class CCIncorrectStatementState extends State<CCIncorrectStatement>
       vsync: this,
     );
 
-    shakeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(
-        parent: shakeController!,
-        curve: Curves.elasticIn,
-      ),
-    );
+    shakeAnimation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(parent: shakeController!, curve: Curves.elasticIn));
 
     setState(() {});
 

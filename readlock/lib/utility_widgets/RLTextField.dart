@@ -65,9 +65,7 @@ class RLTextField extends StatelessWidget {
 
     return Container(
       decoration: fieldDecoration,
-      padding: const EdgeInsets.symmetric(
-        horizontal: TEXT_FIELD_HORIZONTAL_PADDING,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: TEXT_FIELD_HORIZONTAL_PADDING),
       child: TextField(
         controller: controller,
         focusNode: focusNode,

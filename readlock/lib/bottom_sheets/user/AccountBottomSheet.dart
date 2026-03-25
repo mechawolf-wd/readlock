@@ -25,11 +25,7 @@ class AccountSheet extends StatelessWidget {
   const AccountSheet({super.key});
 
   // Icon definitions
-  static const Widget PersonIcon = Icon(
-    Icons.person,
-    color: RLTheme.primaryBlue,
-    size: 20,
-  );
+  static const Widget PersonIcon = Icon(Icons.person, color: RLTheme.primaryBlue, size: 20);
 
   // Style definitions
   static const BoxDecoration modalDecoration = BoxDecoration(
@@ -42,9 +38,7 @@ class AccountSheet extends StatelessWidget {
 
   static const EdgeInsets headerPadding = EdgeInsets.all(MODAL_PADDING);
 
-  static const EdgeInsets bodyPadding = EdgeInsets.symmetric(
-    horizontal: MODAL_PADDING,
-  );
+  static const EdgeInsets bodyPadding = EdgeInsets.symmetric(horizontal: MODAL_PADDING);
 
   @override
   Widget build(BuildContext context) {
@@ -54,26 +48,24 @@ class AccountSheet extends StatelessWidget {
         top: false,
         child: Container(
           decoration: modalDecoration,
-        padding: const EdgeInsets.only(bottom: 16),
-        child: Wrap(
-          children: [
-            Div.column([
-              // Drag handle
+          padding: const EdgeInsets.only(bottom: 16),
+          child: Wrap(
+            children: [
               Div.column([
-                const BottomSheetGrabber(),
-              ], padding: const EdgeInsets.only(top: 12)),
+                // Drag handle
+                const Div.column([BottomSheetGrabber()], padding: EdgeInsets.only(top: 12)),
 
-              // Header section
-              HeaderSection(),
+                // Header section
+                HeaderSection(),
 
-              // Body content
-              BodySection(),
+                // Body content
+                BodySection(),
 
-              // Footer button
-              FooterButton(),
-            ]),
-          ],
-        ),
+                // Footer button
+                FooterButton(),
+              ]),
+            ],
+          ),
         ),
       ),
     );
@@ -107,27 +99,16 @@ class AccountSheet extends StatelessWidget {
         const Spacing.height(24),
 
         // Divider
-        Container(
-          height: 1,
-          color: RLTheme.textPrimary.withValues(alpha: 0.1),
-        ),
+        Container(height: 1, color: RLTheme.textPrimary.withValues(alpha: 0.1)),
 
         const Spacing.height(24),
 
         // Account actions
-        DangerRow(
-          label: 'Deactivate Account',
-          color: RLTheme.textSecondary,
-          onTap: () {},
-        ),
+        DangerRow(label: 'Deactivate Account', color: RLTheme.textSecondary, onTap: () {}),
 
         const Spacing.height(12),
 
-        DangerRow(
-          label: 'Delete Account',
-          color: RLTheme.textSecondary,
-          onTap: () {},
-        ),
+        DangerRow(label: 'Delete Account', color: RLTheme.textSecondary, onTap: () {}),
       ]),
     );
   }
@@ -135,13 +116,8 @@ class AccountSheet extends StatelessWidget {
   Widget FooterButton() {
     return Builder(
       builder: (context) {
-        return RLDesignSystem.BlockButton(
-          children: [
-            RLTypography.bodyMedium(
-              ACCOUNT_DONE_LABEL,
-              color: RLTheme.white,
-            ),
-          ],
+        return RLDS.BlockButton(
+          children: [RLTypography.bodyMedium(ACCOUNT_DONE_LABEL, color: RLTheme.white)],
           backgroundColor: RLTheme.primaryBlue,
           onTap: () => Navigator.of(context).pop(),
         );
@@ -154,11 +130,7 @@ class InfoRow extends StatelessWidget {
   final String label;
   final String value;
 
-  const InfoRow({
-    super.key,
-    required this.label,
-    required this.value,
-  });
+  const InfoRow({super.key, required this.label, required this.value});
 
   @override
   Widget build(BuildContext context) {
@@ -180,12 +152,7 @@ class DangerRow extends StatelessWidget {
   final Color? color;
   final VoidCallback onTap;
 
-  const DangerRow({
-    super.key,
-    required this.label,
-    this.color,
-    required this.onTap,
-  });
+  const DangerRow({super.key, required this.label, this.color, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -198,9 +165,7 @@ class DangerRow extends StatelessWidget {
     );
 
     return Div.row([
-      Expanded(
-        child: RLTypography.bodyMedium(label, color: textColor),
-      ),
+      Expanded(child: RLTypography.bodyMedium(label, color: textColor)),
 
       ChevronIcon,
     ], onTap: onTap);

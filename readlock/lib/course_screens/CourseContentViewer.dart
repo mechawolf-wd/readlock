@@ -61,11 +61,7 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
     size: 24,
   );
 
-  static const Icon BookmarkIcon = Icon(
-    Icons.bookmark_rounded,
-    color: Colors.amber,
-    size: 24,
-  );
+  static const Icon BookmarkIcon = Icon(Icons.bookmark_rounded, color: Colors.amber, size: 24);
 
   // Initializes widget state and loads course data
   @override
@@ -149,9 +145,7 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
 
   // Empty state message when no content available
   Widget EmptyContentMessage() {
-    return Center(
-      child: RLTypography.bodyMedium(NO_CONTENT_AVAILABLE_MESSAGE),
-    );
+    return Center(child: RLTypography.bodyMedium(NO_CONTENT_AVAILABLE_MESSAGE));
   }
 
   // Top navigation bar with progress indicator
@@ -179,18 +173,12 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
 
   // Back button for navigation
   Widget BackNavigationButton() {
-    return GestureDetector(
-      onTap: showQuitConfirmationSheet,
-      child: BackNavigationIcon,
-    );
+    return GestureDetector(onTap: showQuitConfirmationSheet, child: BackNavigationIcon);
   }
 
   // Bookmark button for slide favoriting
   Widget BookmarkButton() {
-    return GestureDetector(
-      onTap: handleBookmarkTap,
-      child: BookmarkIcon,
-    );
+    return GestureDetector(onTap: handleBookmarkTap, child: BookmarkIcon);
   }
 
   // Progress indicator with individual segments for skill check questions
@@ -223,8 +211,7 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
 
   // Segmented progress indicator for skill check sections
   Widget SegmentedProgressIndicator() {
-    final List<ProgressSegment> progressSegments =
-        createProgressSegments();
+    final List<ProgressSegment> progressSegments = createProgressSegments();
 
     return ClipRRect(
       borderRadius: BorderRadius.circular(COURSE_PROGRESS_BAR_RADIUS),
@@ -234,9 +221,7 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
           builder: (context, constraints) {
             final double availableWidth = constraints.maxWidth;
 
-            return Row(
-              children: segmentList(progressSegments, availableWidth),
-            );
+            return Row(children: segmentList(progressSegments, availableWidth));
           },
         ),
       ),
@@ -244,14 +229,11 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
   }
 
   // Generate list of segment widgets without spacing issues
-  List<Widget> segmentList(
-    List<ProgressSegment> progressSegments,
-    double availableWidth,
-  ) {
+  List<Widget> segmentList(List<ProgressSegment> progressSegments, double availableWidth) {
     final List<Widget> segmentWidgets = [];
 
-    for (int i = 0; i < progressSegments.length; i++) {
-      final ProgressSegment segment = progressSegments[i];
+    for (int segmentIndex = 0; segmentIndex < progressSegments.length; segmentIndex++) {
+      final ProgressSegment segment = progressSegments[segmentIndex];
       final double segmentWidth = calculateSegmentWidth(
         segment,
         progressSegments.length,
@@ -259,13 +241,12 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
       );
 
       // Add spacing between segments
-      if (i > 0) {
+      if (segmentIndex > 0) {
         segmentWidgets.add(const SizedBox(width: 2.0));
       }
 
       // For regular segments, show partial progress
-      final bool isRegularSegment =
-          segment.type == ProgressSegmentType.regular;
+      final bool isRegularSegment = segment.type == ProgressSegmentType.regular;
 
       if (isRegularSegment) {
         segmentWidgets.add(
@@ -277,16 +258,13 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
         );
       } else {
         // For skill check segments, show completed or not
-        final bool isCompleted =
-            currentContentIndex > segment.startIndex;
+        final bool isCompleted = currentContentIndex > segment.startIndex;
         segmentWidgets.add(
           Container(
             width: segmentWidth,
             height: COURSE_PROGRESS_BAR_HEIGHT,
             decoration: BoxDecoration(
-              color: isCompleted
-                  ? RLTheme.primaryGreen
-                  : RLTheme.backgroundLight,
+              color: isCompleted ? RLTheme.primaryGreen : RLTheme.backgroundLight,
               borderRadius: BorderRadius.circular(8.0),
             ),
           ),
@@ -306,21 +284,17 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
     const double skillCheckWidth = 16.0;
     const double segmentSpacing = 2.0;
 
-    final bool isSkillCheckSegment =
-        segment.type == ProgressSegmentType.skillCheck;
+    final bool isSkillCheckSegment = segment.type == ProgressSegmentType.skillCheck;
 
     if (isSkillCheckSegment) {
       return skillCheckWidth;
     }
 
     final int skillCheckCount = 3;
-    final int totalSpaces =
-        totalSegments - 1; // Spaces between segments
+    final int totalSpaces = totalSegments - 1; // Spaces between segments
     final double totalSpacingWidth = totalSpaces * segmentSpacing;
-    final double totalSkillCheckWidth =
-        skillCheckCount * skillCheckWidth;
-    final double remainingWidth =
-        availableWidth - totalSkillCheckWidth - totalSpacingWidth;
+    final double totalSkillCheckWidth = skillCheckCount * skillCheckWidth;
+    final double remainingWidth = availableWidth - totalSkillCheckWidth - totalSpacingWidth;
     final int regularSegmentCount = totalSegments - skillCheckCount;
 
     // Ensure we don't return negative width
@@ -345,9 +319,7 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
   Future<void> loadCourseData() async {
     try {
       // Fetch course data by ID
-      courseData = await CourseDataService.getCourseById(
-        widget.courseId,
-      );
+      courseData = await CourseDataService.getCourseById(widget.courseId);
 
       final bool hasCourseData = courseData != null;
 
@@ -375,8 +347,9 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
     }
 
     // Navigate through segments to find lessons
-    final List<Map<String, dynamic>> segments =
-        List<Map<String, dynamic>>.from(courseData!['segments'] ?? []);
+    final List<Map<String, dynamic>> segments = List<Map<String, dynamic>>.from(
+      courseData!['segments'] ?? [],
+    );
 
     return getContentFromCurrentLessonInSegments(segments);
   }
@@ -389,8 +362,9 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
     final List<Map<String, dynamic>> allLessons = [];
 
     for (final segment in segments) {
-      final List<Map<String, dynamic>> segmentLessons =
-          List<Map<String, dynamic>>.from(segment['lessons'] ?? []);
+      final List<Map<String, dynamic>> segmentLessons = List<Map<String, dynamic>>.from(
+        segment['lessons'] ?? [],
+      );
       allLessons.addAll(segmentLessons);
     }
 
@@ -398,9 +372,7 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
   }
 
   // Get content from the current lesson only
-  List<Map<String, dynamic>> getContentFromCurrentLesson(
-    List<Map<String, dynamic>> lessons,
-  ) {
+  List<Map<String, dynamic>> getContentFromCurrentLesson(List<Map<String, dynamic>> lessons) {
     final bool hasValidLessonIndex =
         currentLessonIndex >= 0 && currentLessonIndex < lessons.length;
 
@@ -408,10 +380,10 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
       return [];
     }
 
-    final Map<String, dynamic> currentLesson =
-        lessons[currentLessonIndex];
-    final List<Map<String, dynamic>> lessonContent =
-        List<Map<String, dynamic>>.from(currentLesson['content'] ?? []);
+    final Map<String, dynamic> currentLesson = lessons[currentLessonIndex];
+    final List<Map<String, dynamic>> lessonContent = List<Map<String, dynamic>>.from(
+      currentLesson['content'] ?? [],
+    );
 
     return lessonContent;
   }
@@ -474,10 +446,8 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
 
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (context) => StreakplierRewardScreen(
-          reward: reward,
-          onContinue: handleRewardScreenContinue,
-        ),
+        builder: (context) =>
+            StreakplierRewardScreen(reward: reward, onContinue: handleRewardScreenContinue),
       ),
     );
   }
@@ -485,10 +455,7 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
   // Create lesson reward data based on current lesson performance
   LessonReward createLessonReward() {
     // Calculate lesson duration (example: 5 minutes 30 seconds)
-    final Duration lessonDuration = const Duration(
-      minutes: 5,
-      seconds: 30,
-    );
+    final Duration lessonDuration = const Duration(minutes: 5, seconds: 30);
 
     return LessonReward(
       experiencePointsGained: 190,
@@ -576,8 +543,7 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
     }
 
     // Individual segments for skill check questions
-    final List<int> skillCheckQuestionIndices =
-        findSkillCheckQuestionIndices();
+    final List<int> skillCheckQuestionIndices = findSkillCheckQuestionIndices();
 
     for (int questionIndex in skillCheckQuestionIndices) {
       segments.add(
@@ -596,14 +562,9 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
 
   // Find the starting index of skill check section
   int findSkillCheckStartIndex() {
-    for (
-      int itemIndex = 0;
-      itemIndex < allContent.length;
-      itemIndex++
-    ) {
+    for (int itemIndex = 0; itemIndex < allContent.length; itemIndex++) {
       final Map<String, dynamic> content = allContent[itemIndex];
-      final bool isSkillCheckStart =
-          content['entity-type'] == 'skill-check';
+      final bool isSkillCheckStart = content['entity-type'] == 'skill-check';
 
       if (isSkillCheckStart) {
         return itemIndex;
@@ -616,11 +577,7 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
   List<int> findSkillCheckQuestionIndices() {
     final List<int> questionIndices = [];
 
-    for (
-      int itemIndex = 0;
-      itemIndex < allContent.length;
-      itemIndex++
-    ) {
+    for (int itemIndex = 0; itemIndex < allContent.length; itemIndex++) {
       final Map<String, dynamic> content = allContent[itemIndex];
       final bool isSkillCheckQuestion =
           content['entity-type'] == 'single-choice-question' &&
@@ -641,11 +598,7 @@ class ProgressSegment {
   final int endIndex;
   final ProgressSegmentType type;
 
-  ProgressSegment({
-    required this.startIndex,
-    required this.endIndex,
-    required this.type,
-  });
+  ProgressSegment({required this.startIndex, required this.endIndex, required this.type});
 
   int get itemCount => endIndex - startIndex + 1;
 }
@@ -769,8 +722,7 @@ class ProgressSegmentWidget extends StatelessWidget {
     const double skillCheckRectangleWidth = 16.0;
     const double segmentSpacing = 2.0;
 
-    final bool isSkillCheckSegment =
-        segment.type == ProgressSegmentType.skillCheck;
+    final bool isSkillCheckSegment = segment.type == ProgressSegmentType.skillCheck;
 
     if (isSkillCheckSegment) {
       // Fixed small width for individual skill check question rectangles
@@ -779,11 +731,9 @@ class ProgressSegmentWidget extends StatelessWidget {
 
     // Calculate remaining width for regular segments
     final int skillCheckCount = countSkillCheckSegments();
-    final double totalSkillCheckWidth =
-        skillCheckCount * skillCheckRectangleWidth;
+    final double totalSkillCheckWidth = skillCheckCount * skillCheckRectangleWidth;
     final double totalSpacing = (totalSegments - 1) * segmentSpacing;
-    final double remainingWidth =
-        availableWidth - totalSkillCheckWidth - totalSpacing;
+    final double remainingWidth = availableWidth - totalSkillCheckWidth - totalSpacing;
     final int regularSegmentCount = totalSegments - skillCheckCount;
 
     final bool hasRegularSegments = regularSegmentCount > 0;
@@ -808,11 +758,7 @@ class QuitConfirmationSheet extends StatelessWidget {
   final VoidCallback onLearnTap;
   final VoidCallback onQuitTap;
 
-  const QuitConfirmationSheet({
-    super.key,
-    required this.onLearnTap,
-    required this.onQuitTap,
-  });
+  const QuitConfirmationSheet({super.key, required this.onLearnTap, required this.onQuitTap});
 
   @override
   Widget build(BuildContext context) {
@@ -844,10 +790,7 @@ class QuitConfirmationSheet extends StatelessWidget {
             const Spacing.height(8),
 
             // Message
-            RLTypography.bodyMedium(
-              QUIT_CONFIRMATION_MESSAGE,
-              color: RLTheme.textSecondary,
-            ),
+            RLTypography.bodyMedium(QUIT_CONFIRMATION_MESSAGE, color: RLTheme.textSecondary),
 
             const Spacing.height(24),
 
@@ -866,13 +809,8 @@ class QuitConfirmationSheet extends StatelessWidget {
 
   // Primary button to continue learning
   Widget LearnButton({required VoidCallback onTap}) {
-    return RLDesignSystem.BlockButton(
-      children: [
-        RLTypography.bodyMedium(
-          QUIT_CONFIRMATION_LEARN_BUTTON,
-          color: RLTheme.white,
-        ),
-      ],
+    return RLDS.BlockButton(
+      children: [RLTypography.bodyMedium(QUIT_CONFIRMATION_LEARN_BUTTON, color: RLTheme.white)],
       backgroundColor: RLTheme.primaryGreen,
       margin: EdgeInsets.zero,
       onTap: onTap,

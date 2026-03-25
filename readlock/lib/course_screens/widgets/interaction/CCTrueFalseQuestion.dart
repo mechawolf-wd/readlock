@@ -7,12 +7,7 @@ import 'package:readlock/constants/RLConstants.dart';
 import 'package:readlock/utility_widgets/text_animation/ProgressiveText.dart';
 import 'package:readlock/utility_widgets/FeedbackSnackbar.dart';
 
-enum TrueFalseButtonState {
-  normal,
-  selected,
-  correctAndAnswered,
-  incorrectAndMuted,
-}
+enum TrueFalseButtonState { normal, selected, correctAndAnswered, incorrectAndMuted }
 
 class ButtonColors {
   final Color backgroundColor;
@@ -30,18 +25,12 @@ class ButtonColors {
 
 class CCTrueFalseQuestion extends StatefulWidget {
   final QuestionContent content;
-  final void Function(int selectedIndex, bool isCorrect)
-  onAnswerSelected;
+  final void Function(int selectedIndex, bool isCorrect) onAnswerSelected;
 
-  const CCTrueFalseQuestion({
-    super.key,
-    required this.content,
-    required this.onAnswerSelected,
-  });
+  const CCTrueFalseQuestion({super.key, required this.content, required this.onAnswerSelected});
 
   @override
-  State<CCTrueFalseQuestion> createState() =>
-      CCTrueFalseQuestionState();
+  State<CCTrueFalseQuestion> createState() => CCTrueFalseQuestionState();
 }
 
 class CCTrueFalseQuestionState extends State<CCTrueFalseQuestion> {
@@ -66,40 +55,28 @@ class CCTrueFalseQuestionState extends State<CCTrueFalseQuestion> {
     );
 
     final BoxDecoration mutedDecoration = BoxDecoration(
-      border: Border.all(
-        color: RLTheme.textPrimary.withValues(alpha: 0.1),
-        width: 2,
-      ),
+      border: Border.all(color: RLTheme.textPrimary.withValues(alpha: 0.1), width: 2),
       borderRadius: BorderRadius.circular(12),
     );
 
     final BoxDecoration normalDecoration = BoxDecoration(
-      border: Border.all(
-        color: RLTheme.textPrimary.withValues(alpha: 0.2),
-        width: 2,
-      ),
+      border: Border.all(color: RLTheme.textPrimary.withValues(alpha: 0.2), width: 2),
       borderRadius: BorderRadius.circular(12),
     );
 
-    final Widget CheckIcon = const Icon(
-      Icons.check_circle_outline,
-      size: TRUE_FALSE_ICON_SIZE,
-    );
+    final Widget CheckIcon = const Icon(Icons.check_circle_outline, size: TRUE_FALSE_ICON_SIZE);
 
-    final Widget CancelIcon = const Icon(
-      Icons.cancel_outlined,
-      size: TRUE_FALSE_ICON_SIZE,
-    );
+    final Widget CancelIcon = const Icon(Icons.cancel_outlined, size: TRUE_FALSE_ICON_SIZE);
 
     return Div.column(
       [
         // Question text
-        QuestionTextWidget(),
+        QuestionText(),
 
         const Spacing.height(TRUE_FALSE_SECTION_SPACING),
 
         // True/False button row
-        ButtonRowWidget(
+        ButtonRow(
           CheckIcon,
           CancelIcon,
           correctButtonDecoration,
@@ -112,7 +89,7 @@ class CCTrueFalseQuestionState extends State<CCTrueFalseQuestion> {
         const Spacing.height(TRUE_FALSE_SECTION_SPACING),
 
         // Explanation section
-        ExplanationSectionWidget(),
+        ExplanationSection(),
       ],
       crossAxisAlignment: CrossAxisAlignment.stretch,
       mainAxisAlignment: MainAxisAlignment.start,
@@ -121,18 +98,16 @@ class CCTrueFalseQuestionState extends State<CCTrueFalseQuestion> {
     );
   }
 
-  Widget QuestionTextWidget() {
-    final TextStyle questionStyle = RLTypography.bodyLargeStyle
-        .copyWith(fontWeight: FontWeight.w500, fontSize: 18);
-
-    return Text(
-      widget.content.question,
-      style: questionStyle,
-      textAlign: TextAlign.center,
+  Widget QuestionText() {
+    final TextStyle questionStyle = RLTypography.bodyLargeStyle.copyWith(
+      fontWeight: FontWeight.w500,
+      fontSize: 18,
     );
+
+    return Text(widget.content.question, style: questionStyle, textAlign: TextAlign.center);
   }
 
-  Widget ButtonRowWidget(
+  Widget ButtonRow(
     Widget checkIcon,
     Widget cancelIcon,
     BoxDecoration correctDecoration,
@@ -144,7 +119,7 @@ class CCTrueFalseQuestionState extends State<CCTrueFalseQuestion> {
     return Div.row([
       // True button
       Expanded(
-        child: TrueButtonWidget(
+        child: TrueButton(
           checkIcon,
           correctDecoration,
           selectedTrueDecoration,
@@ -157,7 +132,7 @@ class CCTrueFalseQuestionState extends State<CCTrueFalseQuestion> {
 
       // False button
       Expanded(
-        child: FalseButtonWidget(
+        child: FalseButton(
           cancelIcon,
           correctDecoration,
           selectedFalseDecoration,
@@ -168,7 +143,7 @@ class CCTrueFalseQuestionState extends State<CCTrueFalseQuestion> {
     ]);
   }
 
-  Widget TrueButtonWidget(
+  Widget TrueButton(
     Widget checkIcon,
     BoxDecoration correctDecoration,
     BoxDecoration selectedDecoration,
@@ -177,9 +152,7 @@ class CCTrueFalseQuestionState extends State<CCTrueFalseQuestion> {
   ) {
     const int trueIndex = 0;
     final bool isSelected = selectedAnswerIndex == trueIndex;
-    final bool isCorrect = widget.content.correctAnswerIndices.contains(
-      trueIndex,
-    );
+    final bool isCorrect = widget.content.correctAnswerIndices.contains(trueIndex);
     final bool shouldShowCorrect = hasAnswered && isCorrect;
     final bool shouldMute = hasAnswered && !isCorrect && !isSelected;
 
@@ -200,9 +173,11 @@ class CCTrueFalseQuestionState extends State<CCTrueFalseQuestion> {
       normalDecoration: normalDecoration,
     );
 
+    final FontWeight buttonFontWeight = isSelected ? FontWeight.w600 : FontWeight.w500;
+
     final TextStyle textStyle = RLTypography.bodyLargeStyle.copyWith(
       color: colors.textColor,
-      fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+      fontWeight: buttonFontWeight,
       fontSize: 16,
     );
 
@@ -217,13 +192,7 @@ class CCTrueFalseQuestionState extends State<CCTrueFalseQuestion> {
         : () => handleAnswerSelection(trueIndex);
 
     return Div.row(
-      [
-        TrueCheckIcon,
-
-        const Spacing.width(12),
-
-        Flexible(child: Text('True', style: textStyle)),
-      ],
+      [TrueCheckIcon, const Spacing.width(12), Flexible(child: Text('True', style: textStyle))],
       height: TRUE_FALSE_BUTTON_HEIGHT,
       decoration: decoration.copyWith(color: colors.backgroundColor),
       radius: BorderRadius.circular(12),
@@ -232,7 +201,7 @@ class CCTrueFalseQuestionState extends State<CCTrueFalseQuestion> {
     );
   }
 
-  Widget FalseButtonWidget(
+  Widget FalseButton(
     Widget cancelIcon,
     BoxDecoration correctDecoration,
     BoxDecoration selectedDecoration,
@@ -241,9 +210,7 @@ class CCTrueFalseQuestionState extends State<CCTrueFalseQuestion> {
   ) {
     const int falseIndex = 1;
     final bool isSelected = selectedAnswerIndex == falseIndex;
-    final bool isCorrect = widget.content.correctAnswerIndices.contains(
-      falseIndex,
-    );
+    final bool isCorrect = widget.content.correctAnswerIndices.contains(falseIndex);
     final bool shouldShowCorrect = hasAnswered && isCorrect;
     final bool shouldMute = hasAnswered && !isCorrect && !isSelected;
 
@@ -264,9 +231,11 @@ class CCTrueFalseQuestionState extends State<CCTrueFalseQuestion> {
       normalDecoration: normalDecoration,
     );
 
+    final FontWeight buttonFontWeight = isSelected ? FontWeight.w600 : FontWeight.w500;
+
     final TextStyle textStyle = RLTypography.bodyLargeStyle.copyWith(
       color: colors.textColor,
-      fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+      fontWeight: buttonFontWeight,
       fontSize: 16,
     );
 
@@ -296,13 +265,10 @@ class CCTrueFalseQuestionState extends State<CCTrueFalseQuestion> {
     );
   }
 
-  Widget ExplanationSectionWidget() {
+  Widget ExplanationSection() {
     final bool shouldShowExplanation = hasAnswered;
 
-    return RenderIf.condition(
-      shouldShowExplanation,
-      ExplanationContent(),
-    );
+    return RenderIf.condition(shouldShowExplanation, ExplanationContent());
   }
 
   Widget ExplanationContent() {
@@ -312,8 +278,10 @@ class CCTrueFalseQuestionState extends State<CCTrueFalseQuestion> {
       color: RLTheme.textPrimary.withValues(alpha: 0.8),
     );
 
-    final TextStyle explanationStyle = RLTypography.bodyLargeStyle
-        .copyWith(fontSize: 14, height: 1.5);
+    final TextStyle explanationStyle = RLTypography.bodyLargeStyle.copyWith(
+      fontSize: 14,
+      height: 1.5,
+    );
 
     final Widget LightbulbIcon = Icon(
       Icons.lightbulb_outline,
@@ -417,9 +385,7 @@ class CCTrueFalseQuestionState extends State<CCTrueFalseQuestion> {
       return;
     }
 
-    final bool isCorrect = widget.content.correctAnswerIndices.contains(
-      answerIndex,
-    );
+    final bool isCorrect = widget.content.correctAnswerIndices.contains(answerIndex);
 
     if (!isCorrect) {
       showIncorrectAnswerFeedback(answerIndex);
@@ -432,8 +398,7 @@ class CCTrueFalseQuestionState extends State<CCTrueFalseQuestion> {
   }
 
   void showIncorrectAnswerFeedback(int answerIndex) {
-    final QuestionOption selectedOption =
-        widget.content.options[answerIndex];
+    final QuestionOption selectedOption = widget.content.options[answerIndex];
     final String consequenceMessage = getConsequenceMessage(selectedOption);
 
     FeedbackSnackBar.showWrongAnswer(context, hint: consequenceMessage);
@@ -452,14 +417,10 @@ class CCTrueFalseQuestionState extends State<CCTrueFalseQuestion> {
   }
 
   void showCorrectAnswerFeedback(int answerIndex) {
-    final QuestionOption selectedOption =
-        widget.content.options[answerIndex];
+    final QuestionOption selectedOption = widget.content.options[answerIndex];
     final String feedbackMessage = getFeedbackMessage(selectedOption);
 
-    FeedbackSnackBar.showCorrectAnswer(
-      context,
-      explanation: feedbackMessage,
-    );
+    FeedbackSnackBar.showCorrectAnswer(context, explanation: feedbackMessage);
   }
 
   String getFeedbackMessage(QuestionOption selectedOption) {

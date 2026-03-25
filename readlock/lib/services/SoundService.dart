@@ -6,7 +6,6 @@ class SoundService {
   static final AudioPlayer continueClickAudioPlayer = AudioPlayer();
   static final AudioPlayer correctAnswerAudioPlayer = AudioPlayer();
   static final AudioPlayer typewriterAudioPlayer = AudioPlayer();
-  static final AudioPlayer slowDownClockAudioPlayer = AudioPlayer();
   static bool isAudioEnabled = true;
 
   static Future<void> playContinueClick() async {
@@ -18,9 +17,7 @@ class SoundService {
 
     try {
       await continueClickAudioPlayer.stop();
-      await continueClickAudioPlayer.play(
-        AssetSource(CONTINUE_CLICK_AUDIO_PATH),
-      );
+      await continueClickAudioPlayer.play(AssetSource(CONTINUE_CLICK_AUDIO_PATH));
     } on Exception catch (error) {
       developer.log('Failed to play continue click sound: $error');
       isAudioEnabled = false;
@@ -36,9 +33,7 @@ class SoundService {
 
     try {
       await correctAnswerAudioPlayer.stop();
-      await correctAnswerAudioPlayer.play(
-        AssetSource(CORRECT_ANSWER_AUDIO_PATH),
-      );
+      await correctAnswerAudioPlayer.play(AssetSource(CORRECT_ANSWER_AUDIO_PATH));
     } on Exception catch (error) {
       developer.log('Failed to play correct answer sound: $error');
       isAudioEnabled = false;
@@ -70,8 +65,7 @@ class SoundService {
   }
 
   static Duration getRandomStartPosition() {
-    final int currentTimeMilliseconds =
-        DateTime.now().millisecondsSinceEpoch;
+    final int currentTimeMilliseconds = DateTime.now().millisecondsSinceEpoch;
     final int randomMilliseconds = currentTimeMilliseconds % 5000;
 
     return Duration(milliseconds: randomMilliseconds);
@@ -85,38 +79,11 @@ class SoundService {
     }
   }
 
-  static Future<void> playSlowDownClock() async {
-    final bool canPlayAudio = isAudioEnabled;
-
-    if (!canPlayAudio) {
-      return;
-    }
-
-    try {
-      await slowDownClockAudioPlayer.stop();
-      await slowDownClockAudioPlayer.play(
-        AssetSource(SLOW_DOWN_CLOCK_AUDIO_PATH),
-      );
-    } on Exception catch (error) {
-      developer.log('Failed to play slow down clock sound: $error');
-      isAudioEnabled = false;
-    }
-  }
-
-  static Future<void> stopSlowDownClock() async {
-    try {
-      await slowDownClockAudioPlayer.stop();
-    } on Exception catch (error) {
-      developer.log('Failed to stop slow down clock sound: $error');
-    }
-  }
-
   static Future<void> dispose() async {
     try {
       await continueClickAudioPlayer.dispose();
       await correctAnswerAudioPlayer.dispose();
       await typewriterAudioPlayer.dispose();
-      await slowDownClockAudioPlayer.dispose();
     } on Exception catch (error) {
       developer.log('Failed to dispose audio players: $error');
     }
