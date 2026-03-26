@@ -2,23 +2,41 @@
 
 class CourseData {
   final String language;
-  final List<Course> courses;
+  final List<Accelerator> courses;
 
   const CourseData({required this.language, required this.courses});
 }
 
-class Course {
+class Accelerator {
+  // The course identificator (eg. book:atomic-habits)
   final String courseId;
-  final String title;
-  final String author;
-  final String description;
-  final String coverImagePath;
-  final String color;
-  final List<String> relevantFor;
-  final List<String> genres;
-  final List<CourseSegment> segments;
 
-  const Course({
+  // Display title (eg. "Atomic Habits")
+  final String title;
+
+  // Display author name (eg. "James Clear")
+  final String author;
+
+  // Display description (eg. "The book that describes...")
+  final String description;
+
+  // Network image path (eg. https://example.com/atomic-habits)
+  final String coverImagePath;
+
+  // Color of the course later used for UI elements (eg. "#ffffff")
+  final String color;
+
+  // List of people for whom the course would be relevant for
+  // (eg. Entrepreneurs - building products that users intuitively understand)
+  final List<String> relevantFor;
+
+  // List of genres later used for personalization
+  final List<String> genres;
+
+  // List of course segments (eg. "Fundamentals", "Adanced", ...)
+  final List<Segment> segments;
+
+  const Accelerator({
     required this.courseId,
     required this.title,
     required this.author,
@@ -31,33 +49,40 @@ class Course {
   });
 }
 
-class CourseSegment {
+class Segment {
+  // Segment identificator (eg. ""book:atomic-habits;segment:1)
   final String segmentId;
-  final String segmentTitle;
-  final String segmentDescription;
-  final List<Lesson> lessons;
 
-  const CourseSegment({
+  // Display title
+  final String segmentTitle;
+
+  // Display description
+  final String segmentDescription;
+
+  // List of lessons
+  final List<Unit> units;
+
+  const Segment({
     required this.segmentId,
     required this.segmentTitle,
     required this.segmentDescription,
-    required this.lessons,
+    required this.units,
   });
 }
 
-class Lesson {
+class Unit {
   final String lessonId;
   final String title;
   final String lessonVersion;
   final bool isFree;
-  final List<LessonContent> content;
+  final List<Slide> slides;
 
-  const Lesson({
+  const Unit({
     required this.lessonId,
     required this.title,
     required this.lessonVersion,
     required this.isFree,
-    required this.content,
+    required this.slides,
   });
 }
 
@@ -77,9 +102,8 @@ enum LessonContentType {
   incorrectStatement,
 }
 
-class LessonContent {
+class Slide {
   final LessonContentType entityType;
-  final String? title;
 
   // Used by: text, intro, outro
   final List<String>? textSegments;
@@ -114,18 +138,12 @@ class LessonContent {
   final String? text;
   final String? icon;
 
-  // Used by: design-examples-showcase
-  final String? heading;
-  final String? graphic;
-  final List<DesignExample>? examples;
-
   // Used by: reflection
   final String? prompt;
   final List<String>? thinkingPoints;
 
-  const LessonContent({
+  const Slide({
     required this.entityType,
-    this.title,
     this.textSegments,
     this.question,
     this.explanation,
@@ -137,23 +155,8 @@ class LessonContent {
     this.correctAnswerInt,
     this.text,
     this.icon,
-    this.heading,
-    this.graphic,
-    this.examples,
     this.prompt,
     this.thinkingPoints,
-  });
-}
-
-class DesignExample {
-  final String type;
-  final String title;
-  final String description;
-
-  const DesignExample({
-    required this.type,
-    required this.title,
-    required this.description,
   });
 }
 
@@ -198,13 +201,6 @@ class OutroContent extends CourseContent {
   });
 }
 
-class DesignExamplesShowcaseContent extends CourseContent {
-  const DesignExamplesShowcaseContent({
-    required super.id,
-    required super.title,
-  });
-}
-
 class ReflectionContent extends CourseContent {
   final String prompt;
   final List<String> thinkingPoints;
@@ -231,41 +227,25 @@ class QuoteContent extends CourseContent {
   });
 }
 
-enum QuestionType {
-  multipleChoice,
-  singleChoice,
-  trueOrFalse,
-  reflection,
-  fillGap,
-  incorrectStatement,
-  estimatePercentage,
-}
-
 class QuestionOption {
   final String text;
   final String? emoji;
   final String? hint;
   final String? consequenceMessage;
 
-  const QuestionOption({
-    required this.text,
-    this.emoji,
-    this.hint,
-    this.consequenceMessage,
-  });
+  const QuestionOption({required this.text, this.emoji, this.hint, this.consequenceMessage});
 }
 
-class QuestionContent extends CourseContent {
+// * Question content entities — one per question type
+
+class MultipleChoiceQuestionContent extends CourseContent {
   final String question;
   final List<QuestionOption> options;
   final List<int> correctAnswerIndices;
   final String explanation;
   final String? hint;
-  final QuestionType type;
-  final String? scenarioContext;
-  final List<String>? followUpPrompts;
 
-  const QuestionContent({
+  const MultipleChoiceQuestionContent({
     required super.id,
     required super.title,
     required this.question,
@@ -273,15 +253,93 @@ class QuestionContent extends CourseContent {
     required this.correctAnswerIndices,
     required this.explanation,
     this.hint,
-    this.type = QuestionType.multipleChoice,
-    this.scenarioContext,
-    this.followUpPrompts,
   });
+}
 
-  bool get hasMultipleCorrectAnswers => correctAnswerIndices.length > 1;
+class SingleChoiceQuestionContent extends CourseContent {
+  final String question;
+  final List<QuestionOption> options;
+  final int correctAnswerIndex;
+  final String explanation;
+  final String? hint;
 
-  int get correctAnswerIndex =>
-      correctAnswerIndices.isNotEmpty ? correctAnswerIndices.first : -1;
+  const SingleChoiceQuestionContent({
+    required super.id,
+    required super.title,
+    required this.question,
+    required this.options,
+    required this.correctAnswerIndex,
+    required this.explanation,
+    this.hint,
+  });
+}
+
+class TrueFalseQuestionContent extends CourseContent {
+  final String question;
+  final List<QuestionOption> options;
+  final int correctAnswerIndex;
+  final String explanation;
+  final String? hint;
+
+  const TrueFalseQuestionContent({
+    required super.id,
+    required super.title,
+    required this.question,
+    required this.options,
+    required this.correctAnswerIndex,
+    required this.explanation,
+    this.hint,
+  });
+}
+
+class FillGapQuestionContent extends CourseContent {
+  final String question;
+  final List<QuestionOption> options;
+  final List<int> correctAnswerIndices;
+  final String explanation;
+  final String? hint;
+
+  const FillGapQuestionContent({
+    required super.id,
+    required super.title,
+    required this.question,
+    required this.options,
+    required this.correctAnswerIndices,
+    required this.explanation,
+    this.hint,
+  });
+}
+
+class IncorrectStatementQuestionContent extends CourseContent {
+  final String question;
+  final List<QuestionOption> options;
+  final List<int> correctAnswerIndices;
+  final String explanation;
+
+  const IncorrectStatementQuestionContent({
+    required super.id,
+    required super.title,
+    required this.question,
+    required this.options,
+    required this.correctAnswerIndices,
+    required this.explanation,
+  });
+}
+
+class ReflectionQuestionContent extends CourseContent {
+  final String question;
+  final List<QuestionOption> options;
+  final List<int> correctAnswerIndices;
+  final String explanation;
+
+  const ReflectionQuestionContent({
+    required super.id,
+    required super.title,
+    required this.question,
+    required this.options,
+    required this.correctAnswerIndices,
+    required this.explanation,
+  });
 }
 
 class EstimatePercentageContent extends CourseContent {

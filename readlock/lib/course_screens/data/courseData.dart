@@ -1,12 +1,13 @@
 import 'package:readlock/course_screens/services/JSONCourseDataService.dart';
+import 'package:readlock/constants/DartAliases.dart';
 
 class CourseDataService {
-  static Future<List<Map<String, dynamic>>> getAvailableCourses() async {
-    return await JSONCourseDataService.getCourses();
+  static Future<JSONList> fetchAvailableCourses() async {
+    return await JSONCourseDataService.fetchCourses();
   }
 
-  static Future<Map<String, dynamic>?> getCourseById(String courseId) {
-    return JSONCourseDataService.getCourseById(courseId);
+  static Future<JSONMap?> fetchCourseById(String courseId) {
+    return JSONCourseDataService.fetchCourseById(courseId);
   }
 
   static void clearCache() {

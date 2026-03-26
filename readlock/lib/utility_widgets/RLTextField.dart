@@ -2,9 +2,8 @@
 // Supports email, password, and general text input types
 
 import 'package:flutter/material.dart';
-import 'package:readlock/constants/RLConstants.dart';
 import 'package:readlock/constants/RLTypography.dart';
-import 'package:readlock/constants/RLTheme.dart';
+import 'package:readlock/constants/RLDesignSystem.dart';
 
 class RLTextField extends StatelessWidget {
   final TextEditingController? controller;
@@ -49,12 +48,12 @@ class RLTextField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final BoxDecoration fieldDecoration = BoxDecoration(
-      color: RLTheme.backgroundDark,
-      borderRadius: BorderRadius.circular(TEXT_FIELD_BORDER_RADIUS),
+      color: RLDS.backgroundDark,
+      borderRadius: BorderRadius.circular(12.0),
     );
 
     final TextStyle hintStyle = RLTypography.bodyLargeStyle.copyWith(
-      color: RLTheme.textSecondary,
+      color: RLDS.textSecondary,
     );
 
     final InputDecoration inputDecoration = InputDecoration(
@@ -65,7 +64,7 @@ class RLTextField extends StatelessWidget {
 
     return Container(
       decoration: fieldDecoration,
-      padding: const EdgeInsets.symmetric(horizontal: TEXT_FIELD_HORIZONTAL_PADDING),
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: TextField(
         controller: controller,
         focusNode: focusNode,

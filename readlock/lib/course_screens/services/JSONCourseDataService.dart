@@ -5,31 +5,28 @@
 
 import 'dart:convert';
 import 'package:flutter/services.dart';
+import 'package:readlock/constants/DartAliases.dart';
 
 class JSONCourseDataService {
-  static Map<String, dynamic>? cachedData;
+  static JSONMap? cachedData;
 
-  static Future<List<Map<String, dynamic>>> getCourses() async {
+  static Future<JSONList> fetchCourses() async {
     // Try to load from actual JSON file first
     final bool hasNoCache = cachedData == null;
 
     if (hasNoCache) {
-      final String jsonString = await rootBundle.loadString(
-        'assets/data/course_data.json',
-      );
+      final String jsonString = await rootBundle.loadString('assets/data/course_data.json');
 
       cachedData = json.decode(jsonString);
     }
 
     final List<dynamic> courses = cachedData!['courses'] ?? [];
-    return List<Map<String, dynamic>>.from(courses);
+    return JSONList.from(courses);
   }
 
-  static Future<Map<String, dynamic>?> getCourseById(
-    String courseId,
-  ) async {
-    final List<Map<String, dynamic>> courses = await getCourses();
-    final List<Map<String, dynamic>> matchingCourses = courses
+  static Future<JSONMap?> fetchCourseById(String courseId) async {
+    final JSONList courses = await fetchCourses();
+    final JSONList matchingCourses = courses
         .where((course) => course['course-id'] == courseId)
         .toList();
 

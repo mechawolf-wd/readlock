@@ -4,8 +4,10 @@
 import 'package:flutter/material.dart' hide Typography;
 import 'package:readlock/utility_widgets/Utility.dart';
 import 'package:readlock/constants/RLTypography.dart';
-import 'package:readlock/constants/RLTheme.dart';
-import 'package:readlock/constants/RLConstants.dart';
+import 'package:readlock/constants/RLDesignSystem.dart';
+import 'package:readlock/constants/RLUIStrings.dart';
+import 'package:readlock/constants/DartAliases.dart';
+import 'package:readlock/utility_widgets/RLCard.dart';
 
 class ReaderPassScreen extends StatefulWidget {
   const ReaderPassScreen({super.key});
@@ -15,11 +17,7 @@ class ReaderPassScreen extends StatefulWidget {
 }
 
 class ReaderPassScreenState extends State<ReaderPassScreen> {
-  static const Widget BackArrowIcon = Icon(
-    Icons.arrow_back,
-    color: RLTheme.textPrimary,
-    size: 24,
-  );
+  static final Widget BackArrowIcon = Icon(Icons.arrow_back, color: RLDS.textPrimary, size: 24);
 
   void handleBackButton() {
     Navigator.of(context).pop();
@@ -32,7 +30,7 @@ class ReaderPassScreenState extends State<ReaderPassScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: RLTheme.backgroundDark,
+      backgroundColor: RLDS.backgroundDark,
       body: SafeArea(
         child: SingleChildScrollView(
           child: Div.column([
@@ -88,13 +86,13 @@ class ReaderPassScreenState extends State<ReaderPassScreen> {
 
   Widget TitleSection() {
     return Div.column([
-      RLTypography.headingLarge(READER_PASS_TITLE, textAlign: TextAlign.center),
+      RLTypography.headingLarge(RLUIStrings.READER_PASS_TITLE, textAlign: TextAlign.center),
 
       const Spacing.height(8),
 
       RLTypography.bodyLarge(
-        READER_PASS_SUBTITLE,
-        color: RLTheme.textSecondary,
+        RLUIStrings.READER_PASS_SUBTITLE,
+        color: RLDS.textSecondary,
         textAlign: TextAlign.center,
       ),
     ], crossAxisAlignment: CrossAxisAlignment.center);
@@ -102,7 +100,7 @@ class ReaderPassScreenState extends State<ReaderPassScreen> {
 
   Widget DiscountBadge() {
     final BoxDecoration badgeDecoration = BoxDecoration(
-      color: RLTheme.primaryGreen,
+      color: RLDS.primaryGreen,
       borderRadius: BorderRadius.circular(8),
     );
 
@@ -110,16 +108,16 @@ class ReaderPassScreenState extends State<ReaderPassScreen> {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: badgeDecoration,
-        child: RLTypography.headingMedium(DISCOUNT_TEXT, color: Colors.white),
+        child: RLTypography.headingMedium(RLUIStrings.DISCOUNT_TEXT, color: RLDS.white),
       ),
     );
   }
 
   Widget PricingSection() {
     final BoxDecoration pricingCardDecoration = BoxDecoration(
-      color: RLTheme.backgroundLight.withValues(alpha: 0.08),
+      color: RLDS.backgroundLight.withValues(alpha: 0.08),
       borderRadius: BorderRadius.circular(16),
-      border: Border.all(color: RLTheme.primaryGreen.withValues(alpha: 0.3)),
+      border: Border.all(color: RLDS.primaryGreen.withValues(alpha: 0.3)),
     );
 
     return Container(
@@ -128,8 +126,8 @@ class ReaderPassScreenState extends State<ReaderPassScreen> {
       child: Div.column([
         // Original price (strikethrough)
         RLTypography.bodyLarge(
-          ORIGINAL_PRICE,
-          color: RLTheme.textSecondary,
+          RLUIStrings.ORIGINAL_PRICE,
+          color: RLDS.textSecondary,
           textAlign: TextAlign.center,
         ),
 
@@ -137,16 +135,16 @@ class ReaderPassScreenState extends State<ReaderPassScreen> {
 
         // Discounted price
         Div.row([
-          RLTypography.headingLarge(DISCOUNTED_PRICE, color: RLTheme.primaryGreen),
+          RLTypography.headingLarge(RLUIStrings.DISCOUNTED_PRICE, color: RLDS.primaryGreen),
 
-          RLTypography.bodyLarge(PRICE_PERIOD, color: RLTheme.textSecondary),
+          RLTypography.bodyLarge(RLUIStrings.PRICE_PERIOD, color: RLDS.textSecondary),
         ], mainAxisAlignment: MainAxisAlignment.center),
       ], crossAxisAlignment: CrossAxisAlignment.center),
     );
   }
 
   Widget BenefitsSection() {
-    final List<Map<String, dynamic>> benefits = [
+    final JSONList benefits = [
       {
         'icon': Icons.menu_book,
         'title': 'Unlimited Books',
@@ -170,7 +168,7 @@ class ReaderPassScreenState extends State<ReaderPassScreen> {
     ];
 
     return Div.column([
-      RLTypography.headingMedium(READER_PASS_FEATURES_TITLE),
+      RLTypography.headingMedium(RLUIStrings.READER_PASS_FEATURES_TITLE),
 
       const Spacing.height(16),
 
@@ -178,29 +176,23 @@ class ReaderPassScreenState extends State<ReaderPassScreen> {
     ], crossAxisAlignment: CrossAxisAlignment.start);
   }
 
-  List<Widget> BenefitCards(List<Map<String, dynamic>> benefits) {
+  List<Widget> BenefitCards(JSONList benefits) {
     return benefits.map((benefit) {
       final IconData benefitIcon = benefit['icon'] ?? Icons.check;
       final String benefitTitle = benefit['title'] ?? '';
       final String benefitDescription = benefit['description'] ?? '';
 
-      final BoxDecoration cardDecoration = BoxDecoration(
-        color: RLTheme.backgroundLight.withValues(alpha: 0.08),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: RLTheme.primaryGreen.withValues(alpha: 0.2)),
-      );
-
       final BoxDecoration iconDecoration = BoxDecoration(
-        color: RLTheme.primaryGreen.withValues(alpha: 0.1),
+        color: RLDS.primaryGreen.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(8),
       );
 
-      final Widget BenefitIcon = Icon(benefitIcon, color: RLTheme.primaryGreen, size: 24);
+      final Widget BenefitIcon = Icon(benefitIcon, color: RLDS.primaryGreen, size: 24);
 
-      return Container(
-        margin: const EdgeInsets.only(bottom: 12),
+      return RLCard.subtle(
+        borderColor: RLDS.primaryGreen.withValues(alpha: 0.2),
         padding: const EdgeInsets.all(16),
-        decoration: cardDecoration,
+        margin: const EdgeInsets.only(bottom: 12),
         child: Div.row([
           Container(
             padding: const EdgeInsets.all(8),
@@ -216,7 +208,7 @@ class ReaderPassScreenState extends State<ReaderPassScreen> {
 
               const Spacing.height(4),
 
-              RLTypography.bodyMedium(benefitDescription, color: RLTheme.textSecondary),
+              RLTypography.bodyMedium(benefitDescription, color: RLDS.textSecondary),
             ], crossAxisAlignment: CrossAxisAlignment.start),
           ),
         ]),
@@ -226,7 +218,7 @@ class ReaderPassScreenState extends State<ReaderPassScreen> {
 
   Widget SubscribeButton() {
     final BoxDecoration buttonDecoration = BoxDecoration(
-      color: RLTheme.primaryGreen,
+      color: RLDS.primaryGreen,
       borderRadius: BorderRadius.circular(12),
     );
 
@@ -237,8 +229,8 @@ class ReaderPassScreenState extends State<ReaderPassScreen> {
         padding: const EdgeInsets.symmetric(vertical: 16),
         decoration: buttonDecoration,
         child: RLTypography.headingMedium(
-          SUBSCRIBE_BUTTON_TEXT,
-          color: Colors.white,
+          RLUIStrings.SUBSCRIBE_BUTTON_TEXT,
+          color: RLDS.white,
           textAlign: TextAlign.center,
         ),
       ),

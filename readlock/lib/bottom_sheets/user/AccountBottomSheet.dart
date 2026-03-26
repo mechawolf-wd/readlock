@@ -2,21 +2,19 @@
 // Displays user profile information and account actions
 
 import 'package:flutter/material.dart' hide Typography;
+import 'package:readlock/bottom_sheets/RLBottomSheet.dart';
+import 'package:readlock/bottom_sheets/RLDialog.dart';
 import 'package:readlock/utility_widgets/Utility.dart';
 import 'package:readlock/constants/RLTypography.dart';
-import 'package:readlock/constants/RLTheme.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
-import 'package:readlock/constants/RLConstants.dart';
+import 'package:readlock/constants/RLUIStrings.dart';
 
 class AccountBottomSheet {
   static void show(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: RLTheme.backgroundDark.withValues(alpha: 0),
-      isScrollControlled: true,
-      builder: (BuildContext context) {
-        return const AccountSheet();
-      },
+    RLBottomSheet.show(
+      context,
+      backgroundColor: RLDS.backgroundLight,
+      child: const AccountSheet(),
     );
   }
 }
@@ -25,48 +23,29 @@ class AccountSheet extends StatelessWidget {
   const AccountSheet({super.key});
 
   // Icon definitions
-  static const Widget PersonIcon = Icon(Icons.person, color: RLTheme.primaryBlue, size: 20);
+  static final Widget PersonIcon = Icon(Icons.person, color: RLDS.primaryBlue, size: 20);
 
   // Style definitions
-  static const BoxDecoration modalDecoration = BoxDecoration(
-    color: RLTheme.backgroundLight,
-    borderRadius: BorderRadius.only(
-      topLeft: Radius.circular(20),
-      topRight: Radius.circular(20),
-    ),
-  );
+  static const EdgeInsets headerPadding = EdgeInsets.all(24);
 
-  static const EdgeInsets headerPadding = EdgeInsets.all(MODAL_PADDING);
-
-  static const EdgeInsets bodyPadding = EdgeInsets.symmetric(horizontal: MODAL_PADDING);
+  static const EdgeInsets bodyPadding = EdgeInsets.symmetric(horizontal: 24);
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: RLTheme.white,
-      child: SafeArea(
-        top: false,
-        child: Container(
-          decoration: modalDecoration,
-          padding: const EdgeInsets.only(bottom: 16),
-          child: Wrap(
-            children: [
-              Div.column([
-                // Drag handle
-                const Div.column([BottomSheetGrabber()], padding: EdgeInsets.only(top: 12)),
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // Header section
+          HeaderSection(),
 
-                // Header section
-                HeaderSection(),
+          // Body content
+          BodySection(context),
 
-                // Body content
-                BodySection(),
-
-                // Footer button
-                FooterButton(),
-              ]),
-            ],
-          ),
-        ),
+          // Footer button
+          FooterButton(),
+        ],
       ),
     );
   }
@@ -77,11 +56,11 @@ class AccountSheet extends StatelessWidget {
 
       const Spacing.width(12),
 
-      RLTypography.headingMedium(ACCOUNT_TITLE),
-    ], padding: const EdgeInsets.fromLTRB(MODAL_PADDING, 16, MODAL_PADDING, MODAL_PADDING));
+      RLTypography.headingMedium(RLUIStrings.ACCOUNT_TITLE),
+    ], padding: const EdgeInsets.fromLTRB(24, 16, 24, 24));
   }
 
-  Widget BodySection() {
+  Widget BodySection(BuildContext context) {
     return Padding(
       padding: bodyPadding,
       child: Div.column([
@@ -99,27 +78,74 @@ class AccountSheet extends StatelessWidget {
         const Spacing.height(24),
 
         // Divider
-        Container(height: 1, color: RLTheme.textPrimary.withValues(alpha: 0.1)),
+        Container(height: 1, color: RLDS.textPrimary.withValues(alpha: 0.1)),
 
         const Spacing.height(24),
 
         // Account actions
-        DangerRow(label: 'Deactivate Account', color: RLTheme.textSecondary, onTap: () {}),
+        DangerRow(
+          label: RLUIStrings.ACCOUNT_DEACTIVATE_LABEL,
+          color: RLDS.textSecondary,
+          onTap: () => handleDeactivateAccountTap(context),
+        ),
 
         const Spacing.height(12),
 
-        DangerRow(label: 'Delete Account', color: RLTheme.textSecondary, onTap: () {}),
+        DangerRow(
+          label: RLUIStrings.ACCOUNT_DELETE_LABEL,
+          color: RLDS.textSecondary,
+          onTap: () => handleDeleteAccountTap(context),
+        ),
       ]),
     );
   }
 
+  void handleDeactivateAccountTap(BuildContext context) {
+    RLDialog.showConfirm(
+      context,
+      title: RLUIStrings.ACCOUNT_DEACTIVATE_LABEL,
+      message: RLUIStrings.ACCOUNT_DEACTIVATE_MESSAGE,
+      confirmLabel: RLUIStrings.ACCOUNT_DEACTIVATE_CONFIRM,
+      confirmColor: RLDS.warningColor,
+      onConfirm: () {},
+    );
+  }
+
+  void handleDeleteAccountTap(BuildContext context) {
+    RLDialog.showConfirm(
+      context,
+      title: RLUIStrings.ACCOUNT_DELETE_LABEL,
+      message: RLUIStrings.ACCOUNT_DELETE_MESSAGE,
+      confirmLabel: RLUIStrings.ACCOUNT_DELETE_CONFIRM,
+      confirmColor: RLDS.errorColor,
+      onConfirm: () {},
+    );
+  }
+
+  void handleDismissTap(BuildContext context) {
+    Navigator.of(context).pop();
+  }
+
   Widget FooterButton() {
+    final BoxDecoration buttonDecoration = BoxDecoration(
+      color: RLDS.primaryBlue,
+      borderRadius: BorderRadius.circular(12),
+    );
+
     return Builder(
       builder: (context) {
-        return RLDS.BlockButton(
-          children: [RLTypography.bodyMedium(ACCOUNT_DONE_LABEL, color: RLTheme.white)],
-          backgroundColor: RLTheme.primaryBlue,
-          onTap: () => Navigator.of(context).pop(),
+        return GestureDetector(
+          onTap: () => handleDismissTap(context),
+          child: Container(
+            width: double.infinity,
+            margin: const EdgeInsets.all(24),
+            padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+            decoration: buttonDecoration,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [RLTypography.bodyMedium(RLUIStrings.ACCOUNT_DONE_LABEL)],
+            ),
+          ),
         );
       },
     );
@@ -136,10 +162,7 @@ class InfoRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return Div.row([
       Expanded(
-        child: RLTypography.bodyMedium(
-          label,
-          color: RLTheme.textPrimary.withValues(alpha: 0.6),
-        ),
+        child: RLTypography.bodyMedium(label, color: RLDS.textPrimary.withValues(alpha: 0.6)),
       ),
 
       RLTypography.bodyMedium(value),
@@ -156,7 +179,13 @@ class DangerRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Color textColor = color ?? RLTheme.warningColor;
+    Color textColor = RLDS.warningColor;
+
+    final bool hasCustomColor = color != null;
+
+    if (hasCustomColor) {
+      textColor = color!;
+    }
 
     final Widget ChevronIcon = Icon(
       Icons.chevron_right,

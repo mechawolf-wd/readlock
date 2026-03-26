@@ -1,9 +1,12 @@
+// Open-ended reflection question that encourages the reader to think critically
+// Presents a prompt with answer options — focuses on deeper understanding, not right/wrong
+
 import 'package:flutter/material.dart' hide Typography;
 import 'package:readlock/models/CourseModel.dart';
 import 'package:readlock/utility_widgets/Utility.dart';
 import 'package:readlock/constants/RLTypography.dart';
-import 'package:readlock/constants/RLTheme.dart';
-import 'package:readlock/constants/RLConstants.dart';
+import 'package:readlock/constants/RLDesignSystem.dart';
+import 'package:readlock/constants/RLUIStrings.dart';
 import 'package:readlock/utility_widgets/FeedbackSnackbar.dart';
 
 class ThoughtTextStyleConfig {
@@ -14,7 +17,7 @@ class ThoughtTextStyleConfig {
 }
 
 class CCReflectionQuestion extends StatefulWidget {
-  final QuestionContent content;
+  final ReflectionQuestionContent content;
   final void Function(int selectedIndex, bool isCorrect) onAnswerSelected;
 
   const CCReflectionQuestion({
@@ -55,26 +58,26 @@ class CCReflectionQuestionState extends State<CCReflectionQuestion> {
 
   void initializeStyles() {
     thoughtDecoration = BoxDecoration(
-      color: RLTheme.backgroundLight,
+      color: RLDS.backgroundLight,
       borderRadius: BorderRadius.circular(16),
-      border: Border.all(color: RLTheme.textPrimary.withValues(alpha: 0.1)),
+      border: Border.all(color: RLDS.textPrimary.withValues(alpha: 0.1)),
     );
 
     selectedThoughtDecoration = BoxDecoration(
-      color: RLTheme.primaryBlue.withValues(alpha: 0.05),
+      color: RLDS.primaryBlue.withValues(alpha: 0.05),
       borderRadius: BorderRadius.circular(16),
-      border: Border.all(color: RLTheme.primaryBlue.withValues(alpha: 0.5), width: 2),
+      border: Border.all(color: RLDS.primaryBlue.withValues(alpha: 0.5), width: 2),
     );
 
     reflectedDecoration = BoxDecoration(
-      color: RLTheme.primaryGreen.withValues(alpha: 0.05),
+      color: RLDS.primaryGreen.withValues(alpha: 0.05),
       borderRadius: BorderRadius.circular(16),
-      border: Border.all(color: RLTheme.primaryGreen.withValues(alpha: 0.4), width: 1.5),
+      border: Border.all(color: RLDS.primaryGreen.withValues(alpha: 0.4), width: 1.5),
     );
 
     headerTextStyle = RLTypography.headingMediumStyle.copyWith(
       fontSize: 18,
-      color: RLTheme.textPrimary.withValues(alpha: 0.9),
+      color: RLDS.textPrimary.withValues(alpha: 0.9),
     );
 
     promptTextStyle = RLTypography.bodyLargeStyle.copyWith(fontSize: 16, height: 1.6);
@@ -82,28 +85,28 @@ class CCReflectionQuestionState extends State<CCReflectionQuestion> {
     insightHeaderTextStyle = RLTypography.bodyLargeStyle.copyWith(
       fontWeight: FontWeight.w600,
       fontSize: 14,
-      color: RLTheme.primaryGreen,
+      color: RLDS.primaryGreen,
     );
 
     insightContentTextStyle = RLTypography.bodyMediumStyle.copyWith(
       fontSize: 14,
       height: 1.6,
-      color: RLTheme.textPrimary.withValues(alpha: 0.9),
+      color: RLDS.textPrimary.withValues(alpha: 0.9),
     );
   }
 
   void initializeIcons() {
     ReflectionIcon = Icon(
       Icons.self_improvement,
-      color: RLTheme.primaryBlue.withValues(alpha: 0.7),
+      color: RLDS.primaryBlue.withValues(alpha: 0.7),
       size: 32,
     );
 
-    CheckIcon = const Icon(Icons.check_circle_outline, color: RLTheme.primaryGreen, size: 20);
+    CheckIcon = Icon(Icons.check_circle_outline, color: RLDS.primaryGreen, size: 20);
 
     InsightIcon = Icon(
       Icons.auto_awesome,
-      color: RLTheme.primaryGreen.withValues(alpha: 0.8),
+      color: RLDS.primaryGreen.withValues(alpha: 0.8),
       size: 20,
     );
   }
@@ -115,22 +118,22 @@ class CCReflectionQuestionState extends State<CCReflectionQuestion> {
         // Reflection header with icon and title
         ReflectionHeaderSection(),
 
-        const Spacing.height(REFLECTION_QUESTION_SECTION_SPACING),
+        const Spacing.height(28),
 
         // Reflection question prompt
         ReflectionPromptSection(),
 
-        const Spacing.height(REFLECTION_QUESTION_SECTION_SPACING),
+        const Spacing.height(28),
 
         // Thought options for selection
         ThoughtOptionsSection(),
 
-        const Spacing.height(REFLECTION_QUESTION_SECTION_SPACING),
+        const Spacing.height(28),
 
         // Reflection insight after selection
         ReflectionInsightSection(),
       ],
-      color: RLTheme.backgroundDark,
+      color: RLDS.backgroundDark,
       padding: 24,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       mainAxisAlignment: MainAxisAlignment.center,
@@ -143,7 +146,7 @@ class CCReflectionQuestionState extends State<CCReflectionQuestion> {
 
       const Spacing.height(12),
 
-      Center(child: Text('Take a Moment to Reflect', style: headerTextStyle)),
+      Center(child: Text(RLUIStrings.REFLECT_TITLE, style: headerTextStyle)),
     ]);
   }
 
@@ -186,9 +189,11 @@ class CCReflectionQuestionState extends State<CCReflectionQuestion> {
 
     final bool shouldShowCheckIcon = hasReflected && isCorrectAnswer;
 
-    final VoidCallback? tapCallback = hasReflected
-        ? null
-        : () => handleThoughtSelection(optionIndex);
+    VoidCallback? tapCallback;
+
+    if (!hasReflected) {
+      tapCallback = () => handleThoughtSelection(optionIndex);
+    }
 
     return Div.row(
       [
@@ -210,7 +215,7 @@ class CCReflectionQuestionState extends State<CCReflectionQuestion> {
   Widget ReflectionInsightContent() {
     final Widget InsightIcon = Icon(
       Icons.auto_awesome,
-      color: RLTheme.primaryGreen.withValues(alpha: 0.8),
+      color: RLDS.primaryGreen.withValues(alpha: 0.8),
       size: 20,
     );
 
@@ -226,7 +231,7 @@ class CCReflectionQuestionState extends State<CCReflectionQuestion> {
             style: RLTypography.bodyLargeStyle.copyWith(
               fontWeight: FontWeight.w600,
               fontSize: 14,
-              color: RLTheme.primaryGreen,
+              color: RLDS.primaryGreen,
             ),
           ),
         ]),
@@ -238,12 +243,12 @@ class CCReflectionQuestionState extends State<CCReflectionQuestion> {
           style: RLTypography.bodyMediumStyle.copyWith(
             fontSize: 14,
             height: 1.6,
-            color: RLTheme.textPrimary.withValues(alpha: 0.9),
+            color: RLDS.textPrimary.withValues(alpha: 0.9),
           ),
         ),
       ],
       padding: 20,
-      color: RLTheme.primaryGreen.withValues(alpha: 0.05),
+      color: RLDS.primaryGreen.withValues(alpha: 0.05),
       radius: 12,
     );
   }
@@ -262,7 +267,7 @@ class CCReflectionQuestionState extends State<CCReflectionQuestion> {
     }
 
     if (hasReflected) {
-      return thoughtDecoration.copyWith(color: RLTheme.backgroundLight.withValues(alpha: 0.5));
+      return thoughtDecoration.copyWith(color: RLDS.backgroundLight.withValues(alpha: 0.5));
     }
 
     return thoughtDecoration;
@@ -285,7 +290,7 @@ class CCReflectionQuestionState extends State<CCReflectionQuestion> {
     }
 
     if (hasReflected) {
-      return normalDecoration.copyWith(color: RLTheme.backgroundLight.withValues(alpha: 0.5));
+      return normalDecoration.copyWith(color: RLDS.backgroundLight.withValues(alpha: 0.5));
     }
 
     return normalDecoration;
@@ -296,17 +301,17 @@ class CCReflectionQuestionState extends State<CCReflectionQuestion> {
     required bool hasReflected,
     required bool isCorrect,
   }) {
-    Color textColor = RLTheme.textPrimary;
+    Color textColor = RLDS.textPrimary;
     FontWeight fontWeight = FontWeight.normal;
 
     if (hasReflected && isCorrect) {
-      textColor = RLTheme.primaryGreen;
+      textColor = RLDS.primaryGreen;
       fontWeight = FontWeight.w500;
     } else if (hasReflected && !isCorrect) {
-      textColor = RLTheme.textPrimary.withValues(alpha: 0.5);
+      textColor = RLDS.textPrimary.withValues(alpha: 0.5);
     } else if (isSelected && !hasReflected) {
       fontWeight = FontWeight.w500;
-      textColor = RLTheme.primaryBlue;
+      textColor = RLDS.primaryBlue;
     }
 
     return RLTypography.bodyMediumStyle.copyWith(

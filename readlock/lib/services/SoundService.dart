@@ -1,11 +1,16 @@
 import 'package:audioplayers/audioplayers.dart';
-import 'package:readlock/constants/RLConstants.dart';
 import 'dart:developer' as developer;
+
+const String continueClickAudioPath = 'audio/continue_click.mp3';
+const String correctAnswerAudioPath = 'audio/correct_answer.wav';
+const String typewriterAudioPath = 'audio/typewriter.mp3';
+const String atmosphereAudioPath = 'audio/atmosphere.mp3';
 
 class SoundService {
   static final AudioPlayer continueClickAudioPlayer = AudioPlayer();
   static final AudioPlayer correctAnswerAudioPlayer = AudioPlayer();
   static final AudioPlayer typewriterAudioPlayer = AudioPlayer();
+  static final AudioPlayer atmosphereAudioPlayer = AudioPlayer();
   static bool isAudioEnabled = true;
 
   static Future<void> playContinueClick() async {
@@ -17,7 +22,7 @@ class SoundService {
 
     try {
       await continueClickAudioPlayer.stop();
-      await continueClickAudioPlayer.play(AssetSource(CONTINUE_CLICK_AUDIO_PATH));
+      await continueClickAudioPlayer.play(AssetSource(continueClickAudioPath));
     } on Exception catch (error) {
       developer.log('Failed to play continue click sound: $error');
       isAudioEnabled = false;
@@ -33,7 +38,7 @@ class SoundService {
 
     try {
       await correctAnswerAudioPlayer.stop();
-      await correctAnswerAudioPlayer.play(AssetSource(CORRECT_ANSWER_AUDIO_PATH));
+      await correctAnswerAudioPlayer.play(AssetSource(correctAnswerAudioPath));
     } on Exception catch (error) {
       developer.log('Failed to play correct answer sound: $error');
       isAudioEnabled = false;
@@ -54,7 +59,7 @@ class SoundService {
       await typewriterAudioPlayer.setReleaseMode(ReleaseMode.loop);
 
       await typewriterAudioPlayer.play(
-        AssetSource(TYPEWRITER_AUDIO_PATH),
+        AssetSource(typewriterAudioPath),
         mode: PlayerMode.lowLatency,
         position: randomPosition,
       );
@@ -79,11 +84,36 @@ class SoundService {
     }
   }
 
+  static Future<void> playAtmosphere() async {
+    final bool canPlayAudio = isAudioEnabled;
+
+    if (!canPlayAudio) {
+      return;
+    }
+
+    try {
+      await atmosphereAudioPlayer.stop();
+      await atmosphereAudioPlayer.setReleaseMode(ReleaseMode.loop);
+      await atmosphereAudioPlayer.play(AssetSource(atmosphereAudioPath));
+    } on Exception catch (error) {
+      developer.log('Failed to play atmosphere sound: $error');
+    }
+  }
+
+  static Future<void> stopAtmosphere() async {
+    try {
+      await atmosphereAudioPlayer.stop();
+    } on Exception catch (error) {
+      developer.log('Failed to stop atmosphere sound: $error');
+    }
+  }
+
   static Future<void> dispose() async {
     try {
       await continueClickAudioPlayer.dispose();
       await correctAnswerAudioPlayer.dispose();
       await typewriterAudioPlayer.dispose();
+      await atmosphereAudioPlayer.dispose();
     } on Exception catch (error) {
       developer.log('Failed to dispose audio players: $error');
     }

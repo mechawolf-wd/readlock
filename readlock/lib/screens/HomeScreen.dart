@@ -4,14 +4,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:readlock/course_screens/CourseRoadmapScreen.dart';
-import 'package:readlock/constants/RLConstants.dart';
+import 'package:readlock/constants/RLUIStrings.dart';
+import 'package:readlock/MainNavigation.dart';
 import 'package:readlock/screens/ReaderPassScreen.dart';
 import 'package:readlock/utility_widgets/StatisticsTopBar.dart';
 import 'package:readlock/utility_widgets/Utility.dart';
 import 'package:readlock/constants/RLTypography.dart';
-import 'package:readlock/constants/RLTheme.dart';
-import 'package:readlock/constants/RLDimensions.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
+import 'package:readlock/utility_widgets/RLCard.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -76,7 +76,7 @@ class HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: RLTheme.backgroundDark,
+      backgroundColor: RLDS.backgroundDark,
       body: SafeArea(
         bottom: false,
         child: SingleChildScrollView(
@@ -111,9 +111,9 @@ class HomeScreenState extends State<HomeScreen> {
                 ForYourPersonalitySection(),
 
                 // Bottom spacing for floating navigation
-                const Spacing.height(FLOATING_NAV_BOTTOM_OFFSET),
+                const Spacing.height(MainNavigation.bottomOffset),
               ],
-              padding: RLDimensions.paddingAllXXL,
+              padding: EdgeInsets.all(24.0),
               crossAxisAlignment: CrossAxisAlignment.stretch,
             ),
           ], crossAxisAlignment: CrossAxisAlignment.stretch),
@@ -124,23 +124,23 @@ class HomeScreenState extends State<HomeScreen> {
 
   Widget SeasonPromoBanner() {
     final EdgeInsets bannerPadding = const EdgeInsets.symmetric(
-      vertical: RLDimensions.paddingM,
-      horizontal: RLDimensions.paddingL,
+      vertical: 12.0,
+      horizontal: 16.0,
     );
 
     return Div.row(
       [
         Flexible(
           child: RLTypography.bodyMedium(
-            'Outperformers do not start tomorrow - Reader Pass -25%',
-            color: Colors.white,
+            RLUIStrings.PROMO_BANNER_TEXT,
+            color: RLDS.white,
             textAlign: TextAlign.center,
           ),
         ),
       ],
       width: 'full',
       padding: bannerPadding,
-      color: Colors.black,
+      color: RLDS.black,
       mainAxisAlignment: MainAxisAlignment.center,
       onTap: handlePromoBannerTap,
     );
@@ -149,7 +149,7 @@ class HomeScreenState extends State<HomeScreen> {
   Widget HomeWelcomeHeader() {
     return Div.column([
       // Main welcome title
-      RLTypography.headingLarge(HOME_TITLE),
+      RLTypography.headingLarge(RLUIStrings.HOME_TITLE),
     ], crossAxisAlignment: CrossAxisAlignment.start);
   }
 
@@ -157,104 +157,109 @@ class HomeScreenState extends State<HomeScreen> {
     final double bookProgress = 0.45;
     final int progressPercent = (bookProgress * 100).toInt();
 
-    final BoxDecoration cardDecoration = BoxDecoration(
-      color: RLTheme.white,
-      borderRadius: RLDimensions.borderRadiusL,
-      border: Border.all(color: SOLID_SHADOW_COLOR, width: 1.5),
-      boxShadow: const [SOLID_SHADOW],
-    );
-
     final BoxDecoration buttonDecoration = BoxDecoration(
-      color: RLTheme.primaryGreen,
-      borderRadius: RLDimensions.borderRadiusM,
+      color: RLDS.primaryGreen,
+      borderRadius: BorderRadius.circular(8.0),
     );
 
     final EdgeInsets buttonPadding = const EdgeInsets.symmetric(
-      horizontal: RLDimensions.paddingL,
-      vertical: RLDimensions.paddingS,
+      horizontal: 16.0,
+      vertical: 8.0,
     );
 
     return Div.column([
       Div.column([
-        RLTypography.headingMedium('Continue Reading'),
+        RLTypography.headingMedium(RLUIStrings.CONTINUE_READING_TITLE),
 
         const Spacing.height(4),
 
-        RLTypography.text(
-          'Continue the title you\'ve been reading',
-          color: RLTheme.textSecondary,
+        Text(
+          RLUIStrings.CONTINUE_READING_SUBTITLE,
+          style: RLTypography.bodyMediumStyle.copyWith(color: RLDS.textSecondary),
         ),
       ], crossAxisAlignment: CrossAxisAlignment.start),
 
       const Spacing.height(16),
 
-      Div.column(
-        [
-          Div.row([
-            ClipRRect(
-              borderRadius: RLDimensions.borderRadiusM,
-              child: Image.asset(
-                'assets/covers/doet-cover.png',
-                width: RLDimensions.thumbnailWidthM,
-                height: RLDimensions.thumbnailHeightM,
-                fit: BoxFit.cover,
+      RLCard.elevated(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          children: [
+            Div.row([
+              ClipRRect(
+                borderRadius: BorderRadius.circular(8.0),
+                child: Image.asset(
+                  'assets/covers/doet-cover.png',
+                  width: 60.0,
+                  height: 80.0,
+                  fit: BoxFit.cover,
+                ),
               ),
-            ),
 
-            const Spacing.width(16),
+              const Spacing.width(16),
 
-            Expanded(
-              child: Div.column([
-                RLTypography.text('The Design of Everyday Things'),
+              Expanded(
+                child: Div.column([
+                  Text('The Design of Everyday Things', style: RLTypography.bodyMediumStyle),
 
-                const Spacing.height(4),
+                  const Spacing.height(4),
 
-                RLTypography.text('Don Norman', color: RLTheme.textSecondary),
-
-                const Spacing.height(12),
-
-                Div.row([
-                  Expanded(
-                    child: ProgressBar(progress: bookProgress, color: RLTheme.primaryGreen),
+                  Text(
+                    'Don Norman',
+                    style: RLTypography.bodyMediumStyle.copyWith(color: RLDS.textSecondary),
                   ),
 
-                  const Spacing.width(8),
+                  const Spacing.height(12),
 
-                  RLTypography.text('$progressPercent%', color: RLTheme.primaryGreen),
-                ]),
-              ], crossAxisAlignment: CrossAxisAlignment.start),
+                  Div.row([
+                    Expanded(
+                      child: ProgressBar(progress: bookProgress, color: RLDS.primaryGreen),
+                    ),
+
+                    const Spacing.width(8),
+
+                    Text(
+                      '$progressPercent%',
+                      style: RLTypography.bodyMediumStyle.copyWith(color: RLDS.primaryGreen),
+                    ),
+                  ]),
+                ], crossAxisAlignment: CrossAxisAlignment.start),
+              ),
+            ]),
+
+            const Spacing.height(12),
+
+            Div.row(
+              [
+                Text(
+                  RLUIStrings.CONTINUE_BUTTON_LABEL,
+                  style: RLTypography.bodyMediumStyle.copyWith(color: RLDS.white),
+                ),
+              ],
+              padding: buttonPadding,
+              decoration: buttonDecoration,
+              mainAxisAlignment: MainAxisAlignment.center,
+              onTap: handleContinueReading,
             ),
-          ]),
-
-          const Spacing.height(12),
-
-          Div.row(
-            [RLTypography.text('Continue', color: Colors.white)],
-            padding: buttonPadding,
-            decoration: buttonDecoration,
-            mainAxisAlignment: MainAxisAlignment.center,
-            onTap: handleContinueReading,
-          ),
-        ],
-        padding: RLDimensions.paddingAllL,
-        decoration: cardDecoration,
+          ],
+        ),
       ),
     ], crossAxisAlignment: CrossAxisAlignment.start);
   }
 
   Widget ProgressBar({required double progress, required Color color}) {
     final BoxDecoration trackDecoration = BoxDecoration(
-      color: color.withValues(alpha: RLDimensions.alphaMedium),
-      borderRadius: RLDimensions.borderRadiusXS,
+      color: color.withValues(alpha: 0.2),
+      borderRadius: BorderRadius.circular(4.0),
     );
 
     final BoxDecoration fillDecoration = BoxDecoration(
       color: color,
-      borderRadius: RLDimensions.borderRadiusXS,
+      borderRadius: BorderRadius.circular(4.0),
     );
 
     return Container(
-      height: RLDimensions.progressBarHeight,
+      height: 4.0,
       decoration: trackDecoration,
       child: FractionallySizedBox(
         alignment: Alignment.centerLeft,
@@ -273,11 +278,14 @@ class HomeScreenState extends State<HomeScreen> {
 
     return Div.column([
       Div.column([
-        RLTypography.headingMedium('For Your Personality'),
+        RLTypography.headingMedium(RLUIStrings.FOR_YOUR_PERSONALITY_TITLE),
 
         const Spacing.height(4),
 
-        RLTypography.text('Picked based on your unique choices', color: RLTheme.textSecondary),
+        Text(
+          RLUIStrings.FOR_YOUR_PERSONALITY_SUBTITLE,
+          style: RLTypography.bodyMediumStyle.copyWith(color: RLDS.textSecondary),
+        ),
       ], crossAxisAlignment: CrossAxisAlignment.start),
 
       const Spacing.height(16),
@@ -288,21 +296,19 @@ class HomeScreenState extends State<HomeScreen> {
 
   List<Widget> PersonalityBookCards(List<Map<String, String>> books) {
     final BoxDecoration bookCardDecoration = BoxDecoration(
-      color: RLTheme.backgroundLight.withValues(alpha: RLDimensions.alphaLight),
-      borderRadius: RLDimensions.borderRadiusL,
-      border: Border.all(
-        color: RLTheme.primaryBlue.withValues(alpha: RLDimensions.alphaMedium),
-      ),
+      color: RLDS.backgroundLight.withValues(alpha: 0.1),
+      borderRadius: BorderRadius.circular(12.0),
+      border: Border.all(color: RLDS.primaryBlue.withValues(alpha: 0.2)),
     );
 
     final BoxDecoration bookCoverDecoration = BoxDecoration(
-      color: RLTheme.primaryBlue.withValues(alpha: RLDimensions.alphaDark),
-      borderRadius: RLDimensions.borderRadiusS,
+      color: RLDS.primaryBlue.withValues(alpha: 0.3),
+      borderRadius: BorderRadius.circular(6.0),
     );
 
-    final EdgeInsets cardMargin = const EdgeInsets.only(bottom: RLDimensions.spacing12);
+    final EdgeInsets cardMargin = const EdgeInsets.only(bottom: 12.0);
 
-    final EdgeInsets iconMargin = const EdgeInsets.only(top: RLDimensions.spacing8);
+    final EdgeInsets iconMargin = const EdgeInsets.only(top: 8.0);
 
     return books.map((book) {
       final String bookTitle = book['title'] ?? '';
@@ -311,8 +317,8 @@ class HomeScreenState extends State<HomeScreen> {
       return Div.row(
         [
           Div.emptyColumn(
-            width: RLDimensions.thumbnailWidthS,
-            height: RLDimensions.thumbnailWidthM,
+            width: 40.0,
+            height: 60.0,
             decoration: bookCoverDecoration,
           ),
 
@@ -320,59 +326,62 @@ class HomeScreenState extends State<HomeScreen> {
 
           Expanded(
             child: Div.column([
-              RLTypography.text(bookTitle),
+              Text(bookTitle, style: RLTypography.bodyMediumStyle),
 
               const Spacing.height(4),
 
-              RLTypography.text(bookAuthor, color: RLTheme.textSecondary),
+              Text(
+                bookAuthor,
+                style: RLTypography.bodyMediumStyle.copyWith(color: RLDS.textSecondary),
+              ),
             ], crossAxisAlignment: CrossAxisAlignment.start),
           ),
 
           // Bookmark icon
-          Div.column(const [BookmarkIcon], margin: iconMargin),
+          Div.column([BookmarkIcon], margin: iconMargin),
         ],
         margin: cardMargin,
-        padding: RLDimensions.paddingAllM,
+        padding: EdgeInsets.all(12.0),
         decoration: bookCardDecoration,
       );
     }).toList();
   }
 
-  static const Widget BookmarkIcon = Icon(
+  static final Widget BookmarkIcon = Icon(
     Icons.bookmark_border,
-    color: RLTheme.primaryBlue,
-    size: RLDimensions.iconL,
+    color: RLDS.primaryBlue,
+    size: 24.0,
   );
 
-  static const Widget ChevronRightIcon = Icon(
+  static final Widget ChevronRightIcon = Icon(
     Icons.chevron_right,
-    color: RLTheme.textSecondary,
-    size: RLDimensions.iconL,
+    color: RLDS.textSecondary,
+    size: 24.0,
   );
 
-  static const Widget ShuffleIcon = Icon(
+  static final Widget ShuffleIcon = Icon(
     Icons.shuffle_rounded,
-    color: RLTheme.primaryBlue,
-    size: RLDimensions.iconL,
+    color: RLDS.primaryBlue,
+    size: 24.0,
   );
 
   Widget RandomLessonSection() {
     final BoxDecoration cardDecoration = BoxDecoration(
-      color: RLTheme.backgroundLight,
-      borderRadius: RLDimensions.borderRadiusL,
+      color: RLDS.backgroundLight,
+      borderRadius: BorderRadius.circular(12.0),
     );
 
     return Div.row(
       [
         ShuffleIcon,
 
-        const Spacing.width(RLDimensions.spacing12),
+        const Spacing.width(12.0),
 
-        Expanded(child: RLTypography.bodyLarge('Surprise Me')),
+        Expanded(child: RLTypography.bodyLarge(RLUIStrings.SURPRISE_ME_LABEL)),
 
         ChevronRightIcon,
       ],
-      padding: RLDimensions.paddingAllL,
+      padding: EdgeInsets.all(16.0),
       decoration: cardDecoration,
       crossAxisAlignment: CrossAxisAlignment.center,
       onTap: () {},

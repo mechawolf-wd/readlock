@@ -2,9 +2,8 @@
 // Features bird icon and indexing message for smooth user experience
 
 import 'package:flutter/material.dart' hide Typography;
-import 'package:readlock/constants/RLConstants.dart';
 import 'package:readlock/utility_widgets/Utility.dart';
-import 'package:readlock/constants/RLTheme.dart';
+import 'package:readlock/constants/RLDesignSystem.dart';
 
 class CourseLoadingScreen extends StatelessWidget {
   const CourseLoadingScreen({super.key});
@@ -12,8 +11,8 @@ class CourseLoadingScreen extends StatelessWidget {
   Widget PigeonImage() {
     return Image.asset(
       'assets/pigeon.png',
-      width: PIGEON_IMAGE_SIZE,
-      height: PIGEON_IMAGE_SIZE,
+      width: 240.0,
+      height: 240.0,
       fit: BoxFit.contain,
     );
   }
@@ -30,7 +29,7 @@ class CourseLoadingScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: RLTheme.backgroundDark,
+      backgroundColor: RLDS.backgroundDark,
       body: LoadingContent(),
     );
   }

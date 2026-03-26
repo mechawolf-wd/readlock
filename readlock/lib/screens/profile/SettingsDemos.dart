@@ -4,10 +4,10 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:readlock/constants/RLDimensions.dart';
+import 'package:readlock/constants/RLUIStrings.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/utility_widgets/Utility.dart';
-import 'package:readlock/constants/RLTheme.dart';
+import 'package:readlock/constants/RLDesignSystem.dart';
 
 // Demo widget for Reveal setting
 // Shows text appearing all at once vs character by character
@@ -22,7 +22,7 @@ class RevealDemo extends StatefulWidget {
 
 class RevealDemoState extends State<RevealDemo> with SingleTickerProviderStateMixin {
   late AnimationController animationController;
-  static const String demoText = 'Design is not just what it looks like.';
+  static const String demoText = RLUIStrings.DEMO_REVEAL_TEXT;
   bool isPaused = false;
 
   @override
@@ -64,14 +64,14 @@ class RevealDemoState extends State<RevealDemo> with SingleTickerProviderStateMi
   @override
   Widget build(BuildContext context) {
     final BoxDecoration containerDecoration = BoxDecoration(
-      color: RLTheme.backgroundLight,
-      borderRadius: RLDimensions.borderRadiusM,
+      color: RLDS.backgroundLight,
+      borderRadius: BorderRadius.circular(8.0),
     );
 
     return Container(
       width: double.infinity,
       decoration: containerDecoration,
-      padding: RLDimensions.paddingAllM,
+      padding: EdgeInsets.all(12.0),
       margin: const EdgeInsets.only(bottom: 16),
       child: AnimatedTextDisplay(),
     );
@@ -79,7 +79,7 @@ class RevealDemoState extends State<RevealDemo> with SingleTickerProviderStateMi
 
   Widget AnimatedTextDisplay() {
     if (widget.isEnabled) {
-      return RLTypography.text(demoText);
+      return Text(demoText, style: RLTypography.bodyMediumStyle);
     }
 
     return AnimatedBuilder(
@@ -91,7 +91,7 @@ class RevealDemoState extends State<RevealDemo> with SingleTickerProviderStateMi
 
         return RichText(
           text: TextSpan(
-            style: const TextStyle(fontSize: 14, color: RLTheme.textPrimary),
+            style: TextStyle(fontSize: 14, color: RLDS.textPrimary),
             children: [
               TextSpan(text: visibleText),
 
@@ -117,29 +117,29 @@ class BlurDemo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final BoxDecoration containerDecoration = BoxDecoration(
-      color: RLTheme.backgroundLight,
-      borderRadius: RLDimensions.borderRadiusM,
+      color: RLDS.backgroundLight,
+      borderRadius: BorderRadius.circular(8.0),
     );
 
     return Container(
       width: double.infinity,
       decoration: containerDecoration,
-      padding: RLDimensions.paddingAllM,
+      padding: EdgeInsets.all(12.0),
       margin: const EdgeInsets.only(bottom: 16),
       child: Div.column([
         BlurredSentence(),
 
         const Spacing.height(8),
 
-        RLTypography.text('Current sentence stays clear.'),
+        Text(RLUIStrings.DEMO_BLUR_CURRENT, style: RLTypography.bodyMediumStyle),
       ], crossAxisAlignment: CrossAxisAlignment.start),
     );
   }
 
   Widget BlurredSentence() {
-    final Widget sentenceText = RLTypography.text(
-      'Previous sentence fades away.',
-      color: RLTheme.textSecondary,
+    final Widget sentenceText = Text(
+      RLUIStrings.DEMO_BLUR_PREVIOUS,
+      style: RLTypography.bodyMediumStyle.copyWith(color: RLDS.textSecondary),
     );
 
     if (isEnabled) {
@@ -163,14 +163,14 @@ class ColoredTextDemo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final BoxDecoration containerDecoration = BoxDecoration(
-      color: RLTheme.backgroundLight,
-      borderRadius: RLDimensions.borderRadiusM,
+      color: RLDS.backgroundLight,
+      borderRadius: BorderRadius.circular(8.0),
     );
 
-    Color highlightColor = RLTheme.textPrimary;
+    Color highlightColor = RLDS.textPrimary;
 
     if (isEnabled) {
-      highlightColor = RLTheme.primaryBlue;
+      highlightColor = RLDS.primaryBlue;
     }
 
     FontWeight keyTermsFontWeight = FontWeight.normal;
@@ -182,17 +182,17 @@ class ColoredTextDemo extends StatelessWidget {
     return Container(
       width: double.infinity,
       decoration: containerDecoration,
-      padding: RLDimensions.paddingAllM,
+      padding: EdgeInsets.all(12.0),
       margin: const EdgeInsets.only(bottom: 16),
       child: RichText(
         text: TextSpan(
-          style: const TextStyle(fontSize: 14, color: RLTheme.textPrimary, height: 1.5),
+          style: TextStyle(fontSize: 14, color: RLDS.textPrimary, height: 1.5),
           children: [
             TextSpan(
-              text: 'Key terms',
+              text: RLUIStrings.DEMO_COLORED_HIGHLIGHT,
               style: TextStyle(color: highlightColor, fontWeight: keyTermsFontWeight),
             ),
-            const TextSpan(text: ' are highlighted in text.'),
+            const TextSpan(text: RLUIStrings.DEMO_COLORED_SUFFIX),
           ],
         ),
       ),
@@ -210,8 +210,8 @@ class TextSpeedDemo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final BoxDecoration containerDecoration = BoxDecoration(
-      color: RLTheme.backgroundLight,
-      borderRadius: RLDimensions.borderRadiusM,
+      color: RLDS.backgroundLight,
+      borderRadius: BorderRadius.circular(8.0),
     );
 
     final int wordsPerMinute = getWordsPerMinute();
@@ -220,33 +220,33 @@ class TextSpeedDemo extends StatelessWidget {
     return Container(
       width: double.infinity,
       decoration: containerDecoration,
-      padding: RLDimensions.paddingAllM,
+      padding: EdgeInsets.all(12.0),
       margin: const EdgeInsets.only(bottom: 16),
       child: Div.row([
         Div.column([
-          RLTypography.headingMedium('$wordsPerMinute', color: RLTheme.primaryBlue),
+          RLTypography.headingMedium('$wordsPerMinute', color: RLDS.primaryBlue),
 
-          RLTypography.text('words/min', color: RLTheme.textSecondary),
+          Text(RLUIStrings.DEMO_SPEED_UNIT, style: RLTypography.bodyMediumStyle.copyWith(color: RLDS.textSecondary)),
         ], crossAxisAlignment: CrossAxisAlignment.start),
 
         const Spacing.width(16),
 
-        Expanded(child: RLTypography.text(description, color: RLTheme.textSecondary)),
+        Expanded(child: Text(description, style: RLTypography.bodyMediumStyle.copyWith(color: RLDS.textSecondary))),
       ]),
     );
   }
 
   int getWordsPerMinute() {
     switch (selectedSpeed) {
-      case 'Careful':
+      case RLUIStrings.SPEED_CAREFUL:
         {
           return 120;
         }
-      case 'Classic':
+      case RLUIStrings.SPEED_CLASSIC:
         {
           return 180;
         }
-      case 'Speed':
+      case RLUIStrings.SPEED_SPEED:
         {
           return 250;
         }
@@ -259,21 +259,21 @@ class TextSpeedDemo extends StatelessWidget {
 
   String getSpeedDescription() {
     switch (selectedSpeed) {
-      case 'Careful':
+      case RLUIStrings.SPEED_CAREFUL:
         {
-          return 'Slower pace for deep comprehension.';
+          return RLUIStrings.DEMO_SPEED_CAREFUL;
         }
-      case 'Classic':
+      case RLUIStrings.SPEED_CLASSIC:
         {
-          return 'Balanced speed for comfortable learning.';
+          return RLUIStrings.DEMO_SPEED_CLASSIC;
         }
-      case 'Speed':
+      case RLUIStrings.SPEED_SPEED:
         {
-          return 'Faster pace for quick review.';
+          return RLUIStrings.DEMO_SPEED_FAST;
         }
       default:
         {
-          return 'Balanced speed for comfortable learning.';
+          return RLUIStrings.DEMO_SPEED_CLASSIC;
         }
     }
   }

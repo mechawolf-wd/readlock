@@ -1,4 +1,4 @@
-import 'package:readlock/constants/RLTheme.dart';
+import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/utility_widgets/Utility.dart';
 import 'package:readlock/bottom_sheets/stats/StreakBottomSheet.dart';
@@ -49,18 +49,17 @@ class StatisticsTopBar extends StatelessWidget {
 class StatisticsTopBarStyle {
   static BoxDecoration decoration = BoxDecoration(
     border: Border.all(color: Colors.grey.withValues(alpha: 0.2), width: 1.5),
-    boxShadow: [BoxShadow(color: Colors.grey.withAlpha(70), offset: const Offset(0, 2))],
   );
 
-  static Color backgroundColor = Colors.white;
+  static Color backgroundColor = RLDS.white;
 
   static List<int> padding = [8, 16];
 
-  static Icon KeyIcon = const Icon(Icons.key, color: RLTheme.primaryGreen, size: 20);
+  static final Icon KeyIcon = Icon(Icons.key, color: RLDS.primaryGreen, size: 20);
 
-  static Icon FireIcon = const Icon(
+  static final Icon FireIcon = Icon(
     Icons.local_fire_department,
-    color: RLTheme.warningColor,
+    color: RLDS.warningColor,
     size: 20,
   );
 }

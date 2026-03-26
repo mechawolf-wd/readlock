@@ -3,8 +3,8 @@
 
 import 'package:flutter/material.dart' hide Typography;
 import 'package:readlock/constants/RLTypography.dart';
-import 'package:readlock/constants/RLTheme.dart';
-import 'package:readlock/constants/RLConstants.dart';
+import 'package:readlock/constants/RLDesignSystem.dart';
+import 'package:readlock/constants/RLUIStrings.dart';
 import 'package:readlock/utility_widgets/Utility.dart';
 import 'package:readlock/course_screens/CourseContentViewer.dart';
 
@@ -39,8 +39,8 @@ class CCSkillCheckState extends State<CCSkillCheck> with SingleTickerProviderSta
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: RLTheme.backgroundDark,
-      padding: RLTheme.contentPaddingInsets,
+      color: RLDS.backgroundDark,
+      padding: RLDS.contentPaddingInsets,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -52,12 +52,12 @@ class CCSkillCheckState extends State<CCSkillCheck> with SingleTickerProviderSta
           // Title section
           TitleSection(),
 
-          const Spacing.height(SKILL_CHECK_CONTENT_SPACING),
+          const Spacing.height(24),
 
           // Description
           DescriptionSection(),
 
-          const Spacing.height(SKILL_CHECK_CONTENT_SPACING * 2),
+          const Spacing.height(24 * 2),
 
           // Ready button
           ReadyButton(context),
@@ -68,7 +68,7 @@ class CCSkillCheckState extends State<CCSkillCheck> with SingleTickerProviderSta
 
   // Animated skill check icon display
   Widget SkillCheckIcon() {
-    const Widget QuizIcon = Icon(Icons.quiz_outlined, color: RLTheme.primaryGreen, size: 48);
+    final Widget QuizIcon = Icon(Icons.quiz_outlined, color: RLDS.primaryGreen, size: 48);
 
     return AnimatedBuilder(
       animation: iconAnimationController,
@@ -85,13 +85,13 @@ class CCSkillCheckState extends State<CCSkillCheck> with SingleTickerProviderSta
   Widget TitleSection() {
     return Column(
       children: [
-        RLTypography.headingLarge(SKILL_CHECK_TITLE, textAlign: TextAlign.center),
+        RLTypography.headingLarge(RLUIStrings.SKILL_CHECK_TITLE, textAlign: TextAlign.center),
 
         const Spacing.height(8),
 
         RLTypography.bodyLarge(
-          SKILL_CHECK_SUBTITLE,
-          color: RLTheme.textSecondary,
+          RLUIStrings.SKILL_CHECK_SUBTITLE,
+          color: RLDS.textSecondary,
           textAlign: TextAlign.center,
         ),
       ],
@@ -103,9 +103,9 @@ class CCSkillCheckState extends State<CCSkillCheck> with SingleTickerProviderSta
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24.0),
       child: RLTypography.bodyMedium(
-        SKILL_CHECK_DESCRIPTION,
+        RLUIStrings.SKILL_CHECK_DESCRIPTION,
         textAlign: TextAlign.center,
-        color: RLTheme.textPrimary,
+        color: RLDS.textPrimary,
       ),
     );
   }
@@ -113,13 +113,13 @@ class CCSkillCheckState extends State<CCSkillCheck> with SingleTickerProviderSta
   // Ready button to continue to questions
   Widget ReadyButton(BuildContext context) {
     final BoxDecoration buttonDecoration = BoxDecoration(
-      color: RLTheme.primaryGreen,
+      color: RLDS.primaryGreen,
       borderRadius: BorderRadius.circular(12),
     );
 
     final Widget buttonText = RLTypography.bodyMedium(
-      SKILL_CHECK_READY_BUTTON_TEXT,
-      color: RLTheme.white,
+      RLUIStrings.SKILL_CHECK_READY_BUTTON_TEXT,
+      color: RLDS.white,
     );
 
     return Div.column(

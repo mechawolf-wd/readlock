@@ -1,37 +1,17 @@
-// Widget for displaying fill-in-the-gap questions with draggable answer options
-// Users drag answers to fill blanks in sentences with visual feedback
+// Widget for displaying fill-in-the-gap questions with tappable answer options
+// Users tap options to fill blanks in sentences with visual feedback
 
 import 'package:flutter/material.dart' hide Typography;
 import 'package:readlock/models/CourseModel.dart';
 import 'package:readlock/utility_widgets/Utility.dart';
 import 'package:readlock/constants/RLTypography.dart';
-import 'package:readlock/constants/RLTheme.dart';
-import 'package:readlock/constants/RLConstants.dart';
+import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/utility_widgets/text_animation/ProgressiveText.dart';
 import 'package:readlock/utility_widgets/FeedbackSnackbar.dart';
-
-// Helper classes for styling
-class GapStyling {
-  final Color backgroundColor;
-  final Color borderColor;
-
-  GapStyling({required this.backgroundColor, required this.borderColor});
-}
-
-class ChipStyling {
-  final Color backgroundColor;
-  final Color borderColor;
-  final Color textColor;
-
-  ChipStyling({
-    required this.backgroundColor,
-    required this.borderColor,
-    required this.textColor,
-  });
-}
+import 'package:readlock/constants/RLUIStrings.dart';
 
 class CCFillGapQuestion extends StatefulWidget {
-  final QuestionContent content;
+  final FillGapQuestionContent content;
   final void Function(int selectedIndex, bool isCorrect) onAnswerSelected;
 
   const CCFillGapQuestion({super.key, required this.content, required this.onAnswerSelected});
@@ -41,12 +21,12 @@ class CCFillGapQuestion extends StatefulWidget {
 }
 
 class CCFillGapQuestionState extends State<CCFillGapQuestion> with TickerProviderStateMixin {
-  // State management
+  // State
   Map<int, int?> selectedOptionsForGaps = {};
   bool hasAnswered = false;
   Set<int> usedOptionIndices = {};
 
-  // Animation controllers
+  // Shake animation
   AnimationController? shakeController;
   Animation<double>? shakeAnimation;
 
@@ -57,14 +37,11 @@ class CCFillGapQuestionState extends State<CCFillGapQuestion> with TickerProvide
   }
 
   void initializeGaps() {
-    final int numberOfGaps = countGapsInQuestion();
+    final int numberOfGaps = '___'.allMatches(widget.content.question).length;
+
     selectedOptionsForGaps = Map.fromEntries(
       List.generate(numberOfGaps, (index) => MapEntry(index, null)),
     );
-  }
-
-  int countGapsInQuestion() {
-    return '___'.allMatches(widget.content.question).length;
   }
 
   @override
@@ -77,29 +54,31 @@ class CCFillGapQuestionState extends State<CCFillGapQuestion> with TickerProvide
   Widget build(BuildContext context) {
     return Div.column(
       [
-        // Question Section
+        // Question with inline gaps
         QuestionWithGaps(),
 
-        const Spacing.height(FILL_GAP_SECTION_SPACING),
+        const Spacing.height(24),
 
-        // Options Section
+        // Tappable options
         AvailableOptions(),
 
-        const Spacing.height(FILL_GAP_SECTION_SPACING),
+        const Spacing.height(24),
 
-        // Submit Button
+        // Submit
         SubmitButton(),
 
-        const Spacing.height(FILL_GAP_SECTION_SPACING),
+        const Spacing.height(24),
 
-        // Explanation
+        // Explanation (shown after answering)
         ExplanationSection(),
       ],
-      color: RLTheme.backgroundDark,
-      padding: FILL_GAP_CONTENT_PADDING,
+      color: RLDS.backgroundDark,
+      padding: 20,
       crossAxisAlignment: CrossAxisAlignment.stretch,
     );
   }
+
+  // * Question display
 
   Widget QuestionWithGaps() {
     final List<String> questionParts = widget.content.question.split('___');
@@ -112,20 +91,11 @@ class CCFillGapQuestionState extends State<CCFillGapQuestion> with TickerProvide
       final bool hasPartText = part.isNotEmpty;
 
       if (hasPartText) {
-        questionWidgets.add(
-          Text(
-            part,
-            style: RLTypography.bodyLargeStyle.copyWith(
-              fontSize: FILL_GAP_QUESTION_TEXT_SIZE,
-              height: 1.6,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-        );
+        questionWidgets.add(RLTypography.bodyLarge(part));
       }
 
       if (!isLastPart) {
-        questionWidgets.add(Gap(gapIndex: partIndex));
+        questionWidgets.add(GapSlot(gapIndex: partIndex));
       }
     }
 
@@ -137,40 +107,48 @@ class CCFillGapQuestionState extends State<CCFillGapQuestion> with TickerProvide
     );
   }
 
-  Widget Gap({required int gapIndex}) {
+  Widget GapSlot({required int gapIndex}) {
     final int? selectedOptionIndex = selectedOptionsForGaps[gapIndex];
     final bool hasSelection = selectedOptionIndex != null;
     final bool isCorrect = getIsGapCorrect(gapIndex, selectedOptionIndex);
     final bool isIncorrect = hasAnswered && hasSelection && !isCorrect;
 
-    // Get styling based on state
-    final GapStyling styling = getGapStyling(
-      hasAnswered: hasAnswered,
-      hasSelection: hasSelection,
-      isCorrect: isCorrect,
-      isIncorrect: isIncorrect,
+    // Styling
+    final Color backgroundColor = getGapBackgroundColor(hasSelection, isCorrect, isIncorrect);
+    final Color borderColor = getGapBorderColor(hasSelection, isCorrect, isIncorrect);
+
+    final String displayText = hasSelection
+        ? widget.content.options[selectedOptionIndex].text
+        : '______';
+
+    final Color textColor = hasSelection
+        ? RLDS.textPrimary
+        : RLDS.textPrimary.withValues(alpha: 0.4);
+
+    final FontWeight textWeight = hasSelection ? FontWeight.w600 : FontWeight.normal;
+
+    final BoxDecoration gapDecoration = BoxDecoration(
+      color: backgroundColor,
+      borderRadius: RLDS.borderRadiusSmall,
+      border: Border.all(color: borderColor, width: 1.5),
     );
 
-    // Get display text
-    String displayText = '______';
+    VoidCallback? gapTapHandler;
 
-    if (hasSelection) {
-      displayText = widget.content.options[selectedOptionIndex].text;
+    if (!hasAnswered) {
+      gapTapHandler = () => clearGapSelection(gapIndex);
     }
 
-    // Calculate dynamic width
-    final double gapWidth = calculateGapWidth(displayText, hasSelection);
-
-    // Build gap container
-    final Widget gapContainer = GapContainer(
-      displayText: displayText,
-      gapWidth: gapWidth,
-      styling: styling,
-      hasSelection: hasSelection,
-      gapIndex: gapIndex,
+    // Gap chip — sizes to content via IntrinsicWidth
+    final Widget gapWidget = Div.row(
+      [RLTypography.bodyMedium(displayText, color: textColor)],
+      padding: const [16, 8],
+      decoration: gapDecoration,
+      mainAxisAlignment: MainAxisAlignment.center,
+      onTap: gapTapHandler,
     );
 
-    // Apply shake animation if incorrect
+    // Shake if incorrect
     final bool shouldShake = isIncorrect && shakeAnimation != null;
 
     if (shouldShake) {
@@ -182,289 +160,139 @@ class CCFillGapQuestionState extends State<CCFillGapQuestion> with TickerProvide
             child: child,
           );
         },
-        child: gapContainer,
+        child: gapWidget,
       );
     }
 
-    return gapContainer;
+    return gapWidget;
+  }
+
+  Color getGapBackgroundColor(bool hasSelection, bool isCorrect, bool isIncorrect) {
+    if (hasAnswered && isCorrect) {
+      return RLDS.primaryGreen.withValues(alpha: 0.15);
+    }
+
+    if (isIncorrect) {
+      return RLDS.errorColor.withValues(alpha: 0.08);
+    }
+
+    if (hasSelection) {
+      return RLDS.primaryBlue.withValues(alpha: 0.12);
+    }
+
+    return RLDS.backgroundLight;
+  }
+
+  Color getGapBorderColor(bool hasSelection, bool isCorrect, bool isIncorrect) {
+    if (hasAnswered && isCorrect) {
+      return RLDS.primaryGreen;
+    }
+
+    if (isIncorrect) {
+      return RLDS.errorColor.withValues(alpha: 0.5);
+    }
+
+    if (hasSelection) {
+      return RLDS.primaryBlue;
+    }
+
+    return RLDS.textPrimary.withValues(alpha: 0.25);
   }
 
   bool getIsGapCorrect(int gapIndex, int? selectedOptionIndex) {
-    final bool hasSelection = selectedOptionIndex != null;
-    final bool isAnswered = hasAnswered;
-
-    if (!isAnswered || !hasSelection) {
+    if (!hasAnswered || selectedOptionIndex == null) {
       return false;
     }
 
     return widget.content.correctAnswerIndices.contains(selectedOptionIndex);
   }
 
-  GapStyling getGapStyling({
-    required bool hasAnswered,
-    required bool hasSelection,
-    required bool isCorrect,
-    required bool isIncorrect,
-  }) {
-    Color backgroundColor;
-    Color borderColor;
-
-    if (hasAnswered) {
-      if (isCorrect) {
-        backgroundColor = RLTheme.primaryGreen.withValues(alpha: 0.15);
-        borderColor = RLTheme.primaryGreen;
-      } else if (isIncorrect) {
-        backgroundColor = RLTheme.errorColor.withValues(alpha: 0.08);
-        borderColor = RLTheme.errorColor.withValues(alpha: 0.5);
-      } else {
-        backgroundColor = RLTheme.backgroundLight;
-        borderColor = RLTheme.textPrimary.withValues(alpha: 0.2);
-      }
-    } else if (hasSelection) {
-      backgroundColor = RLTheme.primaryBlue.withValues(alpha: 0.12);
-      borderColor = RLTheme.primaryBlue;
-    } else {
-      backgroundColor = RLTheme.backgroundLight;
-      borderColor = RLTheme.textPrimary.withValues(alpha: 0.25);
-    }
-
-    return GapStyling(backgroundColor: backgroundColor, borderColor: borderColor);
-  }
-
-  double calculateGapWidth(String text, bool hasSelection) {
-    if (!hasSelection) {
-      return FILL_GAP_MIN_BLANK_WIDTH;
-    }
-
-    final double calculatedWidth = text.length * 9.0 + 40;
-    return calculatedWidth.clamp(FILL_GAP_MIN_BLANK_WIDTH, FILL_GAP_MAX_BLANK_WIDTH);
-  }
-
-  Widget GapContainer({
-    required String displayText,
-    required double gapWidth,
-    required GapStyling styling,
-    required bool hasSelection,
-    required int gapIndex,
-  }) {
-    // Text style for gap content
-    final FontWeight gapFontWeight = hasSelection ? FontWeight.w600 : FontWeight.normal;
-
-    Color gapTextColor = RLTheme.textPrimary.withValues(alpha: 0.4);
-
-    if (hasSelection) {
-      gapTextColor = RLTheme.textPrimary;
-    }
-
-    final TextStyle gapTextStyle = RLTypography.bodyLargeStyle.copyWith(
-      fontSize: FILL_GAP_OPTION_TEXT_SIZE,
-      fontWeight: gapFontWeight,
-      color: gapTextColor,
-    );
-
-    // Gap decoration
-    final BoxDecoration gapDecoration = BoxDecoration(
-      color: styling.backgroundColor,
-      borderRadius: BorderRadius.circular(FILL_GAP_GAP_RADIUS),
-      border: Border.all(color: styling.borderColor, width: FILL_GAP_BORDER_WIDTH),
-    );
-
-    VoidCallback? gapTapHandler;
-
-    if (!hasAnswered) {
-      gapTapHandler = () => clearGapSelection(gapIndex);
-    }
-
-    return Div.row(
-      [
-        Flexible(
-          child: Text(
-            displayText,
-            style: gapTextStyle,
-            overflow: TextOverflow.ellipsis,
-            maxLines: 1,
-            textAlign: TextAlign.center,
-          ),
-        ),
-      ],
-      width: gapWidth,
-      height: FILL_GAP_BLANK_HEIGHT,
-      padding: const [FILL_GAP_GAP_PADDING_H, FILL_GAP_GAP_PADDING_V],
-      decoration: gapDecoration,
-      mainAxisAlignment: MainAxisAlignment.center,
-      onTap: gapTapHandler,
-    );
-  }
+  // * Options
 
   Widget AvailableOptions() {
-    // Section label style
-    final TextStyle labelStyle = RLTypography.bodyLargeStyle.copyWith(
-      fontSize: FILL_GAP_LABEL_TEXT_SIZE,
-      fontWeight: FontWeight.w600,
-      color: RLTheme.textPrimary.withValues(alpha: 0.8),
-    );
-
-    // Build option chips
     final List<Widget> optionChips = [];
+
     for (int optionIndex = 0; optionIndex < widget.content.options.length; optionIndex++) {
       optionChips.add(OptionChip(optionIndex: optionIndex));
     }
 
     return Div.column([
-      // Label
-      Text('Select words to fill the gaps:', style: labelStyle),
+      RLTypography.bodyMedium(
+        RLUIStrings.FILL_GAP_INSTRUCTION,
+        color: RLDS.textPrimary.withValues(alpha: 0.8),
+      ),
 
       const Spacing.height(16),
 
-      // Options grid
-      Wrap(
-        spacing: FILL_GAP_OPTION_SPACING,
-        runSpacing: FILL_GAP_OPTION_SPACING,
-        children: optionChips,
-      ),
+      Wrap(spacing: 12, runSpacing: 12, children: optionChips),
     ]);
   }
 
   Widget OptionChip({required int optionIndex}) {
     final bool isUsed = usedOptionIndices.contains(optionIndex);
     final bool isDisabled = isUsed && !hasAnswered;
-    final bool isCorrectOption = getIsCorrectOption(optionIndex);
+    final bool isCorrectOption =
+        hasAnswered && widget.content.correctAnswerIndices.contains(optionIndex);
 
-    // Get chip styling
-    final ChipStyling styling = getChipStyling(
-      hasAnswered: hasAnswered,
-      isCorrectOption: isCorrectOption,
-      isUsed: isUsed,
-    );
-
-    // Build chip text style
-    final FontWeight chipFontWeight = isCorrectOption ? FontWeight.w600 : FontWeight.w500;
-
-    final bool shouldStrikethrough = isUsed && !isCorrectOption;
-    TextDecoration? chipTextDecoration;
-
-    if (shouldStrikethrough) {
-      chipTextDecoration = TextDecoration.lineThrough;
-    }
-
-    final TextStyle chipTextStyle = RLTypography.bodyLargeStyle.copyWith(
-      fontSize: FILL_GAP_OPTION_TEXT_SIZE,
-      color: styling.textColor,
-      fontWeight: chipFontWeight,
-      decoration: chipTextDecoration,
-    );
-
-    // Build chip decoration
-    final BoxDecoration chipDecoration = BoxDecoration(
-      color: styling.backgroundColor,
-      borderRadius: BorderRadius.circular(FILL_GAP_CHIP_RADIUS),
-      border: Border.all(color: styling.borderColor, width: FILL_GAP_BORDER_WIDTH),
-    );
-
-    VoidCallback? optionTapHandler;
-
-    if (!isDisabled) {
-      optionTapHandler = () => selectOption(optionIndex);
-    }
-
-    return Div.row(
-      [
-        Text(
-          widget.content.options[optionIndex].text,
-          style: chipTextStyle,
-          overflow: TextOverflow.ellipsis,
-          maxLines: 1,
-        ),
-      ],
-      padding: const [FILL_GAP_OPTION_CHIP_PADDING_H, FILL_GAP_OPTION_CHIP_PADDING_V],
-      decoration: chipDecoration,
-      onTap: optionTapHandler,
-    );
-  }
-
-  bool getIsCorrectOption(int optionIndex) {
-    final bool isAnswered = hasAnswered;
-
-    if (!isAnswered) {
-      return false;
-    }
-
-    return widget.content.correctAnswerIndices.contains(optionIndex);
-  }
-
-  ChipStyling getChipStyling({
-    required bool hasAnswered,
-    required bool isCorrectOption,
-    required bool isUsed,
-  }) {
+    // Colors
     Color backgroundColor;
     Color borderColor;
     Color textColor;
 
-    if (hasAnswered && isCorrectOption) {
-      backgroundColor = RLTheme.primaryGreen.withValues(alpha: 0.12);
-      borderColor = RLTheme.primaryGreen;
-      textColor = RLTheme.primaryGreen;
+    if (isCorrectOption) {
+      backgroundColor = RLDS.primaryGreen.withValues(alpha: 0.12);
+      borderColor = RLDS.primaryGreen;
+      textColor = RLDS.primaryGreen;
     } else if (isUsed) {
-      backgroundColor = RLTheme.textPrimary.withValues(alpha: 0.03);
-      borderColor = RLTheme.textPrimary.withValues(alpha: 0.15);
-      textColor = RLTheme.textPrimary.withValues(alpha: 0.35);
+      backgroundColor = RLDS.textPrimary.withValues(alpha: 0.03);
+      borderColor = RLDS.textPrimary.withValues(alpha: 0.15);
+      textColor = RLDS.textPrimary.withValues(alpha: 0.35);
     } else {
-      backgroundColor = RLTheme.backgroundLight;
-      borderColor = RLTheme.primaryBlue.withValues(alpha: 0.4);
-      textColor = RLTheme.textPrimary;
+      backgroundColor = RLDS.backgroundLight;
+      borderColor = RLDS.primaryBlue.withValues(alpha: 0.4);
+      textColor = RLDS.textPrimary;
     }
 
-    return ChipStyling(
-      backgroundColor: backgroundColor,
-      borderColor: borderColor,
-      textColor: textColor,
+    final BoxDecoration decoration = BoxDecoration(
+      color: backgroundColor,
+      borderRadius: BorderRadius.circular(20),
+      border: Border.all(color: borderColor, width: 1.5),
+    );
+
+    VoidCallback? chipTapHandler;
+
+    if (!isDisabled) {
+      chipTapHandler = () => selectOption(optionIndex);
+    }
+
+    return Div.row(
+      [RLTypography.bodyMedium(widget.content.options[optionIndex].text, color: textColor)],
+      padding: const [16, 8],
+      decoration: decoration,
+      onTap: chipTapHandler,
     );
   }
 
+  // * Submit
+
   Widget SubmitButton() {
-    final bool allGapsFilled = checkAllGapsFilled();
+    final bool allGapsFilled = selectedOptionsForGaps.values.every((v) => v != null);
     final bool canSubmit = allGapsFilled && !hasAnswered;
 
-    // Button text
-    String buttonText = 'Submit Answer';
+    final String buttonText = hasAnswered ? RLUIStrings.FILL_GAP_SUBMITTED_LABEL : RLUIStrings.FILL_GAP_SUBMIT_LABEL;
 
-    if (hasAnswered) {
-      buttonText = 'Submitted';
-    }
+    final Color buttonColor = canSubmit ? RLDS.primaryBlue : RLDS.backgroundLight;
+    final Color buttonTextColor = canSubmit
+        ? RLDS.white
+        : RLDS.textPrimary.withValues(alpha: 0.4);
+    final Color buttonBorderColor = canSubmit
+        ? RLDS.primaryBlue
+        : RLDS.textPrimary.withValues(alpha: 0.2);
 
-    // Button text color
-    Color buttonTextColor = RLTheme.textPrimary.withValues(alpha: 0.4);
-
-    if (canSubmit) {
-      buttonTextColor = Colors.white;
-    }
-
-    // Button text style
-    final TextStyle buttonTextStyle = RLTypography.bodyLargeStyle.copyWith(
-      color: buttonTextColor,
-      fontWeight: FontWeight.w600,
-      fontSize: FILL_GAP_BUTTON_TEXT_SIZE,
-    );
-
-    // Button colors
-    Color buttonColor = RLTheme.backgroundLight;
-
-    if (canSubmit) {
-      buttonColor = RLTheme.primaryBlue;
-    }
-
-    Color buttonBorderColor = RLTheme.textPrimary.withValues(alpha: 0.2);
-
-    if (canSubmit) {
-      buttonBorderColor = RLTheme.primaryBlue;
-    }
-
-    // Button decoration
     final BoxDecoration buttonDecoration = BoxDecoration(
       color: buttonColor,
-      borderRadius: BorderRadius.circular(FILL_GAP_BUTTON_RADIUS),
-      border: Border.all(color: buttonBorderColor, width: FILL_GAP_BORDER_WIDTH),
+      borderRadius: RLDS.borderRadiusSmall,
+      border: Border.all(color: buttonBorderColor, width: 1.5),
     );
 
     VoidCallback? submitTapHandler;
@@ -474,7 +302,7 @@ class CCFillGapQuestionState extends State<CCFillGapQuestion> with TickerProvide
     }
 
     return Div.row(
-      [Text(buttonText, style: buttonTextStyle)],
+      [RLTypography.bodyMedium(buttonText, color: buttonTextColor)],
       height: 48,
       decoration: buttonDecoration,
       mainAxisAlignment: MainAxisAlignment.center,
@@ -482,12 +310,16 @@ class CCFillGapQuestionState extends State<CCFillGapQuestion> with TickerProvide
     );
   }
 
-  bool checkAllGapsFilled() {
-    return selectedOptionsForGaps.values.every((selectedOption) => selectedOption != null);
-  }
+  // * Explanation
 
   Widget ExplanationSection() {
     final bool shouldShowExplanation = hasAnswered;
+
+    final Widget ExplanationIcon = Icon(
+      Icons.lightbulb_outline,
+      color: RLDS.warningColor,
+      size: RLDS.iconMedium,
+    );
 
     return RenderIf.condition(
       shouldShowExplanation,
@@ -495,21 +327,24 @@ class CCFillGapQuestionState extends State<CCFillGapQuestion> with TickerProvide
       Div.column(
         [
           // Header
-          ExplanationHeader(),
+          Div.row([
+            ExplanationIcon,
+
+            const Spacing.width(8),
+
+            RLTypography.bodyMedium(RLUIStrings.FILL_GAP_EXPLANATION_LABEL),
+          ]),
 
           const Spacing.height(12),
 
-          // Explanation text
+          // Body
           ProgressiveText(
             textSegments: [widget.content.explanation],
-            textStyle: RLTypography.bodyLargeStyle.copyWith(
-              fontSize: FILL_GAP_LABEL_TEXT_SIZE,
-              height: 1.6,
-            ),
+            textStyle: RLTypography.bodyMediumStyle.copyWith(height: 1.6),
           ),
         ],
         padding: 20,
-        color: RLTheme.backgroundLight,
+        color: RLDS.backgroundLight,
         radius: 12,
       ),
 
@@ -517,29 +352,7 @@ class CCFillGapQuestionState extends State<CCFillGapQuestion> with TickerProvide
     );
   }
 
-  Widget ExplanationHeader() {
-    // Icon
-    const Icon ExplanationIcon = Icon(
-      Icons.lightbulb_outline,
-      color: RLTheme.warningColor,
-      size: 20,
-    );
-
-    // Title style
-    final TextStyle titleStyle = RLTypography.bodyLargeStyle.copyWith(
-      fontWeight: FontWeight.w600,
-      fontSize: FILL_GAP_LABEL_TEXT_SIZE,
-      color: RLTheme.textPrimary,
-    );
-
-    return Div.row([
-      ExplanationIcon,
-
-      const Spacing.width(FILL_GAP_ICON_SPACING),
-
-      Text('Explanation', style: titleStyle),
-    ]);
-  }
+  // * Actions
 
   void selectOption(int optionIndex) {
     final bool shouldSkipSelection = hasAnswered || usedOptionIndices.contains(optionIndex);
@@ -548,7 +361,11 @@ class CCFillGapQuestionState extends State<CCFillGapQuestion> with TickerProvide
       return;
     }
 
-    final int? firstEmptyGap = findFirstEmptyGap();
+    final int? firstEmptyGap = selectedOptionsForGaps.entries
+        .where((entry) => entry.value == null)
+        .map((entry) => entry.key)
+        .firstOrNull;
+
     if (firstEmptyGap != null) {
       setState(() {
         selectedOptionsForGaps[firstEmptyGap] = optionIndex;
@@ -557,19 +374,13 @@ class CCFillGapQuestionState extends State<CCFillGapQuestion> with TickerProvide
     }
   }
 
-  int? findFirstEmptyGap() {
-    return selectedOptionsForGaps.entries
-        .where((entry) => entry.value == null)
-        .map((entry) => entry.key)
-        .firstOrNull;
-  }
-
   void clearGapSelection(int gapIndex) {
     if (hasAnswered) {
       return;
     }
 
     final int? currentOption = selectedOptionsForGaps[gapIndex];
+
     if (currentOption != null) {
       setState(() {
         selectedOptionsForGaps[gapIndex] = null;
@@ -582,9 +393,11 @@ class CCFillGapQuestionState extends State<CCFillGapQuestion> with TickerProvide
     final bool allCorrect = selectedOptionsForGaps.entries.every((entry) {
       final int gapIndex = entry.key;
       final int? selectedOption = entry.value;
+
       if (selectedOption == null) {
         return false;
       }
+
       return widget.content.correctAnswerIndices[gapIndex] == selectedOption;
     });
 
@@ -605,7 +418,7 @@ class CCFillGapQuestionState extends State<CCFillGapQuestion> with TickerProvide
 
   void triggerShakeAnimation() {
     shakeController = AnimationController(
-      duration: const Duration(milliseconds: FILL_GAP_SHAKE_DURATION_MS),
+      duration: const Duration(milliseconds: 500),
       vsync: this,
     );
 
@@ -618,6 +431,7 @@ class CCFillGapQuestionState extends State<CCFillGapQuestion> with TickerProvide
 
     shakeController!.forward().then((_) {
       shakeController!.dispose();
+
       setState(() {
         shakeController = null;
         shakeAnimation = null;

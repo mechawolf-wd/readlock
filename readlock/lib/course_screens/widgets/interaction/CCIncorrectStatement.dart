@@ -5,8 +5,8 @@ import 'package:flutter/material.dart' hide Typography;
 import 'package:readlock/models/CourseModel.dart';
 import 'package:readlock/utility_widgets/Utility.dart';
 import 'package:readlock/constants/RLTypography.dart';
-import 'package:readlock/constants/RLTheme.dart';
-import 'package:readlock/constants/RLConstants.dart';
+import 'package:readlock/constants/RLDesignSystem.dart';
+import 'package:readlock/constants/RLUIStrings.dart';
 import 'package:readlock/utility_widgets/text_animation/ProgressiveText.dart';
 
 class StatementStyle {
@@ -22,7 +22,7 @@ class StatementStyle {
 }
 
 class CCIncorrectStatement extends StatefulWidget {
-  final QuestionContent content;
+  final IncorrectStatementQuestionContent content;
   final void Function(int selectedIndex, bool isCorrect) onAnswerSelected;
 
   const CCIncorrectStatement({
@@ -73,7 +73,7 @@ class CCIncorrectStatementState extends State<CCIncorrectStatement>
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: RLTheme.backgroundDark,
+      color: RLDS.backgroundDark,
       padding: const EdgeInsets.all(24),
       child: Center(
         child: Div.column(
@@ -81,12 +81,12 @@ class CCIncorrectStatementState extends State<CCIncorrectStatement>
             // Question prompt section
             QuestionTextSection(),
 
-            const Spacing.height(INCORRECT_STATEMENT_SECTION_SPACING),
+            const Spacing.height(24),
 
             // Statements list to identify incorrect one
             StatementsListSection(),
 
-            const Spacing.height(INCORRECT_STATEMENT_SECTION_SPACING),
+            const Spacing.height(24),
 
             // Explanation after answer
             ExplanationSection(),
@@ -111,7 +111,7 @@ class CCIncorrectStatementState extends State<CCIncorrectStatement>
       return widget.content.question;
     }
 
-    return INCORRECT_STATEMENT_PROMPT;
+    return RLUIStrings.INCORRECT_STATEMENT_PROMPT;
   }
 
   Widget StatementsListSection() {
@@ -174,14 +174,14 @@ class CCIncorrectStatementState extends State<CCIncorrectStatement>
   StatementStyle getAnsweredStatementStyle(bool isIncorrectStatement) {
     if (isIncorrectStatement) {
       return StatementStyle(
-        backgroundColor: RLTheme.primaryGreen.withValues(alpha: 0.1),
-        borderColor: RLTheme.primaryGreen,
+        backgroundColor: RLDS.primaryGreen.withValues(alpha: 0.1),
+        borderColor: RLDS.primaryGreen,
         feedbackIcon: Icons.error_outline,
       );
     } else {
       return StatementStyle(
-        backgroundColor: RLTheme.backgroundLight,
-        borderColor: RLTheme.textPrimary.withValues(alpha: 0.1),
+        backgroundColor: RLDS.backgroundLight,
+        borderColor: RLDS.textPrimary.withValues(alpha: 0.1),
         feedbackIcon: Icons.check_circle_outline,
       );
     }
@@ -189,15 +189,15 @@ class CCIncorrectStatementState extends State<CCIncorrectStatement>
 
   StatementStyle getSelectedStatementStyle() {
     return StatementStyle(
-      backgroundColor: RLTheme.warningColor.withValues(alpha: 0.1),
-      borderColor: RLTheme.warningLight,
+      backgroundColor: RLDS.warningColor.withValues(alpha: 0.1),
+      borderColor: RLDS.warningLight,
     );
   }
 
   StatementStyle getDefaultStatementStyle() {
     return StatementStyle(
-      backgroundColor: RLTheme.backgroundLight,
-      borderColor: RLTheme.textPrimary.withValues(alpha: 0.2),
+      backgroundColor: RLDS.backgroundLight,
+      borderColor: RLDS.textPrimary.withValues(alpha: 0.2),
     );
   }
 
@@ -211,9 +211,11 @@ class CCIncorrectStatementState extends State<CCIncorrectStatement>
       statementStyle.borderColor,
     );
 
-    final VoidCallback? tapCallback = hasAnswered
-        ? null
-        : () => selectStatement(statementIndex);
+    VoidCallback? tapCallback;
+
+    if (!hasAnswered) {
+      tapCallback = () => selectStatement(statementIndex);
+    }
 
     return Div.row(
       [
@@ -241,10 +243,10 @@ class CCIncorrectStatementState extends State<CCIncorrectStatement>
       statementIndex,
     );
 
-    Color iconColor = RLTheme.textPrimary.withValues(alpha: 0.4);
+    Color iconColor = RLDS.textPrimary.withValues(alpha: 0.4);
 
     if (isIncorrectStatement) {
-      iconColor = RLTheme.primaryGreen;
+      iconColor = RLDS.primaryGreen;
     }
 
     final Widget FeedbackIcon = Icon(statementStyle.feedbackIcon!, color: iconColor, size: 20);
@@ -316,9 +318,9 @@ class CCIncorrectStatementState extends State<CCIncorrectStatement>
 
   BoxDecoration getExplanationDecoration() {
     return BoxDecoration(
-      color: RLTheme.backgroundLight,
+      color: RLDS.backgroundLight,
       borderRadius: BorderRadius.circular(12),
-      border: Border.all(color: RLTheme.textPrimary.withValues(alpha: 0.1)),
+      border: Border.all(color: RLDS.textPrimary.withValues(alpha: 0.1)),
     );
   }
 

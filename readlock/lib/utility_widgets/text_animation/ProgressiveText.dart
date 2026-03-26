@@ -6,8 +6,11 @@ import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/utility_widgets/Utility.dart';
 import 'package:readlock/utility_widgets/visual_effects/BlurOverlay.dart';
 import 'package:readlock/services/SoundService.dart';
-import 'package:readlock/constants/RLConstants.dart';
 import 'package:readlock/services/HapticsService.dart';
+
+const double progressiveTextDefaultBottomSpacing = 8.0;
+const Duration progressiveTextAutoRevealDelay = Duration(milliseconds: 7);
+const Duration progressiveTextDoubleTapTimeout = Duration(milliseconds: 500);
 
 // Class to represent a segment of text with optional highlighting
 class TextSegmentWithHighlighting {
@@ -220,7 +223,7 @@ class ProgressiveTextState extends State<ProgressiveText> with TickerProviderSta
         final bool hasMoreSentencesToReveal = currentSentenceNumber < textSentences.length - 1;
 
         if (hasMoreSentencesToReveal) {
-          await Future.delayed(PROGRESSIVE_TEXT_AUTO_REVEAL_DELAY);
+          await Future.delayed(progressiveTextAutoRevealDelay);
 
           revealNextSentence();
         }
@@ -276,7 +279,7 @@ class ProgressiveTextState extends State<ProgressiveText> with TickerProviderSta
         final bool hasMoreSentencesToReveal = currentSentenceNumber < textSentences.length - 1;
 
         if (hasMoreSentencesToReveal) {
-          await Future.delayed(PROGRESSIVE_TEXT_AUTO_REVEAL_DELAY);
+          await Future.delayed(progressiveTextAutoRevealDelay);
           revealNextSentence();
         }
       }
@@ -358,7 +361,7 @@ class ProgressiveTextState extends State<ProgressiveText> with TickerProviderSta
       final Duration timeSinceLastTap = currentTime.difference(lastTapTime!);
 
       final bool isWithinDoubleTapWindow =
-          timeSinceLastTap <= PROGRESSIVE_TEXT_DOUBLE_TAP_TIMEOUT;
+          timeSinceLastTap <= progressiveTextDoubleTapTimeout;
 
       if (isWithinDoubleTapWindow) {
         tapCount++;
@@ -628,7 +631,7 @@ class ProgressiveTextState extends State<ProgressiveText> with TickerProviderSta
   // Build text with full layout, transitioning colors for revealed characters
   Widget TextWithColorTransition(String fullText, int revealedPosition) {
     final TextStyle baseStyle = getConsistentTextStyle();
-    final Color textColor = baseStyle.color ?? Colors.black;
+    final Color textColor = baseStyle.color ?? RLDS.black;
     final List<TextSpan> spans = [];
 
     // Add revealed characters in black
@@ -962,7 +965,7 @@ class CompletedSentenceWidget extends StatelessWidget {
     Widget sentenceWidget = Div.column(
       [SentenceText()],
       crossAxisAlignment: CrossAxisAlignment.start,
-      padding: const [0, 0, PROGRESSIVE_TEXT_DEFAULT_BOTTOM_SPACING, 0],
+      padding: const [0, 0, progressiveTextDefaultBottomSpacing, 0],
     );
 
     if (shouldBlur) {

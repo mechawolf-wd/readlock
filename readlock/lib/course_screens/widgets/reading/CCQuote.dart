@@ -5,8 +5,8 @@ import 'package:flutter/material.dart' hide Typography;
 import 'package:readlock/models/CourseModel.dart';
 import 'package:readlock/utility_widgets/Utility.dart';
 import 'package:readlock/constants/RLTypography.dart';
-import 'package:readlock/constants/RLTheme.dart';
-import 'package:readlock/constants/RLConstants.dart';
+import 'package:readlock/constants/RLDesignSystem.dart';
+import 'package:readlock/constants/RLUIStrings.dart';
 
 class CCQuote extends StatefulWidget {
   final QuoteContent content;
@@ -23,13 +23,13 @@ class CCQuoteState extends State<CCQuote> {
   @override
   Widget build(BuildContext context) {
     final BoxDecoration quoteContainerDecoration = BoxDecoration(
-      color: RLTheme.backgroundLight,
+      color: RLDS.backgroundLight,
       borderRadius: BorderRadius.circular(16),
-      border: Border.all(color: RLTheme.warningColor.withValues(alpha: 0.2)),
+      border: Border.all(color: RLDS.warningColor.withValues(alpha: 0.2)),
     );
 
     return Container(
-      color: RLTheme.backgroundDark,
+      color: RLDS.backgroundDark,
       padding: const EdgeInsets.all(24),
       child: Center(
         child: Container(
@@ -52,7 +52,7 @@ class CCQuoteState extends State<CCQuote> {
   }
 
   Widget QuoteHeader() {
-    const Widget QuoteIcon = Icon(Icons.format_quote, color: RLTheme.warningColor, size: 24);
+    final Widget QuoteIcon = Icon(Icons.format_quote, color: RLDS.warningColor, size: 24);
 
     IconData bookmarkIconData = Icons.bookmark_border;
 
@@ -62,7 +62,7 @@ class CCQuoteState extends State<CCQuote> {
 
     final Widget BookmarkToggleIcon = Icon(
       bookmarkIconData,
-      color: RLTheme.warningColor,
+      color: RLDS.warningColor,
       size: 24,
     );
 
@@ -71,7 +71,7 @@ class CCQuoteState extends State<CCQuote> {
 
       const Spacing.width(12),
 
-      Expanded(child: RLTypography.bodyLarge(NOTABLE_QUOTE_TITLE)),
+      Expanded(child: RLTypography.bodyLarge(RLUIStrings.NOTABLE_QUOTE_TITLE)),
 
       Div.row([BookmarkToggleIcon], onTap: handleBookmarkToggle),
     ]);
@@ -85,9 +85,9 @@ class CCQuoteState extends State<CCQuote> {
 
   Widget QuoteText() {
     final BoxDecoration quoteTextDecoration = BoxDecoration(
-      color: RLTheme.warningColor.withValues(alpha: 0.05),
+      color: RLDS.warningColor.withValues(alpha: 0.05),
       borderRadius: BorderRadius.circular(12),
-      border: Border.all(color: RLTheme.warningColor.withValues(alpha: 0.2), width: 2),
+      border: Border.all(color: RLDS.warningColor.withValues(alpha: 0.2), width: 2),
     );
 
     return Container(
@@ -101,14 +101,14 @@ class CCQuoteState extends State<CCQuote> {
     return Div.row([
       RLTypography.bodyMedium(
         '— ${widget.content.author}',
-        color: RLTheme.textPrimary.withValues(alpha: 0.7),
+        color: RLDS.textPrimary.withValues(alpha: 0.7),
       ),
 
       const Spacer(),
 
       RenderIf.condition(
         isBookmarked,
-        RLTypography.bodyMedium('Bookmarked ✓', color: RLTheme.warningColor),
+        RLTypography.bodyMedium(RLUIStrings.QUOTE_BOOKMARKED_LABEL, color: RLDS.warningColor),
       ),
     ]);
   }

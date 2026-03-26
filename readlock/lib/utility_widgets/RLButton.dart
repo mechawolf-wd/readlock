@@ -1,0 +1,176 @@
+// Reusable button component with primary, secondary, and tertiary variants
+// Full-width by default, uses design system colors and border radius
+
+import 'package:flutter/material.dart';
+import 'package:readlock/constants/RLTypography.dart';
+import 'package:readlock/constants/RLDesignSystem.dart';
+
+enum RLButtonVariant { primary, secondary, tertiary }
+
+class RLButton extends StatelessWidget {
+  final String label;
+  final VoidCallback? onTap;
+  final RLButtonVariant variant;
+  final Color? color;
+  final EdgeInsets? margin;
+  final EdgeInsets? padding;
+
+  const RLButton({
+    super.key,
+    required this.label,
+    this.onTap,
+    this.variant = RLButtonVariant.primary,
+    this.color,
+    this.margin,
+    this.padding,
+  });
+
+  const RLButton.primary({
+    super.key,
+    required this.label,
+    this.onTap,
+    this.color,
+    this.margin,
+    this.padding,
+  }) : variant = RLButtonVariant.primary;
+
+  const RLButton.secondary({
+    super.key,
+    required this.label,
+    this.onTap,
+    this.color,
+    this.margin,
+    this.padding,
+  }) : variant = RLButtonVariant.secondary;
+
+  const RLButton.tertiary({
+    super.key,
+    required this.label,
+    this.onTap,
+    this.color,
+    this.margin,
+    this.padding,
+  }) : variant = RLButtonVariant.tertiary;
+
+  @override
+  Widget build(BuildContext context) {
+    final Color resolvedColor = color ?? RLDS.primaryGreen;
+    final RLButtonColors style = getStyleForVariant(resolvedColor);
+
+    final EdgeInsets resolvedPadding = padding ??
+        const EdgeInsets.symmetric(vertical: 16, horizontal: 24);
+
+    final bool isTertiary = variant == RLButtonVariant.tertiary;
+
+    if (isTertiary) {
+      return TertiaryButton(
+        label: label,
+        textColor: style.textColor,
+        resolvedPadding: resolvedPadding,
+        margin: margin,
+        onTap: onTap,
+      );
+    }
+
+    return FilledButton(
+      label: label,
+      style: style,
+      resolvedPadding: resolvedPadding,
+      margin: margin,
+      onTap: onTap,
+    );
+  }
+
+  Widget FilledButton({
+    required String label,
+    required RLButtonColors style,
+    required EdgeInsets resolvedPadding,
+    required EdgeInsets? margin,
+    required VoidCallback? onTap,
+  }) {
+    final BoxDecoration decoration = BoxDecoration(
+      color: style.backgroundColor,
+      borderRadius: RLDS.borderRadiusSmall,
+      border: style.borderColor != null
+          ? Border.all(color: style.borderColor!, width: 2)
+          : null,
+    );
+
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: double.infinity,
+        margin: margin,
+        padding: resolvedPadding,
+        decoration: decoration,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            RLTypography.bodyLarge(label, color: style.textColor),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget TertiaryButton({
+    required String label,
+    required Color textColor,
+    required EdgeInsets resolvedPadding,
+    required EdgeInsets? margin,
+    required VoidCallback? onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: double.infinity,
+        margin: margin,
+        padding: resolvedPadding,
+        child: Center(
+          child: RLTypography.bodyMedium(label, color: textColor),
+        ),
+      ),
+    );
+  }
+
+  RLButtonColors getStyleForVariant(Color resolvedColor) {
+    switch (variant) {
+      case RLButtonVariant.primary:
+        {
+          return RLButtonColors(
+            backgroundColor: resolvedColor,
+            textColor: RLDS.white,
+            borderColor: Colors.transparent,
+          );
+        }
+      case RLButtonVariant.secondary:
+        {
+          return RLButtonColors(
+            backgroundColor: Colors.transparent,
+            textColor: resolvedColor,
+            borderColor: resolvedColor.withValues(alpha: 0.3),
+          );
+        }
+      case RLButtonVariant.tertiary:
+        {
+          return RLButtonColors(
+            backgroundColor: Colors.transparent,
+            textColor: resolvedColor,
+            borderColor: Colors.transparent,
+          );
+        }
+    }
+  }
+}
+
+class RLButtonColors {
+  final Color backgroundColor;
+  final Color textColor;
+  final Color? borderColor;
+
+  const RLButtonColors({
+    required this.backgroundColor,
+    required this.textColor,
+    this.borderColor,
+  });
+}

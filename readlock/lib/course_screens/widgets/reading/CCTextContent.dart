@@ -6,9 +6,8 @@ import 'package:readlock/models/CourseModel.dart';
 import 'package:readlock/utility_widgets/text_animation/ProgressiveText.dart';
 import 'package:readlock/utility_widgets/Utility.dart';
 import 'package:readlock/constants/RLTypography.dart';
-import 'package:readlock/constants/RLTheme.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
-import 'package:readlock/constants/RLConstants.dart';
+import 'package:readlock/constants/RLUIStrings.dart';
 import 'package:readlock/course_screens/CourseContentViewer.dart';
 
 class CCTextContent extends StatefulWidget {
@@ -28,8 +27,8 @@ class CCTextContentState extends State<CCTextContent> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: RLTheme.backgroundDark,
-      padding: RLTheme.contentPaddingInsets,
+      color: RLDS.backgroundDark,
+      padding: RLDS.contentPaddingInsets,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -62,17 +61,21 @@ class CCTextContentState extends State<CCTextContent> {
 
   // Button widget for continuing to next content
   Widget ContinueButton() {
-    // Button text style
-    final Widget buttonText = RLTypography.bodyMedium(
-      TEXT_CONTENT_CONTINUE_LABEL,
-      color: RLTheme.white,
+    final Widget buttonText = RLTypography.bodyMedium(RLUIStrings.TEXT_CONTENT_CONTINUE_LABEL);
+
+    final BoxDecoration buttonDecoration = BoxDecoration(
+      color: RLDS.primaryGreen,
+      borderRadius: BorderRadius.circular(12),
     );
 
-    return RLDS.BlockButton(
-      children: [buttonText],
+    return GestureDetector(
       onTap: handleContinueButtonTap,
-      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
-      margin: EdgeInsets.zero,
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+        decoration: buttonDecoration,
+        child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [buttonText]),
+      ),
     );
   }
 

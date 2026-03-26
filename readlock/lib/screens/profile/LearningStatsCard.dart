@@ -2,18 +2,18 @@
 // Displays days/lessons completed stats
 
 import 'package:flutter/material.dart';
-import 'package:readlock/constants/RLDimensions.dart';
+import 'package:readlock/constants/RLUIStrings.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/utility_widgets/Utility.dart';
-import 'package:readlock/constants/RLTheme.dart';
+import 'package:readlock/constants/RLDesignSystem.dart';
 
 class LearningStatsCard extends StatelessWidget {
   const LearningStatsCard({super.key});
 
-  static const Widget ShareIcon = Icon(
+  static final Widget ShareIcon = Icon(
     Icons.share,
-    color: RLTheme.white,
-    size: RLDimensions.iconM,
+    color: RLDS.white,
+    size: 20.0,
   );
 
   void handleShareTap() {
@@ -23,17 +23,17 @@ class LearningStatsCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final BoxDecoration cardDecoration = BoxDecoration(
-      color: RLTheme.primaryBlue,
-      borderRadius: RLDimensions.borderRadiusXL,
+      color: RLDS.primaryBlue,
+      borderRadius: BorderRadius.circular(16.0),
     );
 
     return Container(
       decoration: cardDecoration,
-      padding: RLDimensions.paddingAllXL,
+      padding: EdgeInsets.all(20.0),
       child: Div.column([
         // Header row
         Div.row([
-          RLTypography.headingMedium('Learning Statistics', color: RLTheme.white),
+          RLTypography.headingMedium(RLUIStrings.LEARNING_STATS_TITLE, color: RLDS.white),
 
           const Spacer(),
 
@@ -52,19 +52,19 @@ class LearningStatsCard extends StatelessWidget {
     return Div.row([
       // Days equivalent stat
       const Expanded(
-        child: StatItem(value: '320', unit: 'days', label: 'at 10 minutes/day'),
+        child: StatItem(value: '320', unit: RLUIStrings.LEARNING_STATS_DAYS_UNIT, label: RLUIStrings.LEARNING_STATS_DAYS_LABEL),
       ),
 
       // Divider
       Container(
-        width: RLDimensions.dividerNormal,
-        height: RLDimensions.buttonHeightL,
-        color: Colors.white.withValues(alpha: RLDimensions.alphaMedium),
+        width: 1.0,
+        height: 48.0,
+        color: RLDS.white.withValues(alpha: 0.2),
       ),
 
       // Lessons completed stat
       const Expanded(
-        child: StatItem(value: '42', unit: 'lessons', label: 'completed'),
+        child: StatItem(value: '42', unit: RLUIStrings.LEARNING_STATS_LESSONS_UNIT, label: RLUIStrings.LEARNING_STATS_LESSONS_LABEL),
       ),
     ]);
   }
@@ -81,13 +81,13 @@ class StatItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Div.column([
       Div.row([
-        RLTypography.headingLarge(value, color: Colors.white),
+        RLTypography.headingLarge(value, color: RLDS.white),
 
         const Spacing.width(4),
 
         RLTypography.bodyMedium(
           unit,
-          color: Colors.white.withValues(alpha: RLDimensions.opacitySoft),
+          color: RLDS.white.withValues(alpha: 0.8),
         ),
       ], mainAxisAlignment: MainAxisAlignment.center),
 
@@ -95,7 +95,7 @@ class StatItem extends StatelessWidget {
 
       RLTypography.bodyMedium(
         label,
-        color: Colors.white.withValues(alpha: RLDimensions.opacitySubtle),
+        color: RLDS.white.withValues(alpha: 0.6),
         textAlign: TextAlign.center,
       ),
     ], crossAxisAlignment: CrossAxisAlignment.center);

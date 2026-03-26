@@ -4,7 +4,8 @@
 import 'package:flutter/material.dart' hide Typography;
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/utility_widgets/Utility.dart';
-import 'package:readlock/constants/RLTheme.dart';
+import 'package:readlock/constants/RLDesignSystem.dart';
+import 'package:readlock/constants/RLUIStrings.dart';
 
 class CCDesignExamplesShowcase extends StatefulWidget {
   const CCDesignExamplesShowcase({super.key});
@@ -82,19 +83,19 @@ class CCDesignExamplesShowcaseState extends State<CCDesignExamplesShowcase> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: RLTheme.backgroundDark,
-      padding: RLTheme.contentPaddingInsets,
+      color: RLDS.backgroundDark,
+      padding: RLDS.contentPaddingInsets,
       child: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            RLTypography.headingMedium('Design Examples', color: RLTheme.textPrimary),
+            RLTypography.headingMedium(RLUIStrings.DESIGN_EXAMPLES_TITLE, color: RLDS.textPrimary),
 
             const Spacing.height(8),
 
             RLTypography.bodyMedium(
-              'Tap cards to reveal examples of good and bad design',
-              color: RLTheme.textPrimary.withValues(alpha: 0.7),
+              RLUIStrings.DESIGN_EXAMPLES_SUBTITLE,
+              color: RLDS.textPrimary.withValues(alpha: 0.7),
             ),
 
             const Spacing.height(20),
@@ -120,34 +121,34 @@ class CCDesignExamplesShowcaseState extends State<CCDesignExamplesShowcase> {
     );
   }
 
-  Widget getExampleCardItem(BuildContext context, int index) {
+  Widget getExampleCardItem(BuildContext context, int cardIndex) {
     return ExampleCard(
-      example: examples[index],
-      index: index,
-      isRevealed: revealedCards.contains(index),
-      onTap: () => toggleCardReveal(index),
+      example: examples[cardIndex],
+      index: cardIndex,
+      isRevealed: revealedCards.contains(cardIndex),
+      onTap: () => toggleCardReveal(cardIndex),
     );
   }
 
-  void toggleCardReveal(int index) {
+  void toggleCardReveal(int cardIndex) {
     setState(() {
-      final bool isAlreadyRevealed = revealedCards.contains(index);
+      final bool isAlreadyRevealed = revealedCards.contains(cardIndex);
 
       if (isAlreadyRevealed) {
-        revealedCards.remove(index);
+        revealedCards.remove(cardIndex);
       } else {
-        revealedCards.add(index);
+        revealedCards.add(cardIndex);
       }
     });
   }
 
   Widget RevealProgressIndicator() {
-    const Widget LightbulbIcon = Icon(Icons.lightbulb, color: RLTheme.primaryGreen, size: 20);
+    final Widget LightbulbIcon = Icon(Icons.lightbulb, color: RLDS.primaryGreen, size: 20);
 
     final bool isAllRevealed = revealedCards.length == examples.length;
 
     final BoxDecoration progressDecoration = BoxDecoration(
-      color: RLTheme.backgroundLight,
+      color: RLDS.backgroundLight,
       borderRadius: BorderRadius.circular(12),
     );
 
@@ -163,7 +164,7 @@ class CCDesignExamplesShowcaseState extends State<CCDesignExamplesShowcase> {
           Expanded(
             child: RLTypography.bodyMedium(
               '${revealedCards.length}/${examples.length} examples discovered',
-              color: RLTheme.textPrimary,
+              color: RLDS.textPrimary,
             ),
           ),
 
@@ -175,14 +176,14 @@ class CCDesignExamplesShowcaseState extends State<CCDesignExamplesShowcase> {
 
   Widget CompleteChip() {
     final BoxDecoration chipDecoration = BoxDecoration(
-      color: RLTheme.primaryGreen,
+      color: RLDS.primaryGreen,
       borderRadius: BorderRadius.circular(8),
     );
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: chipDecoration,
-      child: RLTypography.bodyMedium('Complete!', color: RLTheme.white),
+      child: RLTypography.bodyMedium(RLUIStrings.DESIGN_EXAMPLES_COMPLETE, color: RLDS.white),
     );
   }
 
@@ -192,10 +193,10 @@ class CCDesignExamplesShowcaseState extends State<CCDesignExamplesShowcase> {
     required bool isRevealed,
     required VoidCallback onTap,
   }) {
-    Color themeColor = RLTheme.errorColor;
+    Color themeColor = RLDS.errorColor;
 
     if (example.isGoodDesign) {
-      themeColor = RLTheme.primaryGreen;
+      themeColor = RLDS.primaryGreen;
     }
 
     // Card styling
@@ -211,10 +212,10 @@ class CCDesignExamplesShowcaseState extends State<CCDesignExamplesShowcase> {
       titleText = example.title;
     }
 
-    Color titleColor = RLTheme.textPrimary.withValues(alpha: 0.7);
+    Color titleColor = RLDS.textPrimary.withValues(alpha: 0.7);
 
     if (isRevealed) {
-      titleColor = RLTheme.textPrimary;
+      titleColor = RLDS.textPrimary;
     }
 
     final TextStyle titleStyle = RLTypography.bodyMediumStyle.copyWith(
@@ -260,8 +261,8 @@ class CCDesignExamplesShowcaseState extends State<CCDesignExamplesShowcase> {
   }
 
   BoxDecoration getCardDecoration({required bool isRevealed, required Color themeColor}) {
-    Color bgColor = RLTheme.backgroundLight;
-    Color borderColor = RLTheme.textPrimary.withValues(alpha: 0.1);
+    Color bgColor = RLDS.backgroundLight;
+    Color borderColor = RLDS.textPrimary.withValues(alpha: 0.1);
     double borderWidth = 1;
 
     if (isRevealed) {
@@ -283,7 +284,7 @@ class CCDesignExamplesShowcaseState extends State<CCDesignExamplesShowcase> {
     required bool isGoodDesign,
   }) {
     // Icon container styling
-    Color iconBgColor = RLTheme.textPrimary.withValues(alpha: 0.1);
+    Color iconBgColor = RLDS.textPrimary.withValues(alpha: 0.1);
 
     if (isRevealed) {
       iconBgColor = themeColor.withValues(alpha: 0.2);
@@ -297,7 +298,7 @@ class CCDesignExamplesShowcaseState extends State<CCDesignExamplesShowcase> {
     }
 
     // Determine icon color
-    Color iconColor = RLTheme.textPrimary.withValues(alpha: 0.5);
+    Color iconColor = RLDS.textPrimary.withValues(alpha: 0.5);
 
     if (isRevealed) {
       iconColor = themeColor;
@@ -314,7 +315,7 @@ class CCDesignExamplesShowcaseState extends State<CCDesignExamplesShowcase> {
 
     final Widget TouchHintIcon = Icon(
       Icons.touch_app,
-      color: RLTheme.textPrimary.withValues(alpha: 0.3),
+      color: RLDS.textPrimary.withValues(alpha: 0.3),
       size: 16,
     );
 
@@ -335,7 +336,7 @@ class CCDesignExamplesShowcaseState extends State<CCDesignExamplesShowcase> {
 
   Widget RevealedContent({required List<String> textSegments}) {
     final TextStyle segmentStyle = RLTypography.bodyMediumStyle.copyWith(
-      color: RLTheme.textPrimary.withValues(alpha: 0.8),
+      color: RLDS.textPrimary.withValues(alpha: 0.8),
       height: 1.4,
     );
 
@@ -357,11 +358,11 @@ class CCDesignExamplesShowcaseState extends State<CCDesignExamplesShowcase> {
 
   Widget HiddenContent() {
     final TextStyle hiddenStyle = RLTypography.bodyMediumStyle.copyWith(
-      color: RLTheme.textPrimary.withValues(alpha: 0.5),
+      color: RLDS.textPrimary.withValues(alpha: 0.5),
       fontStyle: FontStyle.italic,
     );
 
-    return Center(child: Text('Tap to reveal', style: hiddenStyle));
+    return Center(child: Text(RLUIStrings.DESIGN_EXAMPLES_TAP_REVEAL, style: hiddenStyle));
   }
 }
 

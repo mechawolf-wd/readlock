@@ -1,6 +1,6 @@
 // Geomates Design System
 // Centralized design variables for consistent styling across the app
-// Simple design: no glows, no gradients, 1px borders, solid offset shadows
+// Simple design: no glows, no gradients, no shadows, 1px borders
 //
 // Colors defined using HSL (Hue, Saturation, Lightness) for clarity.
 
@@ -31,6 +31,20 @@ class RLDS {
   static final Color primary800 = colorFromHSL(102, 0.78, 0.23);
   static final Color primary900 = colorFromHSL(104, 0.69, 0.20);
   static final Color primary1000 = colorFromHSL(104, 0.69, 0.08);
+
+  // * Cod gray
+
+  static final Color grey50 = colorFromHSL(120, 0.09, 0.98);
+  static final Color grey100 = colorFromHSL(120, 0.05, 0.96);
+  static final Color grey200 = colorFromHSL(60, 0.02, 0.90);
+  static final Color grey300 = colorFromHSL(60, 0.01, 0.83);
+  static final Color grey400 = colorFromHSL(60, 0.01, 0.64);
+  static final Color grey500 = colorFromHSL(75, 0.02, 0.45);
+  static final Color grey600 = colorFromHSL(80, 0.02, 0.32);
+  static final Color grey700 = colorFromHSL(60, 0.02, 0.25);
+  static final Color grey800 = colorFromHSL(60, 0.01, 0.15);
+  static final Color grey900 = colorFromHSL(60, 0.02, 0.10);
+  static final Color grey1000 = colorFromHSL(60, 0.02, 0.05);
 
   // * Deep Cerulean — secondary
 
@@ -144,20 +158,6 @@ class RLDS {
   static final Color indigo900 = colorFromHSL(283, 0.83, 0.32);
   static final Color indigo1000 = colorFromHSL(283, 0.83, 0.08);
 
-  // * Cod gray
-
-  static final Color grey50 = colorFromHSL(120, 0.09, 0.98);
-  static final Color grey100 = colorFromHSL(120, 0.05, 0.96);
-  static final Color grey200 = colorFromHSL(60, 0.02, 0.90);
-  static final Color grey300 = colorFromHSL(60, 0.01, 0.83);
-  static final Color grey400 = colorFromHSL(60, 0.01, 0.64);
-  static final Color grey500 = colorFromHSL(75, 0.02, 0.45);
-  static final Color grey600 = colorFromHSL(80, 0.02, 0.32);
-  static final Color grey700 = colorFromHSL(60, 0.02, 0.25);
-  static final Color grey800 = colorFromHSL(60, 0.01, 0.15);
-  static final Color grey900 = colorFromHSL(60, 0.02, 0.10);
-  static final Color grey1000 = colorFromHSL(60, 0.02, 0.05);
-
   // * Neutral
 
   static final Color black = grey900;
@@ -216,11 +216,17 @@ class RLDS {
     topRight: Radius.circular(radiusLarge),
   );
 
-  // * Strokes & shadows
+  // * Font weights
+
+  static const FontWeight weightRegular = FontWeight.w400;
+  static const FontWeight weightMedium = FontWeight.w500;
+  static const FontWeight weightSemibold = FontWeight.w600;
+  static const FontWeight weightBold = FontWeight.w700;
+
+  // * Strokes
 
   static const double borderWidth = 2;
   static const double separatorWidth = 48.0;
-  static const double shadowOffset = 1.0;
 
   // * Icon sizes
 
@@ -236,4 +242,90 @@ class RLDS {
   static const double sheetGrabberToHeadingSpacing = spacing24;
   static const double sheetHeadingToSubheadingSpacing = spacing4;
   static const double sheetSubheadingToContentSpacing = spacing16;
+
+  // * Primary colors
+
+  static final Color primaryBlue = blue400;
+  static final Color primaryGreen = green500;
+
+  // * Background colors
+
+  static final Color backgroundDark = white;
+  static final Color backgroundLight = grey50;
+
+  // * Status colors
+
+  static final Color successColor = green400;
+  static final Color errorColor = red500;
+  static final Color warningColor = vermilion500;
+
+  static final Color successDark = green600;
+  static final Color errorDark = red600;
+  static final Color warningDark = vermilion600;
+  static final Color warningLight = vermilion400;
+
+  // * Accent colors
+
+  static final Color accentPurple = indigo600;
+  static final Color accentTeal = teal500;
+  static final Color accentIndigo = indigo700;
+  static final Color accentPink = pink500;
+  static final Color accentCyan = cyan400;
+  static final Color accentAmber = colorFromHSL(45, 1.00, 0.50);
+  static final Color accentBrown = colorFromHSL(16, 0.25, 0.38);
+  static final Color accentYellow = colorFromHSL(54, 1.00, 0.50);
+  static final Color accentLime = colorFromHSL(65, 0.70, 0.52);
+
+  // * Content padding
+
+  static const EdgeInsets contentPaddingInsets = EdgeInsets.all(spacing24);
+  static const EdgeInsets contentPaddingMediumInsets = EdgeInsets.all(spacing12);
+
+  // * Navigation transitions
+
+  static const Curve transitionCurve = Curves.easeInOut;
+
+  static PageRouteBuilder<T> fadeTransition<T>(Widget page) {
+    return PageRouteBuilder<T>(
+      pageBuilder: (context, animation, secondaryAnimation) => page,
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        final Animation<double> fadeAnimation = Tween<double>(
+          begin: 0.0,
+          end: 1.0,
+        ).animate(CurvedAnimation(parent: animation, curve: transitionCurve));
+
+        return FadeTransition(opacity: fadeAnimation, child: child);
+      },
+    );
+  }
+
+  static PageRouteBuilder<T> slowFadeTransition<T>(Widget page) {
+    return PageRouteBuilder<T>(
+      transitionDuration: const Duration(milliseconds: 450),
+      reverseTransitionDuration: const Duration(milliseconds: 450),
+      pageBuilder: (context, animation, secondaryAnimation) => page,
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        final Animation<double> fadeAnimation = Tween<double>(
+          begin: 0.0,
+          end: 1.0,
+        ).animate(CurvedAnimation(parent: animation, curve: transitionCurve));
+
+        return FadeTransition(opacity: fadeAnimation, child: child);
+      },
+    );
+  }
+
+  static PageRouteBuilder<T> slideUpTransition<T>(Widget page) {
+    return PageRouteBuilder<T>(
+      pageBuilder: (context, animation, secondaryAnimation) => page,
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        final Animation<Offset> slideAnimation = Tween<Offset>(
+          begin: const Offset(0.0, 1.0),
+          end: Offset.zero,
+        ).animate(CurvedAnimation(parent: animation, curve: transitionCurve));
+
+        return SlideTransition(position: slideAnimation, child: child);
+      },
+    );
+  }
 }

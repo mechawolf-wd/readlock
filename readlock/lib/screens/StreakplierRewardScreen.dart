@@ -3,11 +3,9 @@
 
 import 'package:flutter/material.dart' hide Typography;
 import 'package:readlock/constants/RLTypography.dart';
-import 'package:readlock/constants/RLTheme.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
-import 'package:readlock/constants/RLConstants.dart';
 import 'package:readlock/utility_widgets/Utility.dart';
-import 'package:readlock/services/SoundService.dart';
+import 'package:readlock/constants/RLUIStrings.dart';
 
 // Reward data model
 class LessonReward {
@@ -69,11 +67,12 @@ class StreakplierRewardScreenState extends State<StreakplierRewardScreen>
   // Initialize counting animation controllers only
   void initializeCountingControllers() {
     experiencePointsController = AnimationController(
-      duration: COUNTING_ANIMATION_DURATION,
+      duration: const Duration(milliseconds: 800),
       vsync: this,
     );
+
     streakplierController = AnimationController(
-      duration: COUNTING_ANIMATION_DURATION,
+      duration: const Duration(milliseconds: 800),
       vsync: this,
     );
   }
@@ -91,33 +90,36 @@ class StreakplierRewardScreenState extends State<StreakplierRewardScreen>
     ).animate(CurvedAnimation(parent: streakplierController, curve: Curves.easeOut));
   }
 
-  // Start the sequential reveal with simple opacity changes and audio
+  // Start the sequential reveal with simple opacity changes
   void startRevealSequence() {
-    // Lesson time reveal (now first with emphasis)
-    Future.delayed(REWARD_INITIAL_DELAY, () {
+    const Duration initialDelay = Duration(milliseconds: 500);
+    const Duration itemRevealDelay = Duration(milliseconds: 600);
+
+    // Lesson time reveal (first with emphasis)
+    Future.delayed(initialDelay, () {
       if (mounted) {
         setState(() => lessonTimeOpacity = 1.0);
       }
     });
 
-    // Streakplier reveal (now second)
-    Future.delayed(REWARD_INITIAL_DELAY + ITEM_REVEAL_DELAY, () {
+    // Streakplier reveal (second)
+    Future.delayed(initialDelay + itemRevealDelay, () {
       if (mounted) {
         setState(() => streakplierOpacity = 1.0);
         streakplierController.forward();
       }
     });
 
-    // Experience points reveal (now third)
-    Future.delayed(REWARD_INITIAL_DELAY + ITEM_REVEAL_DELAY * 2, () {
+    // Experience points reveal (third)
+    Future.delayed(initialDelay + itemRevealDelay * 2, () {
       if (mounted) {
         setState(() => experiencePointsOpacity = 1.0);
         experiencePointsController.forward();
       }
     });
 
-    // Continue button reveal and stop audio
-    Future.delayed(REWARD_INITIAL_DELAY + ITEM_REVEAL_DELAY * 3, () {
+    // Continue button reveal
+    Future.delayed(initialDelay + itemRevealDelay * 3, () {
       if (mounted) {
         setState(() => continueButtonOpacity = 1.0);
       }
@@ -127,7 +129,7 @@ class StreakplierRewardScreenState extends State<StreakplierRewardScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: RLTheme.backgroundDark,
+      backgroundColor: RLDS.backgroundDark,
       body: SafeArea(
         child: Div.column(
           [
@@ -162,8 +164,8 @@ class StreakplierRewardScreenState extends State<StreakplierRewardScreen>
 
       // Congratulations text
       RLTypography.headingLarge(
-        CONGRATULATIONS_MESSAGE,
-        color: RLTheme.primaryGreen,
+        RLUIStrings.REWARD_CONGRATULATIONS,
+        color: RLDS.primaryGreen,
         textAlign: TextAlign.center,
       ),
 
@@ -171,8 +173,8 @@ class StreakplierRewardScreenState extends State<StreakplierRewardScreen>
 
       // Lesson complete subtitle
       RLTypography.bodyLarge(
-        LESSON_COMPLETE_MESSAGE,
-        color: RLTheme.textSecondary,
+        RLUIStrings.REWARD_LESSON_COMPLETE,
+        color: RLDS.textSecondary,
         textAlign: TextAlign.center,
       ),
     ], crossAxisAlignment: CrossAxisAlignment.center);
@@ -181,15 +183,11 @@ class StreakplierRewardScreenState extends State<StreakplierRewardScreen>
   // Large celebration check mark icon
   Widget CelebrationIcon() {
     final BoxDecoration iconDecoration = BoxDecoration(
-      color: RLTheme.primaryGreen.withValues(alpha: 0.1),
+      color: RLDS.primaryGreen.withValues(alpha: 0.1),
       borderRadius: BorderRadius.circular(32),
     );
 
-    const Widget CheckIcon = Icon(
-      Icons.check_circle,
-      color: RLTheme.primaryGreen,
-      size: CELEBRATION_ICON_SIZE,
-    );
+    final Widget CheckIcon = Icon(Icons.check_circle, color: RLDS.primaryGreen, size: 48);
 
     return Container(width: 64, height: 64, decoration: iconDecoration, child: CheckIcon);
   }
@@ -199,7 +197,7 @@ class StreakplierRewardScreenState extends State<StreakplierRewardScreen>
     final String formattedLessonTime = formatLessonDuration();
 
     return Div.column([
-      // Featured lesson time card - larger and more prominent
+      // Featured lesson time card
       FeaturedReadingTimeCard(formattedLessonTime),
 
       const Spacing.height(24),
@@ -212,24 +210,17 @@ class StreakplierRewardScreenState extends State<StreakplierRewardScreen>
   // Featured reading time card with enhanced visual prominence
   Widget FeaturedReadingTimeCard(String formattedLessonTime) {
     final BoxDecoration featuredCardDecoration = BoxDecoration(
-      color: RLTheme.warningColor.withValues(alpha: 0.1),
+      color: RLDS.warningColor.withValues(alpha: 0.1),
       borderRadius: BorderRadius.circular(20),
-      border: Border.all(color: RLTheme.warningColor.withValues(alpha: 0.3), width: 2),
-      boxShadow: [
-        BoxShadow(
-          color: RLTheme.warningColor.withValues(alpha: 0.1),
-          blurRadius: 12,
-          offset: const Offset(0, 4),
-        ),
-      ],
+      border: Border.all(color: RLDS.warningColor.withValues(alpha: 0.3), width: 2),
     );
 
     final BoxDecoration timerIconDecoration = BoxDecoration(
-      color: RLTheme.warningColor.withValues(alpha: 0.2),
+      color: RLDS.warningColor.withValues(alpha: 0.2),
       borderRadius: BorderRadius.circular(40),
     );
 
-    const Widget TimerIcon = Icon(Icons.timer_rounded, color: RLTheme.warningColor, size: 40);
+    final Widget TimerIcon = Icon(Icons.timer_rounded, color: RLDS.warningColor, size: 40);
 
     return AnimatedOpacity(
       opacity: lessonTimeOpacity,
@@ -245,8 +236,8 @@ class StreakplierRewardScreenState extends State<StreakplierRewardScreen>
 
           // Reading time label
           RLTypography.bodyLarge(
-            LESSON_TIME_LABEL,
-            color: RLTheme.textPrimary,
+            RLUIStrings.REWARD_LESSON_TIME_LABEL,
+            color: RLDS.textPrimary,
             textAlign: TextAlign.center,
           ),
 
@@ -256,7 +247,7 @@ class StreakplierRewardScreenState extends State<StreakplierRewardScreen>
           Text(
             formattedLessonTime,
             style: RLTypography.headingLargeStyle.copyWith(
-              color: RLTheme.warningColor,
+              color: RLDS.warningColor,
               fontSize: 36,
               fontWeight: FontWeight.bold,
             ),
@@ -270,7 +261,7 @@ class StreakplierRewardScreenState extends State<StreakplierRewardScreen>
   // Secondary stats in a row layout
   Widget SecondaryStatsRow() {
     return Container(
-      padding: const EdgeInsets.all(REWARD_CARD_PADDING),
+      padding: const EdgeInsets.all(24),
       decoration: getRewardCardDecoration(),
       child: Div.row([
         // Streakplier on the left
@@ -280,18 +271,18 @@ class StreakplierRewardScreenState extends State<StreakplierRewardScreen>
             duration: const Duration(milliseconds: 300),
             child: CompactRewardStatisticItem(
               icon: Icons.trending_up,
-              label: STREAKPLIER_LABEL,
+              label: RLUIStrings.REWARD_STREAKPLIER_LABEL,
               animatedValue: AnimatedBuilder(
                 animation: streakplierCountAnimation,
                 builder: (context, child) {
                   return RLTypography.bodyLarge(
                     '${streakplierCountAnimation.value.toStringAsFixed(2)}x',
-                    color: RLTheme.primaryGreen,
+                    color: RLDS.primaryGreen,
                     textAlign: TextAlign.center,
                   );
                 },
               ),
-              color: RLTheme.primaryGreen,
+              color: RLDS.primaryGreen,
             ),
           ),
         ),
@@ -304,18 +295,18 @@ class StreakplierRewardScreenState extends State<StreakplierRewardScreen>
             opacity: experiencePointsOpacity,
             duration: const Duration(milliseconds: 300),
             child: CompactRewardStatisticItem(
-              label: EXPERIENCE_POINTS_LABEL,
+              label: RLUIStrings.REWARD_COLLECTED_LABEL,
               animatedValue: AnimatedBuilder(
                 animation: experiencePointsCountAnimation,
                 builder: (context, child) {
                   return RLTypography.bodyLarge(
                     '+${experiencePointsCountAnimation.value} XP',
-                    color: RLTheme.primaryBlue,
+                    color: RLDS.primaryBlue,
                     textAlign: TextAlign.center,
                   );
                 },
               ),
-              color: RLTheme.primaryBlue,
+              color: RLDS.primaryBlue,
             ),
           ),
         ),
@@ -354,7 +345,7 @@ class StreakplierRewardScreenState extends State<StreakplierRewardScreen>
     }
 
     statisticChildren.add(
-      RLTypography.bodyMedium(label, color: RLTheme.textSecondary, textAlign: TextAlign.center),
+      RLTypography.bodyMedium(label, color: RLDS.textSecondary, textAlign: TextAlign.center),
     );
 
     statisticChildren.add(const Spacing.height(4));
@@ -369,11 +360,20 @@ class StreakplierRewardScreenState extends State<StreakplierRewardScreen>
     return AnimatedOpacity(
       opacity: continueButtonOpacity,
       duration: const Duration(milliseconds: 300),
-      child: RLDS.BlockButton(
-        children: [RLTypography.bodyLarge(REWARD_CONTINUE_BUTTON_TEXT, color: Colors.white)],
+      child: GestureDetector(
         onTap: widget.onContinue,
-        backgroundColor: RLTheme.primaryGreen,
-        margin: EdgeInsets.zero,
+        child: Container(
+          width: double.infinity,
+          padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+          decoration: BoxDecoration(
+            color: RLDS.primaryGreen,
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [RLTypography.bodyLarge(RLUIStrings.REWARD_CONTINUE_LABEL, color: RLDS.white)],
+          ),
+        ),
       ),
     );
   }
@@ -381,16 +381,9 @@ class StreakplierRewardScreenState extends State<StreakplierRewardScreen>
   // Reward card styling decoration
   BoxDecoration getRewardCardDecoration() {
     return BoxDecoration(
-      color: RLTheme.backgroundLight,
-      borderRadius: BorderRadius.circular(REWARD_CARD_BORDER_RADIUS),
-      border: Border.all(color: RLTheme.textPrimary.withValues(alpha: 0.1)),
-      boxShadow: [
-        BoxShadow(
-          color: Colors.black.withValues(alpha: 0.05),
-          blurRadius: 8,
-          offset: const Offset(0, 2),
-        ),
-      ],
+      color: RLDS.backgroundLight,
+      borderRadius: BorderRadius.circular(16),
+      border: Border.all(color: RLDS.textPrimary.withValues(alpha: 0.1)),
     );
   }
 

@@ -1,15 +1,15 @@
+// Multiple-choice question where the reader selects one or more correct answers
+// Tests comprehension after a reading section — wrong answers show hints, correct ones show explanations
+
 import 'package:flutter/material.dart' hide Typography;
 import 'package:readlock/models/CourseModel.dart';
 import 'package:readlock/utility_widgets/Utility.dart';
 import 'package:readlock/constants/RLTypography.dart';
-import 'package:readlock/constants/RLTheme.dart';
-import 'package:readlock/constants/RLConstants.dart';
+import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/utility_widgets/FeedbackSnackbar.dart';
 
-enum OptionButtonState { normal, selected, correctAndAnswered, incorrectAndAnswered }
-
 class CCMultipleChoice extends StatefulWidget {
-  final QuestionContent content;
+  final MultipleChoiceQuestionContent content;
   final void Function(int selectedIndex, bool isCorrect) onAnswerSelected;
 
   const CCMultipleChoice({super.key, required this.content, required this.onAnswerSelected});
@@ -36,27 +36,27 @@ class CCMultipleChoiceState extends State<CCMultipleChoice> {
 
   void initializeStyles() {
     normalOptionDecoration = BoxDecoration(
-      color: RLTheme.backgroundLight,
-      borderRadius: BorderRadius.circular(12),
-      border: Border.all(color: RLTheme.textPrimary.withValues(alpha: 0.2), width: 2),
+      color: RLDS.backgroundLight,
+      borderRadius: RLDS.borderRadiusSmall,
+      border: Border.all(color: RLDS.textPrimary.withValues(alpha: 0.2), width: 2),
     );
 
     selectedOptionDecoration = BoxDecoration(
-      color: RLTheme.backgroundLight,
-      borderRadius: BorderRadius.circular(12),
-      border: Border.all(color: RLTheme.primaryBlue, width: 2),
+      color: RLDS.backgroundLight,
+      borderRadius: RLDS.borderRadiusSmall,
+      border: Border.all(color: RLDS.primaryBlue, width: 2),
     );
 
     correctOptionDecoration = BoxDecoration(
-      color: RLTheme.primaryGreen.withValues(alpha: 0.1),
-      borderRadius: BorderRadius.circular(12),
-      border: Border.all(color: RLTheme.primaryGreen, width: 2),
+      color: RLDS.primaryGreen.withValues(alpha: 0.1),
+      borderRadius: RLDS.borderRadiusSmall,
+      border: Border.all(color: RLDS.primaryGreen, width: 2),
     );
 
     incorrectOptionDecoration = BoxDecoration(
-      color: RLTheme.backgroundLight,
-      borderRadius: BorderRadius.circular(12),
-      border: Border.all(color: RLTheme.textPrimary.withValues(alpha: 0.1), width: 2),
+      color: RLDS.backgroundLight,
+      borderRadius: RLDS.borderRadiusSmall,
+      border: Border.all(color: RLDS.textPrimary.withValues(alpha: 0.1), width: 2),
     );
   }
 
@@ -67,14 +67,14 @@ class CCMultipleChoiceState extends State<CCMultipleChoice> {
         // Question text section
         QuestionTextSection(),
 
-        const Spacing.height(MULTIPLE_CHOICE_QUESTION_SECTION_SPACING),
+        const Spacing.height(24),
 
         // Multiple choice options
         OptionsListSection(),
 
-        const Spacing.height(MULTIPLE_CHOICE_QUESTION_SECTION_SPACING),
+        const Spacing.height(24),
       ],
-      color: RLTheme.backgroundDark,
+      color: RLDS.backgroundDark,
       padding: 24,
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.center,
@@ -90,16 +90,21 @@ class CCMultipleChoiceState extends State<CCMultipleChoice> {
   }
 
   List<Widget> getOptionWidgetsList() {
-    return widget.content.options.asMap().entries.map((entry) {
-      final int optionIndex = entry.key;
-      final QuestionOption option = entry.value;
+    final List<Widget> optionWidgets = [];
 
-      return Div.column([
-        OptionButton(optionIndex: optionIndex, option: option),
+    for (int optionIndex = 0; optionIndex < widget.content.options.length; optionIndex++) {
+      final QuestionOption option = widget.content.options[optionIndex];
 
-        const Spacing.height(MULTIPLE_CHOICE_OPTION_BUTTON_SPACING),
-      ]);
-    }).toList();
+      optionWidgets.add(OptionButton(optionIndex: optionIndex, option: option));
+
+      final bool isLastOption = optionIndex == widget.content.options.length - 1;
+
+      if (!isLastOption) {
+        optionWidgets.add(const Spacing.height(16));
+      }
+    }
+
+    return optionWidgets;
   }
 
   Widget OptionButton({required int optionIndex, required QuestionOption option}) {
@@ -123,13 +128,15 @@ class CCMultipleChoiceState extends State<CCMultipleChoice> {
       shouldMute: shouldMute,
     );
 
-    final VoidCallback? optionTapHandler = hasAnsweredQuestion
-        ? null
-        : () => handleOptionSelection(optionIndex);
+    VoidCallback? optionTapHandler;
+
+    if (!hasAnsweredQuestion) {
+      optionTapHandler = () => handleOptionSelection(optionIndex);
+    }
 
     return Div.row(
-      [Expanded(child: Text(option.text, style: textStyle))],
-      padding: RLTheme.contentPaddingMediumInsets,
+      [Expanded(child: RLTypography.bodyMedium(option.text, color: textStyle.color))],
+      padding: RLDS.contentPaddingMediumInsets,
       decoration: decoration,
       onTap: optionTapHandler,
     );
@@ -164,25 +171,21 @@ class CCMultipleChoiceState extends State<CCMultipleChoice> {
     required bool shouldShowIncorrect,
     required bool shouldMute,
   }) {
-    Color textColor = RLTheme.textPrimary;
+    Color textColor = RLDS.textPrimary;
     FontWeight fontWeight = FontWeight.normal;
 
     if (shouldShowCorrect) {
-      textColor = RLTheme.primaryGreen;
+      textColor = RLDS.primaryGreen;
       fontWeight = FontWeight.w500;
     } else if (shouldShowIncorrect) {
-      textColor = RLTheme.textPrimary.withValues(alpha: 0.5);
+      textColor = RLDS.textPrimary.withValues(alpha: 0.5);
     } else if (shouldMute) {
-      textColor = RLTheme.textPrimary.withValues(alpha: 0.3);
+      textColor = RLDS.textPrimary.withValues(alpha: 0.3);
     } else if (isSelected && !hasAnsweredQuestion) {
       fontWeight = FontWeight.w500;
     }
 
-    return RLTypography.bodyLargeStyle.copyWith(
-      fontSize: 14,
-      color: textColor,
-      fontWeight: fontWeight,
-    );
+    return RLTypography.bodyMediumStyle.copyWith(color: textColor, fontWeight: fontWeight);
   }
 
   void handleOptionSelection(int optionIndex) {
@@ -199,9 +202,7 @@ class CCMultipleChoiceState extends State<CCMultipleChoice> {
 
     if (isCorrectAnswerAttempt) {
       updateSelectedAnswer(optionIndex);
-
       notifyAnswerSelected(optionIndex, isCorrectAnswer);
-
       showCorrectAnswerFeedback();
     }
   }

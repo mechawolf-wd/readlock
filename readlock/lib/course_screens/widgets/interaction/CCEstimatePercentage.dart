@@ -5,8 +5,9 @@ import 'package:flutter/material.dart' hide Typography;
 import 'package:readlock/models/CourseModel.dart';
 import 'package:readlock/utility_widgets/Utility.dart';
 import 'package:readlock/constants/RLTypography.dart';
-import 'package:readlock/constants/RLTheme.dart';
+import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/utility_widgets/text_animation/ProgressiveText.dart';
+import 'package:readlock/constants/RLUIStrings.dart';
 
 class CCEstimatePercentage extends StatefulWidget {
   final EstimatePercentageContent content;
@@ -30,9 +31,9 @@ class CCEstimatePercentageState extends State<CCEstimatePercentage>
   late Animation<double> revealAnimation;
 
   // Icon and styling definitions
-  static const Icon CheckIcon = Icon(Icons.check_circle, color: RLTheme.primaryGreen, size: 20);
+  static final Icon CheckIcon = Icon(Icons.check_circle, color: RLDS.primaryGreen, size: 20);
   static const Icon InfoIcon = Icon(Icons.info_outline, size: 20);
-  static const Icon StarIcon = Icon(Icons.star, color: RLTheme.white, size: 16);
+  static final Icon StarIcon = Icon(Icons.star, color: RLDS.white, size: 16);
 
   int getCorrectPercentage() {
     return widget.content.correctPercentage;
@@ -61,7 +62,7 @@ class CCEstimatePercentageState extends State<CCEstimatePercentage>
     return SingleChildScrollView(
       child: Div.column(
         MainContent(),
-        color: RLTheme.backgroundDark,
+        color: RLDS.backgroundDark,
         padding: const [20, 16],
         crossAxisAlignment: CrossAxisAlignment.stretch,
       ),
@@ -109,15 +110,15 @@ class CCEstimatePercentageState extends State<CCEstimatePercentage>
   Widget CurrentEstimateDisplay() {
     return Div.row([
       RLTypography.bodyMedium(
-        'Your estimate:',
-        color: RLTheme.textPrimary.withValues(alpha: 0.7),
+        RLUIStrings.ESTIMATE_YOUR_LABEL,
+        color: RLDS.textPrimary.withValues(alpha: 0.7),
       ),
 
       const Spacing.width(12),
 
-      RLTypography.headingLarge('${currentEstimate.round()}', color: RLTheme.primaryBlue),
+      RLTypography.headingLarge('${currentEstimate.round()}', color: RLDS.primaryBlue),
 
-      RLTypography.headingMedium('%', color: RLTheme.primaryBlue.withValues(alpha: 0.7)),
+      RLTypography.headingMedium('%', color: RLDS.primaryBlue.withValues(alpha: 0.7)),
     ], mainAxisAlignment: MainAxisAlignment.center);
   }
 
@@ -149,11 +150,11 @@ class CCEstimatePercentageState extends State<CCEstimatePercentage>
   Widget SliderLabelsRow() {
     final TextStyle labelStyle = TextStyle(
       fontSize: 12,
-      color: RLTheme.textPrimary.withValues(alpha: 0.5),
+      color: RLDS.textPrimary.withValues(alpha: 0.5),
     );
 
     return Div.row(
-      [Text('0%', style: labelStyle), const Spacer(), Text('100%', style: labelStyle)],
+      [Text(RLUIStrings.ESTIMATE_MIN_LABEL, style: labelStyle), const Spacer(), Text(RLUIStrings.ESTIMATE_MAX_LABEL, style: labelStyle)],
       padding: const [12, 0],
     );
   }
@@ -177,7 +178,7 @@ class CCEstimatePercentageState extends State<CCEstimatePercentage>
   Widget SubmitButton() {
     final bool shouldShow = !hasSubmittedEstimate;
 
-    const Widget TouchAppIcon = Icon(Icons.touch_app, color: RLTheme.white, size: 18);
+    final Widget TouchAppIcon = Icon(Icons.touch_app, color: RLDS.white, size: 18);
 
     return RenderIf.condition(
       shouldShow,
@@ -187,7 +188,7 @@ class CCEstimatePercentageState extends State<CCEstimatePercentage>
 
           const Spacing.width(8),
 
-          RLTypography.bodyMedium('Submit Estimate', color: RLTheme.white),
+          RLTypography.bodyMedium(RLUIStrings.ESTIMATE_SUBMIT_LABEL, color: RLDS.white),
         ],
         height: 44,
         decoration: Style.submitButtonDecoration,
@@ -227,13 +228,13 @@ class CCEstimatePercentageState extends State<CCEstimatePercentage>
       return Div.row([
         CheckIcon,
         const Spacing.width(12),
-        RLTypography.headingMedium('Excellent estimate!', color: RLTheme.primaryGreen),
+        RLTypography.headingMedium(RLUIStrings.ESTIMATE_EXCELLENT_LABEL, color: RLDS.primaryGreen),
       ]);
     }
 
     final Widget LightbulbIcon = Icon(
       Icons.lightbulb_outline,
-      color: RLTheme.warningDark,
+      color: RLDS.warningDark,
       size: 20,
     );
 
@@ -241,21 +242,21 @@ class CCEstimatePercentageState extends State<CCEstimatePercentage>
     String headerText = 'Getting closer!';
 
     if (isLargeDifference) {
-      headerText = 'Keep learning!';
+      headerText = RLUIStrings.ESTIMATE_KEEP_LEARNING_LABEL;
     }
 
     return Div.column([
       Div.row([
         LightbulbIcon,
         const Spacing.width(12),
-        RLTypography.headingMedium(headerText, color: RLTheme.warningDark),
+        RLTypography.headingMedium(headerText, color: RLDS.warningDark),
       ]),
 
       const Spacing.height(8),
 
       RLTypography.bodyMedium(
         getHintMessage(difference),
-        color: RLTheme.textPrimary.withValues(alpha: 0.7),
+        color: RLDS.textPrimary.withValues(alpha: 0.7),
       ),
     ]);
   }
@@ -263,14 +264,14 @@ class CCEstimatePercentageState extends State<CCEstimatePercentage>
   Widget getComparisonDisplay(int difference) {
     final Widget ArrowForwardIcon = Icon(
       Icons.arrow_forward,
-      color: RLTheme.textPrimary.withValues(alpha: 0.3),
+      color: RLDS.textPrimary.withValues(alpha: 0.3),
       size: 20,
     );
 
     final TextStyle comparisonLabelStyle = TextStyle(
       fontSize: 11,
       fontWeight: FontWeight.w600,
-      color: RLTheme.textPrimary.withValues(alpha: 0.5),
+      color: RLDS.textPrimary.withValues(alpha: 0.5),
       letterSpacing: 0.5,
     );
 
@@ -282,7 +283,7 @@ class CCEstimatePercentageState extends State<CCEstimatePercentage>
           const Spacing.height(4),
           RLTypography.headingMedium(
             '${currentEstimate.round()}%',
-            color: RLTheme.textPrimary,
+            color: RLDS.textPrimary,
             textAlign: TextAlign.center,
           ),
         ]),
@@ -298,7 +299,7 @@ class CCEstimatePercentageState extends State<CCEstimatePercentage>
           const Spacing.height(4),
           RLTypography.headingMedium(
             '${getCorrectPercentage()}%',
-            color: RLTheme.primaryGreen,
+            color: RLDS.primaryGreen,
             textAlign: TextAlign.center,
           ),
         ]),
@@ -317,16 +318,16 @@ class CCEstimatePercentageState extends State<CCEstimatePercentage>
   }
 
   BoxDecoration getResultCardDecoration(bool isClose) {
-    Color backgroundColor = RLTheme.warningColor.withValues(alpha: 0.08);
+    Color backgroundColor = RLDS.warningColor.withValues(alpha: 0.08);
 
     if (isClose) {
-      backgroundColor = RLTheme.primaryGreen.withValues(alpha: 0.08);
+      backgroundColor = RLDS.primaryGreen.withValues(alpha: 0.08);
     }
 
-    Color borderColor = RLTheme.warningLight.withValues(alpha: 0.3);
+    Color borderColor = RLDS.warningLight.withValues(alpha: 0.3);
 
     if (isClose) {
-      borderColor = RLTheme.primaryGreen.withValues(alpha: 0.3);
+      borderColor = RLDS.primaryGreen.withValues(alpha: 0.3);
     }
 
     return BoxDecoration(
@@ -376,10 +377,10 @@ class CCEstimatePercentageState extends State<CCEstimatePercentage>
 
               const Spacing.width(8),
 
-              RLTypography.bodyLarge('+8 experience', color: RLTheme.white),
+              RLTypography.bodyLarge('+8 experience', color: RLDS.white),
             ],
           ),
-          backgroundColor: RLTheme.successDark,
+          backgroundColor: RLDS.successDark,
           duration: const Duration(seconds: 2),
           behavior: SnackBarBehavior.floating,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
@@ -395,10 +396,10 @@ class Style {
 
   static SliderThemeData getSliderTheme() {
     return SliderThemeData(
-      activeTrackColor: RLTheme.primaryBlue,
-      inactiveTrackColor: RLTheme.textPrimary.withValues(alpha: 0.1),
-      thumbColor: RLTheme.primaryBlue,
-      overlayColor: RLTheme.primaryBlue.withValues(alpha: 0.1),
+      activeTrackColor: RLDS.primaryBlue,
+      inactiveTrackColor: RLDS.textPrimary.withValues(alpha: 0.1),
+      thumbColor: RLDS.primaryBlue,
+      overlayColor: RLDS.primaryBlue.withValues(alpha: 0.1),
       thumbShape: const RoundSliderThumbShape(),
       trackHeight: 4,
       tickMarkShape: const RoundSliderTickMarkShape(),
@@ -408,14 +409,7 @@ class Style {
   static const double submitButtonHeight = 44.0;
 
   static final BoxDecoration submitButtonDecoration = BoxDecoration(
-    color: RLTheme.primaryBlue,
+    color: RLDS.primaryBlue,
     borderRadius: BorderRadius.circular(16),
-    boxShadow: [
-      BoxShadow(
-        color: RLTheme.primaryBlue.withValues(alpha: 0.3),
-        offset: const Offset(0, 4),
-        blurRadius: 12,
-      ),
-    ],
   );
 }

@@ -2,20 +2,19 @@
 // Shows complete book library with filter chips
 
 import 'package:flutter/material.dart';
+import 'package:readlock/bottom_sheets/RLBottomSheet.dart';
 import 'package:readlock/utility_widgets/Utility.dart';
 import 'package:readlock/constants/RLTypography.dart';
-import 'package:readlock/constants/RLTheme.dart';
+import 'package:readlock/constants/RLDesignSystem.dart';
+import 'package:readlock/constants/DartAliases.dart';
+import 'package:readlock/constants/RLUIStrings.dart';
+import 'package:readlock/utility_widgets/RLCard.dart';
 
 class AllTitlesBottomSheet extends StatefulWidget {
   const AllTitlesBottomSheet({super.key});
 
   static void show(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (context) => const AllTitlesBottomSheet(),
-    );
+    RLBottomSheet.showFullHeight(context, child: const AllTitlesBottomSheet());
   }
 
   @override
@@ -39,17 +38,7 @@ class AllTitlesBottomSheetState extends State<AllTitlesBottomSheet> {
 
   @override
   Widget build(BuildContext context) {
-    const BorderRadius sheetBorderRadius = BorderRadius.only(
-      topLeft: Radius.circular(20),
-      topRight: Radius.circular(20),
-    );
-
-    const BoxDecoration sheetDecoration = BoxDecoration(
-      color: RLTheme.backgroundDark,
-      borderRadius: sheetBorderRadius,
-    );
-
-    final List<Map<String, dynamic>> allBooks = [
+    final JSONList allBooks = [
       {
         'title': 'Design of Everyday Things',
         'author': 'Don Norman',
@@ -91,59 +80,47 @@ class AllTitlesBottomSheetState extends State<AllTitlesBottomSheet> {
 
     final bool hasSelectedCategory = selectedCategory != null;
 
-    final List<Map<String, dynamic>> filteredBooks = hasSelectedCategory
-        ? allBooks.where((book) => book['category'] == selectedCategory).toList()
-        : allBooks;
+    JSONList filteredBooks = allBooks;
 
-    final double sheetHeight = MediaQuery.of(context).size.height * 0.9;
+    if (hasSelectedCategory) {
+      filteredBooks = allBooks.where((book) => book['category'] == selectedCategory).toList();
+    }
 
-    return ClipRRect(
-      borderRadius: sheetBorderRadius,
-      child: Container(
-        height: sheetHeight,
-        decoration: sheetDecoration,
-        child: Div.column([
-          // Drag handle
-          const Spacing.height(12),
+    return Div.column([
+      const Spacing.height(16),
 
-          const BottomSheetGrabber(),
-
-          const Spacing.height(16),
-
-          // Title
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: Div.row([
-              RLTypography.headingMedium('My Titles'),
-            ], mainAxisAlignment: MainAxisAlignment.start),
-          ),
-
-          const Spacing.height(16),
-
-          // Category filters
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: CategoryFilters(
-              selectedCategory: selectedCategory,
-              onCategorySelected: selectCategory,
-            ),
-          ),
-
-          const Spacing.height(20),
-
-          // Books list
-          Expanded(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Div.column(
-                BookCards(filteredBooks),
-                crossAxisAlignment: CrossAxisAlignment.start,
-              ),
-            ),
-          ),
-        ], crossAxisAlignment: CrossAxisAlignment.stretch),
+      // Title
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        child: Div.row([
+          RLTypography.headingMedium(RLUIStrings.ALL_TITLES_TITLE),
+        ], mainAxisAlignment: MainAxisAlignment.start),
       ),
-    );
+
+      const Spacing.height(16),
+
+      // Category filters
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        child: CategoryFilters(
+          selectedCategory: selectedCategory,
+          onCategorySelected: selectCategory,
+        ),
+      ),
+
+      const Spacing.height(20),
+
+      // Books list
+      Expanded(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: Div.column(
+            BookCards(filteredBooks),
+            crossAxisAlignment: CrossAxisAlignment.start,
+          ),
+        ),
+      ),
+    ], crossAxisAlignment: CrossAxisAlignment.stretch);
   }
 
   Widget CategoryFilters({
@@ -175,51 +152,49 @@ class AllTitlesBottomSheetState extends State<AllTitlesBottomSheet> {
     return categories.map((category) {
       final bool isSelected = selectedCategory == category;
 
-      final Color chipColor = isSelected
-          ? RLTheme.primaryBlue
-          : RLTheme.backgroundLight.withValues(alpha: 0.08);
+      Color chipColor = RLDS.backgroundLight.withValues(alpha: 0.08);
+      Color chipTextColor = RLDS.primaryBlue;
+
+      if (isSelected) {
+        chipColor = RLDS.primaryBlue;
+        chipTextColor = RLDS.white;
+      }
 
       final BoxDecoration chipDecoration = BoxDecoration(
         color: chipColor,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: RLTheme.primaryBlue.withValues(alpha: 0.3)),
+        border: Border.all(color: RLDS.primaryBlue.withValues(alpha: 0.3)),
       );
-
-      final Color chipTextColor = isSelected ? Colors.white : RLTheme.primaryBlue;
 
       return GestureDetector(
         onTap: () => onCategorySelected(category),
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           decoration: chipDecoration,
-          child: RLTypography.text(category, color: chipTextColor),
+          child: Text(
+            category,
+            style: RLTypography.bodyMediumStyle.copyWith(color: chipTextColor),
+          ),
         ),
       );
     }).toList();
   }
 
-  List<Widget> BookCards(List<Map<String, dynamic>> books) {
+  List<Widget> BookCards(JSONList books) {
     return books.map((book) {
       final String bookTitle = book['title'] ?? '';
       final String bookAuthor = book['author'] ?? '';
       final String? coverImagePath = book['coverImage'];
 
-      final BoxDecoration cardDecoration = BoxDecoration(
-        color: RLTheme.backgroundLight.withValues(alpha: 0.08),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: RLTheme.grey300.withValues(alpha: 0.3)),
-      );
-
       final BoxDecoration coverPlaceholderDecoration = BoxDecoration(
-        color: RLTheme.primaryBlue.withValues(alpha: 0.1),
+        color: RLDS.primaryBlue.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(6),
-        border: Border.all(color: RLTheme.primaryBlue.withValues(alpha: 0.2)),
+        border: Border.all(color: RLDS.primaryBlue.withValues(alpha: 0.2)),
       );
 
-      return Container(
-        margin: const EdgeInsets.only(bottom: 12),
+      return RLCard.subtle(
         padding: const EdgeInsets.all(12),
-        decoration: cardDecoration,
+        margin: const EdgeInsets.only(bottom: 12),
         child: Div.row([
           // Book cover
           BookCover(
@@ -236,7 +211,10 @@ class AllTitlesBottomSheetState extends State<AllTitlesBottomSheet> {
 
               const Spacing.height(4),
 
-              RLTypography.text(bookAuthor, color: RLTheme.textSecondary),
+              Text(
+                bookAuthor,
+                style: RLTypography.bodyMediumStyle.copyWith(color: RLDS.textSecondary),
+              ),
             ], crossAxisAlignment: CrossAxisAlignment.start),
           ),
         ]),
@@ -257,7 +235,7 @@ class AllTitlesBottomSheetState extends State<AllTitlesBottomSheet> {
       );
     }
 
-    const Widget BookIcon = Icon(Icons.book, color: RLTheme.primaryBlue, size: 20);
+    final Widget BookIcon = Icon(Icons.book, color: RLDS.primaryBlue, size: 20);
 
     return Container(
       width: 40,

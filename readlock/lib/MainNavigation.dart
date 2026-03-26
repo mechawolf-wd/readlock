@@ -3,9 +3,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:readlock/constants/RLTheme.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
-import 'package:readlock/constants/RLConstants.dart';
+import 'package:readlock/constants/RLUIStrings.dart';
 import 'package:readlock/screens/CoursesScreen.dart';
 import 'package:readlock/screens/HomeScreen.dart';
 import 'package:readlock/screens/MyBookshelfScreen.dart';
@@ -13,6 +12,10 @@ import 'package:readlock/screens/SandboxScreen.dart';
 import 'package:readlock/bottom_sheets/user/LoginBottomSheet.dart';
 
 class MainNavigation extends StatefulWidget {
+  static const double navHeight = 56.0;
+  static const double navMargin = 16.0;
+  static const double bottomOffset = navHeight + navMargin + 16.0;
+
   final int initialTabIndex;
 
   const MainNavigation({super.key, this.initialTabIndex = 0});
@@ -58,10 +61,14 @@ class MainNavigationState extends State<MainNavigation> {
     });
   }
 
+  Widget fadeTransitionBuilder(Widget child, Animation<double> animation) {
+    return FadeTransition(opacity: animation, child: child);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: RLTheme.backgroundDark,
+      backgroundColor: RLDS.backgroundDark,
       body: Stack(
         children: [
           // Main content
@@ -69,9 +76,7 @@ class MainNavigationState extends State<MainNavigation> {
             duration: const Duration(milliseconds: 150),
             switchInCurve: Curves.easeInOut,
             switchOutCurve: Curves.easeInOut,
-            transitionBuilder: (Widget child, Animation<double> animation) {
-              return FadeTransition(opacity: animation, child: child);
-            },
+            transitionBuilder: fadeTransitionBuilder,
             child: KeyedSubtree(key: ValueKey<int>(currentIndex), child: screens[currentIndex]),
           ),
 
@@ -96,10 +101,9 @@ class MainNavigationState extends State<MainNavigation> {
     const BorderRadius navBarBorderRadius = BorderRadius.all(Radius.circular(28));
 
     final BoxDecoration navBarDecoration = BoxDecoration(
-      color: RLTheme.white,
+      color: RLDS.white,
       borderRadius: navBarBorderRadius,
-      border: Border.all(color: SOLID_SHADOW_COLOR, width: 1.5),
-      boxShadow: const [SOLID_SHADOW],
+      border: Border.all(color: const Color(0xFF1A1A1A), width: 1.5),
     );
 
     return Container(
@@ -113,8 +117,8 @@ class MainNavigationState extends State<MainNavigation> {
             currentIndex: currentIndex,
             onTap: handleNavigationTap,
             backgroundColor: Colors.transparent,
-            selectedItemColor: RLTheme.primaryGreen,
-            unselectedItemColor: RLTheme.textSecondary,
+            selectedItemColor: RLDS.primaryGreen,
+            unselectedItemColor: RLDS.textSecondary,
             type: BottomNavigationBarType.fixed,
             items: NavigationItems(),
             selectedFontSize: 11,
@@ -126,27 +130,40 @@ class MainNavigationState extends State<MainNavigation> {
     );
   }
 
+  // Icon definitions for navigation items
+  static const Icon HomeIcon = Icon(Icons.home_outlined);
+  static const Icon HomeActiveIcon = Icon(Icons.home_rounded);
+  static const Icon ExploreIcon = Icon(Icons.explore_outlined);
+  static const Icon ExploreActiveIcon = Icon(Icons.explore_rounded);
+  static const Icon BookshelfIcon = Icon(Icons.menu_book_outlined);
+  static const Icon BookshelfActiveIcon = Icon(Icons.menu_book_rounded);
+  static const Icon SandboxIcon = Icon(Icons.science_outlined);
+  static const Icon SandboxActiveIcon = Icon(Icons.science_rounded);
+
   List<BottomNavigationBarItem> NavigationItems() {
     return [
       const BottomNavigationBarItem(
-        icon: Icon(Icons.home_outlined),
-        activeIcon: Icon(Icons.home_rounded),
-        label: HOME_TAB_LABEL,
+        icon: HomeIcon,
+        activeIcon: HomeActiveIcon,
+        label: RLUIStrings.HOME_TAB_LABEL,
       ),
+
       const BottomNavigationBarItem(
-        icon: Icon(Icons.explore_outlined),
-        activeIcon: Icon(Icons.explore_rounded),
-        label: SEARCH_TAB_LABEL,
+        icon: ExploreIcon,
+        activeIcon: ExploreActiveIcon,
+        label: RLUIStrings.SEARCH_TAB_LABEL,
       ),
+
       const BottomNavigationBarItem(
-        icon: Icon(Icons.menu_book_outlined),
-        activeIcon: Icon(Icons.menu_book_rounded),
-        label: BOOKSHELF_TAB_LABEL,
+        icon: BookshelfIcon,
+        activeIcon: BookshelfActiveIcon,
+        label: RLUIStrings.BOOKSHELF_TAB_LABEL,
       ),
+
       const BottomNavigationBarItem(
-        icon: Icon(Icons.science_outlined),
-        activeIcon: Icon(Icons.science_rounded),
-        label: SANDBOX_TAB_LABEL,
+        icon: SandboxIcon,
+        activeIcon: SandboxActiveIcon,
+        label: RLUIStrings.SANDBOX_TAB_LABEL,
       ),
     ];
   }

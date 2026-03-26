@@ -6,9 +6,8 @@ import 'package:readlock/models/CourseModel.dart';
 import 'package:readlock/utility_widgets/Utility.dart';
 import 'package:readlock/utility_widgets/text_animation/TextAnimation.dart';
 import 'package:readlock/constants/RLTypography.dart';
-import 'package:readlock/constants/RLTheme.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
-import 'package:readlock/constants/RLConstants.dart';
+import 'package:readlock/constants/RLUIStrings.dart';
 
 class CCOutro extends StatefulWidget {
   // Course outro content data
@@ -39,20 +38,20 @@ class CCOutroState extends State<CCOutro> {
         // Header section with icon and title
         HeaderSection(titleTextStyle),
 
-        const Spacing.height(COURSE_OUTRO_CONTENT_SPACING),
+        const Spacing.height(20),
 
         // Progressive text content
         ProgressiveTextSection(),
 
         const Spacer(),
 
-        const Spacing.height(COURSE_OUTRO_CONTENT_SPACING),
+        const Spacing.height(20),
 
         // Fin button when text is complete
         RenderIf.condition(isAllTextRevealed, FinishButton()),
       ],
-      color: RLTheme.backgroundDark,
-      padding: RLTheme.contentPaddingInsets,
+      color: RLDS.backgroundDark,
+      padding: RLDS.contentPaddingInsets,
       crossAxisAlignment: CrossAxisAlignment.start,
     );
   }
@@ -74,7 +73,7 @@ class CCOutroState extends State<CCOutro> {
 
   // Completion check circle icon
   Widget CompletionIcon() {
-    return const Icon(Icons.check_circle, color: RLTheme.primaryGreen, size: 24);
+    return Icon(Icons.check_circle, color: RLDS.primaryGreen, size: 24);
   }
 
   // Progressive text animation section
@@ -100,13 +99,24 @@ class CCOutroState extends State<CCOutro> {
     });
   }
 
-  // Finish button using RLDesignSystem
+  // Finish button
   Widget FinishButton() {
-    return RLDS.BlockButton(
-      children: [RLTypography.bodyLarge('Fin', color: RLTheme.white)],
+    final BoxDecoration buttonDecoration = BoxDecoration(
+      color: RLDS.primaryGreen,
+      borderRadius: BorderRadius.circular(12),
+    );
+
+    return GestureDetector(
       onTap: handleFinishButtonTapped,
-      backgroundColor: RLTheme.primaryGreen,
-      margin: EdgeInsets.zero,
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+        decoration: buttonDecoration,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [RLTypography.bodyLarge(RLUIStrings.OUTRO_BUTTON_LABEL, color: RLDS.white)],
+        ),
+      ),
     );
   }
 

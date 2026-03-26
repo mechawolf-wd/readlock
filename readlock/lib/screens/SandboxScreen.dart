@@ -4,8 +4,8 @@
 import 'package:flutter/material.dart' hide Typography;
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/utility_widgets/Utility.dart';
-import 'package:readlock/constants/RLTheme.dart';
-import 'package:readlock/constants/RLConstants.dart';
+import 'package:readlock/constants/RLDesignSystem.dart';
+import 'package:readlock/constants/RLUIStrings.dart';
 
 class SandboxScreen extends StatelessWidget {
   const SandboxScreen({super.key});
@@ -13,7 +13,7 @@ class SandboxScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: RLTheme.backgroundDark,
+      color: RLDS.backgroundDark,
       child: const SafeArea(
         bottom: false,
         child: SingleChildScrollView(
@@ -107,20 +107,20 @@ class SandboxHeader extends StatelessWidget {
           height: 48,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(24),
-            gradient: const LinearGradient(
-              colors: [RLTheme.accentPurple, RLTheme.accentPink],
+            gradient: LinearGradient(
+              colors: [RLDS.accentPurple, RLDS.accentPink],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
           ),
-          child: const Icon(Icons.science, color: Colors.white, size: 24),
+          child: const Icon(Icons.science, color: RLDS.white, size: 24),
         ),
 
         const Spacing.width(16),
 
         Expanded(
           child: Text(
-            SANDBOX_TITLE,
+            RLUIStrings.SANDBOX_TITLE,
             style: RLTypography.headingLargeStyle.copyWith(
               fontSize: 24,
               fontWeight: FontWeight.bold,
@@ -131,14 +131,14 @@ class SandboxHeader extends StatelessWidget {
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
           decoration: BoxDecoration(
-            color: RLTheme.accentPurple.withValues(alpha: 0.1),
+            color: RLDS.accentPurple.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: RLTheme.accentPurple.withValues(alpha: 0.3)),
+            border: Border.all(color: RLDS.accentPurple.withValues(alpha: 0.3)),
           ),
           child: Text(
             'EXPERIMENTAL',
             style: RLTypography.bodyMediumStyle.copyWith(
-              color: RLTheme.accentPurple,
+              color: RLDS.accentPurple,
               fontSize: 10,
               fontWeight: FontWeight.w600,
               letterSpacing: 1,
@@ -151,7 +151,7 @@ class SandboxHeader extends StatelessWidget {
 
       RLTypography.bodyMedium(
         'Essential widgets for engaging course content',
-        color: RLTheme.textPrimary.withValues(alpha: 0.7),
+        color: RLDS.textPrimary.withValues(alpha: 0.7),
       ),
     ]);
   }
@@ -183,20 +183,20 @@ class ThoughtPrompWidgetState extends State<ThoughtPrompWidget> {
 
     final Widget ExpandCollapseIcon = Icon(
       expandCollapseIconData,
-      color: RLTheme.primaryBlue,
+      color: RLDS.primaryBlue,
       size: 24,
     );
 
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: RLTheme.backgroundLight,
+        color: RLDS.backgroundLight,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: RLTheme.primaryBlue.withValues(alpha: 0.2)),
+        border: Border.all(color: RLDS.primaryBlue.withValues(alpha: 0.2)),
       ),
       child: Div.column([
         Div.row([
-          const Icon(Icons.psychology, color: RLTheme.primaryBlue, size: 24),
+          Icon(Icons.psychology, color: RLDS.primaryBlue, size: 24),
 
           const Spacing.width(12),
 
@@ -221,7 +221,7 @@ class ThoughtPrompWidgetState extends State<ThoughtPrompWidget> {
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: RLTheme.primaryBlue.withValues(alpha: 0.05),
+                color: RLDS.primaryBlue.withValues(alpha: 0.05),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Text(
@@ -240,7 +240,7 @@ class ThoughtPrompWidgetState extends State<ThoughtPrompWidget> {
               'Take a moment to reflect on this before continuing...',
               style: RLTypography.bodyMediumStyle.copyWith(
                 fontSize: 12,
-                color: RLTheme.textPrimary.withValues(alpha: 0.6),
+                color: RLDS.textPrimary.withValues(alpha: 0.6),
               ),
             ),
           ]),
@@ -274,24 +274,24 @@ class BookmarkHighlightWidgetState extends State<BookmarkHighlightWidget> {
       bookmarkIconData = Icons.bookmark;
     }
 
-    final Widget BookmarkIcon = Icon(bookmarkIconData, color: RLTheme.warningColor, size: 24);
+    final Widget BookmarkIcon = Icon(bookmarkIconData, color: RLDS.warningColor, size: 24);
 
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: RLTheme.backgroundLight,
+        color: RLDS.backgroundLight,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: RLTheme.warningColor.withValues(alpha: 0.2)),
+        border: Border.all(color: RLDS.warningColor.withValues(alpha: 0.2)),
       ),
       child: Div.column([
         Div.row([
-          const Icon(Icons.format_quote, color: RLTheme.warningColor, size: 24),
+          Icon(Icons.format_quote, color: RLDS.warningColor, size: 24),
 
           const Spacing.width(12),
 
           Expanded(
             child: Text(
-              'Notable Quote',
+              RLUIStrings.NOTABLE_QUOTE_TITLE,
               style: RLTypography.bodyLargeStyle.copyWith(
                 fontWeight: FontWeight.w600,
                 fontSize: 16,
@@ -307,9 +307,9 @@ class BookmarkHighlightWidgetState extends State<BookmarkHighlightWidget> {
         Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: RLTheme.warningColor.withValues(alpha: 0.05),
+            color: RLDS.warningColor.withValues(alpha: 0.05),
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: RLTheme.warningColor.withValues(alpha: 0.2), width: 2),
+            border: Border.all(color: RLDS.warningColor.withValues(alpha: 0.2), width: 2),
           ),
           child: Text(
             '"Good design is obvious. Great design is transparent."',
@@ -329,7 +329,7 @@ class BookmarkHighlightWidgetState extends State<BookmarkHighlightWidget> {
             '— Joe Sparano',
             style: RLTypography.bodyMediumStyle.copyWith(
               fontSize: 12,
-              color: RLTheme.textPrimary.withValues(alpha: 0.7),
+              color: RLDS.textPrimary.withValues(alpha: 0.7),
             ),
           ),
 
@@ -338,10 +338,10 @@ class BookmarkHighlightWidgetState extends State<BookmarkHighlightWidget> {
           RenderIf.condition(
             isBookmarked,
             Text(
-              'Bookmarked ✓',
+              RLUIStrings.QUOTE_BOOKMARKED_LABEL,
               style: RLTypography.bodyMediumStyle.copyWith(
                 fontSize: 12,
-                color: RLTheme.warningColor,
+                color: RLDS.warningColor,
                 fontWeight: FontWeight.w500,
               ),
             ),
@@ -386,13 +386,13 @@ class SwipeToRevealWidgetState extends State<SwipeToRevealWidget>
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: RLTheme.backgroundLight,
+        color: RLDS.backgroundLight,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: RLTheme.accentPurple.withValues(alpha: 0.2)),
+        border: Border.all(color: RLDS.accentPurple.withValues(alpha: 0.2)),
       ),
       child: Div.column([
         Div.row([
-          const Icon(Icons.visibility, color: RLTheme.accentPurple, size: 24),
+          Icon(Icons.visibility, color: RLDS.accentPurple, size: 24),
 
           const Spacing.width(12),
 
@@ -412,9 +412,9 @@ class SwipeToRevealWidgetState extends State<SwipeToRevealWidget>
         Container(
           height: 80,
           decoration: BoxDecoration(
-            color: RLTheme.accentPurple.withValues(alpha: 0.05),
+            color: RLDS.accentPurple.withValues(alpha: 0.05),
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: RLTheme.accentPurple.withValues(alpha: 0.2)),
+            border: Border.all(color: RLDS.accentPurple.withValues(alpha: 0.2)),
           ),
           child: Stack(
             children: [
@@ -426,7 +426,7 @@ class SwipeToRevealWidgetState extends State<SwipeToRevealWidget>
                     'The most powerful design principle is...',
                     style: RLTypography.bodyMediumStyle.copyWith(
                       fontSize: 14,
-                      color: RLTheme.textPrimary.withValues(alpha: 0.6),
+                      color: RLDS.textPrimary.withValues(alpha: 0.6),
                     ),
                     textAlign: TextAlign.center,
                   ),
@@ -444,7 +444,7 @@ class SwipeToRevealWidgetState extends State<SwipeToRevealWidget>
                         padding: const EdgeInsets.all(16),
                         width: double.infinity,
                         decoration: BoxDecoration(
-                          color: RLTheme.accentPurple.withValues(alpha: 0.1),
+                          color: RLDS.accentPurple.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: Center(
@@ -454,7 +454,7 @@ class SwipeToRevealWidgetState extends State<SwipeToRevealWidget>
                             style: RLTypography.bodyLargeStyle.copyWith(
                               fontSize: 14,
                               fontWeight: FontWeight.w600,
-                              color: RLTheme.accentPurple,
+                              color: RLDS.accentPurple,
                             ),
 
                             textAlign: TextAlign.center,
@@ -490,9 +490,9 @@ class SwipeToRevealWidgetState extends State<SwipeToRevealWidget>
                       child: RenderIf.condition(
                         !isRevealed,
                         Div.row([
-                          const Icon(
+                          Icon(
                             Icons.arrow_forward,
-                            color: RLTheme.accentPurple,
+                            color: RLDS.accentPurple,
                             size: 16,
                           ),
                           const Spacing.width(8),
@@ -500,7 +500,7 @@ class SwipeToRevealWidgetState extends State<SwipeToRevealWidget>
                             'Swipe right → or tap',
                             style: RLTypography.bodyMediumStyle.copyWith(
                               fontSize: 12,
-                              color: RLTheme.accentPurple,
+                              color: RLDS.accentPurple,
                               fontWeight: FontWeight.w500,
                             ),
                           ),
@@ -522,7 +522,7 @@ class SwipeToRevealWidgetState extends State<SwipeToRevealWidget>
             'Insight revealed! +5 Understanding points',
             style: RLTypography.bodyMediumStyle.copyWith(
               fontSize: 12,
-              color: RLTheme.accentPurple,
+              color: RLDS.accentPurple,
               fontWeight: FontWeight.w500,
             ),
             textAlign: TextAlign.center,
@@ -558,13 +558,13 @@ class ConceptConnectionWidgetState extends State<ConceptConnectionWidget> {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: RLTheme.backgroundLight,
+        color: RLDS.backgroundLight,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: RLTheme.accentTeal.withValues(alpha: 0.2)),
+        border: Border.all(color: RLDS.accentTeal.withValues(alpha: 0.2)),
       ),
       child: Div.column([
         Div.row([
-          const Icon(Icons.account_tree, color: RLTheme.accentTeal, size: 24),
+          Icon(Icons.account_tree, color: RLDS.accentTeal, size: 24),
 
           const Spacing.width(12),
 
@@ -585,7 +585,7 @@ class ConceptConnectionWidgetState extends State<ConceptConnectionWidget> {
           'Match design principles to real-world examples',
           style: RLTypography.bodyMediumStyle.copyWith(
             fontSize: 12,
-            color: RLTheme.textPrimary.withValues(alpha: 0.6),
+            color: RLDS.textPrimary.withValues(alpha: 0.6),
           ),
         ),
 
@@ -599,7 +599,7 @@ class ConceptConnectionWidgetState extends State<ConceptConnectionWidget> {
                 style: RLTypography.bodyMediumStyle.copyWith(
                   fontSize: 12,
                   fontWeight: FontWeight.w600,
-                  color: RLTheme.accentTeal,
+                  color: RLDS.accentTeal,
                 ),
               ),
               const Spacing.height(8),
@@ -616,7 +616,7 @@ class ConceptConnectionWidgetState extends State<ConceptConnectionWidget> {
                 style: RLTypography.bodyMediumStyle.copyWith(
                   fontSize: 12,
                   fontWeight: FontWeight.w600,
-                  color: RLTheme.accentTeal,
+                  color: RLDS.accentTeal,
                 ),
               ),
               const Spacing.height(8),
@@ -631,18 +631,18 @@ class ConceptConnectionWidgetState extends State<ConceptConnectionWidget> {
             margin: const EdgeInsets.only(top: 16),
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: RLTheme.primaryGreen.withValues(alpha: 0.1),
+              color: RLDS.primaryGreen.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: RLTheme.primaryGreen),
+              border: Border.all(color: RLDS.primaryGreen),
             ),
             child: Div.row([
-              const Icon(Icons.check_circle, color: RLTheme.primaryGreen, size: 16),
+              Icon(Icons.check_circle, color: RLDS.primaryGreen, size: 16),
               const Spacing.width(8),
               Text(
                 'Perfect match! +10 Connection points',
                 style: RLTypography.bodyMediumStyle.copyWith(
                   fontSize: 12,
-                  color: RLTheme.primaryGreen,
+                  color: RLDS.primaryGreen,
                   fontWeight: FontWeight.w500,
                 ),
               ),
@@ -678,13 +678,13 @@ class ConceptConnectionWidgetState extends State<ConceptConnectionWidget> {
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
             decoration: BoxDecoration(
               color: isSelected
-                  ? RLTheme.accentTeal.withValues(alpha: 0.1)
-                  : RLTheme.backgroundDark.withValues(alpha: 0.5),
+                  ? RLDS.accentTeal.withValues(alpha: 0.1)
+                  : RLDS.backgroundDark.withValues(alpha: 0.5),
               borderRadius: BorderRadius.circular(8),
               border: Border.all(
                 color: isSelected
-                    ? RLTheme.accentTeal
-                    : RLTheme.textPrimary.withValues(alpha: 0.2),
+                    ? RLDS.accentTeal
+                    : RLDS.textPrimary.withValues(alpha: 0.2),
               ),
             ),
             child: Text(
@@ -692,7 +692,7 @@ class ConceptConnectionWidgetState extends State<ConceptConnectionWidget> {
               style: RLTypography.bodyMediumStyle.copyWith(
                 fontSize: 13,
                 fontWeight: isSelected ? FontWeight.w500 : FontWeight.normal,
-                color: isSelected ? RLTheme.accentTeal : RLTheme.textPrimary,
+                color: isSelected ? RLDS.accentTeal : RLDS.textPrimary,
               ),
             ),
           ),
@@ -726,13 +726,13 @@ class ConceptConnectionWidgetState extends State<ConceptConnectionWidget> {
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
             decoration: BoxDecoration(
               color: isSelected
-                  ? RLTheme.accentTeal.withValues(alpha: 0.1)
-                  : RLTheme.backgroundDark.withValues(alpha: 0.5),
+                  ? RLDS.accentTeal.withValues(alpha: 0.1)
+                  : RLDS.backgroundDark.withValues(alpha: 0.5),
               borderRadius: BorderRadius.circular(8),
               border: Border.all(
                 color: isSelected
-                    ? RLTheme.accentTeal
-                    : RLTheme.textPrimary.withValues(alpha: 0.2),
+                    ? RLDS.accentTeal
+                    : RLDS.textPrimary.withValues(alpha: 0.2),
               ),
             ),
             child: Text(
@@ -740,7 +740,7 @@ class ConceptConnectionWidgetState extends State<ConceptConnectionWidget> {
               style: RLTypography.bodyMediumStyle.copyWith(
                 fontSize: 12,
                 fontWeight: isSelected ? FontWeight.w500 : FontWeight.normal,
-                color: isSelected ? RLTheme.accentTeal : RLTheme.textPrimary,
+                color: isSelected ? RLDS.accentTeal : RLDS.textPrimary,
                 height: 1.3,
               ),
             ),
@@ -817,13 +817,13 @@ class MicroQuizWidgetState extends State<MicroQuizWidget> with SingleTickerProvi
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: RLTheme.backgroundLight,
+        color: RLDS.backgroundLight,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: RLTheme.accentIndigo.withValues(alpha: 0.2)),
+        border: Border.all(color: RLDS.accentIndigo.withValues(alpha: 0.2)),
       ),
       child: Div.column([
         Div.row([
-          const Icon(Icons.quiz, color: RLTheme.accentIndigo, size: 24),
+          Icon(Icons.quiz, color: RLDS.accentIndigo, size: 24),
 
           const Spacing.width(12),
 
@@ -859,14 +859,14 @@ class MicroQuizWidgetState extends State<MicroQuizWidget> with SingleTickerProvi
             margin: const EdgeInsets.only(top: 16),
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: RLTheme.primaryGreen.withValues(alpha: 0.1),
+              color: RLDS.primaryGreen.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(8),
             ),
             child: Text(
               'Great design becomes invisible because users can focus on their goals, not fighting the interface.',
               style: RLTypography.bodyMediumStyle.copyWith(
                 fontSize: 13,
-                color: RLTheme.textPrimary.withValues(alpha: 0.8),
+                color: RLDS.textPrimary.withValues(alpha: 0.8),
                 height: 1.4,
                 fontStyle: FontStyle.italic,
               ),
@@ -890,21 +890,21 @@ class MicroQuizWidgetState extends State<MicroQuizWidget> with SingleTickerProvi
       Color textColor;
 
       if (isCorrect) {
-        backgroundColor = RLTheme.primaryGreen.withValues(alpha: 0.1);
-        borderColor = RLTheme.primaryGreen;
-        textColor = RLTheme.primaryGreen;
+        backgroundColor = RLDS.primaryGreen.withValues(alpha: 0.1);
+        borderColor = RLDS.primaryGreen;
+        textColor = RLDS.primaryGreen;
       } else if (isWrong) {
-        backgroundColor = RLTheme.errorColor.withValues(alpha: 0.1);
-        borderColor = RLTheme.errorColor;
-        textColor = RLTheme.errorColor;
+        backgroundColor = RLDS.errorColor.withValues(alpha: 0.1);
+        borderColor = RLDS.errorColor;
+        textColor = RLDS.errorColor;
       } else if (isSelected) {
-        backgroundColor = RLTheme.accentIndigo.withValues(alpha: 0.1);
-        borderColor = RLTheme.accentIndigo;
-        textColor = RLTheme.accentIndigo;
+        backgroundColor = RLDS.accentIndigo.withValues(alpha: 0.1);
+        borderColor = RLDS.accentIndigo;
+        textColor = RLDS.accentIndigo;
       } else {
-        backgroundColor = RLTheme.backgroundDark.withValues(alpha: 0.5);
-        borderColor = RLTheme.textPrimary.withValues(alpha: 0.2);
-        textColor = RLTheme.textPrimary;
+        backgroundColor = RLDS.backgroundDark.withValues(alpha: 0.5);
+        borderColor = RLDS.textPrimary.withValues(alpha: 0.2);
+        textColor = RLDS.textPrimary;
       }
 
       final bool shouldBounce = isCorrect && hasAnswered;
@@ -913,27 +913,27 @@ class MicroQuizWidgetState extends State<MicroQuizWidget> with SingleTickerProvi
 
       final Color circleColor = hasActiveState
           ? (isCorrect
-                ? RLTheme.primaryGreen
+                ? RLDS.primaryGreen
                 : isWrong
-                ? RLTheme.errorColor
-                : RLTheme.accentIndigo)
+                ? RLDS.errorColor
+                : RLDS.accentIndigo)
           : Colors.transparent;
 
       final Color circleBorderColor = isCorrect
-          ? RLTheme.primaryGreen
+          ? RLDS.primaryGreen
           : isWrong
-          ? RLTheme.errorColor
+          ? RLDS.errorColor
           : isSelected
-          ? RLTheme.accentIndigo
-          : RLTheme.textPrimary.withValues(alpha: 0.3);
+          ? RLDS.accentIndigo
+          : RLDS.textPrimary.withValues(alpha: 0.3);
 
       Widget? circleChild;
       if (isCorrect) {
-        circleChild = const Icon(Icons.check, color: Colors.white, size: 16);
+        circleChild = const Icon(Icons.check, color: RLDS.white, size: 16);
       } else if (isWrong) {
-        circleChild = const Icon(Icons.close, color: Colors.white, size: 16);
+        circleChild = const Icon(Icons.close, color: RLDS.white, size: 16);
       } else if (isSelected) {
-        circleChild = const Icon(Icons.circle, color: Colors.white, size: 8);
+        circleChild = const Icon(Icons.circle, color: RLDS.white, size: 8);
       }
 
       final FontWeight optionFontWeight = (isCorrect || isSelected)
@@ -1052,7 +1052,7 @@ class ProgressCelebrationWidgetState extends State<ProgressCelebrationWidget>
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: RLTheme.backgroundLight,
+        color: RLDS.backgroundLight,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: Colors.amber.withValues(alpha: 0.2)),
       ),
@@ -1118,7 +1118,7 @@ class ProgressCelebrationWidgetState extends State<ProgressCelebrationWidget>
           Container(
             height: 8,
             decoration: BoxDecoration(
-              color: RLTheme.textPrimary.withValues(alpha: 0.1),
+              color: RLDS.textPrimary.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(4),
             ),
             child: AnimatedBuilder(
@@ -1157,7 +1157,7 @@ class ProgressCelebrationWidgetState extends State<ProgressCelebrationWidget>
                 child: Text(
                   'Complete Chapter',
                   style: RLTypography.bodyLargeStyle.copyWith(
-                    color: Colors.white,
+                    color: RLDS.white,
                     fontWeight: FontWeight.w600,
                     fontSize: 14,
                   ),
@@ -1194,7 +1194,7 @@ class ProgressCelebrationWidgetState extends State<ProgressCelebrationWidget>
                 'You\'ve mastered the fundamentals of good design.',
                 style: RLTypography.bodyMediumStyle.copyWith(
                   fontSize: 12,
-                  color: RLTheme.textPrimary.withValues(alpha: 0.7),
+                  color: RLDS.textPrimary.withValues(alpha: 0.7),
                   fontStyle: FontStyle.italic,
                 ),
               ),
@@ -1233,7 +1233,7 @@ class SliderRevealWidgetState extends State<SliderRevealWidget> {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: RLTheme.backgroundLight,
+        color: RLDS.backgroundLight,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: Colors.cyan.withValues(alpha: 0.2)),
       ),
@@ -1260,7 +1260,7 @@ class SliderRevealWidgetState extends State<SliderRevealWidget> {
           'Adjust the design principle importance',
           style: RLTypography.bodyMediumStyle.copyWith(
             fontSize: 12,
-            color: RLTheme.textPrimary.withValues(alpha: 0.6),
+            color: RLDS.textPrimary.withValues(alpha: 0.6),
           ),
         ),
 
@@ -1288,7 +1288,7 @@ class SliderRevealWidgetState extends State<SliderRevealWidget> {
             SliderTheme(
               data: SliderThemeData(
                 activeTrackColor: Colors.cyan,
-                inactiveTrackColor: RLTheme.textPrimary.withValues(alpha: 0.1),
+                inactiveTrackColor: RLDS.textPrimary.withValues(alpha: 0.1),
                 thumbColor: Colors.cyan,
                 overlayColor: Colors.cyan.withValues(alpha: 0.1),
                 thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 12),
@@ -1314,7 +1314,7 @@ class SliderRevealWidgetState extends State<SliderRevealWidget> {
                 'Low',
                 style: RLTypography.bodyMediumStyle.copyWith(
                   fontSize: 12,
-                  color: RLTheme.textPrimary.withValues(alpha: 0.5),
+                  color: RLDS.textPrimary.withValues(alpha: 0.5),
                 ),
               ),
               const Spacer(),
@@ -1322,7 +1322,7 @@ class SliderRevealWidgetState extends State<SliderRevealWidget> {
                 'Critical',
                 style: RLTypography.bodyMediumStyle.copyWith(
                   fontSize: 12,
-                  color: RLTheme.textPrimary.withValues(alpha: 0.5),
+                  color: RLDS.textPrimary.withValues(alpha: 0.5),
                 ),
               ),
             ]),
@@ -1390,7 +1390,7 @@ class MemoryCardMatchWidgetState extends State<MemoryCardMatchWidget>
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: RLTheme.backgroundLight,
+        color: RLDS.backgroundLight,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: Colors.deepPurple.withValues(alpha: 0.2)),
       ),
@@ -1426,7 +1426,7 @@ class MemoryCardMatchWidgetState extends State<MemoryCardMatchWidget>
           'Match design principles with their descriptions',
           style: RLTypography.bodyMediumStyle.copyWith(
             fontSize: 12,
-            color: RLTheme.textPrimary.withValues(alpha: 0.6),
+            color: RLDS.textPrimary.withValues(alpha: 0.6),
           ),
         ),
 
@@ -1452,14 +1452,14 @@ class MemoryCardMatchWidgetState extends State<MemoryCardMatchWidget>
                       ? Colors.deepPurple.withValues(alpha: 0.1)
                       : flippedCards[index]
                       ? Colors.deepPurple.withValues(alpha: 0.05)
-                      : RLTheme.backgroundDark.withValues(alpha: 0.5),
+                      : RLDS.backgroundDark.withValues(alpha: 0.5),
                   borderRadius: BorderRadius.circular(8),
                   border: Border.all(
                     color: matchedCards[index]
                         ? Colors.deepPurple
                         : flippedCards[index]
                         ? Colors.deepPurple.withValues(alpha: 0.5)
-                        : RLTheme.textPrimary.withValues(alpha: 0.2),
+                        : RLDS.textPrimary.withValues(alpha: 0.2),
                     width: matchedCards[index] ? 2 : 1,
                   ),
                 ),
@@ -1474,8 +1474,8 @@ class MemoryCardMatchWidgetState extends State<MemoryCardMatchWidget>
                         color: matchedCards[index]
                             ? Colors.deepPurple
                             : flippedCards[index]
-                            ? RLTheme.textPrimary
-                            : RLTheme.textPrimary.withValues(alpha: 0.4),
+                            ? RLDS.textPrimary
+                            : RLDS.textPrimary.withValues(alpha: 0.4),
                         height: 1.2,
                       ),
                       textAlign: TextAlign.center,
@@ -1493,18 +1493,18 @@ class MemoryCardMatchWidgetState extends State<MemoryCardMatchWidget>
             margin: const EdgeInsets.only(top: 16),
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: RLTheme.primaryGreen.withValues(alpha: 0.1),
+              color: RLDS.primaryGreen.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: RLTheme.primaryGreen),
+              border: Border.all(color: RLDS.primaryGreen),
             ),
             child: Div.row([
-              const Icon(Icons.celebration, color: RLTheme.primaryGreen, size: 16),
+              Icon(Icons.celebration, color: RLDS.primaryGreen, size: 16),
               const Spacing.width(8),
               Text(
                 'Perfect! All design principles matched! +15 Memory points',
                 style: RLTypography.bodyMediumStyle.copyWith(
                   fontSize: 12,
-                  color: RLTheme.primaryGreen,
+                  color: RLDS.primaryGreen,
                   fontWeight: FontWeight.w500,
                 ),
               ),
@@ -1577,13 +1577,13 @@ class PriorityRankingWidgetState extends State<PriorityRankingWidget> {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: RLTheme.backgroundLight,
+        color: RLDS.backgroundLight,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: RLTheme.warningColor.withValues(alpha: 0.2)),
+        border: Border.all(color: RLDS.warningColor.withValues(alpha: 0.2)),
       ),
       child: Div.column([
         Div.row([
-          const Icon(Icons.sort, color: RLTheme.warningColor, size: 24),
+          Icon(Icons.sort, color: RLDS.warningColor, size: 24),
 
           const Spacing.width(12),
 
@@ -1604,7 +1604,7 @@ class PriorityRankingWidgetState extends State<PriorityRankingWidget> {
           'Drag to rank design priorities from most to least important',
           style: RLTypography.bodyMediumStyle.copyWith(
             fontSize: 12,
-            color: RLTheme.textPrimary.withValues(alpha: 0.6),
+            color: RLDS.textPrimary.withValues(alpha: 0.6),
           ),
         ),
 
@@ -1636,14 +1636,14 @@ class PriorityRankingWidgetState extends State<PriorityRankingWidget> {
               decoration: BoxDecoration(
                 color: hasSubmitted
                     ? (isCorrect
-                          ? RLTheme.primaryGreen.withValues(alpha: 0.1)
-                          : RLTheme.warningColor.withValues(alpha: 0.1))
-                    : RLTheme.backgroundDark.withValues(alpha: 0.5),
+                          ? RLDS.primaryGreen.withValues(alpha: 0.1)
+                          : RLDS.warningColor.withValues(alpha: 0.1))
+                    : RLDS.backgroundDark.withValues(alpha: 0.5),
                 borderRadius: BorderRadius.circular(8),
                 border: Border.all(
                   color: hasSubmitted
-                      ? (isCorrect ? RLTheme.primaryGreen : RLTheme.warningColor)
-                      : RLTheme.warningColor.withValues(alpha: 0.3),
+                      ? (isCorrect ? RLDS.primaryGreen : RLDS.warningColor)
+                      : RLDS.warningColor.withValues(alpha: 0.3),
                 ),
               ),
               child: Div.row([
@@ -1653,8 +1653,8 @@ class PriorityRankingWidgetState extends State<PriorityRankingWidget> {
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
                     color: hasSubmitted
-                        ? (isCorrect ? RLTheme.primaryGreen : RLTheme.warningColor)
-                        : RLTheme.warningColor,
+                        ? (isCorrect ? RLDS.primaryGreen : RLDS.warningColor)
+                        : RLDS.warningColor,
                   ),
                 ),
 
@@ -1667,22 +1667,22 @@ class PriorityRankingWidgetState extends State<PriorityRankingWidget> {
                       fontSize: 14,
                       fontWeight: isCorrect ? FontWeight.w500 : FontWeight.normal,
                       color: hasSubmitted
-                          ? (isCorrect ? RLTheme.primaryGreen : Colors.orange.shade700)
-                          : RLTheme.textPrimary,
+                          ? (isCorrect ? RLDS.primaryGreen : Colors.orange.shade700)
+                          : RLDS.textPrimary,
                     ),
                   ),
                 ),
 
                 RenderIf.condition(
                   !hasSubmitted,
-                  const Icon(Icons.drag_handle, color: RLTheme.warningColor, size: 20),
+                  Icon(Icons.drag_handle, color: RLDS.warningColor, size: 20),
                 ),
 
                 RenderIf.condition(
                   hasSubmitted,
                   Icon(
                     isCorrect ? Icons.check_circle : Icons.info,
-                    color: isCorrect ? RLTheme.primaryGreen : RLTheme.warningColor,
+                    color: isCorrect ? RLDS.primaryGreen : RLDS.warningColor,
                     size: 20,
                   ),
                 ),
@@ -1707,7 +1707,7 @@ class PriorityRankingWidgetState extends State<PriorityRankingWidget> {
                 child: Text(
                   'Submit Ranking',
                   style: RLTypography.bodyLargeStyle.copyWith(
-                    color: Colors.white,
+                    color: RLDS.white,
                     fontWeight: FontWeight.w600,
                     fontSize: 14,
                   ),
@@ -1722,14 +1722,14 @@ class PriorityRankingWidgetState extends State<PriorityRankingWidget> {
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: RLTheme.primaryGreen.withValues(alpha: 0.1),
+              color: RLDS.primaryGreen.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(8),
             ),
             child: Text(
               'Great thinking! Usability and accessibility should indeed come first - they ensure everyone can use the product effectively.',
               style: RLTypography.bodyMediumStyle.copyWith(
                 fontSize: 13,
-                color: RLTheme.textPrimary.withValues(alpha: 0.8),
+                color: RLDS.textPrimary.withValues(alpha: 0.8),
                 height: 1.4,
                 fontStyle: FontStyle.italic,
               ),
@@ -1762,7 +1762,7 @@ class BeforeAfterComparisonWidgetState extends State<BeforeAfterComparisonWidget
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: RLTheme.backgroundLight,
+        color: RLDS.backgroundLight,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: Colors.pink.withValues(alpha: 0.2)),
       ),
@@ -1814,7 +1814,7 @@ class BeforeAfterComparisonWidgetState extends State<BeforeAfterComparisonWidget
           'Tap to compare good vs bad button design',
           style: RLTypography.bodyMediumStyle.copyWith(
             fontSize: 12,
-            color: RLTheme.textPrimary.withValues(alpha: 0.6),
+            color: RLDS.textPrimary.withValues(alpha: 0.6),
           ),
         ),
 
@@ -1827,13 +1827,13 @@ class BeforeAfterComparisonWidgetState extends State<BeforeAfterComparisonWidget
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
               color: showAfter
-                  ? RLTheme.primaryGreen.withValues(alpha: 0.05)
-                  : RLTheme.errorColor.withValues(alpha: 0.05),
+                  ? RLDS.primaryGreen.withValues(alpha: 0.05)
+                  : RLDS.errorColor.withValues(alpha: 0.05),
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
                 color: showAfter
-                    ? RLTheme.primaryGreen.withValues(alpha: 0.3)
-                    : RLTheme.errorColor.withValues(alpha: 0.3),
+                    ? RLDS.primaryGreen.withValues(alpha: 0.3)
+                    : RLDS.errorColor.withValues(alpha: 0.3),
               ),
             ),
             child: Div.column([
@@ -1842,7 +1842,7 @@ class BeforeAfterComparisonWidgetState extends State<BeforeAfterComparisonWidget
                 style: RLTypography.bodyLargeStyle.copyWith(
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
-                  color: showAfter ? RLTheme.primaryGreen : Colors.red.shade700,
+                  color: showAfter ? RLDS.primaryGreen : Colors.red.shade700,
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -1856,24 +1856,15 @@ class BeforeAfterComparisonWidgetState extends State<BeforeAfterComparisonWidget
                     vertical: showAfter ? 12 : 6,
                   ),
                   decoration: BoxDecoration(
-                    color: showAfter ? RLTheme.primaryBlue : Colors.grey.shade400,
+                    color: showAfter ? RLDS.primaryBlue : Colors.grey.shade400,
                     borderRadius: BorderRadius.circular(showAfter ? 8 : 0),
-                    boxShadow: showAfter
-                        ? [
-                            BoxShadow(
-                              color: RLTheme.primaryBlue.withValues(alpha: 0.3),
-                              blurRadius: 8,
-                              offset: const Offset(0, 2),
-                            ),
-                          ]
-                        : null,
                   ),
                   child: Text(
                     showAfter ? 'Download Now' : 'click here',
                     style: RLTypography.bodyLargeStyle.copyWith(
                       fontSize: showAfter ? 14 : 12,
                       fontWeight: showAfter ? FontWeight.w600 : FontWeight.normal,
-                      color: showAfter ? Colors.white : Colors.black54,
+                      color: showAfter ? RLDS.white : RLDS.black54,
                     ),
                   ),
                 ),
@@ -1902,7 +1893,7 @@ class BeforeAfterComparisonWidgetState extends State<BeforeAfterComparisonWidget
           'Tap the badge above to toggle between examples',
           style: RLTypography.bodyMediumStyle.copyWith(
             fontSize: 11,
-            color: RLTheme.textPrimary.withValues(alpha: 0.5),
+            color: RLDS.textPrimary.withValues(alpha: 0.5),
             fontStyle: FontStyle.italic,
           ),
           textAlign: TextAlign.center,
@@ -1936,7 +1927,7 @@ class ReactionPickerWidgetState extends State<ReactionPickerWidget> {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: RLTheme.backgroundLight,
+        color: RLDS.backgroundLight,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: Colors.green.withValues(alpha: 0.2)),
       ),
@@ -1963,7 +1954,7 @@ class ReactionPickerWidgetState extends State<ReactionPickerWidget> {
           'How do you feel about this design principle?',
           style: RLTypography.bodyMediumStyle.copyWith(
             fontSize: 12,
-            color: RLTheme.textPrimary.withValues(alpha: 0.6),
+            color: RLDS.textPrimary.withValues(alpha: 0.6),
           ),
         ),
 
@@ -2006,12 +1997,12 @@ class ReactionPickerWidgetState extends State<ReactionPickerWidget> {
                 decoration: BoxDecoration(
                   color: isSelected
                       ? Colors.green.withValues(alpha: 0.1)
-                      : RLTheme.backgroundDark.withValues(alpha: 0.5),
+                      : RLDS.backgroundDark.withValues(alpha: 0.5),
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(
                     color: isSelected
                         ? Colors.green
-                        : RLTheme.textPrimary.withValues(alpha: 0.2),
+                        : RLDS.textPrimary.withValues(alpha: 0.2),
                     width: isSelected ? 2 : 1,
                   ),
                 ),
@@ -2025,7 +2016,7 @@ class ReactionPickerWidgetState extends State<ReactionPickerWidget> {
                     style: RLTypography.bodyMediumStyle.copyWith(
                       fontSize: 12,
                       fontWeight: isSelected ? FontWeight.w500 : FontWeight.normal,
-                      color: isSelected ? Colors.green : RLTheme.textPrimary,
+                      color: isSelected ? Colors.green : RLDS.textPrimary,
                     ),
                   ),
                 ]),
@@ -2062,7 +2053,7 @@ class ReactionPickerWidgetState extends State<ReactionPickerWidget> {
                 'Your reaction helps us understand what resonates with learners.',
                 style: RLTypography.bodyMediumStyle.copyWith(
                   fontSize: 11,
-                  color: RLTheme.textPrimary.withValues(alpha: 0.7),
+                  color: RLDS.textPrimary.withValues(alpha: 0.7),
                   fontStyle: FontStyle.italic,
                 ),
               ),
@@ -2127,13 +2118,13 @@ class KnowledgeBuilderWidgetState extends State<KnowledgeBuilderWidget>
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: RLTheme.backgroundLight,
+        color: RLDS.backgroundLight,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: RLTheme.accentIndigo.withValues(alpha: 0.2)),
+        border: Border.all(color: RLDS.accentIndigo.withValues(alpha: 0.2)),
       ),
       child: Div.column([
         Div.row([
-          const Icon(Icons.school, color: RLTheme.accentIndigo, size: 24),
+          Icon(Icons.school, color: RLDS.accentIndigo, size: 24),
 
           const Spacing.width(12),
 
@@ -2151,7 +2142,7 @@ class KnowledgeBuilderWidgetState extends State<KnowledgeBuilderWidget>
             'Level ${currentLevel + 1}/4',
             style: RLTypography.bodyMediumStyle.copyWith(
               fontSize: 12,
-              color: RLTheme.accentIndigo,
+              color: RLDS.accentIndigo,
               fontWeight: FontWeight.w600,
             ),
           ),
@@ -2163,7 +2154,7 @@ class KnowledgeBuilderWidgetState extends State<KnowledgeBuilderWidget>
           'Unlock design mastery step by step',
           style: RLTypography.bodyMediumStyle.copyWith(
             fontSize: 12,
-            color: RLTheme.textPrimary.withValues(alpha: 0.6),
+            color: RLDS.textPrimary.withValues(alpha: 0.6),
           ),
         ),
 
@@ -2175,8 +2166,8 @@ class KnowledgeBuilderWidgetState extends State<KnowledgeBuilderWidget>
 
         LinearProgressIndicator(
           value: (currentLevel + 1) / levels.length,
-          backgroundColor: RLTheme.textPrimary.withValues(alpha: 0.1),
-          valueColor: const AlwaysStoppedAnimation<Color>(RLTheme.accentIndigo),
+          backgroundColor: RLDS.textPrimary.withValues(alpha: 0.1),
+          valueColor: AlwaysStoppedAnimation<Color>(RLDS.accentIndigo),
           minHeight: 6,
         ),
 
@@ -2186,7 +2177,7 @@ class KnowledgeBuilderWidgetState extends State<KnowledgeBuilderWidget>
           'Progress: ${((currentLevel + 1) / levels.length * 100).toInt()}% complete',
           style: RLTypography.bodyMediumStyle.copyWith(
             fontSize: 11,
-            color: RLTheme.accentIndigo,
+            color: RLDS.accentIndigo,
             fontWeight: FontWeight.w500,
           ),
           textAlign: TextAlign.center,
@@ -2208,58 +2199,58 @@ class KnowledgeBuilderWidgetState extends State<KnowledgeBuilderWidget>
       final bool shouldPulse = isCurrent && isUnlocked;
 
       final Color containerColor = isCompleted
-          ? RLTheme.primaryGreen.withValues(alpha: 0.1)
+          ? RLDS.primaryGreen.withValues(alpha: 0.1)
           : isCurrent
-          ? RLTheme.accentIndigo.withValues(alpha: 0.1)
+          ? RLDS.accentIndigo.withValues(alpha: 0.1)
           : isUnlocked
-          ? RLTheme.backgroundDark.withValues(alpha: 0.5)
-          : RLTheme.textPrimary.withValues(alpha: 0.05);
+          ? RLDS.backgroundDark.withValues(alpha: 0.5)
+          : RLDS.textPrimary.withValues(alpha: 0.05);
 
       final Color containerBorderColor = isCompleted
-          ? RLTheme.primaryGreen
+          ? RLDS.primaryGreen
           : isCurrent
-          ? RLTheme.accentIndigo
+          ? RLDS.accentIndigo
           : isUnlocked
-          ? RLTheme.accentIndigo.withValues(alpha: 0.3)
-          : RLTheme.textPrimary.withValues(alpha: 0.1);
+          ? RLDS.accentIndigo.withValues(alpha: 0.3)
+          : RLDS.textPrimary.withValues(alpha: 0.1);
 
       final double borderWidth = (isCurrent || isCompleted) ? 2 : 1;
 
       final Color circleColor = isCompleted
-          ? RLTheme.primaryGreen
+          ? RLDS.primaryGreen
           : isCurrent
-          ? RLTheme.accentIndigo
+          ? RLDS.accentIndigo
           : isUnlocked
-          ? RLTheme.accentIndigo.withValues(alpha: 0.3)
-          : RLTheme.textPrimary.withValues(alpha: 0.2);
+          ? RLDS.accentIndigo.withValues(alpha: 0.3)
+          : RLDS.textPrimary.withValues(alpha: 0.2);
 
       Widget circleChild;
       if (isCompleted) {
-        circleChild = const Icon(Icons.check, color: Colors.white, size: 16);
+        circleChild = const Icon(Icons.check, color: RLDS.white, size: 16);
       } else if (isUnlocked) {
         circleChild = Text(
           '${index + 1}',
           style: RLTypography.bodyLargeStyle.copyWith(
             fontSize: 14,
             fontWeight: FontWeight.bold,
-            color: isCurrent ? Colors.white : RLTheme.accentIndigo,
+            color: isCurrent ? RLDS.white : RLDS.accentIndigo,
           ),
         );
       } else {
-        circleChild = const Icon(Icons.lock, color: Colors.white, size: 16);
+        circleChild = const Icon(Icons.lock, color: RLDS.white, size: 16);
       }
 
       final Color titleColor = isCompleted
-          ? RLTheme.primaryGreen
+          ? RLDS.primaryGreen
           : isCurrent
-          ? RLTheme.accentIndigo
+          ? RLDS.accentIndigo
           : isUnlocked
-          ? RLTheme.textPrimary
-          : RLTheme.textPrimary.withValues(alpha: 0.4);
+          ? RLDS.textPrimary
+          : RLDS.textPrimary.withValues(alpha: 0.4);
 
       final Color descriptionColor = isUnlocked
-          ? RLTheme.textPrimary.withValues(alpha: 0.7)
-          : RLTheme.textPrimary.withValues(alpha: 0.3);
+          ? RLDS.textPrimary.withValues(alpha: 0.7)
+          : RLDS.textPrimary.withValues(alpha: 0.3);
 
       return Padding(
         padding: const EdgeInsets.only(bottom: 12),
@@ -2316,7 +2307,7 @@ class KnowledgeBuilderWidgetState extends State<KnowledgeBuilderWidget>
 
                 RenderIf.condition(
                   shouldPulse,
-                  const Icon(Icons.play_arrow, color: RLTheme.accentIndigo, size: 20),
+                  Icon(Icons.play_arrow, color: RLDS.accentIndigo, size: 20),
                 ),
               ]),
             ),
@@ -2366,7 +2357,7 @@ class TimelineBuilderWidgetState extends State<TimelineBuilderWidget> {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: RLTheme.backgroundLight,
+        color: RLDS.backgroundLight,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: Colors.brown.withValues(alpha: 0.2)),
       ),
@@ -2393,7 +2384,7 @@ class TimelineBuilderWidgetState extends State<TimelineBuilderWidget> {
           'Drag to arrange the design process in correct order',
           style: RLTypography.bodyMediumStyle.copyWith(
             fontSize: 12,
-            color: RLTheme.textPrimary.withValues(alpha: 0.6),
+            color: RLDS.textPrimary.withValues(alpha: 0.6),
           ),
         ),
 
@@ -2413,7 +2404,7 @@ class TimelineBuilderWidgetState extends State<TimelineBuilderWidget> {
                     'Drop events here to build timeline',
                     style: RLTypography.bodyMediumStyle.copyWith(
                       fontSize: 12,
-                      color: RLTheme.textPrimary.withValues(alpha: 0.4),
+                      color: RLDS.textPrimary.withValues(alpha: 0.4),
                       fontStyle: FontStyle.italic,
                     ),
                   ),
@@ -2488,7 +2479,7 @@ class TimelineBuilderWidgetState extends State<TimelineBuilderWidget> {
                   decoration: BoxDecoration(
                     color: isUsed
                         ? Colors.grey.withValues(alpha: 0.1)
-                        : RLTheme.backgroundDark.withValues(alpha: 0.5),
+                        : RLDS.backgroundDark.withValues(alpha: 0.5),
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(
                       color: isUsed
@@ -2501,8 +2492,8 @@ class TimelineBuilderWidgetState extends State<TimelineBuilderWidget> {
                     style: RLTypography.bodyMediumStyle.copyWith(
                       fontSize: 12,
                       color: isUsed
-                          ? RLTheme.textPrimary.withValues(alpha: 0.4)
-                          : RLTheme.textPrimary,
+                          ? RLDS.textPrimary.withValues(alpha: 0.4)
+                          : RLDS.textPrimary,
                     ),
                   ),
                 ),
@@ -2517,18 +2508,18 @@ class TimelineBuilderWidgetState extends State<TimelineBuilderWidget> {
             margin: const EdgeInsets.only(top: 16),
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: RLTheme.primaryGreen.withValues(alpha: 0.1),
+              color: RLDS.primaryGreen.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: RLTheme.primaryGreen),
+              border: Border.all(color: RLDS.primaryGreen),
             ),
             child: Div.row([
-              const Icon(Icons.check_circle, color: RLTheme.primaryGreen, size: 16),
+              Icon(Icons.check_circle, color: RLDS.primaryGreen, size: 16),
               const Spacing.width(8),
               Text(
                 'Perfect timeline! You understand the design process. +12 Process points',
                 style: RLTypography.bodyMediumStyle.copyWith(
                   fontSize: 12,
-                  color: RLTheme.primaryGreen,
+                  color: RLDS.primaryGreen,
                   fontWeight: FontWeight.w500,
                 ),
               ),
@@ -2608,7 +2599,7 @@ class WordAssociationWidgetState extends State<WordAssociationWidget> {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: RLTheme.backgroundLight,
+        color: RLDS.backgroundLight,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: Colors.blue.withValues(alpha: 0.2)),
       ),
@@ -2635,7 +2626,7 @@ class WordAssociationWidgetState extends State<WordAssociationWidget> {
           'Connect words that relate to the central concept',
           style: RLTypography.bodyMediumStyle.copyWith(
             fontSize: 12,
-            color: RLTheme.textPrimary.withValues(alpha: 0.6),
+            color: RLDS.textPrimary.withValues(alpha: 0.6),
           ),
         ),
 
@@ -2678,7 +2669,7 @@ class WordAssociationWidgetState extends State<WordAssociationWidget> {
                     'Tap words below to add associations',
                     style: RLTypography.bodyMediumStyle.copyWith(
                       fontSize: 12,
-                      color: RLTheme.textPrimary.withValues(alpha: 0.4),
+                      color: RLDS.textPrimary.withValues(alpha: 0.4),
                       fontStyle: FontStyle.italic,
                     ),
                   ),
@@ -2695,11 +2686,11 @@ class WordAssociationWidgetState extends State<WordAssociationWidget> {
                         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                         decoration: BoxDecoration(
                           color: isCorrect
-                              ? RLTheme.primaryGreen.withValues(alpha: 0.1)
-                              : RLTheme.errorColor.withValues(alpha: 0.1),
+                              ? RLDS.primaryGreen.withValues(alpha: 0.1)
+                              : RLDS.errorColor.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(12),
                           border: Border.all(
-                            color: isCorrect ? RLTheme.primaryGreen : RLTheme.errorColor,
+                            color: isCorrect ? RLDS.primaryGreen : RLDS.errorColor,
                           ),
                         ),
                         child: Div.row([
@@ -2707,7 +2698,7 @@ class WordAssociationWidgetState extends State<WordAssociationWidget> {
                             word,
                             style: RLTypography.bodyMediumStyle.copyWith(
                               fontSize: 12,
-                              color: isCorrect ? RLTheme.primaryGreen : Colors.red.shade700,
+                              color: isCorrect ? RLDS.primaryGreen : Colors.red.shade700,
                               fontWeight: FontWeight.w500,
                             ),
                           ),
@@ -2715,7 +2706,7 @@ class WordAssociationWidgetState extends State<WordAssociationWidget> {
                           Icon(
                             isCorrect ? Icons.check : Icons.close,
                             size: 14,
-                            color: isCorrect ? RLTheme.primaryGreen : RLTheme.errorColor,
+                            color: isCorrect ? RLDS.primaryGreen : RLDS.errorColor,
                           ),
                         ]),
                       ),
@@ -2753,7 +2744,7 @@ class WordAssociationWidgetState extends State<WordAssociationWidget> {
                   decoration: BoxDecoration(
                     color: isUsed
                         ? Colors.grey.withValues(alpha: 0.1)
-                        : RLTheme.backgroundDark.withValues(alpha: 0.5),
+                        : RLDS.backgroundDark.withValues(alpha: 0.5),
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(
                       color: isUsed
@@ -2766,8 +2757,8 @@ class WordAssociationWidgetState extends State<WordAssociationWidget> {
                     style: RLTypography.bodyMediumStyle.copyWith(
                       fontSize: 12,
                       color: isUsed
-                          ? RLTheme.textPrimary.withValues(alpha: 0.4)
-                          : RLTheme.textPrimary,
+                          ? RLDS.textPrimary.withValues(alpha: 0.4)
+                          : RLDS.textPrimary,
                     ),
                   ),
                 ),
@@ -2783,18 +2774,18 @@ class WordAssociationWidgetState extends State<WordAssociationWidget> {
             margin: const EdgeInsets.only(top: 16),
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: RLTheme.primaryGreen.withValues(alpha: 0.1),
+              color: RLDS.primaryGreen.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: RLTheme.primaryGreen),
+              border: Border.all(color: RLDS.primaryGreen),
             ),
             child: Div.row([
-              const Icon(Icons.psychology, color: RLTheme.primaryGreen, size: 16),
+              Icon(Icons.psychology, color: RLDS.primaryGreen, size: 16),
               const Spacing.width(8),
               Text(
                 'Excellent associations! You understand usability principles. +8 Concept points',
                 style: RLTypography.bodyMediumStyle.copyWith(
                   fontSize: 12,
-                  color: RLTheme.primaryGreen,
+                  color: RLDS.primaryGreen,
                   fontWeight: FontWeight.w500,
                 ),
               ),
@@ -2839,13 +2830,13 @@ class DialAdjustmentWidgetState extends State<DialAdjustmentWidget> {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: RLTheme.backgroundLight,
+        color: RLDS.backgroundLight,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: RLTheme.accentPurple.withValues(alpha: 0.2)),
+        border: Border.all(color: RLDS.accentPurple.withValues(alpha: 0.2)),
       ),
       child: Div.column([
         Div.row([
-          const Icon(Icons.tune, color: RLTheme.accentPurple, size: 24),
+          Icon(Icons.tune, color: RLDS.accentPurple, size: 24),
 
           const Spacing.width(12),
 
@@ -2866,7 +2857,7 @@ class DialAdjustmentWidgetState extends State<DialAdjustmentWidget> {
           'Adjust both dials to find the optimal design balance',
           style: RLTypography.bodyMediumStyle.copyWith(
             fontSize: 12,
-            color: RLTheme.textPrimary.withValues(alpha: 0.6),
+            color: RLDS.textPrimary.withValues(alpha: 0.6),
           ),
         ),
 
@@ -2880,7 +2871,7 @@ class DialAdjustmentWidgetState extends State<DialAdjustmentWidget> {
               style: RLTypography.bodyMediumStyle.copyWith(
                 fontSize: 14,
                 fontWeight: FontWeight.w500,
-                color: RLTheme.accentPurple,
+                color: RLDS.accentPurple,
               ),
             ),
             const Spacer(),
@@ -2898,10 +2889,10 @@ class DialAdjustmentWidgetState extends State<DialAdjustmentWidget> {
 
           SliderTheme(
             data: SliderThemeData(
-              activeTrackColor: RLTheme.accentPurple,
-              inactiveTrackColor: RLTheme.textPrimary.withValues(alpha: 0.1),
-              thumbColor: RLTheme.accentPurple,
-              overlayColor: RLTheme.accentPurple.withValues(alpha: 0.1),
+              activeTrackColor: RLDS.accentPurple,
+              inactiveTrackColor: RLDS.textPrimary.withValues(alpha: 0.1),
+              thumbColor: RLDS.accentPurple,
+              overlayColor: RLDS.accentPurple.withValues(alpha: 0.1),
               thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 12),
               trackHeight: 6,
             ),
@@ -2922,7 +2913,7 @@ class DialAdjustmentWidgetState extends State<DialAdjustmentWidget> {
               'Simple',
               style: RLTypography.bodyMediumStyle.copyWith(
                 fontSize: 11,
-                color: RLTheme.textPrimary.withValues(alpha: 0.5),
+                color: RLDS.textPrimary.withValues(alpha: 0.5),
               ),
             ),
             const Spacer(),
@@ -2930,7 +2921,7 @@ class DialAdjustmentWidgetState extends State<DialAdjustmentWidget> {
               'Complex',
               style: RLTypography.bodyMediumStyle.copyWith(
                 fontSize: 11,
-                color: RLTheme.textPrimary.withValues(alpha: 0.5),
+                color: RLDS.textPrimary.withValues(alpha: 0.5),
               ),
             ),
           ]),
@@ -2946,7 +2937,7 @@ class DialAdjustmentWidgetState extends State<DialAdjustmentWidget> {
               style: RLTypography.bodyMediumStyle.copyWith(
                 fontSize: 14,
                 fontWeight: FontWeight.w500,
-                color: RLTheme.accentPurple,
+                color: RLDS.accentPurple,
               ),
             ),
             const Spacer(),
@@ -2964,10 +2955,10 @@ class DialAdjustmentWidgetState extends State<DialAdjustmentWidget> {
 
           SliderTheme(
             data: SliderThemeData(
-              activeTrackColor: RLTheme.accentPurple,
-              inactiveTrackColor: RLTheme.textPrimary.withValues(alpha: 0.1),
-              thumbColor: RLTheme.accentPurple,
-              overlayColor: RLTheme.accentPurple.withValues(alpha: 0.1),
+              activeTrackColor: RLDS.accentPurple,
+              inactiveTrackColor: RLDS.textPrimary.withValues(alpha: 0.1),
+              thumbColor: RLDS.accentPurple,
+              overlayColor: RLDS.accentPurple.withValues(alpha: 0.1),
               thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 12),
               trackHeight: 6,
             ),
@@ -2988,7 +2979,7 @@ class DialAdjustmentWidgetState extends State<DialAdjustmentWidget> {
               'Difficult',
               style: RLTypography.bodyMediumStyle.copyWith(
                 fontSize: 11,
-                color: RLTheme.textPrimary.withValues(alpha: 0.5),
+                color: RLDS.textPrimary.withValues(alpha: 0.5),
               ),
             ),
             const Spacer(),
@@ -2996,7 +2987,7 @@ class DialAdjustmentWidgetState extends State<DialAdjustmentWidget> {
               'Easy',
               style: RLTypography.bodyMediumStyle.copyWith(
                 fontSize: 11,
-                color: RLTheme.textPrimary.withValues(alpha: 0.5),
+                color: RLDS.textPrimary.withValues(alpha: 0.5),
               ),
             ),
           ]),
@@ -3009,15 +3000,15 @@ class DialAdjustmentWidgetState extends State<DialAdjustmentWidget> {
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
             color: isOptimal
-                ? RLTheme.primaryGreen.withValues(alpha: 0.1)
-                : RLTheme.warningColor.withValues(alpha: 0.1),
+                ? RLDS.primaryGreen.withValues(alpha: 0.1)
+                : RLDS.warningColor.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(8),
-            border: Border.all(color: isOptimal ? RLTheme.primaryGreen : RLTheme.warningColor),
+            border: Border.all(color: isOptimal ? RLDS.primaryGreen : RLDS.warningColor),
           ),
           child: Div.row([
             Icon(
               isOptimal ? Icons.balance : Icons.warning,
-              color: isOptimal ? RLTheme.primaryGreen : RLTheme.warningColor,
+              color: isOptimal ? RLDS.primaryGreen : RLDS.warningColor,
               size: 16,
             ),
             const Spacing.width(8),
@@ -3028,7 +3019,7 @@ class DialAdjustmentWidgetState extends State<DialAdjustmentWidget> {
                     : 'Try adjusting: aim for simple and easy to use',
                 style: RLTypography.bodyMediumStyle.copyWith(
                   fontSize: 12,
-                  color: isOptimal ? RLTheme.primaryGreen : Colors.orange.shade700,
+                  color: isOptimal ? RLDS.primaryGreen : Colors.orange.shade700,
                   fontWeight: FontWeight.w500,
                   height: 1.3,
                 ),
@@ -3043,14 +3034,14 @@ class DialAdjustmentWidgetState extends State<DialAdjustmentWidget> {
             margin: const EdgeInsets.only(top: 8),
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: RLTheme.primaryGreen.withValues(alpha: 0.1),
+              color: RLDS.primaryGreen.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(8),
             ),
             child: Text(
               'Excellent! You found the sweet spot where designs are both simple and usable. +10 Balance points',
               style: RLTypography.bodyMediumStyle.copyWith(
                 fontSize: 12,
-                color: RLTheme.primaryGreen,
+                color: RLDS.primaryGreen,
                 fontWeight: FontWeight.w500,
                 height: 1.3,
               ),
@@ -3142,13 +3133,13 @@ class StoryBranchingWidgetState extends State<StoryBranchingWidget> {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: RLTheme.backgroundLight,
+        color: RLDS.backgroundLight,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: RLTheme.accentTeal.withValues(alpha: 0.2)),
+        border: Border.all(color: RLDS.accentTeal.withValues(alpha: 0.2)),
       ),
       child: Div.column([
         Div.row([
-          const Icon(Icons.auto_stories, color: RLTheme.accentTeal, size: 24),
+          Icon(Icons.auto_stories, color: RLDS.accentTeal, size: 24),
 
           const Spacing.width(12),
 
@@ -3166,7 +3157,7 @@ class StoryBranchingWidgetState extends State<StoryBranchingWidget> {
             'Chapter ${storyPath.length + 1}',
             style: RLTypography.bodyMediumStyle.copyWith(
               fontSize: 12,
-              color: RLTheme.accentTeal,
+              color: RLDS.accentTeal,
               fontWeight: FontWeight.w500,
             ),
           ),
@@ -3178,7 +3169,7 @@ class StoryBranchingWidgetState extends State<StoryBranchingWidget> {
           'Choose how the design story unfolds',
           style: RLTypography.bodyMediumStyle.copyWith(
             fontSize: 12,
-            color: RLTheme.textPrimary.withValues(alpha: 0.6),
+            color: RLDS.textPrimary.withValues(alpha: 0.6),
           ),
         ),
 
@@ -3188,7 +3179,7 @@ class StoryBranchingWidgetState extends State<StoryBranchingWidget> {
         Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: RLTheme.accentTeal.withValues(alpha: 0.05),
+            color: RLDS.accentTeal.withValues(alpha: 0.05),
             borderRadius: BorderRadius.circular(12),
           ),
           child: Text(
@@ -3196,7 +3187,7 @@ class StoryBranchingWidgetState extends State<StoryBranchingWidget> {
             style: RLTypography.bodyLargeStyle.copyWith(
               fontSize: 14,
               height: 1.5,
-              color: RLTheme.textPrimary,
+              color: RLDS.textPrimary,
             ),
           ),
         ),
@@ -3247,7 +3238,7 @@ class StoryBranchingWidgetState extends State<StoryBranchingWidget> {
             getEndingMessage(ending),
             style: RLTypography.bodyMediumStyle.copyWith(
               fontSize: 12,
-              color: RLTheme.textPrimary.withValues(alpha: 0.8),
+              color: RLDS.textPrimary.withValues(alpha: 0.8),
               height: 1.3,
             ),
           ),
@@ -3268,7 +3259,7 @@ class StoryBranchingWidgetState extends State<StoryBranchingWidget> {
             child: Text(
               'Try Different Choices',
               style: RLTypography.bodyLargeStyle.copyWith(
-                color: Colors.white,
+                color: RLDS.white,
                 fontWeight: FontWeight.w600,
                 fontSize: 14,
               ),
@@ -3290,9 +3281,9 @@ class StoryBranchingWidgetState extends State<StoryBranchingWidget> {
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             decoration: BoxDecoration(
-              color: RLTheme.backgroundDark.withValues(alpha: 0.5),
+              color: RLDS.backgroundDark.withValues(alpha: 0.5),
               borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: RLTheme.accentTeal.withValues(alpha: 0.3)),
+              border: Border.all(color: RLDS.accentTeal.withValues(alpha: 0.3)),
             ),
             child: Div.row([
               Expanded(
@@ -3300,12 +3291,12 @@ class StoryBranchingWidgetState extends State<StoryBranchingWidget> {
                   choiceMap['text'] as String,
                   style: RLTypography.bodyMediumStyle.copyWith(
                     fontSize: 13,
-                    color: RLTheme.textPrimary,
+                    color: RLDS.textPrimary,
                   ),
                 ),
               ),
 
-              const Icon(Icons.arrow_forward_ios, size: 16, color: RLTheme.accentTeal),
+              Icon(Icons.arrow_forward_ios, size: 16, color: RLDS.accentTeal),
             ]),
           ),
         ),
@@ -3317,19 +3308,19 @@ class StoryBranchingWidgetState extends State<StoryBranchingWidget> {
     switch (ending) {
       case 'success':
         {
-          return RLTheme.primaryGreen;
+          return RLDS.primaryGreen;
         }
       case 'partial':
         {
-          return RLTheme.warningColor;
+          return RLDS.warningColor;
         }
       case 'failure':
         {
-          return RLTheme.errorColor;
+          return RLDS.errorColor;
         }
       default:
         {
-          return RLTheme.accentTeal;
+          return RLDS.accentTeal;
         }
     }
   }
@@ -3438,13 +3429,13 @@ class PatternRecognitionWidgetState extends State<PatternRecognitionWidget> {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: RLTheme.backgroundLight,
+        color: RLDS.backgroundLight,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: RLTheme.errorColor.withValues(alpha: 0.2)),
+        border: Border.all(color: RLDS.errorColor.withValues(alpha: 0.2)),
       ),
       child: Div.column([
         Div.row([
-          const Icon(Icons.pattern, color: RLTheme.errorColor, size: 24),
+          Icon(Icons.pattern, color: RLDS.errorColor, size: 24),
 
           const Spacing.width(12),
 
@@ -3465,7 +3456,7 @@ class PatternRecognitionWidgetState extends State<PatternRecognitionWidget> {
           'Identify repeated design patterns in the sequence',
           style: RLTypography.bodyMediumStyle.copyWith(
             fontSize: 12,
-            color: RLTheme.textPrimary.withValues(alpha: 0.6),
+            color: RLDS.textPrimary.withValues(alpha: 0.6),
           ),
         ),
 
@@ -3475,7 +3466,7 @@ class PatternRecognitionWidgetState extends State<PatternRecognitionWidget> {
         Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: RLTheme.errorColor.withValues(alpha: 0.05),
+            color: RLDS.errorColor.withValues(alpha: 0.05),
             borderRadius: BorderRadius.circular(12),
           ),
           child: Div.column([
@@ -3484,7 +3475,7 @@ class PatternRecognitionWidgetState extends State<PatternRecognitionWidget> {
               style: RLTypography.bodyMediumStyle.copyWith(
                 fontSize: 12,
                 fontWeight: FontWeight.w600,
-                color: RLTheme.errorColor,
+                color: RLDS.errorColor,
               ),
             ),
 
@@ -3506,24 +3497,24 @@ class PatternRecognitionWidgetState extends State<PatternRecognitionWidget> {
                     decoration: BoxDecoration(
                       color: hasSubmitted
                           ? (isRepeated
-                                ? RLTheme.primaryGreen.withValues(alpha: 0.1)
+                                ? RLDS.primaryGreen.withValues(alpha: 0.1)
                                 : (isSelected
-                                      ? RLTheme.errorColor.withValues(alpha: 0.1)
-                                      : RLTheme.backgroundDark.withValues(alpha: 0.5)))
+                                      ? RLDS.errorColor.withValues(alpha: 0.1)
+                                      : RLDS.backgroundDark.withValues(alpha: 0.5)))
                           : (isSelected
-                                ? RLTheme.errorColor.withValues(alpha: 0.1)
-                                : RLTheme.backgroundDark.withValues(alpha: 0.5)),
+                                ? RLDS.errorColor.withValues(alpha: 0.1)
+                                : RLDS.backgroundDark.withValues(alpha: 0.5)),
                       borderRadius: BorderRadius.circular(8),
                       border: Border.all(
                         color: hasSubmitted
                             ? (isRepeated
-                                  ? RLTheme.primaryGreen
+                                  ? RLDS.primaryGreen
                                   : (isSelected
-                                        ? RLTheme.errorColor
-                                        : RLTheme.textPrimary.withValues(alpha: 0.2)))
+                                        ? RLDS.errorColor
+                                        : RLDS.textPrimary.withValues(alpha: 0.2)))
                             : (isSelected
-                                  ? RLTheme.errorColor
-                                  : RLTheme.textPrimary.withValues(alpha: 0.2)),
+                                  ? RLDS.errorColor
+                                  : RLDS.textPrimary.withValues(alpha: 0.2)),
                         width: hasSubmitted && isRepeated ? 2 : 1,
                       ),
                     ),
@@ -3534,9 +3525,9 @@ class PatternRecognitionWidgetState extends State<PatternRecognitionWidget> {
                           fontSize: 12,
                           color: hasSubmitted
                               ? (isRepeated
-                                    ? RLTheme.primaryGreen
-                                    : (isSelected ? Colors.red.shade700 : RLTheme.textPrimary))
-                              : (isSelected ? RLTheme.errorColor : RLTheme.textPrimary),
+                                    ? RLDS.primaryGreen
+                                    : (isSelected ? Colors.red.shade700 : RLDS.textPrimary))
+                              : (isSelected ? RLDS.errorColor : RLDS.textPrimary),
                           fontWeight: hasSubmitted && isRepeated
                               ? FontWeight.w600
                               : FontWeight.normal,
@@ -3555,10 +3546,10 @@ class PatternRecognitionWidgetState extends State<PatternRecognitionWidget> {
                                 : Icons.circle_outlined,
                             size: 16,
                             color: isRepeated
-                                ? RLTheme.primaryGreen
+                                ? RLDS.primaryGreen
                                 : isSelected
-                                ? RLTheme.errorColor
-                                : RLTheme.textPrimary.withValues(alpha: 0.3),
+                                ? RLDS.errorColor
+                                : RLDS.textPrimary.withValues(alpha: 0.3),
                           ),
                         ),
                       ),
@@ -3586,7 +3577,7 @@ class PatternRecognitionWidgetState extends State<PatternRecognitionWidget> {
                 child: Text(
                   'Check Pattern Recognition',
                   style: RLTypography.bodyLargeStyle.copyWith(
-                    color: Colors.white,
+                    color: RLDS.white,
                     fontWeight: FontWeight.w600,
                     fontSize: 14,
                   ),
@@ -3602,18 +3593,18 @@ class PatternRecognitionWidgetState extends State<PatternRecognitionWidget> {
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
               color: score >= 2
-                  ? RLTheme.primaryGreen.withValues(alpha: 0.1)
-                  : RLTheme.warningColor.withValues(alpha: 0.1),
+                  ? RLDS.primaryGreen.withValues(alpha: 0.1)
+                  : RLDS.warningColor.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(8),
               border: Border.all(
-                color: score >= 2 ? RLTheme.primaryGreen : RLTheme.warningColor,
+                color: score >= 2 ? RLDS.primaryGreen : RLDS.warningColor,
               ),
             ),
             child: Div.column([
               Div.row([
                 Icon(
                   score >= 2 ? Icons.visibility : Icons.psychology,
-                  color: score >= 2 ? RLTheme.primaryGreen : RLTheme.warningColor,
+                  color: score >= 2 ? RLDS.primaryGreen : RLDS.warningColor,
                   size: 16,
                 ),
                 const Spacing.width(8),
@@ -3623,7 +3614,7 @@ class PatternRecognitionWidgetState extends State<PatternRecognitionWidget> {
                       : 'Pattern recognition needs practice',
                   style: RLTypography.bodyMediumStyle.copyWith(
                     fontSize: 12,
-                    color: score >= 2 ? RLTheme.primaryGreen : Colors.orange.shade700,
+                    color: score >= 2 ? RLDS.primaryGreen : Colors.orange.shade700,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -3635,7 +3626,7 @@ class PatternRecognitionWidgetState extends State<PatternRecognitionWidget> {
                 'You identified $score/2 repeated patterns. ${score >= 2 ? "+12 Recognition points" : "+6 Recognition points for trying"}',
                 style: RLTypography.bodyMediumStyle.copyWith(
                   fontSize: 11,
-                  color: RLTheme.textPrimary.withValues(alpha: 0.7),
+                  color: RLDS.textPrimary.withValues(alpha: 0.7),
                 ),
               ),
             ]),

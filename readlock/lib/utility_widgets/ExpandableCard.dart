@@ -2,10 +2,9 @@
 // Expands to show full content when tapped
 
 import 'package:flutter/material.dart' hide Typography;
-import 'package:readlock/constants/RLConstants.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/utility_widgets/Utility.dart';
-import 'package:readlock/constants/RLTheme.dart';
+import 'package:readlock/constants/RLDesignSystem.dart';
 
 class ExpandableCard extends StatefulWidget {
   final String title;
@@ -64,18 +63,24 @@ class ExpandableCardState extends State<ExpandableCard> {
 
   BoxDecoration getCardDecoration() {
     final bool hasGradient = widget.gradient != null;
-    final Color fallbackColor = widget.backgroundColor ?? RLTheme.backgroundLight;
+    final bool hasBackgroundColor = widget.backgroundColor != null;
+
+    Color fallbackColor = RLDS.backgroundLight;
+
+    if (hasBackgroundColor) {
+      fallbackColor = widget.backgroundColor!;
+    }
 
     Border? cardBorder;
 
     if (!hasGradient) {
-      cardBorder = Border.all(color: RLTheme.textPrimary.withValues(alpha: 0.1));
+      cardBorder = Border.all(color: RLDS.textPrimary.withValues(alpha: 0.1));
     }
 
     return BoxDecoration(
       gradient: widget.gradient,
       color: fallbackColor,
-      borderRadius: BorderRadius.circular(CARD_BORDER_RADIUS),
+      borderRadius: BorderRadius.circular(16.0),
       border: cardBorder,
     );
   }
@@ -90,10 +95,10 @@ class ExpandableCardState extends State<ExpandableCard> {
     final bool hasGradient = widget.gradient != null;
 
     if (hasGradient) {
-      return Colors.white;
+      return RLDS.white;
     }
 
-    return RLTheme.textPrimary;
+    return RLDS.textPrimary;
   }
 
   Color getIconColor() {
@@ -106,10 +111,10 @@ class ExpandableCardState extends State<ExpandableCard> {
     final bool hasGradient = widget.gradient != null;
 
     if (hasGradient) {
-      return Colors.white;
+      return RLDS.white;
     }
 
-    return RLTheme.primaryBlue;
+    return RLDS.primaryBlue;
   }
 
   Widget HeaderSection(Color titleColor, Color iconColor) {
@@ -119,13 +124,13 @@ class ExpandableCardState extends State<ExpandableCard> {
 
     return Div.row(
       [mainIcon, const Spacing.width(12), Expanded(child: titleText), arrowIcon],
-      padding: const EdgeInsets.all(HEADER_PADDING),
+      padding: const EdgeInsets.all(20.0),
       onTap: handleExpansionToggle,
     );
   }
 
   Widget MainIcon(Color iconColor) {
-    return Icon(widget.icon, color: iconColor, size: ICON_SIZE_MAIN);
+    return Icon(widget.icon, color: iconColor, size: 24.0);
   }
 
   Widget TitleText(Color titleColor) {
@@ -139,7 +144,7 @@ class ExpandableCardState extends State<ExpandableCard> {
       chevronIcon = Icons.expand_less;
     }
 
-    return Icon(chevronIcon, color: titleColor.withValues(alpha: 0.7), size: ICON_SIZE_ARROW);
+    return Icon(chevronIcon, color: titleColor.withValues(alpha: 0.7), size: 20.0);
   }
 
   Widget ExpandedSection(Color titleColor) {
@@ -152,19 +157,19 @@ class ExpandableCardState extends State<ExpandableCard> {
 
   Widget DividerLine(Color titleColor) {
     return Container(
-      height: DIVIDER_HEIGHT,
+      height: 1.0,
       color: titleColor.withValues(alpha: 0.1),
-      margin: const EdgeInsets.symmetric(horizontal: CONTENT_PADDING_HORIZONTAL),
+      margin: const EdgeInsets.symmetric(horizontal: 20.0),
     );
   }
 
   Widget ContentContainer() {
     return Container(
       padding: const EdgeInsets.fromLTRB(
-        CONTENT_PADDING_HORIZONTAL,
-        CONTENT_PADDING_TOP,
-        CONTENT_PADDING_HORIZONTAL,
-        CONTENT_PADDING_BOTTOM,
+        20.0,
+        16.0,
+        20.0,
+        20.0,
       ),
       child: widget.expandedContent,
     );

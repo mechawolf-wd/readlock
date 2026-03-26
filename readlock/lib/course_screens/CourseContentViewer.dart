@@ -4,13 +4,15 @@
 import 'package:flutter/material.dart';
 import 'package:readlock/course_screens/widgets/CCJSONContentFactory.dart';
 import 'package:readlock/course_screens/data/CourseData.dart';
-import 'package:readlock/constants/RLTheme.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
-import 'package:readlock/constants/RLConstants.dart';
+import 'package:readlock/constants/RLUIStrings.dart';
 import 'package:readlock/utility_widgets/Utility.dart';
 import 'package:readlock/utility_widgets/FeedbackSnackbar.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/screens/StreakplierRewardScreen.dart';
+import 'package:readlock/bottom_sheets/course/QuitConfirmationSheet.dart';
+import 'package:readlock/constants/DartAliases.dart';
+import 'package:readlock/services/SoundService.dart';
 
 class CourseDetailScreen extends StatefulWidget {
   // Course identifier to load
@@ -42,8 +44,8 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
   late int currentLessonIndex;
 
   // Content data management
-  List<Map<String, dynamic>> allContent = [];
-  Map<String, dynamic>? courseData;
+  JSONList allContent = [];
+  JSONMap? courseData;
 
   // Loading state
   bool isLoading = true;
@@ -52,12 +54,12 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
   static const Icon BackNavigationIcon = Icon(
     Icons.close_rounded,
     color: Color.fromARGB(255, 157, 157, 157),
-    size: COURSE_BACK_ICON_SIZE,
+    size: RLDS.iconMedium,
   );
 
-  static const Icon BlazeIcon = Icon(
+  static final Icon BlazeIcon = Icon(
     Icons.local_fire_department_rounded,
-    color: RLTheme.warningColor,
+    color: RLDS.warningColor,
     size: 24,
   );
 
@@ -76,12 +78,16 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
     pageController = PageController(initialPage: currentContentIndex);
 
     // Load course data asynchronously
-    loadCourseData();
+    fetchCourseData();
+
+    // Start atmosphere audio loop
+    SoundService.playAtmosphere();
   }
 
-  // Cleanup page controller when widget is disposed
+  // Cleanup page controller and stop atmosphere when widget is disposed
   @override
   void dispose() {
+    SoundService.stopAtmosphere();
     pageController.dispose();
     super.dispose();
   }
@@ -99,9 +105,9 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
 
   // Loading screen widget
   Widget LoadingScreen() {
-    return const Scaffold(
-      backgroundColor: RLTheme.backgroundDark,
-      body: Center(child: CircularProgressIndicator()),
+    return Scaffold(
+      backgroundColor: RLDS.backgroundDark,
+      body: const Center(child: CircularProgressIndicator()),
     );
   }
 
@@ -109,7 +115,7 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
   Widget MainCourseScreen() {
     return SafeArea(
       child: Scaffold(
-        backgroundColor: RLTheme.backgroundDark,
+        backgroundColor: RLDS.backgroundDark,
         body: Div.column([
           // Progress bar and navigation header
           TopProgressBar(),
@@ -145,7 +151,7 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
 
   // Empty state message when no content available
   Widget EmptyContentMessage() {
-    return Center(child: RLTypography.bodyMedium(NO_CONTENT_AVAILABLE_MESSAGE));
+    return Center(child: RLTypography.bodyMedium(RLUIStrings.NO_CONTENT_AVAILABLE_MESSAGE));
   }
 
   // Top navigation bar with progress indicator
@@ -154,12 +160,12 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
       // Back navigation button
       BackNavigationButton(),
 
-      const Spacing.width(COURSE_NAVIGATION_SPACING),
+      const Spacing.width(RLDS.spacing12),
 
       // Course progress indicator
       Expanded(child: ProgressIndicator()),
 
-      const Spacing.width(COURSE_NAVIGATION_SPACING),
+      const Spacing.width(RLDS.spacing12),
 
       // Bookmark slide icon
       BookmarkButton(),
@@ -168,7 +174,7 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
 
       // Streak blaze icon
       BlazeIcon,
-    ], padding: COURSE_TOP_BAR_PADDING);
+    ], padding: RLDS.spacing16);
   }
 
   // Back button for navigation
@@ -197,12 +203,12 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
     final double progressValue = calculateProgress();
 
     return SizedBox(
-      height: COURSE_PROGRESS_BAR_HEIGHT,
+      height: 12.0,
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(COURSE_PROGRESS_BAR_RADIUS),
+        borderRadius: BorderRadius.circular(8.0),
         child: LinearProgressIndicator(
           value: progressValue,
-          backgroundColor: RLTheme.backgroundLight,
+          backgroundColor: RLDS.backgroundLight,
           valueColor: const AlwaysStoppedAnimation<Color>(Colors.green),
         ),
       ),
@@ -214,9 +220,9 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
     final List<ProgressSegment> progressSegments = createProgressSegments();
 
     return ClipRRect(
-      borderRadius: BorderRadius.circular(COURSE_PROGRESS_BAR_RADIUS),
+      borderRadius: BorderRadius.circular(8.0),
       child: SizedBox(
-        height: COURSE_PROGRESS_BAR_HEIGHT,
+        height: 12.0,
         child: LayoutBuilder(
           builder: (context, constraints) {
             final double availableWidth = constraints.maxWidth;
@@ -259,12 +265,19 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
       } else {
         // For skill check segments, show completed or not
         final bool isCompleted = currentContentIndex > segment.startIndex;
+
+        Color segmentColor = RLDS.backgroundLight;
+
+        if (isCompleted) {
+          segmentColor = RLDS.primaryGreen;
+        }
+
         segmentWidgets.add(
           Container(
             width: segmentWidth,
-            height: COURSE_PROGRESS_BAR_HEIGHT,
+            height: 12.0,
             decoration: BoxDecoration(
-              color: isCompleted ? RLTheme.primaryGreen : RLTheme.backgroundLight,
+              color: segmentColor,
               borderRadius: BorderRadius.circular(8.0),
             ),
           ),
@@ -298,28 +311,38 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
     final int regularSegmentCount = totalSegments - skillCheckCount;
 
     // Ensure we don't return negative width
-    final double calculatedWidth = regularSegmentCount > 0
-        ? (remainingWidth / regularSegmentCount)
-        : skillCheckWidth;
+    double calculatedWidth = skillCheckWidth;
 
-    return calculatedWidth > 0 ? calculatedWidth : 20.0;
+    final bool hasRegularSegments = regularSegmentCount > 0;
+
+    if (hasRegularSegments) {
+      calculatedWidth = remainingWidth / regularSegmentCount;
+    }
+
+    final bool hasPositiveWidth = calculatedWidth > 0;
+
+    if (!hasPositiveWidth) {
+      return 20.0;
+    }
+
+    return calculatedWidth;
   }
 
   // Build content item widget for specific index
   Widget getContentItem(BuildContext context, int contentItemIndex) {
-    final Map<String, dynamic> content = allContent[contentItemIndex];
+    final JSONMap content = allContent[contentItemIndex];
 
-    return JsonContentWidgetFactory.createContentWidget(
+    return CCJSONContentFactory.createContentWidget(
       content,
       onLessonComplete: showStreakplierRewardScreen,
     );
   }
 
   // Load course data from service
-  Future<void> loadCourseData() async {
+  Future<void> fetchCourseData() async {
     try {
       // Fetch course data by ID
-      courseData = await CourseDataService.getCourseById(widget.courseId);
+      courseData = await CourseDataService.fetchCourseById(widget.courseId);
 
       final bool hasCourseData = courseData != null;
 
@@ -327,7 +350,7 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
         allContent = await getAllContent();
       }
     } on Exception catch (error) {
-      debugPrint('$ERROR_LOADING_COURSE_DATA: $error');
+      debugPrint('$RLUIStrings.ERROR_LOADING_COURSE_DATA: $error');
     } finally {
       // Update loading state
       if (mounted) {
@@ -339,7 +362,7 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
   }
 
   // Extract content items from current lesson only
-  Future<List<Map<String, dynamic>>> getAllContent() async {
+  Future<JSONList> getAllContent() async {
     final bool hasNoCourseData = courseData == null;
 
     if (hasNoCourseData) {
@@ -347,24 +370,18 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
     }
 
     // Navigate through segments to find lessons
-    final List<Map<String, dynamic>> segments = List<Map<String, dynamic>>.from(
-      courseData!['segments'] ?? [],
-    );
+    final JSONList segments = JSONList.from(courseData!['segments'] ?? []);
 
     return getContentFromCurrentLessonInSegments(segments);
   }
 
   // Get content from current lesson by navigating through segments
-  List<Map<String, dynamic>> getContentFromCurrentLessonInSegments(
-    List<Map<String, dynamic>> segments,
-  ) {
+  JSONList getContentFromCurrentLessonInSegments(JSONList segments) {
     // Flatten all lessons from all segments
-    final List<Map<String, dynamic>> allLessons = [];
+    final JSONList allLessons = [];
 
     for (final segment in segments) {
-      final List<Map<String, dynamic>> segmentLessons = List<Map<String, dynamic>>.from(
-        segment['lessons'] ?? [],
-      );
+      final JSONList segmentLessons = JSONList.from(segment['lessons'] ?? []);
       allLessons.addAll(segmentLessons);
     }
 
@@ -372,7 +389,7 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
   }
 
   // Get content from the current lesson only
-  List<Map<String, dynamic>> getContentFromCurrentLesson(List<Map<String, dynamic>> lessons) {
+  JSONList getContentFromCurrentLesson(JSONList lessons) {
     final bool hasValidLessonIndex =
         currentLessonIndex >= 0 && currentLessonIndex < lessons.length;
 
@@ -380,10 +397,8 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
       return [];
     }
 
-    final Map<String, dynamic> currentLesson = lessons[currentLessonIndex];
-    final List<Map<String, dynamic>> lessonContent = List<Map<String, dynamic>>.from(
-      currentLesson['content'] ?? [],
-    );
+    final JSONMap currentLesson = lessons[currentLessonIndex];
+    final JSONList lessonContent = JSONList.from(currentLesson['content'] ?? []);
 
     return lessonContent;
   }
@@ -422,18 +437,11 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
     Navigator.of(context).pop();
   }
 
-  // Show quit confirmation bottom sheet
+  // Show quit confirmation dialog
   void showQuitConfirmationSheet() {
-    showModalBottomSheet(
+    QuitConfirmationSheet.show(
       context: context,
-      backgroundColor: Colors.transparent,
-      builder: (sheetContext) => QuitConfirmationSheet(
-        onLearnTap: () => Navigator.of(sheetContext).pop(),
-        onQuitTap: () {
-          Navigator.of(sheetContext).pop();
-          navigateBackToRoadmap();
-        },
-      ),
+      onQuitTap: navigateBackToRoadmap,
     );
   }
 
@@ -489,7 +497,7 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
     // Show bookmark feedback using custom snackbar
     FeedbackSnackBar.showCustomFeedback(
       context,
-      'Saved to your nest! Saved by: 339 birds.',
+      RLUIStrings.BOOKMARK_FEEDBACK_MESSAGE,
       true,
     );
   }
@@ -500,7 +508,7 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
   }
 
   // Helper method to identify skill check content
-  bool isSkillCheckContent(Map<String, dynamic> content) {
+  bool isSkillCheckContent(JSONMap content) {
     final String? entityType = content['entity-type'] as String?;
     final String? contentTitle = content['title']?.toString();
 
@@ -563,7 +571,7 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
   // Find the starting index of skill check section
   int findSkillCheckStartIndex() {
     for (int itemIndex = 0; itemIndex < allContent.length; itemIndex++) {
-      final Map<String, dynamic> content = allContent[itemIndex];
+      final JSONMap content = allContent[itemIndex];
       final bool isSkillCheckStart = content['entity-type'] == 'skill-check';
 
       if (isSkillCheckStart) {
@@ -578,7 +586,7 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
     final List<int> questionIndices = [];
 
     for (int itemIndex = 0; itemIndex < allContent.length; itemIndex++) {
-      final Map<String, dynamic> content = allContent[itemIndex];
+      final JSONMap content = allContent[itemIndex];
       final bool isSkillCheckQuestion =
           content['entity-type'] == 'single-choice-question' &&
           content['title']?.toString().contains('Skill Check') == true;
@@ -626,7 +634,7 @@ class RegularProgressSegment extends StatelessWidget {
 
     // Extract styling above build method
     final BoxDecoration progressBackgroundDecoration = BoxDecoration(
-      color: RLTheme.backgroundLight,
+      color: RLDS.backgroundLight,
       borderRadius: BorderRadius.circular(8.0),
     );
 
@@ -637,7 +645,7 @@ class RegularProgressSegment extends StatelessWidget {
 
     return SizedBox(
       width: width,
-      height: COURSE_PROGRESS_BAR_HEIGHT,
+      height: 12.0,
       child: Stack(
         children: [
           // Background
@@ -696,25 +704,19 @@ class ProgressSegmentWidget extends StatelessWidget {
     // Extract styling above build method
     final BoxDecoration segmentDecoration = BoxDecoration(
       color: segmentColor,
-      borderRadius: BorderRadius.circular(COURSE_PROGRESS_BAR_RADIUS),
+      borderRadius: BorderRadius.circular(8.0),
     );
 
-    return Container(
-      width: segmentWidth,
-      height: COURSE_PROGRESS_BAR_HEIGHT,
-      decoration: segmentDecoration,
-    );
+    return Container(width: segmentWidth, height: 12.0, decoration: segmentDecoration);
   }
 
   // Get color based on segment type and completion status
   Color getSegmentColor() {
     if (isCompleted) {
-      return segment.type == ProgressSegmentType.skillCheck
-          ? RLTheme.primaryGreen
-          : Colors.green;
+      return segment.type == ProgressSegmentType.skillCheck ? RLDS.primaryGreen : Colors.green;
     }
 
-    return RLTheme.backgroundLight;
+    return RLDS.backgroundLight;
   }
 
   // Calculate proportional width for segment
@@ -747,86 +749,9 @@ class ProgressSegmentWidget extends StatelessWidget {
 
   // Count skill check segments for width calculation
   int countSkillCheckSegments() {
-    // This is a simplified approach - in a real implementation,
-    // you might pass this as a parameter to avoid recalculation
-    return 3; // We know there are 3 skill check questions from the JSON
+    // Simplified approach, could be passed as a parameter
+    return 3;
   }
 }
 
 // Bottom sheet for quit confirmation
-class QuitConfirmationSheet extends StatelessWidget {
-  final VoidCallback onLearnTap;
-  final VoidCallback onQuitTap;
-
-  const QuitConfirmationSheet({super.key, required this.onLearnTap, required this.onQuitTap});
-
-  @override
-  Widget build(BuildContext context) {
-    const BoxDecoration sheetDecoration = BoxDecoration(
-      color: RLTheme.backgroundDark,
-      borderRadius: BorderRadius.only(
-        topLeft: Radius.circular(16),
-        topRight: Radius.circular(16),
-      ),
-    );
-
-    return SafeArea(
-      top: false,
-      child: Container(
-        decoration: sheetDecoration,
-        padding: const EdgeInsets.fromLTRB(24, 12, 24, 24),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            // Drag handle
-            const BottomSheetGrabber(),
-
-            const Spacing.height(24),
-
-            // Title
-            RLTypography.headingMedium(QUIT_CONFIRMATION_TITLE),
-
-            const Spacing.height(8),
-
-            // Message
-            RLTypography.bodyMedium(QUIT_CONFIRMATION_MESSAGE, color: RLTheme.textSecondary),
-
-            const Spacing.height(24),
-
-            // Learn button
-            LearnButton(onTap: onLearnTap),
-
-            const Spacing.height(12),
-
-            // Quit text button
-            QuitTextButton(onTap: onQuitTap),
-          ],
-        ),
-      ),
-    );
-  }
-
-  // Primary button to continue learning
-  Widget LearnButton({required VoidCallback onTap}) {
-    return RLDS.BlockButton(
-      children: [RLTypography.bodyMedium(QUIT_CONFIRMATION_LEARN_BUTTON, color: RLTheme.white)],
-      backgroundColor: RLTheme.primaryGreen,
-      margin: EdgeInsets.zero,
-      onTap: onTap,
-    );
-  }
-
-  // Red text button to quit
-  Widget QuitTextButton({required VoidCallback onTap}) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Center(
-        child: RLTypography.bodyMedium(
-          QUIT_CONFIRMATION_QUIT_BUTTON,
-          color: RLTheme.errorColor,
-        ),
-      ),
-    );
-  }
-}

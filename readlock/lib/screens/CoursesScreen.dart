@@ -6,9 +6,11 @@ import 'package:flutter/services.dart';
 import 'package:readlock/screens/ReaderPassScreen.dart';
 import 'package:readlock/utility_widgets/Utility.dart';
 import 'package:readlock/constants/RLTypography.dart';
-import 'package:readlock/constants/RLTheme.dart';
-import 'package:readlock/constants/RLDimensions.dart';
-import 'package:readlock/constants/RLConstants.dart';
+import 'package:readlock/constants/RLDesignSystem.dart';
+import 'package:readlock/constants/RLUIStrings.dart';
+import 'package:readlock/MainNavigation.dart';
+import 'package:readlock/constants/DartAliases.dart';
+import 'package:readlock/utility_widgets/RLCard.dart';
 
 class CoursesScreen extends StatefulWidget {
   const CoursesScreen({super.key});
@@ -109,7 +111,7 @@ class CoursesScreenState extends State<CoursesScreen> {
     final bool shouldShowCategories = !hasSearchText;
 
     return Scaffold(
-      backgroundColor: RLTheme.backgroundDark,
+      backgroundColor: RLDS.backgroundDark,
       body: SafeArea(
         bottom: false,
         child: RenderIf.condition(
@@ -138,10 +140,10 @@ class CoursesScreenState extends State<CoursesScreen> {
 
         // Main content (with padding)
         Padding(
-          padding: RLDimensions.paddingAllXXL,
+          padding: EdgeInsets.all(24.0),
           child: Div.column([
             // Search heading
-            RLTypography.headingLarge('Search'),
+            RLTypography.headingLarge(RLUIStrings.SEARCH_TAB_LABEL),
 
             const Spacing.height(24),
 
@@ -171,7 +173,7 @@ class CoursesScreenState extends State<CoursesScreen> {
             TrendingSection(),
 
             // Bottom spacing for floating navigation
-            const Spacing.height(FLOATING_NAV_BOTTOM_OFFSET),
+            const Spacing.height(MainNavigation.bottomOffset),
           ], crossAxisAlignment: CrossAxisAlignment.stretch),
         ),
       ], crossAxisAlignment: CrossAxisAlignment.stretch),
@@ -193,7 +195,7 @@ class CoursesScreenState extends State<CoursesScreen> {
           padding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
           child: Div.column([
             // Search heading
-            RLTypography.headingLarge('Search'),
+            RLTypography.headingLarge(RLUIStrings.SEARCH_TAB_LABEL),
 
             const Spacing.height(24),
 
@@ -224,7 +226,7 @@ class CoursesScreenState extends State<CoursesScreen> {
         // Expanded search results (scrollable)
         Expanded(
           child: Padding(
-            padding: const EdgeInsets.fromLTRB(24, 0, 24, FLOATING_NAV_BOTTOM_OFFSET),
+            padding: const EdgeInsets.fromLTRB(24, 0, 24, MainNavigation.bottomOffset),
             child: SearchResults(),
           ),
         ),
@@ -238,12 +240,12 @@ class CoursesScreenState extends State<CoursesScreen> {
       child: Container(
         width: double.infinity,
         padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-        color: Colors.black,
+        color: RLDS.black,
         child: Div.row([
           Flexible(
             child: RLTypography.bodyMedium(
-              'Outperformers do not start tomorrow - Reader Pass -25%',
-              color: Colors.white,
+              RLUIStrings.PROMO_BANNER_TEXT,
+              color: RLDS.white,
               textAlign: TextAlign.center,
             ),
           ),
@@ -254,15 +256,15 @@ class CoursesScreenState extends State<CoursesScreen> {
 
   Widget MockSearchBar() {
     final BoxDecoration searchBarDecoration = BoxDecoration(
-      color: RLTheme.backgroundLight.withValues(alpha: RLDimensions.alphaLight),
-      borderRadius: RLDimensions.borderRadiusL,
-      border: Border.all(color: RLTheme.grey300.withValues(alpha: RLDimensions.alphaDark)),
+      color: RLDS.backgroundLight.withValues(alpha: 0.1),
+      borderRadius: BorderRadius.circular(12.0),
+      border: Border.all(color: RLDS.grey300.withValues(alpha: 0.3)),
     );
 
-    final Widget SearchIcon = const Icon(
+    final Widget SearchIcon = Icon(
       Icons.search,
-      color: RLTheme.textSecondary,
-      size: RLDimensions.iconM,
+      color: RLDS.textSecondary,
+      size: 20.0,
     );
 
     return RenderIf.condition(
@@ -286,7 +288,10 @@ class CoursesScreenState extends State<CoursesScreen> {
 
           const Spacing.width(12),
 
-          RLTypography.text('Title or author...', color: RLTheme.textSecondary),
+          Text(
+            RLUIStrings.SEARCH_PLACEHOLDER,
+            style: RLTypography.bodyMediumStyle.copyWith(color: RLDS.textSecondary),
+          ),
         ]),
       ),
     );
@@ -296,18 +301,18 @@ class CoursesScreenState extends State<CoursesScreen> {
     required BoxDecoration searchBarDecoration,
     required Widget searchIcon,
   }) {
-    final Widget CloseIcon = const Icon(Icons.close, color: RLTheme.textSecondary, size: 20);
+    final Widget CloseIcon = Icon(Icons.close, color: RLDS.textSecondary, size: 20);
 
     final bool hasSearchText = searchController.text.isNotEmpty;
 
     final Color borderColor = hasSearchText
-        ? RLTheme.primaryBlue
-        : RLTheme.grey300.withValues(alpha: 0.3);
+        ? RLDS.primaryBlue
+        : RLDS.grey300.withValues(alpha: 0.3);
 
     final double borderWidth = hasSearchText ? 1.5 : 1;
 
     final BoxDecoration activeSearchBarDecoration = BoxDecoration(
-      color: RLTheme.backgroundLight.withValues(alpha: 0.08),
+      color: RLDS.backgroundLight.withValues(alpha: 0.08),
       borderRadius: BorderRadius.circular(12),
       border: Border.all(color: borderColor, width: borderWidth),
     );
@@ -327,8 +332,8 @@ class CoursesScreenState extends State<CoursesScreen> {
             focusNode: searchFocusNode,
             style: RLTypography.bodyMediumStyle,
             decoration: InputDecoration(
-              hintText: 'Title or author...',
-              hintStyle: RLTypography.bodyMediumStyle.copyWith(color: RLTheme.textSecondary),
+              hintText: RLUIStrings.SEARCH_PLACEHOLDER,
+              hintStyle: RLTypography.bodyMediumStyle.copyWith(color: RLDS.textSecondary),
               border: InputBorder.none,
               isDense: true,
               contentPadding: EdgeInsets.zero,
@@ -358,7 +363,7 @@ class CoursesScreenState extends State<CoursesScreen> {
 
     return Div.column([
       Div.row([
-        RLTypography.text('Genres', color: RLTheme.textSecondary),
+        Text(RLUIStrings.GENRES_LABEL, style: RLTypography.bodyMediumStyle.copyWith(color: RLDS.textSecondary)),
       ], mainAxisAlignment: MainAxisAlignment.start),
 
       const Spacing.height(12),
@@ -372,14 +377,12 @@ class CoursesScreenState extends State<CoursesScreen> {
       final bool isSelected = selectedGenre == category;
 
       final BoxDecoration chipDecoration = BoxDecoration(
-        color: isSelected
-            ? RLTheme.primaryBlue
-            : RLTheme.backgroundLight.withValues(alpha: 0.08),
+        color: isSelected ? RLDS.primaryBlue : RLDS.backgroundLight.withValues(alpha: 0.08),
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: RLTheme.primaryBlue.withValues(alpha: 0.3)),
+        border: Border.all(color: RLDS.primaryBlue.withValues(alpha: 0.3)),
       );
 
-      final Color chipTextColor = isSelected ? Colors.white : RLTheme.primaryBlue;
+      final Color chipTextColor = isSelected ? RLDS.white : RLDS.primaryBlue;
 
       void handleCategoryChipTap() {
         HapticFeedback.lightImpact();
@@ -396,7 +399,10 @@ class CoursesScreenState extends State<CoursesScreen> {
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           decoration: chipDecoration,
-          child: RLTypography.text(category, color: chipTextColor),
+          child: Text(
+            category,
+            style: RLTypography.bodyMediumStyle.copyWith(color: chipTextColor),
+          ),
         ),
       );
     }).toList();
@@ -405,19 +411,22 @@ class CoursesScreenState extends State<CoursesScreen> {
   Widget TrendingHeader() {
     return Div.column([
       Div.row([
-        RLTypography.headingMedium('Others are reading'),
+        RLTypography.headingMedium(RLUIStrings.OTHERS_READING_TITLE),
       ], mainAxisAlignment: MainAxisAlignment.start),
 
       const Spacing.height(4),
 
       Div.row([
-        RLTypography.text('Popular titles this week', color: RLTheme.textSecondary),
+        Text(
+          RLUIStrings.OTHERS_READING_SUBTITLE,
+          style: RLTypography.bodyMediumStyle.copyWith(color: RLDS.textSecondary),
+        ),
       ], mainAxisAlignment: MainAxisAlignment.start),
     ], crossAxisAlignment: CrossAxisAlignment.start);
   }
 
   Widget TrendingBooksList() {
-    final List<Map<String, dynamic>> trendingBooks = [
+    final JSONList trendingBooks = [
       {
         'title': 'Design of Everyday Things',
         'author': 'Don Norman',
@@ -441,28 +450,21 @@ class CoursesScreenState extends State<CoursesScreen> {
     );
   }
 
-  List<Widget> TrendingBookCards(List<Map<String, dynamic>> books) {
+  List<Widget> TrendingBookCards(JSONList books) {
     return books.map((book) {
       final String bookTitle = book['title'] ?? '';
       final String bookAuthor = book['author'] ?? '';
       final String? coverImagePath = book['coverImage'];
 
-      final BoxDecoration cardDecoration = BoxDecoration(
-        color: RLTheme.backgroundLight.withValues(alpha: 0.08),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: RLTheme.grey300.withValues(alpha: 0.3)),
-      );
-
       final BoxDecoration coverPlaceholderDecoration = BoxDecoration(
-        color: RLTheme.primaryBlue.withValues(alpha: 0.1),
+        color: RLDS.primaryBlue.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(6),
-        border: Border.all(color: RLTheme.primaryBlue.withValues(alpha: 0.2)),
+        border: Border.all(color: RLDS.primaryBlue.withValues(alpha: 0.2)),
       );
 
-      return Container(
-        margin: const EdgeInsets.only(bottom: 12),
+      return RLCard.subtle(
         padding: const EdgeInsets.all(12),
-        decoration: cardDecoration,
+        margin: const EdgeInsets.only(bottom: 12),
         child: Div.row([
           // Book cover
           BookCover(
@@ -479,7 +481,10 @@ class CoursesScreenState extends State<CoursesScreen> {
 
               const Spacing.height(4),
 
-              RLTypography.text(bookAuthor, color: RLTheme.textSecondary),
+              Text(
+                bookAuthor,
+                style: RLTypography.bodyMediumStyle.copyWith(color: RLDS.textSecondary),
+              ),
             ], crossAxisAlignment: CrossAxisAlignment.start),
           ),
 
@@ -498,7 +503,7 @@ class CoursesScreenState extends State<CoursesScreen> {
   }) {
     final bool hasCover = coverImagePath != null;
 
-    const Widget BookIcon = Icon(Icons.book, color: RLTheme.primaryBlue, size: 20);
+    final Widget BookIcon = Icon(Icons.book, color: RLDS.primaryBlue, size: 20);
 
     if (hasCover) {
       return ClipRRect(
@@ -528,7 +533,7 @@ class CoursesScreenState extends State<CoursesScreen> {
   }
 
   Widget SearchResults() {
-    final List<Map<String, dynamic>> allSearchResults = [
+    final JSONList allSearchResults = [
       {
         'title': 'The Design of Everyday Things',
         'author': 'Don Norman',
@@ -570,10 +575,7 @@ class CoursesScreenState extends State<CoursesScreen> {
 
     final int totalResults = allSearchResults.length;
     final int itemsToShow = displayedItemsCount.clamp(0, totalResults);
-    final List<Map<String, dynamic>> displayedResults = allSearchResults.sublist(
-      0,
-      itemsToShow,
-    );
+    final JSONList displayedResults = allSearchResults.sublist(0, itemsToShow);
 
     final bool hasMoreResults = itemsToShow < totalResults;
 
@@ -586,7 +588,10 @@ class CoursesScreenState extends State<CoursesScreen> {
 
         const Spacing.height(4),
 
-        RLTypography.text('$totalResults titles found', color: RLTheme.textSecondary),
+        Text(
+          '$totalResults titles found',
+          style: RLTypography.bodyMediumStyle.copyWith(color: RLDS.textSecondary),
+        ),
 
         const Spacing.height(16),
 
@@ -601,11 +606,8 @@ class CoursesScreenState extends State<CoursesScreen> {
     );
   }
 
-  List<Widget> SearchResultsListContent(
-    List<Map<String, dynamic>> displayedResults,
-    bool hasMoreResults,
-  ) {
-    final List<Widget> content = SearchResultCards(displayedResults);
+  List<Widget> SearchResultsListContent(JSONList displayedResults, bool hasMoreResults) {
+    final List<Widget> content = List<Widget>.from(SearchResultCards(displayedResults));
 
     content.add(const Spacing.height(16));
 
@@ -621,31 +623,24 @@ class CoursesScreenState extends State<CoursesScreen> {
       return selectedGenre!;
     }
 
-    return 'Search Results';
+    return RLUIStrings.SEARCH_RESULTS_TITLE;
   }
 
-  List<Widget> SearchResultCards(List<Map<String, dynamic>> books) {
+  List<Widget> SearchResultCards(JSONList books) {
     return books.map((book) {
       final String bookTitle = book['title'] ?? '';
       final String bookAuthor = book['author'] ?? '';
       final String? coverImagePath = book['coverImage'];
 
-      final BoxDecoration cardDecoration = BoxDecoration(
-        color: RLTheme.backgroundLight.withValues(alpha: 0.08),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: RLTheme.grey300.withValues(alpha: 0.3)),
-      );
-
       final BoxDecoration coverPlaceholderDecoration = BoxDecoration(
-        color: RLTheme.primaryBlue.withValues(alpha: 0.1),
+        color: RLDS.primaryBlue.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(6),
-        border: Border.all(color: RLTheme.primaryBlue.withValues(alpha: 0.2)),
+        border: Border.all(color: RLDS.primaryBlue.withValues(alpha: 0.2)),
       );
 
-      return Container(
-        margin: const EdgeInsets.only(bottom: 12),
+      return RLCard.subtle(
         padding: const EdgeInsets.all(12),
-        decoration: cardDecoration,
+        margin: const EdgeInsets.only(bottom: 12),
         child: Div.row([
           // Book cover
           SearchResultBookCover(
@@ -662,7 +657,10 @@ class CoursesScreenState extends State<CoursesScreen> {
 
               const Spacing.height(4),
 
-              RLTypography.text(bookAuthor, color: RLTheme.textSecondary),
+              Text(
+                bookAuthor,
+                style: RLTypography.bodyMediumStyle.copyWith(color: RLDS.textSecondary),
+              ),
             ], crossAxisAlignment: CrossAxisAlignment.start),
           ),
 
@@ -685,7 +683,7 @@ class CoursesScreenState extends State<CoursesScreen> {
   }) {
     final bool hasCover = coverImagePath != null;
 
-    const Widget BookIcon = Icon(Icons.book, color: RLTheme.primaryBlue, size: 20);
+    final Widget BookIcon = Icon(Icons.book, color: RLDS.primaryBlue, size: 20);
 
     if (hasCover) {
       return ClipRRect(
@@ -702,17 +700,17 @@ class CoursesScreenState extends State<CoursesScreen> {
     );
   }
 
-  static const Widget ArrowDownIcon = Icon(
+  static final Widget ArrowDownIcon = Icon(
     Icons.arrow_downward,
-    color: RLTheme.primaryBlue,
+    color: RLDS.primaryBlue,
     size: 16,
   );
 
   Widget LoadNextButton() {
     final BoxDecoration buttonDecoration = BoxDecoration(
-      color: RLTheme.backgroundLight.withValues(alpha: 0.08),
+      color: RLDS.backgroundLight.withValues(alpha: 0.08),
       borderRadius: BorderRadius.circular(12),
-      border: Border.all(color: RLTheme.primaryBlue.withValues(alpha: 0.3)),
+      border: Border.all(color: RLDS.primaryBlue.withValues(alpha: 0.3)),
     );
 
     return GestureDetector(
@@ -722,7 +720,10 @@ class CoursesScreenState extends State<CoursesScreen> {
         padding: const EdgeInsets.symmetric(vertical: 12),
         decoration: buttonDecoration,
         child: Div.row([
-          RLTypography.text('Load next', color: RLTheme.primaryBlue),
+          Text(
+            RLUIStrings.LOAD_NEXT_LABEL,
+            style: RLTypography.bodyMediumStyle.copyWith(color: RLDS.primaryBlue),
+          ),
 
           const Spacing.width(8),
 

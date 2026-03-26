@@ -2,9 +2,8 @@
 // Showcases mockups of engaging learning patterns adapted for book reading
 
 import 'package:flutter/material.dart';
-import 'package:readlock/constants/RLDimensions.dart';
 import 'package:readlock/utility_widgets/Utility.dart';
-import 'package:readlock/constants/RLTheme.dart';
+import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/screens/profile/SoundPickerCard.dart';
 import 'package:readlock/screens/profile/MenuWidgets.dart';
 
@@ -18,11 +17,11 @@ class ProfileScreen extends StatefulWidget {
 class ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      backgroundColor: RLTheme.backgroundDark,
+    return Scaffold(
+      backgroundColor: RLDS.backgroundDark,
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: RLDimensions.paddingAllXL,
+          padding: EdgeInsets.all(20.0),
           child: ProfileContent(),
         ),
       ),

@@ -2,8 +2,19 @@
 // Provides Div widget for layout and Spacing widget for consistent spacing
 
 import 'package:flutter/material.dart';
-import 'package:readlock/constants/RLTheme.dart';
-import 'package:readlock/constants/RLConstants.dart';
+import 'package:readlock/constants/RLDesignSystem.dart';
+
+// * Div layout direction and alignment identifiers
+const String DIRECTION_VERTICAL = 'vertical';
+const String DIRECTION_HORIZONTAL = 'horizontal';
+const String ALIGNMENT_START = 'start';
+const String ALIGNMENT_END = 'end';
+const String ALIGNMENT_CENTER = 'center';
+const String ALIGNMENT_SPACE_BETWEEN = 'spaceBetween';
+const String ALIGNMENT_SPACE_AROUND = 'spaceAround';
+const String ALIGNMENT_SPACE_EVENLY = 'spaceEvenly';
+const String ALIGNMENT_STRETCH = 'stretch';
+const String ALIGNMENT_BASELINE = 'baseline';
 
 class Div extends StatelessWidget {
   /// List of child widgets to display
@@ -558,52 +569,52 @@ class Div extends StatelessWidget {
   Color? getColorFromString(String colorString) {
     switch (colorString.toLowerCase()) {
       case 'red': {
-        return RLTheme.errorColor;
+        return RLDS.errorColor;
       }
       case 'blue': {
-        return RLTheme.primaryBlue;
+        return RLDS.primaryBlue;
       }
       case 'green': {
-        return RLTheme.primaryGreen;
+        return RLDS.primaryGreen;
       }
       case 'yellow': {
-        return RLTheme.accentYellow;
+        return RLDS.accentYellow;
       }
       case 'orange': {
-        return RLTheme.warningColor;
+        return RLDS.warningColor;
       }
       case 'purple': {
-        return RLTheme.accentPurple;
+        return RLDS.accentPurple;
       }
       case 'pink': {
-        return RLTheme.accentPink;
+        return RLDS.accentPink;
       }
       case 'cyan': {
-        return RLTheme.accentCyan;
+        return RLDS.accentCyan;
       }
       case 'teal': {
-        return RLTheme.accentTeal;
+        return RLDS.accentTeal;
       }
       case 'lime': {
-        return RLTheme.accentLime;
+        return RLDS.accentLime;
       }
       case 'indigo': {
-        return RLTheme.accentIndigo;
+        return RLDS.accentIndigo;
       }
       case 'amber': {
-        return RLTheme.accentAmber;
+        return RLDS.accentAmber;
       }
       case 'brown': {
-        return RLTheme.accentBrown;
+        return RLDS.accentBrown;
       }
       case 'grey': {
         return Colors.grey;
       }
       case 'black': {
-        return Colors.black;
+        return RLDS.black;
       }
       case 'white': {
-        return Colors.white;
+        return RLDS.white;
       }
       case 'transparent': {
         return Colors.transparent;
@@ -711,7 +722,7 @@ class BottomSheetGrabber extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final BoxDecoration grabberDecoration = BoxDecoration(
-      color: RLTheme.textSecondary.withValues(alpha: 0.3),
+      color: RLDS.textSecondary.withValues(alpha: 0.3),
       borderRadius: BorderRadius.circular(4),
     );
 

@@ -2,9 +2,9 @@
 // Shows experience gains, hints, and other feedback at the bottom of the screen
 
 import 'package:flutter/material.dart' hide Typography;
-import 'package:readlock/constants/RLConstants.dart';
+import 'package:readlock/constants/RLUIStrings.dart';
 import 'package:readlock/constants/RLTypography.dart';
-import 'package:readlock/constants/RLTheme.dart';
+import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/bottom_sheets/course/FeedbackBottomSheet.dart';
 import 'package:readlock/utility_widgets/Utility.dart';
 
@@ -76,29 +76,37 @@ class FeedbackSnackBar {
     snackbarController.show(
       context: context,
       content: content,
-      backgroundColor: RLTheme.primaryGreen,
+      backgroundColor: RLDS.primaryGreen,
     );
   }
 
   static void showWrongAnswer(BuildContext context, {String? hint}) {
     final bool hasHint = hint != null && hint.isNotEmpty;
 
-    final Duration duration = hasHint ? HINT_SNACKBAR_DURATION : DEFAULT_SNACKBAR_DURATION;
+    Duration duration = Duration(milliseconds: 3000);
+
+    if (hasHint) {
+      duration = Duration(seconds: 5);
+    }
 
     final Widget content = WrongAnswerContent(hasHint: hasHint, hint: hint);
 
     snackbarController.show(
       context: context,
       content: content,
-      backgroundColor: RLTheme.primaryBlue,
+      backgroundColor: RLDS.primaryBlue,
       duration: duration,
     );
   }
 
   static void showCustomFeedback(BuildContext context, String message, bool isCorrect) {
-    final Color backgroundColor = isCorrect ? RLTheme.primaryGreen : RLTheme.primaryBlue;
+    Color backgroundColor = RLDS.primaryBlue;
 
-    final Widget content = RLTypography.bodyLarge(message, color: RLTheme.white);
+    if (isCorrect) {
+      backgroundColor = RLDS.primaryGreen;
+    }
+
+    final Widget content = RLTypography.bodyLarge(message, color: RLDS.white);
 
     snackbarController.show(
       context: context,
@@ -149,7 +157,7 @@ class AnimatedSnackbarState extends State<AnimatedSnackbar>
 
     animationController = AnimationController(
       vsync: this,
-      duration: SNACKBAR_ANIMATION_DURATION,
+      duration: Duration(milliseconds: 250),
     );
 
     slideAnimation = Tween<Offset>(begin: const Offset(0, 1), end: Offset.zero).animate(
@@ -189,10 +197,10 @@ class AnimatedSnackbarState extends State<AnimatedSnackbar>
     final double bottomSafeArea = MediaQuery.of(context).padding.bottom;
 
     final EdgeInsets contentPadding = EdgeInsets.fromLTRB(
-      SNACKBAR_HORIZONTAL_PADDING,
-      SNACKBAR_VERTICAL_PADDING,
-      SNACKBAR_HORIZONTAL_PADDING,
-      SNACKBAR_VERTICAL_PADDING + bottomSafeArea + SNACKBAR_BOTTOM_SAFE_AREA_EXTRA,
+      20,
+      16,
+      20,
+      16 + bottomSafeArea + 8,
     );
 
     return Positioned(
@@ -217,7 +225,7 @@ class CorrectAnswerContent extends StatelessWidget {
 
   const CorrectAnswerContent({required this.hasExplanation, this.explanation});
 
-  static const Icon StarIcon = Icon(Icons.star, color: RLTheme.white, size: 20);
+  static final Icon StarIcon = Icon(Icons.star, color: RLDS.white, size: 20);
 
   @override
   Widget build(BuildContext context) {
@@ -226,7 +234,7 @@ class CorrectAnswerContent extends StatelessWidget {
 
       const Spacing.width(12),
 
-      Expanded(child: RLTypography.bodyLarge(CORRECT_ANSWER_MESSAGE, color: RLTheme.white)),
+      Expanded(child: RLTypography.bodyLarge(RLUIStrings.CORRECT_ANSWER_MESSAGE, color: RLDS.white)),
 
       RenderIf.condition(hasExplanation, WhyButton(explanation: explanation)),
     ], crossAxisAlignment: CrossAxisAlignment.center);
@@ -250,7 +258,7 @@ class WhyButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final TextStyle buttonStyle = RLTypography.bodyMediumStyle.copyWith(
-      color: RLTheme.white,
+      color: RLDS.white,
       fontWeight: FontWeight.w600,
     );
 
@@ -258,7 +266,7 @@ class WhyButton extends StatelessWidget {
       onTap: () => handleTap(context),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-        child: Text('Why?', style: buttonStyle),
+        child: Text(RLUIStrings.WHY_BUTTON_LABEL, style: buttonStyle),
       ),
     );
   }
@@ -271,9 +279,9 @@ class WrongAnswerContent extends StatelessWidget {
 
   const WrongAnswerContent({required this.hasHint, this.hint});
 
-  static const Icon LightbulbIcon = Icon(
+  static final Icon LightbulbIcon = Icon(
     Icons.lightbulb_outline,
-    color: RLTheme.white,
+    color: RLDS.white,
     size: 20,
   );
 
@@ -284,7 +292,7 @@ class WrongAnswerContent extends StatelessWidget {
 
       const Spacing.width(12),
 
-      Expanded(child: RLTypography.bodyLarge(WRONG_ANSWER_TITLE, color: RLTheme.white)),
+      Expanded(child: RLTypography.bodyLarge(RLUIStrings.WRONG_ANSWER_TITLE, color: RLDS.white)),
 
       RenderIf.condition(hasHint, HintButton(hint: hint)),
     ], crossAxisAlignment: CrossAxisAlignment.center);
@@ -308,7 +316,7 @@ class HintButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final TextStyle buttonStyle = RLTypography.bodyMediumStyle.copyWith(
-      color: RLTheme.white,
+      color: RLDS.white,
       fontWeight: FontWeight.w600,
     );
 
@@ -316,7 +324,7 @@ class HintButton extends StatelessWidget {
       onTap: () => handleTap(context),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-        child: Text('Hint', style: buttonStyle),
+        child: Text(RLUIStrings.HINT_BUTTON_LABEL, style: buttonStyle),
       ),
     );
   }

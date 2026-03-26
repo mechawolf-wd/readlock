@@ -2,23 +2,23 @@
 // Provides consistent UI for explanations and hints across the app
 
 import 'package:flutter/material.dart' hide Typography;
+import 'package:readlock/bottom_sheets/RLBottomSheet.dart';
 import 'package:readlock/utility_widgets/Utility.dart';
 import 'package:readlock/constants/RLTypography.dart';
-import 'package:readlock/constants/RLTheme.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
-import 'package:readlock/constants/RLConstants.dart';
+import 'package:readlock/constants/RLUIStrings.dart';
 
 class FeedbackBottomSheets {
   // Icon definitions
-  static const Widget ExperienceIcon = Icon(
+  static final Widget ExperienceIcon = Icon(
     Icons.lightbulb,
-    color: RLTheme.primaryGreen,
+    color: RLDS.primaryGreen,
     size: 20,
   );
 
-  static const Widget HintIcon = Icon(
+  static final Widget HintIcon = Icon(
     Icons.tips_and_updates_outlined,
-    color: RLTheme.primaryBlue,
+    color: RLDS.primaryBlue,
     size: 20,
   );
 
@@ -26,9 +26,9 @@ class FeedbackBottomSheets {
   static void showExplanation({required BuildContext context, required String explanation}) {
     showFeedbackSheet(
       context: context,
-      title: FEEDBACK_DIALOG_TITLE,
+      title: RLUIStrings.FEEDBACK_DIALOG_TITLE,
       content: explanation,
-      buttonColor: RLTheme.primaryGreen,
+      buttonColor: RLDS.primaryGreen,
       icon: ExperienceIcon,
     );
   }
@@ -37,9 +37,9 @@ class FeedbackBottomSheets {
   static void showHint({required BuildContext context, required String hint}) {
     showFeedbackSheet(
       context: context,
-      title: HINT_DIALOG_TITLE,
+      title: RLUIStrings.HINT_DIALOG_TITLE,
       content: hint,
-      buttonColor: RLTheme.primaryBlue,
+      buttonColor: RLDS.primaryBlue,
       icon: HintIcon,
     );
   }
@@ -52,17 +52,15 @@ class FeedbackBottomSheets {
     required Color buttonColor,
     required Widget icon,
   }) {
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: RLTheme.backgroundDark.withValues(alpha: 0),
-      builder: (BuildContext context) {
-        return FeedbackSheet(
-          title: title,
-          content: content,
-          buttonColor: buttonColor,
-          icon: icon,
-        );
-      },
+    RLBottomSheet.show(
+      context,
+      backgroundColor: RLDS.backgroundLight,
+      child: FeedbackSheet(
+        title: title,
+        content: content,
+        buttonColor: buttonColor,
+        icon: icon,
+      ),
     );
   }
 }
@@ -82,52 +80,28 @@ class FeedbackSheet extends StatelessWidget {
   });
 
   // Style definitions
-  static const BoxDecoration modalDecoration = BoxDecoration(
-    color: RLTheme.backgroundLight,
-    borderRadius: BorderRadius.only(
-      topLeft: Radius.circular(20),
-      topRight: Radius.circular(20),
-    ),
-  );
+  static const EdgeInsets bodyPadding = EdgeInsets.symmetric(horizontal: 24);
 
-  static const EdgeInsets bodyPadding = EdgeInsets.symmetric(horizontal: MODAL_PADDING);
+  static const EdgeInsets buttonMargin = EdgeInsets.all(24);
 
-  static const EdgeInsets buttonMargin = EdgeInsets.all(MODAL_PADDING);
-
-  static const EdgeInsets headerPadding = EdgeInsets.fromLTRB(
-    MODAL_PADDING,
-    16,
-    MODAL_PADDING,
-    MODAL_PADDING,
-  );
+  static const EdgeInsets headerPadding = EdgeInsets.fromLTRB(24, 16, 24, 24);
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: RLTheme.white,
-      child: SafeArea(
-        top: false,
-        child: Container(
-          decoration: modalDecoration,
-          padding: const EdgeInsets.only(bottom: 16),
-          child: Wrap(
-            children: [
-              Div.column([
-                // Drag handle
-                const Div.column([BottomSheetGrabber()], padding: EdgeInsets.only(top: 12)),
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // Header section
+          HeaderSection(),
 
-                // Header section
-                HeaderSection(),
+          // Body content
+          BodySection(),
 
-                // Body content
-                BodySection(),
-
-                // Footer button
-                FooterButton(),
-              ]),
-            ],
-          ),
-        ),
+          // Footer button
+          FooterButton(),
+        ],
       ),
     );
   }
@@ -151,12 +125,27 @@ class FeedbackSheet extends StatelessWidget {
   }
 
   Widget FooterButton() {
+    final BoxDecoration buttonDecoration = BoxDecoration(
+      color: buttonColor,
+      borderRadius: BorderRadius.circular(12),
+    );
+
     return Builder(
       builder: (context) {
-        return RLDS.BlockButton(
-          children: [RLTypography.bodyMedium(FEEDBACK_GOT_IT_LABEL, color: RLTheme.white)],
-          backgroundColor: buttonColor,
+        return GestureDetector(
           onTap: () => Navigator.of(context).pop(),
+          child: Container(
+            width: double.infinity,
+            margin: const EdgeInsets.all(24),
+            padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+            decoration: buttonDecoration,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                RLTypography.bodyMedium(RLUIStrings.FEEDBACK_GOT_IT_LABEL, color: RLDS.white),
+              ],
+            ),
+          ),
         );
       },
     );

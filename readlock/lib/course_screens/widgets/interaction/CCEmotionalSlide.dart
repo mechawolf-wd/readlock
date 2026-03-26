@@ -1,8 +1,11 @@
+// Motivational breathing slide between lesson sections
+// Gives the reader a short emotional pause with an icon and an encouraging message
+
 import 'package:flutter/material.dart' hide Typography;
 import 'package:readlock/utility_widgets/Utility.dart';
 import 'package:readlock/constants/RLTypography.dart';
-import 'package:readlock/constants/RLTheme.dart';
-import 'package:readlock/constants/RLConstants.dart';
+import 'package:readlock/constants/RLDesignSystem.dart';
+
 
 class CCEmotionalSlide extends StatelessWidget {
   final String text;
@@ -16,7 +19,7 @@ class CCEmotionalSlide extends StatelessWidget {
     final TextStyle motivationalTextStyle = RLTypography.bodyLargeStyle.copyWith(
       fontSize: 16,
       fontWeight: FontWeight.w600,
-      color: RLTheme.textPrimary.withValues(alpha: 0.7),
+      color: RLDS.textPrimary.withValues(alpha: 0.7),
       height: 1.2,
     );
 
@@ -25,10 +28,10 @@ class CCEmotionalSlide extends StatelessWidget {
         // Simple motivational content on plain background
         SimpleMotivationalContent(motivationalTextStyle: motivationalTextStyle),
       ],
-      color: RLTheme.backgroundDark,
+      color: RLDS.backgroundDark,
       padding: const EdgeInsets.symmetric(
         horizontal: 24,
-        vertical: EMOTIONAL_SLIDE_VERTICAL_PADDING,
+        vertical: 40,
       ),
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.center,
@@ -41,7 +44,7 @@ class CCEmotionalSlide extends StatelessWidget {
         // Small motivational icon
         MotivationalIcon(),
 
-        const Spacing.height(EMOTIONAL_SLIDE_SPACING),
+        const Spacing.height(16),
 
         // Short motivational text
         MotivationalText(textStyle: motivationalTextStyle),
@@ -53,15 +56,15 @@ class CCEmotionalSlide extends StatelessWidget {
 
   Widget MotivationalIcon() {
     final IconData motivationalIconData = getIconDataFromName();
-    final Color motivationalIconColor = RLTheme.primaryGreen.withValues(alpha: 0.8);
+    final Color motivationalIconColor = RLDS.primaryGreen.withValues(alpha: 0.8);
 
-    final Widget MotivationalIcon = Icon(
+    final Widget IconWidget = Icon(
       motivationalIconData,
-      size: EMOTIONAL_SLIDE_ICON_SIZE,
+      size: 32,
       color: motivationalIconColor,
     );
 
-    return MotivationalIcon;
+    return IconWidget;
   }
 
   Widget MotivationalText({required TextStyle textStyle}) {

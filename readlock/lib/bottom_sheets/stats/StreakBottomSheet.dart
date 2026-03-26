@@ -2,77 +2,55 @@
 // Displays daily streak progress with week tracker
 
 import 'package:flutter/material.dart';
+import 'package:readlock/bottom_sheets/RLBottomSheet.dart';
 import 'package:readlock/utility_widgets/Utility.dart';
 import 'package:readlock/constants/RLTypography.dart';
-import 'package:readlock/constants/RLTheme.dart';
+import 'package:readlock/constants/RLDesignSystem.dart';
+import 'package:readlock/constants/RLUIStrings.dart';
 
 class StreakBottomSheet extends StatelessWidget {
   const StreakBottomSheet({super.key});
 
   static void show(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: Colors.transparent,
-      builder: (sheetContext) => const StreakBottomSheet(),
-    );
+    RLBottomSheet.show(context, child: const StreakBottomSheet());
   }
 
   @override
   Widget build(BuildContext context) {
-    const BoxDecoration sheetDecoration = BoxDecoration(
-      color: RLTheme.backgroundDark,
-      borderRadius: BorderRadius.only(
-        topLeft: Radius.circular(16),
-        topRight: Radius.circular(16),
-      ),
-    );
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(24, 12, 24, 32),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // Fire icon
+          LargeFireIcon,
 
-    return Container(
-      color: RLTheme.white,
-      child: SafeArea(
-        top: false,
-        child: Container(
-          decoration: sheetDecoration,
-          padding: const EdgeInsets.fromLTRB(24, 12, 24, 32),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // Drag handle
-              const BottomSheetGrabber(),
+          const Spacing.height(16),
 
-              const Spacing.height(24),
+          // Title
+          RLTypography.headingLarge(RLUIStrings.STREAK_TITLE),
 
-              // Fire icon
-              LargeFireIcon,
+          const Spacing.height(8),
 
-              const Spacing.height(16),
-
-              // Title
-              RLTypography.headingLarge('3 Day Combo!'),
-
-              const Spacing.height(8),
-
-              // Message
-              RLTypography.bodyMedium(
-                'Keep learning daily to build your combo.',
-                color: RLTheme.textSecondary,
-                textAlign: TextAlign.center,
-              ),
-
-              const Spacing.height(24),
-
-              // Week progress
-              WeekStreakProgress(),
-            ],
+          // Message
+          RLTypography.bodyMedium(
+            RLUIStrings.STREAK_MESSAGE,
+            color: RLDS.textSecondary,
+            textAlign: TextAlign.center,
           ),
-        ),
+
+          const Spacing.height(24),
+
+          // Week progress
+          WeekStreakProgress(),
+        ],
       ),
     );
   }
 
-  static const Widget LargeFireIcon = Icon(
+  static final Widget LargeFireIcon = Icon(
     Icons.local_fire_department,
-    color: RLTheme.warningColor,
+    color: RLDS.warningColor,
     size: 48,
   );
 
@@ -118,15 +96,15 @@ class StreakBottomSheet extends StatelessWidget {
 
   Color getDayColor(bool isCompleted) {
     if (isCompleted) {
-      return RLTheme.warningColor;
+      return RLDS.warningColor;
     }
-    return RLTheme.textSecondary.withValues(alpha: 0.2);
+    return RLDS.textSecondary.withValues(alpha: 0.2);
   }
 
   Color getDayTextColor(bool isCompleted) {
     if (isCompleted) {
-      return RLTheme.white;
+      return RLDS.white;
     }
-    return RLTheme.textSecondary;
+    return RLDS.textSecondary;
   }
 }

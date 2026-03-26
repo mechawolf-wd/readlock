@@ -4,12 +4,12 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart' hide Typography;
+import 'package:readlock/bottom_sheets/RLBottomSheet.dart';
 import 'package:readlock/utility_widgets/Utility.dart';
 import 'package:readlock/utility_widgets/RLTextField.dart';
 import 'package:readlock/constants/RLTypography.dart';
-import 'package:readlock/constants/RLTheme.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
-import 'package:readlock/constants/RLConstants.dart';
+import 'package:readlock/constants/RLUIStrings.dart';
 
 class LoginBottomSheet {
   static void show(BuildContext context) {
@@ -86,25 +86,16 @@ class LoginSheetState extends State<LoginSheet> {
   @override
   Widget build(BuildContext context) {
     return BackdropFilter(
-      filter: ImageFilter.blur(sigmaX: BLUR_SIGMA, sigmaY: BLUR_SIGMA),
-      child: Container(
-        color: RLTheme.white,
-        child: SafeArea(top: false, child: ModalContent()),
+      filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+      child: SheetContainer(
+        backgroundColor: RLDS.backgroundLight,
+        child: ModalContent(),
       ),
     );
   }
 
   Widget ModalContent() {
-    const BoxDecoration modalDecoration = BoxDecoration(
-      color: RLTheme.backgroundLight,
-      borderRadius: BorderRadius.only(
-        topLeft: Radius.circular(LOGIN_MODAL_BORDER_RADIUS),
-        topRight: Radius.circular(LOGIN_MODAL_BORDER_RADIUS),
-      ),
-    );
-
-    return Container(
-      decoration: modalDecoration,
+    return Padding(
       padding: const EdgeInsets.only(bottom: 16),
       child: Wrap(
         children: [
@@ -134,18 +125,15 @@ class LoginSheetState extends State<LoginSheet> {
 
   Widget HeaderSection() {
     return Div.column([
-      // Drag handle
-      const BottomSheetGrabber(),
-
       const Spacing.height(16),
 
       // Title
-      RLTypography.headingLarge(LOGIN_TITLE),
+      RLTypography.headingLarge(RLUIStrings.LOGIN_TITLE),
 
       const Spacing.height(4),
 
       // Subtitle
-      RLTypography.bodyMedium(LOGIN_SUBTITLE, color: RLTheme.textSecondary),
+      RLTypography.bodyMedium(RLUIStrings.LOGIN_SUBTITLE, color: RLDS.textSecondary),
     ], padding: const EdgeInsets.all(24));
   }
 
@@ -162,24 +150,24 @@ class LoginSheetState extends State<LoginSheet> {
   }
 
   Widget AppleLoginButton() {
-    const Icon AppleIcon = Icon(Icons.apple, color: RLTheme.white, size: 20);
+    final Icon AppleIcon = Icon(Icons.apple, color: RLDS.white, size: 20);
 
     final BoxDecoration buttonDecoration = BoxDecoration(
-      color: Colors.black,
+      color: RLDS.black,
       borderRadius: BorderRadius.circular(12),
     );
 
     return GestureDetector(
       onTap: handleAppleLoginTap,
       child: Container(
-        height: SOCIAL_BUTTON_HEIGHT,
+        height: 48.0,
         decoration: buttonDecoration,
         child: Div.row([
           AppleIcon,
 
           const Spacing.width(8),
 
-          RLTypography.bodyMedium(APPLE_LOGIN_LABEL, color: RLTheme.white),
+          RLTypography.bodyMedium(RLUIStrings.APPLE_LOGIN_LABEL, color: RLDS.white),
         ], mainAxisAlignment: MainAxisAlignment.center),
       ),
     );
@@ -187,22 +175,22 @@ class LoginSheetState extends State<LoginSheet> {
 
   Widget GoogleLoginButton() {
     final BoxDecoration buttonDecoration = BoxDecoration(
-      color: RLTheme.backgroundDark,
+      color: RLDS.backgroundDark,
       borderRadius: BorderRadius.circular(12),
-      border: Border.all(color: RLTheme.textPrimary.withValues(alpha: 0.1)),
+      border: Border.all(color: RLDS.textPrimary.withValues(alpha: 0.1)),
     );
 
     return GestureDetector(
       onTap: handleGoogleLoginTap,
       child: Container(
-        height: SOCIAL_BUTTON_HEIGHT,
+        height: 48.0,
         decoration: buttonDecoration,
         child: Div.row([
           GoogleIcon(),
 
           const Spacing.width(8),
 
-          RLTypography.bodyMedium(GOOGLE_LOGIN_LABEL),
+          RLTypography.bodyMedium(RLUIStrings.GOOGLE_LOGIN_LABEL),
         ], mainAxisAlignment: MainAxisAlignment.center),
       ),
     );
@@ -210,7 +198,7 @@ class LoginSheetState extends State<LoginSheet> {
 
   Widget GoogleIcon() {
     final BoxDecoration iconDecoration = BoxDecoration(
-      color: RLTheme.white,
+      color: RLDS.white,
       borderRadius: BorderRadius.circular(4),
     );
 
@@ -223,13 +211,13 @@ class LoginSheetState extends State<LoginSheet> {
   }
 
   Widget OrDivider() {
-    final Color dividerColor = RLTheme.textPrimary.withValues(alpha: 0.1);
+    final Color dividerColor = RLDS.textPrimary.withValues(alpha: 0.1);
 
     return Div.row([
       Expanded(child: Container(height: 1, color: dividerColor)),
 
       Div.row([
-        RLTypography.bodyMedium(OR_DIVIDER_LABEL, color: RLTheme.textSecondary),
+        RLTypography.bodyMedium(RLUIStrings.OR_DIVIDER_LABEL, color: RLDS.textSecondary),
       ], padding: const EdgeInsets.symmetric(horizontal: 16)),
 
       Expanded(child: Container(height: 1, color: dividerColor)),
@@ -267,10 +255,23 @@ class LoginSheetState extends State<LoginSheet> {
   }
 
   Widget ActionButton() {
-    return RLDS.BlockButton(
-      children: [RLTypography.bodyLarge(SIGN_IN_BUTTON_LABEL, color: RLTheme.white)],
-      backgroundColor: RLTheme.primaryGreen,
+    final BoxDecoration buttonDecoration = BoxDecoration(
+      color: RLDS.primaryGreen,
+      borderRadius: BorderRadius.circular(12),
+    );
+
+    return GestureDetector(
       onTap: handleSignInTap,
+      child: Container(
+        width: double.infinity,
+        margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+        decoration: buttonDecoration,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [RLTypography.bodyLarge(RLUIStrings.SIGN_IN_BUTTON_LABEL)],
+        ),
+      ),
     );
   }
 
@@ -279,14 +280,14 @@ class LoginSheetState extends State<LoginSheet> {
       [
         GestureDetector(
           onTap: handleForgotPasswordTap,
-          child: RLTypography.bodyMedium(FORGOT_PASSWORD_LABEL, color: RLTheme.textSecondary),
+          child: RLTypography.bodyMedium(RLUIStrings.FORGOT_PASSWORD_LABEL, color: RLDS.textSecondary),
         ),
 
-        RLTypography.bodyMedium(' · ', color: RLTheme.textSecondary),
+        RLTypography.bodyMedium(' · ', color: RLDS.textSecondary),
 
         GestureDetector(
           onTap: handleSignUpTap,
-          child: RLTypography.bodyMedium(SIGN_UP_LABEL, color: RLTheme.textSecondary),
+          child: RLTypography.bodyMedium(RLUIStrings.SIGN_UP_LABEL, color: RLDS.textSecondary),
         ),
       ],
       mainAxisAlignment: MainAxisAlignment.center,
