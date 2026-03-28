@@ -2,6 +2,7 @@
 // Provides ProgressiveText widget for character-by-character text reveal with sentence navigation
 
 import 'package:flutter/material.dart' hide Typography;
+import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/utility_widgets/Utility.dart';
 import 'package:readlock/utility_widgets/visual_effects/BlurOverlay.dart';
@@ -360,8 +361,7 @@ class ProgressiveTextState extends State<ProgressiveText> with TickerProviderSta
     if (hasLastTapTime) {
       final Duration timeSinceLastTap = currentTime.difference(lastTapTime!);
 
-      final bool isWithinDoubleTapWindow =
-          timeSinceLastTap <= progressiveTextDoubleTapTimeout;
+      final bool isWithinDoubleTapWindow = timeSinceLastTap <= progressiveTextDoubleTapTimeout;
 
       if (isWithinDoubleTapWindow) {
         tapCount++;

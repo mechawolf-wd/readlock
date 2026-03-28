@@ -304,10 +304,6 @@
                   "icon": "progress"
                 },
                 {
-                  "entity-type": "design-examples-showcase",
-                  "title": "Real Life Examples"
-                },
-                {
                   "entity-type": "reflection",
                   "title": "Affordances in Your Life",
                   "prompt": "Think about an object you use daily that has excellent affordances. What makes it so intuitive?",

@@ -83,11 +83,6 @@ class CCJSONContentFactory {
           );
         }
 
-      case 'design-examples-showcase':
-        {
-          return JsonDesignExamplesShowcaseWidget(contentData: contentData);
-        }
-
       case 'reflection':
         {
           return JsonReflectionContentWidget(contentData: contentData);
@@ -332,10 +327,7 @@ class JsonMultipleChoiceQuestionWidget extends StatelessWidget {
       hint: contentData['hint'],
     );
 
-    return CCMultipleChoice(
-      content: content,
-      onAnswerSelected: (int index, bool isCorrect) {},
-    );
+    return CCMultipleChoice(content: content, onAnswerSelected: (int index, bool isCorrect) {});
   }
 }
 
@@ -348,9 +340,7 @@ class JsonSingleChoiceQuestionWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final List<QuestionOption> options = parseQuestionOptions(contentData);
-    final List<int> indices = List<int>.from(
-      contentData['correct-answer-indices'] ?? [],
-    );
+    final List<int> indices = List<int>.from(contentData['correct-answer-indices'] ?? []);
     final int correctAnswerIndex = indices.isNotEmpty ? indices.first : -1;
 
     final SingleChoiceQuestionContent content = SingleChoiceQuestionContent(
@@ -363,10 +353,7 @@ class JsonSingleChoiceQuestionWidget extends StatelessWidget {
       hint: contentData['hint'],
     );
 
-    return CCSingleChoice(
-      content: content,
-      onAnswerSelected: (int index, bool isCorrect) {},
-    );
+    return CCSingleChoice(content: content, onAnswerSelected: (int index, bool isCorrect) {});
   }
 }
 
@@ -379,9 +366,7 @@ class JsonTrueFalseQuestionWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final List<QuestionOption> options = parseQuestionOptions(contentData);
-    final List<int> indices = List<int>.from(
-      contentData['correct-answer-indices'] ?? [],
-    );
+    final List<int> indices = List<int>.from(contentData['correct-answer-indices'] ?? []);
     final int correctAnswerIndex = indices.isNotEmpty ? indices.first : -1;
 
     final TrueFalseQuestionContent content = TrueFalseQuestionContent(

@@ -5,7 +5,6 @@ import 'package:flutter/material.dart' hide Typography;
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/utility_widgets/Utility.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
-import 'package:readlock/constants/RLUIStrings.dart';
 
 class SandboxScreen extends StatelessWidget {
   const SandboxScreen({super.key});
@@ -120,7 +119,7 @@ class SandboxHeader extends StatelessWidget {
 
         Expanded(
           child: Text(
-            RLUIStrings.SANDBOX_TITLE,
+            'Widget Sandbox',
             style: RLTypography.headingLargeStyle.copyWith(
               fontSize: 24,
               fontWeight: FontWeight.bold,
@@ -291,7 +290,7 @@ class BookmarkHighlightWidgetState extends State<BookmarkHighlightWidget> {
 
           Expanded(
             child: Text(
-              RLUIStrings.NOTABLE_QUOTE_TITLE,
+              'Notable Quote',
               style: RLTypography.bodyLargeStyle.copyWith(
                 fontWeight: FontWeight.w600,
                 fontSize: 16,
@@ -338,7 +337,7 @@ class BookmarkHighlightWidgetState extends State<BookmarkHighlightWidget> {
           RenderIf.condition(
             isBookmarked,
             Text(
-              RLUIStrings.QUOTE_BOOKMARKED_LABEL,
+              'Bookmarked ✓',
               style: RLTypography.bodyMediumStyle.copyWith(
                 fontSize: 12,
                 color: RLDS.warningColor,

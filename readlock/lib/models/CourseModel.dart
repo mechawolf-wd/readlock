@@ -60,7 +60,7 @@ class Segment {
   final String segmentDescription;
 
   // List of lessons
-  final List<Unit> units;
+  final List<Package> units;
 
   const Segment({
     required this.segmentId,
@@ -70,14 +70,14 @@ class Segment {
   });
 }
 
-class Unit {
+class Package {
   final String lessonId;
   final String title;
   final String lessonVersion;
   final bool isFree;
-  final List<Slide> slides;
+  final List<Swipe> slides;
 
-  const Unit({
+  const Package({
     required this.lessonId,
     required this.title,
     required this.lessonVersion,
@@ -93,7 +93,6 @@ enum LessonContentType {
   estimatePercentageQuestion,
   estimatePercentage,
   emotionalSlide,
-  designExamplesShowcase,
   reflection,
   skillCheck,
   intro,
@@ -102,74 +101,16 @@ enum LessonContentType {
   incorrectStatement,
 }
 
-class Slide {
-  final LessonContentType entityType;
-
-  // Used by: text, intro, outro
-  final List<String>? textSegments;
-
-  // Used by: single-choice-question, true-false-question, estimate-percentage-question,
-  // fill-gap-question, incorrect-statement
-  final String? question;
-
-  // Used by: single-choice-question, true-false-question, estimate-percentage-question,
-  // fill-gap-question, incorrect-statement, estimate-percentage
-  final String? explanation;
-
-  // Used by: single-choice-question, true-false-question
-  final String? hint;
-
-  // Used by: single-choice-question, true-false-question (options with text and consequence-message)
-  final List<QuestionOption>? questionOptions;
-
-  // Used by: fill-gap-question, incorrect-statement (simple string options)
-  final List<String>? stringOptions;
-
-  // Used by: single-choice-question, true-false-question, estimate-percentage-question
-  final List<int>? correctAnswerIndices;
-
-  // Used by: fill-gap-question (correct answer as String)
-  final String? correctAnswerString;
-
-  // Used by: incorrect-statement, estimate-percentage (correct answer as int)
-  final int? correctAnswerInt;
-
-  // Used by: emotional-slide
-  final String? text;
-  final String? icon;
-
-  // Used by: reflection
-  final String? prompt;
-  final List<String>? thinkingPoints;
-
-  const Slide({
-    required this.entityType,
-    this.textSegments,
-    this.question,
-    this.explanation,
-    this.hint,
-    this.questionOptions,
-    this.stringOptions,
-    this.correctAnswerIndices,
-    this.correctAnswerString,
-    this.correctAnswerInt,
-    this.text,
-    this.icon,
-    this.prompt,
-    this.thinkingPoints,
-  });
-}
-
 // Widget-compatible content types used by course content widgets
 
-abstract class CourseContent {
+abstract class Swipe {
   final String id;
   final String title;
 
-  const CourseContent({required this.id, required this.title});
+  const Swipe({required this.id, required this.title});
 }
 
-class IntroContent extends CourseContent {
+class IntroContent extends Swipe {
   final List<String> introTextSegments;
 
   const IntroContent({
@@ -179,7 +120,7 @@ class IntroContent extends CourseContent {
   });
 }
 
-class TextContent extends CourseContent {
+class TextContent extends Swipe {
   final List<String> textSegments;
   final String? text;
 
@@ -191,7 +132,7 @@ class TextContent extends CourseContent {
   });
 }
 
-class OutroContent extends CourseContent {
+class OutroContent extends Swipe {
   final List<String> outroTextSegments;
 
   const OutroContent({
@@ -201,7 +142,7 @@ class OutroContent extends CourseContent {
   });
 }
 
-class ReflectionContent extends CourseContent {
+class ReflectionContent extends Swipe {
   final String prompt;
   final List<String> thinkingPoints;
   final String? emoji;
@@ -215,7 +156,7 @@ class ReflectionContent extends CourseContent {
   });
 }
 
-class QuoteContent extends CourseContent {
+class QuoteContent extends Swipe {
   final String quote;
   final String author;
 
@@ -238,7 +179,7 @@ class QuestionOption {
 
 // * Question content entities — one per question type
 
-class MultipleChoiceQuestionContent extends CourseContent {
+class MultipleChoiceQuestionContent extends Swipe {
   final String question;
   final List<QuestionOption> options;
   final List<int> correctAnswerIndices;
@@ -256,7 +197,7 @@ class MultipleChoiceQuestionContent extends CourseContent {
   });
 }
 
-class SingleChoiceQuestionContent extends CourseContent {
+class SingleChoiceQuestionContent extends Swipe {
   final String question;
   final List<QuestionOption> options;
   final int correctAnswerIndex;
@@ -274,7 +215,7 @@ class SingleChoiceQuestionContent extends CourseContent {
   });
 }
 
-class TrueFalseQuestionContent extends CourseContent {
+class TrueFalseQuestionContent extends Swipe {
   final String question;
   final List<QuestionOption> options;
   final int correctAnswerIndex;
@@ -292,7 +233,7 @@ class TrueFalseQuestionContent extends CourseContent {
   });
 }
 
-class FillGapQuestionContent extends CourseContent {
+class FillGapQuestionContent extends Swipe {
   final String question;
   final List<QuestionOption> options;
   final List<int> correctAnswerIndices;
@@ -310,7 +251,7 @@ class FillGapQuestionContent extends CourseContent {
   });
 }
 
-class IncorrectStatementQuestionContent extends CourseContent {
+class IncorrectStatementQuestionContent extends Swipe {
   final String question;
   final List<QuestionOption> options;
   final List<int> correctAnswerIndices;
@@ -326,7 +267,7 @@ class IncorrectStatementQuestionContent extends CourseContent {
   });
 }
 
-class ReflectionQuestionContent extends CourseContent {
+class ReflectionQuestionContent extends Swipe {
   final String question;
   final List<QuestionOption> options;
   final List<int> correctAnswerIndices;
@@ -342,7 +283,7 @@ class ReflectionQuestionContent extends CourseContent {
   });
 }
 
-class EstimatePercentageContent extends CourseContent {
+class EstimatePercentageContent extends Swipe {
   final String question;
   final int correctPercentage;
   final String explanation;
