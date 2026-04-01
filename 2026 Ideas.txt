@@ -1,0 +1,18 @@
+- Wikimedia Commons for images
+- Images before questions (when clicked the author is shown)
+- Story - questions - idea
+
++ Base prompt for styling
++ Base prompt for source (Blinkist summary -> get ideas -> add couple like 2 - 3)
++ Make into 2 - 3 segments with acronyms
+
+- Make AI suggest photos for EACH slide
+- Browse the images in Wikimedia Commons -> download the image
+- Uploading is automatic
+
+- Audio files where possible?
+
+- Fact checking agent
+- Grammar checking agent
+- Style checking agent
+- 

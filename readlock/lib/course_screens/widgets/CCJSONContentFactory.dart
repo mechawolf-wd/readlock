@@ -100,7 +100,11 @@ class CCJSONContentFactory {
 
       case 'skill-check':
         {
-          return const CCSkillCheck();
+          return CCSkillCheck(
+            title: contentData['title'] ?? 'Skill Check',
+            subtitle: contentData['subtitle'] ?? 'Test Your Understanding',
+            iconName: contentData['icon'] ?? 'check',
+          );
         }
 
       case 'emotional-slide':

@@ -115,10 +115,13 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground select-none;
   }
   button, [role="button"], a, label[for], select, [tabindex]:not([tabindex="-1"]) {
     cursor: pointer;
+  }
+  input, textarea, [contenteditable="true"], pre, code, .ProseMirror, .select-text {
+    user-select: text;
   }
 }
 
@@ -128,7 +131,8 @@
 }
 
 .swipe-list-move,
-.reorder-list-move {
+.reorder-list-move,
+.nav-list-move {
   transition: transform 0.2s ease;
 }
 

@@ -53,8 +53,9 @@ export const useCourseStore = defineStore('course', () => {
   const activePackageIndex = ref<number>(0)
   const activeSwipeUid = ref<string | null>(null)
 
-  // * Undo state for swipe deletion
-  const lastDeletedSwipe = ref<{ swipe: Swipe; index: number } | null>(null)
+  // * Undo state for swipe deletion (2 levels)
+  const deletedSwipeStack = ref<{ swipe: Swipe; index: number }[]>([])
+  const lastDeletedSwipe = computed(() => deletedSwipeStack.value.length > 0 ? deletedSwipeStack.value[0] : null)
 
   // * Getters
 
@@ -300,7 +301,13 @@ export const useCourseStore = defineStore('course', () => {
     const deleted = activePackage.value!.content.splice(index, 1)[0]
 
     if (deleted) {
-      lastDeletedSwipe.value = { swipe: deleted, index }
+      deletedSwipeStack.value.unshift({ swipe: deleted, index })
+
+      const hasMoreThanTwo = deletedSwipeStack.value.length > 2
+
+      if (hasMoreThanTwo) {
+        deletedSwipeStack.value.pop()
+      }
     }
 
     const wasActiveSwipe = activeSwipeUid.value === deletedUid
@@ -319,22 +326,31 @@ export const useCourseStore = defineStore('course', () => {
   }
 
   function undoDeleteSwipe() {
-    const hasNothingToUndo = !lastDeletedSwipe.value || !activePackage.value
+    const hasNothingToUndo = deletedSwipeStack.value.length === 0 || !activePackage.value
 
     if (hasNothingToUndo) {
       return
     }
 
-    const { swipe, index } = lastDeletedSwipe.value!
-    const clampedIndex = Math.min(index, activePackage.value!.content.length)
+    const entry = deletedSwipeStack.value.shift()!
+    const clampedIndex = Math.min(entry.index, activePackage.value!.content.length)
 
-    activePackage.value!.content.splice(clampedIndex, 0, swipe)
-    activeSwipeUid.value = (swipe as any)._uid ?? null
-    lastDeletedSwipe.value = null
+    activePackage.value!.content.splice(clampedIndex, 0, entry.swipe)
+    activeSwipeUid.value = (entry.swipe as any)._uid ?? null
   }
 
   function exportJSON(): string {
-    return JSON.stringify(courseData.value, null, 2)
+    const replacer = (key: string, value: any) => {
+      const isInternalUid = key === '_uid'
+
+      if (isInternalUid) {
+        return undefined
+      }
+
+      return value
+    }
+
+    return JSON.stringify(courseData.value, replacer, 2)
   }
 
   // * Reorder segments
@@ -512,14 +528,6 @@ function createEmptySwipe(entityType: EntityType): Swipe {
         'correct-answer-indices': [0],
       }
     }
-    case 'reflection-question': {
-      return {
-        'entity-type': 'reflection-question',
-        question: '', explanation: '',
-        options: [{ text: '' }],
-        'correct-answer-indices': [0],
-      }
-    }
     case 'emotional-slide': {
       return { 'entity-type': 'emotional-slide', text: '', icon: 'check' }
     }
@@ -530,7 +538,7 @@ function createEmptySwipe(entityType: EntityType): Swipe {
       return { 'entity-type': 'quote', quote: '', author: '' }
     }
     case 'skill-check': {
-      return { 'entity-type': 'skill-check' }
+      return { 'entity-type': 'skill-check', title: 'Skill Check', subtitle: 'Test your understanding', icon: 'check' }
     }
   }
 }

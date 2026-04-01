@@ -40,7 +40,6 @@ export type Swipe =
   | EstimatePercentageQuestionBlock
   | FillGapQuestionBlock
   | IncorrectStatementQuestionBlock
-  | ReflectionQuestionBlock
   | EmotionalSlideBlock
   | ReflectionBlock
   | QuoteBlock
@@ -101,14 +100,6 @@ export interface IncorrectStatementQuestionBlock {
   'correct-answer-indices': number[]
 }
 
-export interface ReflectionQuestionBlock {
-  'entity-type': 'reflection-question'
-  question: string
-  explanation: string
-  options: QuestionOption[]
-  'correct-answer-indices': number[]
-}
-
 export interface EmotionalSlideBlock {
   'entity-type': 'emotional-slide'
   text: string
@@ -129,6 +120,9 @@ export interface QuoteBlock {
 
 export interface SkillCheckBlock {
   'entity-type': 'skill-check'
+  title: string
+  subtitle: string
+  icon: string
 }
 
 // * Entity type registry
@@ -140,7 +134,6 @@ export const ENTITY_TYPES = [
   'estimate-percentage-question',
   'fill-gap-question',
   'incorrect-statement-question',
-  'reflection-question',
   'emotional-slide',
   'reflection',
   'quote',
@@ -156,7 +149,6 @@ export const ENTITY_TYPE_LABELS: Record<EntityType, string> = {
   'estimate-percentage-question': 'Estimate',
   'fill-gap-question': 'Fill Gap',
   'incorrect-statement-question': 'Find Error',
-  'reflection-question': 'Reflect Q',
   'emotional-slide': 'Pause',
   'reflection': 'Reflect',
   'quote': 'Quote',
@@ -170,7 +162,6 @@ export const ENTITY_TYPE_ICONS: Record<EntityType, string> = {
   'estimate-percentage-question': '%',
   'fill-gap-question': '⎵',
   'incorrect-statement-question': '✗',
-  'reflection-question': '◇',
   'emotional-slide': '♡',
   'reflection': '◎',
   'quote': '❝',
@@ -184,7 +175,6 @@ export const ENTITY_TYPE_COLORS: Record<EntityType, string> = {
   'estimate-percentage-question': '#eab308',
   'fill-gap-question': '#06b6d4',
   'incorrect-statement-question': '#ef4444',
-  'reflection-question': '#ec4899',
   'emotional-slide': '#f43f5e',
   'reflection': '#a855f7',
   'quote': '#14b8a6',
@@ -199,7 +189,7 @@ export interface EntityTypeGroup {
 export const ENTITY_TYPE_GROUPS: EntityTypeGroup[] = [
   {
     label: 'Reading',
-    types: ['text', 'quote'],
+    types: ['text', 'quote', 'reflection'],
   },
   {
     label: 'Questions',
@@ -209,12 +199,11 @@ export const ENTITY_TYPE_GROUPS: EntityTypeGroup[] = [
       'fill-gap-question',
       'incorrect-statement-question',
       'estimate-percentage-question',
-      'reflection-question',
     ],
   },
   {
     label: 'Interactive',
-    types: ['emotional-slide', 'reflection', 'skill-check'],
+    types: ['emotional-slide', 'skill-check'],
   },
 ]
 

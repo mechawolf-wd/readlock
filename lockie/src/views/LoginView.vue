@@ -6,7 +6,8 @@ import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/AuthStore'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
+import { Card, CardContent } from '@/components/ui/card'
+import VantaBackground from '@/components/VantaBackground.vue'
 
 // * Store and router
 
@@ -28,25 +29,42 @@ function handleLogin() {
 </script>
 
 <template>
-  <!-- Login container -->
-  <div class="min-h-screen flex items-center justify-center bg-background p-6">
-    <Card class="w-full max-w-sm">
-      <!-- Header -->
-      <CardHeader class="text-center">
-        <CardTitle class="text-2xl font-bold text-primary">Lockie</CardTitle>
-        <CardDescription>Course content creator for Readlock</CardDescription>
-      </CardHeader>
+  <div class="min-h-screen flex flex-col relative overflow-hidden">
+    <VantaBackground color="#dc2626" />
 
-      <!-- Form -->
-      <CardContent>
-        <form class="flex flex-col gap-4" @submit.prevent="handleLogin">
-          <Input v-model="email" type="email" placeholder="Email" />
+    <!-- Header -->
+    <div class="relative z-10 p-8">
+      <h1 class="text-3xl font-bold text-white drop-shadow-sm">Lockie</h1>
+      <p class="text-sm text-white/60 mt-1">Course content creator for Readlock</p>
+    </div>
 
-          <Input v-model="password" type="password" placeholder="Password" />
+    <div class="flex-1" />
 
-          <Button type="submit" class="w-full">Sign in</Button>
-        </form>
-      </CardContent>
-    </Card>
+    <!-- Login card — bottom right -->
+    <div class="relative z-10 flex justify-end p-8">
+      <Card class="w-full max-w-sm shadow-xl">
+        <CardContent class="pt-6">
+          <form class="flex flex-col gap-4" @submit.prevent="handleLogin">
+            <Input
+              v-model="email"
+              type="email"
+              placeholder="Email"
+              class="h-11"
+            />
+
+            <Input
+              v-model="password"
+              type="password"
+              placeholder="Password"
+              class="h-11"
+            />
+
+            <Button type="submit" class="w-full h-11 font-medium">
+              Sign in
+            </Button>
+          </form>
+        </CardContent>
+      </Card>
+    </div>
   </div>
 </template>

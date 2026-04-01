@@ -2,7 +2,7 @@
 // Rich text editor for a single text segment
 // Supports coloring text with Readlock markup: <c:r>red</c:r> <c:g>green</c:g>
 
-import { watch, onBeforeUnmount } from 'vue'
+import { ref, watch, onBeforeUnmount } from 'vue'
 import { useEditor, EditorContent } from '@tiptap/vue-3'
 import StarterKit from '@tiptap/starter-kit'
 import { TextStyle } from '@tiptap/extension-text-style'
@@ -37,6 +37,42 @@ function htmlToMarkup(html: string): string {
   return result
 }
 
+// * Selection state for floating toolbar
+
+const hasSelection = ref(false)
+const toolbarTop = ref(0)
+const toolbarLeft = ref(0)
+const editorContainer = ref<HTMLElement | null>(null)
+
+function updateSelectionState() {
+  const editorInstance = editor.value
+  const hasNoEditor = !editorInstance
+
+  if (hasNoEditor) {
+    hasSelection.value = false
+    return
+  }
+
+  const { from, to } = editorInstance!.state.selection
+  const isTextSelected = from !== to
+
+  if (isTextSelected && editorContainer.value) {
+    const domSelection = window.getSelection()
+    const hasRange = domSelection && domSelection.rangeCount > 0
+
+    if (hasRange) {
+      const range = domSelection!.getRangeAt(0)
+      const rect = range.getBoundingClientRect()
+      const containerRect = editorContainer.value.getBoundingClientRect()
+
+      toolbarTop.value = rect.top - containerRect.top - 40
+      toolbarLeft.value = rect.left - containerRect.left + rect.width / 2
+    }
+  }
+
+  hasSelection.value = isTextSelected
+}
+
 // * Editor instance
 
 const editor = useEditor({
@@ -62,6 +98,14 @@ const editor = useEditor({
     const markup = htmlToMarkup(ed.getHTML())
 
     emit('update:modelValue', markup)
+  },
+  onSelectionUpdate() {
+    updateSelectionState()
+  },
+  onBlur() {
+    setTimeout(() => {
+      hasSelection.value = false
+    }, 200)
   },
 })
 
@@ -105,25 +149,29 @@ function clearColor() {
 </script>
 
 <template>
-  <div class="rounded-md border border-input bg-transparent overflow-hidden flex">
-    <!-- Editor -->
-    <div class="flex-1">
-      <EditorContent :editor="editor" />
-    </div>
-
-    <!-- Toolbar -->
-    <div class="flex flex-col items-center gap-1 px-1 py-1 border-l border-border bg-muted/30">
-      <Button variant="ghost" size="icon" class="h-6 w-6 text-red-500 text-xs font-bold" @click="applyRed">
+  <div ref="editorContainer" class="rounded-md border border-input bg-transparent overflow-visible focus-within:border-ring transition-colors relative">
+    <!-- Floating toolbar on selection -->
+    <div
+      v-if="hasSelection"
+      class="absolute z-50 flex items-center gap-0.5 rounded-lg border border-border bg-popover p-1 shadow-md"
+      :style="{ top: toolbarTop + 'px', left: toolbarLeft + 'px', transform: 'translateX(-50%)' }"
+    >
+      <Button variant="ghost" size="icon" class="h-7 w-7 text-red-500 text-xs font-bold" @mousedown.prevent="applyRed">
         W
       </Button>
 
-      <Button variant="ghost" size="icon" class="h-6 w-6 text-green-500 text-xs font-bold" @click="applyGreen">
+      <Button variant="ghost" size="icon" class="h-7 w-7 text-green-500 text-xs font-bold" @mousedown.prevent="applyGreen">
         G
       </Button>
 
-      <Button variant="ghost" size="icon" class="h-6 w-6 text-muted-foreground text-xs" @click="clearColor">
+      <Button variant="ghost" size="icon" class="h-7 w-7 text-muted-foreground text-xs" @mousedown.prevent="clearColor">
         A
       </Button>
+    </div>
+
+    <!-- Editor -->
+    <div class="cursor-text" @click="editor?.commands.focus()">
+      <EditorContent :editor="editor" />
     </div>
   </div>
 </template>

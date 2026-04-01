@@ -41,7 +41,7 @@ const textSegments = computed<string[]>(() => {
     return []
   }
 
-  return (swipe as any)['text-segments']
+  return [...(swipe as any)['text-segments']]
 })
 
 const progressRatio = computed(() => {
@@ -419,10 +419,10 @@ function getLabel(entityType: string): string {
 
             <!-- * Skill Check -->
             <template v-else-if="(currentSwipe as any)['entity-type'] === 'skill-check'">
-              <div class="flex-1 flex flex-col items-center justify-center gap-3 py-12">
-                <div class="text-2xl">🧠</div>
-                <p class="text-sm font-semibold text-card-foreground">Skill Check</p>
-                <p class="text-xs text-muted-foreground text-center">Test your understanding</p>
+              <div class="flex-1 flex flex-col items-center justify-center gap-4 py-12">
+                <div class="text-3xl" :style="{ color: courseColor }">✦</div>
+                <p class="text-sm font-semibold text-card-foreground">{{ (currentSwipe as any).title || 'Skill Check' }}</p>
+                <p class="text-xs text-muted-foreground text-center">{{ (currentSwipe as any).subtitle || 'Test your understanding' }}</p>
               </div>
             </template>
 

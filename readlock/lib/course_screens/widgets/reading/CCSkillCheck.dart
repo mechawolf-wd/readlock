@@ -1,5 +1,5 @@
 // Skill check introduction widget for course assessment section
-// Displays information about the upcoming skill check questions
+// Displays configurable title, subtitle, and icon before skill check questions
 
 import 'package:flutter/material.dart' hide Typography;
 import 'package:readlock/constants/RLTypography.dart';
@@ -9,21 +9,28 @@ import 'package:readlock/utility_widgets/Utility.dart';
 import 'package:readlock/course_screens/CourseContentViewer.dart';
 
 class CCSkillCheck extends StatefulWidget {
-  const CCSkillCheck({super.key});
+  final String title;
+  final String subtitle;
+  final String iconName;
+
+  const CCSkillCheck({
+    super.key,
+    this.title = 'Skill Check',
+    this.subtitle = 'Test Your Understanding',
+    this.iconName = 'check',
+  });
 
   @override
   State<CCSkillCheck> createState() => CCSkillCheckState();
 }
 
 class CCSkillCheckState extends State<CCSkillCheck> with SingleTickerProviderStateMixin {
-  // Animation controller for spinning icon
   late AnimationController iconAnimationController;
 
   @override
   void initState() {
     super.initState();
 
-    // Initialize spinning animation for skill check icon
     iconAnimationController = AnimationController(
       duration: const Duration(seconds: 3),
       vsync: this,
@@ -57,7 +64,7 @@ class CCSkillCheckState extends State<CCSkillCheck> with SingleTickerProviderSta
           // Description
           DescriptionSection(),
 
-          const Spacing.height(24 * 2),
+          const Spacing.height(48),
 
           // Ready button
           ReadyButton(context),
@@ -66,31 +73,30 @@ class CCSkillCheckState extends State<CCSkillCheck> with SingleTickerProviderSta
     );
   }
 
-  // Animated skill check icon display
   Widget SkillCheckIcon() {
-    final Widget QuizIcon = Icon(Icons.quiz_outlined, color: RLDS.primaryGreen, size: 48);
+    final IconData iconData = getIconDataFromName(widget.iconName);
+    final Widget CheckIcon = Icon(iconData, color: RLDS.primaryGreen, size: 48);
 
     return AnimatedBuilder(
       animation: iconAnimationController,
       builder: (context, child) {
         return Transform.rotate(
           angle: iconAnimationController.value * 2.0 * 3.14159,
-          child: QuizIcon,
+          child: CheckIcon,
         );
       },
     );
   }
 
-  // Title and subtitle section
   Widget TitleSection() {
     return Column(
       children: [
-        RLTypography.headingLarge(RLUIStrings.SKILL_CHECK_TITLE, textAlign: TextAlign.center),
+        RLTypography.headingLarge(widget.title, textAlign: TextAlign.center),
 
         const Spacing.height(8),
 
         RLTypography.bodyLarge(
-          RLUIStrings.SKILL_CHECK_SUBTITLE,
+          widget.subtitle,
           color: RLDS.textSecondary,
           textAlign: TextAlign.center,
         ),
@@ -98,7 +104,6 @@ class CCSkillCheckState extends State<CCSkillCheck> with SingleTickerProviderSta
     );
   }
 
-  // Description text section
   Widget DescriptionSection() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24.0),
@@ -110,7 +115,6 @@ class CCSkillCheckState extends State<CCSkillCheck> with SingleTickerProviderSta
     );
   }
 
-  // Ready button to continue to questions
   Widget ReadyButton(BuildContext context) {
     final BoxDecoration buttonDecoration = BoxDecoration(
       color: RLDS.primaryGreen,
@@ -132,22 +136,16 @@ class CCSkillCheckState extends State<CCSkillCheck> with SingleTickerProviderSta
     );
   }
 
-  // Navigate to next content (skill check questions)
   void navigateToNextContent(BuildContext context) {
-    // Import CourseContentViewer to access state
     final courseDetailScreen = context.findAncestorStateOfType<CourseDetailScreenState>();
-
     final PageController? pageController = courseDetailScreen?.pageController;
-
     final bool hasValidPageController = pageController != null && pageController.hasClients;
 
     if (!hasValidPageController) {
       return;
     }
 
-    // Navigate to next page
     final double? currentPageDouble = pageController.page;
-
     final bool hasCurrentPage = currentPageDouble != null;
 
     if (!hasCurrentPage) {
@@ -162,5 +160,34 @@ class CCSkillCheckState extends State<CCSkillCheck> with SingleTickerProviderSta
       duration: const Duration(milliseconds: 300),
       curve: Curves.easeInOut,
     );
+  }
+
+  IconData getIconDataFromName(String name) {
+    switch (name.toLowerCase()) {
+      case 'check': {
+        return Icons.check_circle_outline;
+      }
+      case 'quiz': {
+        return Icons.quiz_outlined;
+      }
+      case 'star': {
+        return Icons.star_outline;
+      }
+      case 'lightning': {
+        return Icons.flash_on;
+      }
+      case 'target': {
+        return Icons.track_changes;
+      }
+      case 'brain': {
+        return Icons.psychology;
+      }
+      case 'trophy': {
+        return Icons.emoji_events;
+      }
+      default: {
+        return Icons.check_circle_outline;
+      }
+    }
   }
 }

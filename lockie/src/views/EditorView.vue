@@ -2,6 +2,7 @@
 // Main editor view — Accelerator → Segments → Packages → Swipes
 
 import { ref, computed, onMounted, onUnmounted, watch, nextTick } from 'vue'
+import { codeToHtml } from 'shiki'
 import { useCourseStore } from '@/stores/CourseStore'
 import { useAuthStore } from '@/stores/AuthStore'
 import { useRouter } from 'vue-router'
@@ -94,6 +95,14 @@ const availableGenres = computed(() => {
 })
 
 const formattedJson = computed(() => store.exportJSON())
+const highlightedJson = ref('')
+
+watch(formattedJson, async (json) => {
+  highlightedJson.value = await codeToHtml(json, {
+    lang: 'json',
+    theme: 'github-dark-default',
+  })
+}, { immediate: true })
 
 const totalSwipeCount = computed(() => {
   const course = store.activeCourse
@@ -525,10 +534,21 @@ function getSwipeItemStyle(swipe: any, isSelected: boolean): Record<string, stri
 
 function getNavItemClass(isSelected: boolean): string {
   if (isSelected) {
-    return 'bg-accent text-accent-foreground'
+    return ''
   }
 
   return 'hover:bg-muted'
+}
+
+function getNavItemStyle(isSelected: boolean): Record<string, string> {
+  if (!isSelected) {
+    return {}
+  }
+
+  return {
+    backgroundColor: courseColor.value + '15',
+    color: '#ffffff',
+  }
 }
 </script>
 
@@ -564,7 +584,7 @@ function getNavItemClass(isSelected: boolean): string {
           </DialogContent>
         </Dialog>
         <span class="text-sm text-white/60">for Readlock</span>
-        <span v-if="hasActiveCourse" class="text-[10px] text-white/40">{{ totalPackageCount }} packages · {{ totalSwipeCount }} swipes</span>
+        <span v-if="hasActiveCourse" class="text-[10px] text-white/40">{{ store.activeCourse!.segments.length }} segments · {{ totalPackageCount }} packages · {{ totalSwipeCount }} swipes</span>
       </div>
 
       <div class="flex items-center gap-2">
@@ -625,12 +645,11 @@ function getNavItemClass(isSelected: boolean): string {
     <!-- JSON View -->
     <div v-if="showJsonView" class="flex flex-1 overflow-hidden">
       <div class="flex-1 flex flex-col overflow-hidden border-r border-border">
-        <div class="p-4 border-b border-border flex flex-col gap-4 shrink-0">
+        <div class="p-4 border-b border-border flex items-center gap-4 shrink-0">
           <span class="text-sm font-medium">Course JSON</span>
+          <span v-if="hasActiveCourse" class="text-[10px] text-muted-foreground">{{ (formattedJson.length / 1024).toFixed(1) }} KB</span>
         </div>
-        <div class="flex-1 overflow-auto">
-          <pre class="p-6 text-xs font-mono whitespace-pre leading-relaxed text-foreground/80">{{ formattedJson }}</pre>
-        </div>
+        <div class="flex-1 overflow-auto [&_pre]:p-6 [&_pre]:text-xs [&_pre]:leading-relaxed [&_pre]:min-h-full [&_pre]:overflow-x-auto [&_code]:whitespace-pre" v-html="highlightedJson" />
         <div class="p-4 border-t border-border flex gap-2 shrink-0">
           <Button variant="outline" class="w-full h-9 text-xs" @click="toggleJsonView">Back to Editor</Button>
         </div>
@@ -706,15 +725,54 @@ function getNavItemClass(isSelected: boolean): string {
                 </div>
               </div>
 
-              <TransitionGroup tag="div" name="reorder-list" class="flex flex-col gap-0.5">
+              <TransitionGroup tag="div" name="nav-list" class="flex flex-col gap-0.5">
               <div
                 v-for="(segment, segmentIndex) in store.activeCourse!.segments"
                 :key="segment['segment-id']"
                 class="text-sm px-4 py-3 rounded-lg cursor-pointer transition-colors flex items-center gap-2 group/seg"
                 :class="getNavItemClass(isSegmentSelected(segmentIndex))"
+                :style="getNavItemStyle(isSegmentSelected(segmentIndex))"
                 @click="(e: MouseEvent) => { if (e.shiftKey) { openSegmentSettingsIndex = segmentIndex } else { store.selectSegment(segmentIndex); activePanel = 'segments' } }"
+                @contextmenu.prevent="openSegmentSettingsIndex = segmentIndex"
               >
                 <span class="flex-1 truncate select-none">{{ segment['segment-title'] }}</span>
+
+                <!-- Segment settings popover (shift+click) -->
+                <Popover :open="openSegmentSettingsIndex === segmentIndex" @update:open="(val: boolean) => { if (!val) openSegmentSettingsIndex = null }">
+                  <PopoverTrigger as-child><span /></PopoverTrigger>
+                  <PopoverContent side="right" :side-offset="8" class="w-64">
+                    <div class="flex flex-col gap-3">
+                      <div class="flex flex-col gap-1.5">
+                        <label class="text-xs text-muted-foreground">Title</label>
+                        <Input v-model="segment['segment-title']" class="h-8 text-sm" />
+                      </div>
+
+                      <div class="flex flex-col gap-1.5">
+                        <label class="text-xs text-muted-foreground">Symbol</label>
+                        <Input v-model="segment['segment-symbol']" class="h-8 text-sm" />
+                      </div>
+
+                      <AlertDialog>
+                        <AlertDialogTrigger as-child>
+                          <Button variant="outline" size="sm" class="w-full hover:bg-destructive/10 hover:text-destructive hover:border-destructive/30">
+                            <Trash2 class="h-3.5 w-3.5" />
+                            Delete Segment
+                          </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>Delete segment?</AlertDialogTitle>
+                            <AlertDialogDescription>This will delete "{{ segment['segment-title'] }}" and all its packages.</AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                            <AlertDialogAction class="bg-destructive text-destructive-foreground hover:bg-destructive/90" @click="store.removeSegment(segmentIndex); openSegmentSettingsIndex = null">Delete</AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
+                    </div>
+                  </PopoverContent>
+                </Popover>
               </div>
               </TransitionGroup>
             </div>
@@ -722,7 +780,8 @@ function getNavItemClass(isSelected: boolean): string {
             <Separator v-if="hasActiveSegment" />
 
             <!-- Packages -->
-            <div v-if="hasActiveSegment" class="flex flex-col gap-2 bg-muted/40 rounded-lg p-3">
+            <div v-if="hasActiveSegment" class="flex flex-col gap-2" :class="store.activeSegment!.lessons.length > 0 ? 'bg-muted/40 rounded-lg p-3' : ''"
+>
               <div class="flex items-center justify-between">
                 <label class="text-xs text-muted-foreground uppercase tracking-wider flex items-center gap-1.5">
 
@@ -741,16 +800,55 @@ function getNavItemClass(isSelected: boolean): string {
                 </div>
               </div>
 
-              <TransitionGroup :key="store.activeSegmentIndex" tag="div" name="reorder-list" class="flex flex-col gap-0.5">
+              <TransitionGroup :key="store.activeSegmentIndex" tag="div" name="nav-list" class="flex flex-col gap-0.5">
               <div
                 v-for="(pkg, packageIndex) in store.activeSegment!.lessons"
                 :key="pkg['lesson-id']"
                 :data-package-index="packageIndex"
                 class="text-sm px-4 py-3 rounded-lg cursor-pointer transition-colors flex items-center gap-2 group/pkg"
                 :class="getNavItemClass(isPackageSelected(packageIndex))"
+                :style="getNavItemStyle(isPackageSelected(packageIndex))"
                 @click="(e: MouseEvent) => { if (e.shiftKey) { openPackageSettingsIndex = packageIndex } else { store.selectPackage(packageIndex); activePanel = 'swipes' } }"
+                @contextmenu.prevent="openPackageSettingsIndex = packageIndex"
               >
                 <span class="flex-1 truncate select-none">{{ pkg.title }}</span>
+
+                <!-- Package settings popover (shift+click) -->
+                <Popover :open="openPackageSettingsIndex === packageIndex" @update:open="(val: boolean) => { if (!val) openPackageSettingsIndex = null }">
+                  <PopoverTrigger as-child><span /></PopoverTrigger>
+                  <PopoverContent side="right" :side-offset="8" class="w-64">
+                    <div class="flex flex-col gap-3">
+                      <div class="flex flex-col gap-1.5">
+                        <label class="text-xs text-muted-foreground">Title</label>
+                        <Input v-model="pkg.title" class="h-8 text-sm" />
+                      </div>
+
+                      <div class="flex items-center gap-2">
+                        <Checkbox :checked="pkg.isFree" @update:checked="(val: boolean) => pkg.isFree = val" />
+                        <label class="text-xs text-muted-foreground">Free</label>
+                      </div>
+
+                      <AlertDialog>
+                        <AlertDialogTrigger as-child>
+                          <Button variant="outline" size="sm" class="w-full mt-2 hover:bg-destructive/10 hover:text-destructive hover:border-destructive/30">
+                            <Trash2 class="h-3.5 w-3.5" />
+                            Delete Package
+                          </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>Delete package?</AlertDialogTitle>
+                            <AlertDialogDescription>This will delete "{{ pkg.title }}" and all its swipes.</AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                            <AlertDialogAction class="bg-destructive text-destructive-foreground hover:bg-destructive/90" @click="store.removePackage(packageIndex); openPackageSettingsIndex = null">Delete</AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
+                    </div>
+                  </PopoverContent>
+                </Popover>
               </div>
               </TransitionGroup>
             </div>
@@ -828,8 +926,8 @@ function getNavItemClass(isSelected: boolean): string {
             </div>
 
             <!-- Swipe list -->
-            <div class="flex-1 overflow-auto">
-              <TransitionGroup :key="store.activePackageIndex" tag="div" name="swipe-list" class="p-1.5 flex flex-col gap-1.5">
+            <ScrollArea class="flex-1 h-0">
+              <TransitionGroup :key="`${store.activeSegmentIndex}-${store.activePackageIndex}`" tag="div" name="swipe-list" class="p-1.5 flex flex-col gap-1.5">
                 <div
                   v-for="(swipe, swipeIndex) in store.activePackage!.content"
                   :key="(swipe as any)._uid"
@@ -863,13 +961,13 @@ function getNavItemClass(isSelected: boolean): string {
                   </Button>
                 </div>
               </TransitionGroup>
-            </div>
+            </ScrollArea>
 
           </div>
 
           <!-- Swipe editor -->
           <div class="flex-1 overflow-auto bg-muted/40">
-            <div v-if="hasActiveSwipe" class="p-8 max-w-2xl">
+            <div v-if="hasActiveSwipe" class="p-8">
               <ContentBlockEditor :key="store.activeSwipeIndex ?? -1" :block="store.activeSwipe!" />
             </div>
             <div v-else class="flex-1 flex items-center justify-center h-full text-muted-foreground text-sm">

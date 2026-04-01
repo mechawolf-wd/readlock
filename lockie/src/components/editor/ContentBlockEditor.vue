@@ -4,14 +4,14 @@
 
 import { ref, computed } from 'vue'
 import type { Swipe } from '@/types/Course'
-import { ENTITY_TYPE_LABELS, type EntityType } from '@/types/Course'
+import { ENTITY_TYPE_LABELS, ENTITY_TYPE_COLORS, type EntityType } from '@/types/Course'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
 import { Checkbox } from '@/components/ui/checkbox'
-import { Minus, Plus, PlusCircle, BookOpen, Sparkles, ImageIcon, ChevronUp, ChevronDown, Type } from 'lucide-vue-next'
+import { Minus, Plus, PlusCircle, BookOpen, Sparkles, ImageIcon, ChevronUp, ChevronDown, Type, Undo2 } from 'lucide-vue-next'
 import {
   Dialog,
   DialogContent,
@@ -29,6 +29,7 @@ import RichTextSegment from '@/components/editor/RichTextSegment.vue'
 const props = defineProps<{ block: Swipe }>()
 
 const entityLabel = ENTITY_TYPE_LABELS[props.block['entity-type'] as EntityType] ?? props.block['entity-type']
+const entityColor = ENTITY_TYPE_COLORS[props.block['entity-type'] as EntityType] ?? '#666'
 
 // * Stable keys for text segments (strings have no UID)
 
@@ -69,13 +70,41 @@ function insertTextSegmentAfter(segmentIndex: number) {
   }
 }
 
+const deletedSegmentStack = ref<{ text: string; index: number; key: number }[]>([])
+
 function removeTextSegment(segmentIndex: number) {
   const hasTextSegments = 'text-segments' in props.block
   const hasMultipleSegments = hasTextSegments && props.block['text-segments'].length > 1
 
   if (hasMultipleSegments) {
-    props.block['text-segments'].splice(segmentIndex, 1)
-    segmentKeys.value.splice(segmentIndex, 1)
+    const removedText = props.block['text-segments'].splice(segmentIndex, 1)[0]
+    const removedKey = segmentKeys.value.splice(segmentIndex, 1)[0]
+
+    deletedSegmentStack.value.unshift({ text: removedText, index: segmentIndex, key: removedKey })
+
+    const hasMoreThanTwo = deletedSegmentStack.value.length > 2
+
+    if (hasMoreThanTwo) {
+      deletedSegmentStack.value.pop()
+    }
+  }
+}
+
+function undoDeleteSegment() {
+  const hasNothingToUndo = deletedSegmentStack.value.length === 0
+
+  if (hasNothingToUndo) {
+    return
+  }
+
+  const hasTextSegments = 'text-segments' in props.block
+
+  if (hasTextSegments) {
+    const entry = deletedSegmentStack.value.shift()!
+    const clampedIndex = Math.min(entry.index, props.block['text-segments'].length)
+
+    props.block['text-segments'].splice(clampedIndex, 0, entry.text)
+    segmentKeys.value.splice(clampedIndex, 0, entry.key)
   }
 }
 
@@ -89,6 +118,17 @@ function addOption() {
 
     newOption._uid = `opt-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`
     props.block.options.push(newOption)
+  }
+}
+
+function insertOptionAfter(optionIndex: number) {
+  const hasOptions = 'options' in props.block
+
+  if (hasOptions) {
+    const newOption = { text: '' } as any
+
+    newOption._uid = `opt-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`
+    props.block.options.splice(optionIndex + 1, 0, newOption)
   }
 }
 
@@ -180,40 +220,95 @@ const aiSlidePrompt = ref('')
 const showAIMenu = ref(false)
 const showGuidelinesDialog = ref(false)
 
-const AI_ACTION_GROUPS = [
+// * AI action groups per entity type category
+
+const TEXT_AI_GROUPS = [
   {
     label: 'Writing',
     actions: [
       { label: 'Fix grammar', prompt: 'Fix grammar and spelling errors in this slide' },
       { label: 'Make concise', prompt: 'Make the text more concise without losing meaning' },
-      { label: 'Make pop-scientific', prompt: 'Rewrite in an engaging popular science tone — vivid, surprising, accessible' },
-      { label: 'Simplify language', prompt: 'Simplify the language for easier reading' },
+      { label: 'Pop-scientific', prompt: 'Rewrite in an engaging popular science tone — vivid, surprising, accessible' },
+      { label: 'Simplify', prompt: 'Simplify the language for easier reading' },
     ],
   },
   {
     label: 'Structure',
     actions: [
-      { label: 'Split into segments', prompt: 'Split the text into shorter, punchier segments' },
-      { label: 'Add emphasis', prompt: 'Add color markup to highlight key terms' },
-      { label: 'Suggest a photo', prompt: 'Suggest a relevant photo or illustration for this slide with a search query and description' },
-    ],
-  },
-  {
-    label: 'Generate',
-    actions: [
-      { label: 'Answer options', prompt: 'Generate answer options for this question' },
-      { label: 'Explanation', prompt: 'Generate an explanation for the correct answer' },
-      { label: 'Hint', prompt: 'Generate a helpful hint for this question' },
+      { label: 'Split segments', prompt: 'Split the text into shorter, punchier segments' },
+      { label: 'Add emphasis', prompt: 'Add color markup to highlight key terms (green) and warnings (red)' },
+      { label: 'Suggest image', prompt: 'Suggest a relevant photo or illustration with a search query' },
     ],
   },
   {
     label: 'Review',
     actions: [
-      { label: 'Critique', prompt: 'Critique this slide — point out weaknesses, factual issues, and suggest improvements' },
-      { label: 'Fact check', prompt: 'Verify the claims in this slide and flag anything that needs a source or correction' },
+      { label: 'Critique', prompt: 'Critique this slide — point out weaknesses and suggest improvements' },
+      { label: 'Fact check', prompt: 'Verify claims and flag anything that needs a source or correction' },
     ],
   },
 ]
+
+const QUESTION_AI_GROUPS = [
+  {
+    label: 'Generate',
+    actions: [
+      { label: 'Suggest question', prompt: 'Suggest a better question based on the course context' },
+      { label: 'Generate options', prompt: 'Generate answer options for this question' },
+      { label: 'Consequences', prompt: 'Write consequence messages explaining why each option is right or wrong' },
+      { label: 'Add explanation', prompt: 'Generate an explanation shown after answering' },
+      { label: 'Fill hint', prompt: 'Generate a helpful hint for this question' },
+    ],
+  },
+  {
+    label: 'Review',
+    actions: [
+      { label: 'Critique', prompt: 'Critique this question — is it clear, fair, and testing the right thing?' },
+      { label: 'Fix grammar', prompt: 'Fix grammar and spelling in the question and options' },
+    ],
+  },
+]
+
+const OTHER_AI_GROUPS = [
+  {
+    label: 'Writing',
+    actions: [
+      { label: 'Fix grammar', prompt: 'Fix grammar and spelling errors' },
+      { label: 'Make concise', prompt: 'Make the text more concise' },
+      { label: 'Rewrite', prompt: 'Rewrite this content to be more engaging' },
+    ],
+  },
+  {
+    label: 'Review',
+    actions: [
+      { label: 'Critique', prompt: 'Critique this slide and suggest improvements' },
+    ],
+  },
+]
+
+const QUESTION_TYPES = [
+  'single-choice-question',
+  'true-false-question',
+  'estimate-percentage-question',
+  'fill-gap-question',
+  'incorrect-statement-question',
+]
+
+const AI_ACTION_GROUPS = computed(() => {
+  const entityType = props.block['entity-type']
+  const isQuestion = QUESTION_TYPES.includes(entityType)
+  const isText = entityType === 'text'
+
+  if (isQuestion) {
+    return QUESTION_AI_GROUPS
+  }
+
+  if (isText) {
+    return TEXT_AI_GROUPS
+  }
+
+  return OTHER_AI_GROUPS
+})
 
 function handleAIQuickAction(actionPrompt: string) {
   // TODO: Connect to AI API
@@ -281,7 +376,6 @@ const GUIDELINES: Record<string, string> = {
   'estimate-percentage-question': 'Use real statistics. Let the reader guess before revealing the answer.',
   'fill-gap-question': 'Use ___ for blanks in the question. Options are the words to fill in.',
   'incorrect-statement-question': 'List 3+ statements. One or more are incorrect. Tests critical thinking.',
-  'reflection-question': 'Open-ended. Focus on deeper understanding, not right/wrong.',
   'emotional-slide': 'Short motivational pause between sections. Keep it to one sentence.',
   'reflection': 'Personal application prompt. Include 3-4 thinking points.',
   'quote': 'Memorable insight from the author. Keep it impactful.',
@@ -306,7 +400,7 @@ const currentGuideline = computed(() => {
       <!-- AI actions -->
       <Popover v-model:open="showAIMenu">
         <PopoverTrigger as-child>
-          <Button variant="outline" size="sm" class="h-7 gap-1.5 text-xs">
+          <Button variant="outline" size="sm" class="h-7 gap-1.5 text-xs border-current" :style="{ color: entityColor, backgroundColor: entityColor + '10' }">
             <Sparkles class="h-3 w-3" />
             AI
           </Button>
@@ -317,7 +411,7 @@ const currentGuideline = computed(() => {
             <div v-for="(group, groupIndex) in AI_ACTION_GROUPS" :key="group.label" class="flex flex-col gap-1.5">
               <Separator v-if="groupIndex > 0" />
 
-              <span class="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">{{ group.label }}</span>
+              <span class="text-[10px] font-medium uppercase tracking-wider" :style="{ color: entityColor }">{{ group.label }}</span>
 
               <div class="flex flex-wrap gap-1.5">
                 <button
@@ -380,6 +474,7 @@ const currentGuideline = computed(() => {
       <div class="flex items-center justify-between">
         <label class="text-sm text-muted-foreground">Text Segments</label>
         <div class="flex items-center gap-1">
+          <Button v-if="deletedSegmentStack.length > 0" variant="ghost" size="icon" class="h-8 w-8" @click="undoDeleteSegment"><Undo2 class="h-4 w-4" /></Button>
           <Button variant="ghost" size="icon" class="h-8 w-8" @click="addImageSegment"><ImageIcon class="h-4 w-4" /></Button>
           <Button variant="ghost" size="icon" class="h-8 w-8" @click="addTextSegment"><Plus class="h-4 w-4" /></Button>
         </div>
@@ -463,15 +558,19 @@ const currentGuideline = computed(() => {
           :key="(option as any)._uid ?? optionIndex"
           class="flex gap-2 items-stretch"
         >
-          <!-- Minus column -->
+          <!-- Minus / Plus column -->
           <div class="flex flex-col shrink-0 items-center self-stretch">
             <Button
               variant="ghost"
               size="icon"
-              class="flex-1 w-8 hover:bg-destructive/10 hover:text-destructive"
+              class="flex-1 w-8 rounded-b-none hover:bg-destructive/10 hover:text-destructive"
               @click="removeOption(Number(optionIndex))"
             >
               <Minus class="h-4 w-4" />
+            </Button>
+
+            <Button variant="ghost" size="icon" class="flex-1 w-8 rounded-t-none text-muted-foreground opacity-0 hover:opacity-100 transition-opacity" @click="insertOptionAfter(Number(optionIndex))">
+              <Plus class="h-4 w-4" />
             </Button>
           </div>
 
@@ -502,6 +601,11 @@ const currentGuideline = computed(() => {
           />
         </div>
       </TransitionGroup>
+
+      <p
+        v-if="'correct-answer-indices' in block && (block as any)['correct-answer-indices'].length === 0"
+        class="text-xs text-blue-500 italic"
+      >Select at least one correct answer</p>
     </div>
 
     <!-- Explanation -->
@@ -514,6 +618,24 @@ const currentGuideline = computed(() => {
     <div v-if="'hint' in block" class="flex flex-col gap-1.5">
       <label class="text-sm text-muted-foreground">Hint</label>
       <Input v-model="(block as any).hint" placeholder="Hint..." class="text-xs !bg-transparent border-border italic text-muted-foreground" />
+    </div>
+
+    <!-- Skill check fields -->
+    <div v-if="block['entity-type'] === 'skill-check'" class="flex flex-col gap-4">
+      <div class="flex flex-col gap-1.5">
+        <label class="text-sm text-muted-foreground">Title</label>
+        <Input v-model="(block as any).title" placeholder="Skill Check" />
+      </div>
+
+      <div class="flex flex-col gap-1.5">
+        <label class="text-sm text-muted-foreground">Subtitle</label>
+        <Input v-model="(block as any).subtitle" placeholder="Test your understanding" />
+      </div>
+
+      <div class="flex flex-col gap-1.5">
+        <label class="text-sm text-muted-foreground">Icon</label>
+        <Input v-model="(block as any).icon" placeholder="check, star, progress..." />
+      </div>
     </div>
 
     <!-- Emotional slide fields -->
