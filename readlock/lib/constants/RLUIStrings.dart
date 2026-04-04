@@ -7,7 +7,6 @@ class RLUIStrings {
   static const String HOME_TAB_LABEL = 'Home';
   static const String SEARCH_TAB_LABEL = 'Search';
   static const String BOOKSHELF_TAB_LABEL = 'My Bookshelf';
-  static const String SANDBOX_TAB_LABEL = 'Sandbox';
 
   // * Home Screen
   static const String HOME_TITLE = 'Home';
@@ -29,9 +28,6 @@ class RLUIStrings {
   static const String PRICE_PERIOD = '/month';
   static const String SUBSCRIBE_BUTTON_TEXT = 'Get Reader Pass';
   static const String READER_PASS_FEATURES_TITLE = 'What you get';
-
-  // * Sandbox Screen
-  static const String SANDBOX_TITLE = 'Widget Sandbox';
 
   // * Feedback Snackbar
   static const String CORRECT_ANSWER_MESSAGE = '+5 experience';
@@ -76,16 +72,6 @@ class RLUIStrings {
 
   // * Course Content Factory
   static const String UNKNOWN_CONTENT_TYPE_MESSAGE = 'Unknown content type: ';
-
-  // * Course Skill Check
-  static const String SKILL_CHECK_TITLE = 'Skill Check';
-  static const String SKILL_CHECK_SUBTITLE = 'Test Your Understanding';
-  static const String SKILL_CHECK_DESCRIPTION =
-      'You\'ve completed the lesson! Now let\'s check your understanding with a few questions.';
-  static const String SKILL_CHECK_READY_BUTTON_TEXT = 'I\'m Ready';
-
-  // * Incorrect Statement Question
-  static const String INCORRECT_STATEMENT_PROMPT = 'Which statement is incorrect?';
 
   // * Reflection Question
   static const String REFLECTION_ASPECTS_LABEL = 'Consider these aspects:';
@@ -138,11 +124,8 @@ class RLUIStrings {
   static const String TRUE_LABEL = 'True';
   static const String FALSE_LABEL = 'False';
 
-  // * Fill Gap Question
-  static const String FILL_GAP_INSTRUCTION = 'Select words to fill the gaps:';
-  static const String FILL_GAP_SUBMIT_LABEL = 'Submit Answer';
-  static const String FILL_GAP_SUBMITTED_LABEL = 'Submitted';
-  static const String FILL_GAP_EXPLANATION_LABEL = 'Explanation';
+  // * Explanation
+  static const String EXPLANATION_LABEL = 'Explanation';
 
   // * Estimate Percentage Question
   static const String ESTIMATE_YOUR_LABEL = 'Your estimate:';
@@ -162,8 +145,8 @@ class RLUIStrings {
   static const String OUTRO_BUTTON_LABEL = 'Fin';
 
   // * Streak Bottom Sheet
-  static const String STREAK_TITLE = '3 Day Combo!';
-  static const String STREAK_MESSAGE = 'Keep learning daily to build your combo.';
+  static const String STREAK_TITLE = '3 Day Streak!';
+  static const String STREAK_MESSAGE = 'Keep learning daily to build your streak.';
 
   // * Streakplier Reward Screen
   static const String REWARD_CONGRATULATIONS = 'Reader time';

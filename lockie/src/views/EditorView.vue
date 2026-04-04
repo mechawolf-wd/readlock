@@ -1,11 +1,11 @@
 <script setup lang="ts">
 // Main editor view — Accelerator → Segments → Packages → Swipes
 
-import { ref, computed, onMounted, onUnmounted, watch, nextTick } from 'vue'
-import { codeToHtml } from 'shiki'
-import { useCourseStore } from '@/stores/CourseStore'
-import { useAuthStore } from '@/stores/AuthStore'
-import { useRouter } from 'vue-router'
+import { ref, computed, onMounted, onUnmounted, watch, nextTick } from "vue";
+import { codeToHtml } from "shiki";
+import { useCourseStore } from "@/stores/CourseStore";
+import { useAuthStore } from "@/stores/AuthStore";
+import { useRouter } from "vue-router";
 import {
   ENTITY_TYPE_LABELS,
   ENTITY_TYPE_ICONS,
@@ -14,28 +14,45 @@ import {
   QUICK_ADD_TYPES,
   PREMADE_GENRES,
   type EntityType,
-} from '@/types/Course'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
-import { ScrollArea } from '@/components/ui/scroll-area'
-import { Separator } from '@/components/ui/separator'
-import { Badge } from '@/components/ui/badge'
-import { Checkbox } from '@/components/ui/checkbox'
-import { Switch } from '@/components/ui/switch'
+} from "@/types/Course";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Separator } from "@/components/ui/separator";
+import { Badge } from "@/components/ui/badge";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Switch } from "@/components/ui/switch";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog'
+} from "@/components/ui/dialog";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from '@/components/ui/popover'
-import { X, ChevronUp, ChevronDown, PlusCircle, Settings, Undo2, Code, LogOut, Download, Trash2 } from 'lucide-vue-next'
+} from "@/components/ui/popover";
+import {
+  X,
+  ChevronUp,
+  ChevronDown,
+  PlusCircle,
+  Settings,
+  Undo2,
+  LogOut,
+  Download,
+  Trash2,
+  RotateCcw,
+  Sparkles,
+  BookOpen,
+  Code,
+  FileText,
+} from "lucide-vue-next";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -46,400 +63,450 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from '@/components/ui/alert-dialog'
-import ContentBlockEditor from '@/components/editor/ContentBlockEditor.vue'
-import PhonePreview from '@/components/preview/PhonePreview.vue'
-import VantaBackground from '@/components/VantaBackground.vue'
-import courseJSON from '../../../readlock/assets/data/course_data.json'
+} from "@/components/ui/alert-dialog";
+import ContentBlockEditor from "@/components/editor/ContentBlockEditor.vue";
+import PhonePreview from "@/components/preview/PhonePreview.vue";
+import {
+  parsePackageText,
+  parseCourseText,
+  PACKAGE_TEXT_FORMAT_GUIDE,
+} from "@/lib/PackageTextParser";
+import { Upload } from "lucide-vue-next";
+import courseJSON from "../../../readlock/assets/data/course_data.json";
 
 // * Store and router
 
-const store = useCourseStore()
-const auth = useAuthStore()
-const router = useRouter()
+const store = useCourseStore();
+const auth = useAuthStore();
+const router = useRouter();
 
 // * State
 
-const showCourseConfigDialog = ref(false)
-const showCourseSelectDialog = ref(false)
-const showAddSwipeDialog = ref(false)
-const showJsonView = ref(false)
-const openSegmentSettingsIndex = ref<number | null>(null)
-const openPackageSettingsIndex = ref<number | null>(null)
+const showCourseConfigDialog = ref(false);
+const showCourseSelectDialog = ref(false);
+const showAddSwipeDialog = ref(false);
+const showJsonView = ref(false);
+const openSegmentSettingsIndex = ref<number | null>(null);
+const openPackageSettingsIndex = ref<number | null>(null);
 
 // * AI Creator state
 
-const aiSources = ref<string[]>([''])
-const aiSegmentCount = ref(3)
-const aiLessonsPerSegment = ref(8)
-const aiTone = ref('educational')
-const aiSystemPrompt = ref('')
-const aiChatMessages = ref<{ role: string; text: string }[]>([])
-const aiChatInput = ref('')
+const aiSources = ref<string[]>([""]);
+const aiSegmentCount = ref(3);
+const aiLessonsPerSegment = ref(8);
+const aiTone = ref("educational");
+const aiSystemPrompt = ref("");
+const aiChatMessages = ref<{ role: string; text: string }[]>([]);
+const aiChatInput = ref("");
 
-const sidebarScrollRef = ref<HTMLElement | null>(null)
+const showImportTextDialog = ref(false);
+const importTextInput = ref("");
+const showFormatGuide = ref(false);
+const selectedGuideBlock = ref(PACKAGE_TEXT_FORMAT_GUIDE.blocks[0].tag);
+const fileInputRef = ref<HTMLInputElement | null>(null);
+
+const showImportCourseDialog = ref(false);
+const importCourseInput = ref("");
+const courseFileInputRef = ref<HTMLInputElement | null>(null);
+
+const sidebarScrollRef = ref<HTMLElement | null>(null);
 
 // * Sortable drag-and-drop for swipes
 
 // * Computed
 
-const hasActivePackage = computed(() => store.activePackage !== null)
-const hasActiveCourse = computed(() => store.activeCourse !== null)
-const hasActiveSegment = computed(() => store.activeSegment !== null)
-const hasActiveSwipe = computed(() => store.activeSwipe !== null)
+const hasActivePackage = computed(() => store.activePackage !== null);
+const hasActiveCourse = computed(() => store.activeCourse !== null);
+const hasActiveSegment = computed(() => store.activeSegment !== null);
+const hasActiveSwipe = computed(() => store.activeSwipe !== null);
 
 const availableGenres = computed(() => {
-  const currentGenres = store.activeCourse?.genres ?? []
+  const currentGenres = store.activeCourse?.genres ?? [];
 
-  return PREMADE_GENRES.filter((genre) => !currentGenres.includes(genre))
-})
+  return PREMADE_GENRES.filter((genre) => !currentGenres.includes(genre));
+});
 
-const formattedJson = computed(() => store.exportJSON())
-const highlightedJson = ref('')
+const formattedJson = computed(() => store.exportJSON());
+const highlightedJson = ref("");
 
-watch(formattedJson, async (json) => {
-  highlightedJson.value = await codeToHtml(json, {
-    lang: 'json',
-    theme: 'github-dark-default',
-  })
-}, { immediate: true })
+watch(
+  formattedJson,
+  async (json) => {
+    highlightedJson.value = await codeToHtml(json, {
+      lang: "json",
+      theme: "github-dark-default",
+    });
+  },
+  { immediate: true },
+);
 
 const totalSwipeCount = computed(() => {
-  const course = store.activeCourse
+  const course = store.activeCourse;
 
   if (!course) {
-    return 0
+    return 0;
   }
 
-  let total = 0
+  let total = 0;
 
   for (const segment of course.segments) {
     for (const pkg of segment.lessons) {
-      total += pkg.content.length
+      total += pkg.content.length;
     }
   }
 
-  return total
-})
+  return total;
+});
 
 const totalPackageCount = computed(() => {
-  const course = store.activeCourse
+  const course = store.activeCourse;
 
   if (!course) {
-    return 0
+    return 0;
   }
 
-  let total = 0
+  let total = 0;
 
   for (const segment of course.segments) {
-    total += segment.lessons.length
+    total += segment.lessons.length;
   }
 
-  return total
-})
+  return total;
+});
 
 // * Lifecycle
 
 onMounted(() => {
-  const hasStoredData = store.loadFromStorage()
+  const hasStoredData = store.loadFromStorage();
 
   if (!hasStoredData) {
-    store.loadCourseData(courseJSON as any)
+    store.loadCourseData(courseJSON as any);
   }
 
-  const hasCourses = store.courseData.courses.length > 0
+  const hasCourses = store.courseData.courses.length > 0;
 
   if (hasCourses) {
-    store.selectCourse(0)
+    store.selectCourse(0);
   }
-})
+});
 
 // * Keyboard navigation — arrow up/down to browse segments, packages, swipes
 
-type FocusPanel = 'segments' | 'packages' | 'swipes'
+type FocusPanel = "segments" | "packages" | "swipes";
 
-const activePanel = ref<FocusPanel>('swipes')
+const activePanel = ref<FocusPanel>("swipes");
 
 function handleKeyDown(event: KeyboardEvent) {
-  const isArrowUp = event.key === 'ArrowUp'
-  const isArrowDown = event.key === 'ArrowDown'
-  const isArrowLeft = event.key === 'ArrowLeft'
-  const isArrowRight = event.key === 'ArrowRight'
-  const isSpace = event.key === ' '
-  const isEnter = event.key === 'Enter'
-  const isHandled = isArrowUp || isArrowDown || isArrowLeft || isArrowRight || isSpace || isEnter
+  const isArrowUp = event.key === "ArrowUp";
+  const isArrowDown = event.key === "ArrowDown";
+  const isArrowLeft = event.key === "ArrowLeft";
+  const isArrowRight = event.key === "ArrowRight";
+  const isSpace = event.key === " ";
+  const isEnter = event.key === "Enter";
+  const isHandled =
+    isArrowUp ||
+    isArrowDown ||
+    isArrowLeft ||
+    isArrowRight ||
+    isSpace ||
+    isEnter;
 
   if (!isHandled) {
-    return
+    return;
   }
 
   // Skip if user is typing in an input/textarea/editor
-  const target = event.target as HTMLElement
-  const isEditable = target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable
+  const target = event.target as HTMLElement;
+  const isEditable =
+    target.tagName === "INPUT" ||
+    target.tagName === "TEXTAREA" ||
+    target.isContentEditable;
 
   if (isEditable) {
-    return
+    return;
   }
 
-  event.preventDefault()
+  event.preventDefault();
 
   if (isEnter) {
-    const isOnSwipes = activePanel.value === 'swipes'
+    const isOnSwipes = activePanel.value === "swipes";
 
     if (isOnSwipes) {
-      activePanel.value = 'packages'
+      activePanel.value = "packages";
     } else {
-      const hasSwipes = store.activePackage && store.activePackage.content.length > 0
+      const hasSwipes =
+        store.activePackage && store.activePackage.content.length > 0;
 
       if (hasSwipes) {
-        activePanel.value = 'swipes'
+        activePanel.value = "swipes";
       }
     }
 
-    return
+    return;
   }
 
   if (isSpace) {
-    const isOnPackages = activePanel.value === 'packages'
-    const isOnSwipes = activePanel.value === 'swipes'
-    const direction = event.shiftKey ? -1 : 1
-    const wrap = !event.shiftKey
+    const isOnPackages = activePanel.value === "packages";
+    const isOnSwipes = activePanel.value === "swipes";
+    const direction = event.shiftKey ? -1 : 1;
+    const wrap = !event.shiftKey;
 
     if (isOnPackages) {
-      navigatePackage(direction, wrap)
+      navigatePackage(direction, wrap);
     } else if (isOnSwipes) {
-      navigateSwipe(direction, wrap)
+      navigateSwipe(direction, wrap);
     }
 
-    return
+    return;
   }
 
   if (isArrowLeft) {
-    activePanel.value = 'packages'
-    return
+    activePanel.value = "packages";
+    return;
   }
 
   if (isArrowRight) {
-    const hasSwipes = store.activePackage && store.activePackage.content.length > 0
+    const hasSwipes =
+      store.activePackage && store.activePackage.content.length > 0;
 
     if (hasSwipes) {
-      activePanel.value = 'swipes'
+      activePanel.value = "swipes";
     }
 
-    return
+    return;
   }
 
-  const direction = isArrowUp ? -1 : 1
+  const direction = isArrowUp ? -1 : 1;
 
-  if (activePanel.value === 'swipes') {
-    navigateSwipe(direction)
-  } else if (activePanel.value === 'packages') {
-    navigatePackage(direction)
-  } else if (activePanel.value === 'segments') {
-    navigateSegment(direction)
+  if (activePanel.value === "swipes") {
+    navigateSwipe(direction);
+  } else if (activePanel.value === "packages") {
+    navigatePackage(direction);
+  } else if (activePanel.value === "segments") {
+    navigateSegment(direction);
   }
 }
 
 function navigateSwipe(direction: number, wrap = false) {
-  const hasNoPackage = !store.activePackage
+  const hasNoPackage = !store.activePackage;
 
   if (hasNoPackage) {
-    return
+    return;
   }
 
-  const total = store.activePackage!.content.length
-  const currentIndex = store.activeSwipeIndex ?? -1
-  let newIndex = currentIndex + direction
+  const total = store.activePackage!.content.length;
+  const currentIndex = store.activeSwipeIndex ?? -1;
+  let newIndex = currentIndex + direction;
 
   if (wrap && newIndex >= total) {
-    newIndex = 0
+    newIndex = 0;
   }
 
-  const isInBounds = newIndex >= 0 && newIndex < total
+  const isInBounds = newIndex >= 0 && newIndex < total;
 
   if (isInBounds) {
-    store.selectSwipe(newIndex)
+    store.selectSwipe(newIndex);
   }
 }
 
 function navigatePackage(direction: number, wrap = false) {
-  const hasNoSegment = !store.activeSegment
+  const hasNoSegment = !store.activeSegment;
 
   if (hasNoSegment) {
-    return
+    return;
   }
 
-  const total = store.activeSegment!.lessons.length
-  let newIndex = store.activePackageIndex + direction
+  const total = store.activeSegment!.lessons.length;
+  let newIndex = store.activePackageIndex + direction;
 
-  const shouldWrapToFirst = wrap && newIndex >= total
+  const shouldWrapToFirst = wrap && newIndex >= total;
 
   if (shouldWrapToFirst) {
-    newIndex = 0
+    newIndex = 0;
 
     nextTick(() => {
-      const firstPackage = document.querySelector('[data-package-index="0"]')
+      const firstPackage = document.querySelector('[data-package-index="0"]');
 
       if (firstPackage) {
-        firstPackage.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+        firstPackage.scrollIntoView({ behavior: "smooth", block: "nearest" });
       }
-    })
+    });
   }
 
-  const isInBounds = newIndex >= 0 && newIndex < total
+  const isInBounds = newIndex >= 0 && newIndex < total;
 
   if (isInBounds) {
-    store.selectPackage(newIndex)
+    store.selectPackage(newIndex);
   }
 }
 
 function navigateSegment(direction: number) {
-  const hasNoCourse = !store.activeCourse
+  const hasNoCourse = !store.activeCourse;
 
   if (hasNoCourse) {
-    return
+    return;
   }
 
-  const newIndex = store.activeSegmentIndex + direction
-  const isInBounds = newIndex >= 0 && newIndex < store.activeCourse!.segments.length
+  const newIndex = store.activeSegmentIndex + direction;
+  const isInBounds =
+    newIndex >= 0 && newIndex < store.activeCourse!.segments.length;
 
   if (isInBounds) {
-    store.selectSegment(newIndex)
+    store.selectSegment(newIndex);
   }
 }
 
 onMounted(() => {
-  window.addEventListener('keydown', handleKeyDown)
-})
+  window.addEventListener("keydown", handleKeyDown);
+});
 
 onUnmounted(() => {
-  window.removeEventListener('keydown', handleKeyDown)
-})
+  window.removeEventListener("keydown", handleKeyDown);
+});
 
 // * Sync course color to CSS primary
 
-const courseColor = computed(() => store.activeCourse?.color ?? '#dc2626')
+const courseColor = computed(
+  () => store.activeCourse?.color ?? "var(--primary)",
+);
 
-watch(courseColor, (newColor) => {
-  document.documentElement.style.setProperty('--primary', newColor)
-  document.documentElement.style.setProperty('--ring', newColor)
-}, { immediate: true })
+watch(
+  courseColor,
+  (newColor) => {
+    document.documentElement.style.setProperty("--primary", newColor);
+    document.documentElement.style.setProperty("--ring", newColor);
+  },
+  { immediate: true },
+);
 
 // * Auto-select first swipe when switching packages
 
-watch(() => store.activePackage, (pkg) => {
-  const hasContent = pkg !== null && pkg.content.length > 0
+watch(
+  () => store.activePackage,
+  (pkg) => {
+    const hasContent = pkg !== null && pkg.content.length > 0;
 
-  if (hasContent) {
-    store.selectSwipe(0)
-  }
-})
+    if (hasContent) {
+      store.selectSwipe(0);
+    }
+  },
+);
 
 // * Auto-scroll to active items
 
-watch(() => store.activeSwipeIndex, () => {
-  nextTick(() => {
-    const activeIndex = store.activeSwipeIndex
+watch(
+  () => store.activeSwipeIndex,
+  () => {
+    nextTick(() => {
+      const activeIndex = store.activeSwipeIndex;
 
-    if (activeIndex === null) {
-      return
-    }
+      if (activeIndex === null) {
+        return;
+      }
 
-    const el = document.querySelector(`[data-swipe-index="${activeIndex}"]`) as HTMLElement
+      const el = document.querySelector(
+        `[data-swipe-index="${activeIndex}"]`,
+      ) as HTMLElement;
 
-    if (el) {
-      el.scrollIntoView({ block: 'nearest' })
-    }
-  })
-})
+      if (el) {
+        el.scrollIntoView({ block: "nearest" });
+      }
+    });
+  },
+);
 
-watch(() => store.activePackageIndex, () => {
-  nextTick(() => {
-    const el = document.querySelector(`[data-package-index="${store.activePackageIndex}"]`) as HTMLElement
+watch(
+  () => store.activePackageIndex,
+  () => {
+    nextTick(() => {
+      const el = document.querySelector(
+        `[data-package-index="${store.activePackageIndex}"]`,
+      ) as HTMLElement;
 
-    if (el) {
-      el.scrollIntoView({ block: 'nearest' })
-    }
-  })
-})
+      if (el) {
+        el.scrollIntoView({ block: "nearest" });
+      }
+    });
+  },
+);
 
 // * Methods
 
 function handleMoveSwipeUp() {
-  const index = store.activeSwipeIndex
-  const hasNoSelection = index === null || index === 0
-  const hasNoPackage = !store.activePackage
+  const index = store.activeSwipeIndex;
+  const hasNoSelection = index === null || index === 0;
+  const hasNoPackage = !store.activePackage;
 
   if (hasNoSelection || hasNoPackage) {
-    return
+    return;
   }
 
-  const content = store.activePackage!.content
-  const moved = content.splice(index, 1)[0]
+  const content = store.activePackage!.content;
+  const moved = content.splice(index, 1)[0];
 
   if (moved) {
-    content.splice(index - 1, 0, moved)
-    store.selectSwipe(index - 1)
+    content.splice(index - 1, 0, moved);
+    store.selectSwipe(index - 1);
   }
 }
 
 function handleMoveSwipeDown() {
-  const index = store.activeSwipeIndex
-  const hasNoPackage = !store.activePackage
+  const index = store.activeSwipeIndex;
+  const hasNoPackage = !store.activePackage;
 
   if (index === null || hasNoPackage) {
-    return
+    return;
   }
 
-  const content = store.activePackage!.content
-  const isLastItem = index >= content.length - 1
+  const content = store.activePackage!.content;
+  const isLastItem = index >= content.length - 1;
 
   if (isLastItem) {
-    return
+    return;
   }
 
-  const moved = content.splice(index, 1)[0]
+  const moved = content.splice(index, 1)[0];
 
   if (moved) {
-    content.splice(index + 1, 0, moved)
-    store.selectSwipe(index + 1)
+    content.splice(index + 1, 0, moved);
+    store.selectSwipe(index + 1);
   }
 }
 
 function handleAddSwipe(entityType: EntityType) {
-  store.addSwipe(entityType)
-  showAddSwipeDialog.value = false
+  store.addSwipe(entityType);
+  showAddSwipeDialog.value = false;
 }
 
 function handleExport() {
-  const json = store.exportJSON()
-  const blob = new Blob([json], { type: 'application/json' })
-  const url = URL.createObjectURL(blob)
+  const json = store.exportJSON();
+  const blob = new Blob([json], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
 
-  const link = document.createElement('a')
-  link.href = url
-  link.download = 'course_data.json'
-  link.click()
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = "course_data.json";
+  link.click();
 
-  URL.revokeObjectURL(url)
+  URL.revokeObjectURL(url);
 }
 
 function handleAISendMessage() {
-  const hasNoInput = aiChatInput.value.trim() === ''
+  const hasNoInput = aiChatInput.value.trim() === "";
 
   if (hasNoInput) {
-    return
+    return;
   }
 
-  aiChatMessages.value.push({ role: 'user', text: aiChatInput.value })
+  aiChatMessages.value.push({ role: "user", text: aiChatInput.value });
 
   // TODO: Connect to AI API
   aiChatMessages.value.push({
-    role: 'assistant',
-    text: 'Course generation mockup — AI integration coming soon.',
-  })
+    role: "assistant",
+    text: "Course generation mockup — AI integration coming soon.",
+  });
 
-  aiChatInput.value = ''
+  aiChatInput.value = "";
 }
 
 function handleAIFillCourse() {
@@ -447,253 +514,556 @@ function handleAIFillCourse() {
 }
 
 function handleLogout() {
-  auth.logout()
+  auth.logout();
 
-  router.push('/')
+  router.push("/");
 }
 
 function handleAddGenre(genre: string) {
-  const isAlreadyAdded = store.activeCourse?.genres.includes(genre)
+  const isAlreadyAdded = store.activeCourse?.genres.includes(genre);
 
   if (store.activeCourse && !isAlreadyAdded) {
-    store.activeCourse.genres.push(genre)
+    store.activeCourse.genres.push(genre);
   }
 }
 
 function handleRemoveGenre(genreIndex: number) {
   if (store.activeCourse) {
-    store.activeCourse.genres.splice(genreIndex, 1)
+    store.activeCourse.genres.splice(genreIndex, 1);
   }
 }
 
 function handleAddRelevantFor() {
   if (store.activeCourse) {
-    store.activeCourse['relevant-for'].push('')
+    store.activeCourse["relevant-for"].push("");
   }
 }
 
 function handleRemoveRelevantFor(itemIndex: number) {
   if (store.activeCourse) {
-    store.activeCourse['relevant-for'].splice(itemIndex, 1)
+    store.activeCourse["relevant-for"].splice(itemIndex, 1);
   }
 }
 
 function handleAddSource() {
-  aiSources.value.push('')
+  aiSources.value.push("");
 }
 
 function handleRemoveSource(sourceIndex: number) {
-  const hasMultiple = aiSources.value.length > 1
+  const hasMultiple = aiSources.value.length > 1;
 
   if (hasMultiple) {
-    aiSources.value.splice(sourceIndex, 1)
+    aiSources.value.splice(sourceIndex, 1);
   }
 }
 
 function handleCreateNewCourse() {
   // TODO: Connect to course creation
-  showCourseSelectDialog.value = false
+  showCourseSelectDialog.value = false;
+}
+
+function handleFileUpload(event: Event) {
+  const input = event.target as HTMLInputElement;
+  const file = input.files?.[0];
+  const hasNoFile = !file;
+
+  if (hasNoFile) {
+    return;
+  }
+
+  const reader = new FileReader();
+
+  reader.onload = () => {
+    importTextInput.value = reader.result as string;
+  };
+
+  reader.readAsText(file);
+  input.value = "";
+}
+
+function handleImportFromText() {
+  const hasNoInput = importTextInput.value.trim() === "";
+
+  if (hasNoInput) {
+    return;
+  }
+
+  const swipes = parsePackageText(importTextInput.value);
+  const hasNoSwipes = swipes.length === 0;
+
+  if (hasNoSwipes) {
+    return;
+  }
+
+  const packageCount = store.activeSegment?.lessons.length ?? 0;
+  const title = `Package ${packageCount + 1}`;
+
+  store.importPackageFromSwipes(title, swipes);
+
+  importTextInput.value = "";
+  showFormatGuide.value = false;
+  showImportTextDialog.value = false;
+}
+
+function handleCourseFileUpload(event: Event) {
+  const input = event.target as HTMLInputElement;
+  const file = input.files?.[0];
+  const hasNoFile = !file;
+
+  if (hasNoFile) {
+    return;
+  }
+
+  const reader = new FileReader();
+
+  reader.onload = () => {
+    importCourseInput.value = reader.result as string;
+  };
+
+  reader.readAsText(file);
+  input.value = "";
+}
+
+function handleImportCourse() {
+  const hasNoInput = importCourseInput.value.trim() === "";
+
+  if (hasNoInput) {
+    return;
+  }
+
+  const course = parseCourseText(importCourseInput.value);
+
+  store.importCourse(course);
+
+  importCourseInput.value = "";
+  showImportCourseDialog.value = false;
 }
 
 function toggleJsonView() {
-  showJsonView.value = !showJsonView.value
+  showJsonView.value = !showJsonView.value;
 }
 
 function isSegmentSelected(segmentIndex: number): boolean {
-  return store.activeSegmentIndex === segmentIndex
+  return store.activeSegmentIndex === segmentIndex;
 }
 
 function isPackageSelected(packageIndex: number): boolean {
-  return store.activePackageIndex === packageIndex
+  return store.activePackageIndex === packageIndex;
 }
 
 function isSwipeSelected(swipeIndex: number): boolean {
-  return store.activeSwipeIndex === swipeIndex
+  return store.activeSwipeIndex === swipeIndex;
 }
 
 function getSwipeItemClass(isSelected: boolean): string {
   if (isSelected) {
-    return ''
+    return "";
   }
 
-  return 'hover:bg-muted'
+  return "hover:bg-muted";
 }
 
-function getSwipeItemStyle(swipe: any, isSelected: boolean): Record<string, string> {
+function getSwipeItemStyle(
+  swipe: any,
+  isSelected: boolean,
+): Record<string, string> {
   if (!isSelected) {
-    return {}
+    return {};
   }
 
-  const color = ENTITY_TYPE_COLORS[swipe['entity-type'] as EntityType]
+  const color = ENTITY_TYPE_COLORS[swipe["entity-type"] as EntityType];
 
   return {
-    backgroundColor: color + '15',
+    backgroundColor: `color-mix(in srgb, ${color} 8%, transparent)`,
     color: color,
-  }
+  };
 }
 
 function getNavItemClass(isSelected: boolean): string {
   if (isSelected) {
-    return ''
+    return "";
   }
 
-  return 'hover:bg-muted'
+  return "hover:bg-muted";
 }
 
 function getNavItemStyle(isSelected: boolean): Record<string, string> {
   if (!isSelected) {
-    return {}
+    return {};
   }
 
   return {
-    backgroundColor: courseColor.value + '15',
-    color: '#ffffff',
-  }
+    backgroundColor: `color-mix(in srgb, ${courseColor.value} 8%, transparent)`,
+    color: courseColor.value,
+  };
 }
 </script>
 
 <template>
   <div class="h-screen flex flex-col bg-background">
     <!-- Top bar -->
-    <header class="h-14 border-b border-border shrink-0 relative overflow-hidden">
-      <VantaBackground v-if="hasActiveCourse" :color="courseColor" />
-      <div class="relative z-10 h-full flex items-center justify-between px-6">
-      <div class="flex items-center gap-3">
-        <!-- Logo -->
-        <Dialog v-model:open="showCourseSelectDialog">
-          <DialogTrigger as-child>
-            <button class="text-lg font-bold text-white cursor-pointer hover:opacity-80 transition-opacity drop-shadow-sm">Lockie</button>
-          </DialogTrigger>
-          <DialogContent class="max-w-sm">
-            <DialogHeader>
-              <DialogTitle>Courses</DialogTitle>
-            </DialogHeader>
-            <div class="flex flex-col gap-2 pt-2">
-              <div
-                v-for="(course, courseIndex) in store.courseData.courses"
-                :key="courseIndex"
-                class="px-4 py-3 rounded-lg border border-border cursor-pointer hover:bg-accent transition-colors"
-                @click="store.selectCourse(courseIndex); showCourseSelectDialog = false"
+    <header class="h-14 border-b border-border shrink-0 bg-header">
+      <div class="h-full flex items-center justify-between px-6">
+        <div class="flex items-center gap-3">
+          <!-- Logo -->
+          <Dialog v-model:open="showCourseSelectDialog">
+            <DialogTrigger as-child>
+              <Button
+                variant="ghost"
+                class="text-lg font-bold text-header-foreground hover:bg-header-foreground/10 px-2"
+                >Lockie</Button
               >
-                <div class="font-medium text-sm">{{ course.title }}</div>
-                <div class="text-xs text-muted-foreground">{{ course.author }}</div>
-              </div>
-              <Separator />
-              <Button variant="outline" class="w-full" @click="handleCreateNewCourse"><PlusCircle class="h-4 w-4" /></Button>
-            </div>
-          </DialogContent>
-        </Dialog>
-        <span class="text-sm text-white/60">for Readlock</span>
-        <span v-if="hasActiveCourse" class="text-[10px] text-white/40">{{ store.activeCourse!.segments.length }} segments · {{ totalPackageCount }} packages · {{ totalSwipeCount }} swipes</span>
-      </div>
+            </DialogTrigger>
+            <DialogContent class="max-w-sm">
+              <DialogHeader>
+                <DialogTitle>Courses</DialogTitle>
+              </DialogHeader>
+              <div class="flex flex-col gap-2">
+                <!-- Course list -->
+                <div
+                  v-for="(course, courseIndex) in store.courseData.courses"
+                  :key="courseIndex"
+                  class="flex items-center gap-2 px-4 py-3 rounded-lg border border-border cursor-pointer hover:bg-accent transition-colors"
+                  @click="
+                    store.selectCourse(courseIndex);
+                    showCourseSelectDialog = false;
+                  "
+                >
+                  <div class="flex-1 min-w-0">
+                    <div class="font-medium text-sm">{{ course.title }}</div>
+                    <div class="text-xs text-muted-foreground">
+                      {{ course.author }}
+                    </div>
+                  </div>
 
-      <div class="flex items-center gap-2">
-        <Dialog v-model:open="showCourseConfigDialog">
-          <DialogTrigger as-child>
-            <Button v-if="hasActiveCourse" variant="ghost" size="icon" class="text-white/80 hover:text-white hover:bg-white/10"><Settings class="h-4 w-4" /></Button>
-          </DialogTrigger>
-          <DialogContent class="max-w-lg max-h-[80vh] overflow-auto">
-            <DialogHeader><DialogTitle>Course Settings</DialogTitle></DialogHeader>
-            <div v-if="hasActiveCourse" class="flex flex-col gap-5 pt-2">
-              <div class="flex flex-col gap-1.5">
-                <label class="text-sm text-muted-foreground">Title</label>
-                <Input v-model="store.activeCourse!.title" />
-              </div>
-              <div class="flex flex-col gap-1.5">
-                <label class="text-sm text-muted-foreground">Author</label>
-                <Input v-model="store.activeCourse!.author" />
-              </div>
-              <div class="flex flex-col gap-1.5">
-                <label class="text-sm text-muted-foreground">Description</label>
-                <Textarea v-model="store.activeCourse!.description" class="min-h-[80px]" />
-              </div>
-              <div class="flex flex-col gap-1.5">
-                <label class="text-sm text-muted-foreground">Theme Color</label>
-                <div class="flex items-center gap-3">
-                  <input type="color" :value="store.activeCourse!.color" class="w-10 h-10 rounded-md border border-border cursor-pointer" @input="(e: any) => store.activeCourse!.color = e.target.value" />
-                  <Input v-model="store.activeCourse!.color" class="flex-1" />
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    class="h-7 w-7 shrink-0 text-muted-foreground hover:text-destructive"
+                    @click.stop="store.trashCourse(courseIndex)"
+                  >
+                    <Trash2 class="h-3.5 w-3.5" />
+                  </Button>
                 </div>
+
+                <Separator />
+
+                <Button
+                  variant="outline"
+                  class="w-full"
+                  @click="handleCreateNewCourse"
+                ><PlusCircle class="h-4 w-4" /></Button>
+
+                <!-- Trash section -->
+                <template v-if="store.trashedCourses.length > 0">
+                  <Separator />
+
+                  <div class="text-xs text-muted-foreground font-medium px-1">
+                    Trash
+                  </div>
+
+                  <div
+                    v-for="(course, trashIndex) in store.trashedCourses"
+                    :key="`trash-${trashIndex}`"
+                    class="flex items-center gap-2 px-4 py-2 rounded-lg border border-border border-dashed opacity-60"
+                  >
+                    <div class="flex-1 min-w-0">
+                      <div class="font-medium text-sm">{{ course.title }}</div>
+                    </div>
+
+                    <!-- Restore -->
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      class="h-7 w-7 shrink-0 text-muted-foreground hover:text-foreground"
+                      @click="store.restoreCourse(trashIndex)"
+                    >
+                      <RotateCcw class="h-3.5 w-3.5" />
+                    </Button>
+
+                    <!-- Permanent delete -->
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      class="h-7 w-7 shrink-0 text-muted-foreground hover:text-destructive"
+                      @click="store.permanentlyDeleteCourse(trashIndex)"
+                    >
+                      <X class="h-3.5 w-3.5" />
+                    </Button>
+                  </div>
+                </template>
               </div>
-              <div class="flex flex-col gap-2">
-                <label class="text-sm text-muted-foreground">Relevant For</label>
-                <div v-for="(_, itemIndex) in store.activeCourse!['relevant-for']" :key="itemIndex" class="flex gap-2">
-                  <Input v-model="store.activeCourse!['relevant-for'][itemIndex]" class="flex-1 h-9" />
-                  <Button variant="ghost" size="icon" class="shrink-0 h-8 w-8 hover:bg-destructive/10 hover:text-destructive" @click="handleRemoveRelevantFor(Number(itemIndex))"><X class="h-3.5 w-3.5" /></Button>
+            </DialogContent>
+          </Dialog>
+          <span class="text-sm text-header-foreground/60">for Readlock</span>
+          <span v-if="hasActiveCourse" class="text-xs text-header-foreground/40"
+            >{{ store.activeCourse!.segments.length }} segments ·
+            {{ totalPackageCount }} packages ·
+            {{ totalSwipeCount }} swipes</span
+          >
+        </div>
+
+        <div class="flex items-center gap-2">
+          <Button
+            variant="ghost"
+            class="text-xs text-header-foreground/60 hover:text-header-foreground hover:bg-header-foreground/10"
+            @click="showImportCourseDialog = true"
+          >
+            Import
+          </Button>
+          <Separator orientation="vertical" class="!h-5" />
+          <Dialog v-model:open="showCourseConfigDialog">
+            <DialogTrigger as-child>
+              <Button
+                v-if="hasActiveCourse"
+                variant="ghost"
+                size="icon"
+                class="text-header-foreground/80 hover:text-header-foreground hover:bg-header-foreground/10"
+                ><Settings class="h-4 w-4"
+              /></Button>
+            </DialogTrigger>
+            <DialogContent class="max-w-lg max-h-[85vh] overflow-auto">
+              <DialogHeader
+                ><DialogTitle>Course Settings</DialogTitle></DialogHeader
+              >
+              <div v-if="hasActiveCourse" class="flex flex-col gap-4">
+                <div class="flex flex-col gap-2">
+                  <label class="text-sm text-muted-foreground">Title</label>
+                  <Input v-model="store.activeCourse!.title" />
                 </div>
-                <Button variant="outline" class="w-full" @click="handleAddRelevantFor"><PlusCircle class="h-4 w-4" /></Button>
+                <div class="flex flex-col gap-2">
+                  <label class="text-sm text-muted-foreground">Author</label>
+                  <Input v-model="store.activeCourse!.author" />
+                </div>
+                <div class="flex flex-col gap-2">
+                  <label class="text-sm text-muted-foreground"
+                    >Description</label
+                  >
+                  <Textarea
+                    v-model="store.activeCourse!.description"
+                    class="min-h-20"
+                  />
+                </div>
+                <div class="flex flex-col gap-2">
+                  <label class="text-sm text-muted-foreground"
+                    >Theme Color</label
+                  >
+                  <div class="flex items-center gap-3">
+                    <input
+                      type="color"
+                      :value="store.activeCourse!.color"
+                      class="w-10 h-10 rounded-md border border-border cursor-pointer"
+                      @input="
+                        (e: any) => (store.activeCourse!.color = e.target.value)
+                      "
+                    />
+                    <Input v-model="store.activeCourse!.color" class="flex-1" />
+                  </div>
+                </div>
+                <div class="flex flex-col gap-2">
+                  <label class="text-sm text-muted-foreground"
+                    >Relevant For</label
+                  >
+                  <div
+                    v-for="(_, itemIndex) in store.activeCourse![
+                      'relevant-for'
+                    ]"
+                    :key="itemIndex"
+                    class="flex gap-2"
+                  >
+                    <Input
+                      v-model="store.activeCourse!['relevant-for'][itemIndex]"
+                      class="flex-1 h-9"
+                    />
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      class="shrink-0 h-8 w-8 hover:bg-muted hover:text-foreground"
+                      @click="handleRemoveRelevantFor(Number(itemIndex))"
+                      ><X class="h-4 w-4"
+                    /></Button>
+                  </div>
+                  <Button
+                    variant="outline"
+                    class="w-full"
+                    @click="handleAddRelevantFor"
+                    ><PlusCircle class="h-4 w-4"
+                  /></Button>
+                </div>
+                <div class="flex flex-col gap-2">
+                  <label class="text-sm text-muted-foreground">Genres</label>
+                  <div class="flex flex-wrap gap-2">
+                    <Badge
+                      v-for="(genre, genreIndex) in store.activeCourse!.genres"
+                      :key="genre"
+                      variant="secondary"
+                      class="cursor-pointer hover:bg-muted gap-1"
+                      @click="handleRemoveGenre(genreIndex)"
+                      >{{ genre }} <X class="h-3 w-3"
+                    /></Badge>
+                  </div>
+                  <div class="flex flex-wrap gap-2 pt-1">
+                    <Badge
+                      v-for="genre in availableGenres"
+                      :key="genre"
+                      variant="outline"
+                      class="cursor-pointer hover:bg-accent"
+                      @click="handleAddGenre(genre)"
+                      >+ {{ genre }}</Badge
+                    >
+                  </div>
+                </div>
+                <Separator />
+                <Button
+                  variant="outline"
+                  class="w-full"
+                  @click="handleAIFillCourse"
+                  ><Sparkles class="h-4 w-4" /> Fill</Button
+                >
               </div>
-              <div class="flex flex-col gap-2">
-                <label class="text-sm text-muted-foreground">Genres</label>
-                <div class="flex flex-wrap gap-2">
-                  <Badge v-for="(genre, genreIndex) in store.activeCourse!.genres" :key="genre" variant="secondary" class="cursor-pointer hover:bg-destructive/20 gap-1" @click="handleRemoveGenre(genreIndex)">{{ genre }} <X class="h-3 w-3" /></Badge>
-                </div>
-                <div class="flex flex-wrap gap-1.5 pt-1">
-                  <Badge v-for="genre in availableGenres" :key="genre" variant="outline" class="cursor-pointer hover:bg-accent" @click="handleAddGenre(genre)">+ {{ genre }}</Badge>
-                </div>
-              </div>
-              <Separator />
-              <Button variant="outline" class="w-full" @click="handleAIFillCourse">AI Fill</Button>
-            </div>
-          </DialogContent>
-        </Dialog>
-        <Button variant="ghost" size="icon" class="text-white/80 hover:text-white hover:bg-white/10" @click="handleExport"><Download class="h-4 w-4" /></Button>
-        <Button variant="ghost" size="icon" class="text-white/80 hover:text-white hover:bg-white/10" @click="handleLogout"><LogOut class="h-4 w-4" /></Button>
-      </div>
+            </DialogContent>
+          </Dialog>
+          <Button
+            variant="ghost"
+            size="icon"
+            class="text-header-foreground/80 hover:text-header-foreground hover:bg-header-foreground/10"
+            :class="showJsonView ? 'bg-header-foreground/10' : ''"
+            @click="toggleJsonView"
+            ><Code class="h-4 w-4"
+          /></Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            class="text-header-foreground/80 hover:text-header-foreground hover:bg-header-foreground/10"
+            @click="handleExport"
+            ><Download class="h-4 w-4"
+          /></Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            class="text-header-foreground/80 hover:text-header-foreground hover:bg-header-foreground/10"
+            @click="handleLogout"
+            ><LogOut class="h-4 w-4"
+          /></Button>
+        </div>
       </div>
     </header>
 
     <!-- JSON View -->
     <div v-if="showJsonView" class="flex flex-1 overflow-hidden">
       <div class="flex-1 flex flex-col overflow-hidden border-r border-border">
-        <div class="p-4 border-b border-border flex items-center gap-4 shrink-0">
+        <div
+          class="p-4 border-b border-border flex items-center gap-4 shrink-0"
+        >
           <span class="text-sm font-medium">Course JSON</span>
-          <span v-if="hasActiveCourse" class="text-[10px] text-muted-foreground">{{ (formattedJson.length / 1024).toFixed(1) }} KB</span>
+          <span v-if="hasActiveCourse" class="text-xs text-muted-foreground"
+            >{{ (formattedJson.length / 1024).toFixed(1) }} KB</span
+          >
         </div>
-        <div class="flex-1 overflow-auto [&_pre]:p-6 [&_pre]:text-xs [&_pre]:leading-relaxed [&_pre]:min-h-full [&_pre]:overflow-x-auto [&_code]:whitespace-pre" v-html="highlightedJson" />
-        <div class="p-4 border-t border-border flex gap-2 shrink-0">
-          <Button variant="outline" class="w-full h-9 text-xs" @click="toggleJsonView">Back to Editor</Button>
-        </div>
+        <ScrollArea class="flex-1 h-0">
+          <div
+            class="[&_pre]:p-6 [&_pre]:text-xs [&_pre]:leading-relaxed [&_pre]:min-h-full [&_pre]:overflow-x-auto [&_code]:whitespace-pre"
+            v-html="highlightedJson"
+          />
+        </ScrollArea>
       </div>
 
       <div class="w-[420px] flex flex-col shrink-0">
-        <div class="p-4 border-b border-border flex flex-col gap-4 shrink-0 overflow-auto max-h-[50vh]">
-          <span class="text-sm font-medium">AI Course Creator</span>
+        <div
+          class="p-4 border-b border-border flex flex-col gap-4 shrink-0 overflow-auto max-h-[50vh]"
+        >
+          <span class="text-sm font-medium">Course Creator</span>
           <div class="flex flex-col gap-2">
             <label class="text-xs text-muted-foreground">Sources</label>
-            <div v-for="(_, sourceIndex) in aiSources" :key="sourceIndex" class="flex gap-2">
-              <Input v-model="aiSources[sourceIndex]" placeholder="Book, URL, or topic..." class="flex-1 h-9" />
-              <Button v-if="aiSources.length > 1" variant="ghost" size="icon" class="shrink-0 h-8 w-8 hover:bg-destructive/10 hover:text-destructive" @click="handleRemoveSource(sourceIndex)"><X class="h-3.5 w-3.5" /></Button>
+            <div
+              v-for="(_, sourceIndex) in aiSources"
+              :key="sourceIndex"
+              class="flex gap-2"
+            >
+              <Input
+                v-model="aiSources[sourceIndex]"
+                placeholder="Book, URL, or topic..."
+                class="flex-1 h-9"
+              />
+              <Button
+                v-if="aiSources.length > 1"
+                variant="ghost"
+                size="icon"
+                class="shrink-0 h-8 w-8 hover:bg-muted hover:text-foreground"
+                @click="handleRemoveSource(sourceIndex)"
+                ><X class="h-4 w-4"
+              /></Button>
             </div>
-            <Button variant="outline" class="w-full" @click="handleAddSource"><PlusCircle class="h-4 w-4" /></Button>
+            <Button variant="outline" class="w-full" @click="handleAddSource"
+              ><PlusCircle class="h-4 w-4"
+            /></Button>
           </div>
           <div class="flex gap-3">
-            <div class="flex flex-col gap-1.5 flex-1">
+            <div class="flex flex-col gap-2 flex-1">
               <label class="text-xs text-muted-foreground">Segments</label>
-              <Input v-model.number="aiSegmentCount" type="number" min="1" max="10" class="h-9" />
+              <Input
+                v-model.number="aiSegmentCount"
+                type="number"
+                min="1"
+                max="10"
+                class="h-9"
+              />
             </div>
-            <div class="flex flex-col gap-1.5 flex-1">
+            <div class="flex flex-col gap-2 flex-1">
               <label class="text-xs text-muted-foreground">Lessons/seg</label>
-              <Input v-model.number="aiLessonsPerSegment" type="number" min="1" max="20" class="h-9" />
+              <Input
+                v-model.number="aiLessonsPerSegment"
+                type="number"
+                min="1"
+                max="20"
+                class="h-9"
+              />
             </div>
-            <div class="flex flex-col gap-1.5 flex-1">
+            <div class="flex flex-col gap-2 flex-1">
               <label class="text-xs text-muted-foreground">Tone</label>
               <Input v-model="aiTone" class="h-9" />
             </div>
           </div>
-          <div class="flex flex-col gap-1.5">
+          <div class="flex flex-col gap-2">
             <label class="text-xs text-muted-foreground">System Prompt</label>
-            <Textarea v-model="aiSystemPrompt" placeholder="You are an expert course designer..." class="min-h-[60px] text-xs" />
+            <Textarea
+              v-model="aiSystemPrompt"
+              placeholder="You are an expert course designer..."
+              class="min-h-16 text-xs"
+            />
           </div>
         </div>
         <div class="flex-1 overflow-auto p-4 flex flex-col gap-3">
-          <div v-if="aiChatMessages.length === 0" class="flex-1 flex items-center justify-center text-muted-foreground text-sm text-center px-8">Describe what to generate.</div>
-          <div v-for="(message, messageIndex) in aiChatMessages" :key="messageIndex" class="flex flex-col gap-1">
-            <span class="text-[10px] uppercase tracking-wider text-muted-foreground">{{ message.role }}</span>
-            <div class="text-sm rounded-lg px-3 py-2" :class="message.role === 'user' ? 'bg-primary/10' : 'bg-muted'">{{ message.text }}</div>
+          <div
+            v-if="aiChatMessages.length === 0"
+            class="flex-1 flex items-center justify-center text-muted-foreground text-sm text-center px-8"
+          >
+            Describe what to generate.
+          </div>
+          <div
+            v-for="(message, messageIndex) in aiChatMessages"
+            :key="messageIndex"
+            class="flex flex-col gap-1"
+          >
+            <span
+              class="text-xs uppercase tracking-wider text-muted-foreground"
+              >{{ message.role }}</span
+            >
+            <div
+              class="text-sm rounded-lg px-3 py-2"
+              :class="message.role === 'user' ? 'bg-primary/10' : 'bg-muted'"
+            >
+              {{ message.text }}
+            </div>
           </div>
         </div>
         <div class="p-4 border-t border-border flex gap-2 shrink-0">
-          <Input v-model="aiChatInput" placeholder="Describe the course..." class="flex-1 h-9" @keydown.enter="handleAISendMessage" />
+          <Input
+            v-model="aiChatInput"
+            placeholder="Describe the course..."
+            class="flex-1 h-9"
+            @keydown.enter="handleAISendMessage"
+          />
           <Button class="h-9" @click="handleAISendMessage">Send</Button>
         </div>
       </div>
@@ -702,155 +1072,317 @@ function getNavItemStyle(isSelected: boolean): Record<string, string> {
     <!-- Main editor layout -->
     <div v-else class="flex flex-1 overflow-hidden">
       <!-- Left sidebar -->
-      <aside class="w-72 border-r border-border flex flex-col shrink-0 overflow-hidden">
+      <aside
+        class="w-72 border-r border-border flex flex-col shrink-0 overflow-hidden"
+      >
         <ScrollArea class="flex-1 h-0">
           <div class="p-5 flex flex-col gap-5">
             <!-- Segments -->
-            <div v-if="hasActiveCourse" class="flex flex-col gap-2 bg-muted/40 rounded-lg p-3">
+            <div v-if="hasActiveCourse" class="flex flex-col gap-2">
               <div class="flex items-center justify-between">
-                <label class="text-xs text-muted-foreground uppercase tracking-wider flex items-center gap-1.5">
-                  <span v-if="activePanel === 'segments'" class="w-1.5 h-1.5 rounded-full bg-primary shrink-0" />
+                <label
+                  class="text-xs text-muted-foreground uppercase tracking-wider flex items-center gap-2"
+                >
                   Segments
+                  <span
+                    class="text-xs normal-case tracking-normal px-2 py-1 rounded-full"
+                    :class="activePanel === 'segments'
+                      ? 'bg-foreground text-background'
+                      : ''
+                      "
+                    >{{ store.activeSegmentIndex + 1 }}/{{
+                      store.activeCourse!.segments.length
+                    }}</span
+                  >
                 </label>
 
-                <div class="flex items-center gap-0.5">
-                  <!-- Segment move controls -->
+                <div class="flex items-center gap-1">
                   <template v-if="hasActiveSegment">
-                    <Button variant="ghost" size="icon" class="h-8 w-8" @click="store.moveSegmentUp()"><ChevronUp class="h-4 w-4" /></Button>
-                    <Button variant="ghost" size="icon" class="h-8 w-8" @click="store.moveSegmentDown()"><ChevronDown class="h-4 w-4" /></Button>
-
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      class="h-8 w-8"
+                      @click="store.moveSegmentUp()"
+                      ><ChevronUp class="h-4 w-4"
+                    /></Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      class="h-8 w-8"
+                      @click="store.moveSegmentDown()"
+                      ><ChevronDown class="h-4 w-4"
+                    /></Button>
                   </template>
 
-                  <Button variant="ghost" size="icon" class="h-8 w-8" @click="store.addSegment()"><PlusCircle class="h-4 w-4" /></Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    class="h-8 w-8"
+                    @click="store.addSegment()"
+                    ><PlusCircle class="h-4 w-4"
+                  /></Button>
                 </div>
               </div>
 
-              <TransitionGroup tag="div" name="nav-list" class="flex flex-col gap-0.5">
-              <div
-                v-for="(segment, segmentIndex) in store.activeCourse!.segments"
-                :key="segment['segment-id']"
-                class="text-sm px-4 py-3 rounded-lg cursor-pointer transition-colors flex items-center gap-2 group/seg"
-                :class="getNavItemClass(isSegmentSelected(segmentIndex))"
-                :style="getNavItemStyle(isSegmentSelected(segmentIndex))"
-                @click="(e: MouseEvent) => { if (e.shiftKey) { openSegmentSettingsIndex = segmentIndex } else { store.selectSegment(segmentIndex); activePanel = 'segments' } }"
-                @contextmenu.prevent="openSegmentSettingsIndex = segmentIndex"
+              <TransitionGroup
+                tag="div"
+                name="nav-list"
+                class="flex flex-col gap-1"
               >
-                <span class="flex-1 truncate select-none">{{ segment['segment-title'] }}</span>
+                <div
+                  v-for="(segment, segmentIndex) in store.activeCourse!
+                    .segments"
+                  :key="segment['segment-id']"
+                  class="text-sm px-4 py-3 rounded-lg cursor-pointer transition-colors flex items-center gap-2 group/seg"
+                  :class="getNavItemClass(isSegmentSelected(segmentIndex))"
+                  :style="getNavItemStyle(isSegmentSelected(segmentIndex))"
+                  @click="
+                    (e: MouseEvent) => {
+                      if (e.shiftKey) {
+                        openSegmentSettingsIndex = segmentIndex;
+                      } else {
+                        store.selectSegment(segmentIndex);
+                        activePanel = 'segments';
+                      }
+                    }
+                  "
+                  @contextmenu.prevent="openSegmentSettingsIndex = segmentIndex"
+                >
+                  <span class="flex-1 truncate select-none">{{
+                    segment["segment-title"]
+                  }}</span>
 
-                <!-- Segment settings popover (shift+click) -->
-                <Popover :open="openSegmentSettingsIndex === segmentIndex" @update:open="(val: boolean) => { if (!val) openSegmentSettingsIndex = null }">
-                  <PopoverTrigger as-child><span /></PopoverTrigger>
-                  <PopoverContent side="right" :side-offset="8" class="w-64">
-                    <div class="flex flex-col gap-3">
-                      <div class="flex flex-col gap-1.5">
-                        <label class="text-xs text-muted-foreground">Title</label>
-                        <Input v-model="segment['segment-title']" class="h-8 text-sm" />
+                  <Popover
+                    :open="openSegmentSettingsIndex === segmentIndex"
+                    @update:open="
+                      (val: boolean) => {
+                        if (!val) openSegmentSettingsIndex = null;
+                      }
+                    "
+                  >
+                    <PopoverTrigger as-child><span /></PopoverTrigger>
+                    <PopoverContent side="right" :side-offset="8" class="w-64">
+                      <div class="flex flex-col gap-3">
+                        <div class="flex flex-col gap-2">
+                          <label class="text-xs text-muted-foreground"
+                            >Title</label
+                          >
+                          <Input
+                            v-model="segment['segment-title']"
+                            variant="compact"
+                          />
+                        </div>
+
+                        <div class="flex flex-col gap-2">
+                          <label class="text-xs text-muted-foreground"
+                            >Symbol</label
+                          >
+                          <Input
+                            v-model="segment['segment-symbol']"
+                            variant="compact"
+                          />
+                        </div>
+
+                        <AlertDialog>
+                          <AlertDialogTrigger as-child>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              class="w-full mt-1 hover:bg-muted hover:text-foreground hover:border-border"
+                            >
+                              <Trash2 class="h-4 w-4" />
+                              Delete Segment
+                            </Button>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent>
+                            <AlertDialogHeader>
+                              <AlertDialogTitle
+                                >Delete segment?</AlertDialogTitle
+                              >
+                              <AlertDialogDescription
+                                >This will delete "{{
+                                  segment["segment-title"]
+                                }}" and all its
+                                packages.</AlertDialogDescription
+                              >
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                              <AlertDialogCancel>Cancel</AlertDialogCancel>
+                              <AlertDialogAction
+                                class="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                                @click="
+                                  store.removeSegment(segmentIndex);
+                                openSegmentSettingsIndex = null;
+                                "
+                                >Delete</AlertDialogAction
+                              >
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
                       </div>
-
-                      <div class="flex flex-col gap-1.5">
-                        <label class="text-xs text-muted-foreground">Symbol</label>
-                        <Input v-model="segment['segment-symbol']" class="h-8 text-sm" />
-                      </div>
-
-                      <AlertDialog>
-                        <AlertDialogTrigger as-child>
-                          <Button variant="outline" size="sm" class="w-full hover:bg-destructive/10 hover:text-destructive hover:border-destructive/30">
-                            <Trash2 class="h-3.5 w-3.5" />
-                            Delete Segment
-                          </Button>
-                        </AlertDialogTrigger>
-                        <AlertDialogContent>
-                          <AlertDialogHeader>
-                            <AlertDialogTitle>Delete segment?</AlertDialogTitle>
-                            <AlertDialogDescription>This will delete "{{ segment['segment-title'] }}" and all its packages.</AlertDialogDescription>
-                          </AlertDialogHeader>
-                          <AlertDialogFooter>
-                            <AlertDialogCancel>Cancel</AlertDialogCancel>
-                            <AlertDialogAction class="bg-destructive text-destructive-foreground hover:bg-destructive/90" @click="store.removeSegment(segmentIndex); openSegmentSettingsIndex = null">Delete</AlertDialogAction>
-                          </AlertDialogFooter>
-                        </AlertDialogContent>
-                      </AlertDialog>
-                    </div>
-                  </PopoverContent>
-                </Popover>
-              </div>
+                    </PopoverContent>
+                  </Popover>
+                </div>
               </TransitionGroup>
             </div>
 
             <Separator v-if="hasActiveSegment" />
 
             <!-- Packages -->
-            <div v-if="hasActiveSegment" class="flex flex-col gap-2" :class="store.activeSegment!.lessons.length > 0 ? 'bg-muted/40 rounded-lg p-3' : ''"
->
+            <div v-if="hasActiveSegment" class="flex flex-col gap-2">
               <div class="flex items-center justify-between">
-                <label class="text-xs text-muted-foreground uppercase tracking-wider flex items-center gap-1.5">
-
+                <label
+                  class="text-xs text-muted-foreground uppercase tracking-wider flex items-center gap-2"
+                >
                   Packages
                   <span
-                    class="text-[10px] normal-case tracking-normal px-1.5 py-0.5 rounded-full"
-                    :class="activePanel === 'packages' ? 'bg-foreground text-background' : ''"
-                  >{{ store.activePackageIndex + 1 }}/{{ store.activeSegment!.lessons.length }}</span>
+                    class="text-xs normal-case tracking-normal px-2 py-1 rounded-full"
+                    :class="activePanel === 'packages'
+                      ? 'bg-foreground text-background'
+                      : ''
+                      "
+                    >{{ store.activePackageIndex + 1 }}/{{
+                      store.activeSegment!.lessons.length
+                    }}</span
+                  >
                 </label>
 
-                <div class="flex items-center gap-0.5">
-
-                  <Button v-if="hasActivePackage" variant="ghost" size="icon" class="h-8 w-8" @click="store.movePackageUp()"><ChevronUp class="h-4 w-4" /></Button>
-                  <Button v-if="hasActivePackage" variant="ghost" size="icon" class="h-8 w-8" @click="store.movePackageDown()"><ChevronDown class="h-4 w-4" /></Button>
-                  <Button variant="ghost" size="icon" class="h-8 w-8" @click="store.addPackage()"><PlusCircle class="h-4 w-4" /></Button>
+                <div class="flex items-center gap-1">
+                  <Button
+                    v-if="hasActivePackage"
+                    variant="ghost"
+                    size="icon"
+                    class="h-8 w-8"
+                    @click="store.movePackageUp()"
+                    ><ChevronUp class="h-4 w-4"
+                  /></Button>
+                  <Button
+                    v-if="hasActivePackage"
+                    variant="ghost"
+                    size="icon"
+                    class="h-8 w-8"
+                    @click="store.movePackageDown()"
+                    ><ChevronDown class="h-4 w-4"
+                  /></Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    class="h-8 w-8"
+                    @click="store.addPackage()"
+                    ><PlusCircle class="h-4 w-4"
+                  /></Button>
                 </div>
               </div>
 
-              <TransitionGroup :key="store.activeSegmentIndex" tag="div" name="nav-list" class="flex flex-col gap-0.5">
-              <div
-                v-for="(pkg, packageIndex) in store.activeSegment!.lessons"
-                :key="pkg['lesson-id']"
-                :data-package-index="packageIndex"
-                class="text-sm px-4 py-3 rounded-lg cursor-pointer transition-colors flex items-center gap-2 group/pkg"
-                :class="getNavItemClass(isPackageSelected(packageIndex))"
-                :style="getNavItemStyle(isPackageSelected(packageIndex))"
-                @click="(e: MouseEvent) => { if (e.shiftKey) { openPackageSettingsIndex = packageIndex } else { store.selectPackage(packageIndex); activePanel = 'swipes' } }"
-                @contextmenu.prevent="openPackageSettingsIndex = packageIndex"
+              <TransitionGroup
+                :key="store.activeSegmentIndex"
+                tag="div"
+                name="nav-list"
+                class="flex flex-col gap-1"
               >
-                <span class="flex-1 truncate select-none">{{ pkg.title }}</span>
+                <div
+                  v-for="(pkg, packageIndex) in store.activeSegment!.lessons"
+                  :key="pkg['lesson-id']"
+                  :data-package-index="packageIndex"
+                  class="text-sm px-4 py-3 rounded-lg cursor-pointer transition-colors flex items-center gap-2 group/pkg"
+                  :class="getNavItemClass(isPackageSelected(packageIndex))"
+                  :style="getNavItemStyle(isPackageSelected(packageIndex))"
+                  @click="
+                    (e: MouseEvent) => {
+                      if (e.shiftKey) {
+                        openPackageSettingsIndex = packageIndex;
+                      } else {
+                        store.selectPackage(packageIndex);
+                        activePanel = 'swipes';
+                      }
+                    }
+                  "
+                  @contextmenu.prevent="openPackageSettingsIndex = packageIndex"
+                >
+                  <span class="flex-1 truncate select-none">{{
+                    pkg.title
+                  }}</span>
 
-                <!-- Package settings popover (shift+click) -->
-                <Popover :open="openPackageSettingsIndex === packageIndex" @update:open="(val: boolean) => { if (!val) openPackageSettingsIndex = null }">
-                  <PopoverTrigger as-child><span /></PopoverTrigger>
-                  <PopoverContent side="right" :side-offset="8" class="w-64">
-                    <div class="flex flex-col gap-3">
-                      <div class="flex flex-col gap-1.5">
-                        <label class="text-xs text-muted-foreground">Title</label>
-                        <Input v-model="pkg.title" class="h-8 text-sm" />
+                  <!-- Package settings popover (shift+click) -->
+                  <Popover
+                    :open="openPackageSettingsIndex === packageIndex"
+                    @update:open="
+                      (val: boolean) => {
+                        if (!val) openPackageSettingsIndex = null;
+                      }
+                    "
+                  >
+                    <PopoverTrigger as-child><span /></PopoverTrigger>
+                    <PopoverContent side="right" :side-offset="8" class="w-64">
+                      <div class="flex flex-col gap-3">
+                        <div class="flex flex-col gap-2">
+                          <label class="text-xs text-muted-foreground"
+                            >Title</label
+                          >
+                          <Input v-model="pkg.title" variant="compact" />
+                        </div>
+
+                        <div class="flex items-center gap-2">
+                          <Checkbox
+                            :checked="pkg.isFree"
+                            @update:checked="
+                              (val: boolean) => (pkg.isFree = val)
+                            "
+                          />
+                          <label class="text-xs text-muted-foreground"
+                            >Free</label
+                          >
+                        </div>
+
+                        <AlertDialog>
+                          <AlertDialogTrigger as-child>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              class="w-full mt-1 hover:bg-muted hover:text-foreground hover:border-border"
+                            >
+                              <Trash2 class="h-4 w-4" />
+                              Delete Package
+                            </Button>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent>
+                            <AlertDialogHeader>
+                              <AlertDialogTitle
+                                >Delete package?</AlertDialogTitle
+                              >
+                              <AlertDialogDescription
+                                >This will delete "{{ pkg.title }}" and all its
+                                swipes.</AlertDialogDescription
+                              >
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                              <AlertDialogCancel>Cancel</AlertDialogCancel>
+                              <AlertDialogAction
+                                class="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                                @click="
+                                  store.removePackage(packageIndex);
+                                openPackageSettingsIndex = null;
+                                "
+                                >Delete</AlertDialogAction
+                              >
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
                       </div>
-
-                      <div class="flex items-center gap-2">
-                        <Checkbox :checked="pkg.isFree" @update:checked="(val: boolean) => pkg.isFree = val" />
-                        <label class="text-xs text-muted-foreground">Free</label>
-                      </div>
-
-                      <AlertDialog>
-                        <AlertDialogTrigger as-child>
-                          <Button variant="outline" size="sm" class="w-full mt-2 hover:bg-destructive/10 hover:text-destructive hover:border-destructive/30">
-                            <Trash2 class="h-3.5 w-3.5" />
-                            Delete Package
-                          </Button>
-                        </AlertDialogTrigger>
-                        <AlertDialogContent>
-                          <AlertDialogHeader>
-                            <AlertDialogTitle>Delete package?</AlertDialogTitle>
-                            <AlertDialogDescription>This will delete "{{ pkg.title }}" and all its swipes.</AlertDialogDescription>
-                          </AlertDialogHeader>
-                          <AlertDialogFooter>
-                            <AlertDialogCancel>Cancel</AlertDialogCancel>
-                            <AlertDialogAction class="bg-destructive text-destructive-foreground hover:bg-destructive/90" @click="store.removePackage(packageIndex); openPackageSettingsIndex = null">Delete</AlertDialogAction>
-                          </AlertDialogFooter>
-                        </AlertDialogContent>
-                      </AlertDialog>
-                    </div>
-                  </PopoverContent>
-                </Popover>
-              </div>
+                    </PopoverContent>
+                  </Popover>
+                </div>
               </TransitionGroup>
+
+              <!-- Import from text -->
+              <Button
+                variant="ghost"
+                class="w-full mt-2 text-sm px-4 py-3 h-auto"
+                @click="showImportTextDialog = true"
+              >
+                <FileText class="h-3.5 w-3.5" />
+                Import
+              </Button>
             </div>
           </div>
         </ScrollArea>
@@ -858,15 +1390,22 @@ function getNavItemStyle(isSelected: boolean): Record<string, string> {
 
       <!-- Center -->
       <main class="flex-1 flex flex-col overflow-hidden">
-        <div v-if="!hasActivePackage" class="flex-1 flex items-center justify-center text-muted-foreground">
+        <div
+          v-if="!hasActivePackage"
+          class="flex-1 flex items-center justify-center text-muted-foreground"
+        >
           Select a package to start editing
         </div>
 
         <div v-else class="flex-1 flex overflow-hidden">
           <!-- Swipe list panel -->
-          <div class="w-48 border-r border-border flex flex-col shrink-0 overflow-hidden">
+          <div
+            class="w-48 border-r border-border flex flex-col shrink-0 overflow-hidden"
+          >
             <!-- Add controls -->
-            <div class="border-b border-border px-2 py-1.5 flex items-center gap-1">
+            <div
+              class="border-b border-border px-2 py-2 flex items-center gap-1"
+            >
               <!-- Quick add -->
               <Button
                 v-for="quickType in QUICK_ADD_TYPES"
@@ -876,7 +1415,11 @@ function getNavItemStyle(isSelected: boolean): Record<string, string> {
                 class="h-8 w-8"
                 @click="handleAddSwipe(quickType)"
               >
-                <span class="text-sm" :style="{ color: ENTITY_TYPE_COLORS[quickType] }">{{ ENTITY_TYPE_ICONS[quickType] }}</span>
+                <component
+                  :is="ENTITY_TYPE_ICONS[quickType]"
+                  class="h-4 w-4"
+                  :style="{ color: ENTITY_TYPE_COLORS[quickType] }"
+                />
               </Button>
 
               <span class="flex-1" />
@@ -884,24 +1427,44 @@ function getNavItemStyle(isSelected: boolean): Record<string, string> {
               <!-- Add dialog -->
               <Dialog v-model:open="showAddSwipeDialog">
                 <DialogTrigger as-child>
-                  <Button variant="ghost" size="icon" class="h-8 w-8"><PlusCircle class="h-4 w-4" /></Button>
+                  <Button variant="ghost" size="icon" class="h-8 w-8"
+                    ><PlusCircle class="h-4 w-4"
+                  /></Button>
                 </DialogTrigger>
                 <DialogContent class="max-w-md">
-                  <DialogHeader><DialogTitle>Add Swipe</DialogTitle></DialogHeader>
-                  <div class="flex flex-col gap-4 pt-2">
-                    <div v-for="group in ENTITY_TYPE_GROUPS" :key="group.label" class="flex flex-col gap-2">
-                      <label class="text-xs text-muted-foreground uppercase tracking-wider">{{ group.label }}</label>
+                  <DialogHeader
+                    ><DialogTitle>Add Swipe</DialogTitle></DialogHeader
+                  >
+                  <div class="flex flex-col gap-4">
+                    <div
+                      v-for="group in ENTITY_TYPE_GROUPS"
+                      :key="group.label"
+                      class="flex flex-col gap-2"
+                    >
+                      <label
+                        class="text-xs text-muted-foreground uppercase tracking-wider"
+                        >{{ group.label }}</label
+                      >
                       <div class="grid grid-cols-3 gap-2">
-                        <button
+                        <Button
                           v-for="entityType in group.types"
                           :key="entityType"
-                          class="flex flex-col items-center justify-center gap-1.5 p-3 rounded-lg border hover:bg-accent transition-colors cursor-pointer text-center"
-                          :style="{ borderColor: ENTITY_TYPE_COLORS[entityType] + '40' }"
+                          variant="outline"
+                          class="flex flex-col items-center justify-center gap-2 p-3 h-auto text-center"
+                          :style="{
+                            borderColor: `color-mix(in srgb, ${ENTITY_TYPE_COLORS[entityType]} 25%, transparent)`,
+                          }"
                           @click="handleAddSwipe(entityType)"
                         >
-                          <span class="text-lg" :style="{ color: ENTITY_TYPE_COLORS[entityType] }">{{ ENTITY_TYPE_ICONS[entityType] }}</span>
-                          <span class="text-xs font-medium">{{ ENTITY_TYPE_LABELS[entityType] }}</span>
-                        </button>
+                          <component
+                            :is="ENTITY_TYPE_ICONS[entityType]"
+                            class="h-5 w-5"
+                            :style="{ color: ENTITY_TYPE_COLORS[entityType] }"
+                          />
+                          <span class="text-xs font-medium">{{
+                            ENTITY_TYPE_LABELS[entityType]
+                          }}</span>
+                        </Button>
                       </div>
                     </div>
                   </div>
@@ -910,24 +1473,56 @@ function getNavItemStyle(isSelected: boolean): Record<string, string> {
             </div>
 
             <!-- Ordering controls -->
-            <div v-if="hasActiveSwipe" class="border-b border-border px-2 py-1.5 flex items-center gap-1">
-              <Button variant="ghost" size="icon" class="h-8 w-8" @click="handleMoveSwipeUp"><ChevronUp class="h-4 w-4" /></Button>
-              <Button variant="ghost" size="icon" class="h-8 w-8" @click="handleMoveSwipeDown"><ChevronDown class="h-4 w-4" /></Button>
+            <div
+              v-if="hasActiveSwipe"
+              class="border-b border-border px-2 py-2 flex items-center gap-1"
+            >
+              <Button
+                variant="ghost"
+                size="icon"
+                class="h-8 w-8"
+                @click="handleMoveSwipeUp"
+                ><ChevronUp class="h-4 w-4"
+              /></Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                class="h-8 w-8"
+                @click="handleMoveSwipeDown"
+                ><ChevronDown class="h-4 w-4"
+              /></Button>
               <span class="flex-1 flex justify-end">
                 <span
-                  class="text-[10px] px-1.5 py-0.5 rounded-full"
-                  :class="activePanel === 'swipes' ? 'bg-foreground text-background' : 'text-muted-foreground'"
-                >{{ (store.activeSwipeIndex ?? 0) + 1 }}/{{ store.activePackage?.content.length }}</span>
+                  class="text-xs px-2 py-1 rounded-full"
+                  :class="activePanel === 'swipes'
+                    ? 'bg-foreground text-background'
+                    : 'text-muted-foreground'
+                    "
+                  >{{ (store.activeSwipeIndex ?? 0) + 1 }}/{{
+                    store.activePackage?.content.length
+                  }}</span
+                >
               </span>
 
-              <Button v-if="store.lastDeletedSwipe" variant="ghost" size="icon" class="h-8 w-8" @click="store.undoDeleteSwipe()">
-                <Undo2 class="h-3.5 w-3.5" />
+              <Button
+                v-if="store.lastDeletedSwipe"
+                variant="ghost"
+                size="icon"
+                class="h-8 w-8"
+                @click="store.undoDeleteSwipe()"
+              >
+                <Undo2 class="h-4 w-4" />
               </Button>
             </div>
 
             <!-- Swipe list -->
             <ScrollArea class="flex-1 h-0">
-              <TransitionGroup :key="`${store.activeSegmentIndex}-${store.activePackageIndex}`" tag="div" name="swipe-list" class="p-1.5 flex flex-col gap-1.5">
+              <TransitionGroup
+                :key="`${store.activeSegmentIndex}-${store.activePackageIndex}`"
+                tag="div"
+                name="nav-list"
+                class="p-2 flex flex-col gap-2"
+              >
                 <div
                   v-for="(swipe, swipeIndex) in store.activePackage!.content"
                   :key="(swipe as any)._uid"
@@ -935,26 +1530,40 @@ function getNavItemStyle(isSelected: boolean): Record<string, string> {
                   class="px-4 py-3 rounded-lg flex items-center gap-2 group transition-colors cursor-pointer"
                   :class="[getSwipeItemClass(isSwipeSelected(swipeIndex))]"
                   :style="getSwipeItemStyle(swipe, isSwipeSelected(swipeIndex))"
-                  @click="store.selectSwipe(swipeIndex); activePanel = 'swipes'"
+                  @click="
+                    store.selectSwipe(swipeIndex);
+                  activePanel = 'swipes';
+                  "
                 >
                   <!-- Icon -->
-                  <span
-                    class="shrink-0 text-sm"
-                    :style="{ color: ENTITY_TYPE_COLORS[(swipe as any)['entity-type'] as EntityType] }"
-                  >
-                    {{ ENTITY_TYPE_ICONS[(swipe as any)['entity-type'] as EntityType] }}
-                  </span>
+                  <component
+                    :is="ENTITY_TYPE_ICONS[
+                      (swipe as any)['entity-type'] as EntityType
+                    ]
+                      "
+                    class="shrink-0 h-4 w-4"
+                    :style="{
+                      color:
+                        ENTITY_TYPE_COLORS[
+                        (swipe as any)['entity-type'] as EntityType
+                        ],
+                    }"
+                  />
 
                   <!-- Label -->
                   <span class="flex-1 truncate text-sm">
-                    {{ ENTITY_TYPE_LABELS[(swipe as any)['entity-type'] as EntityType] }}
+                    {{
+                      ENTITY_TYPE_LABELS[
+                      (swipe as any)["entity-type"] as EntityType
+                      ]
+                    }}
                   </span>
 
                   <!-- Remove -->
                   <Button
                     variant="ghost"
                     size="icon"
-                    class="shrink-0 h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-destructive/10 hover:text-destructive"
+                    class="shrink-0 h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-muted hover:text-foreground"
                     @click.stop="store.removeSwipe(swipeIndex)"
                   >
                     <X class="h-3 w-3" />
@@ -962,18 +1571,29 @@ function getNavItemStyle(isSelected: boolean): Record<string, string> {
                 </div>
               </TransitionGroup>
             </ScrollArea>
-
           </div>
 
           <!-- Swipe editor -->
-          <div class="flex-1 overflow-auto bg-muted/40">
-            <div v-if="hasActiveSwipe" class="p-8">
-              <ContentBlockEditor :key="store.activeSwipeIndex ?? -1" :block="store.activeSwipe!" />
+          <ScrollArea class="flex-1 min-w-0 bg-muted/40 relative">
+            <div v-if="hasActiveSwipe" class="p-8 flex flex-col min-h-full">
+              <ContentBlockEditor
+                :key="store.activeSwipeIndex ?? -1"
+                :block="store.activeSwipe!"
+              />
+
+              <!-- Next swipe area — click empty space below editor to go to next swipe -->
+              <div
+                class="flex-1 min-h-[120px] cursor-pointer"
+                @click="navigateSwipe(1)"
+              />
             </div>
-            <div v-else class="flex-1 flex items-center justify-center h-full text-muted-foreground text-sm">
+            <div
+              v-else
+              class="absolute inset-0 flex items-center justify-center text-muted-foreground text-sm"
+            >
               Select a swipe to edit
             </div>
-          </div>
+          </ScrollArea>
         </div>
       </main>
 
@@ -982,10 +1602,182 @@ function getNavItemStyle(isSelected: boolean): Record<string, string> {
         <div class="flex-1 flex items-center justify-center p-6 bg-muted/30">
           <PhonePreview />
         </div>
-        <div class="p-3 border-t border-border">
-          <Button variant="outline" size="sm" class="w-full text-xs gap-2" @click="toggleJsonView"><Code class="h-3 w-3" /> JSON</Button>
+        <div
+          class="p-4 border-t border-border flex items-center justify-center"
+        >
+          <Button
+            variant="ghost"
+            class="h-12 w-12 rounded-lg"
+            :style="{ color: courseColor }"
+            @click="handleAIFillCourse"
+          >
+            <Sparkles class="h-5 w-5" />
+          </Button>
         </div>
       </aside>
     </div>
+
+    <!-- Import from text dialog -->
+    <Dialog v-model:open="showImportTextDialog">
+      <DialogContent class="max-w-7xl max-h-[85vh] flex flex-col">
+        <DialogHeader>
+          <DialogTitle>Import Package from Text</DialogTitle>
+          <DialogDescription>
+            Paste or upload a
+            <span class="font-mono font-semibold">.rlockie</span> file to
+            generate a package.
+          </DialogDescription>
+        </DialogHeader>
+
+        <div class="flex gap-6 flex-1 overflow-hidden">
+          <!-- Text input -->
+          <div class="flex-1 flex flex-col overflow-hidden">
+            <Textarea
+              v-model="importTextInput"
+              placeholder="text::&#10;First segment of text.&#10;Second segment.&#10;&#10;question::&#10;What is 2+2?&#10;&#10;answer=correct: 4&#10;consequence: Correct!&#10;&#10;answer: 3&#10;consequence: Not quite.&#10;&#10;explanation: Basic arithmetic."
+              class="flex-1 min-h-[300px] font-mono text-sm !field-sizing-normal"
+            />
+          </div>
+
+          <!-- Format guide sidebar -->
+          <div
+            v-if="showFormatGuide"
+            class="w-80 flex flex-col border border-border rounded-lg overflow-hidden shrink-0"
+          >
+            <!-- Block list -->
+            <div
+              class="flex flex-wrap gap-1 p-2 border-b border-border bg-muted/30"
+            >
+              <button
+                v-for="block in PACKAGE_TEXT_FORMAT_GUIDE.blocks"
+                :key="block.tag"
+                class="px-2.5 py-1 text-xs rounded-md transition-colors cursor-pointer"
+                :class="selectedGuideBlock === block.tag
+                  ? 'bg-accent text-accent-foreground font-medium'
+                  : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                  "
+                @click="selectedGuideBlock = block.tag"
+              >
+                {{ block.name }}
+              </button>
+            </div>
+
+            <!-- Selected block detail -->
+            <ScrollArea class="flex-1 p-4">
+              <template
+                v-for="block in PACKAGE_TEXT_FORMAT_GUIDE.blocks"
+                :key="block.tag"
+              >
+                <div
+                  v-if="selectedGuideBlock === block.tag"
+                  class="flex flex-col gap-3"
+                >
+                  <p class="text-sm font-medium text-foreground font-mono">
+                    {{ block.tag }}
+                  </p>
+
+                  <p class="text-sm text-muted-foreground leading-relaxed">
+                    {{ block.description }}
+                  </p>
+
+                  <div v-if="block.syntax" class="flex flex-col gap-1">
+                    <p
+                      class="text-xs font-medium text-muted-foreground uppercase tracking-wide"
+                    >
+                      Syntax
+                    </p>
+                    <pre
+                      class="text-xs text-muted-foreground font-mono whitespace-pre-wrap bg-muted/40 rounded-md px-3 py-2 leading-relaxed"
+                      >{{ block.syntax }}</pre
+                    >
+                  </div>
+
+                  <div class="flex flex-col gap-1">
+                    <p
+                      class="text-xs font-medium text-muted-foreground uppercase tracking-wide"
+                    >
+                      Example
+                    </p>
+                    <pre
+                      class="text-xs text-foreground/70 font-mono whitespace-pre-wrap bg-muted/40 rounded-md px-3 py-2 leading-relaxed select-text"
+                      >{{ block.example }}</pre
+                    >
+                  </div>
+                </div>
+              </template>
+            </ScrollArea>
+          </div>
+        </div>
+
+        <input
+          ref="fileInputRef"
+          type="file"
+          accept=".rlockie"
+          class="hidden"
+          @change="handleFileUpload"
+        />
+
+        <DialogFooter>
+          <Button variant="outline" @click="fileInputRef?.click()"
+            >Upload</Button
+          >
+
+          <Button variant="ghost" @click="showFormatGuide = !showFormatGuide">
+            {{ showFormatGuide ? "Hide" : "Show" }} Guide
+          </Button>
+
+          <div class="flex-1" />
+
+          <Button variant="outline" @click="showImportTextDialog = false"
+            >Cancel</Button
+          >
+          <Button @click="handleImportFromText">Import</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+
+    <!-- Import course dialog -->
+    <Dialog v-model:open="showImportCourseDialog">
+      <DialogContent class="max-w-7xl max-h-[85vh] flex flex-col">
+        <DialogHeader>
+          <DialogTitle>Import Course</DialogTitle>
+          <DialogDescription>
+            Paste or upload a
+            <span class="font-mono font-semibold">.rlockie</span> course file.
+            The first section defines course info, packages are separated by
+            <span class="font-mono font-semibold">--------</span>.
+          </DialogDescription>
+        </DialogHeader>
+
+        <div class="flex-1 flex flex-col overflow-hidden">
+          <Textarea
+            v-model="importCourseInput"
+            placeholder="title: My Course&#10;author: Author Name&#10;description: A short description&#10;color: #6366f1&#10;genres: design, psychology&#10;relevant_for: Designers, Developers&#10;&#10;--------&#10;&#10;text::&#10;First swipe of package 1.&#10;&#10;question::&#10;What is 2+2?&#10;&#10;answer=correct: 4&#10;consequence: Correct!&#10;&#10;answer: 3&#10;consequence: Not quite.&#10;&#10;explanation: Basic arithmetic.&#10;&#10;--------&#10;&#10;text::&#10;First swipe of package 2."
+            class="flex-1 min-h-[300px] font-mono text-sm !field-sizing-normal"
+          />
+        </div>
+
+        <input
+          ref="courseFileInputRef"
+          type="file"
+          accept=".rlockie"
+          class="hidden"
+          @change="handleCourseFileUpload"
+        />
+
+        <DialogFooter>
+          <Button variant="outline" @click="courseFileInputRef?.click()">
+            <Upload class="h-4 w-4" /> Upload
+          </Button>
+
+          <div class="flex-1" />
+
+          <Button variant="outline" @click="showImportCourseDialog = false"
+            >Cancel</Button
+          >
+          <Button @click="handleImportCourse">Import</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   </div>
 </template>

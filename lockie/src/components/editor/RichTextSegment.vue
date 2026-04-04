@@ -2,7 +2,7 @@
 // Rich text editor for a single text segment
 // Supports coloring text with Readlock markup: <c:r>red</c:r> <c:g>green</c:g>
 
-import { ref, watch, onBeforeUnmount } from 'vue'
+import { ref, watch, computed, onBeforeUnmount } from 'vue'
 import { useEditor, EditorContent } from '@tiptap/vue-3'
 import StarterKit from '@tiptap/starter-kit'
 import { TextStyle } from '@tiptap/extension-text-style'
@@ -12,12 +12,24 @@ import { Button } from '@/components/ui/button'
 const props = defineProps<{ modelValue: string }>()
 const emit = defineEmits<{ (e: 'update:modelValue', value: string): void }>()
 
+// * Resolve CSS variable colors at runtime
+
+function getCssColor(varName: string): string {
+  return getComputedStyle(document.documentElement).getPropertyValue(varName).trim()
+}
+
+const markupRedColor = computed(() => getCssColor('--markup-red'))
+const markupGreenColor = computed(() => getCssColor('--markup-green'))
+
 // * Convert Readlock markup to HTML for the editor
 
 function markupToHtml(text: string): string {
+  const red = markupRedColor.value
+  const green = markupGreenColor.value
+
   return text
-    .replace(/<c:r>(.*?)<\/c:r>/g, '<span style="color: #dc2626">$1</span>')
-    .replace(/<c:g>(.*?)<\/c:g>/g, '<span style="color: #16a34a">$1</span>')
+    .replace(/<c:r>(.*?)<\/c:r>/g, `<span style="color: ${red}">$1</span>`)
+    .replace(/<c:g>(.*?)<\/c:g>/g, `<span style="color: ${green}">$1</span>`)
 }
 
 // * Convert editor HTML back to Readlock markup
@@ -28,8 +40,11 @@ function htmlToMarkup(html: string): string {
     .replace(/<\/p>/g, '')
     .replace(/<br\s*\/?>/g, '')
 
-  result = result.replace(/<span style="color: #dc2626">(.*?)<\/span>/g, '<c:r>$1</c:r>')
-  result = result.replace(/<span style="color: #16a34a">(.*?)<\/span>/g, '<c:g>$1</c:g>')
+  const red = markupRedColor.value
+  const green = markupGreenColor.value
+
+  result = result.replace(new RegExp(`<span style="color: ${red}">(.*?)<\\/span>`, 'g'), '<c:r>$1</c:r>')
+  result = result.replace(new RegExp(`<span style="color: ${green}">(.*?)<\\/span>`, 'g'), '<c:g>$1</c:g>')
 
   // Strip any remaining HTML tags
   result = result.replace(/<[^>]*>/g, '')
@@ -91,7 +106,7 @@ const editor = useEditor({
   ],
   editorProps: {
     attributes: {
-      class: 'min-h-[48px] px-3 py-2 text-sm outline-none cursor-text',
+      class: 'min-h-12 px-3 py-2 text-sm outline-none cursor-text',
     },
   },
   onUpdate({ editor: ed }) {
@@ -136,11 +151,11 @@ onBeforeUnmount(() => {
 // * Color actions
 
 function applyRed() {
-  editor.value?.chain().focus().setColor('#dc2626').run()
+  editor.value?.chain().focus().setColor(markupRedColor.value).run()
 }
 
 function applyGreen() {
-  editor.value?.chain().focus().setColor('#16a34a').run()
+  editor.value?.chain().focus().setColor(markupGreenColor.value).run()
 }
 
 function clearColor() {
@@ -156,11 +171,11 @@ function clearColor() {
       class="absolute z-50 flex items-center gap-0.5 rounded-lg border border-border bg-popover p-1 shadow-md"
       :style="{ top: toolbarTop + 'px', left: toolbarLeft + 'px', transform: 'translateX(-50%)' }"
     >
-      <Button variant="ghost" size="icon" class="h-7 w-7 text-red-500 text-xs font-bold" @mousedown.prevent="applyRed">
+      <Button variant="ghost" size="icon" class="h-7 w-7 text-markup-red text-xs font-bold" @mousedown.prevent="applyRed">
         W
       </Button>
 
-      <Button variant="ghost" size="icon" class="h-7 w-7 text-green-500 text-xs font-bold" @mousedown.prevent="applyGreen">
+      <Button variant="ghost" size="icon" class="h-7 w-7 text-markup-green text-xs font-bold" @mousedown.prevent="applyGreen">
         G
       </Button>
 

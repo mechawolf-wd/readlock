@@ -13,10 +13,7 @@ import 'package:readlock/course_screens/widgets/reading/CCOutro.dart';
 import 'package:readlock/course_screens/widgets/reading/CCDesignExamplesShowcase.dart';
 import 'package:readlock/course_screens/widgets/reading/CCReflection.dart';
 import 'package:readlock/course_screens/widgets/reading/CCQuote.dart';
-import 'package:readlock/course_screens/widgets/reading/CCSkillCheck.dart';
 import 'package:readlock/course_screens/widgets/interaction/CCTrueFalseQuestion.dart';
-import 'package:readlock/course_screens/widgets/interaction/CCFillGapQuestion.dart';
-import 'package:readlock/course_screens/widgets/interaction/CCIncorrectStatement.dart';
 import 'package:readlock/course_screens/widgets/interaction/CCEstimatePercentage.dart';
 import 'package:readlock/course_screens/widgets/interaction/CCMultipleChoice.dart';
 import 'package:readlock/course_screens/widgets/interaction/CCSingleChoiceQuestion.dart';
@@ -55,16 +52,6 @@ class CCJSONContentFactory {
           return JsonTrueFalseQuestionWidget(contentData: contentData);
         }
 
-      case 'fill-gap-question':
-        {
-          return JsonFillGapQuestionWidget(contentData: contentData);
-        }
-
-      case 'incorrect-statement-question':
-        {
-          return JsonIncorrectStatementQuestionWidget(contentData: contentData);
-        }
-
       case 'reflection-question':
         {
           return JsonReflectionQuestionWidget(contentData: contentData);
@@ -96,15 +83,6 @@ class CCJSONContentFactory {
       case 'estimate-percentage':
         {
           return JsonEstimatePercentageWidget(contentData: contentData);
-        }
-
-      case 'skill-check':
-        {
-          return CCSkillCheck(
-            title: contentData['title'] ?? 'Skill Check',
-            subtitle: contentData['subtitle'] ?? 'Test Your Understanding',
-            iconName: contentData['icon'] ?? 'check',
-          );
         }
 
       case 'emotional-slide':
@@ -384,65 +362,6 @@ class JsonTrueFalseQuestionWidget extends StatelessWidget {
     );
 
     return CCTrueFalseQuestion(
-      content: content,
-      onAnswerSelected: (int index, bool isCorrect) {},
-    );
-  }
-}
-
-// Fill gap question wrapper widget
-class JsonFillGapQuestionWidget extends StatelessWidget {
-  final JSONMap contentData;
-
-  const JsonFillGapQuestionWidget({super.key, required this.contentData});
-
-  @override
-  Widget build(BuildContext context) {
-    final List<QuestionOption> options = parseQuestionOptions(contentData);
-    final List<int> correctAnswerIndices = List<int>.from(
-      contentData['correct-answer-indices'] ?? [],
-    );
-
-    final FillGapQuestionContent content = FillGapQuestionContent(
-      id: contentData['id'] ?? '',
-      title: contentData['title'] ?? '',
-      question: contentData['question'] ?? '',
-      options: options,
-      correctAnswerIndices: correctAnswerIndices,
-      explanation: contentData['explanation'] ?? '',
-      hint: contentData['hint'],
-    );
-
-    return CCFillGapQuestion(
-      content: content,
-      onAnswerSelected: (int index, bool isCorrect) {},
-    );
-  }
-}
-
-// Incorrect statement question wrapper widget
-class JsonIncorrectStatementQuestionWidget extends StatelessWidget {
-  final JSONMap contentData;
-
-  const JsonIncorrectStatementQuestionWidget({super.key, required this.contentData});
-
-  @override
-  Widget build(BuildContext context) {
-    final List<QuestionOption> options = parseQuestionOptions(contentData);
-    final List<int> correctAnswerIndices = List<int>.from(
-      contentData['correct-answer-indices'] ?? [],
-    );
-
-    final IncorrectStatementQuestionContent content = IncorrectStatementQuestionContent(
-      id: contentData['id'] ?? '',
-      title: contentData['title'] ?? '',
-      question: contentData['question'] ?? '',
-      options: options,
-      correctAnswerIndices: correctAnswerIndices,
-      explanation: contentData['explanation'] ?? '',
-    );
-
-    return CCIncorrectStatement(
       content: content,
       onAnswerSelected: (int index, bool isCorrect) {},
     );

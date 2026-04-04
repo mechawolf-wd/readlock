@@ -3,7 +3,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:sliver_tools/sliver_tools.dart';
 import 'package:readlock/course_screens/CourseContentViewer.dart';
 import 'package:readlock/course_screens/data/CourseData.dart';
 import 'package:readlock/utility_widgets/Utility.dart';
@@ -20,37 +19,6 @@ const double roadmapNodeVerticalSpacing = 96.0;
 const double roadmapMasteryDotSize = 8.0;
 const double roadmapMasteryDotSpacing = 4.0;
 const int roadmapMasteryDotsPerLesson = 3;
-const double roadmapStickyHeaderPadding = 8.0;
-const double roadmapStickyHeaderContentPadding = 12.0;
-const double roadmapStickyHeaderLetterSize = 40.0;
-const double roadmapStickyHeaderHeight =
-    (roadmapStickyHeaderPadding * 2) +
-    (roadmapStickyHeaderContentPadding * 2) +
-    roadmapStickyHeaderLetterSize;
-const double roadmapSegmentContentTopSpacing = 16.0;
-
-// Segment color mapping (Temporary) - each course will have its own color
-Color getColorForLetter(String letter) {
-  switch (letter) {
-    case 'A':
-      {
-        return RLDS.primaryGreen;
-      }
-    case 'B':
-      {
-        return RLDS.primaryBlue;
-      }
-    case 'C':
-      {
-        return RLDS.accentPurple;
-      }
-    default:
-      {
-        return RLDS.primaryGreen;
-      }
-  }
-}
-
 class CourseRoadmapScreen extends StatefulWidget {
   final String courseId;
 
@@ -62,14 +30,12 @@ class CourseRoadmapScreen extends StatefulWidget {
 
 class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
   JSONMap? courseData;
-  JSONList courseSegments = [];
+  JSONList courseLessons = [];
   bool isCourseDataLoading = true;
-  int activeSegmentIndex = 0;
   int lastLessonAtThreshold = -1;
   bool isProgrammaticScroll = false;
   bool showBackToTop = false;
 
-  List<GlobalKey> segmentKeys = [];
   List<GlobalKey> lessonKeys = [];
   late ScrollController scrollController;
 
@@ -84,7 +50,6 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
   }
 
   void handleScrollUpdate() {
-    updateActiveSegment();
     checkLessonHaptic();
     updateBackToTopVisibility();
   }
@@ -142,40 +107,6 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
     super.dispose();
   }
 
-  void updateActiveSegment() {
-    if (isProgrammaticScroll) {
-      return;
-    }
-
-    final int visible = findVisibleSegment();
-
-    if (visible != activeSegmentIndex) {
-      setState(() {
-        activeSegmentIndex = visible;
-      });
-    }
-  }
-
-  int findVisibleSegment() {
-    const double visibilityThreshold = 300;
-
-    for (int segmentIndex = segmentKeys.length - 1; segmentIndex >= 0; segmentIndex--) {
-      final RenderBox? box =
-          segmentKeys[segmentIndex].currentContext?.findRenderObject() as RenderBox?;
-
-      if (box != null) {
-        final double y = box.localToGlobal(Offset.zero).dy;
-        final bool isSegmentVisible = y < visibilityThreshold;
-
-        if (isSegmentVisible) {
-          return segmentIndex;
-        }
-      }
-    }
-
-    return 0;
-  }
-
   Future<void> fetchCourseData() async {
     try {
       courseData = await CourseDataService.fetchCourseById(widget.courseId);
@@ -183,19 +114,14 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
       final bool hasCourseData = courseData != null;
 
       if (hasCourseData) {
-        courseSegments = JSONList.from(courseData!['segments'] ?? []);
+        final JSONList segments = JSONList.from(courseData!['segments'] ?? []);
+        final bool hasSegments = segments.isNotEmpty;
 
-        segmentKeys = List.generate(courseSegments.length, (segmentIndex) => GlobalKey());
-
-        // Count total lessons across all segments
-        int totalLessons = 0;
-
-        for (final segment in courseSegments) {
-          final List<dynamic> lessons = segment['lessons'] ?? [];
-          totalLessons += lessons.length;
+        if (hasSegments) {
+          courseLessons = JSONList.from(segments[0]['lessons'] ?? []);
         }
 
-        lessonKeys = List.generate(totalLessons, (lessonIndex) => GlobalKey());
+        lessonKeys = List.generate(courseLessons.length, (lessonIndex) => GlobalKey());
       }
     } on Exception {
       // Handle error silently
@@ -204,66 +130,6 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
         isCourseDataLoading = false;
       });
     }
-  }
-
-  int scrollGeneration = 0;
-
-  void handleSegmentTap(int segmentIndex) {
-    final bool isAlreadyActive = segmentIndex == activeSegmentIndex;
-
-    if (isAlreadyActive) {
-      return;
-    }
-
-    HapticFeedback.lightImpact();
-    isProgrammaticScroll = true;
-    scrollGeneration++;
-    final int currentGeneration = scrollGeneration;
-
-    // Instantly highlight the tapped segment
-    setState(() {
-      activeSegmentIndex = segmentIndex;
-    });
-
-    // First segment scrolls to top
-    final bool isFirstSegment = segmentIndex == 0;
-
-    if (isFirstSegment) {
-      scrollController.animateTo(
-        0,
-        duration: const Duration(milliseconds: 400),
-        curve: Curves.easeOutCubic,
-      );
-    } else {
-      // Calculate scroll position manually to account for sticky header
-      final RenderBox? targetBox =
-          segmentKeys[segmentIndex].currentContext?.findRenderObject() as RenderBox?;
-
-      if (targetBox != null) {
-        final double currentScroll = scrollController.offset;
-        final double targetY = targetBox.localToGlobal(Offset.zero).dy;
-
-        // Calculate offset to position content just below pinned header
-        final double safeAreaTop = MediaQuery.of(context).padding.top;
-        final double headerOffset = safeAreaTop + roadmapStickyHeaderHeight;
-        final double newScrollPosition = currentScroll + targetY - headerOffset;
-
-        scrollController.animateTo(
-          newScrollPosition.clamp(0, scrollController.position.maxScrollExtent),
-          duration: const Duration(milliseconds: 400),
-          curve: Curves.easeOutCubic,
-        );
-      }
-    }
-
-    // Only clear flag if no new scroll was started
-    Future.delayed(const Duration(milliseconds: 450), () {
-      final bool isLatestScroll = currentGeneration == scrollGeneration;
-
-      if (isLatestScroll) {
-        isProgrammaticScroll = false;
-      }
-    });
   }
 
   @override
@@ -276,17 +142,27 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
       return const Center(child: CircularProgressIndicator());
     }
 
-    // Build slivers list explicitly (avoiding spread operator per rule @4.31)
+    // Build slivers list
     final List<Widget> slivers = [
       // Header
       SliverToBoxAdapter(child: RoadmapHeader()),
+
+      // Lessons from first segment
+      SliverToBoxAdapter(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: PathWithNodes(
+            lessons: courseLessons,
+            segmentIndex: 0,
+            lessonKeys: lessonKeys,
+            onLessonTap: showLoadingScreenThenNavigate,
+          ),
+        ),
+      ),
+
+      // Bottom padding for floating buttons
+      const SliverToBoxAdapter(child: Spacing.height(180)),
     ];
-
-    // Add all segment slivers
-    slivers.addAll(AllSegmentSlivers());
-
-    // Bottom padding for floating buttons
-    slivers.add(const SliverToBoxAdapter(child: Spacing.height(180)));
 
     return Material(
       color: RLDS.backgroundDark,
@@ -352,21 +228,12 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
 
   void handleBackToTop() {
     HapticFeedback.lightImpact();
-    isProgrammaticScroll = true;
-
-    setState(() {
-      activeSegmentIndex = 0;
-    });
 
     scrollController.animateTo(
       0,
       duration: const Duration(milliseconds: 400),
       curve: Curves.easeOutCubic,
     );
-
-    Future.delayed(const Duration(milliseconds: 450), () {
-      isProgrammaticScroll = false;
-    });
   }
 
   Widget BottomFloatingBar() {
@@ -379,18 +246,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: barDecoration,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          // Segment tiles
-          Row(mainAxisAlignment: MainAxisAlignment.center, children: SegmentTiles()),
-
-          const Spacing.height(12),
-
-          // Continue button
-          ContinueButton(),
-        ],
-      ),
+      child: ContinueButton(),
     );
   }
 
@@ -575,109 +431,6 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
     );
   }
 
-  List<Widget> SegmentTiles() {
-    final List<Widget> tiles = [];
-
-    for (int segmentIndex = 0; segmentIndex < courseSegments.length; segmentIndex++) {
-      final JSONMap segment = courseSegments[segmentIndex];
-      final String letter = segment['segment-symbol'] ?? '';
-      final bool isActive = segmentIndex == activeSegmentIndex;
-      final bool isNotFirst = segmentIndex > 0;
-
-      if (isNotFirst) {
-        tiles.add(const Spacing.width(12));
-      }
-
-      final Color segmentColor = getColorForLetter(letter);
-
-      Color backgroundColor = RLDS.textSecondary.withValues(alpha: 0.08);
-      Color textColor = RLDS.textSecondary;
-
-      if (isActive) {
-        backgroundColor = segmentColor.withValues(alpha: 0.15);
-        textColor = segmentColor;
-      }
-
-      final BoxDecoration tileDecoration = BoxDecoration(
-        color: backgroundColor,
-        borderRadius: BorderRadius.circular(8),
-      );
-
-      tiles.add(
-        Div.row(
-          [RLTypography.headingMedium(letter, color: textColor)],
-          padding: const [8, 16],
-          decoration: tileDecoration,
-          onTap: () => handleSegmentTap(segmentIndex),
-        ),
-      );
-    }
-
-    return tiles;
-  }
-
-  List<Widget> AllSegmentSlivers() {
-    final List<Widget> slivers = [];
-    int lessonOffset = 0;
-
-    for (int segmentIndex = 0; segmentIndex < courseSegments.length; segmentIndex++) {
-      final JSONMap segment = courseSegments[segmentIndex];
-      final List<dynamic> lessons = segment['lessons'] ?? [];
-      final String segmentSymbol = segment['segment-symbol'] ?? '';
-      final String segmentTitle = segment['segment-title'] ?? 'Segment';
-      final bool isNotFirst = segmentIndex > 0;
-
-      // Spacing between segments
-      if (isNotFirst) {
-        slivers.add(const SliverToBoxAdapter(child: Spacing.height(48)));
-      }
-
-      // Segment with sticky header that pushes out previous headers
-      slivers.add(
-        MultiSliver(
-          pushPinnedChildren: true,
-          children: [
-            // Sticky segment header
-            SliverPersistentHeader(
-              pinned: true,
-              delegate: StickySegmentHeaderDelegate(
-                symbol: segmentSymbol,
-                title: segmentTitle,
-              ),
-            ),
-
-            // Segment lessons
-            SliverToBoxAdapter(
-              child: Padding(
-                key: segmentKeys[segmentIndex],
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Column(
-                  children: [
-                    const Spacing.height(roadmapSegmentContentTopSpacing),
-
-                    PathWithNodes(
-                      lessons: lessons,
-                      segmentIndex: segmentIndex,
-                      lessonKeys: lessonKeys.sublist(
-                        lessonOffset,
-                        lessonOffset + lessons.length,
-                      ),
-                      onLessonTap: showLoadingScreenThenNavigate,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
-      );
-
-      lessonOffset += lessons.length;
-    }
-
-    return slivers;
-  }
-
   Widget ContinueButton() {
     final BoxDecoration buttonDecoration = BoxDecoration(
       color: RLDS.primaryGreen,
@@ -698,16 +451,8 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
     );
   }
 
-  // Count total lessons across all segments from JSON data
   int countTotalLessons() {
-    int total = 0;
-
-    for (final segment in courseSegments) {
-      final List<dynamic> lessons = segment['lessons'] ?? [];
-      total += lessons.length;
-    }
-
-    return total;
+    return courseLessons.length;
   }
 
   void handleContinueTap() {
@@ -744,70 +489,6 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
         ),
       );
     }
-  }
-}
-
-// Sticky header delegate for segment titles
-class StickySegmentHeaderDelegate extends SliverPersistentHeaderDelegate {
-  final String symbol;
-  final String title;
-
-  const StickySegmentHeaderDelegate({required this.symbol, required this.title});
-
-  @override
-  double get minExtent => roadmapStickyHeaderHeight;
-
-  @override
-  double get maxExtent => roadmapStickyHeaderHeight;
-
-  @override
-  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
-    final Color color = getColorForLetter(symbol);
-
-    final BoxDecoration letterDecoration = BoxDecoration(
-      color: color.withValues(alpha: 0.15),
-      borderRadius: BorderRadius.circular(8),
-    );
-
-    final BoxDecoration headerDecoration = BoxDecoration(
-      color: RLDS.white,
-      borderRadius: BorderRadius.circular(20),
-      border: Border.all(color: const Color(0xFF1A1A1A), width: 1.5),
-    );
-
-    return Container(
-      color: Colors.transparent,
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: roadmapStickyHeaderPadding),
-      child: Center(
-        child: Container(
-          decoration: headerDecoration,
-          padding: const EdgeInsets.all(roadmapStickyHeaderContentPadding),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                width: roadmapStickyHeaderLetterSize,
-                height: roadmapStickyHeaderLetterSize,
-                decoration: letterDecoration,
-                child: Center(child: RLTypography.headingMedium(symbol, color: color)),
-              ),
-
-              const Spacing.width(12),
-
-              RLTypography.headingMedium(title),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  @override
-  bool shouldRebuild(StickySegmentHeaderDelegate oldDelegate) {
-    final bool hasTitleChanged = title != oldDelegate.title;
-    final bool hasSymbolChanged = symbol != oldDelegate.symbol;
-
-    return hasTitleChanged || hasSymbolChanged;
   }
 }
 

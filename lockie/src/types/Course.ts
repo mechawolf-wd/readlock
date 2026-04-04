@@ -1,6 +1,9 @@
 // Course data types mirroring Readlock's CourseModel.dart
 // Hierarchy: Accelerator > Segments > Packages > Swipes
 
+import { BookOpen, CircleHelp, ToggleLeft, Percent, Heart, Brain, MessageSquareQuote } from 'lucide-vue-next'
+import type { Component } from 'vue'
+
 export interface CourseData {
   language: string
   courses: Accelerator[]
@@ -38,12 +41,9 @@ export type Swipe =
   | SingleChoiceQuestionBlock
   | TrueFalseQuestionBlock
   | EstimatePercentageQuestionBlock
-  | FillGapQuestionBlock
-  | IncorrectStatementQuestionBlock
   | EmotionalSlideBlock
   | ReflectionBlock
   | QuoteBlock
-  | SkillCheckBlock
 
 export interface TextBlock {
   'entity-type': 'text'
@@ -83,23 +83,6 @@ export interface EstimatePercentageQuestionBlock {
   'correct-answer-indices': number[]
 }
 
-export interface FillGapQuestionBlock {
-  'entity-type': 'fill-gap-question'
-  question: string
-  explanation: string
-  hint?: string
-  options: QuestionOption[]
-  'correct-answer-indices': number[]
-}
-
-export interface IncorrectStatementQuestionBlock {
-  'entity-type': 'incorrect-statement-question'
-  question: string
-  explanation: string
-  options: QuestionOption[]
-  'correct-answer-indices': number[]
-}
-
 export interface EmotionalSlideBlock {
   'entity-type': 'emotional-slide'
   text: string
@@ -118,13 +101,6 @@ export interface QuoteBlock {
   author: string
 }
 
-export interface SkillCheckBlock {
-  'entity-type': 'skill-check'
-  title: string
-  subtitle: string
-  icon: string
-}
-
 // * Entity type registry
 
 export const ENTITY_TYPES = [
@@ -132,53 +108,41 @@ export const ENTITY_TYPES = [
   'single-choice-question',
   'true-false-question',
   'estimate-percentage-question',
-  'fill-gap-question',
-  'incorrect-statement-question',
   'emotional-slide',
   'reflection',
   'quote',
-  'skill-check',
 ] as const
 
 export type EntityType = typeof ENTITY_TYPES[number]
 
 export const ENTITY_TYPE_LABELS: Record<EntityType, string> = {
-  'text': 'Reading',
-  'single-choice-question': 'Choice',
+  'text': 'Page',
+  'single-choice-question': 'Question',
   'true-false-question': 'True/False',
   'estimate-percentage-question': 'Estimate',
-  'fill-gap-question': 'Fill Gap',
-  'incorrect-statement-question': 'Find Error',
   'emotional-slide': 'Pause',
   'reflection': 'Reflect',
   'quote': 'Quote',
-  'skill-check': 'Skill Check',
 }
 
-export const ENTITY_TYPE_ICONS: Record<EntityType, string> = {
-  'text': '¶',
-  'single-choice-question': '○',
-  'true-false-question': '⊘',
-  'estimate-percentage-question': '%',
-  'fill-gap-question': '⎵',
-  'incorrect-statement-question': '✗',
-  'emotional-slide': '♡',
-  'reflection': '◎',
-  'quote': '❝',
-  'skill-check': '✓',
+export const ENTITY_TYPE_ICONS: Record<EntityType, Component> = {
+  'text': BookOpen,
+  'single-choice-question': CircleHelp,
+  'true-false-question': ToggleLeft,
+  'estimate-percentage-question': Percent,
+  'emotional-slide': Heart,
+  'reflection': Brain,
+  'quote': MessageSquareQuote,
 }
 
 export const ENTITY_TYPE_COLORS: Record<EntityType, string> = {
-  'text': '#94a3b8',
-  'single-choice-question': '#3b82f6',
-  'true-false-question': '#8b5cf6',
-  'estimate-percentage-question': '#eab308',
-  'fill-gap-question': '#06b6d4',
-  'incorrect-statement-question': '#ef4444',
-  'emotional-slide': '#f43f5e',
-  'reflection': '#a855f7',
-  'quote': '#14b8a6',
-  'skill-check': '#10b981',
+  'text': 'var(--entity-text)',
+  'single-choice-question': 'var(--entity-question)',
+  'true-false-question': 'var(--entity-question)',
+  'estimate-percentage-question': 'var(--entity-question)',
+  'emotional-slide': 'var(--entity-emotional)',
+  'reflection': 'var(--entity-text)',
+  'quote': 'var(--entity-text)',
 }
 
 export interface EntityTypeGroup {
@@ -196,14 +160,12 @@ export const ENTITY_TYPE_GROUPS: EntityTypeGroup[] = [
     types: [
       'single-choice-question',
       'true-false-question',
-      'fill-gap-question',
-      'incorrect-statement-question',
       'estimate-percentage-question',
     ],
   },
   {
     label: 'Interactive',
-    types: ['emotional-slide', 'skill-check'],
+    types: ['emotional-slide'],
   },
 ]
 

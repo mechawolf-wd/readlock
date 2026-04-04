@@ -94,11 +94,8 @@ enum LessonContentType {
   estimatePercentage,
   emotionalSlide,
   reflection,
-  skillCheck,
   intro,
   outro,
-  fillGapQuestion,
-  incorrectStatement,
 }
 
 // Widget-compatible content types used by course content widgets
@@ -230,40 +227,6 @@ class TrueFalseQuestionContent extends Swipe {
     required this.correctAnswerIndex,
     required this.explanation,
     this.hint,
-  });
-}
-
-class FillGapQuestionContent extends Swipe {
-  final String question;
-  final List<QuestionOption> options;
-  final List<int> correctAnswerIndices;
-  final String explanation;
-  final String? hint;
-
-  const FillGapQuestionContent({
-    required super.id,
-    required super.title,
-    required this.question,
-    required this.options,
-    required this.correctAnswerIndices,
-    required this.explanation,
-    this.hint,
-  });
-}
-
-class IncorrectStatementQuestionContent extends Swipe {
-  final String question;
-  final List<QuestionOption> options;
-  final List<int> correctAnswerIndices;
-  final String explanation;
-
-  const IncorrectStatementQuestionContent({
-    required super.id,
-    required super.title,
-    required this.question,
-    required this.options,
-    required this.correctAnswerIndices,
-    required this.explanation,
   });
 }
 

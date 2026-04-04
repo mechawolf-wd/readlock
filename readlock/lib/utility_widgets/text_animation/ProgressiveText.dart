@@ -629,25 +629,36 @@ class ProgressiveTextState extends State<ProgressiveText> with TickerProviderSta
   }
 
   // Build text with full layout, transitioning colors for revealed characters
+  // Only the last character gets partial opacity for a subtle fade-in
   Widget TextWithColorTransition(String fullText, int revealedPosition) {
     final TextStyle baseStyle = getConsistentTextStyle();
     final Color textColor = baseStyle.color ?? RLDS.black;
     final List<TextSpan> spans = [];
 
-    // Add revealed characters in black
     if (revealedPosition >= 0 && fullText.isNotEmpty) {
       final int actualRevealedLength = (revealedPosition + 1).clamp(0, fullText.length);
 
-      if (actualRevealedLength > 0) {
+      if (actualRevealedLength > 1) {
+        // All revealed characters except the last one - fully visible
         spans.add(
           TextSpan(
-            text: fullText.substring(0, actualRevealedLength),
+            text: fullText.substring(0, actualRevealedLength - 1),
             style: baseStyle.copyWith(color: textColor),
           ),
         );
       }
 
-      // Add remaining characters as transparent
+      // Last revealed character - partial opacity
+      if (actualRevealedLength > 0) {
+        spans.add(
+          TextSpan(
+            text: fullText[actualRevealedLength - 1],
+            style: baseStyle.copyWith(color: textColor.withValues(alpha: 0.5)),
+          ),
+        );
+      }
+
+      // Remaining characters as transparent
       if (actualRevealedLength < fullText.length) {
         spans.add(
           TextSpan(
@@ -657,7 +668,6 @@ class ProgressiveTextState extends State<ProgressiveText> with TickerProviderSta
         );
       }
     } else {
-      // All transparent if nothing revealed yet
       spans.add(
         TextSpan(
           text: fullText,
@@ -824,6 +834,7 @@ class ProgressiveTextState extends State<ProgressiveText> with TickerProviderSta
   }
 
   // Create text span with color transition based on reveal position
+  // Only the last revealed character gets partial opacity
   TextSpan createSpanWithColorTransition(
     String text,
     TextStyle style,
@@ -831,6 +842,7 @@ class ProgressiveTextState extends State<ProgressiveText> with TickerProviderSta
     int revealedLength,
   ) {
     final int endPosition = startPosition + text.length;
+    final Color baseColor = style.color ?? RLDS.black;
 
     // Fully revealed - use original color
     if (endPosition <= revealedLength) {
@@ -845,20 +857,34 @@ class ProgressiveTextState extends State<ProgressiveText> with TickerProviderSta
       );
     }
 
-    // Partially revealed - split into visible and transparent parts
+    // Partially revealed
     final int splitIndex = revealedLength - startPosition;
     final String visiblePart = text.substring(0, splitIndex);
     final String transparentPart = text.substring(splitIndex);
 
-    return TextSpan(
-      children: [
-        TextSpan(text: visiblePart, style: style),
-        TextSpan(
-          text: transparentPart,
-          style: style.copyWith(color: Colors.transparent),
-        ),
-      ],
+    final List<TextSpan> children = [];
+
+    // All visible except last char - fully opaque
+    if (visiblePart.length > 1) {
+      children.add(TextSpan(text: visiblePart.substring(0, visiblePart.length - 1), style: style));
+    }
+
+    // Last visible char - partial opacity
+    children.add(
+      TextSpan(
+        text: visiblePart[visiblePart.length - 1],
+        style: style.copyWith(color: baseColor.withValues(alpha: 0.5)),
+      ),
     );
+
+    children.add(
+      TextSpan(
+        text: transparentPart,
+        style: style.copyWith(color: Colors.transparent),
+      ),
+    );
+
+    return TextSpan(children: children);
   }
 
   // Helper methods
@@ -962,22 +988,21 @@ class CompletedSentenceWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Widget sentenceWidget = Div.column(
+    final Widget sentenceContent = Div.column(
       [SentenceText()],
       crossAxisAlignment: CrossAxisAlignment.start,
       padding: const [0, 0, progressiveTextDefaultBottomSpacing, 0],
     );
 
-    if (shouldBlur) {
-      sentenceWidget = BlurOverlay(
-        blurSigma: blurIntensity,
-        opacity: blurOpacity,
-        child: sentenceWidget,
-      );
-    }
-
     return Div.column(
-      [sentenceWidget],
+      [
+        BlurOverlay(
+          blurSigma: blurIntensity,
+          opacity: blurOpacity,
+          enabled: shouldBlur,
+          child: sentenceContent,
+        ),
+      ],
       crossAxisAlignment: CrossAxisAlignment.start,
       onTap: onTap,
     );

@@ -163,7 +163,7 @@ class CCTrueFalseQuestionState extends State<CCTrueFalseQuestion> {
           const Spacing.width(8),
 
           RLTypography.bodyMedium(
-            RLUIStrings.FILL_GAP_EXPLANATION_LABEL,
+            RLUIStrings.EXPLANATION_LABEL,
             color: RLDS.textPrimary.withValues(alpha: 0.8),
           ),
         ]),

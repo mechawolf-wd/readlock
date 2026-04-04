@@ -8,7 +8,6 @@ import 'package:readlock/constants/RLUIStrings.dart';
 import 'package:readlock/screens/CoursesScreen.dart';
 import 'package:readlock/screens/HomeScreen.dart';
 import 'package:readlock/screens/MyBookshelfScreen.dart';
-import 'package:readlock/screens/SandboxScreen.dart';
 import 'package:readlock/bottom_sheets/user/LoginBottomSheet.dart';
 
 class MainNavigation extends StatefulWidget {
@@ -37,7 +36,6 @@ class MainNavigationState extends State<MainNavigation> {
       const HomeScreen(),
       const CoursesScreen(),
       const MyBookshelfScreen(),
-      const SandboxScreen(),
     ];
 
     WidgetsBinding.instance.addPostFrameCallback(showLoginSheet);
@@ -137,9 +135,6 @@ class MainNavigationState extends State<MainNavigation> {
   static const Icon ExploreActiveIcon = Icon(Icons.explore_rounded);
   static const Icon BookshelfIcon = Icon(Icons.menu_book_outlined);
   static const Icon BookshelfActiveIcon = Icon(Icons.menu_book_rounded);
-  static const Icon SandboxIcon = Icon(Icons.science_outlined);
-  static const Icon SandboxActiveIcon = Icon(Icons.science_rounded);
-
   List<BottomNavigationBarItem> NavigationItems() {
     return [
       const BottomNavigationBarItem(
@@ -158,12 +153,6 @@ class MainNavigationState extends State<MainNavigation> {
         icon: BookshelfIcon,
         activeIcon: BookshelfActiveIcon,
         label: RLUIStrings.BOOKSHELF_TAB_LABEL,
-      ),
-
-      const BottomNavigationBarItem(
-        icon: SandboxIcon,
-        activeIcon: SandboxActiveIcon,
-        label: RLUIStrings.SANDBOX_TAB_LABEL,
       ),
     ];
   }

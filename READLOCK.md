@@ -16,10 +16,8 @@ already existing mockups)
 2. **Text** - Story segments, examples, and conceptual explanations
 3. **Question** - Multiple choice, true/false, application challenges, imaginative scenarios ("Imagine you are...")
 
-4. **Fill Gap** - Interactive completion exercises
-5. **Estimate** - Percentage-based prediction activities
-6. **Incorrect Statement** - Critical thinking and error identification
-7. **Reflection** - Personal application and synthesis prompts
+4. **Estimate** - Percentage-based prediction activities
+5. **Reflection** - Personal application and synthesis prompts
 8. **Outro** - Consolidation and forward momentum
 9. **Quote** - Memorable insights and key principles
 10. **Design Examples** - Visual demonstrations and case studies
@@ -46,7 +44,7 @@ already existing mockups)
 10. Engaging simple story for practical application (CCTextContent.dart)
 
 11. Interaction widget (true/false or estimation) (CCTrueFalseQuestion.dart or CCEstimatePercentage.dart)
-12. Interaction widget (different type from previous one) (CCFillGapQuestion.dart or CCIncorrectStatement.dart)
+12. Interaction widget (different type from previous one) (CCTrueFalseQuestion.dart or CCEstimatePercentage.dart)
 
 13. "Real Life Examples" slide with heading and graphic (CCDesignExamplesShowcase.dart)
 14. Summary cards (2/3 good & 2/3 bad examples) (CCDesignExamplesShowcase.dart)
@@ -233,7 +231,7 @@ Every course description must include a "Relevant for:" section that clearly ide
 
 - Stories → Text entities
 - Key principles → Quote entities
-- Applications → Question/Fill Gap entities
+- Applications → Question entities
 - Case studies → Design Examples or Text entities
 
 ### **Step 2: Writing Standards & Tone**

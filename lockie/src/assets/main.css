@@ -39,6 +39,14 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+  --color-header: var(--header);
+  --color-header-foreground: var(--header-foreground);
+  --color-markup-red: var(--markup-red);
+  --color-markup-green: var(--markup-green);
+  --color-success: var(--success);
+  --color-entity-text: var(--entity-text);
+  --color-entity-question: var(--entity-question);
+  --color-entity-emotional: var(--entity-emotional);
 }
 
 :root {
@@ -74,6 +82,14 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.577 0.245 27.325);
+  --header: oklch(0.2 0 0);
+  --header-foreground: oklch(0.985 0 0);
+  --markup-red: oklch(0.577 0.245 27.325);
+  --markup-green: oklch(0.532 0.157 149.214);
+  --success: oklch(0.532 0.157 149.214);
+  --entity-text: oklch(0.685 0.024 252.8);
+  --entity-question: oklch(0.623 0.214 259.1);
+  --entity-emotional: oklch(0.613 0.225 16.6);
 }
 
 .dark {
@@ -108,6 +124,14 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.704 0.191 22.216);
+  --header: oklch(0.15 0 0);
+  --header-foreground: oklch(0.985 0 0);
+  --markup-red: oklch(0.704 0.191 22.216);
+  --markup-green: oklch(0.6 0.178 155);
+  --success: oklch(0.6 0.178 155);
+  --entity-text: oklch(0.75 0.024 252.8);
+  --entity-question: oklch(0.7 0.18 259.1);
+  --entity-emotional: oklch(0.7 0.19 16.6);
 }
 
 @layer base {
@@ -123,12 +147,33 @@
   input, textarea, [contenteditable="true"], pre, code, .ProseMirror, .select-text {
     user-select: text;
   }
+  input::placeholder, textarea::placeholder, .ProseMirror [data-placeholder]::before {
+    color: var(--muted-foreground);
+    opacity: 0.5;
+  }
 }
 
 .sortable-ghost {
-  opacity: 0.2;
+  opacity: 1;
   pointer-events: none;
 }
+
+.sortable-ghost * {
+  visibility: hidden;
+}
+
+.sortable-ghost > div > div:first-child {
+  visibility: visible;
+  background: var(--foreground);
+  opacity: 0.08;
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.sortable-ghost > div > div:first-child * {
+  visibility: hidden;
+}
+
 
 .swipe-list-move,
 .reorder-list-move,

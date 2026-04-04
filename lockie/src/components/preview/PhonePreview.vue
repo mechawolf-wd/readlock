@@ -56,8 +56,17 @@ const progressRatio = computed(() => {
 })
 
 const courseColor = computed(() => {
-  return store.activeCourse?.color ?? '#666'
+  return store.activeCourse?.color ?? 'var(--muted-foreground)'
 })
+
+// * Resolve markup colors from CSS variables
+
+function getCssColor(varName: string): string {
+  return getComputedStyle(document.documentElement).getPropertyValue(varName).trim()
+}
+
+const markupRedColor = computed(() => getCssColor('--markup-red'))
+const markupGreenColor = computed(() => getCssColor('--markup-green'))
 
 // * Progressive text state
 
@@ -168,13 +177,6 @@ function handleContentTap() {
     return
   }
 
-  const isCurrentlyAnimating = isRevealing.value
-
-  if (isCurrentlyAnimating) {
-    completeCurrentSegment()
-    return
-  }
-
   const hasMoreSegments = activeSegmentIndex.value < textSegments.value.length - 1
 
   if (hasMoreSegments) {
@@ -258,7 +260,7 @@ function applyMarkupToSubstring(originalSegment: string, visibleChars: number): 
     const openMatch = originalSegment.substring(idx).match(/^<c:([gr])>/)
 
     if (openMatch) {
-      const color = openMatch[1] === 'r' ? '#dc2626' : '#16a34a'
+      const color = openMatch[1] === 'r' ? markupRedColor.value : markupGreenColor.value
 
       result += `<span style="color: ${color}; font-weight: 600;">`
       idx += openMatch[0].length
@@ -273,7 +275,14 @@ function applyMarkupToSubstring(originalSegment: string, visibleChars: number): 
       continue
     }
 
-    result += originalSegment[idx]
+    const isLastChar = cleanPos === visibleChars - 1
+
+    if (isLastChar) {
+      result += `<span class="char-reveal">${originalSegment[idx]}</span>`
+    } else {
+      result += originalSegment[idx]
+    }
+
     cleanPos++
     idx++
   }
@@ -290,9 +299,12 @@ function applyMarkupToSubstring(originalSegment: string, visibleChars: number): 
 }
 
 function renderColorMarkup(text: string): string {
+  const red = markupRedColor.value
+  const green = markupGreenColor.value
+
   return text
-    .replace(/<c:r>(.*?)<\/c:r>/g, '<span style="color: #dc2626; font-weight: 600;">$1</span>')
-    .replace(/<c:g>(.*?)<\/c:g>/g, '<span style="color: #16a34a; font-weight: 600;">$1</span>')
+    .replace(/<c:r>(.*?)<\/c:r>/g, `<span style="color: ${red}; font-weight: 600;">$1</span>`)
+    .replace(/<c:g>(.*?)<\/c:g>/g, `<span style="color: ${green}; font-weight: 600;">$1</span>`)
 }
 
 function stripMarkup(text: string): string {
@@ -358,12 +370,12 @@ function getLabel(entityType: string): string {
             <!-- * Text / Intro / Outro — progressive reveal with blur -->
             <template v-if="isTextSwipe">
               <template v-for="(segment, segmentIndex) in textSegments" :key="segmentIndex">
-                <!-- Image segments -->
+                <!-- Image segments (never blurred) -->
                 <img
                   v-if="isImageSegment(segment)"
                   :src="getImagePath(segment)"
                   class="rounded-lg segment-transition"
-                  :class="{ 'segment-hidden': isSegmentHidden(Number(segmentIndex)), 'segment-blurred': shouldBlurSegment(Number(segmentIndex)) }"
+                  :class="{ 'segment-hidden': isSegmentHidden(Number(segmentIndex)) }"
                 />
 
                 <!-- Text segments -->
@@ -380,11 +392,15 @@ function getLabel(entityType: string): string {
             <template v-else-if="'question' in currentSwipe && 'options' in currentSwipe">
               <p class="text-sm font-medium text-card-foreground leading-relaxed" v-html="renderColorMarkup((currentSwipe as any).question)" />
 
-              <div class="flex flex-col gap-2 mt-2">
+              <div
+                class="mt-2 gap-2"
+                :class="(currentSwipe as any)['entity-type'] === 'true-false-question' ? 'flex' : 'flex flex-col'"
+              >
                 <div
                   v-for="(option, optionIndex) in (currentSwipe as any).options"
                   :key="optionIndex"
                   class="px-4 py-3 rounded-xl border text-sm text-card-foreground"
+                  :class="(currentSwipe as any)['entity-type'] === 'true-false-question' ? 'flex-1 text-center' : ''"
                   :style="{ borderColor: (currentSwipe as any)['correct-answer-indices']?.includes(optionIndex) ? courseColor : 'var(--border)' }"
                 >
                   {{ option.text }}
@@ -417,15 +433,6 @@ function getLabel(entityType: string): string {
               </div>
             </template>
 
-            <!-- * Skill Check -->
-            <template v-else-if="(currentSwipe as any)['entity-type'] === 'skill-check'">
-              <div class="flex-1 flex flex-col items-center justify-center gap-4 py-12">
-                <div class="text-3xl" :style="{ color: courseColor }">✦</div>
-                <p class="text-sm font-semibold text-card-foreground">{{ (currentSwipe as any).title || 'Skill Check' }}</p>
-                <p class="text-xs text-muted-foreground text-center">{{ (currentSwipe as any).subtitle || 'Test your understanding' }}</p>
-              </div>
-            </template>
-
             <!-- * Fallback -->
             <template v-else>
               <p class="text-xs text-muted-foreground text-center py-8">{{ getLabel((currentSwipe as any)['entity-type']) }}</p>
@@ -437,21 +444,21 @@ function getLabel(entityType: string): string {
       <!-- Bottom navigation -->
       <div class="h-12 border-t border-border flex items-center justify-between px-6 shrink-0">
         <button class="text-xs text-muted-foreground hover:text-card-foreground transition-colors" @click.stop="handlePrevious">← Back</button>
-        <span class="text-[10px] text-muted-foreground">{{ currentIndex + 1 }} / {{ swipes.length }}</span>
+        <span class="text-xs text-muted-foreground">{{ currentIndex + 1 }} / {{ swipes.length }}</span>
         <button class="text-xs text-muted-foreground hover:text-card-foreground transition-colors" @click.stop="handleNext">Next →</button>
       </div>
     </div>
 
     <!-- Viewer controls -->
     <div v-if="isTextSwipe" class="w-[320px] flex items-center gap-4 text-xs text-muted-foreground">
-      <Button variant="outline" size="sm" class="ml-auto h-9 gap-1.5" @click="revealAllInstantly"><Eye class="h-4 w-4" /> Reveal all</Button>
+      <Button variant="outline" size="icon" class="ml-auto h-9 w-9" @click="revealAllInstantly"><Eye class="h-4 w-4" /></Button>
     </div>
   </div>
 </template>
 
 <style scoped>
 .segment-transition {
-  transition: opacity 0.3s;
+  transition: opacity 0.3s, filter 0.4s ease-out;
 }
 
 .segment-hidden {
@@ -461,5 +468,19 @@ function getLabel(entityType: string): string {
 .segment-blurred {
   filter: blur(3px);
   opacity: 0.25;
+}
+
+@keyframes char-fade-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+:deep(.char-reveal) {
+  animation: char-fade-in 0.15s ease-out forwards;
 }
 </style>

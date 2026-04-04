@@ -158,7 +158,7 @@ class ReaderPassScreenState extends State<ReaderPassScreen> {
       {
         'icon': Icons.psychology,
         'title': 'Interactive Lessons',
-        'description': 'Skill checks and reflections',
+        'description': 'Quizzes and reflections',
       },
       {
         'icon': Icons.stars,

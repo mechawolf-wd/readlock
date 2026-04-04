@@ -2,10 +2,11 @@
 
 import { defineStore } from 'pinia'
 import { ref, computed, watch } from 'vue'
-import type { CourseData, Accelerator, Segment, Package, Swipe, EntityType } from '@/types/Course'
+import type { CourseData, Accelerator, Package, Swipe, EntityType } from '@/types/Course'
 
-// * LocalStorage key
+// * LocalStorage keys
 const STORAGE_KEY = 'lockie-course-data'
+const TRASH_STORAGE_KEY = 'lockie-course-trash'
 
 // * UID generator for drag-and-drop keys
 let uidCounter = 0
@@ -48,6 +49,7 @@ export const useCourseStore = defineStore('course', () => {
   // * State
 
   const courseData = ref<CourseData>({ language: 'EN', courses: [] })
+  const trashedCourses = ref<Accelerator[]>([])
   const activeCourseIndex = ref<number | null>(null)
   const activeSegmentIndex = ref<number>(0)
   const activePackageIndex = ref<number>(0)
@@ -138,18 +140,79 @@ export const useCourseStore = defineStore('course', () => {
 
       ensureSwipeUids(parsed)
       courseData.value = parsed
-      return true
     }
 
-    return false
+    const storedTrash = localStorage.getItem(TRASH_STORAGE_KEY)
+    const hasStoredTrash = storedTrash !== null
+
+    if (hasStoredTrash) {
+      trashedCourses.value = JSON.parse(storedTrash!)
+    }
+
+    return hasStoredData
   }
 
   function saveToStorage() {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(courseData.value))
   }
 
-  // * Auto-save on any course data change
-  watch(courseData, saveToStorage, { deep: true })
+  function saveTrashToStorage() {
+    localStorage.setItem(TRASH_STORAGE_KEY, JSON.stringify(trashedCourses.value))
+  }
+
+  // * Auto-save on any course data change (debounced)
+
+  let saveTimeout: ReturnType<typeof setTimeout> | null = null
+
+  function debouncedSave() {
+    if (saveTimeout) {
+      clearTimeout(saveTimeout)
+    }
+
+    saveTimeout = setTimeout(saveToStorage, 300)
+  }
+
+  watch(courseData, debouncedSave, { deep: true })
+  watch(trashedCourses, saveTrashToStorage, { deep: true })
+
+  // * Course trash actions
+
+  function trashCourse(index: number) {
+    const course = courseData.value.courses.splice(index, 1)[0]
+
+    if (course) {
+      trashedCourses.value.push(course)
+    }
+
+    const wasActiveCourse = activeCourseIndex.value === index
+    const hasRemainingCourses = courseData.value.courses.length > 0
+
+    if (wasActiveCourse) {
+      if (hasRemainingCourses) {
+        selectCourse(0)
+      } else {
+        activeCourseIndex.value = null
+        activeSegmentIndex.value = 0
+        activePackageIndex.value = 0
+        activeSwipeUid.value = null
+      }
+    } else if (activeCourseIndex.value !== null && activeCourseIndex.value > index) {
+      activeCourseIndex.value--
+    }
+  }
+
+  function restoreCourse(trashIndex: number) {
+    const course = trashedCourses.value.splice(trashIndex, 1)[0]
+
+    if (course) {
+      ensureSwipeUids({ language: 'EN', courses: [course] })
+      courseData.value.courses.push(course)
+    }
+  }
+
+  function permanentlyDeleteCourse(trashIndex: number) {
+    trashedCourses.value.splice(trashIndex, 1)
+  }
 
   function selectCourse(index: number) {
     activeCourseIndex.value = index
@@ -445,8 +508,73 @@ export const useCourseStore = defineStore('course', () => {
     loadCourseData(parsed)
   }
 
+  function importCourse(course: Accelerator) {
+    // Assign UIDs to all swipes and their options
+    for (const segment of course.segments) {
+      for (const pkg of segment.lessons) {
+        for (const swipe of pkg.content) {
+          (swipe as any)._uid = generateUid()
+
+          const hasOptions = 'options' in swipe && Array.isArray((swipe as any).options)
+
+          if (hasOptions) {
+            for (const option of (swipe as any).options) {
+              option._uid = generateUid()
+            }
+          }
+        }
+      }
+    }
+
+    courseData.value.courses.push(course)
+
+    const newCourseIndex = courseData.value.courses.length - 1
+
+    selectCourse(newCourseIndex)
+  }
+
+  function importPackageFromSwipes(title: string, swipes: Swipe[]) {
+    const hasNoSegment = !activeSegment.value
+
+    if (hasNoSegment) {
+      return
+    }
+
+    // Assign UIDs to all swipes and their options
+    for (const swipe of swipes) {
+      (swipe as any)._uid = generateUid()
+
+      const hasOptions = 'options' in swipe && Array.isArray((swipe as any).options)
+
+      if (hasOptions) {
+        for (const option of (swipe as any).options) {
+          option._uid = generateUid()
+        }
+      }
+    }
+
+    const packageCount = activeSegment.value!.lessons.length
+    const newPackage: Package = {
+      'lesson-id': `package-${packageCount + 1}`,
+      title,
+      isFree: false,
+      content: swipes,
+    }
+
+    activeSegment.value!.lessons.push(newPackage)
+    activePackageIndex.value = activeSegment.value!.lessons.length - 1
+    activeSwipeUid.value = null
+
+    const hasSwipes = swipes.length > 0
+
+    if (hasSwipes) {
+      activeSwipeUid.value = (swipes[0] as any)._uid
+    }
+  }
+
   return {
     courseData,
+    trashedCourses,
     activeCourseIndex,
     activeSegmentIndex,
     activePackageIndex,
@@ -458,6 +586,9 @@ export const useCourseStore = defineStore('course', () => {
     loadCourseData,
     loadFromStorage,
     saveToStorage,
+    trashCourse,
+    restoreCourse,
+    permanentlyDeleteCourse,
     selectCourse,
     selectSegment,
     selectPackage,
@@ -478,6 +609,8 @@ export const useCourseStore = defineStore('course', () => {
     clearSwipeSelection,
     exportJSON,
     importJSON,
+    importCourse,
+    importPackageFromSwipes,
   }
 })
 
@@ -512,22 +645,6 @@ function createEmptySwipe(entityType: EntityType): Swipe {
         'correct-answer-indices': [50],
       }
     }
-    case 'fill-gap-question': {
-      return {
-        'entity-type': 'fill-gap-question',
-        question: '', explanation: '', hint: '',
-        options: [{ text: '' }],
-        'correct-answer-indices': [0],
-      }
-    }
-    case 'incorrect-statement-question': {
-      return {
-        'entity-type': 'incorrect-statement-question',
-        question: '', explanation: '',
-        options: [{ text: '' }, { text: '' }, { text: '' }],
-        'correct-answer-indices': [0],
-      }
-    }
     case 'emotional-slide': {
       return { 'entity-type': 'emotional-slide', text: '', icon: 'check' }
     }
@@ -536,9 +653,6 @@ function createEmptySwipe(entityType: EntityType): Swipe {
     }
     case 'quote': {
       return { 'entity-type': 'quote', quote: '', author: '' }
-    }
-    case 'skill-check': {
-      return { 'entity-type': 'skill-check', title: 'Skill Check', subtitle: 'Test your understanding', icon: 'check' }
     }
   }
 }
