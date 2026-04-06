@@ -641,8 +641,8 @@ function createEmptySwipe(entityType: EntityType): Swipe {
       return {
         'entity-type': 'estimate-percentage-question',
         question: '', explanation: '',
-        options: [],
         'correct-answer-indices': [50],
+        'close-threshold': 10,
       }
     }
     case 'emotional-slide': {

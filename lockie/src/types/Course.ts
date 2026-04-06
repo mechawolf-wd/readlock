@@ -79,8 +79,8 @@ export interface EstimatePercentageQuestionBlock {
   question: string
   explanation: string
   hint?: string
-  options: QuestionOption[]
   'correct-answer-indices': number[]
+  'close-threshold'?: number
 }
 
 export interface EmotionalSlideBlock {

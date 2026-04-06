@@ -41,6 +41,7 @@ import {
   X,
   ChevronUp,
   ChevronDown,
+  Plus,
   PlusCircle,
   Settings,
   Undo2,
@@ -84,7 +85,9 @@ const router = useRouter();
 
 const showCourseConfigDialog = ref(false);
 const showCourseSelectDialog = ref(false);
+const showTrashSection = ref(false);
 const showAddSwipeDialog = ref(false);
+const showAddSwipeBottomDialog = ref(false);
 const showJsonView = ref(false);
 const openSegmentSettingsIndex = ref<number | null>(null);
 const openPackageSettingsIndex = ref<number | null>(null);
@@ -110,6 +113,7 @@ const importCourseInput = ref("");
 const courseFileInputRef = ref<HTMLInputElement | null>(null);
 
 const sidebarScrollRef = ref<HTMLElement | null>(null);
+const phonePreviewRef = ref<InstanceType<typeof PhonePreview> | null>(null);
 
 // * Sortable drag-and-drop for swipes
 
@@ -476,6 +480,11 @@ function handleMoveSwipeDown() {
 function handleAddSwipe(entityType: EntityType) {
   store.addSwipe(entityType);
   showAddSwipeDialog.value = false;
+  showAddSwipeBottomDialog.value = false;
+}
+
+function copyToClipboard(text: string) {
+  navigator.clipboard.writeText(text);
 }
 
 function handleExport() {
@@ -717,80 +726,102 @@ function getNavItemStyle(isSelected: boolean): Record<string, string> {
             <DialogContent class="max-w-sm">
               <DialogHeader>
                 <DialogTitle>Courses</DialogTitle>
+                <DialogDescription>
+                  {{ store.courseData.courses.length }} course{{ store.courseData.courses.length !== 1 ? 's' : '' }}
+                </DialogDescription>
               </DialogHeader>
-              <div class="flex flex-col gap-2">
+
+              <div class="flex flex-col gap-1.5">
                 <!-- Course list -->
                 <div
                   v-for="(course, courseIndex) in store.courseData.courses"
                   :key="courseIndex"
-                  class="flex items-center gap-2 px-4 py-3 rounded-lg border border-border cursor-pointer hover:bg-accent transition-colors"
+                  class="group flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer transition-colors"
+                  :class="courseIndex === store.activeCourseIndex
+                    ? 'bg-primary/10 ring-1 ring-primary/20'
+                    : 'hover:bg-accent'"
                   @click="
                     store.selectCourse(courseIndex);
-                    showCourseSelectDialog = false;
+                  showCourseSelectDialog = false;
                   "
                 >
+                  <!-- Course info -->
                   <div class="flex-1 min-w-0">
-                    <div class="font-medium text-sm">{{ course.title }}</div>
-                    <div class="text-xs text-muted-foreground">
-                      {{ course.author }}
+                    <div class="font-medium text-sm truncate">{{ course.title }}</div>
+                    <div class="text-xs text-muted-foreground mt-0.5">
+                      {{ course.author }} · {{ course.segments.length }} segments
                     </div>
                   </div>
 
+                  <!-- Trash button -->
                   <Button
                     variant="ghost"
                     size="icon"
-                    class="h-7 w-7 shrink-0 text-muted-foreground hover:text-destructive"
+                    class="h-7 w-7 shrink-0 opacity-0 group-hover:opacity-100 text-muted-foreground hover:text-destructive transition-opacity"
                     @click.stop="store.trashCourse(courseIndex)"
                   >
                     <Trash2 class="h-3.5 w-3.5" />
                   </Button>
                 </div>
 
-                <Separator />
+                <!-- Empty state -->
+                <div
+                  v-if="store.courseData.courses.length === 0"
+                  class="py-8 text-center text-sm text-muted-foreground"
+                >
+                  No courses yet
+                </div>
 
-                <Button
-                  variant="outline"
-                  class="w-full"
-                  @click="handleCreateNewCourse"
-                ><PlusCircle class="h-4 w-4" /></Button>
-
-                <!-- Trash section -->
+                <!-- Trash toggle -->
                 <template v-if="store.trashedCourses.length > 0">
-                  <Separator />
+                  <Separator class="mt-2" />
 
-                  <div class="text-xs text-muted-foreground font-medium px-1">
-                    Trash
-                  </div>
-
-                  <div
-                    v-for="(course, trashIndex) in store.trashedCourses"
-                    :key="`trash-${trashIndex}`"
-                    class="flex items-center gap-2 px-4 py-2 rounded-lg border border-border border-dashed opacity-60"
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    class="w-full justify-start gap-2 text-muted-foreground"
+                    @click="showTrashSection = !showTrashSection"
                   >
-                    <div class="flex-1 min-w-0">
-                      <div class="font-medium text-sm">{{ course.title }}</div>
+                    <Trash2 class="h-3 w-3" />
+                    Trash ({{ store.trashedCourses.length }})
+                    <ChevronDown
+                      class="h-3 w-3 ml-auto transition-transform"
+                      :class="showTrashSection ? 'rotate-180' : ''"
+                    />
+                  </Button>
+
+                  <!-- Trash items -->
+                  <template v-if="showTrashSection">
+                    <div
+                      v-for="(course, trashIndex) in store.trashedCourses"
+                      :key="`trash-${trashIndex}`"
+                      class="flex items-center gap-2 px-3 py-2 rounded-lg border border-dashed border-border/60 opacity-50"
+                    >
+                      <div class="flex-1 min-w-0">
+                        <div class="font-medium text-sm truncate">{{ course.title }}</div>
+                      </div>
+
+                      <!-- Restore -->
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        class="h-7 w-7 shrink-0 text-muted-foreground hover:text-foreground"
+                        @click="store.restoreCourse(trashIndex)"
+                      >
+                        <RotateCcw class="h-3.5 w-3.5" />
+                      </Button>
+
+                      <!-- Permanent delete -->
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        class="h-7 w-7 shrink-0 text-muted-foreground hover:text-destructive"
+                        @click="store.permanentlyDeleteCourse(trashIndex)"
+                      >
+                        <X class="h-3.5 w-3.5" />
+                      </Button>
                     </div>
-
-                    <!-- Restore -->
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      class="h-7 w-7 shrink-0 text-muted-foreground hover:text-foreground"
-                      @click="store.restoreCourse(trashIndex)"
-                    >
-                      <RotateCcw class="h-3.5 w-3.5" />
-                    </Button>
-
-                    <!-- Permanent delete -->
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      class="h-7 w-7 shrink-0 text-muted-foreground hover:text-destructive"
-                      @click="store.permanentlyDeleteCourse(trashIndex)"
-                    >
-                      <X class="h-3.5 w-3.5" />
-                    </Button>
-                  </div>
+                  </template>
                 </template>
               </div>
             </DialogContent>
@@ -823,75 +854,95 @@ function getNavItemStyle(isSelected: boolean): Record<string, string> {
               /></Button>
             </DialogTrigger>
             <DialogContent class="max-w-lg max-h-[85vh] overflow-auto">
-              <DialogHeader
-                ><DialogTitle>Course Settings</DialogTitle></DialogHeader
-              >
-              <div v-if="hasActiveCourse" class="flex flex-col gap-4">
+              <DialogHeader>
+                <DialogTitle>Course Settings</DialogTitle>
+              </DialogHeader>
+
+              <div v-if="hasActiveCourse" class="flex flex-col gap-6">
+                <!-- Title -->
                 <div class="flex flex-col gap-2">
                   <label class="text-sm text-muted-foreground">Title</label>
                   <Input v-model="store.activeCourse!.title" />
                 </div>
+
+                <!-- Author -->
                 <div class="flex flex-col gap-2">
                   <label class="text-sm text-muted-foreground">Author</label>
                   <Input v-model="store.activeCourse!.author" />
                 </div>
+
+                <!-- Description -->
                 <div class="flex flex-col gap-2">
-                  <label class="text-sm text-muted-foreground"
-                    >Description</label
-                  >
+                  <label class="text-sm text-muted-foreground">Description</label>
                   <Textarea
                     v-model="store.activeCourse!.description"
                     class="min-h-20"
                   />
                 </div>
+
+                <Separator />
+
+                <!-- Theme Color -->
                 <div class="flex flex-col gap-2">
-                  <label class="text-sm text-muted-foreground"
-                    >Theme Color</label
-                  >
+                  <label class="text-sm text-muted-foreground">Theme Color</label>
                   <div class="flex items-center gap-3">
                     <input
                       type="color"
                       :value="store.activeCourse!.color"
-                      class="w-10 h-10 rounded-md border border-border cursor-pointer"
-                      @input="
-                        (e: any) => (store.activeCourse!.color = e.target.value)
-                      "
+                      class="w-10 h-10 rounded-md border border-border cursor-pointer bg-transparent"
+                      @input="(e: any) => (store.activeCourse!.color = e.target.value)"
                     />
-                    <Input v-model="store.activeCourse!.color" class="flex-1" />
+                    <Input
+                      v-model="store.activeCourse!.color"
+                      variant="subtle"
+                      class="flex-1 font-mono"
+                    />
                   </div>
                 </div>
-                <div class="flex flex-col gap-2">
-                  <label class="text-sm text-muted-foreground"
-                    >Relevant For</label
-                  >
+
+                <Separator />
+
+                <!-- Relevant For -->
+                <div class="flex flex-col gap-4">
+                  <div class="flex items-center justify-between">
+                    <label class="text-sm text-muted-foreground">Relevant For</label>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      class="h-8 w-8"
+                      @click="handleAddRelevantFor"
+                    >
+                      <Plus class="h-4 w-4" />
+                    </Button>
+                  </div>
+
                   <div
-                    v-for="(_, itemIndex) in store.activeCourse![
-                      'relevant-for'
-                    ]"
+                    v-for="(_, itemIndex) in store.activeCourse!['relevant-for']"
                     :key="itemIndex"
-                    class="flex gap-2"
+                    class="flex gap-2 items-center"
                   >
                     <Input
                       v-model="store.activeCourse!['relevant-for'][itemIndex]"
-                      class="flex-1 h-9"
+                      variant="subtle"
+                      class="flex-1"
                     />
                     <Button
                       variant="ghost"
                       size="icon"
-                      class="shrink-0 h-8 w-8 hover:bg-muted hover:text-foreground"
+                      class="shrink-0 h-8 w-8 text-muted-foreground hover:text-destructive"
                       @click="handleRemoveRelevantFor(Number(itemIndex))"
-                      ><X class="h-4 w-4"
-                    /></Button>
+                    >
+                      <X class="h-4 w-4" />
+                    </Button>
                   </div>
-                  <Button
-                    variant="outline"
-                    class="w-full"
-                    @click="handleAddRelevantFor"
-                    ><PlusCircle class="h-4 w-4"
-                  /></Button>
                 </div>
-                <div class="flex flex-col gap-2">
+
+                <Separator />
+
+                <!-- Genres -->
+                <div class="flex flex-col gap-4">
                   <label class="text-sm text-muted-foreground">Genres</label>
+
                   <div class="flex flex-wrap gap-2">
                     <Badge
                       v-for="(genre, genreIndex) in store.activeCourse!.genres"
@@ -899,27 +950,35 @@ function getNavItemStyle(isSelected: boolean): Record<string, string> {
                       variant="secondary"
                       class="cursor-pointer hover:bg-muted gap-1"
                       @click="handleRemoveGenre(genreIndex)"
-                      >{{ genre }} <X class="h-3 w-3"
-                    /></Badge>
+                    >
+                      {{ genre }} <X class="h-3 w-3" />
+                    </Badge>
                   </div>
-                  <div class="flex flex-wrap gap-2 pt-1">
+
+                  <div class="flex flex-wrap gap-2">
                     <Badge
                       v-for="genre in availableGenres"
                       :key="genre"
                       variant="outline"
                       class="cursor-pointer hover:bg-accent"
                       @click="handleAddGenre(genre)"
-                      >+ {{ genre }}</Badge
                     >
+                      + {{ genre }}
+                    </Badge>
                   </div>
                 </div>
+
                 <Separator />
+
+                <!-- AI Fill -->
                 <Button
                   variant="outline"
-                  class="w-full"
+                  class="w-full gap-2 text-muted-foreground"
                   @click="handleAIFillCourse"
-                  ><Sparkles class="h-4 w-4" /> Fill</Button
                 >
+                  <Sparkles class="h-4 w-4" />
+                  Fill with AI
+                </Button>
               </div>
             </DialogContent>
           </Dialog>
@@ -1424,52 +1483,40 @@ function getNavItemStyle(isSelected: boolean): Record<string, string> {
 
               <span class="flex-1" />
 
-              <!-- Add dialog -->
-              <Dialog v-model:open="showAddSwipeDialog">
-                <DialogTrigger as-child>
+              <!-- Add swipe popover -->
+              <Popover v-model:open="showAddSwipeDialog">
+                <PopoverTrigger as-child>
                   <Button variant="ghost" size="icon" class="h-8 w-8"
                     ><PlusCircle class="h-4 w-4"
                   /></Button>
-                </DialogTrigger>
-                <DialogContent class="max-w-md">
-                  <DialogHeader
-                    ><DialogTitle>Add Swipe</DialogTitle></DialogHeader
-                  >
-                  <div class="flex flex-col gap-4">
-                    <div
-                      v-for="group in ENTITY_TYPE_GROUPS"
+                </PopoverTrigger>
+                <PopoverContent side="bottom" align="start" :side-offset="4" class="w-48 p-1.5">
+                  <div class="flex flex-col">
+                    <template
+                      v-for="(group, groupIndex) in ENTITY_TYPE_GROUPS"
                       :key="group.label"
-                      class="flex flex-col gap-2"
                     >
-                      <label
-                        class="text-xs text-muted-foreground uppercase tracking-wider"
-                        >{{ group.label }}</label
+                      <Separator v-if="groupIndex > 0" class="my-1" />
+
+                      <Button
+                        v-for="entityType in group.types"
+                        :key="entityType"
+                        variant="ghost"
+                        size="sm"
+                        class="w-full justify-start gap-2"
+                        @click="handleAddSwipe(entityType)"
                       >
-                      <div class="grid grid-cols-3 gap-2">
-                        <Button
-                          v-for="entityType in group.types"
-                          :key="entityType"
-                          variant="outline"
-                          class="flex flex-col items-center justify-center gap-2 p-3 h-auto text-center"
-                          :style="{
-                            borderColor: `color-mix(in srgb, ${ENTITY_TYPE_COLORS[entityType]} 25%, transparent)`,
-                          }"
-                          @click="handleAddSwipe(entityType)"
-                        >
-                          <component
-                            :is="ENTITY_TYPE_ICONS[entityType]"
-                            class="h-5 w-5"
-                            :style="{ color: ENTITY_TYPE_COLORS[entityType] }"
-                          />
-                          <span class="text-xs font-medium">{{
-                            ENTITY_TYPE_LABELS[entityType]
-                          }}</span>
-                        </Button>
-                      </div>
-                    </div>
+                        <component
+                          :is="ENTITY_TYPE_ICONS[entityType]"
+                          class="h-4 w-4 shrink-0"
+                          :style="{ color: ENTITY_TYPE_COLORS[entityType] }"
+                        />
+                        {{ ENTITY_TYPE_LABELS[entityType] }}
+                      </Button>
+                    </template>
                   </div>
-                </DialogContent>
-              </Dialog>
+                </PopoverContent>
+              </Popover>
             </div>
 
             <!-- Ordering controls -->
@@ -1570,6 +1617,45 @@ function getNavItemStyle(isSelected: boolean): Record<string, string> {
                   </Button>
                 </div>
               </TransitionGroup>
+
+              <!-- Add swipe area -->
+              <Popover v-model:open="showAddSwipeBottomDialog">
+                <PopoverTrigger as-child>
+                  <div class="px-2 pb-2">
+                    <div
+                      class="rounded-lg border border-dashed border-transparent hover:border-border flex items-center justify-center h-10 cursor-pointer transition-colors group/add"
+                    >
+                      <Plus class="h-4 w-4 text-transparent group-hover/add:text-muted-foreground transition-colors" />
+                    </div>
+                  </div>
+                </PopoverTrigger>
+                <PopoverContent side="bottom" align="start" :side-offset="4" class="w-48 p-1.5">
+                  <div class="flex flex-col">
+                    <template
+                      v-for="(group, groupIndex) in ENTITY_TYPE_GROUPS"
+                      :key="group.label"
+                    >
+                      <Separator v-if="groupIndex > 0" class="my-1" />
+
+                      <Button
+                        v-for="entityType in group.types"
+                        :key="entityType"
+                        variant="ghost"
+                        size="sm"
+                        class="w-full justify-start gap-2"
+                        @click="handleAddSwipe(entityType)"
+                      >
+                        <component
+                          :is="ENTITY_TYPE_ICONS[entityType]"
+                          class="h-4 w-4 shrink-0"
+                          :style="{ color: ENTITY_TYPE_COLORS[entityType] }"
+                        />
+                        {{ ENTITY_TYPE_LABELS[entityType] }}
+                      </Button>
+                    </template>
+                  </div>
+                </PopoverContent>
+              </Popover>
             </ScrollArea>
           </div>
 
@@ -1581,10 +1667,10 @@ function getNavItemStyle(isSelected: boolean): Record<string, string> {
                 :block="store.activeSwipe!"
               />
 
-              <!-- Next swipe area — click empty space below editor to go to next swipe -->
+              <!-- Next segment reveal — click empty space below editor to advance preview text -->
               <div
                 class="flex-1 min-h-[120px] cursor-pointer"
-                @click="navigateSwipe(1)"
+                @click="phonePreviewRef?.handleContentTap()"
               />
             </div>
             <div
@@ -1600,7 +1686,7 @@ function getNavItemStyle(isSelected: boolean): Record<string, string> {
       <!-- Right: preview + JSON toggle -->
       <aside class="w-[380px] border-l border-border flex flex-col shrink-0">
         <div class="flex-1 flex items-center justify-center p-6 bg-muted/30">
-          <PhonePreview />
+          <PhonePreview ref="phonePreviewRef" />
         </div>
         <div
           class="p-4 border-t border-border flex items-center justify-center"
@@ -1621,20 +1707,18 @@ function getNavItemStyle(isSelected: boolean): Record<string, string> {
     <Dialog v-model:open="showImportTextDialog">
       <DialogContent class="max-w-7xl max-h-[85vh] flex flex-col">
         <DialogHeader>
-          <DialogTitle>Import Package from Text</DialogTitle>
+          <DialogTitle>Import Package</DialogTitle>
           <DialogDescription>
-            Paste or upload a
-            <span class="font-mono font-semibold">.rlockie</span> file to
-            generate a package.
+            Paste <span class="font-mono font-semibold">.rlockie</span> text or upload a file.
           </DialogDescription>
         </DialogHeader>
 
-        <div class="flex gap-6 flex-1 overflow-hidden">
+        <div class="flex-1 flex gap-4 overflow-hidden">
           <!-- Text input -->
           <div class="flex-1 flex flex-col overflow-hidden">
             <Textarea
               v-model="importTextInput"
-              placeholder="text::&#10;First segment of text.&#10;Second segment.&#10;&#10;question::&#10;What is 2+2?&#10;&#10;answer=correct: 4&#10;consequence: Correct!&#10;&#10;answer: 3&#10;consequence: Not quite.&#10;&#10;explanation: Basic arithmetic."
+              placeholder="@text&#10;First segment of text.&#10;Second segment.&#10;Use &lt;c:r&gt;red&lt;/c:r&gt; or &lt;c:g&gt;green&lt;/c:g&gt; for color.&#10;&#10;@question&#10;What is 2+2?&#10;&#10;answer: 4&#10;consequence: Correct!&#10;&#10;answer: 3&#10;consequence: Not quite.&#10;&#10;correct_answers: 1&#10;explanation: Basic arithmetic.&#10;hint: Think simple."
               class="flex-1 min-h-[300px] font-mono text-sm !field-sizing-normal"
             />
           </div>
@@ -1644,33 +1728,33 @@ function getNavItemStyle(isSelected: boolean): Record<string, string> {
             v-if="showFormatGuide"
             class="w-80 flex flex-col border border-border rounded-lg overflow-hidden shrink-0"
           >
-            <!-- Block list -->
-            <div
-              class="flex flex-wrap gap-1 p-2 border-b border-border bg-muted/30"
-            >
-              <button
+            <!-- Block tabs -->
+            <div class="flex flex-wrap gap-1 p-2 border-b border-border bg-muted/30 shrink-0">
+              <Button
                 v-for="block in PACKAGE_TEXT_FORMAT_GUIDE.blocks"
                 :key="block.tag"
-                class="px-2.5 py-1 text-xs rounded-md transition-colors cursor-pointer"
+                variant="ghost"
+                size="sm"
+                class="h-7 px-2 text-xs"
                 :class="selectedGuideBlock === block.tag
                   ? 'bg-accent text-accent-foreground font-medium'
-                  : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                  : 'text-muted-foreground'
                   "
                 @click="selectedGuideBlock = block.tag"
               >
                 {{ block.name }}
-              </button>
+              </Button>
             </div>
 
             <!-- Selected block detail -->
-            <ScrollArea class="flex-1 p-4">
+            <ScrollArea class="flex-1 h-0">
               <template
                 v-for="block in PACKAGE_TEXT_FORMAT_GUIDE.blocks"
                 :key="block.tag"
               >
                 <div
                   v-if="selectedGuideBlock === block.tag"
-                  class="flex flex-col gap-3"
+                  class="flex flex-col gap-3 p-4"
                 >
                   <p class="text-sm font-medium text-foreground font-mono">
                     {{ block.tag }}
@@ -1680,28 +1764,32 @@ function getNavItemStyle(isSelected: boolean): Record<string, string> {
                     {{ block.description }}
                   </p>
 
-                  <div v-if="block.syntax" class="flex flex-col gap-1">
-                    <p
-                      class="text-xs font-medium text-muted-foreground uppercase tracking-wide"
-                    >
+                  <div v-if="block.syntax" class="flex flex-col gap-1.5">
+                    <p class="text-xs font-medium text-muted-foreground uppercase tracking-wide">
                       Syntax
                     </p>
                     <pre
-                      class="text-xs text-muted-foreground font-mono whitespace-pre-wrap bg-muted/40 rounded-md px-3 py-2 leading-relaxed"
-                      >{{ block.syntax }}</pre
-                    >
+                      class="text-xs text-muted-foreground font-mono whitespace-pre-wrap bg-muted/40 rounded-md px-3 py-2 leading-relaxed select-text"
+                    >{{ block.syntax }}</pre>
                   </div>
 
-                  <div class="flex flex-col gap-1">
-                    <p
-                      class="text-xs font-medium text-muted-foreground uppercase tracking-wide"
-                    >
-                      Example
-                    </p>
+                  <div class="flex flex-col gap-1.5">
+                    <div class="flex items-center justify-between">
+                      <p class="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                        Example
+                      </p>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        class="h-6 px-1.5 text-xs text-muted-foreground"
+                        @click="copyToClipboard(block.example)"
+                      >
+                        Copy
+                      </Button>
+                    </div>
                     <pre
                       class="text-xs text-foreground/70 font-mono whitespace-pre-wrap bg-muted/40 rounded-md px-3 py-2 leading-relaxed select-text"
-                      >{{ block.example }}</pre
-                    >
+                    >{{ block.example }}</pre>
                   </div>
                 </div>
               </template>
@@ -1718,9 +1806,9 @@ function getNavItemStyle(isSelected: boolean): Record<string, string> {
         />
 
         <DialogFooter>
-          <Button variant="outline" @click="fileInputRef?.click()"
-            >Upload</Button
-          >
+          <Button variant="outline" @click="fileInputRef?.click()">
+            <Upload class="h-4 w-4" /> Upload
+          </Button>
 
           <Button variant="ghost" @click="showFormatGuide = !showFormatGuide">
             {{ showFormatGuide ? "Hide" : "Show" }} Guide
@@ -1728,9 +1816,7 @@ function getNavItemStyle(isSelected: boolean): Record<string, string> {
 
           <div class="flex-1" />
 
-          <Button variant="outline" @click="showImportTextDialog = false"
-            >Cancel</Button
-          >
+          <Button variant="outline" @click="showImportTextDialog = false">Cancel</Button>
           <Button @click="handleImportFromText">Import</Button>
         </DialogFooter>
       </DialogContent>
@@ -1745,14 +1831,14 @@ function getNavItemStyle(isSelected: boolean): Record<string, string> {
             Paste or upload a
             <span class="font-mono font-semibold">.rlockie</span> course file.
             The first section defines course info, packages are separated by
-            <span class="font-mono font-semibold">--------</span>.
+            <span class="font-mono font-semibold">@package</span>.
           </DialogDescription>
         </DialogHeader>
 
         <div class="flex-1 flex flex-col overflow-hidden">
           <Textarea
             v-model="importCourseInput"
-            placeholder="title: My Course&#10;author: Author Name&#10;description: A short description&#10;color: #6366f1&#10;genres: design, psychology&#10;relevant_for: Designers, Developers&#10;&#10;--------&#10;&#10;text::&#10;First swipe of package 1.&#10;&#10;question::&#10;What is 2+2?&#10;&#10;answer=correct: 4&#10;consequence: Correct!&#10;&#10;answer: 3&#10;consequence: Not quite.&#10;&#10;explanation: Basic arithmetic.&#10;&#10;--------&#10;&#10;text::&#10;First swipe of package 2."
+            placeholder="@course&#10;&#10;title: My Course&#10;author: Author Name&#10;description: A short description&#10;color: #6366f1&#10;genres: design, psychology&#10;relevant_for: Designers, Developers&#10;&#10;@segment&#10;Segment Title&#10;ST&#10;&#10;@package&#10;&#10;@text&#10;First segment of text.&#10;Second segment.&#10;&#10;@question&#10;What is 2+2?&#10;&#10;answer: 4&#10;consequence: Correct!&#10;&#10;answer: 3&#10;consequence: Not quite.&#10;&#10;correct_answers: 1&#10;explanation: Basic arithmetic.&#10;hint: Think simple.&#10;&#10;@package&#10;&#10;@text&#10;First swipe of package 2."
             class="flex-1 min-h-[300px] font-mono text-sm !field-sizing-normal"
           />
         </div>

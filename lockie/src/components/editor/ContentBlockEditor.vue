@@ -626,14 +626,16 @@ const currentGuideline = computed(() => {
               <span class="text-xs font-medium uppercase tracking-wider" :style="{ color: entityColor }">{{ group.label }}</span>
 
               <div class="flex flex-wrap gap-2">
-                <button
+                <Button
                   v-for="action in group.actions"
                   :key="action.label"
-                  class="px-2.5 py-1 text-xs rounded-full border border-border hover:bg-accent hover:border-accent-foreground/20 transition-colors cursor-pointer"
+                  variant="outline"
+                  size="sm"
+                  class="h-7 px-2.5 text-xs rounded-full"
                   @click="handleAIQuickAction(action.prompt)"
                 >
                   {{ action.label }}
-                </button>
+                </Button>
               </div>
             </div>
 
@@ -679,7 +681,7 @@ const currentGuideline = computed(() => {
         />
 
         <Button variant="ghost" class="w-full" @click="handleConvertRawText">
-          Convert to Segments
+          Convert
         </Button>
       </div>
 
@@ -767,13 +769,13 @@ const currentGuideline = computed(() => {
     </div>
 
     <!-- Question -->
-    <div v-if="'question' in block" class="flex flex-col gap-4">
+    <div v-if="'question' in block" class="flex flex-col gap-2">
       <label class="text-sm text-muted-foreground">Question</label>
       <Textarea v-model="(block as any).question" placeholder="Question text..." />
     </div>
 
     <!-- True/False options — compact row -->
-    <div v-if="block['entity-type'] === 'true-false-question' && 'options' in block" class="flex flex-col gap-4">
+    <div v-if="block['entity-type'] === 'true-false-question' && 'options' in block" class="flex flex-col gap-2">
       <label class="text-sm text-muted-foreground">Answer</label>
 
       <div class="flex flex-col gap-4">
@@ -808,7 +810,7 @@ const currentGuideline = computed(() => {
     </div>
 
     <!-- Options with correct answer checkboxes -->
-    <div v-if="block['entity-type'] !== 'true-false-question' && 'options' in block && block.options.length > 0" class="flex flex-col gap-4">
+    <div v-if="block['entity-type'] !== 'true-false-question' && block['entity-type'] !== 'estimate-percentage-question' && 'options' in block && block.options.length > 0" class="flex flex-col gap-2">
       <div class="flex items-center justify-between">
         <label class="text-sm text-muted-foreground">Options</label>
         <Button variant="ghost" size="icon" class="h-8 w-8" @click="addOption"><Plus class="h-4 w-4" /></Button>
@@ -871,15 +873,48 @@ const currentGuideline = computed(() => {
     </div>
 
     <!-- Explanation -->
-    <div v-if="'explanation' in block" class="flex flex-col gap-4">
+    <div v-if="'explanation' in block" class="flex flex-col gap-2">
       <label class="text-sm text-muted-foreground">Explanation</label>
       <Textarea v-model="(block as any).explanation" placeholder="Shown after answering..." />
     </div>
 
     <!-- Hint -->
-    <div v-if="'hint' in block" class="flex flex-col gap-4">
+    <div v-if="'hint' in block" class="flex flex-col gap-2">
       <label class="text-sm text-muted-foreground">Hint</label>
       <Input v-model="(block as any).hint" placeholder="Hint..." variant="subtle" />
+    </div>
+
+    <!-- Estimate percentage fields -->
+    <div v-if="block['entity-type'] === 'estimate-percentage-question'" class="flex flex-col gap-4">
+      <div class="flex flex-col gap-2">
+        <label class="text-sm text-muted-foreground">Correct Percentage</label>
+        <div class="flex items-center gap-3">
+          <input
+            type="range"
+            min="0"
+            max="100"
+            :value="(block as any)['correct-answer-indices']?.[0] ?? 50"
+            class="flex-1 accent-primary"
+            @input="(e: any) => { (block as any)['correct-answer-indices'] = [Number(e.target.value)] }"
+          />
+          <span class="text-sm font-mono w-10 text-right tabular-nums">{{ (block as any)['correct-answer-indices']?.[0] ?? 50 }}%</span>
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-2">
+        <label class="text-sm text-muted-foreground">Close Threshold</label>
+        <div class="flex items-center gap-3">
+          <input
+            type="range"
+            min="1"
+            max="50"
+            :value="(block as any)['close-threshold'] ?? 10"
+            class="flex-1 accent-primary"
+            @input="(e: any) => { (block as any)['close-threshold'] = Number(e.target.value) }"
+          />
+          <span class="text-sm font-mono w-10 text-right tabular-nums">±{{ (block as any)['close-threshold'] ?? 10 }}%</span>
+        </div>
+      </div>
     </div>
 
     <!-- Emotional slide fields -->
@@ -902,29 +937,31 @@ const currentGuideline = computed(() => {
         <Textarea v-model="(block as any).prompt" placeholder="Reflection prompt..." />
       </div>
 
-      <label class="text-sm text-muted-foreground">Thinking Points</label>
+      <div class="flex flex-col gap-2">
+        <label class="text-sm text-muted-foreground">Thinking Points</label>
 
-      <div
-        v-for="(_, pointIndex) in (block as any)['thinking-points']"
-        :key="pointIndex"
-        class="flex gap-2"
-      >
-        <Input
-          v-model="(block as any)['thinking-points'][pointIndex]"
-          :placeholder="`Point ${Number(pointIndex) + 1}`"
-        />
-
-        <Button
-          variant="ghost"
-          size="icon"
-          class="shrink-0 h-8 w-8 hover:bg-muted hover:text-foreground"
-          @click="removeThinkingPoint(Number(pointIndex))"
+        <div
+          v-for="(_, pointIndex) in (block as any)['thinking-points']"
+          :key="pointIndex"
+          class="flex gap-2"
         >
-          <Minus class="h-4 w-4" />
-        </Button>
-      </div>
+          <Input
+            v-model="(block as any)['thinking-points'][pointIndex]"
+            :placeholder="`Point ${Number(pointIndex) + 1}`"
+          />
 
-      <Button variant="outline" class="w-full" @click="addThinkingPoint"><PlusCircle class="h-4 w-4" /></Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            class="shrink-0 h-8 w-8 hover:bg-muted hover:text-foreground"
+            @click="removeThinkingPoint(Number(pointIndex))"
+          >
+            <Minus class="h-4 w-4" />
+          </Button>
+        </div>
+
+        <Button variant="outline" class="w-full" @click="addThinkingPoint"><PlusCircle class="h-4 w-4" /></Button>
+      </div>
     </div>
 
     <!-- Quote fields -->

@@ -342,6 +342,8 @@ function handleNext() {
 function getLabel(entityType: string): string {
   return ENTITY_TYPE_LABELS[entityType as EntityType] ?? entityType
 }
+
+defineExpose({ handleContentTap })
 </script>
 
 <template>
@@ -386,6 +388,27 @@ function getLabel(entityType: string): string {
                   v-html="getRenderedSegment(segment, Number(segmentIndex))"
                 />
               </template>
+            </template>
+
+            <!-- * Estimate Percentage -->
+            <template v-else-if="(currentSwipe as any)['entity-type'] === 'estimate-percentage-question'">
+              <p class="text-sm font-medium text-card-foreground leading-relaxed" v-html="renderColorMarkup((currentSwipe as any).question)" />
+
+              <div class="mt-4 flex flex-col items-center gap-3">
+                <span class="text-3xl font-bold" :style="{ color: courseColor }">{{ (currentSwipe as any)['correct-answer-indices']?.[0] ?? 50 }}%</span>
+
+                <div class="w-full h-2 bg-muted rounded-full overflow-hidden">
+                  <div
+                    class="h-full rounded-full"
+                    :style="{ width: `${(currentSwipe as any)['correct-answer-indices']?.[0] ?? 50}%`, backgroundColor: courseColor }"
+                  />
+                </div>
+
+                <div class="flex justify-between w-full text-xs text-muted-foreground">
+                  <span>0%</span>
+                  <span>100%</span>
+                </div>
+              </div>
             </template>
 
             <!-- * Questions -->
