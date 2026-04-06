@@ -21,3 +21,17 @@ Language:
 - Grammar checking agent
 - Style checking agent
 - 
+
+====
+Immersion: The Readlock is different and does not look at competition
+- Atmospheres playing
+- Full screen without the cringy bar
+- Loading question answers
+- Dark theme
+
+
+====
+Reading: The reader must feel like the are not taught by overweening professor or by a corporate tutor
+but a smart nerd person with class, so like kurzgesagt tone or brilliant.org tone
+Questions: Non accusatory questions, the reader must feel like they are asked by peacful tutor
+True False: The reader must feel like they must disagree with semi obvious false statement
