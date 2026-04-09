@@ -403,6 +403,27 @@ export const useCourseStore = defineStore('course', () => {
   }
 
   function exportJSON(): string {
+    // Build a deep copy with propagated IDs before serialising
+    const exportData = JSON.parse(JSON.stringify(courseData.value)) as CourseData
+
+    for (const course of exportData.courses) {
+      const courseId = course['course-id']
+
+      for (let segmentIndex = 0; segmentIndex < course.segments.length; segmentIndex++) {
+        const segment = course.segments[segmentIndex]
+        const segmentNumber = segmentIndex + 1
+
+        segment['segment-id'] = `${courseId};segment:${segmentNumber}`
+
+        for (let lessonIndex = 0; lessonIndex < segment.lessons.length; lessonIndex++) {
+          const lesson = segment.lessons[lessonIndex]
+          const lessonNumber = lessonIndex + 1
+
+          lesson['lesson-id'] = `${courseId};segment:${segmentNumber};lesson:${lessonNumber}`
+        }
+      }
+    }
+
     const replacer = (key: string, value: any) => {
       const isInternalUid = key === '_uid'
 
@@ -413,7 +434,7 @@ export const useCourseStore = defineStore('course', () => {
       return value
     }
 
-    return JSON.stringify(courseData.value, replacer, 2)
+    return JSON.stringify(exportData, replacer, 2)
   }
 
   // * Reorder segments

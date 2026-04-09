@@ -859,6 +859,19 @@ function getNavItemStyle(isSelected: boolean): Record<string, string> {
               </DialogHeader>
 
               <div v-if="hasActiveCourse" class="flex flex-col gap-6">
+                <!-- Course ID -->
+                <div class="flex flex-col gap-2">
+                  <label class="text-sm text-muted-foreground">Course ID</label>
+                  <Input
+                    v-model="store.activeCourse!['course-id']"
+                    placeholder="book:my-course-title-abcd"
+                    class="font-mono text-xs"
+                  />
+                  <p class="text-xs text-muted-foreground">
+                    Format: type:kebab-case-title-hash (e.g. book:thinking-fast-and-slow-xkfm)
+                  </p>
+                </div>
+
                 <!-- Title -->
                 <div class="flex flex-col gap-2">
                   <label class="text-sm text-muted-foreground">Title</label>

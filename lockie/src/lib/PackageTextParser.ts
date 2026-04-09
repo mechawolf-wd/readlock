@@ -235,6 +235,7 @@ function parseEstimateBlock(lines: string[]): Swipe {
   const questionParts: string[] = [];
   let answer = 50;
   let explanation = "";
+  let hint = "";
 
   for (const line of contentLines) {
     const trimmed = line.trim();
@@ -248,6 +249,8 @@ function parseEstimateBlock(lines: string[]): Swipe {
       }
     } else if (trimmed.startsWith("explanation:")) {
       explanation = trimmed.slice("explanation:".length).trim();
+    } else if (trimmed.startsWith("hint:")) {
+      hint = trimmed.slice("hint:".length).trim();
     } else {
       questionParts.push(trimmed);
     }
@@ -259,6 +262,7 @@ function parseEstimateBlock(lines: string[]): Swipe {
     "entity-type": "estimate-percentage-question",
     question,
     explanation,
+    hint,
     "correct-answer-indices": [answer],
     "close-threshold": 10,
   };
@@ -290,6 +294,47 @@ function parseReflectionBlock(lines: string[]): Swipe {
     prompt: "",
     "thinking-points": thinkingPoints.length > 0 ? thinkingPoints : [""],
   };
+}
+
+// * Package metadata extraction
+
+interface PackageMetadata {
+  title: string;
+  isFree: boolean;
+  contentText: string;
+}
+
+function extractPackageMetadata(sectionText: string, fallbackTitle: string): PackageMetadata {
+  const firstBlockIndex = sectionText.search(/^@\w+\s*$/m);
+
+  const hasNoContentBlocks = firstBlockIndex === -1;
+
+  if (hasNoContentBlocks) {
+    return { title: fallbackTitle, isFree: false, contentText: sectionText };
+  }
+
+  const headerText = sectionText.slice(0, firstBlockIndex);
+  const contentText = sectionText.slice(firstBlockIndex);
+
+  const headerLines = headerText
+    .split("\n")
+    .map((line) => line.trim())
+    .filter((line) => line !== "");
+
+  let title = fallbackTitle;
+  let isFree = false;
+
+  for (const line of headerLines) {
+    const isFreeLine = line.toLowerCase() === "free";
+
+    if (isFreeLine) {
+      isFree = true;
+    } else {
+      title = line;
+    }
+  }
+
+  return { title, isFree, contentText };
 }
 
 // * Main parser
@@ -343,6 +388,7 @@ export function parsePackageText(input: string): Swipe[] {
 // * Course parser (whole course from .rlockie file)
 
 interface ParsedCourseInfo {
+  id: string;
   title: string;
   author: string;
   description: string;
@@ -353,6 +399,7 @@ interface ParsedCourseInfo {
 
 function parseCourseInfoSection(text: string): ParsedCourseInfo {
   const info: ParsedCourseInfo = {
+    id: "",
     title: "",
     author: "",
     description: "",
@@ -364,7 +411,9 @@ function parseCourseInfoSection(text: string): ParsedCourseInfo {
   for (const line of text.split("\n")) {
     const trimmed = line.trim();
 
-    if (trimmed.startsWith("title:")) {
+    if (trimmed.startsWith("id:")) {
+      info.id = trimmed.slice("id:".length).trim();
+    } else if (trimmed.startsWith("title:")) {
       info.title = trimmed.slice("title:".length).trim();
     } else if (trimmed.startsWith("author:")) {
       info.author = trimmed.slice("author:".length).trim();
@@ -394,7 +443,7 @@ function parseCourseInfoSection(text: string): ParsedCourseInfo {
 
 // * Segment parser
 
-function parseSegmentBlock(text: string, segmentNumber: number): Segment {
+function parseSegmentBlock(text: string, segmentNumber: number, courseId: string): Segment {
   const lines = text.split("\n").filter((line) => line.trim() !== "");
 
   const title = lines.length > 0 ? lines[0].trim() : `Segment ${segmentNumber}`;
@@ -402,7 +451,7 @@ function parseSegmentBlock(text: string, segmentNumber: number): Segment {
     lines.length > 1 ? lines[1].trim() : title.charAt(0).toUpperCase();
 
   return {
-    "segment-id": `segment-${segmentNumber}`,
+    "segment-id": `${courseId};segment:${segmentNumber}`,
     "segment-title": title,
     "segment-description": "",
     "segment-symbol": symbol,
@@ -443,9 +492,28 @@ export function parseCourseText(input: string): Accelerator {
     : firstSection;
 
   const courseInfo = parseCourseInfoSection(courseInfoText);
+  const courseId = courseInfo.id || `course-${Date.now()}`;
 
   const segments: Segment[] = [];
   let currentSegment: Segment | null = null;
+
+  // Helper to build a lesson-id from current position
+  function buildLessonId(segmentNumber: number, lessonNumber: number): string {
+    return `${courseId};segment:${segmentNumber};lesson:${lessonNumber}`;
+  }
+
+  // Helper to create a fallback segment with proper id
+  function createFallbackSegment(): Segment {
+    const segmentNumber = segments.length + 1;
+
+    return {
+      "segment-id": `${courseId};segment:${segmentNumber}`,
+      "segment-title": `Segment ${segmentNumber}`,
+      "segment-description": "",
+      "segment-symbol": String.fromCharCode(64 + segmentNumber),
+      lessons: [],
+    };
+  }
 
   // Extract segment from first section if present
   if (hasSegmentInFirstSection) {
@@ -453,7 +521,7 @@ export function parseCourseText(input: string): Accelerator {
       segmentHeaderIndex + "\n@segment\n".length,
     );
 
-    currentSegment = parseSegmentBlock(segmentText, segments.length + 1);
+    currentSegment = parseSegmentBlock(segmentText, segments.length + 1, courseId);
     segments.push(currentSegment);
   }
 
@@ -478,24 +546,19 @@ export function parseCourseText(input: string): Accelerator {
 
       if (hasPackageContent) {
         if (!currentSegment) {
-          currentSegment = {
-            "segment-id": "segment-1",
-            "segment-title": "Segment 1",
-            "segment-description": "",
-            "segment-symbol": "A",
-            lessons: [],
-          };
-
+          currentSegment = createFallbackSegment();
           segments.push(currentSegment);
         }
 
-        const swipes = parsePackageText(packageContent);
         const packageNumber = currentSegment.lessons.length + 1;
+        const segmentNumber = segments.indexOf(currentSegment) + 1;
+        const meta = extractPackageMetadata(packageContent, `Package ${packageNumber}`);
+        const swipes = parsePackageText(meta.contentText);
 
         const pkg: Package = {
-          "lesson-id": `package-${packageNumber}`,
-          title: `Package ${packageNumber}`,
-          isFree: false,
+          "lesson-id": buildLessonId(segmentNumber, packageNumber),
+          title: meta.title,
+          isFree: meta.isFree,
           content: swipes,
         };
 
@@ -507,32 +570,26 @@ export function parseCourseText(input: string): Accelerator {
         segmentMarkerIndex + "@segment\n".length,
       );
 
-      currentSegment = parseSegmentBlock(segmentText, segments.length + 1);
+      currentSegment = parseSegmentBlock(segmentText, segments.length + 1, courseId);
       segments.push(currentSegment);
       continue;
     }
 
     // No segment marker — this is a regular package section
     if (!currentSegment) {
-      currentSegment = {
-        "segment-id": "segment-1",
-        "segment-title": "Segment 1",
-        "segment-description": "",
-        "segment-symbol": "A",
-        lessons: [],
-      };
-
+      currentSegment = createFallbackSegment();
       segments.push(currentSegment);
     }
 
-    const swipes = parsePackageText(sectionText);
     const packageNumber = currentSegment.lessons.length + 1;
-    const packageTitle = `Package ${packageNumber}`;
+    const segmentNumber = segments.indexOf(currentSegment) + 1;
+    const meta = extractPackageMetadata(sectionText, `Package ${packageNumber}`);
+    const swipes = parsePackageText(meta.contentText);
 
     const pkg: Package = {
-      "lesson-id": `package-${packageNumber}`,
-      title: packageTitle,
-      isFree: false,
+      "lesson-id": buildLessonId(segmentNumber, packageNumber),
+      title: meta.title,
+      isFree: meta.isFree,
       content: swipes,
     };
 
@@ -544,7 +601,7 @@ export function parseCourseText(input: string): Accelerator {
 
   if (hasNoSegments) {
     segments.push({
-      "segment-id": "segment-1",
+      "segment-id": `${courseId};segment:1`,
       "segment-title": "Segment 1",
       "segment-description": "",
       "segment-symbol": "A",
@@ -553,7 +610,7 @@ export function parseCourseText(input: string): Accelerator {
   }
 
   return {
-    "course-id": `course-${Date.now()}`,
+    "course-id": courseId,
     title: courseInfo.title || "Untitled Course",
     author: courseInfo.author,
     description: courseInfo.description,
@@ -577,6 +634,7 @@ export const PACKAGE_TEXT_FORMAT_GUIDE = {
         "Marks the beginning of a course definition. Course metadata (title, author, etc.) follows on subsequent lines.",
       example: `@course
 
+id: book:my-course-title-abcd
 title: My Course
 author: Author Name
 description: A short description
@@ -588,8 +646,10 @@ relevant_for: Designers, Developers`,
       name: "Package",
       tag: "@package",
       description:
-        "Separates packages (lessons) within a segment. Each package contains content blocks.",
-      example: `@package`,
+        "Separates packages (lessons) within a segment. First line after @package is the display title. Add 'Free' on its own line to mark as free.",
+      example: `@package
+Introduction to Color
+Free`,
     },
     {
       name: "Course Segment",
@@ -669,13 +729,16 @@ hint: Think about what Copernicus discovered`,
     {
       name: "Estimate",
       tag: "@estimate",
-      description: "Percentage estimation question.",
-      syntax: `answer:       correct answer (number)
-explanation:  explanation`,
+      description: "Percentage estimation question. The learner drags a slider to guess.",
+      syntax: `answer:       correct answer (0-100)
+explanation:  explanation
+hint:         hint`,
       example: `@estimate
 What % of Earth is covered by water?
+
 answer: 71
-explanation: About 71% of Earth's surface is water.`,
+explanation: About 71% of Earth's surface is water.
+hint: It is higher than most people expect.`,
     },
     {
       name: "Quote",
@@ -688,18 +751,17 @@ Steve Jobs`,
     {
       name: "Pause",
       tag: "@pause",
-      description: "Motivational break slide.",
+      description: "A breather slide that connects what was learned to something real.",
       example: `@pause
-Great job, keep going!`,
+90% of first impressions come down to color. Once you know that, you start seeing the choices behind every interface.`,
     },
     {
       name: "Reflect",
       tag: "@reflect",
-      description: "Each line becomes a thinking point.",
+      description: "A reflection prompt. Each line is a thinking point that should make the reader see something familiar differently.",
       example: `@reflect
-Think about your morning routine
-Consider your work habits
-How could you apply this today?`,
+If every app uses the same cognitive shortcuts, are we designing for humans, or training humans to fit our designs?
+Next time you feel frustrated by an interface, ask yourself: is the task actually hard, or is the design making it harder?`,
     },
   ],
 };

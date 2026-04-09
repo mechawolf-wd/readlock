@@ -1,0 +1,172 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "Readlock Course",
+  "scopeName": "source.rlockie",
+  "patterns": [
+    {
+      "include": "#course-declaration"
+    },
+    {
+      "include": "#segment-declarations"
+    },
+    {
+      "include": "#package-declarations"
+    },
+    {
+      "include": "#content-declarations"
+    },
+    {
+      "include": "#free-keyword"
+    },
+    {
+      "include": "#properties"
+    },
+    {
+      "include": "#color-markup"
+    },
+    {
+      "include": "#image-link"
+    },
+    {
+      "include": "#text-values"
+    }
+  ],
+  "repository": {
+    "course-declaration": {
+      "patterns": [
+        {
+          "match": "^(@course)\\s*$",
+          "name": "rlockie.declaration.course"
+        }
+      ]
+    },
+    "segment-declarations": {
+      "patterns": [
+        {
+          "match": "^(@segment)\\s*$",
+          "name": "rlockie.declaration.segment"
+        }
+      ]
+    },
+    "package-declarations": {
+      "patterns": [
+        {
+          "match": "^(@package)\\s*$",
+          "name": "rlockie.declaration.package"
+        }
+      ]
+    },
+    "free-keyword": {
+      "patterns": [
+        {
+          "match": "^(Free)\\s*$",
+          "name": "rlockie.keyword.free"
+        }
+      ]
+    },
+    "content-declarations": {
+      "patterns": [
+        {
+          "match": "^(@text|@question|@true_false|@estimate|@quote|@pause|@reflect)\\s*$",
+          "name": "rlockie.declaration.content"
+        }
+      ]
+    },
+    "properties": {
+      "patterns": [
+        {
+          "begin": "^(id|title|author|description|color|genres|relevant_for)(:)\\s*",
+          "beginCaptures": {
+            "1": {
+              "name": "rlockie.property.name"
+            },
+            "2": {
+              "name": "rlockie.property.name"
+            }
+          },
+          "end": "$",
+          "contentName": "rlockie.property.value"
+        },
+        {
+          "begin": "^(answer|consequence|correct_answers|explanation|hint|true|false)(:)\\s*",
+          "beginCaptures": {
+            "1": {
+              "name": "rlockie.property.name"
+            },
+            "2": {
+              "name": "rlockie.property.name"
+            }
+          },
+          "end": "$",
+          "contentName": "rlockie.property.value",
+          "patterns": [
+            {
+              "include": "#color-markup"
+            }
+          ]
+        }
+      ]
+    },
+    "color-markup": {
+      "patterns": [
+        {
+          "match": "(<c:r>)(.*?)(</c:r>)",
+          "captures": {
+            "1": {
+              "name": "punctuation.definition.tag.rlockie"
+            },
+            "2": {
+              "name": "markup.deleted.rlockie"
+            },
+            "3": {
+              "name": "punctuation.definition.tag.rlockie"
+            }
+          }
+        },
+        {
+          "match": "(<c:g>)(.*?)(</c:g>)",
+          "captures": {
+            "1": {
+              "name": "punctuation.definition.tag.rlockie"
+            },
+            "2": {
+              "name": "markup.inserted.rlockie"
+            },
+            "3": {
+              "name": "punctuation.definition.tag.rlockie"
+            }
+          }
+        }
+      ]
+    },
+    "image-link": {
+      "patterns": [
+        {
+          "match": "^(image-link:)\\s*(\".*\")",
+          "captures": {
+            "1": {
+              "name": "rlockie.property.name"
+            },
+            "2": {
+              "name": "rlockie.property.value"
+            }
+          }
+        }
+      ]
+    },
+    "text-values": {
+      "patterns": [
+        {
+          "begin": "^(?!@|id:|title:|author:|description:|color:|genres:|relevant_for:|answer:|consequence:|correct_answers:|explanation:|hint:|true:|false:|image-link:|Free$)(?=.)",
+          "end": "$",
+          "name": "rlockie.text",
+          "patterns": [
+            {
+              "include": "#color-markup"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

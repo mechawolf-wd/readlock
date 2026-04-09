@@ -1,0 +1,117 @@
+{
+  "name": "rlockie-syntax",
+  "displayName": "Readlock Course Format",
+  "description": "Syntax highlighting for .rlockie course files",
+  "version": "0.2.0",
+  "engines": {
+    "vscode": "^1.60.0"
+  },
+  "categories": [
+    "Programming Languages"
+  ],
+  "contributes": {
+    "languages": [
+      {
+        "id": "rlockie",
+        "aliases": [
+          "Readlock Course",
+          "rlockie"
+        ],
+        "extensions": [
+          ".rlockie"
+        ],
+        "icon": {
+          "light": "./icons/rlockie.svg",
+          "dark": "./icons/rlockie.svg"
+        },
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "rlockie",
+        "scopeName": "source.rlockie",
+        "path": "./syntaxes/rlockie.tmLanguage.json"
+      }
+    ],
+    "configurationDefaults": {
+      "editor.tokenColorCustomizations": {
+        "textMateRules": [
+          {
+            "scope": "rlockie.declaration.course",
+            "settings": {
+              "foreground": "#ffffff",
+              "fontStyle": "bold"
+            }
+          },
+          {
+            "scope": "rlockie.declaration.segment",
+            "settings": {
+              "foreground": "#ef4444",
+              "fontStyle": "bold"
+            }
+          },
+          {
+            "scope": "rlockie.declaration.package",
+            "settings": {
+              "foreground": "#f97316",
+              "fontStyle": "bold"
+            }
+          },
+          {
+            "scope": "rlockie.declaration.content",
+            "settings": {
+              "foreground": "#22c55e",
+              "fontStyle": "bold"
+            }
+          },
+          {
+            "scope": "rlockie.property.name",
+            "settings": {
+              "foreground": "#9ca3af"
+            }
+          },
+          {
+            "scope": "rlockie.property.value",
+            "settings": {
+              "foreground": "#ffffff",
+              "fontStyle": "italic"
+            }
+          },
+          {
+            "scope": "rlockie.text",
+            "settings": {
+              "foreground": "#ffffff",
+              "fontStyle": "italic"
+            }
+          },
+          {
+            "scope": "rlockie.keyword.free",
+            "settings": {
+              "foreground": "#22c55e",
+              "fontStyle": "italic"
+            }
+          },
+          {
+            "scope": "markup.deleted.rlockie",
+            "settings": {
+              "foreground": "#ef4444"
+            }
+          },
+          {
+            "scope": "markup.inserted.rlockie",
+            "settings": {
+              "foreground": "#22c55e"
+            }
+          },
+          {
+            "scope": "markup.changed.rlockie",
+            "settings": {
+              "foreground": "#f97316"
+            }
+          }
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,223 @@
+@course
+
+id: topic:psychology-of-design-qmvr
+title: The Psychology of Design
+author: Jane Mitchell
+description: How cognitive biases and psychological principles shape the way people interact with designed objects.
+color: #6366f1
+genres: design, psychology
+relevant_for: ux-designers, product-managers
+
+@segment
+Foundations
+FD
+
+@package
+Title of the package
+Free
+
+@text
+For thousands of years, humans made decisions without reading a single word.
+They judged safety by the shape of a shadow. They chose food by color. They trusted faces in milliseconds.
+The brain still works this way. Every designed object is speaking to that same visual system, whether the designer intended it or not.
+
+@text
+In the 1960s, a psychologist named Robert Zajonc ran a simple experiment.
+He showed people a series of random shapes. Some shapes appeared once. Others appeared dozens of times.
+When asked which shapes they preferred, people consistently chose the ones they had seen most often, even when they did not remember seeing them.
+
+@text
+Zajonc called this the <c:g>mere exposure effect</c:g>. The more familiar something feels, the more we tend to like it.
+This is not a conscious choice. It happens beneath awareness, and it affects everything from the music we enjoy to the brands we trust.
+
+@question
+What do you think? Why do people tend to prefer familiar things over novel ones?
+
+answer: The brain treats familiarity as a signal of safety
+consequence: Exactly. If something has been encountered before without harm, the brain registers it as trustworthy.
+
+answer: People are simply lazy and avoid new experiences
+consequence: It is not about effort. The brain is running a fast, unconscious calculation about safety, not making a deliberate choice.
+
+answer: Familiar things are objectively better designed
+consequence: Not necessarily. The preference exists even for random shapes with no design intent behind them. Familiarity alone is enough.
+
+correct_answers: 1
+explanation: The mere exposure effect is rooted in survival. The brain uses past exposure as a shorthand for safety. If something has appeared before without causing harm, it feels trustworthy. Zajonc's research showed this holds true even when the person has no conscious memory of the exposure.
+hint: Think about what "familiar" might signal to a brain that evolved to avoid danger.
+
+@true_false
+People tend to prefer things they have never seen before over things they encounter regularly.
+
+true: Novelty always wins, the brain craves new stimuli
+consequence: It is tempting to think so, but decades of research tell a different story.
+
+false: Familiarity breeds preference, repeated exposure increases liking
+consequence: Exactly right. This is the mere exposure effect. It shapes everything from music taste to brand loyalty.
+
+correct_answers: 2
+explanation: The mere exposure effect, discovered by Robert Zajonc in the 1960s, shows that simply encountering something repeatedly makes us like it more, even if we do not consciously notice the repetition.
+hint: Think about why you prefer certain brands over others, even when the products are nearly identical.
+
+@pause
+The next time a logo, a song, or a layout feels "right" for no particular reason, consider how many times you have seen it before. Preference and familiarity are closer than most people realize.
+
+@package
+
+@text
+Before written language existed, humans already had a sophisticated visual system.
+They could judge the ripeness of fruit by its color, sense danger from the red of blood or fire, and feel calm under a blue sky.
+Color has been carrying meaning for far longer than words have.
+
+@text
+Researchers at the University of Winnipeg found that people make snap judgments about products within 90 seconds of first seeing them.
+Up to <c:g>90%</c:g> of that initial assessment is based on color alone, before shape, text, or price even register.
+
+@estimate
+What percentage of first impressions are influenced by color alone?
+
+answer: 90
+explanation: Studies suggest up to 90% of snap judgments about products can be based on color alone. The next time you pick a product off a shelf, notice what drew your attention first.
+hint: It is higher than most people expect.
+
+@quote
+Color is a power which directly influences the soul.
+Wassily Kandinsky
+
+@pause
+90% of first impressions come down to color. Once you know that, you start seeing the choices behind every interface, every package, every sign.
+
+@package
+
+@text
+In the 1950s, a cognitive psychologist named George Miller published a paper with a title that became famous: "The Magical Number Seven, Plus or Minus Two."
+Miller had discovered that human working memory can only hold a small number of items at once.
+Later research narrowed that number further. The current estimate is closer to four.
+
+@text
+That means your brain can actively juggle about four things at any given moment.
+Every button, label, notification, and animation on a screen competes for one of those slots.
+When a design asks the brain to hold more than it can, people get lost and leave. Researchers call this <c:r>cognitive load</c:r>.
+
+@question
+Based on what you just read, which of these reduces cognitive load?
+
+answer: Breaking complex tasks into smaller steps
+consequence: Exactly. This is called progressive disclosure: showing only what is needed, when it is needed.
+
+answer: Showing all options at once
+consequence: More options means more items competing for those four slots. This is precisely what creates overload.
+
+answer: Using unfamiliar icons without labels
+consequence: Unlabelled icons force the brain to guess meanings. That is additional load, not less.
+
+correct_answers: 1
+explanation: Reducing cognitive load means simplifying what the brain has to process at any given moment. Progressive disclosure is one of the most effective techniques for doing this.
+hint: Think about what makes an interface feel effortless versus overwhelming.
+
+@reflect
+If every app uses the same cognitive shortcuts, are we designing for humans, or training humans to fit our designs?
+Next time you feel frustrated by an interface, ask yourself: is the task actually hard, or is the design making it harder?
+
+@segment
+Perception and Decisions
+PD
+
+@package
+
+@text
+In 1974, two psychologists named Amos Tversky and Daniel Kahneman ran an experiment.
+They asked people to estimate the percentage of African countries in the United Nations. Before answering, each person watched a rigged wheel spin and land on a random number.
+People whose wheel landed on 10 guessed around 25%. People whose wheel landed on 65 guessed around 45%.
+
+@text
+The wheel had nothing to do with the question. The numbers were completely random. But they still pulled people's estimates in their direction.
+Tversky and Kahneman called this the <c:g>anchoring effect</c:g>. The first piece of information you encounter becomes the reference point for everything that follows, even when that information is irrelevant.
+
+@text
+A jacket labeled "$500, now $200" feels like a deal, even if the jacket was never worth $500.
+A $12 latte at the top of a menu makes a $5 cappuccino below it feel perfectly reasonable.
+In both cases, the first number set the reference point, and every number after it was judged relative to that anchor.
+
+@question
+Quick check: A coffee shop lists a $12 latte at the top of the menu. How does this affect how you perceive a $5 cappuccino below it?
+
+answer: The $5 cappuccino feels like a bargain
+consequence: Exactly. The $12 latte set the anchor. Everything below it feels reasonable by comparison.
+
+answer: It has no effect, people judge prices independently
+consequence: That would be rational, but the brain does not work that way. The anchor shapes the entire frame.
+
+answer: The $5 cappuccino feels overpriced
+consequence: The opposite happens. The high anchor makes the lower price feel more acceptable.
+
+correct_answers: 1
+explanation: Anchoring bias means the first number we see sets the frame. Designers and marketers use this constantly. The "premium" option often exists just to make the mid-tier look like a deal.
+hint: Think about what role the first number plays in your mind.
+
+@quote
+We do not see things as they are, we see them as we are.
+Anais Nin
+
+@true_false
+The more choices you give someone, the more likely they are to make a decision.
+
+true: More options means more freedom, and freedom leads to action
+consequence: It sounds logical, but research shows the opposite. More choices often lead to paralysis.
+
+false: Too many choices overwhelm the brain and lead to decision paralysis
+consequence: Correct. This is the paradox of choice. Beyond a certain point, more options make people less likely to choose at all.
+
+correct_answers: 2
+explanation: Barry Schwartz's research on the paradox of choice showed that people presented with fewer options are more likely to make a decision and feel satisfied with it. Reducing options reduces the mental cost of choosing.
+hint: Think about the last time you spent ten minutes scrolling through a streaming service and ended up watching nothing.
+
+@pause
+Anchoring and choice overload show up in every menu, every pricing page, every product lineup. You have been encountering them your entire life. Now you can name them.
+
+@package
+
+@text
+In the early 20th century, a group of German psychologists noticed something peculiar about how people perceive visual information.
+When shown a collection of dots, people did not see individual dots. They saw rows, clusters, and shapes. The brain was organizing the information automatically, without being asked to.
+They called these organizing rules <c:g>Gestalt principles</c:g>.
+
+@text
+The simplest and most widely used of these is the principle of proximity.
+Things that are close together are perceived as related. Things that are far apart are perceived as separate.
+image-link: "Illustration of Gestalt principles showing proximity, similarity, and closure"
+Look at the graphic. Your brain grouped these shapes before you made any conscious decision to do so.
+
+@text
+Every form with neatly grouped fields, every navigation bar with clustered icons, every card layout with consistent spacing uses proximity to communicate relationships without a single label.
+Spacing alone tells the brain what belongs together and what does not.
+
+@question
+Here is a tricky one: a signup form has "First Name" and "Last Name" fields close together, with "Password" placed far below. What Gestalt principle is at work?
+
+answer: Proximity, closeness signals that the name fields are related
+consequence: Correct. The spacing alone tells your brain these fields belong together, without needing a label to say so.
+
+answer: Similarity, the fields look alike so they feel grouped
+consequence: Similarity does play a role, but the primary grouping cue here is the physical distance between elements.
+
+correct_answers: 1
+explanation: Proximity is the most fundamental Gestalt principle in interface design. By simply adjusting spacing, a designer can communicate relationships without adding any extra visual elements.
+hint: Focus on the physical distance between the elements, not their appearance.
+
+@true_false
+White space in a design is wasted space that should be filled with content.
+
+true: Every pixel should serve a purpose, empty space is a missed opportunity
+consequence: This is one of the most common misconceptions in design. White space is not empty. It is working.
+
+false: White space is an active design element that guides attention and creates hierarchy
+consequence: Exactly. White space gives the brain room to process. Without it, everything competes for attention and nothing wins.
+
+correct_answers: 2
+explanation: White space, also called negative space, reduces cognitive load, creates visual hierarchy, and makes content easier to scan. The best designs often have more white space, not less.
+hint: Think about what makes a luxury brand's website feel so different from a cluttered marketplace.
+
+@reflect
+Next time you open an app that feels "clean," try to identify what is actually missing. The clarity is likely white space and proximity doing invisible work.
+Consider a design you find cluttered. Is the problem too much content, or too little space between the content?

@@ -1,0 +1,20 @@
+{
+  "comments": {},
+  "brackets": [],
+  "autoClosingPairs": [
+    {
+      "open": "<c:r>",
+      "close": "</c:r>"
+    },
+    {
+      "open": "<c:g>",
+      "close": "</c:g>"
+    },
+  ],
+  "folding": {
+    "markers": {
+      "start": "^@(course|segment|package)$",
+      "end": "^@(segment|package)$"
+    }
+  }
+}
