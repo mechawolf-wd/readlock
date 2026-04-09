@@ -1,0 +1,101 @@
+@course
+
+id: book:sapiens-zlqj
+title: Sapiens
+author: Readlock
+description: How one branch of the human family ended up in charge of the planet.
+color: #65a30d
+genres: history, anthropology
+relevant_for: curious readers, students, anyone
+
+@segment
+The Cognitive Revolution
+CR
+
+@package
+The Story That Outran Every Other Animal
+Free
+
+@text
+For most of the time there has been life on Earth, the most dangerous animal was never human.
+We were medium-sized primates, smarter than most, weaker than many, and not especially successful at anything.
+There were other species of humans alive at the same time.
+Some of them were bigger, some were stronger, some had larger brains than we did.
+Then something happened, roughly 70,000 years ago, that made our branch impossible to compete with.
+
+@text
+About 200,000 years ago, a small population of modern humans lived in East Africa.
+Genetically, they were already almost identical to us.
+You could take a baby from that population and raise her in a 21st century city and nobody would notice anything unusual.
+For the first 100,000 years or so of that population's existence, they did not do much.
+They hunted in small bands, foraged, made simple stone tools, and stayed close to the places they knew.
+The world outside Africa was already occupied by other human species, who were perfectly capable of keeping them out.
+For a very long time, nothing interesting happened.
+
+@text
+Then, starting about 70,000 years ago, the same species began to behave differently.
+The tools became more complex. Art started appearing on the walls of caves.
+Bands of humans left Africa, crossed water, and reached places their ancestors had no reason to know existed.
+Within 40,000 years they had settled Europe, Asia, Australia, and eventually the Americas.
+Along the way, every other species of human on Earth disappeared.
+Some of them probably interbred with us first. Most of them simply did not survive.
+This all happened fast, in historical terms. A short window relative to the age of the species.
+
+@text
+Today, there are about 8 billion of us, scattered across every continent including Antarctica.
+We live in cities, airplanes, submarines, and the International Space Station.
+We have rearranged the surface of the planet so completely that geologists are debating whether to name an epoch after us.
+The other human species are gone.
+Most large land animals that are not our pets or our food are gone too, or close to it.
+None of this was inevitable 70,000 years ago.
+It was the downstream effect of one specific change inside our ancestors' minds.
+
+@question
+What changed 70,000 years ago that let one population of humans outcompete every other species of human and then nearly every other large animal on Earth?
+
+answer: They developed the ability to tell and believe in stories that were not literally true.
+consequence: Yes. Being able to share a fiction lets thousands of strangers cooperate, like treating all clan members as family. Coordination at scale is the weapon that made everything else possible.
+
+answer: They developed bigger brains than the other human species.
+consequence: This is the intuitive answer, but the size was already in place. Neanderthals had larger brains than us, and raw brainpower was not the deciding factor. What we gained was a specific new capacity.
+
+answer: They developed better physical tools and weapons.
+consequence: Better tools did follow, but they followed the change, not caused it. The real question is why one group innovated faster than any other. That is a communication problem, not a tool problem.
+
+correct_answers: 1
+explanation: Yuval Noah Harari calls this the Cognitive Revolution. It is the point at which our ancestors could invent and believe in shared fictions. Religion, money, nations, and corporations all run on the same trick. It scales cooperation past the limits of any other species.
+hint: Ask what a thousand strangers can do together that a thousand chimpanzees cannot.
+
+@text
+This idea is the backbone of Sapiens by Yuval Noah Harari.
+Harari argues that what makes us unusual is not intelligence in the technical sense.
+It is our ability to invent stories that are not literally true and then coordinate around them.
+Other animals cooperate. Ants cooperate better than we do inside one colony.
+No other animal can get a million strangers to agree on the same money and the same laws.
+That capacity is what let one middling primate reshape the surface of a planet.
+
+@true_false
+The Cognitive Revolution happened because our ancestors evolved a new physical organ in their brain.
+
+true: True, a new brain structure appeared.
+consequence: There is no clean anatomical marker separating pre-Cognitive Revolution humans from post-Cognitive Revolution humans. If you compared the skulls, you could not tell them apart. Whatever changed was not a new organ, but a new use of the same equipment.
+
+false: False, the brain equipment was already there.
+consequence: Right. Harari's argument is that the physical brain was effectively finished long before the Cognitive Revolution. What changed was how the brain was used, probably in language and shared abstraction.
+
+correct_answers: 2
+explanation: The ancestors who did nothing interesting for 100,000 years and the ancestors who colonized the planet had almost identical brains. The difference was not biological in the visible sense. It was in what those brains could now do with each other.
+hint: Ask whether an X-ray could tell apart the brains of the bored ancestors and the world-colonizing ones.
+
+@text
+It is worth sitting for a moment with how recent all of this is.
+70,000 years is nothing compared to the 4 billion years life has existed on Earth.
+In that tiny sliver of time, one primate species figured out a communication trick.
+Everything downstream of that trick is the world you live in right now.
+Sapiens is not a book about how lucky we are.
+It is a book about how strange we are, and how much of what we take for granted is a story the species is still telling itself.
+
+@reflect
+A story you live by without examining, like the value of paper money.
+A daily decision that depends on strangers, like trusting traffic laws.
+A shared story that changed during your lifetime, like what a career means.

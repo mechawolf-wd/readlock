@@ -1,0 +1,99 @@
+@course
+
+id: book:freakonomics-mdvr
+title: Freakonomics
+author: Readlock
+description: How unseen incentives shape behavior in places economists are not supposed to look.
+color: #f59e0b
+genres: economics, psychology
+relevant_for: anyone, curious readers, students
+
+@segment
+Hidden Incentives
+HI
+
+@package
+Three Things That Should Not Be Connected
+Free
+
+@text
+Most of the time, the explanation we reach for about why people behave the way they do is character.
+He is lazy. She is generous. They are risk-takers.
+Character sounds like an explanation and feels like one.
+But when you look closely at why people actually do what they do, character usually loses.
+It loses to whatever tiny reward or punishment sits one step away from the action.
+
+@text
+A Chicago public school teacher in the late 1990s is being evaluated on how well her students do on a standardized test.
+Her pay, her reputation, and the future of her school depend on those scores.
+The tests are multiple choice and taken while she stands in the room with her students.
+At some point, a handful of teachers begin erasing wrong answers after the test and filling in correct ones.
+They are not bad people. Most of them have been teaching for a decade.
+They began erasing because the punishment for low scores was real, and the risk of being caught was invisible.
+
+@text
+A sumo wrestler in Japan is climbing the professional ranks.
+A single loss can cost him income, rank, and tournament eligibility.
+Researchers studying 20 years of records notice something odd about the final match of each tournament.
+Wrestlers who needed one more win to hold their rank beat comfortably-placed opponents at rates that look nothing like their usual records.
+The matches were not fixed out loud. Nobody was paid off.
+An unspoken favor system took care of it, because the upside for the one who needed the win was huge, and the cost to the other was small.
+
+@text
+A real estate agent selling her own home in Chicago leaves it on the market for 10 days longer than comparable homes she sells for clients.
+She also sells her own home for about 3 percent more.
+3 percent on a client's house is a few thousand dollars in her pocket, barely worth waiting for.
+3 percent on her own house is a lot of money.
+She is not dishonest with her clients. Most of her advice to them is accurate.
+She is quietly telling them to take a good offer now, because her paycheck only rewards her a little for the extra wait.
+
+@question
+What do the teacher, the wrestler, and the real estate agent have in common?
+
+answer: Each of them was responding to a small incentive that nobody thought to measure.
+consequence: Exactly. The system rewarded one outcome, while the person was quietly optimizing for another. That gap is where the strange behavior lives.
+
+answer: Each of them was committing fraud for personal gain.
+consequence: Fraud is the strong version of the story, but not what is happening here. The real estate agent is not lying, the wrestler is not bribed. The word fraud tells you the behavior is bad without telling you why.
+
+answer: Each of them worked in a system with poor oversight.
+consequence: Oversight is part of it, but not the main part. You can add oversight forever and the incentive stays. Oversight catches some cases, but it never removes the reason.
+
+correct_answers: 1
+explanation: Behavior follows incentives, not job descriptions. Change the incentive and the behavior changes. Leave the incentive in place and no amount of character or oversight will hold the behavior back forever.
+hint: Ask what each of them was quietly being paid for, beyond their official job.
+
+@text
+These three stories come from Freakonomics, a book by economist Steven Levitt and journalist Stephen Dubner.
+Levitt's argument is that incentives are the hidden operating system of everyday life.
+Most people do not respond to values or rules.
+They respond to the tiny rewards and punishments sitting one step away from their decisions.
+The teacher, the wrestler, and the agent are not unusual people.
+They are ordinary people placed inside structures that quietly reward one behavior and claim to reward another.
+To understand why a system produces strange behavior, look for the incentive nobody wrote down.
+
+@true_false
+If you replaced the people in these three stories with more ethical people, the strange behaviors would disappear.
+
+true: True, better people would fix it.
+consequence: That is the intuitive answer, and it is how we usually try to fix systems. But the new people step into the same structure and start doing versions of the same thing. Not because they are bad, but because the incentive is still there.
+
+false: False, the incentive would still be there.
+consequence: Right. Levitt's point is that the structure does more work than the individual. You can swap people in and out of a badly-designed system, but the behavior stays the same.
+
+correct_answers: 2
+explanation: Systems shape behavior more than character does. An ethical person placed in a system that rewards a strange action will either start doing the action, quit, or be replaced by someone who does. The incentive outlasts any individual.
+hint: Ask whether the goal someone rewards you for matches the goal they say they care about.
+
+@text
+The useful question after reading a story like any of these is not "how could they."
+It is "what was each of them quietly being paid to do that nobody said out loud."
+Once you start asking that question, you find it in everything.
+School grading, hospital metrics, company goals, your own morning routine.
+The world runs on small, invisible rewards more than it runs on stated goals.
+The difference between the two is usually where the surprise lives.
+
+@reflect
+A small daily reward, like a quick thank-you message from a colleague.
+A goal rewarded differently than stated, like speed over quality.
+A task you would do differently with flipped incentives, like writing fewer but better emails.

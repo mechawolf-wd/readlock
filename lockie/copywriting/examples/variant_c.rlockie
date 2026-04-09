@@ -1,0 +1,101 @@
+@course
+
+id: book:thinking-fast-and-slow-hqkr
+title: Thinking, Fast and Slow
+author: Readlock
+description: Why your mind runs on two different systems, and what happens when they disagree.
+color: #0ea5e9
+genres: psychology, decision-making
+relevant_for: anyone, managers, investors
+
+@segment
+The Two Systems
+TS
+
+@package
+The Anchor You Did Not See
+Free
+
+@text
+There are numbers in your head right now that you did not choose.
+Prices you half-remember, distances you estimated once, guesses you made without trying.
+Most of the time they feel like neutral background.
+But when you are asked to make a decision, they are the first numbers your mind reaches for.
+You do not notice it happen.
+
+@text
+A shopper in a department store sees a jacket marked "was 2,400, now 1,200."
+She has never paid 2,400 for a jacket in her life.
+She does not need a jacket this week.
+But the 1,200 feels like a gift, and she leaves the store with the bag.
+A week later she sees the same jacket at a different store for 900, with no "was" sticker.
+She feels nothing about the 900.
+It is just a number for a jacket she already owns.
+
+@text
+A judge in a courtroom is deciding how many months a shoplifter should spend in prison.
+Before she decides, a defense attorney mentions a length of time in passing, 5 months, in an unrelated argument.
+The judge ignores the comment. She is a professional.
+Her ruling comes out closer to 5 months than it would have if the defense had mentioned 12.
+Not because she agreed with the defense.
+The number was simply in the room.
+She cannot unhear it.
+
+@text
+A buyer is negotiating the price of a house.
+The seller names a number first, deliberately high, to see what happens.
+The buyer knows the trick. He has read articles about it.
+He offers a number lower than the seller's, and lower than what he would have offered otherwise.
+Still, his final offer lands closer to the seller's opening than he intended.
+Knowing the trick did not protect him.
+The number had already changed what he thought was a reasonable offer.
+
+@question
+What connects the jacket, the judge, and the house negotiation?
+
+answer: Each decision was pulled toward a number introduced first, even when the number was arbitrary.
+consequence: Exactly. The first number becomes the reference point every later number gets compared against. Even professionals who know this is happening cannot fully escape it.
+
+answer: Each person was acting emotionally instead of rationally.
+consequence: That is the usual explanation, but it is not quite right. The judge and the house buyer were doing careful, rational work. The bias happened inside their reasoning, not outside it.
+
+answer: Each person failed to do enough research before deciding.
+consequence: Research does help, but the judge and house buyer had all the information they needed. More information would not have changed the pull of the first number. The pull is upstream of what you know.
+
+correct_answers: 1
+explanation: The first number introduced into a decision sets an unconscious reference point that pulls every later number toward it. This is the anchoring effect.
+hint: Notice what all three situations share, someone said a number first.
+
+@text
+Daniel Kahneman called this the anchoring effect.
+In Thinking, Fast and Slow, he describes two modes of thought that live in every person.
+System 1 is fast, automatic, and runs on rough estimates and reference points.
+System 2 is slow, deliberate, and only wakes up when you ask it to.
+Anchoring happens because System 1 grabs the first number and uses it as the starting point.
+System 2 argues with it, but almost never throws the number out entirely.
+
+@true_false
+A person who knows about the anchoring effect can make decisions that are fully free of it.
+
+true: True, awareness protects you.
+consequence: Awareness helps, but not as much as you would hope. Kahneman's experiments include judges and statisticians who anchor even when warned. Knowing the trap lets you watch it happen, not avoid it.
+
+false: False, awareness reduces it but does not remove it.
+consequence: That is the honest answer. Anchoring operates below the level of deliberate thought. The best you can do is reset to an independent number before committing to anything.
+
+correct_answers: 2
+explanation: Knowing about a cognitive bias is not the same as being immune to it. The bias lives in System 1, and System 1 does not care what you have read.
+hint: Ask whether any other unconscious behavior has ever gone away just because you learned about it.
+
+@text
+The useful move is not to try to escape anchors.
+Anchors are how System 1 works, and you cannot turn System 1 off.
+The useful move is to notice when a number has landed in front of you.
+Make an independent guess first, before the anchor has a chance to do its work.
+Write your guess down if you have to, then compare it to the anchor.
+The difference between the two is where the real decision happens.
+
+@reflect
+A number you never chose, like last year's rent price.
+A purchase shaped by a discount sticker, like a "50 percent off" tag.
+A guess you made before seeing the real price, like for a coffee abroad.

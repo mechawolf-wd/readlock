@@ -1,0 +1,101 @@
+@course
+
+id: book:atomic-habits-abcd
+title: Atomic Habits
+author: Readlock
+description: How small daily actions compound into the person you become.
+color: #4f46e5
+genres: self-help, psychology
+relevant_for: anyone, students, professionals
+
+@segment
+Small Changes, Big Results
+SC
+
+@package
+The Two-Minute Morning
+Free
+
+@text
+Most mornings start the same way.
+You open your eyes and reach for something before you are fully awake.
+Coffee, phone, the same stretch you did yesterday without thinking about it.
+You did not decide to do any of this today.
+Your body moved before you had an opinion.
+
+@text
+Imagine you are standing in your kitchen at 6:47 in the morning.
+The light is still blue through the window.
+You are holding a glass of water you do not remember pouring.
+The kettle is starting to hum.
+Your phone is face-down on the counter, because last night you decided it would be.
+None of this took willpower.
+You did not have to convince yourself to do any of it.
+
+@text
+While the water is boiling, you reach for a book already open to the page you left it on.
+You read one paragraph.
+Just one.
+Then you put the book down, because the kettle is ready and you are done reading for the day.
+Tomorrow you will read one more paragraph.
+You are not trying to finish the book this week.
+You are trying to be someone who reads in the morning.
+
+@text
+Nothing in this morning was dramatic.
+No alarm with a motivational quote.
+No cold plunge.
+No 60-minute routine downloaded from a productivity podcast.
+And yet, 6 months from now, you will have read a book you would not have started otherwise.
+You will have done it two minutes at a time.
+The mornings shaped who you became.
+
+@question
+Why did the two-minute version of the habit work when longer attempts had not?
+
+answer: Because two minutes is easy enough that you never have to convince yourself to start.
+consequence: That is the intuitive answer, and for most people it is exactly right. The barrier to starting is what ends most habits, not the effort itself. Making the start small removes the barrier.
+
+answer: Because two minutes is long enough to make real progress.
+consequence: Two minutes of reading is almost no progress in pages. But the habit is not about pages, it is about becoming someone who reads. That identity does not need long sessions.
+
+answer: Because short habits are more fun than long ones.
+consequence: There is something to that, short habits are often easier to enjoy. But enjoyment is not what keeps a habit going. What matters is whether starting feels easy every day.
+
+correct_answers: 1
+explanation: A habit you can start without a fight is a habit you will still be doing next month. The size of the action matters less than the decision to begin.
+hint: Think about what usually stops you before you even begin.
+
+@text
+What you just walked through is the core idea of Atomic Habits by James Clear.
+He argues the smallest version of a habit is almost always the one that lasts.
+Not for what it does on any single day, but for what it adds up to.
+Each tiny action nudges you a little closer to who you want to become.
+Clear calls this identity-based habit change.
+You aim to become someone, not to hit a goal.
+
+@true_false
+A two-minute habit is too small to matter and will not produce real results.
+
+true: True, two minutes is not enough.
+consequence: Two minutes is not the point, it is the entry. Once you are reading daily, the sessions usually get longer without effort. Even if they do not, you will still finish a book this year.
+
+false: False, the small version is the point.
+consequence: Exactly. The habit grows by being continued, not by being ambitious on day one. The size of the commitment has little to do with the long-term result.
+
+correct_answers: 2
+explanation: Small habits compound because they continue. Ambitious habits often produce one impressive week and then nothing, which compounds to nothing.
+hint: Ask which is more valuable, one perfect day or a year of imperfect ones.
+
+@text
+The two-minute morning is not really about two minutes.
+It is about being the kind of person whose mornings contain that small habit.
+That person reads the book, or writes the sentence, or stretches the hamstring, every day, without making a big deal of it.
+Over a year, those small actions shape someone you would recognize.
+Habits shape identity more than identity shapes habits.
+You become what you repeat.
+
+@reflect
+A habit that started tiny, like reading one page before bed.
+An ambition that broke on day one, like a gym plan.
+A small action for tomorrow, like writing one sentence in a notebook.

@@ -1,0 +1,101 @@
+@course
+
+id: book:a-brief-history-of-time-cnwo
+title: A Brief History of Time
+author: Readlock
+description: How a few patient observations of distant light told us the universe had a beginning.
+color: #1e293b
+genres: science, physics
+relevant_for: curious readers, students, anyone
+
+@segment
+The Expanding Universe
+EU
+
+@package
+The Light That Gave It Away
+Free
+
+@text
+For most of recorded history, almost everyone assumed the universe was eternal.
+Not unchanging in every detail. Stars were born and died.
+But the universe as a whole was thought to have always been there.
+This was not a religious position. It was the default assumption of almost every physicist, including Einstein.
+It turned out to be wrong, and the evidence came from patient measurements of light from other galaxies.
+
+@text
+In the 1920s, at the Mount Wilson Observatory in California, an astronomer named Edwin Hubble spent long nights photographing faint smudges of light in the sky.
+At the time, there was an argument about whether these smudges were clouds inside our own galaxy or separate galaxies far beyond it.
+Hubble measured the light from each smudge using a spectrograph that spread the light into its component colors.
+He noticed that the colors from these galaxies were shifted toward red, and the farther away a galaxy was, the more its colors had shifted.
+He plotted the data, and the pattern was almost a straight line.
+More distance, more redshift.
+He did not yet know what the line meant, only that it was there.
+
+@text
+To understand the redshift, you have to know what light does when its source is moving.
+A source moving toward you has its colors shifted slightly toward blue.
+A source moving away has its colors shifted slightly toward red.
+This is the same idea as a siren sounding higher when an ambulance moves toward you and lower once it passes.
+Redshift means "the source is moving away."
+Redshift that grows with distance means "farther sources are moving away faster."
+Physicists already had equations from Einstein and a Belgian priest named Georges Lemaitre that predicted exactly this.
+
+@text
+The straight line in Hubble's plot was the fingerprint of an expanding universe.
+If you accept the redshift for what it is, then every galaxy used to be closer to every other galaxy.
+The universe used to be smaller, denser, and hotter.
+If you follow the expansion backward in time far enough, everything that exists was packed into a region smaller than a room.
+Further back and it was smaller than an atom.
+This is not a metaphor. It is what the equations, the redshift, and the photographs point at when taken literally.
+The universe had a beginning, and the light from distant galaxies was the evidence.
+
+@question
+Why did Hubble's straight line show that the universe had a beginning?
+
+answer: Because the line implied the universe is expanding, and an expanding universe must have been smaller in the past.
+consequence: Exactly. The line links distance to how fast galaxies are moving away. Running that backward in time takes you to a single starting point where everything began.
+
+answer: Because redshift proves that light gets tired as it travels.
+consequence: This idea was floated in the early 20th century, sometimes called the tired light hypothesis. It does not hold up against other evidence, like the cosmic microwave background. That background is exactly what an early hot universe would leave behind.
+
+answer: Because farther galaxies emit red light for chemical reasons.
+consequence: Distant galaxies are not chemically redder. Their spectral lines, the fingerprints of specific elements, are shifted toward the red end together. The elements are the same, only the motion differs.
+
+correct_answers: 1
+explanation: A universe that is expanding today must have been smaller yesterday, smaller still the day before, and at some point small enough that the word "universe" meant something very different. That starting point is what we now call the Big Bang.
+hint: If everything is moving apart today, what did the arrangement look like a very long time ago.
+
+@text
+The idea Hubble's line pointed at became known as the Big Bang.
+Stephen Hawking tells this story in A Brief History of Time.
+For him, it marked the moment physics stopped treating the universe as a fixed background.
+From then on, the universe had a beginning, a middle, and a direction.
+That is a strange thing to say about the whole of existence.
+But the strangeness did not come from imagination. It came from measurement.
+
+@true_false
+The Big Bang was a single explosion that happened at one specific place in the existing universe.
+
+true: True, it was an explosion in space.
+consequence: This is the picture most of us grow up with, because "bang" suggests an explosion. But the Big Bang is not an event at a location inside space. It is the expansion of space itself, happening everywhere at once.
+
+false: False, space itself was expanding, not exploding into something.
+consequence: Right. There is no center of the Big Bang, and no edge. Every point is moving away from every other point, like raisins in a rising loaf of bread where no raisin is the center.
+
+correct_answers: 2
+explanation: The Big Bang is the expansion of space itself, not an event within an existing space. The language of "bang" and "explosion" is a metaphor that misleads more often than it helps.
+hint: Ask where the Big Bang happened, and what it means if the honest answer is "everywhere."
+
+@text
+The useful thing about the story of Hubble's line is that it shows how the biggest ideas in physics are usually made of ordinary ingredients.
+A telescope, some photographic plates, a patient person doing the same measurement over and over.
+Then someone with the nerve to take the resulting line seriously.
+Hawking's book is full of moments like this.
+None of them involved genius in the dramatic sense.
+They involved people who refused to look away from a pattern in the data, even when the pattern seemed to say something impossible.
+
+@reflect
+A pattern you noticed but ignored, like your best work happening at dawn.
+An ordinary answer to a big question, like "because I finally slept well."
+A moment you trusted data over a hunch, like an experiment result.
