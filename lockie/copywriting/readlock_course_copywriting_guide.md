@@ -1,5 +1,13 @@
 # Readlock Writing Guidelines
 
+**Related files:**
+
+- `rlockie_format_guide.txt` — syntax authority for the `.rlockie` file format. Covers every declaration (`@course`, `@segment`, `@package`, `@text`, `@question`, `@true_false`, `@estimate`, `@quote`, `@pause`, `@reflect`), their required fields, and formatting rules. If a question is about what a `.rlockie` file looks like or what fields a declaration takes, the answer is in that file, not here. This guide covers what to write. The format guide covers how to structure it.
+- `readlock_final_test.txt` — rule checklist to run after writing, before shipping. Every rule from this guide condensed into pass/fail checkboxes. Run the finished draft through it as a final step.
+- `ai_writing_blacklist.txt` — flat blacklist of banned AI writing patterns, words, and structures. Supplements Sections 5, 6, and 7 of this guide.
+
+---
+
 ## Contents
 
 1. [Identity](#1-identity)
@@ -83,6 +91,8 @@ clean prose
 
 **Never tell them what they think, feel, or are doing.** "You think you are reading this. You are not." This is presumptuous. "You have an incredible superpower." This is patronizing. You do not get to narrate the reader's inner life.
 
+**Use "we" in intros and general observations. Use "you" only in reader-immersion scenarios (Variant A).** When the narrator is describing something that happens to all people, the word is "we." _"We do not notice it happen."_ The narrator is included. When the narrator says "you," it sounds like they are telling the reader something about themselves, which is presumptuous unless the reader has been explicitly placed inside a scenario (Variant A, "Imagine you are standing in your kitchen..."). Outside of Variant A, default to "we" for shared human behavior.
+
 **Invite, never assert.** The difference between good and bad second-person writing:
 
 > **Correct:** _"Imagine standing at a crossroads where..."_ (opens a door)
@@ -121,7 +131,7 @@ Rotate opener styles across packages, never repeat the same type consecutively:
 | **Historical sweep**      | _"For most of human history, there was no writing. Our ancestors navigated the world entirely through vision."_ |
 | **Universal observation** | _"People have always trusted what they can see more than what they are told."_                                  |
 | **Gentle question**       | _"Have you ever wondered why some things feel instantly familiar, even when you have never seen them before?"_  |
-| **Grounded fact**         | _"The human visual system is ancient. Over 500 million years of evolutionary refinement."_                      |
+| **Grounded fact**         | _"The human visual system is older than every language and every alphabet that has ever existed."_               |
 
 The intro should feel like the first paragraph of an essay. It does not sell, does not tease, does not promise. It opens a door.
 
@@ -157,11 +167,11 @@ These test understanding, not recall. They work because the reader has been thin
 
 Do not write questions that sound accusatory or that punish the reader for not knowing something. The tone is collaborative. The narrator and the reader are thinking about this together. The narrator just happens to already know the answer.
 
-#### Writing `@question` consequences
+#### Writing `@question` consequences (.rlockie field: `consequence:`)
 
 A consequence is the short explanation the reader sees after picking an answer. Every consequence must follow these rules:
 
-0. **Length.** A consequence is **1 to 3 sentences**, and each sentence follows the same length rules as `@text` sentences (about 2 or 3 words up to around 14 words). One sentence is usually enough. Two or three sentences are allowed when the consequence needs to acknowledge the intuition, correct it, and then point at the real reason. Never more than three. If you are writing a fourth sentence, the nuance belongs in the `explanation` field, which the reader sees after all the consequences.
+0. **Length.** A consequence (.rlockie: `consequence:`) is **1 to 3 sentences**, and each sentence follows the same length rules as `@text` sentences (about 2 or 3 words up to around 14 words, with +3/4 overflow when needed). One sentence is usually enough. Two or three sentences are allowed when the consequence needs to acknowledge the intuition, correct it, and then point at the real reason. Never more than three. If you are writing a fourth sentence, the nuance belongs in the explanation (.rlockie: `explanation:`) field, which the reader sees after all the consequences.
 
 1. **Never make the reader feel stupid.** Do not write consequences that sound like a verdict (_"Wrong."_, _"This would not work."_, _"Incorrect."_). Those read as _"how did you not know this?"_ even when you did not mean them that way.
 
@@ -173,11 +183,11 @@ A consequence is the short explanation the reader sees after picking an answer. 
 
 5. **Do not sugarcoat a wrong answer into sounding right.** Validating the intuition is not the same as pretending the answer was almost correct. Respect the reader by being honest about the correction.
 
-#### Writing `@question` hints
+#### Writing `@question` hints (.rlockie field: `hint:`)
 
-A hint is a short line shown before the reader answers, to help them get unstuck. Every hint must follow these rules:
+A hint (.rlockie: `hint:`) is a short line shown before the reader answers, to help them get unstuck. Every hint must follow these rules:
 
-0. **Length.** A hint is **exactly one sentence, at most 14 words**. If you need two sentences to hint, the question is either too hard, or the hint is revealing too much.
+0. **Length.** A hint is **exactly one sentence, at most 14 words** (with +3/4 overflow when needed). If you need two sentences to hint, the question is either too hard, or the hint is revealing too much.
 
 1. **A hint points at the topic of the question, not at the answer.** After reading the hint, the reader should know what area of thinking the question lives in. They should not know which option to pick.
 
@@ -193,6 +203,8 @@ Name the pattern. Make the connection between the stories explicit.
 - _"What ties these together is something researchers have studied for decades..."_
 
 This moment should feel like a satisfying click. The reader's intuition confirmed, or gently corrected. Not a lecture.
+
+**Never mention the source book or its author in the course text.** The reader is here to learn a concept, not to be told which book it came from. _"This is the core idea of Atomic Habits by James Clear"_ breaks the illusion that the course is teaching them directly. The course IS the teacher. It does not point at another teacher. Book titles and author names belong in the `@course` metadata (the `title` and `author` fields), not inside `@text` swipes, consequences, explanations, or hints. If the concept has a name, use the name. If it has an origin, describe the origin without namedropping. _"Researchers call this identity-based habit change"_ is fine. _"James Clear calls this identity-based habit change"_ is not.
 
 **Color highlights (`<c:g>`, `<c:r>`) have two specific jobs, and nothing else.** The `.rlockie` format supports two inline color markers: `<c:g>...</c:g>` for green and `<c:r>...</c:r>` for red. These markers work only inside `@text` swipes. They do not work and must not be used inside `@question`, `@true_false`, `@estimate`, `@pause`, `@reflect`, `@quote`, or any property field (consequence, explanation, hint, answer). They are not decoration. They carry meaning, and the reader learns what that meaning is across the course. Use them outside these two jobs, or outside `@text`, and the package starts to look messy, loses the signal, and teaches the reader to ignore highlights.
 
@@ -277,7 +289,7 @@ The only thing in this whole guide that is called an "outro" is this swipe. The 
 **Structure.** A good final outro does two things in two or three sentences:
 
 1. Name the thread that ran through every package, without listing the packages.
-2. End on a question or an alternative angle that the reader carries with them after closing the app. A phrase like _"Maybe the real question is whether..."_ or _"Or perhaps the point was never X, but Y,"_ leaves the reader in motion instead of parked.
+2. End on a question or an alternative angle the reader keeps thinking about after closing the app. A phrase like _"Maybe the question is whether..."_ or _"Or perhaps the point was never X, but Y"_ gives the reader something to carry forward.
 
 **What it must never sound like:**
 
@@ -287,8 +299,8 @@ The only thing in this whole guide that is called an "outro" is this swipe. The 
 
 The examples below show the shape of a final course outro, not a template to copy. Every course outro should sound different. Do not reuse phrasing, sentence shapes, or the "Maybe the real question is..." opener from these examples. Write each outro from scratch based on the specific course it closes.
 
-> **Correct (example only, do not copy the structure):** _"For 70,000 years we have run on shared stories, and we are still telling them. Maybe the real question is not whether the stories are true, but which ones are still worth believing."_
-> **Correct (example only, do not copy the structure):** _"Every small habit in this course pointed at the same idea. The question left open is whether the habit matters, or only the person it quietly builds."_
+> **Correct (example only, do not copy the structure):** _"For 70,000 years, humans have been telling each other stories that are not true, and building entire worlds on top of them. Maybe the question is not whether the stories are true, but which ones are still worth keeping."_
+> **Correct (example only, do not copy the structure):** _"Every small habit in this course pointed at the same idea. The open question is whether the habit matters on its own, or only because of who it turns you into."_
 > **Wrong:** _"In this course you learned about habits, identity, and small actions. These are important principles to apply in your life."_ (mechanical, bullet-style, no tension)
 > **Wrong:** _"And that changes everything."_ (template closer, no content)
 
@@ -311,11 +323,13 @@ Every length and count in a course lives in this one table: how many packages pe
 | Optional pause                | 0 or 1             | `@pause`                                                                                      | One sentence only, standalone. Default spot is right here, right after Phase 4 (Topic Reveal), when the reader needs a beat after the conclusion lands. See "Optional: `@pause` swipes" above for tone rules.                     |
 | Optional estimate             | 0 or 1             | `@estimate`                                                                                   | Optional. Comes after Phase 4 (after the conclusion has been stated). Only when the topic has a numerical element worth guessing. One question with a numerical answer (0 to 100 slider).                                         |
 | 5. True/False or Deeper Check | 1                  | `@true_false`                                                                                 | One statement, usually one sentence. Semi-obvious, not a trap. See Phase 5 text for tone rules.                                                                                                                                   |
-| 6. Reflect                    | 1                  | `@reflect`                                                                                    | 2 to 3 points maximum, each around 5 to 11 words. Each point includes one concrete example. See Phase 6 text for tone rules.                                                                                                      |
+| 6. Reflect                    | 1                  | `@reflect`                                                                                    | 2 to 3 points maximum, each around 14 to 16 words. Each point includes one concrete example. See Phase 6 text for tone rules.                                                                                                     |
 | **Final outro**               | **1 (extra)**      | `@text`                                                                                       | Only on the very last package of the whole course, after Phase 6. 2 to 3 sentences. Intelligent sum-up that names the thread of the course and ends on an open question or alternative angle. See "The final course outro" above. |
 | **Package total**             | **7 to 11 swipes** | Phases 1 → 2 → 3 → 4 → 5 → 6, in order, with optional `@pause` and/or `@estimate` after Phase 4            | A preferable package moves through every phase once, in order. Skipping a phase is allowed only when the narrative arc would actually break by including it.                                                                      |
 
 **Consecutive `@text` swipes.** Never place more than 3 `@text` swipes in a row anywhere in a package, **not counting the Phase 1 intro `@text`**. The intro is excluded because it is one swipe and lives in its own phase. After it, you may still run up to 3 consecutive `@text` swipes in Phase 2 without breaking this. Anywhere else in the package, 4 `@text` swipes in sequence is a wall of text on a mobile screen, and the reader will bounce. If a phase needs more than 3 `@text` swipes to land, the content is too much, not the format. Cut it, or break the sequence with a `@question`, `@true_false`, or `@pause`.
+
+**Free package.** The first package of the first segment is always free. Mark it with the word `Free` on its own line in the package configuration, right after the package title. Every other package is paid by default.
 
 **Course level.** A preferable course contains 2 to 3 `@segment`s maximum. Each `@segment` contains 3 to 5 `@package`s maximum. A typical segment therefore contains about 21 to 55 swipes, and a typical course lands in the range of about 42 to 165 swipes total. Shorter is almost always better. If a course can teach its subject in fewer segments without losing the arc, it should. **The very last package of the course ends with one extra `@text` swipe**, the final course outro: 2 to 3 sentences, intelligent, slightly open-ended. See "The final course outro" under Phase 6 for the full rule.
 
@@ -327,18 +341,39 @@ Every length and count in a course lives in this one table: how many packages pe
 
 **Ground every claim in context.** Never state a fact in isolation. Anchor it in history, evolution, or a concrete scenario so the reader understands WHY something is true, not just THAT it is true.
 
-> **Correct:** _"The human visual system is ancient. Over 500 million years of evolutionary refinement have shaped it into something that can process a complete scene in as little as 13 milliseconds."_
+> **Correct:** _"The human visual system is older than every language and every alphabet. It can process a complete scene faster than you can snap your fingers."_
 >
-> **Wrong:** _"The brain processes images 60,000 times faster than text. This is important for design."_
+> **Wrong:** _"The brain processes images 60,000 times faster than text. This is important for design."_ (60,000 times is a number nobody can picture)
 
-**Use specific numbers.** "13 milliseconds," "500 million years," "5,000 years old" land harder than "significantly faster" or "much older." Precision is credibility.
+**Every number needs a visual anchor.** A number on its own is trivia the reader will forget by the next swipe. A number paired with something the reader can actually picture is a fact that stays. The visual anchor is not optional decoration. It is the thing that makes the number real.
+
+Everyone can picture "when dinosaurs ruled the Earth." Nobody can picture "65 million years ago." Everyone can picture "faster than you can snap your fingers." Nobody can picture "13 milliseconds." The number can still appear, but the visual anchor is what the reader will remember.
+
+Rules:
+
+1. **Always pair a number with a visual anchor.** The anchor is a concrete scene, era, object, or physical sensation the reader already knows. The number sits next to it, not instead of it.
+2. **The visual anchor comes first, or wraps around the number.** Lead with the picture, then pin the number to it. Do not lead with the number and hope the reader forms their own image.
+3. **For deep time,** use eras the reader can see: _"when dinosaurs ruled the Earth,"_ _"long before any city or farm existed,"_ _"before humans had writing."_
+4. **For years and decades,** anchor to something the reader can picture from that era: _"in the early 1970s, around the time of the first pocket calculators,"_ not just _"in 1972."_
+5. **For speed and scale,** anchor to body sensations or everyday objects: _"faster than you can snap your fingers,"_ _"small enough to fit on a fingertip,"_ not just a raw measurement.
+
+> **Correct:** _"The human visual system has been around since before the dinosaurs disappeared. It can process a complete scene faster than you can snap your fingers."_
+> **Correct:** _"70,000 years ago, long before any city or farm existed, something changed in our ancestors' minds."_
+> **Correct:** _"In the early 1970s, around the time of the first pocket calculators, researchers discovered something odd."_
+> **Wrong:** _"The visual system is 500 million years old."_ (nobody can picture 500 million years)
+> **Wrong:** _"In 1972, researchers discovered..."_ (a year is a label, not an image)
+> **Wrong:** _"The brain processes images 60,000 times faster than text."_ (nobody can picture 60,000 times)
+
+The raw number is welcome as long as the visual anchor is doing the real work. _"70,000 years ago"_ is fine because _"before any city or farm"_ is right next to it. _"500 million years ago"_ alone is a number with no picture, and the reader will not carry it to the next swipe.
+
+**Keep visual anchors universal.** The reader may be from any country. Do not sweat matching every culture, but avoid obviously local references. _"When dinosaurs ruled the Earth"_ works everywhere. _"Before humans had writing"_ works everywhere. _"Around the time of the first pocket calculators"_ works in most places. _"When your grandparents were in school"_ does not, because the reader's grandparents may not have been in school. _"Around the time of the Super Bowl"_ does not, because most of the world does not watch it. If you are not sure whether an anchor is universal, pick a different one. There are always more.
 
 **Write numbers as numerals, not as words.** Any quantity larger than about ten should be written in digits, not spelled out. A B2 reader parses _"70,000 years ago"_ much faster than _"seventy thousand years ago"_ because digits are language-independent and spelled-out numbers force an extra translation step. This also applies to vague-but-quantified framings:
 
-> **Correct:** _"Roughly 70,000 years ago, something changed in our ancestors' minds."_
+> **Correct:** _"Roughly 70,000 years ago, long before any city existed, something changed in our ancestors' minds."_
 > **Wrong:** _"Roughly seventy thousand years ago, something changed in our ancestors' minds."_
 >
-> **Correct:** _"About 200,000 years ago, a small population of modern humans lived in East Africa."_
+> **Correct:** _"About 200,000 years ago, when humans still lived in small bands in East Africa, a population appeared that was almost identical to us."_
 > **Wrong:** _"About two hundred thousand years ago, a small population of modern humans lived in East Africa."_
 >
 > **Correct:** _"She spent 10 days longer on the market than comparable homes."_
@@ -410,17 +445,19 @@ Rule of thumb for both idioms and rare phrasal verbs: treat them like seasoning.
 
 **Preferred: one sentence per line. Up to two sentences allowed.** In practice this means one period per line in most cases, and never more than two periods per line. The `.rlockie` format turns every line inside a `@text` block into its own on-screen segment, so packing three or more sentences on one line clusters them visually and breaks the rhythm the format is designed for.
 
-**Line length: up to 16 words total.** Whether the line holds one sentence or two, the whole line should fit in about 16 words maximum. A single sentence may run up to around 14 words (the same ceiling used everywhere else in the guide). If the line holds two sentences, both together still fit in the same ~16-word window, which means one of them has to be short. Two short beats like _"She stops. She listens."_ use 4 words total. A setup plus a short consequence like _"He offered less. The seller accepted."_ uses 6.
+**Line length: up to 16 words total, with some flexibility.** Whether the line holds one sentence or two, the whole line should fit in about 16 words. A single sentence targets around 14 words. If a sentence genuinely needs 3 or 4 extra words to land clearly, that is fine. Going to 17 or 18 once in a while is acceptable. Going there on every other line is not. The 14-word target is the default. The +3/4 overflow is the safety valve, not the new default.
+
+If the line holds two sentences, both together should still fit in the ~16-word window, which means one of them has to be short. Two short beats like _"She stops. She listens."_ use 4 words total. A setup plus a short consequence like _"He offered less. The seller accepted."_ uses 6.
 
 **One sentence per line is the default.** Write _"They are not bad people."_ on one line and _"Most of them have been teaching for a decade."_ on the next, not both together.
 
-**Two sentences per line is allowed** when the two sentences belong together as a single beat, splitting them would feel like over-fragmentation, and the combined length still fits in the 19-word line budget. Typical cases:
+**Two sentences per line is allowed** when the two sentences belong together as a single beat, splitting them would feel like over-fragmentation, and the combined length still fits in the ~16-word budget. Typical cases:
 
 - Two very short sentences that land as one moment: _"She stops. She listens."_
 - A short correction immediately tied to what came before: _"Not accomplishments. Just small corrections he wanted to remember."_
 - A short setup and its immediate consequence: _"He offered less. The seller accepted."_
 
-**Three sentences on one line is never allowed.** Neither is a line longer than ~16 words, even if it is one sentence. If you find yourself writing a third period on the same line, or your single sentence runs past 14 words, split it into two lines. The reader should see at most two thoughts per on-screen segment, and those two thoughts should fit in one breath.
+**Three sentences on one line is never allowed.** If you find yourself writing a third period on the same line, split it. The reader should see at most two thoughts per on-screen segment, and those two thoughts should fit in one breath.
 
 When in doubt, split.
 
@@ -705,3 +742,9 @@ Stories and illustrative scenarios do not need to describe real events. An inven
 Specific factual claims are the opposite. If the package would benefit from a specific statistic, a named study, or a historical date but you cannot source one, write the package without it. Do not invent a study to support a concept. Do not attach a fake percentage to a real phenomenon. Do not give an imagined character a real-sounding name, institution, or year that implies the story actually happened.
 
 The reader will never notice a missing statistic. The reader will absolutely notice if they look up your claim and find that it does not exist.
+
+---
+
+## After writing
+
+When the draft is finished, run it through `readlock_final_test.txt` before shipping. Every rule in this guide is listed there as a pass/fail checkbox. A draft that passes every box is ready. A draft with one unchecked box goes back for a fix. Do not ship with known failures.

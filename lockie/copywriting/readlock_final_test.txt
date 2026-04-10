@@ -1,9 +1,14 @@
 Readlock Final Test
 ===================
 
+Related files:
+
+- readlock_course_copywriting_guide.md — full rules and explanations (this file only checks)
+- rlockie_format_guide.txt — syntax reference for .rlockie declarations and fields
+
 Every rule a finished draft must pass. Each line is one rule. A draft
 passes only if every rule holds. If a rule fails, open
-readlock_course_copywriting_guide.md at the section named in the brackets.
+readlock_course_copywriting_guide.md at the section named in brackets.
 The guide is the only place that says what the rule means and how a
 compliant version looks. This file only checks.
 
@@ -12,8 +17,8 @@ compliant version looks. This file only checks.
 BLOCK 0, DO ONLY WHAT WAS ASKED
 --------------------------------------------------------------------------------
 
-[ ] Zero extra packages, swipes, sentences, examples, or explanations
-    beyond what the prompt requested.
+[ ] Zero extra packages, swipes, sentences, or explanations beyond
+    what the prompt requested.
     [guide: top blockquote, "Do only what was asked"]
 
 [ ] When in doubt between shorter and longer, the draft is shorter.
@@ -25,15 +30,15 @@ BLOCK 1, IDENTITY (SECTION 1)
 --------------------------------------------------------------------------------
 
 [ ] Voice: Veritasium documentary or Kurzgesagt narrator, not textbook,
-    not TED talk, not LinkedIn post, not friend texting, not salesman.
+    not TED talk, not LinkedIn post, not friend texting, not salesman,
+    not forcing teacher.
     [guide: Section 1, Identity]
 
 [ ] No authority posture, no performed insight, no urgency, no fear,
     no pressure.
     [guide: Section 1, Identity]
 
-[ ] No register drift: the package reads as a calm essayist who
-    respects the reader.
+[ ] The package reads as a calm essayist who respects the reader.
     [guide: Section 1, Identity]
 
 
@@ -49,10 +54,15 @@ BLOCK 2, RELATIONSHIP WITH THE READER (SECTION 2)
     "You are not just X, you are Y").
     [guide: Section 2, Never tell them what they think]
 
-[ ] Zero condescending explanations of things the reader can infer.
+[ ] Zero condescending explanations of what the reader can infer.
     Zero congratulating the reader for understanding something
     straightforward.
     [guide: Section 2, Respect their intelligence]
+
+[ ] "We" for intros and general observations about shared human
+    behavior. "You" only in Variant A reader-immersion scenarios
+    where the reader has been explicitly placed inside a scene.
+    [guide: Section 2, Use "we" in intros and general observations]
 
 [ ] Invitations only ("Imagine...", "You may be asking..."), never
     assertions about what the reader did or is.
@@ -69,14 +79,11 @@ BLOCK 3, PACKAGE FLOW AND PHASE STRUCTURE (SECTION 3)
 
 Flow integrity:
 
-[ ] The package reads as a single unbroken line of thought. The arc
-    moves forward: curiosity, then evidence, then understanding. No
-    swipe feels out of order.
+[ ] The package reads as a single unbroken line of thought. No swipe
+    feels out of order.
     [guide: Section 3, Package Flow, opening blockquote]
 
-[ ] The reader does not arrive at the insight before Phase 4. No
-    reveal-then-question-again. No circle-back to something already
-    resolved.
+[ ] The reader does not arrive at the insight before Phase 4.
     [guide: Section 3, Package Flow, opening blockquote]
 
 Phase 1, Intro:
@@ -84,186 +91,208 @@ Phase 1, Intro:
 [ ] Exactly 1 intro @text swipe, 3 to 5 sentences.
     [guide: Section 3, Length reference]
 
-[ ] Opens with a broad human hook, does not name the topic yet, does
-    not sell, tease, or promise.
+[ ] Opens with a broad human hook, does not name the topic yet.
     [guide: Section 3, Phase 1, Intro]
 
 [ ] Opener style rotates across packages (historical sweep, universal
-    observation, gentle question, grounded fact). Same type is never
+    observation, gentle question, grounded fact). Same type never
     repeated consecutively.
     [guide: Section 3, Phase 1, Intro]
 
 Phase 2, Stories / Narratives:
 
 [ ] 2 to 3 consecutive @text swipes, each 5 to 7 sentences. Each
-    sentence about 2 or 3 words up to around 14 words.
+    sentence targets ~14 words (can overflow to 17-18 when needed).
     [guide: Section 3, Length reference]
 
-[ ] The package follows one of the 7 variants (A, reader-immersion
-    scenario / B, single person narrative / C, two people contrast /
-    D, diverse multiple stories / E, scientific walkthrough / F,
-    historical arc / G, thought experiment), or a deliberate mix.
+[ ] Package follows one of the 7 variants (A through G) or a mix.
+    Swipe structure matches the variant's column in the table.
     [guide: Section 3, Phase 2, Stories / Narratives]
 
-[ ] The swipe structure matches the variant's swipe-structure column
-    (e.g., Variant D = 3 different people in 3 parallel swipes).
-    [guide: Section 3, Phase 2, Stories / Narratives table]
-
-[ ] The stories create a question in the reader's mind, not a
-    conclusion. The pattern is sensed, not named.
+[ ] Stories create a question, not a conclusion. The pattern is
+    sensed, not named.
     [guide: Section 3, Phase 2, Stories / Narratives]
 
-Phase 3, Questions / Estimations:
+Phase 3, Questions:
 
-[ ] 1 to 2 swipes using @question, @true_false, or @estimate. @estimate
-    only if the topic has a numerical element.
+[ ] 1 to 2 swipes using @question or @true_false. No @estimate here.
     [guide: Section 3, Length reference]
 
-[ ] Question tone is curious, not testing. The reader feels safe, not
+[ ] Question tone is curious, not testing. Reader feels safe, not
     examined.
     [guide: Section 3, Phase 3]
 
-[ ] Every question is answerable from what came before. Zero questions
-    that require knowledge the course has not provided.
+[ ] Every question is answerable from what came before.
     [guide: Section 3, Phase 3]
 
-[ ] Zero accusatory questions, zero questions that punish the reader.
-    [guide: Section 3, Phase 3]
+@question consequences (.rlockie: `consequence:`):
 
-@question consequences:
-
-[ ] Each consequence is 1 to 3 sentences. Each sentence at most about
-    14 words.
-    [guide: Section 3, Phase 3, Writing @question consequences, Length]
+[ ] Each consequence is 1 to 3 sentences. Each sentence targets ~14
+    words (can overflow to 17-18).
+    [guide: Section 3, Phase 3, Writing @question consequences, rule 0]
 
 [ ] Zero verdict language ("Wrong.", "Incorrect.", "This would not
     work.").
     [guide: Section 3, Phase 3, Writing @question consequences, rule 1]
 
-[ ] For wrong-but-intuitive answers: the consequence names the
-    intuition, validates it briefly, then flips it.
+[ ] Wrong-but-intuitive answers: brief acknowledgment, then
+    correction. Sometimes just the correction. Vary the approach.
     [guide: Section 3, Phase 3, Writing @question consequences, rule 2]
 
-[ ] For wrong-but-not-intuitive answers: plain correction, no invented
-    "you might have thought" reasoning.
+[ ] Wrong-but-not-intuitive: plain correction, no invented reasoning.
     [guide: Section 3, Phase 3, Writing @question consequences, rule 3]
 
-[ ] For correct answers: brief confirmation plus reasoning. No
-    "Exactly!", no "Great job!".
+[ ] Correct answers: brief confirmation plus reasoning. No "Exactly!",
+    no "Great job!".
     [guide: Section 3, Phase 3, Writing @question consequences, rule 4]
 
-[ ] Zero sugarcoating. A wrong answer is honestly corrected, not
-    dressed up as almost-right.
+[ ] Zero sugarcoating. Wrong is wrong, stated honestly.
     [guide: Section 3, Phase 3, Writing @question consequences, rule 5]
 
-[ ] Any nuance beyond 3 sentences lives in the `explanation` field,
-    not in the consequence.
-    [guide: Section 3, Phase 3, Writing @question consequences, Length]
+[ ] Any nuance beyond 3 sentences belongs in the explanation
+    (.rlockie: `explanation:`), not in the consequence.
+    [guide: Section 3, Phase 3, Writing @question consequences, rule 0]
 
-@question hints:
+@question hints (.rlockie: `hint:`):
 
-[ ] Exactly one sentence, at most 14 words.
-    [guide: Section 3, Phase 3, Writing @question hints, Length]
+[ ] Exactly one sentence, at most 14 words (can overflow to 17-18).
+    [guide: Section 3, Phase 3, Writing @question hints, rule 0]
 
-[ ] Points at the topic of the question, not at the answer. Also
-    useful as context the reader can carry forward.
-    [guide: Section 3, Phase 3, Writing @question hints, rules 1 and 2]
+[ ] Points at the topic of the question, not at the answer.
+    [guide: Section 3, Phase 3, Writing @question hints, rule 1]
+
+[ ] Also useful as context the reader carries forward.
+    [guide: Section 3, Phase 3, Writing @question hints, rule 2]
 
 [ ] Not a rephrasing of the question.
     [guide: Section 3, Phase 3, Writing @question hints, rule 3]
+
+@question explanations (.rlockie: `explanation:`):
+
+[ ] Each sentence targets ~14 words (can overflow to 17-18). Sentences
+    over 18 words are split.
+    [guide: follows same sentence-length rules as all other prose]
 
 Phase 4, Topic Reveal:
 
 [ ] 1 to 2 @text swipes, 5 to 7 sentences each.
     [guide: Section 3, Length reference]
 
-[ ] The pattern is named. The connection between the stories is made
-    explicit. Feels like a satisfying click, not a lecture.
+[ ] Names the pattern. Makes the connection explicit. Feels like a
+    satisfying click, not a lecture.
     [guide: Section 3, Phase 4, Topic Reveal]
 
-Color highlights (<c:g>, <c:r>):
+[ ] Zero mentions of the source book or author name anywhere in
+    course text. Book titles and author names live only in @course
+    metadata. "Researchers call this X" is fine. "Author Y calls
+    this X" is not.
+    [guide: Section 3, Phase 4, Never mention the source book]
 
-[ ] Green <c:g> marks the topic of the current package and nothing
-    else. Appears once, usually in Phase 4. May repeat once later only
-    if it points at the same term.
+[ ] Non-last packages include a transition note in the last @text
+    swipe pointing toward the next package's topic. The reader can
+    tell it refers to the next package. No chapter-menu language.
+    [guide: Section 3, Phase 6, Transition to the next package]
+
+Color highlights (.rlockie: `<c:g>`, `<c:r>`):
+
+[ ] Green <c:g> marks the topic of the current package only. Appears
+    once, usually in Phase 4. May repeat once in another @text swipe
+    only if it is the same term. Only works inside @text.
     [guide: Section 3, Phase 4, Color highlights, rule 1]
 
-[ ] Red <c:r> marks only a wrong thing stated inside the text
-    (misconception, deliberate wrong statement). Never on the topic,
-    never on anything correct.
+[ ] Red <c:r> marks only a wrong thing stated inside the text. Never
+    on the topic, never on anything correct. Only works inside @text.
     [guide: Section 3, Phase 4, Color highlights, rule 2]
 
-[ ] Maximum 1 to 2 highlights per package across both colours combined.
+[ ] Maximum 1 to 2 highlights per package across both colors combined.
     [guide: Section 3, Phase 4, Color highlights, rule 3]
 
 [ ] Highlights wrap the exact term, not a whole sentence.
     [guide: Section 3, Phase 4, Color highlights, rule 4]
 
-[ ] Zero highlights on generic words ("decision", "number", "thing",
-    "idea", "people").
+[ ] Zero highlights on generic words ("decision", "number", "thing").
     [guide: Section 3, Phase 4, Color highlights, rule 5]
 
-Optional @pause:
+[ ] Zero color markup inside @question, @true_false, @estimate,
+    @pause, @reflect, @quote, or any property field (consequence,
+    explanation, hint, answer).
+    [guide: Section 3, Phase 4, Color highlights, opening paragraph]
 
-[ ] Zero or one @pause per package. Single sentence only. Default spot
-    is right after Phase 4 (Topic Reveal).
+Optional @pause (.rlockie: `@pause`):
+
+[ ] Zero or one per package. Single sentence only. Default spot is
+    right after Phase 4 (Topic Reveal).
     [guide: Section 3, Optional: @pause swipes]
 
-[ ] The @pause sentence is a small interesting fact, observation, or
-    reframing related to the topic. Not a quiz, not a recap, not a
-    motivational line.
+[ ] The sentence is a small interesting fact or reframing related to
+    the topic. Not a quiz, not a recap, not a motivational line.
     [guide: Section 3, Optional: @pause swipes]
 
 [ ] Zero "Did you know...", "Fun fact:", "Pro tip:".
     [guide: Section 3, Optional: @pause swipes]
 
-Phase 5, True/False or Deeper Check:
+Optional @estimate (.rlockie: `@estimate`):
+
+[ ] Zero or one per package. Comes after Phase 4. Only when the topic
+    has a numerical element worth guessing.
+    [guide: Section 3, Length reference, Optional estimate]
+
+Phase 5, True/False or Deeper Check (.rlockie: `@true_false`):
 
 [ ] Exactly 1 @true_false swipe. Statement on one line.
     [guide: Section 3, Length reference]
 
-[ ] Statement is semi-obvious after a moment of thought. Not dumb, not
-    a trap. Satisfaction comes from catching a plausible flaw.
-    [guide: Section 3, Phase 5, True/False or Deeper Check]
+[ ] Statement is semi-obvious after a moment of thought. Not dumb,
+    not a trap.
+    [guide: Section 3, Phase 5]
 
-Phase 6, Reflect:
+[ ] true: and false: option texts are descriptive, not literally
+    "True" and "False".
+    [rlockie_format_guide.txt, @true_false]
 
-[ ] Exactly 1 @reflect swipe. Phase 6 contains @reflect only. No
-    closing @text inside Phase 6.
+[ ] Consequences and hints follow the same rules as @question
+    consequences and hints (see above).
+    [guide: Section 3, Phase 3 rules apply to @true_false too]
+
+Phase 6, Reflect (.rlockie: `@reflect`):
+
+[ ] Exactly 1 @reflect swipe. Phase 6 contains @reflect only.
+    No closing @text inside Phase 6.
     [guide: Section 3, Phase 6, Reflect]
 
-[ ] 2 or 3 points per @reflect swipe, each around 5 to 11 words.
+[ ] 2 or 3 points per @reflect swipe, each around 14 to 16 words.
     [guide: Section 3, Length reference]
 
 [ ] Each point contains one concrete example (situation, object,
-    moment, or type of person).
-    [guide: Section 3, Phase 6, Each @reflect point should include one
-    concrete example]
+    moment, or type of person), introduced with a colon.
+    [guide: Section 3, Phase 6, Each @reflect point should include
+    one concrete example]
 
 [ ] Zero platitudes, zero fridge-magnet wisdom.
     [guide: Section 3, Phase 6, @reflect points should not be cliche]
 
-The final course outro:
+Final course outro:
 
 [ ] Only the very last package of the course contains one extra @text
-    swipe after Phase 6. Regular packages do not.
-    [guide: Section 3, Phase 6, The final course outro]
+    swipe after Phase 6.
+    [guide: Section 3, The final course outro]
 
-[ ] 2 to 3 sentences. Never longer.
-    [guide: Section 3, Phase 6, The final course outro, Length]
+[ ] 2 to 3 sentences. Never longer. Each sentence targets ~14 words.
+    [guide: Section 3, The final course outro, Length]
 
-[ ] Intelligent, quiet, slightly open-ended. Names the thread of the
-    whole course without listing packages.
-    [guide: Section 3, Phase 6, The final course outro, Structure]
-
-[ ] Ends on a question or an alternative angle, not a resolution.
-    [guide: Section 3, Phase 6, The final course outro, Structure]
+[ ] Names the thread of the whole course without listing packages.
+    Ends on a question or alternative angle, not a resolution.
+    [guide: Section 3, The final course outro, Structure]
 
 [ ] Zero mechanical recap language ("In conclusion", "To summarize",
     "In this course you learned", "We covered", "And that changes
     everything").
-    [guide: Section 3, Phase 6, The final course outro, What it must
-    never sound like]
+    [guide: Section 3, The final course outro, What it must never
+    sound like]
+
+[ ] The structure is not copied from the guide's examples. Every
+    course outro sounds different.
+    [guide: Section 3, The final course outro, closing paragraph]
 
 Consecutive @text swipes:
 
@@ -276,9 +305,12 @@ Package totals:
 [ ] Total swipes per package: 7 to 11.
     [guide: Section 3, Length reference]
 
-[ ] The package runs through phases 1 → 2 → 3 → 4 → 5 → 6 in order,
-    with 0 or 1 @pause slotted after Phase 4.
+[ ] Phases run 1 → 2 → 3 → 4 → 5 → 6 in order, with optional @pause
+    and/or @estimate after Phase 4.
     [guide: Section 3, Length reference]
+
+[ ] First package of the first segment is marked Free.
+    [guide: Section 3, Free package]
 
 Course totals:
 
@@ -297,124 +329,124 @@ Claims and evidence:
 
 [ ] Every claim is anchored in history, evolution, or a concrete
     scenario. Zero facts stated in isolation.
-    [guide: Section 4, Claims and evidence, Ground every claim in
-    context]
+    [guide: Section 4, Ground every claim in context]
 
-[ ] Specific numbers where they matter ("13 milliseconds", "500
-    million years"), not vague intensifiers ("significantly faster").
-    [guide: Section 4, Claims and evidence, Use specific numbers]
+[ ] Every number has a visual anchor the reader can picture.
+    Numbers without visual anchors are trivia the reader will forget.
+    [guide: Section 4, Every number needs a visual anchor]
+
+[ ] Visual anchors are universal. Zero obviously local cultural
+    references ("Super Bowl", "when your grandparents were in
+    school"). "When dinosaurs ruled the Earth" and "before humans
+    had writing" work everywhere.
+    [guide: Section 4, Keep visual anchors universal]
 
 [ ] Every quantity larger than about 10 is written in digits, not
-    spelled out.
-    [guide: Section 4, Claims and evidence, Write numbers as numerals]
+    words.
+    [guide: Section 4, Write numbers as numerals]
 
-[ ] Number format is US English. Thousands separated by comma,
-    decimals by period. Years are plain four-digit numerals, no
-    comma. Decades as "the 1920s".
-    [guide: Section 4, Claims and evidence, Number format is US English]
+[ ] Number format is US English. Comma for thousands, period for
+    decimals. Years are plain four-digit numerals. Decades as
+    "the 1920s".
+    [guide: Section 4, Number format is US English]
 
 [ ] Zero subjective claims presented as universal truth.
-    [guide: Section 4, Claims and evidence, Never present subjective
-    claims]
+    [guide: Section 4, Never present subjective claims]
 
 Word choice:
 
-[ ] Plain words for plain concepts. Zero substitutions like
-    "textual comprehension" for "written text".
-    [guide: Section 4, Word choice, Use plain words]
+[ ] Plain words for plain concepts. Zero inflated substitutions.
+    [guide: Section 4, Use plain words]
 
-[ ] Zero redundant words. "Feel things" → "feel". "Make a decision" →
-    "decide". "In order to" → "to".
-    [guide: Section 4, Word choice, Cut redundant words]
+[ ] Zero redundant words. "In order to" → "to". "Make a decision"
+    → "decide".
+    [guide: Section 4, Cut redundant words]
 
-[ ] Zero "things" or "stuff". Same for placeholder nouns ("factors",
+[ ] Zero "things" or "stuff". Zero placeholder nouns ("factors",
     "aspects", "elements", "matters") used as fillers.
-    [guide: Section 4, Word choice, Do not use "things" or "stuff"]
+    [guide: Section 4, Do not use "things" or "stuff"]
 
-[ ] Zero "like" as an example-introducer. Use "such as", a colon, or
-    a separate sentence. "Like" as a comparison word is still fine.
-    [guide: Section 4, Word choice, Do not use "like" as an
-    example-introducer]
+[ ] Zero "like" as an example-introducer. Use "such as", a colon,
+    or a separate sentence. "Like" as a comparison is fine.
+    [guide: Section 4, Do not use "like" as an example-introducer]
 
-[ ] Register sits between CEFR B2 and C1, closer to B2. Reads like a
-    well-translated essay. Zero slang, zero friend-texting shortcuts.
-    [guide: Section 4, Word choice, Accessible language]
+[ ] Register sits between CEFR B2 and C1, closer to B2.
+    [guide: Section 4, Accessible language]
 
-[ ] Zero obscure idioms. Well-known B2 idioms allowed at most once per
-    package and only when the plain version would be clunkier.
-    [guide: Section 4, Word choice, Idioms]
+[ ] Zero obscure idioms. Well-known B2 idioms allowed at most once
+    per package when the plain version would be clunkier.
+    [guide: Section 4, Idioms]
 
 [ ] Zero rare or figurative phrasal verbs unless the plain-verb
     version would genuinely weaken the sentence.
-    [guide: Section 4, Word choice, Phrasal verbs]
+    [guide: Section 4, Phrasal verbs]
 
 Sentence construction:
 
-[ ] Every @text line is one thought, clearly stated. A line never
-    tries to do two things.
-    [guide: Section 4, Sentence construction, One idea per line]
+[ ] Every @text line is one thought. A line never tries to do two
+    things.
+    [guide: Section 4, One idea per line]
 
-[ ] One sentence per line is the default inside every @text block.
-    Up to two sentences allowed when they land as a single beat.
-    Three sentences on one line is never allowed.
-    [guide: Section 4, Sentence construction, Preferred: one sentence
-    per line]
+[ ] One sentence per line is the default. Up to two sentences
+    allowed when they land as a single beat. Three sentences on one
+    line is never allowed.
+    [guide: Section 4, Preferred: one sentence per line]
 
-[ ] Every line inside an @text block is at most about 16 words total,
-    whether it holds one sentence or two. A single sentence may run
-    up to around 14 words. A two-sentence line still fits in the
-    same 16-word window.
-    [guide: Section 4, Sentence construction, Line length: up to 19
-    words total]
+[ ] Every line targets ~16 words total. A single sentence targets
+    ~14 words but can go to 17-18 if genuinely needed. Going there
+    on every other line is a failure.
+    [guide: Section 4, Line length: up to 16 words total]
 
-[ ] Every metaphor earns its place. If the sentence still works
-    without it, it is removed.
-    [guide: Section 4, Sentence construction, Metaphors must earn
-    their place]
+[ ] Every metaphor is clear, relatable, and B2-readable without
+    translating. Metaphors that exist to sound clever are removed.
+    [guide: Section 4, Metaphors must be clear and relatable]
 
-[ ] Zero tangled metaphors. No stacking. No metaphor that requires
-    translating before understanding.
-    [guide: Section 4, Sentence construction, No tangled metaphorical
-    expressions]
+[ ] Zero tangled metaphors. No stacking. One metaphor per sentence
+    maximum.
+    [guide: Section 4, No tangled metaphorical expressions]
 
-[ ] One metaphor per sentence maximum. Metaphors are B2-readable
-    without translation.
-    [guide: Section 4, Sentence construction, Rules for metaphors]
+[ ] Every list of 3 or more items uses "or" or "and" before the
+    last item. Zero comma-only drumrolls.
+    [guide: Section 6, Every list of three or more items]
 
 Craft techniques:
 
-[ ] Difficult concepts are followed by a plain-language reframe only
-    when genuinely needed, never reflexively.
-    [guide: Section 4, Craft techniques, When a concept is difficult]
+[ ] Difficult concepts followed by a plain reframe only when
+    genuinely needed, not reflexively.
+    [guide: Section 4, When a concept is difficult]
 
-[ ] The whole draft reads naturally aloud. Zero stumbles, zero
-    excessive dashes, zero fragments for emphasis, zero punctuation
-    choreography.
-    [guide: Section 4, Craft techniques, Read it aloud]
+[ ] The draft reads naturally aloud. Zero stumbles, zero excessive
+    dashes, zero fragments for emphasis.
+    [guide: Section 4, Read it aloud]
+
+[ ] Zero public-speaking tricks on the page. No ascending lists of
+    three, no dramatic pauses, no rhetorical Q-then-A, no callback
+    lines, no "let that sink in" closers.
+    [guide: Section 4, No public-speaking tricks on the page]
 
 
 --------------------------------------------------------------------------------
 BLOCK 5, BANNED WORDS AND PHRASES (SECTION 5)
 --------------------------------------------------------------------------------
 
-[ ] Zero banned empty verbs: leverage, utilize, delve, foster, elevate,
-    empower, resonate, underscore, navigate (metaphorical), unlock
-    (metaphorical).
+[ ] Zero banned empty verbs: leverage, utilize, delve, foster,
+    elevate, empower, resonate, underscore, navigate (metaphorical),
+    unlock (metaphorical).
     [guide: Section 5, Empty action verbs]
 
-[ ] Zero banned inflated nouns/adjectives: synergy, paradigm, holistic,
-    pivotal, multifaceted, game-changer, tapestry, realm, landscape
-    (metaphorical), arguably.
+[ ] Zero banned inflated nouns/adjectives: synergy, paradigm,
+    holistic, pivotal, multifaceted, game-changer, tapestry, realm,
+    landscape (metaphorical), arguably.
     [guide: Section 5, Inflated nouns and adjectives]
 
 [ ] Zero empty filler phrases: "at the end of the day", "it goes
-    without saying", "needless to say", "in today's world", "in today's
-    fast-paced world", "it is worth noting that", "it is important to
-    note that", "it turns out that", "when it comes to", "in order to".
+    without saying", "needless to say", "in today's world",
+    "it is worth noting that", "it is important to note that",
+    "it turns out that", "when it comes to", "in order to".
     [guide: Section 5, Empty filler phrases]
 
 [ ] Zero pseudo-profound phrases: "at its core", "the power of",
-    "serves as a testament to", "a testament to".
+    "serves as a testament to".
     [guide: Section 5, Pseudo-profound phrases]
 
 
@@ -424,127 +456,81 @@ BLOCK 6, AI SENTENCE STRUCTURES (SECTION 6)
 
 Contrast and reversal:
 
-[ ] Zero "not A, actually B" reversals ("Vision is the default.
-    Reading is the workaround.").
-    [guide: Section 6, The "not A, actually B" reversal]
-
+[ ] Zero "not A, actually B" reversals.
 [ ] Zero mirror sentences ("The question is not whether X, the
     question is Y.").
-    [guide: Section 6, The mirror sentence]
-
 [ ] Zero definition-then-reframe ("X is defined as Y. But what it
     really means is Z.").
-    [guide: Section 6, The definition-then-reframe]
+    [guide: Section 6, Contrast and reversal patterns]
 
 Inflation and enumeration:
 
-[ ] Zero triple-adjective lists ("powerful, transformative, and deeply
-    compelling").
-    [guide: Section 6, The triple-adjective list]
-
-[ ] Zero triple-noun drumrolls, including the negated kind ("Not
-    accomplishments, not conquests, not titles.").
-    [guide: Section 6, The triple-noun list]
-
-[ ] Every list of three or more items (nouns, verbs, examples, any
-    kind) uses "or" or "and" before the last item. Zero comma-only
-    drumrolls anywhere in the draft. "Coffee, phone, or a stretch"
-    is correct. "Coffee, phone, a stretch" is a drumroll.
-    [guide: Section 6, Every list of three or more items uses "or"
-    or "and" before the last one]
-
+[ ] Zero triple-adjective lists ("powerful, transformative, and
+    deeply compelling").
+[ ] Zero triple-noun drumrolls, including negated kind ("Not
+    accomplishments, not conquests, not titles."). If three nouns
+    are genuinely needed, "or"/"and" before the last.
 [ ] Zero list-of-three with ascending intensity ("It is not just A.
     It is B. It is C.").
-    [guide: Section 6, The list-of-three with ascending intensity]
+    [guide: Section 6, Inflation and enumeration tricks]
 
-Dramatic framing and false closers:
+Dramatic framing:
 
-[ ] Zero colon-punchlines ("The result: your brain processes images
-    60,000 times faster.").
-    [guide: Section 6, The colon-punchline]
-
-[ ] Zero false profundity closers ("And that changes everything",
-    "And once you see it, you cannot unsee it").
-    [guide: Section 6, The false profundity closer]
-
-[ ] Zero emotional imperatives ("Let that sink in", "Think about that
-    for a moment", "Read that again").
-    [guide: Section 6, The emotional imperative]
+[ ] Zero colon-punchlines ("The result: ...").
+[ ] Zero false profundity closers ("And that changes everything").
+[ ] Zero emotional imperatives ("Let that sink in", "Read that
+    again").
+    [guide: Section 6, Dramatic framing and false closers]
 
 Rhetorical manipulation:
 
-[ ] Zero rhetorical questions immediately answered ("But why does this
-    matter? Because...").
-    [guide: Section 6, The rhetorical question answered immediately]
-
-[ ] Zero "imagine if" escalations (a chain of "Imagine X. Now imagine
-    Y. Now imagine Z.").
-    [guide: Section 6, The "imagine if" escalation]
-
+[ ] Zero rhetorical questions immediately answered ("But why does
+    this matter? Because...").
+[ ] Zero "imagine if" escalations (chain of Imagine X, Y, Z).
 [ ] Zero bookend callbacks ("Remember the story from the beginning?
     It turns out...").
-    [guide: Section 6, The bookend callback]
+    [guide: Section 6, Rhetorical manipulation]
 
 Weak references:
 
-[ ] Zero sentences that start with "This." as a vague reference. Name
-    what "this" is.
-    [guide: Section 6, Starting with "This."]
-
-[ ] Zero paragraphs ending with a question that the next paragraph
-    immediately answers. The question must breathe for at least one
-    swipe.
-    [guide: Section 6, Ending paragraphs with questions you immediately
-    answer]
+[ ] Zero sentences starting with "This." as a vague reference.
+[ ] Zero paragraphs ending with a question the next paragraph
+    immediately answers.
+    [guide: Section 6, Weak references and unresolved questions]
 
 
 --------------------------------------------------------------------------------
 BLOCK 7, CASUAL SLANG AND FILLER (SECTION 7)
 --------------------------------------------------------------------------------
 
-[ ] Zero filler and stalling: "basically", "essentially", "literally"
-    (non-literal), "I mean", "look", "listen", "so" (sentence opener),
+[ ] Zero filler: "basically", "essentially", "literally"
+    (non-literal), "I mean", "look", "listen", "so" (opener),
     "honestly", "actually" (when nothing is being corrected).
-    [guide: Section 7, Filler and stalling row]
-
 [ ] Zero fake enthusiasm: "wild", "insane", "mind-blowing",
-    "Mind. Blown.", "incredible", "amazing", "fascinating" (when the
-    content has not earned it).
-    [guide: Section 7, Fake enthusiasm row]
-
+    "incredible", "amazing", "fascinating" (unearned).
 [ ] Zero forced familiarity: "you guys", "folks", "friends", "we"
     (when there is no we), "right?" (mid-sentence), "let's be real",
     "here's the thing", "spoiler alert".
-    [guide: Section 7, Forced familiarity row]
-
 [ ] Zero internet-speak: "hot take", "fun fact", "pro tip",
     "next-level", "deep dive", "low-key", "high-key", "vibe",
     "energy" (metaphorical).
-    [guide: Section 7, Internet-speak row]
-
 [ ] Zero inflated informality: "a ton of", "a bunch of", "super"
-    (intensifier), "kind of" / "sort of" (hedging), "pretty much".
-    [guide: Section 7, Inflated informality row]
-
-[ ] Zero em dashes ("—") anywhere in the draft.
-    [guide: Section 7, Em dashes row]
-
-[ ] Zero dramatic fragmentation ("Sixty. Thousand.", "Let. That. Sink.
-    In.", "One word. Design.").
-    [guide: Section 7, Dramatic fragmentation row]
+    (intensifier), "kind of"/"sort of" (hedging), "pretty much".
+[ ] Zero em dashes anywhere in the draft.
+[ ] Zero dramatic fragmentation ("Sixty. Thousand.", "One word.
+    Design.").
+    [guide: Section 7, Casual Slang and Filler to Avoid]
 
 
 --------------------------------------------------------------------------------
 BLOCK 8, TONE PITFALLS (SECTION 8)
 --------------------------------------------------------------------------------
 
-[ ] Zero corporate dryness. No overintellectualized vocabulary, no
-    passive constructions that strip personality.
+[ ] Zero corporate dryness. No passive constructions that strip
+    personality.
     [guide: Section 8, Corporate dryness]
 
-[ ] Zero salesman pressure. No urgency, scarcity, or fear used to
-    make a point land. No "Design accordingly", no "If you get this
-    wrong, X will fail."
+[ ] Zero salesman pressure. No urgency, scarcity, or fear.
     [guide: Section 8, Salesman pressure]
 
 
@@ -552,49 +538,46 @@ BLOCK 8, TONE PITFALLS (SECTION 8)
 BLOCK 9, SELF-CHECK (SECTION 9)
 --------------------------------------------------------------------------------
 
-These are judgment checks. They must be confirmed by a human or a
-dedicated review pass.
+These are judgment checks. A human or dedicated review pass must
+confirm each holds.
 
-[ ] Substitution test passes. No sentence still works when the topic
-    is swapped for a different subject.
+[ ] Substitution test: no sentence still works when the topic is
+    swapped for a different subject.
     [guide: Section 9, The substitution test]
 
-[ ] Aloud test passes. Every sentence is something you would say to
-    another adult in a calm conversation.
+[ ] Aloud test: every sentence is something you would say to another
+    adult in a calm conversation.
     [guide: Section 9, The aloud test]
 
-[ ] "Who wrote this" test passes. A reader can tell a human wrote the
-    draft, not an AI.
+[ ] "Who wrote this" test: a reader can tell a human wrote the draft.
     [guide: Section 9, The "who wrote this" test]
 
-[ ] "So what" test passes. Every statement is answered by the next
-    sentence, explicitly or by moving the narrative forward.
+[ ] "So what" test: every statement is answered by the next sentence.
     [guide: Section 9, The "so what" test]
 
-[ ] Deletion test passes. No sentence can be removed without the
-    paragraph losing something.
+[ ] Deletion test: no sentence can be removed without the paragraph
+    losing something.
     [guide: Section 9, The deletion test]
 
 
 --------------------------------------------------------------------------------
-BLOCK 10, FACTUAL ACCURACY AND HALLUCINATION PREVENTION (SECTION 10)
+BLOCK 10, FACTUAL ACCURACY (SECTION 10)
 --------------------------------------------------------------------------------
 
 [ ] Every factual claim presented as fact is true.
     [guide: Section 10, opening paragraphs]
 
 [ ] Invented stories and scenarios never read as documented real
-    cases. Zero fake names attached to fake dates, institutions, or
-    locations that imply a real reported event.
+    cases. Zero fake names, dates, or institutions that imply a
+    reported event.
     [guide: Section 10, opening paragraphs]
 
 [ ] Every specific date, number, name, quote, or study is
-    textbook-canonical, or it has been hedged to a range, or it has
-    been omitted.
+    textbook-canonical, or hedged to a range, or omitted.
     [guide: Section 10, The rule of textbook-canonical facts]
 
-High-risk categories — each must be 100% verifiable and canonical,
-otherwise hedged or removed:
+High-risk categories (each must be 100% verifiable and canonical,
+otherwise hedged or removed):
 
 [ ] Exact dates.
 [ ] Specific statistics ("73% of people...").
@@ -605,25 +588,20 @@ otherwise hedged or removed:
 [ ] Book or paper titles.
     [guide: Section 10, High-risk categories of claims]
 
-[ ] Package defaults to mechanism, not measurement. Concept is
-    preferred over trivia.
+[ ] Package defaults to mechanism, not measurement.
     [guide: Section 10, Prefer concepts over specifics]
 
 Self-verification pass:
 
-[ ] Every specific claim has been walked through individually.
-[ ] Every claim clears the 95% confidence threshold.
-[ ] Every claim that did not clear the threshold has been hedged,
-    removed, or replaced with the mechanism.
-[ ] Zero swapping of one specific for another specific without
-    independent verification of both.
-[ ] Every entry in the high-risk category list has been re-checked
-    after writing.
+[ ] Every specific claim walked through individually.
+[ ] Every claim clears 95% confidence.
+[ ] Claims that did not clear are hedged, removed, or replaced with
+    the mechanism.
+[ ] Zero swapping one specific for another without verifying both.
+[ ] High-risk categories re-checked after writing.
     [guide: Section 10, Self-verification pass]
 
-[ ] Zero fabricated claims used to fill a quota. If the package
-    needed a statistic or study that could not be sourced, the
-    package was written without it.
+[ ] Zero fabricated claims to fill a quota.
     [guide: Section 10, Never fabricate facts to fill quotas]
 
 
@@ -633,14 +611,12 @@ BLOCK 11, RLOCKIE FORMAT (rlockie_format_guide.txt)
 
 @course:
 
-[ ] @course is the first line of the file, followed by a blank line,
-    then metadata fields.
-[ ] All 7 required fields present: id, title, author, description,
-    color, genres, relevant_for.
+[ ] @course is the first line. Blank line, then metadata fields.
+[ ] All 7 fields present: id, title, author, description, color,
+    genres, relevant_for.
 [ ] description is a single line.
 [ ] color is a valid hex code.
-[ ] id follows the pattern [type]:[kebab-case-title]-[4-char-hash]
-    with type in {book, topic, article}.
+[ ] id follows [type]:[kebab-case-title]-[4-char-hash].
     [rlockie_format_guide.txt, @course]
 
 @segment:
@@ -653,40 +629,43 @@ BLOCK 11, RLOCKIE FORMAT (rlockie_format_guide.txt)
 @package:
 
 [ ] Every @package has at least one content block.
-[ ] Package title and the optional "Free" flag appear before any
-    content declaration.
+[ ] Title and optional "Free" flag come before any content
+    declarations.
+[ ] First package of first segment has "Free" on its own line.
     [rlockie_format_guide.txt, @package]
 
 @text:
 
 [ ] At least one line of text per @text block.
-[ ] Color markup used only per the Section 3, Phase 4 rules.
-[ ] Any image-link: entry is a broad, categorical description, not a
-    stylised one, and the surrounding text refers to the image.
+[ ] Color markup only per Section 3, Phase 4 rules (green = topic,
+    red = wrong, only in @text, max 1-2 per package).
+[ ] Any image-link: is a broad, categorical Wikimedia-style
+    description, and the surrounding text refers to the image.
     [rlockie_format_guide.txt, @text]
 
 @question:
 
 [ ] Question text is exactly one line.
-[ ] 2 or 3 answer options, each followed by a consequence.
+[ ] 2 or 3 answer options, each followed by consequence (.rlockie:
+    `consequence:`).
 [ ] Blank line between each answer+consequence pair.
 [ ] correct_answers present, 1-indexed.
-[ ] explanation present, hint present.
+[ ] explanation (.rlockie: `explanation:`) present.
+[ ] hint (.rlockie: `hint:`) present.
     [rlockie_format_guide.txt, @question]
 
 @true_false:
 
 [ ] Statement is exactly one line.
 [ ] Exactly one true: and one false: option, in that order.
-[ ] true: and false: texts are descriptive, not literally "True" and
-    "False".
+[ ] true: and false: texts are descriptive.
 [ ] correct_answers (1 or 2), explanation, hint all present.
     [rlockie_format_guide.txt, @true_false]
 
 @estimate:
 
 [ ] Question is exactly one line.
-[ ] answer is an integer between 0 and 100.
+[ ] answer (.rlockie: `answer:`) is an integer between 0 and 100.
 [ ] explanation and hint are present.
     [rlockie_format_guide.txt, @estimate]
 
@@ -698,13 +677,14 @@ BLOCK 11, RLOCKIE FORMAT (rlockie_format_guide.txt)
 
 @pause:
 
-[ ] Exactly one line.
+[ ] Exactly one line, exactly one sentence.
 [ ] No blank lines inside the body.
     [rlockie_format_guide.txt, @pause]
 
 @reflect:
 
 [ ] 2 or 3 thinking points, one per line.
+[ ] Each point 14 to 16 words with a concrete example.
     [rlockie_format_guide.txt, @reflect]
 
 General formatting:

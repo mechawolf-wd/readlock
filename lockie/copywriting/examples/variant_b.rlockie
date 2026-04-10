@@ -24,78 +24,70 @@ They write because the writing itself is what makes the day survivable.
 Those are the strangest books we have.
 
 @text
-In the year 170, a man in his late 40s sits in a campaign tent by candlelight.
-He is somewhere in central Europe, on the northern edge of his empire.
+In the year 170, during the Roman wars along the northern border, a man sits in a tent.
+He is in his late 40s.
 He is the most powerful person in the world at this moment.
 He rules from Scotland to the edge of the Sahara.
-Outside, his army is sleeping along a cold river they have been watching for years.
+Outside, his army is sleeping along a cold river.
 He is tired in a way that has nothing to do with the body.
 He opens a small notebook and writes a note to himself.
 
 @text
 The note is not addressed to later generations.
 It is not written in the high Latin of official speeches.
-It is written in Greek, the private language educated Romans used for personal writing.
-The first thing he writes is gratitude for what his teachers and family taught him.
-Not accomplishments. Just small corrections he wanted to remember.
-Small lessons such as "do not become indignant over small matters."
-He fills about 11 pages with these before he stops.
+It is written in Greek, the language educated Romans used for personal writing.
+He writes gratitude for what his teachers taught him.
+Not accomplishments. Just corrections he wanted to remember.
+Small rules such as "do not become indignant over small matters."
+He fills about 11 pages before he stops.
 
 @text
 This becomes his habit.
 Most nights for the rest of his life, he writes a few paragraphs before sleep.
 He reminds himself that everyone he resents will be dead in 50 years.
-He reminds himself that complaining changes nothing except the quality of his own mind.
+He reminds himself that complaining changes nothing except his own mind.
 He reminds himself that the universe does not owe him an easy day.
-He dies in 180 without ever publishing any of it.
-For 18 centuries afterwards, people read the notebook without knowing it was private.
+He dies in the year 180 without ever publishing any of it.
+For 18 centuries, people read the notebook without knowing it was private.
 
 @question
 Why did a Roman emperor bother writing private notes that corrected himself every night?
 
 answer: He needed a place to practice his values without being watched.
-consequence: That is the answer that fits his circumstance best. An emperor cannot ask his advisors to correct him without losing status. The notebook is the only mirror available to someone who is never alone and never contradicted.
+consequence: That fits his situation best. An emperor cannot ask his advisors to correct him without losing status. The notebook was the only place he could be honest with himself.
 
 answer: He wanted to teach future generations what stoicism looked like.
-consequence: It is a reasonable guess, because that is how the book gets used today. But he wrote in private Greek, never in official Latin, and he never published it. He chose the tools of a diary, not the tools of a teacher.
+consequence: That is how the book gets used today. But he wrote in private Greek, never in official Latin, and never published it. He chose the tools of a diary, not a teacher.
 
 answer: He was bored on military campaigns and needed something to do.
-consequence: Marcus Aurelius was not short on things to do. He was fighting a war, managing plague outbreaks, and running a government of 60 million people. Boredom was not his problem.
+consequence: He was not short on work. He was fighting a war, managing disease outbreaks, and running a government. Boredom was not his problem.
 
 correct_answers: 1
-explanation: Stoicism, to Marcus, was not a belief system. It was a practice. And like any practice, it needed a place to be rehearsed. The notebook was the rehearsal room.
+explanation: Stoicism, to Marcus, was a practice, not a belief system. The notebook was the place where he rehearsed it, because no one else could correct him.
 hint: Ask what an emperor cannot get, that an ordinary person can.
 
 @text
-The notebook is <c:g>Meditations</c:g>, by Marcus Aurelius.
+The notebook is called <c:g>Meditations</c:g>.
 It survives because one copy was copied, then another, then another.
 15 centuries of scribes kept deciding it was worth saving.
 The book has no structure and no argument in the usual sense.
-It reads like a man trying to remind himself of things he keeps forgetting.
+It reads as a man trying to remind himself of what he keeps forgetting.
 It is the only book of ancient philosophy that does not try to sound important.
 
 @true_false
-Marcus Aurelius wrote Meditations as a guide for his son and successor.
+The emperor wrote Meditations as a guide for his son and successor.
 
 true: True, it was written for his heir.
-consequence: This is a common assumption, because it feels tidy, a father leaving wisdom for his son. But the text is addressed to the author himself throughout. And Commodus grew into the kind of ruler the book would have warned against.
+consequence: This is a common assumption. But the text is addressed to the author himself throughout. And his son Commodus became the kind of ruler the book would have warned against.
 
 false: False, the book is addressed to himself.
-consequence: Right. Every "you" in Meditations is Marcus talking to Marcus. Most philosophical writing performs wisdom for a reader, but this one rehearses it for the writer alone.
+consequence: Right. Every "you" in the book is the emperor talking to himself. Most philosophy performs for a reader, but this one rehearses for the writer.
 
 correct_answers: 2
-explanation: The Greek title of the book, literally translated, is "To Himself." The writing is self-directed, which is why it survived as something people read instead of a political document.
-hint: Who is the word "you" pointing at when you talk to yourself in your head.
-
-@text
-Meditations works because it was not meant to work on you.
-You are reading over the shoulder of a man who needed the writing more than he needed a reader.
-That is why the book does not perform.
-It does not try to convince, inspire, or impress.
-It only tries to remind.
-Maybe that is the only kind of philosophy that still reaches us in a world full of books that did try.
+explanation: The Greek title of the book, literally translated, is "To Himself." The writing is self-directed, which is why it reads as personal, not political.
+hint: Who is the word "you" pointing at when you talk to yourself.
 
 @reflect
-An inner voice that corrects you: a parent or teacher.
-A lesson you relearn: patience when stuck in bad traffic.
-A quiet value you rehearse: staying kind under pressure.
+An inner voice that corrects you the way a parent corrects a child: firm, but trying to help.
+A lesson you have learned and forgotten and learned again, the same one each time: patience in traffic.
+A value you practice privately, without telling anyone you are practicing it: staying kind under pressure.

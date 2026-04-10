@@ -1,5 +1,10 @@
 .rlockie Syntax Reference
 
+Related files:
+
+- readlock_course_copywriting_guide.md — content authority (tone, voice, phase structure, lengths, all writing rules)
+- readlock_final_test.txt — rule checklist to run after writing, before shipping
+
 This file is the syntax authority: what declarations exist, what fields they take, what shape the file must have. It is NOT the content authority. For tone, voice, register, phase structure, swipe length, consequence/hint rules, @reflect content, color highlight meanings, and every other "what do I actually write" question, the authority is readlock_course_copywriting_guide.md. Where this file touches content rules, it references the matching guide section in square brackets. If anything in this file ever contradicts the copywriting guide, the copywriting guide wins.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -295,7 +300,7 @@ A reflection prompt. Each line is one thinking point.
 
 Rules:
 - 2 to 3 thinking points, one per line.
-- Each point is about 5 to 11 words.
+- Each point is about 14 to 16 words.
 - Each point contains one concrete example (a situation, an object, a moment, or a type of person). A reflect prompt without an anchor fails.
 - No platitudes, no fridge-magnet wisdom.
   [see copywriting guide: Section 3, Phase 6, Reflect]

@@ -17,85 +17,74 @@ The Story That Outran Every Other Animal
 Free
 
 @text
-For most of the time there has been life on Earth, the most dangerous animal was never human.
-We were medium-sized primates, smarter than most, weaker than many, and not especially successful at anything.
+For most of the time life has existed on Earth, the most dangerous animal was never human.
+We were medium-sized primates, smarter than most, weaker than many.
 There were other species of humans alive at the same time.
-Some of them were bigger, some were stronger, some had larger brains than we did.
-Then something happened, roughly 70,000 years ago, that made our branch impossible to compete with.
+Some were bigger, some were stronger, some had larger brains.
+Then something changed, long before any city or farm existed, that made our branch impossible to compete with.
 
 @text
-About 200,000 years ago, a small population of modern humans lived in East Africa.
+Long before there was writing, a small population of modern humans lived in East Africa.
 Genetically, they were already almost identical to us.
-You could take a baby from that population and raise her in a 21st century city and nobody would notice anything unusual.
-For the first 100,000 years or so of that population's existence, they did not do much.
-They hunted in small bands, foraged, made simple stone tools, and stayed close to the places they knew.
-The world outside Africa was already occupied by other human species, who were perfectly capable of keeping them out.
-For a very long time, nothing interesting happened.
+You could raise one of their babies in a modern city and nobody would notice anything unusual.
+For a very long time, they did not do much.
+They hunted in small bands, made simple tools, and stayed close to what they knew.
+The world outside Africa was already occupied by other human species.
 
 @text
-Then, starting about 70,000 years ago, the same species began to behave differently.
-The tools became more complex. Art started appearing on the walls of caves.
-Bands of humans left Africa, crossed water, and reached places their ancestors had no reason to know existed.
-Within 40,000 years they had settled Europe, Asia, Australia, and eventually the Americas.
-Along the way, every other species of human on Earth disappeared.
-Some of them probably interbred with us first. Most of them simply did not survive.
-This all happened fast, in historical terms. A short window relative to the age of the species.
+Then the same species began to behave differently.
+The tools became more complex. Art appeared on cave walls.
+Bands of humans left Africa, crossed water, and reached places their ancestors had never known.
+Within a span shorter than a few hundred human lifetimes, they had settled every continent.
+Along the way, every other human species disappeared.
+Some interbred with us. Most did not survive.
 
 @text
-Today, there are about 8 billion of us, scattered across every continent including Antarctica.
-We live in cities, airplanes, submarines, and the International Space Station.
-We have rearranged the surface of the planet so completely that geologists are debating whether to name an epoch after us.
+Today, there are about 8 billion of us on every continent, including Antarctica.
+We live in cities, airplanes, and submarines.
+We have rearranged the planet's surface so completely that geologists want to name an epoch after us.
 The other human species are gone.
-Most large land animals that are not our pets or our food are gone too, or close to it.
-None of this was inevitable 70,000 years ago.
-It was the downstream effect of one specific change inside our ancestors' minds.
+Most large animals that are not our pets or our food are gone too.
+None of this was guaranteed.
+It was the result of one specific change inside our ancestors' minds.
 
 @question
-What changed 70,000 years ago that let one population of humans outcompete every other species of human and then nearly every other large animal on Earth?
+What changed that let one population of humans outcompete every other species of human on Earth?
 
-answer: They developed the ability to tell and believe in stories that were not literally true.
-consequence: Yes. Being able to share a fiction lets thousands of strangers cooperate, such as by treating all clan members as family. Coordination at scale is the weapon that made everything else possible.
+answer: They developed the ability to tell and believe stories that were not literally true.
+consequence: Yes. Sharing a fiction lets thousands of strangers cooperate. Coordination at scale is the advantage that made everything else possible.
 
 answer: They developed bigger brains than the other human species.
-consequence: This is the intuitive answer, but the size was already in place. Neanderthals had larger brains than us, and raw brainpower was not the deciding factor. What we gained was a specific new capacity.
+consequence: This is the intuitive answer, but the brain size was already in place. Neanderthals had larger brains. What we gained was a specific new capacity.
 
 answer: They developed better physical tools and weapons.
-consequence: Better tools did follow, but they followed the change, not caused it. The real question is why one group innovated faster than any other. That is a communication problem, not a tool problem.
+consequence: Better tools followed the change, but did not cause it. The real question is why one group innovated faster. That is about communication, not tools.
 
 correct_answers: 1
-explanation: Yuval Noah Harari calls this the Cognitive Revolution. It is the point at which our ancestors could invent and believe in shared fictions. Religion, money, nations, and corporations all run on the same trick. It scales cooperation past the limits of any other species.
+explanation: Researchers call this the Cognitive Revolution. Our ancestors could invent shared fictions, and that is what religion, money, and nations all run on. It scales cooperation beyond any other species.
 hint: Ask what a thousand strangers can do together that a thousand chimpanzees cannot.
 
 @text
-This idea is the backbone of <c:g>Sapiens</c:g> by Yuval Noah Harari.
-Harari argues that what makes us unusual is not intelligence in the technical sense.
-It is our ability to invent stories that are not literally true and then coordinate around them.
+This idea is the backbone of how we understand our own species.
+What makes us unusual is not intelligence.
+It is our ability to invent stories that are not true and then coordinate around them.
 Other animals cooperate. Ants cooperate better than we do inside one colony.
-No other animal can get a million strangers to agree on the same money and the same laws.
-That capacity is what let one middling primate reshape the surface of a planet.
+No other animal can get a million strangers to agree on the same money or laws.
 
 @true_false
 The Cognitive Revolution happened because our ancestors evolved a new physical organ in their brain.
 
 true: True, a new brain structure appeared.
-consequence: There is no clean anatomical marker separating pre-Cognitive Revolution humans from post-Cognitive Revolution humans. If you compared the skulls, you could not tell them apart. Whatever changed was not a new organ, but a new use of the same equipment.
+consequence: There is no anatomical marker separating pre- and post-Revolution humans. If you compared the skulls, you could not tell them apart.
 
 false: False, the brain equipment was already there.
-consequence: Right. Harari's argument is that the physical brain was effectively finished long before the Cognitive Revolution. What changed was how the brain was used, probably in language and shared abstraction.
+consequence: Right. The physical brain was finished long before the Revolution. What changed was how it was used, probably in language and shared abstraction.
 
 correct_answers: 2
-explanation: The ancestors who did nothing interesting for 100,000 years and the ancestors who colonized the planet had almost identical brains. The difference was not biological in the visible sense. It was in what those brains could now do with each other.
-hint: Ask whether an X-ray could tell apart the brains of the bored ancestors and the world-colonizing ones.
-
-@text
-It is worth sitting for a moment with how recent all of this is.
-70,000 years is nothing compared to the 4 billion years life has existed on Earth.
-In that tiny sliver of time, one primate species figured out a communication trick.
-Everything downstream of that trick is the world you live in right now.
-Sapiens is not a book about how lucky we are.
-It is a book about how strange we are, and how much of what we take for granted is a story the species is still telling itself.
+explanation: The ancestors who stayed in Africa and the ancestors who colonized the planet had almost identical brains. The difference was in what those brains could do together.
+hint: Ask whether an X-ray could tell the two groups of ancestors apart.
 
 @reflect
-A story you live by without examining: the value of paper money.
-A daily decision that depends on strangers: trusting traffic laws.
-A shared story that changed during your lifetime: what a career means.
+A story you live by without examining it, the way you trust paper money without asking why it has value.
+A daily decision that depends on thousands of strangers agreeing on the same rules: driving on the correct side of the road.
+A shared story that changed during your own lifetime, the way the meaning of a "career" has shifted in a generation.

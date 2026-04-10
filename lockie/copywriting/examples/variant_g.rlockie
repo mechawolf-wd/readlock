@@ -17,83 +17,74 @@ The Question Nobody Wants to Answer
 Free
 
 @text
-There is a kind of question that most people politely refuse to answer in public.
-Not because the answer is embarrassing, but because answering it out loud would put you in disagreement with almost everyone you know.
+There is a kind of question most people refuse to answer in public.
+Not because the answer is embarrassing.
+Because answering it out loud would put you in disagreement with everyone you know.
 Silence is cheaper.
 Silence is also why most interesting ideas never get tested.
-The people who build companies that actually matter are the ones willing to answer the question anyway.
 
 @text
-Suppose, for a moment, that you are allowed to believe any one fact about the world that almost nobody else agrees with.
-Not a strange belief about aliens or conspiracies.
-A specific, testable belief about how something works, that you could defend to a roomful of people if they asked.
-Most of the room will disagree with you. Almost all of them will be polite about it.
-One or two might be quietly curious.
-Hold that belief in your head as the premise of the thought experiment.
+Suppose you are allowed to believe one fact about the world that almost nobody agrees with.
+Not a strange belief about aliens.
+A specific, testable belief about how something works.
+You could defend it to a roomful of people if they asked.
+Most of the room will disagree. Almost all of them will be polite about it.
+Hold that belief in your head as the premise.
 
 @text
 Now add a condition.
-The belief has to be one where, if it is true, acting on it would change how you spend the next 10 years.
-Not a minor preference. A fact about how the world works that, once you accept it, forces you to do different work than everyone around you.
+The belief has to be one that, if true, would change how you spend the next 10 years.
+Not a minor preference.
+A fact that, once you accept it, forces you to do different work than everyone around you.
 Most beliefs do not clear this bar.
-Most opinions, even strong ones, would not actually change your Monday morning if they turned out to be correct.
-The beliefs that would change your Monday morning are the ones that are actually worth something.
+Most opinions would not change your Monday morning if they turned out to be correct.
 
 @text
-If you can name a belief like that, and you can defend it, and you are willing to act on it, then one of two things is true.
-Either you are wrong and most of the world is right, in which case you will learn quickly and move on.
-Or you are right and most of the world is wrong, in which case you are sitting on the kind of opportunity almost nobody is competing with.
-The second outcome is what builds valuable companies, important research, and the ideas we later pretend were obvious all along.
-They are not obvious in advance because the honest answer to the question is uncomfortable to say.
-Most people never get the chance to find out if they were right, because they refused to answer the question in the first place.
+If you can name a belief that passes that test, one of two outcomes follows.
+Either you are wrong and the world is right. You will learn quickly and move on.
+Or you are right and the world is wrong.
+You are sitting on an opportunity almost nobody is competing with.
+The second outcome builds the valuable companies and the important research.
+These ideas are not obvious in advance.
+The honest answer to the question is uncomfortable to say.
 
 @question
-Peter Thiel's question is "What important truth do very few people agree with you on?" Why is this question harder to answer than it looks?
+There is a famous question in business: "What important truth do very few people agree with you on?" Why is this question harder to answer than it looks?
 
 answer: Because the honest answer puts you in disagreement with most people you know, which is socially expensive.
-consequence: That is the real reason. The question is not intellectually hard, it is socially hard. Saying the honest answer out loud, in public, is the part almost nobody is willing to do.
+consequence: That is the real reason. The question is not hard to think about. It is hard to say out loud.
 
 answer: Because it is hard to know what is actually true.
-consequence: Knowing what is true is hard in general, but that is not what stops people here. Plenty of people are confident about things. The question is whether they will say it out loud when the room disagrees.
+consequence: Knowing what is true is hard, but that is not what stops people. Plenty of people are confident. The bottleneck is whether they will say it.
 
-answer: Because most people do not have enough information to have any beliefs at all.
-consequence: Everyone has beliefs. The problem is not having beliefs, it is voicing the unpopular ones. The refusal to say them out loud is the interesting part.
+answer: Because most people do not have enough information to have beliefs.
+consequence: Everyone has beliefs. The problem is not having them. The problem is voicing the unpopular ones.
 
 correct_answers: 1
-explanation: Thiel uses this question as a filter for founders because answering it honestly requires the same kind of social courage that building a contrarian company requires. If you cannot say the thing, you cannot build the thing.
-hint: The question is not asking you to know a truth, it is asking you to say one.
+explanation: This question filters for founders. Answering it honestly takes the same social courage as building a contrarian company.
+hint: The question is not about knowing a truth, but about saying one.
 
 @text
-This is the central exercise in Zero to One by Peter Thiel.
-Thiel argues that every valuable new business is built on a <c:g>secret</c:g>.
+This question is the central exercise behind the idea.
+Every valuable new business is built on a <c:g>secret</c:g>.
 A secret is a fact the founder believes that most people do not yet agree with.
 If the fact is obvious, someone else has already built the business.
 If it is just a preference, it will not survive contact with reality.
-Valuable secrets are specific enough to act on, and strange enough to make a room go quiet.
-Companies that matter come out of that room.
 
 @true_false
 If everyone around you agrees with your business idea, that is a good sign, because it means the idea is sound.
 
 true: True, agreement is a sign of a good idea.
-consequence: Agreement is a sign you are saying something familiar. Familiar ideas rarely create anything new, because if everyone agrees, someone is probably already building it. Comfort in the room is not evidence of quality.
+consequence: Agreement is a sign you are saying something familiar. Familiar ideas rarely create anything new.
 
 false: False, universal agreement means the idea is crowded.
-consequence: Right. Thiel's logic is that a truly new business must be built on a fact not yet widely accepted. If your idea makes a room nod without any pushback, it is probably too crowded to matter.
+consequence: Right. A truly new business needs a fact not yet widely accepted. If your idea gets instant agreement, it is probably already being built.
 
 correct_answers: 2
-explanation: Contrarianism for its own sake is not the goal. Be ing right when most people are wrong is the goal. Agreement is just a signal that you have not actually stepped outside what is already being built.
-hint: Ask whether an idea everyone in the room nods at has any room for a new company.
-
-@text
-The thought experiment is not really about businesses.
-It is about whether you are willing to hold a belief in public that you cannot yet point at someone else to back you up.
-Most people cannot. That is a perfectly reasonable way to live.
-The ones who can are a small group, and they are the people who build the things everyone else later pretends were obvious.
-Thiel's book is a long, patient argument that there is still plenty of room in that small group.
-Most of the seats are empty because the price of sitting in one is saying something unpopular out loud.
+explanation: Being right when most people are wrong is the goal. Agreement is just a signal that you have not stepped outside what is already being built.
+hint: Ask whether an idea everyone agrees with has any room for a new company.
 
 @reflect
-A belief about your field you have never said aloud: an industry taboo.
-A belief that would change your next Monday if it were true.
-An action a private belief would make you take tomorrow: a different product bet.
+A belief about your work that you hold privately but have never defended out loud: an industry assumption you think is wrong.
+A belief that, if true, would change how you spend your next Monday morning: a different product, a different audience.
+An action that belief would lead to tomorrow, if you treated it as true: a conversation, a prototype, or a written plan.
