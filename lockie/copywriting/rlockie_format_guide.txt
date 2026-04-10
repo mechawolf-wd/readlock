@@ -4,6 +4,17 @@ Related files:
 
 - readlock_course_copywriting_guide.md — content authority (tone, voice, phase structure, lengths, all writing rules)
 - readlock_final_test.txt — rule checklist to run after writing, before shipping
+- ai_writing_blacklist.txt — flat blacklist of banned AI writing patterns
+
+Contents:
+
+1. Metadata writing rules
+2. Document structure
+3. @course
+4. @segment
+5. @package
+6. Content blocks: @text, @question, @true_false, @estimate, @quote, @pause, @reflect
+7. Formatting rules
 
 This file is the syntax authority: what declarations exist, what fields they take, what shape the file must have. It is NOT the content authority. For tone, voice, register, phase structure, swipe length, consequence/hint rules, @reflect content, color highlight meanings, and every other "what do I actually write" question, the authority is readlock_course_copywriting_guide.md. Where this file touches content rules, it references the matching guide section in square brackets. If anything in this file ever contradicts the copywriting guide, the copywriting guide wins.
 
