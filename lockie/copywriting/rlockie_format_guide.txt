@@ -1,12 +1,14 @@
 .rlockie Syntax Reference
 
+This file is the syntax authority: what declarations exist, what fields they take, what shape the file must have. It is NOT the content authority. For tone, voice, register, phase structure, swipe length, consequence/hint rules, @reflect content, color highlight meanings, and every other "what do I actually write" question, the authority is readlock_course_copywriting_guide.md. Where this file touches content rules, it references the matching guide section in square brackets. If anything in this file ever contradicts the copywriting guide, the copywriting guide wins.
+
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 METADATA WRITING RULES
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-The content writing guidelines (readlock_course_copywriting_guide.md) cover @text, @question, and other content blocks. But metadata fields like title, description, author, and segment titles are not covered by that prompt. They still need to sound human.
+The content writing guidelines (readlock_course_copywriting_guide.md) cover @text, @question, and other content blocks. Metadata fields like title, description, author, and segment titles are not covered by that prompt, but they must follow the same register.
 
-Write metadata fields the way a person would describe a book to a friend, not the way a marketing team would pitch it to investors.
+Write metadata the way a person would describe a book to a friend, not the way a marketing team would pitch it to investors.
 
 BAD:  "Explore the fascinating world of cognitive biases and unlock powerful psychological principles that will transform your design thinking."
 GOOD: "How cognitive biases shape the way people interact with designed objects."
@@ -15,11 +17,7 @@ BAD:  "A comprehensive deep dive into the art and science of color theory."
 GOOD: "Why colors make people feel, and how designers have used that for centuries."
 
 Rules:
-- No "explore," "discover," "unlock," "master," "transform," or "journey" in descriptions.
-- No "comprehensive," "in-depth," "essential," "ultimate," or "definitive."
-- No "the art and science of," "the power of," "the secrets of."
-- No "leverage," "utilize," "delve," "foster," "elevate," "resonate," "empower," "navigate" (metaphorical), "tapestry," "realm," "landscape" (metaphorical), "paradigm," "holistic," "synergy."
-- No em dashes. Ever. Rewrite as two sentences or use a comma, period, or colon.
+- Every rule in readlock_course_copywriting_guide.md Sections 5, 6, 7, and 8 applies to metadata as well (banned verbs, banned openers, banned closers, banned inflators, casual slang, em dashes, triple-anything lists).
 - Descriptions state what the course is about. They do not sell it.
 - Segment titles are short, plain nouns or noun phrases ("Foundations," "Perception and Decisions"). Not taglines.
 - If a sentence could appear in any course about any topic and still make sense, it is too generic. Rewrite it to be specific to this course.
@@ -125,11 +123,18 @@ A reading slide. Each line becomes a separate text segment displayed one at a ti
     @text
     First line shown to the learner.
     Second line shown after the first.
-    A third line with <c:r>highlighted red</c:r> words.
+    A third line with a <c:g>highlighted topic term</c:g>.
+
+Line rules (format side):
+- Each line is one on-screen segment.
+- One sentence per line is the default, up to two sentences allowed when they read as a single beat, three is never allowed.
+- Every line, whether one or two sentences, fits in about 19 words total.
+  [see copywriting guide: Section 4, Sentence construction, Preferred: one sentence per line / Line length]
 
 Inline color markup:
-- <c:r>text</c:r>  -> red
-- <c:g>text</c:g>  -> green
+- <c:g>text</c:g>  -> green. Marks the TOPIC of the current package (the concept, study, book, or effect the package is about).
+- <c:r>text</c:r>  -> red. Marks a WRONG thing stated inside the text (a misconception, a deliberately wrong statement the narrator is about to correct). Never on the topic, never on anything correct.
+  [see copywriting guide: Section 3, Phase 4, Color highlights]
 
 Image link format:
 - image-link: "[search description]"
@@ -165,7 +170,8 @@ When an image is included, refer to it in the surrounding text: "Look at the gra
 
 Rules:
 - At least one line of text.
-- Use color markup sparingly, at most one or two highlights per text block.
+- Color markup is rare: maximum 1 to 2 highlights per WHOLE PACKAGE across both colours combined, not per text block. Most @text blocks will contain zero highlights. The one that names the topic gets the green one.
+  [see copywriting guide: Section 3, Phase 4, Color highlights]
 
 ────────────────────────────────────────────────────
 @question
@@ -196,6 +202,9 @@ Rules:
 - Blank line between each answer+consequence pair.
 - correct_answers uses 1-based indexing (1 = first answer).
 - Both hint and explanation are required.
+- Each consequence is 1 to 3 sentences, each sentence at most about 17 words.
+- Each hint is exactly one sentence, at most 17 words.
+  [see copywriting guide: Section 3, Phase 3, Writing @question consequences / Writing @question hints]
 
 ────────────────────────────────────────────────────
 @true_false
@@ -221,7 +230,10 @@ Rules:
 - Exactly one true: and one false: option, in that order.
 - true: and false: option text should be descriptive, not just "True" and "False".
 - correct_answers is 1 if the statement is true, 2 if false.
-- hint is required.
+- hint is required, and follows the same rules as @question hints (one sentence, ~17 words).
+- Consequences follow the same rules as @question consequences (1 to 3 sentences).
+- The statement should feel semi-obvious after a moment of thought, not a trap and not dumb.
+  [see copywriting guide: Section 3, Phase 5, True/False or Deeper Check]
 
 ────────────────────────────────────────────────────
 @estimate
@@ -258,27 +270,35 @@ Rules:
 @pause
 ────────────────────────────────────────────────────
 
-A breather slide.
+A breather slide with a nice animation and a single sentence. Gives the reader a beat of rest between denser swipes.
 
     @pause
-    [Message text]
+    [Single sentence]
 
 Rules:
-- One line only.
+- Exactly one line, exactly one sentence. Never two.
+- The sentence is a small interesting fact, observation, or reframing related to the topic of the package. Not trivia, not a quiz, not a recap, not a motivational line.
+- Never starts with "Did you know...", "Fun fact:", or "Pro tip:".
+- Zero or one @pause per package. Default spot is right after Phase 4, Topic Reveal.
+  [see copywriting guide: Section 3, Optional: @pause swipes]
 
 ────────────────────────────────────────────────────
 @reflect
 ────────────────────────────────────────────────────
 
-A reflection prompt. Each line is a thinking point.
+A reflection prompt. Each line is one thinking point.
 
     @reflect
-    [First thinking point]
-    [Second thinking point]
-    [Third thinking point]
+    [First thinking point, including one concrete example]
+    [Second thinking point, including one concrete example]
+    [Third thinking point, including one concrete example]
 
 Rules:
-- 2 to 3 thinking points.
+- 2 to 3 thinking points, one per line.
+- Each point is about 5 to 11 words.
+- Each point contains one concrete example (a situation, an object, a moment, or a type of person). A reflect prompt without an anchor fails.
+- No platitudes, no fridge-magnet wisdom.
+  [see copywriting guide: Section 3, Phase 6, Reflect]
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 FORMATTING RULES

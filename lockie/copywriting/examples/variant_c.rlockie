@@ -67,7 +67,7 @@ explanation: The first number introduced into a decision sets an unconscious ref
 hint: Notice what all three situations share, someone said a number first.
 
 @text
-Daniel Kahneman called this the anchoring effect.
+Daniel Kahneman called this the <c:g>anchoring effect</c:g>.
 In Thinking, Fast and Slow, he describes two modes of thought that live in every person.
 System 1 is fast, automatic, and runs on rough estimates and reference points.
 System 2 is slow, deliberate, and only wakes up when you ask it to.
@@ -96,6 +96,6 @@ Write your guess down if you have to, then compare it to the anchor.
 The difference between the two is where the real decision happens.
 
 @reflect
-A number you never chose, like last year's rent price.
-A purchase shaped by a discount sticker, like a "50 percent off" tag.
-A guess you made before seeing the real price, like for a coffee abroad.
+A number you never chose: last year's rent price.
+A purchase shaped by a discount sticker: a "50 percent off" tag.
+A guess you made before seeing a real price: a coffee abroad.

@@ -65,7 +65,7 @@ hint: The question is not asking you to know a truth, it is asking you to say on
 
 @text
 This is the central exercise in Zero to One by Peter Thiel.
-Thiel argues that every valuable new business is built on a secret.
+Thiel argues that every valuable new business is built on a <c:g>secret</c:g>.
 A secret is a fact the founder believes that most people do not yet agree with.
 If the fact is obvious, someone else has already built the business.
 If it is just a preference, it will not survive contact with reality.
@@ -82,7 +82,7 @@ false: False, universal agreement means the idea is crowded.
 consequence: Right. Thiel's logic is that a truly new business must be built on a fact not yet widely accepted. If your idea makes a room nod without any pushback, it is probably too crowded to matter.
 
 correct_answers: 2
-explanation: Contrarianism for its own sake is not the goal. Being right when most people are wrong is the goal. Agreement is just a signal that you have not actually stepped outside what is already being built.
+explanation: Contrarianism for its own sake is not the goal. Be ing right when most people are wrong is the goal. Agreement is just a signal that you have not actually stepped outside what is already being built.
 hint: Ask whether an idea everyone in the room nods at has any room for a new company.
 
 @text
@@ -94,6 +94,6 @@ Thiel's book is a long, patient argument that there is still plenty of room in t
 Most of the seats are empty because the price of sitting in one is saying something unpopular out loud.
 
 @reflect
-A belief about your field you have never said aloud, like about your industry's taboos.
+A belief about your field you have never said aloud: an industry taboo.
 A belief that would change your next Monday if it were true.
-An action a private belief would make you take tomorrow, like a different product bet.
+An action a private belief would make you take tomorrow: a different product bet.

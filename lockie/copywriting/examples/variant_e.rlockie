@@ -57,7 +57,7 @@ answer: Because the line implied the universe is expanding, and an expanding uni
 consequence: Exactly. The line links distance to how fast galaxies are moving away. Running that backward in time takes you to a single starting point where everything began.
 
 answer: Because redshift proves that light gets tired as it travels.
-consequence: This idea was floated in the early 20th century, sometimes called the tired light hypothesis. It does not hold up against other evidence, like the cosmic microwave background. That background is exactly what an early hot universe would leave behind.
+consequence: This idea was floated in the early 20th century, sometimes called the tired light hypothesis. It does not hold up against other evidence such as the cosmic microwave background. That background is exactly what an early hot universe would leave behind.
 
 answer: Because farther galaxies emit red light for chemical reasons.
 consequence: Distant galaxies are not chemically redder. Their spectral lines, the fingerprints of specific elements, are shifted toward the red end together. The elements are the same, only the motion differs.
@@ -67,7 +67,7 @@ explanation: A universe that is expanding today must have been smaller yesterday
 hint: If everything is moving apart today, what did the arrangement look like a very long time ago.
 
 @text
-The idea Hubble's line pointed at became known as the Big Bang.
+The idea Hubble's line pointed at became known as the <c:g>Big Bang</c:g>.
 Stephen Hawking tells this story in A Brief History of Time.
 For him, it marked the moment physics stopped treating the universe as a fixed background.
 From then on, the universe had a beginning, a middle, and a direction.
@@ -96,6 +96,6 @@ None of them involved genius in the dramatic sense.
 They involved people who refused to look away from a pattern in the data, even when the pattern seemed to say something impossible.
 
 @reflect
-A pattern you noticed but ignored, like your best work happening at dawn.
-An ordinary answer to a big question, like "because I finally slept well."
-A moment you trusted data over a hunch, like an experiment result.
+A pattern you noticed but ignored: your best work happening at dawn.
+An ordinary answer to a big question: "because I finally slept well."
+A moment you trusted data over a hunch: an experiment result.
