@@ -454,7 +454,7 @@ Rotate opener styles across packages, never repeat the same type consecutively:
 | **Historical sweep**      | _"For most of human history, there was no writing. Our ancestors navigated the world entirely through vision."_ |
 | **Universal observation** | _"People have always trusted what they can see more than what they are told."_                                  |
 | **Gentle question**       | _"Have you ever wondered why some things feel instantly familiar, even when you have never seen them before?"_  |
-| **Grounded fact**         | _"The human visual system is older than every language and every alphabet that has ever existed."_               |
+| **Grounded fact**         | _"The human visual system is older than every language and every alphabet that has ever existed."_              |
 
 The intro should feel like the first paragraph of an essay. It does not sell, does not tease, does not promise. It opens a door.
 
