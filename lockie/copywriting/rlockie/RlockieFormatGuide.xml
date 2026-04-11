@@ -302,7 +302,7 @@ hint: [Hint text]
         <rule>Exactly one line, exactly one sentence. Never two.</rule>
         <rule>The sentence is a small interesting fact, observation, or reframing related to the topic of the package. Not trivia, not a quiz, not a recap, not a motivational line.</rule>
         <rule>Never starts with "Did you know...", "Fun fact:", or "Pro tip:".</rule>
-        <rule ref="ReadlockCopywritingGuide.md, Section 5, @pause">Zero or one @pause per package. Default spot is right after Phase 4, Topic Reveal.</rule>
+        <rule ref="ReadlockCopywritingGuide.md, Section 5, @pause">Zero or one @pause per package. Default spot is after Phase 3 (questions), before Phase 4 (topic reveal). Must not name or hint at the topic.</rule>
       </rules>
     </block>
 

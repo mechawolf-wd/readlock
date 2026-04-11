@@ -38,7 +38,7 @@
     </group>
 
     <group name="Phase 1, Intro">
-      <rule ref="guide: Section 5, Length reference">Exactly 1 intro @text swipe, 3 to 5 sentences.</rule>
+      <rule ref="guide: Section 5, Length reference">Exactly 1 intro @text swipe, 2 to 3 sentences (4 at most).</rule>
       <rule ref="guide: Section 5, Phase 1">Opens with a broad human hook. Does not name the topic.</rule>
       <rule ref="guide: Section 5, Phase 1">Opener style rotates across packages. Same type never repeated consecutively.</rule>
     </group>
@@ -50,19 +50,19 @@
     </group>
 
     <group name="Phase 3, Questions">
-      <rule ref="guide: Section 5, Length reference">1 to 2 swipes using @question or @true_false. No @estimate here.</rule>
+      <rule ref="guide: Section 5, Length reference">1 to 2 swipes using @question or @true_false, rarely 3. No @estimate here.</rule>
       <rule ref="guide: Section 5, Phase 3">Question tone is curious, not testing. Reader feels safe.</rule>
       <rule ref="guide: Section 5, Phase 3">Every question is answerable from what came before.</rule>
     </group>
 
     <group name="Consequences" rlockie_field="consequence:">
-      <rule ref="guide: Section 5, Phase 3, consequences rule 0">1 to 3 sentences. Each sentence targets ~14 words (can overflow to 17-18).</rule>
+      <rule ref="guide: Section 5, Phase 3, consequences rule 0">1 sentence default, 2 occasional, 3 rare. Should not exceed ~20 words total.</rule>
       <rule ref="guide: Section 5, Phase 3, consequences rule 1">Zero verdict language ("Wrong.", "Incorrect.", "This would not work.").</rule>
       <rule ref="guide: Section 5, Phase 3, consequences rule 2">Wrong-but-intuitive: brief acknowledgment then correction. Sometimes just the correction. Vary the approach.</rule>
       <rule ref="guide: Section 5, Phase 3, consequences rule 3">Wrong-but-not-intuitive: plain correction, no invented reasoning.</rule>
       <rule ref="guide: Section 5, Phase 3, consequences rule 4">Correct answers: brief confirmation plus reasoning. No "Exactly!" or "Great job!".</rule>
       <rule ref="guide: Section 5, Phase 3, consequences rule 5">Zero sugarcoating. Wrong is wrong, stated honestly.</rule>
-      <rule ref="guide: Section 5, Phase 3, consequences rule 0">Nuance beyond 3 sentences belongs in explanation (explanation:), not consequence.</rule>
+      <rule ref="guide: Section 5, Phase 3, consequences rule 0">Nuance beyond 2 sentences belongs in explanation (explanation:), not consequence.</rule>
     </group>
 
     <group name="Hints" rlockie_field="hint:">
@@ -73,14 +73,14 @@
     </group>
 
     <group name="Explanations" rlockie_field="explanation:">
-      <rule ref="guide: same sentence-length rules as all prose">Each sentence targets ~14 words (can overflow to 17-18). Sentences over 18 words are split.</rule>
+      <rule ref="guide: Section 5, Phase 3, explanations">1 to 2 sentences. Not a paragraph. Each sentence targets ~14 words.</rule>
     </group>
 
     <group name="Phase 4, Topic Reveal">
       <rule ref="guide: Section 5, Length reference">1 to 2 @text swipes, 5 to 7 sentences each.</rule>
       <rule ref="guide: Section 5, Phase 4">Names the pattern. Makes the connection explicit. Feels like a click, not a lecture.</rule>
       <rule ref="guide: Section 5, Phase 4, No book or author">Zero mentions of source book or author in course text. Only in @course metadata.</rule>
-      <rule ref="guide: Section 5, Phase 6, Transition">Non-last packages include a transition note pointing to the next package's topic. Reader can tell it refers to the next package.</rule>
+      <rule ref="guide: Section 5, Phase 4, Topic naming">Topic naming varies across packages. Zero repetitive "Researchers call/describe this as..." formula.</rule>
     </group>
 
     <group name="Color highlights" rlockie_field="c:g, c:r">
@@ -93,9 +93,10 @@
     </group>
 
     <group name="Optional @pause" rlockie_field="@pause">
-      <rule ref="guide: Section 5, @pause">Zero or one per package. Single sentence. Default spot: after Phase 4.</rule>
+      <rule ref="guide: Section 5, @pause">Zero or one per package. Single sentence. Goes after Phase 3 (questions), before Phase 4 (reveal).</rule>
       <rule ref="guide: Section 5, @pause">Small interesting fact or reframing. Not a quiz, recap, or motivational line.</rule>
       <rule ref="guide: Section 5, @pause">Zero "Did you know...", "Fun fact:", "Pro tip:".</rule>
+      <rule ref="guide: Section 5, @pause">Must not name or hint at the topic. The reader has not reached Phase 4 yet.</rule>
     </group>
 
     <group name="Optional @estimate" rlockie_field="@estimate">
@@ -103,25 +104,27 @@
     </group>
 
     <group name="Phase 5, True/False" rlockie_field="@true_false">
-      <rule ref="guide: Section 5, Length reference">Exactly 1 @true_false swipe. Statement on one line.</rule>
+      <rule ref="guide: Section 5, Length reference">1 to 2 @true_false swipes. Statement on one line.</rule>
       <rule ref="guide: Section 5, Phase 5">Statement is semi-obvious after a moment of thought. Not dumb, not a trap.</rule>
       <rule ref="RlockieFormatGuide.xml, @true_false">true: and false: texts are descriptive, not literally "True" and "False".</rule>
       <rule ref="guide: Section 5, Phase 3 rules apply">Consequences and hints follow the same rules as @question.</rule>
     </group>
 
-    <group name="Phase 6, Reflect" rlockie_field="@reflect">
-      <rule ref="guide: Section 5, Phase 6">Exactly 1 @reflect swipe. Phase 6 contains @reflect only. No @text.</rule>
-      <rule ref="guide: Section 5, Length reference">2 or 3 points, each 14 to 16 words.</rule>
+    <group name="Phase 6, Reflect (optional)" rlockie_field="@reflect">
+      <rule ref="guide: Section 5, Phase 6">0 or 1 @reflect swipe. Optional. Skip when the package arc feels complete without it. Phase 6 contains @reflect only, no @text.</rule>
+      <rule ref="guide: Section 5, Length reference">When present: 2 or 3 points, each 14 to 16 words.</rule>
       <rule ref="guide: Section 5, Phase 6, concrete example">Each point contains one concrete example, introduced with a colon.</rule>
       <rule ref="guide: Section 5, Phase 6, no cliche">Zero platitudes, zero fridge-magnet wisdom.</rule>
     </group>
 
-    <group name="Final course outro">
-      <rule ref="guide: Section 5, The final course outro">Only the very last package has one extra @text swipe after Phase 6.</rule>
-      <rule ref="guide: Section 5, The final course outro, Length">2 to 3 sentences. Never longer. Each sentence targets ~14 words.</rule>
-      <rule ref="guide: Section 5, The final course outro, Structure">Names the thread of the course without listing packages. Ends on a question or alternative angle, not a resolution.</rule>
-      <rule ref="guide: Section 5, The final course outro, What it must never sound like">Zero recap language ("In conclusion", "To summarize", "We covered", "And that changes everything").</rule>
-      <rule ref="guide: Section 5, The final course outro, closing">The structure is not copied from the guide's examples. Every outro sounds different.</rule>
+    <group name="Package outro">
+      <rule ref="guide: Section 5, Package outro">Every package ends with a @text outro as its LAST swipe. This is mandatory for all packages.</rule>
+      <rule ref="guide: Section 5, Package outro, Length">2 to 3 sentences. Never longer. Each sentence targets ~14 words.</rule>
+      <rule ref="guide: Section 5, Package outro, Non-last packages">Non-last packages: outro closes the thought and weaves in a transition to the next package's topic.</rule>
+      <rule ref="guide: Section 5, Package outro, Transitions">Transition phrasing varies across packages. Zero repetitive "The next package asks/looks at/examines..." formula.</rule>
+      <rule ref="guide: Section 5, Package outro, Last package">Last package: names the thread of the course without listing packages. Ends on a question or alternative angle, not a resolution.</rule>
+      <rule ref="guide: Section 5, Package outro, Last package">Zero recap language ("In conclusion", "To summarize", "We covered", "And that changes everything").</rule>
+      <rule ref="guide: Section 5, Package outro, closing">The structure is not copied from the guide's examples. Every outro sounds different.</rule>
     </group>
 
     <group name="Consecutive @text swipes">
@@ -130,7 +133,7 @@
 
     <group name="Package totals">
       <rule ref="guide: Section 5, Length reference">Total swipes per package: 7 to 11.</rule>
-      <rule ref="guide: Section 5, Length reference">Phases run 1-2-3-4-5-6 in order, with optional @pause and/or @estimate after Phase 4.</rule>
+      <rule ref="guide: Section 5, Length reference">Phase order: 1 → 2 → 3 → (optional pause) → 4 → (optional estimate) → 5 → (optional reflect) → outro.</rule>
       <rule ref="guide: Section 5, Free package">First package of first segment is marked Free.</rule>
     </group>
 
@@ -148,7 +151,7 @@
       <rule ref="guide: Section 2, Visual anchors">Every number has a visual anchor the reader can picture.</rule>
       <rule ref="guide: Section 2, Universal anchors">Visual anchors are universal. Zero obviously local references ("Super Bowl", "when your grandparents were in school").</rule>
       <rule ref="guide: Section 2, Numbers as numerals">Every quantity larger than ~10 in digits, not words.</rule>
-      <rule ref="guide: Section 2, US English format">US English number format. Comma thousands, period decimals. Years as plain 4-digit numerals. Decades as "the 1920s".</rule>
+      <rule ref="guide: Section 2, US English format">US English number format. Comma thousands, period decimals. Years as plain 4-digit numerals. Decades as "the 1920s". Percentages use % symbol ("1%" not "1 percent"). Use the word only when % would look odd.</rule>
       <rule ref="guide: Section 2, Subjective claims">Zero subjective claims presented as universal truth.</rule>
     </group>
 
@@ -189,7 +192,7 @@
   <block id="6" name="AI Sentence Structures" guide_section="4">
 
     <group name="Contrast and reversal">
-      <rule ref="guide: Section 4, AI structures">Zero "not A, actually B" reversals.</rule>
+      <rule ref="guide: Section 4, AI structures">Zero "not A, actually B" reversals, including split corrections ("X did not fail. It has not crossed Y.").</rule>
       <rule ref="guide: Section 4, AI structures">Zero mirror sentences ("The question is not whether X, the question is Y.").</rule>
       <rule ref="guide: Section 4, AI structures">Zero definition-then-reframe ("X is defined as Y. But what it really means is Z.").</rule>
     </group>
@@ -215,6 +218,14 @@
     <group name="Weak references">
       <rule ref="guide: Section 4, AI structures">Zero sentences starting with "This." as vague reference.</rule>
       <rule ref="guide: Section 4, AI structures">Zero paragraphs ending with a question the next paragraph immediately answers.</rule>
+    </group>
+
+    <group name="Inflated assertions">
+      <rule ref="guide: Section 2, Tone pitfalls">Zero inflated assertions: "The math is real.", "That number is not a metaphor.", "The science is settled.", "The data is clear.", "The evidence speaks for itself."</rule>
+    </group>
+
+    <group name="Choppy sentence pairs">
+      <rule ref="guide: Section 2, Sentence construction">Zero choppy sentence pairs that should be one sentence. "Goals end. Identities persist." must be written as "Goals end, but identities persist."</rule>
     </group>
 
   </block>

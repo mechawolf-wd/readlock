@@ -112,6 +112,8 @@ If a line has two sentences, both together should still fit in ~16 words. That m
 
 When in doubt, split.
 
+**Merge short sentences that form one thought.** Two choppy sentences that belong together should be written as one. _"Goals end. Identities persist."_ is _"Goals end, but identities persist."_ _"The app fills that pause. It has filled it for two years."_ is _"The app has filled that pause for two years."_ If removing the period and joining with a comma or conjunction makes the line read better, do it. Choppy pairs that could be one sentence are dramatic fragmentation in disguise.
+
 ### Word choice
 
 **Use plain words.** "Written text" not "textual comprehension." "Results" not "implications." "Use" not "leverage." If a simpler word works, use it.
@@ -208,6 +210,8 @@ Small numbers that read naturally as words (_"one," "two," "three"_) can stay as
 > **Correct:** _"1,200"_ / _"70,000"_ / _"299,792 kilometers per second"_ / _"3.14"_
 > **Wrong:** _"1.200"_ / _"70 000"_ / _"3,14"_
 
+**Percentages use the % symbol.** Write _"1%"_ not _"1 percent."_ Use the word "percent" only when the % symbol would look odd in the sentence.
+
 Years are plain digits with no comma: _"1969," "1789," "170."_ Decades: _"the 1920s,"_ not _"the nineteen-twenties."_
 
 **Do not state opinions as facts.** _"The eye has already formed an opinion about the entire screen"_ as settled fact is overreach. For broad claims about human behavior, say _"Research suggests..."_ instead.
@@ -262,6 +266,8 @@ These make text sound like a blog post, a podcast, or a LinkedIn influencer:
 
 **Salesman pressure.** _"Design accordingly."_ / _"If you get this wrong, the words may never get read."_ Education does not need urgency. Do not use fear, scarcity, or pressure.
 
+**Inflated assertions.** _"The math is real."_ / _"That number is not a metaphor."_ / _"The science is settled."_ / _"The data is clear."_ / _"The evidence speaks for itself."_ These are the narrator trying to convince instead of showing. If the writing did its job, the reader already believes. If it did not, an assertion will not fix it. Cut these.
+
 ---
 
 ## 3. Relationship with the Reader
@@ -290,6 +296,8 @@ These make text sound like a blog post, a podcast, or a LinkedIn influencer:
 ---
 
 ## 4. Banned Patterns
+
+> **The blacklist (`ReadlockBlacklist.xml`) must be followed strictly.** AI writing patterns creep into every draft. They are invisible to the writer and obvious to the reader. After writing, check every sentence against the blacklist. Every item in it is banned, no exceptions. A match means the sentence is rewritten from scratch, not patched.
 
 ### Banned words and phrases
 
@@ -358,6 +366,10 @@ Just state Y.
 **The definition-then-reframe**
 _"X is defined as Y. But what it really means is Z."_
 Just say Z.
+
+**The split correction**
+_"The method did not fail. It has not crossed the threshold."_ / _"The math did not stop. The timeline was wrong."_
+Two short sentences where the first negates and the second corrects. Write them as one sentence: _"The method has not failed, it just has not crossed the threshold yet."_ This is not-A-actually-B broken into two periods.
 
 **Inflation and enumeration tricks:**
 
@@ -452,7 +464,7 @@ Rotate opener styles across packages. Do not repeat the same type in a row:
 | **Gentle question**       | _"Have you ever wondered why some things feel instantly familiar, even when you have never seen them before?"_  |
 | **Grounded fact**         | _"The human visual system is older than every language and every alphabet that has ever existed."_               |
 
-The intro should feel like the first paragraph of an essay. It does not sell, tease, or promise. It opens a door.
+The intro is short: 2 to 3 sentences, 4 at most. It should feel like the first paragraph of an essay. It does not sell, tease, or promise. It opens a door.
 
 ### Phase 2, Stories / Narratives
 
@@ -469,6 +481,8 @@ Build the case through stories, examples, and scenarios, not statements. Let the
 | **G, Thought experiment**        | A hypothetical stated openly as one. _"Suppose every person in a city woke up one morning and..."_ Used to isolate a variable or stress-test an intuition. The reader follows logic, not a character.                                                                                                                                                                                                                 | `@text` (state the premise) → `@text` (add a condition or follow one step) → `@text` (land on the consequence)                                                                                    |
 
 These are starting points, not rigid templates. Variants can be mixed. The principle is the same: build toward a pattern the reader can sense before you name it.
+
+**"Suppose..." and "Imagine..." are optional.** A scene can start directly: _"An ice cube sits on a table in a room at minus 5 degrees."_ The reader understands it is a scenario from context. Do not prefix every scenario with "Suppose" or "Imagine."
 
 In all variants: the stories do not arrive at a conclusion. They create a question in the reader's mind.
 
@@ -490,7 +504,7 @@ Do not write questions that punish the reader. The tone is collaborative. The na
 
 The consequence is the short explanation the reader sees after picking an answer.
 
-0. **Length.** 1 to 3 sentences (.rlockie: `consequence:`). Each sentence targets ~14 words (can go to 17-18 when needed). One sentence is usually enough. If you need a fourth sentence, put the extra detail in the explanation field (.rlockie: `explanation:`).
+0. **Length.** 1 to 2 sentences (.rlockie: `consequence:`). One sentence is the default. Two is occasional. Three is rare and only when genuinely needed. A consequence should almost never exceed 20 words total. If you need more, move extra detail to the explanation field (.rlockie: `explanation:`).
 
 1. **Do not make the reader feel stupid.** No verdict language (_"Wrong." "This would not work." "Incorrect."_).
 
@@ -514,14 +528,26 @@ The hint (.rlockie: `hint:`) is a short line shown before the reader answers, to
 
 3. **A hint is never a rephrasing of the question.**
 
+#### Writing `@question` explanations (.rlockie field: `explanation:`)
+
+The explanation (.rlockie: `explanation:`) is the longer note shown after the reader sees the consequence.
+
+0. **Length.** 1 to 2 sentences. Not a paragraph. Each sentence targets ~14 words. If the consequence already explained enough, a short single-sentence explanation is fine.
+
 ### Phase 4, Topic Reveal
 
 Name the pattern. Make the connection between the stories clear.
 
-- _"All three of these stories describe the same phenomenon. It is called..."_
-- _"What ties these together is something researchers have studied for decades..."_
-
 This should feel like a satisfying click. The reader's intuition confirmed, or gently corrected. Not a lecture.
+
+**Vary how you name the topic.** Do not default to _"Researchers call this [topic]"_ or _"Researchers describe this as [topic]."_ These become repetitive across packages. Mix the structure:
+
+- _"The term for this is <c:g>anchoring effect</c:g>, and it explains why the first number wins."_
+- _"In behavioral research, this pattern has a name: <c:g>the habit loop</c:g>."_
+- _"<c:g>Environment design</c:g> is the principle behind all three kitchens."_
+- _"What makes this work has a name. <c:g>The aggregation of marginal gains</c:g> describes how..."_
+
+The concept name can appear at the start, middle, or end of a sentence. The only rule: wrap the term in `<c:g>` and make sure the sentence says what the concept does, not just what it is called.
 
 **Do not mention the source book or its author anywhere in the course text.** The reader is here to learn a concept, not to be told which book it came from. Book titles and author names go only in the `@course` metadata fields (`title` and `author`), never in `@text`, consequences, explanations, or hints. _"Researchers call this identity-based habit change"_ is fine. _"James Clear calls this identity-based habit change"_ is not.
 
@@ -543,37 +569,6 @@ More rules:
 > **Wrong:** _"Each story shows a different <c:r>decision</c:r> pulled toward a <c:g>number</c:g>."_ (generic words, wrong color meaning)
 > **Wrong:** _"Researchers call this <c:r>identity-based habit change</c:r>."_ (the topic is in red, which means "this is wrong")
 
-### Phase 5, True/False or Deeper Check
-
-A statement that tests whether the reader understood the concept. Often a common misconception that sounds right on the surface.
-
-**The statement should feel semi-obvious.** The reader should be able to catch a plausible-sounding mistake after a moment of thought. Not too easy, not a trap. The satisfaction is spotting the flaw in something that sounded fine at first.
-
-### Phase 6, Reflect
-
-The reader just finished Phase 5. Now they get a quiet moment to connect what they learned to their own life. Phase 6 is a prompt to the reader, not a summary.
-
-This phase uses `@reflect` points only. No `@text`.
-
-**Reflect points should not be cliche.** They should make the reader actually think. If a point could appear on a fridge magnet, rewrite it. (See the length table for how many points and how long.)
-
-**Each reflect point needs one concrete example.** Reflecting from a blank page is hard. Give the reader something specific to push off from: a situation, an object, a moment, or a type of person.
-
-> **Correct:** _"A habit you kept going even when day one felt too small: reading one paragraph before bed."_
-> **Correct:** _"A decision someone else made for you by naming the first number, the way a seller names a price."_
-> **Wrong:** _"Which habits of yours have lasted."_ (too abstract)
-> **Wrong:** _"Think about your decisions."_ (no anchor)
-
-**Transition to the next package.** Every package except the last should include a short note about the next package's topic. This note goes in the last `@text` swipe (usually Phase 4). It should feel natural, not like a chapter menu. The reader should be able to tell it refers to the next package.
-
-> **Correct:** _"This explains why the pattern exists. The next package looks at what happens when two of these patterns work against each other."_
-> **Correct:** _"Now that the mechanism is clear, the next package asks a harder question: does it still hold when the stakes are real?"_
-> **Wrong:** _"Next up: cognitive biases in the workplace."_ (chapter menu)
-> **Wrong:** _"In the next package you will learn about..."_ (syllabus)
-> **Wrong:** _"The question that follows is whether it still holds when the stakes are real."_ (too vague, the reader cannot tell this is about the next package)
-
-The last package of the course does not have a transition. It ends with the final course outro instead.
-
 ### Optional: `@pause` swipes
 
 A `@pause` swipe is a standalone screen with a nice animation and a single sentence. It gives the reader a rest between denser swipes.
@@ -581,7 +576,7 @@ A `@pause` swipe is a standalone screen with a nice animation and a single sente
 **What to write:**
 
 - One sentence. Never two.
-- A small interesting fact, observation, or reframing related to the topic.
+- A small interesting fact, observation, or reframing related to the topic of the package.
 - Something the reader will want to sit with for a few seconds.
 
 **What it must never be:**
@@ -591,12 +586,48 @@ A `@pause` swipe is a standalone screen with a nice animation and a single sente
 - A trivia quiz question.
 - A motivational line.
 - A summary of what was just taught.
+- A sentence that names or reveals the topic. The reader has not reached Phase 4 yet.
 
-**Where it goes.** Usually right after Phase 4, the Topic Reveal. One per package at most. Zero is also fine.
+**Where it goes.** After Phase 3 (questions), before Phase 4 (topic reveal). One per package at most. Zero is also fine. The @pause sits between the reader's guess and the answer.
 
-### The final course outro
+### Phase 5, True/False or Deeper Check
 
-The only thing called an "outro" in this guide. The very last `@text` swipe of a course. It appears only on the last package, after Phase 6.
+A statement that tests whether the reader understood the concept. Often a common misconception that sounds right on the surface. 1 to 2 `@true_false` swipes per package.
+
+**The statement should feel semi-obvious.** The reader should be able to catch a plausible-sounding mistake after a moment of thought. Not too easy, not a trap. The satisfaction is spotting the flaw in something that sounded fine at first.
+
+### Phase 6, Reflect (optional)
+
+A quiet moment to connect what was taught to the reader's own life. Phase 6 is a prompt to the reader, not a summary.
+
+This phase uses `@reflect` points only. No `@text`. **@reflect is optional.** Skip it when the package arc feels complete without it. Include it when the topic has personal applications the reader would benefit from sitting with.
+
+**Reflect points should not be cliche.** They should make the reader actually think. If a point could appear on a fridge magnet, rewrite it. 2 to 3 points, each 14 to 16 words.
+
+**Each reflect point needs one concrete example.** Reflecting from a blank page is hard. Give the reader something specific to push off from: a situation, an object, a moment, or a type of person.
+
+> **Correct:** _"A habit you kept going even when day one felt too small: reading one paragraph before bed."_
+> **Correct:** _"A decision someone else made for you by naming the first number, the way a seller names a price."_
+> **Wrong:** _"Which habits of yours have lasted."_ (too abstract)
+> **Wrong:** _"Think about your decisions."_ (no anchor)
+
+### Package outro
+
+Every package ends with a `@text` swipe as its last element. This is the outro. It comes after @reflect (when present) or after Phase 5 (when @reflect is skipped).
+
+**Length.** 2 to 3 sentences. Never longer.
+
+**For non-last packages:** the outro closes the thought and includes a transition to the next package's topic. The transition should feel natural, woven into the closing thought, not bolted on as a separate sentence.
+
+**Vary transition phrasing.** Do not repeat _"The next package asks/looks at/examines..."_ across multiple packages. Weave the transition into the closing thought, use a question, or write a statement that naturally opens the next topic.
+
+> **Correct:** _"The compound math is simple enough. What it does not answer is whether the direction of those small changes matters more than the size."_
+> **Correct:** _"Once the loop is clear, a harder question follows: can the cue be changed without changing the person?"_
+> **Wrong:** _"The next package asks what happens when..."_ (formulaic, repetitive across packages)
+> **Wrong:** _"Next up: cognitive biases in the workplace."_ (chapter menu)
+> **Wrong:** _"In the next package you will learn about..."_ (syllabus)
+
+**For the last package of the course:** the outro names the thread that ran through every package without listing them, and ends on an open question or alternative angle. No recap, no resolution.
 
 **Length.** 2 to 3 sentences. Never longer.
 
@@ -604,10 +635,7 @@ The only thing called an "outro" in this guide. The very last `@text` swipe of a
 
 **Structure.** A good outro does two things:
 
-1. Name the thread that ran through every package without listing them.
-2. End on a question or an alternative angle the reader carries with them.
-
-**What it must never sound like:**
+**What the last-package outro must never sound like:**
 
 - _"In conclusion," "To summarize," "In this course you learned," "We covered,"_ or any other recap.
 - A bullet-point wrap-up.
@@ -630,24 +658,26 @@ All lengths and counts for a course live in this table. If anything else in the 
 
 **Package level.**
 
-| Phase                         | Swipes per phase   | Swipe type(s)                                                                                   | Length per swipe                                                                                                                                                                                                      |
-| ----------------------------- | ------------------ | ----------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1. Intro                      | 1                  | `@text`                                                                                         | 3 to 5 sentences.                                                                                                                                                                                                     |
-| 2. Stories / Narratives       | 2 to 3 consecutive | `@text`                                                                                         | 5 to 7 sentences per swipe. Each sentence ~14 words (can go to 17-18). Short beats allowed when the moment calls for one, not required on every swipe.                                                               |
-| 3. Questions                  | 1 to 2             | `@question`, `@true_false`                                                                      | One question or statement per swipe. Answer options short and distinct.                                                                                                                                               |
-| 4. Topic Reveal               | 1 to 2             | `@text`                                                                                         | Same as Phase 2: 5 to 7 sentences, ~14 words per sentence.                                                                                                                                                            |
-| Optional pause                | 0 or 1             | `@pause`                                                                                        | One sentence only. Default spot: right after Phase 4.                                                                                                                                                                  |
-| Optional estimate             | 0 or 1             | `@estimate`                                                                                     | After Phase 4. Only when the topic has a numerical element. One question, answer 0-100.                                                                                                                               |
-| 5. True/False or Deeper Check | 1                  | `@true_false`                                                                                   | One statement, usually one sentence. Semi-obvious, not a trap.                                                                                                                                                         |
-| 6. Reflect                    | 1                  | `@reflect`                                                                                      | 2 to 3 points, each ~14 to 16 words. Each point includes one concrete example.                                                                                                                                        |
-| **Final outro**               | **1 (extra)**      | `@text`                                                                                         | Only on the last package of the course. 2 to 3 sentences. Names the thread, ends on an open question.                                                                                                                |
-| **Package total**             | **7 to 11 swipes** | Phases 1 → 2 → 3 → 4 → 5 → 6, in order, with optional `@pause` and/or `@estimate` after Phase 4 | Each phase once, in order. Skipping a phase is allowed only when the arc would break by including it.                                                                                                                 |
+| Phase                         | Swipes per phase   | Swipe type(s)             | Length per swipe                                                                                                                                       |
+| ----------------------------- | ------------------ | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 1. Intro                      | 1                  | `@text`                   | 2 to 3 sentences, 4 at most.                                                                                                                          |
+| 2. Stories / Narratives       | 2 to 3 consecutive | `@text`                  | 5 to 7 sentences per swipe. Each sentence ~14 words (can go to 17-18). Short beats allowed when the moment calls for one.                             |
+| 3. Questions                  | 1 to 2, rarely 3   | `@question`, `@true_false` | One question or statement per swipe. Answer options short and distinct.                                                                                |
+| Optional pause                | 0 or 1             | `@pause`                  | One sentence only. Goes after Phase 3, before Phase 4. Must not name or hint at the topic.                                                            |
+| 4. Topic Reveal               | 1 to 2             | `@text`                   | Same as Phase 2: 5 to 7 sentences, ~14 words per sentence.                                                                                            |
+| Optional estimate             | 0 or 1             | `@estimate`               | After Phase 4. Only when the topic has a numerical element. One question, answer 0-100.                                                               |
+| 5. True/False or Deeper Check | 1 to 2             | `@true_false`             | One statement per swipe, usually one sentence. Semi-obvious, not a trap.                                                                               |
+| 6. Reflect (optional)         | 0 or 1             | `@reflect`                | 2 to 3 points, each ~14 to 16 words. Each point includes one concrete example. Skip when the package feels complete without it.                       |
+| **Package outro**             | **1**              | `@text`                   | Last swipe of every package. 2 to 3 sentences. Non-last packages: close the thought and transition. Last package: name the thread, end on a question. |
+| **Package total**             | **7 to 11 swipes** | see phase order below     | Each phase in order. Skipping an optional phase is fine.                                                                                               |
+
+**Phase order:** 1 → 2 → 3 → (optional pause) → 4 → (optional estimate) → 5 → (optional reflect) → outro.
 
 **No more than 3 `@text` swipes in a row** anywhere in a package, **not counting the Phase 1 intro.** The intro is one swipe in its own phase. After it, you can run up to 3 `@text` swipes in Phase 2. Four in a row is a wall of text. Cut it, or break it with a `@question`, `@true_false`, or `@pause`.
 
 **First package of the first segment is always free.** Mark it with `Free` on its own line after the package title.
 
-**Course level.** 2 to 3 segments maximum. 3 to 5 packages per segment. A typical course has about 42 to 165 swipes total. Shorter is almost always better. **The last package ends with one extra `@text` swipe** (the final course outro): 2 to 3 sentences.
+**Course level.** 2 to 3 segments maximum. 3 to 5 packages per segment. Shorter is almost always better.
 
 ---
 
