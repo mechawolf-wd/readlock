@@ -202,7 +202,7 @@ A microwave that beeps when it starts gives the cook permission to walk away.
 
 @text
 The missing piece in the crosswalk and the present piece in the elevator is <c:g>feedback</c:g>.
-<c:g>Feedback</c:g> is any signal that tells a person their action was received and what happened next.
+Feedback is any signal that tells a person their action was received and what happened next.
 A light that turns on, a click, or a change on a screen.
 Without it, people repeat the action, press harder, or give up.
 With it, they trust the system and wait.

@@ -87,6 +87,7 @@
       <rule ref="guide: Section 5, Phase 4, Color highlights rule 1">Green marks the topic only. Appears once in Phase 4. May repeat once if same term. Only inside @text.</rule>
       <rule ref="guide: Section 5, Phase 4, Color highlights rule 2">Red marks only a wrong thing. Never on the topic, never on anything correct. Only inside @text.</rule>
       <rule ref="guide: Section 5, Phase 4, Color highlights rule 3">1 to 2 highlights per package total across both colors.</rule>
+      <rule ref="guide: Section 5, Phase 4, Color highlights rule 4">At most 1 highlight per @text swipe. No two highlights in the same swipe.</rule>
       <rule ref="guide: Section 5, Phase 4, Color highlights rule 4">Highlights wrap the exact term, not a whole sentence.</rule>
       <rule ref="guide: Section 5, Phase 4, Color highlights rule 5">Zero highlights on generic words ("decision", "number", "thing").</rule>
       <rule ref="guide: Section 5, Phase 4, Color highlights">Zero color markup inside @question, @true_false, @estimate, @pause, @reflect, @quote, or any property field.</rule>

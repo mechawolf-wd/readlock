@@ -192,6 +192,7 @@ Look at the graphic.
       <rules>
         <rule>At least one line of text.</rule>
         <rule>Color markup is rare: maximum 1 to 2 highlights per WHOLE PACKAGE across both colours combined, not per text block. Most @text blocks will contain zero highlights. The one that names the topic gets the green one.</rule>
+        <rule>At most 1 color highlight per @text swipe. Do not put two highlights in the same swipe.</rule>
       </rules>
     </block>
 

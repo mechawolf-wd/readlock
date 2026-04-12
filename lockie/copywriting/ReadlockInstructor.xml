@@ -210,7 +210,7 @@ Your job: produce one complete, valid .rlockie file that follows every rule in t
   <rule id="3" name="Sentences per line">One sentence per line is the default. Two allowed only when they read as one beat. Three on one line: never.</rule>
   <rule id="4" name="We vs you">Use "we" for shared human behavior. Use "you" only in Variant A reader-immersion scenarios.</rule>
   <rule id="5" name="No book or author names">No book titles or author names in @text, consequences, explanations, or hints. They go only in @course metadata.</rule>
-  <rule id="6" name="Color highlights">Green marks the topic name. Red marks a wrong thing stated in the text. Both only inside @text. 1 to 2 highlights per package maximum.</rule>
+  <rule id="6" name="Color highlights">Green marks the topic name. Red marks a wrong thing stated in the text. Both only inside @text. 1 to 2 highlights per package maximum. At most 1 highlight per @text swipe.</rule>
   <rule id="7" name="Consequences" rlockie_field="consequence:">1 sentence is the default, 2 occasional, 3 rare. Should not exceed ~20 words total. No verdict language ("Wrong.", "Incorrect."). Vary the approach across answers.</rule>
   <rule id="8" name="Hints" rlockie_field="hint:">Exactly 1 sentence, at most 14 words. Points at the topic, not at the answer.</rule>
   <rule id="9" name="Explanations" rlockie_field="explanation:">1 to 2 sentences. Not a paragraph. Each sentence ~14 words.</rule>

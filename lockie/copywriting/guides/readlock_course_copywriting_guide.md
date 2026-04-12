@@ -561,7 +561,8 @@ Each color has one job:
 More rules:
 
 3. **1 to 2 highlights per package total.** One green almost always. A red can appear if the package has a wrong thing to name. Zero highlights is also fine.
-4. **Highlight the exact term, not the whole sentence.**
+4. **At most 1 color highlight per @text swipe.** Do not put both green and red in the same swipe, and do not highlight two different terms in the same swipe.
+5. **Highlight the exact term, not the whole sentence.**
 5. **Do not highlight generic words** ("decision," "number," "people," "idea," "thing").
 
 > **Correct:** _"Psychologists call this the <c:g>anchoring effect</c:g>."_ (green on the topic name)
