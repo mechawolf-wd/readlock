@@ -92,10 +92,6 @@ clean prose
 
 ### Sentence construction
 
-**One idea per line.** Each line in a `@text` block is one thought. A line that does two things does neither well.
-
-**One sentence per line is the default. Two sentences are allowed.** Each line in a `@text` block becomes its own screen segment. Three sentences on one line looks crowded. Never more than two.
-
 **Target ~14 words per sentence. Lines can be up to ~16 words total.** A single sentence targets 14 words. Going to 17 or 18 sometimes is fine. Going there on every other line is not. 14 is the default. The +3/4 extra is a safety valve, not the new normal.
 
 If a line has two sentences, both together should still fit in ~16 words. That means one of them has to be short.
@@ -105,8 +101,9 @@ If a line has two sentences, both together should still fit in ~16 words. That m
 **Two sentences are allowed** when they belong together as one beat and splitting them would feel wrong:
 
 - _"She stops. She listens."_
-- _"Not accomplishments. Just corrections he wanted to remember."_
 - _"He offered less. The seller accepted."_
+
+Both halves of a two-sentence beat must be full sentences. Fragments like _"Not accomplishments."_ are banned everywhere, including inside two-sentence beats.
 
 **Three sentences on one line: never.** Split them. The reader should see at most two thoughts per screen segment.
 
@@ -278,18 +275,22 @@ These make text sound like a blog post, a podcast, or a LinkedIn influencer:
 
 **Do not tell them what they think, feel, or are doing.** _"You think you are reading this. You are not."_ is presumptuous. _"You have an incredible superpower."_ is patronizing. You do not narrate the reader's inner life.
 
-**Use "we" for shared human behavior. Use "you" only in Variant A (reader-immersion scenarios).** When describing something all people do, say "we." _"We do not notice it happen."_ When the narrator says "you," it sounds like they are telling the reader about themselves, which is presumptuous unless the reader was explicitly placed inside a scene ("Imagine you are standing in your kitchen..."). Outside Variant A, default to "we."
+**Use "we" for humanity-wide observations. Never use "you" to address the reader.** When stating something true of people in general, say "we": _"We figure out most objects without reading the manual."_ _"We have always trusted what we can see."_ This kind of "we" means "we as humans," not "you and me right now." Saying "you" sounds like the narrator is telling the reader about themselves personally, which is presumptuous. Both pronouns have a job, both can be misused.
 
-**Invite, do not assert.** The difference between good and bad second-person writing:
+**"We" is not for placing narrator and reader together in a hypothetical scene.** Do not write _"We are standing in a supermarket aisle"_ or _"We walk into the room"_ — that "we" is fake intimacy, not shared humanity. For reader-immersion scenes (Variant A in Phase 2), use a gerund or imperative instead: _"Imagine standing in a supermarket aisle..."_ or _"Picture a supermarket aisle, two boxes of cereal in hand..."_ No pronoun.
 
-> **Correct:** _"Imagine standing at a crossroads where..."_ (opens a door)
-> **Correct:** _"You may be asking yourself how A and B can both be true."_ (acknowledges their thinking)
-> **Wrong:** _"You just processed the layout of this screen before reading a word."_ (tells them what they did)
-> **Wrong:** _"You are not just creating, you are speaking the brain's native language."_ (assigns them an identity)
+(This rule applies to course writing, not to this guide. The guide can use "you" because it is talking to the writer, not to a course reader.)
 
-**Acknowledge their reasoning.** When the reader is probably forming a guess, meet them there:
+**Invite, do not assert.** The difference between good and bad shared-perspective writing:
 
-- _"And you would be right to wonder about that."_
+> **Correct:** _"Imagine standing at a crossroads where..."_ (a doorway, no pronoun assigned)
+> **Correct:** _"By now, the question of how A and B can both be true is probably forming."_ (acknowledges shared thinking without "you")
+> **Wrong:** _"We just processed the layout of this screen before reading a word."_ (this is fake intimacy, not humanity-wide)
+> **Wrong:** _"You are not just creating, you are speaking the brain's native language."_ (assigns an identity)
+
+**Acknowledge shared reasoning.** When the reader is probably forming a guess, meet them there:
+
+- _"And it would be reasonable to wonder about that."_
 - _"This seems counterintuitive at first."_
 - _"At first glance, the answer seems obvious."_
 
@@ -449,13 +450,20 @@ If a section ends with a question, let it breathe for at least one swipe before 
 
 Each package follows a narrative arc. Not every package uses every phase, but this is the shape.
 
+**Quick reference for terms used below** (full definitions in `RlockieFormatGuide.xml`):
+
+- **Swipe** — one screen the reader sees before swiping forward. Every `@text`, `@question`, `@true_false`, `@quote`, `@pause`, `@reflect`, and `@estimate` block is exactly one swipe. When this guide says **"@text swipe"** it means a swipe whose block type is `@text`.
+- **Package** (`@package`) — one full lesson on one concept. It contains the phases below in order.
+- **Segment** (`@segment`) — a group of 3 to 5 packages.
+- **Course** (`@course`) — the whole book. Made of 2 to 3 segments.
+
 > **The flow must read as one unbroken line of thought.** Do not reveal the answer and then keep questioning. Do not skip context and land on a test. Do not circle back to something already resolved. The arc moves forward: curiosity, then evidence, then understanding. Once the reader arrives at the insight, you do not rewind.
 >
 > If any swipe feels out of order, the package is broken. Fix the order before fixing the sentences.
 
 ### Phase 1, Intro
 
-Open with a broad, human hook. Do not name the topic yet. Set the stage.
+**The intro has one job: make the reader curious.** Open with a broad, human hook. Do not name the topic yet. Set the stage. (One exception: the misconception-first intro variant, described below, can name the everyday term for the topic, because the package is built around correcting the picture the reader already has of it.)
 
 Rotate opener styles across packages. Do not repeat the same type in a row:
 
@@ -466,13 +474,13 @@ Rotate opener styles across packages. Do not repeat the same type in a row:
 | **Gentle question**       | _"Have you ever wondered why some things feel instantly familiar, even when you have never seen them before?"_  |
 | **Grounded fact**         | _"The human visual system is older than every language and every alphabet that has ever existed."_              |
 
-The intro is short: 2 to 3 sentences, 4 at most. It should feel like the first paragraph of an essay. It does not sell, tease, or promise. It opens a door.
+The intro is short: 2 to 4 sentences. It should feel like the first paragraph of an essay. It does not sell, teach, summarise, or promise. The whole job is to make the reader curious enough to swipe to the next screen.
 
-#### How to write an intro that pulls the reader in
+#### How to make the reader curious
 
-The intro has one job: make the reader swipe to the next screen. It does not teach. It does not summarise. It makes the reader curious.
+The intro has one job, said again: **make the reader curious.** Everything below is about how to do that.
 
-**The key principle is visualisation.** Every sentence should put a picture in the reader's head. If the reader can see what you are describing, they are inside the scene. If they cannot see it, they are outside reading words. Every other rule below exists to serve this one.
+**The main technique is visualisation.** Every sentence should put a picture in the reader's head. If the reader can see what you are describing, they are inside the scene. If they cannot see it, they are outside reading words. The rules below are all ways to do this.
 
 **Use words you can picture.** Words like _"coffee cup," "stuck door," "light switch," "manual"_ become images instantly. Words like _"system," "process," "concept," "context," "framework"_ are invisible. Cut them or replace them with something the reader can see. Specific beats general. _"A coffee cup"_ paints something. _"A cup"_ paints almost nothing. Add detail only if the picture needs it.
 
@@ -482,13 +490,13 @@ The intro has one job: make the reader swipe to the next screen. It does not tea
 
 **Use moments the reader has actually lived, when possible.** Pick everyday situations: a coffee cup, a stuck door, a remote nobody can figure out. The reader should think _"yes, I have seen that"_ inside the first sentence.
 
-**End on something unfinished.** The last sentence must leave a question in the reader's mind. Preferably a literal question (_"But what if X?"_), but not always. A "but" that flips what came before, or a small contradiction, also works. The test is simple: if the last sentence could also be the last sentence of the whole package, it is the wrong last sentence. A flat ending closes the door. An unfinished one keeps it open.
+**End on something unfinished.** The last sentence must leave a question in the reader's mind. Preferably a literal question (_"But what if X?"_), but not always. A "but" that flips what came before, or a small contradiction, also works. The test is simple: if the last sentence could also be the last sentence of the whole package, it is the wrong last sentence. A flat ending kills the curiosity. An unfinished one keeps the reader wanting the next swipe.
 
 > **Wrong:** _"We figure out most objects without reading instructions. A cup, a pair of scissors, or a light switch all communicate how they work before we touch them. When that communication fails, we blame ourselves."_
 >
-> **Correct:** _"We figure out most objects without ever cracking open a manual. A coffee cup, a pair of scissors, even a light switch. They all whisper how they work before you touch them. When that whisper turns into confusion, we blame ourselves. But what if the object is the one not speaking clearly?"_
+> **Correct:** _"We figure out most objects without ever cracking open a manual. A coffee cup, a pair of scissors, even a light switch. They all whisper how they work before we touch them. When that whisper turns into confusion, we blame ourselves. But what if the object is the one not speaking clearly?"_
 
-The second version works because every line puts a picture in the reader's head. You can see a manual being cracked open. _"Coffee cup"_ is a real cup, where _"cup"_ is just a word. _"Whisper"_ is something you can almost hear. The last sentence is a question the next swipe will answer.
+The second version works because every line puts a picture in the reader's head. The reader can see a manual being cracked open. _"Coffee cup"_ is a real cup in the head, where _"cup"_ is just a word. _"Whisper"_ is something the reader can almost hear. The last sentence is a question the next swipe will answer.
 
 This is one example, not the only correct shape. A historical fact can put a picture in the reader's head just as well. A single dry observation can too. Follow the rules. Do not copy this exact voice.
 
@@ -523,6 +531,7 @@ Rules:
 3. **The only answers are `True` and `False`.** No third option.
 4. **Use it only when it fits.** If the statement feels random or like a trick test, use a normal `@text` intro instead.
 5. **One true/false intro per segment, maximum.**
+6. **A true/false intro is the only `@true_false` swipe in the package.** If the package opens with one, it skips Phase 5 entirely. The intro replaces the Phase 5 check. A package never has two `@true_false` swipes when one of them is the intro.
 
 **Misconception-first intro.** A package can start by stating something the reader probably already believes that is wrong. The wrong part is wrapped in `<c:r>` (the red marker). The reader nods along to it. Then Phase 2 starts taking it apart.
 
@@ -543,7 +552,7 @@ Build the case through stories, examples, and scenarios, not statements. Let the
 
 | Variant                          | Description                                                                                                                                                                                                                                                                                | Swipe structure example                                                                                                                                |
 | -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **A, Reader-immersion scenario** | _"Imagine you are standing in a supermarket aisle..."_ The reader is the subject. Each swipe pulls them deeper into one situation until they feel the question form on their own.                                                                                                          | `@text` (place reader in scene) → `@text` (develop the scene) → `@text` (moment of recognition)                                                        |
+| **A, Reader-immersion scenario** | _"Imagine standing in a supermarket aisle..."_ The reader is invited into the scene through a gerund or imperative, not a pronoun. Each swipe pulls them deeper into one situation until they feel the question form on their own. Never use "you" or "we" inside the scene.            | `@text` (place reader in scene) → `@text` (develop the scene) → `@text` (moment of recognition)                                                        |
 | **B, Single person narrative**   | One person's experience, told with enough detail to feel real. Each swipe is the next beat in their story. The lesson is in what happens to them, not in commentary.                                                                                                                       | `@text` (beat 1, same person) → `@text` (beat 2, same person) → `@text` (beat 3, same person)                                                          |
 | **C, Two people contrast**       | Two people (or more) in situations that are similar in what they ask of the topic, but different in specifics. The situations do not need to be the same scene. They need to speak to the same idea. The contrast is the question. The reader compares without being told what to compare. | `@text` (first situation) → `@text` (a different situation, same topic) → `@text` (a third situation, or the moment the common thread becomes visible) |
 | **D, Diverse multiple stories**  | 3 short stories about 3 different people or situations, spanning different eras, cultures, or contexts. Same principle, different angles. The reader sees the pattern repeat in places that should not match.                                                                              | `@text` (one person) → `@text` (a different person, different context) → `@text` (a third person, different context)                                   |
@@ -555,7 +564,7 @@ These are starting points, not rigid templates. Variants can be mixed. The princ
 
 **"Suppose..." and "Imagine..." are optional.** A scene can start directly: _"An ice cube sits on a table in a room at minus 5 degrees."_ The reader understands it is a scenario from context. Do not prefix every scenario with "Suppose" or "Imagine."
 
-**Stories can include a line of dialogue.** In variants A (reader-immersion), B (single person), C (two-people contrast), D (diverse multiple), and F (historical arc), a `@text` story can include a short line of someone speaking. Use it when the spoken line brings the scene closer to the reader. One line per swipe. Two at most, and only sometimes.
+**Stories can include a line of dialogue.** In variants A (reader-immersion), B (single person), C (two-people contrast), D (diverse multiple), and F (historical arc), a `@text` swipe in a story can include a short line of someone speaking. Use it when the spoken line brings the scene closer to the reader. One line per swipe. Two at most, and only sometimes. (Variants E and G are excluded because E builds from mechanism and G from hypothetical logic, so neither has a real character whose voice would help.)
 
 Rules for dialogue:
 
@@ -587,35 +596,35 @@ Do not write questions that punish the reader. The tone is collaborative. The na
 
 The consequence is the short explanation the reader sees after picking an answer.
 
-0. **Length.** 1 to 2 sentences (.rlockie: `consequence:`). One sentence is the default. Two is occasional. Three is rare and only when genuinely needed. A consequence should almost never exceed 20 words total. If you need more, move extra detail to the explanation field (.rlockie: `explanation:`).
+1. **Length.** 1 to 2 sentences (.rlockie: `consequence:`). One sentence is the default. Two is occasional. Three is rare and only when genuinely needed. A consequence should almost never exceed 20 words total. If you need more, move extra detail to the explanation field (.rlockie: `explanation:`).
 
-1. **Do not make the reader feel stupid.** No verdict language (_"Wrong." "This would not work." "Incorrect."_).
+2. **Do not make the reader feel stupid.** No verdict language (_"Wrong." "This would not work." "Incorrect."_).
 
-2. **For wrong answers that feel intuitive:** acknowledge the reasoning briefly, then correct it. 1 to 3 sentences. The tone is welcoming, not soft. Do not over-validate. Sometimes just the correction is enough. Vary the approach. Examples: _"{That is the intuitive answer, but in this case X}."_ or _"{That makes sense at first. The reason it does not hold here is Y}."_ or just _"{The reason it does not hold here is Y}."_
+3. **For wrong answers that feel intuitive:** acknowledge the reasoning briefly, then correct it. 1 to 3 sentences. The tone is welcoming, not soft. Do not over-validate. Sometimes just the correction is enough. Vary the approach. Examples: _"{That is the intuitive answer, but in this case X}."_ or _"{That makes sense at first. The reason it does not hold here is Y}."_ or just _"{The reason it does not hold here is Y}."_
 
-3. **For wrong answers that are not intuitive:** correct plainly. Do not invent a "you might have thought" reason. One sentence is usually enough.
+4. **For wrong answers that are not intuitive:** correct plainly. Do not invent a "you might have thought" reason. One sentence is usually enough.
 
-4. **For correct answers:** confirm briefly and add the reasoning. No _"Exactly!"_ or _"Great job!"_ One or two sentences.
+5. **For correct answers:** confirm briefly and add the reasoning. No _"Exactly!"_ or _"Great job!"_ One or two sentences.
 
-5. **Do not pretend a wrong answer was close to right.** Acknowledge the reasoning, but be honest about the correction.
+6. **Do not pretend a wrong answer was close to right.** Acknowledge the reasoning, but be honest about the correction.
 
 #### Writing `@question` hints (.rlockie field: `hint:`)
 
 The hint (.rlockie: `hint:`) is a short line shown before the reader answers, to help them get unstuck.
 
-0. **Length.** Exactly one sentence, at most 14 words (can go to 17-18 when needed). If you need two sentences, the question is too hard or the hint is giving too much away.
+1. **Length.** Exactly one sentence, at most 14 words (can go to 17-18 when needed). If you need two sentences, the question is too hard or the hint is giving too much away.
 
-1. **Point at the topic of the question, not at the answer.** The reader should know what area to think about. They should not know which option to pick.
+2. **Point at the topic of the question, not at the answer.** The reader should know what area to think about. They should not know which option to pick.
 
-2. **The hint should be useful beyond the question.** It should add context the reader can carry forward.
+3. **The hint should be useful beyond the question.** It should add context the reader can carry forward.
 
-3. **A hint is never a rephrasing of the question.**
+4. **A hint is never a rephrasing of the question.**
 
 #### Writing `@question` explanations (.rlockie field: `explanation:`)
 
 The explanation (.rlockie: `explanation:`) is the longer note shown after the reader sees the consequence.
 
-0. **Length.** 1 to 2 sentences. Not a paragraph. Each sentence targets ~14 words. If the consequence already explained enough, a short single-sentence explanation is fine.
+1. **Length.** 1 to 2 sentences. Not a paragraph. Each sentence targets ~14 words. If the consequence already explained enough, a short single-sentence explanation is fine.
 
 ### Phase 4, Topic Reveal
 
@@ -632,14 +641,16 @@ This should feel like a satisfying click. The reader's intuition confirmed, or g
 
 The concept name can appear at the start, middle, or end of a sentence. The only rule: wrap the term in `<c:g>` and make sure the sentence says what the concept does, not just what it is called.
 
+**Do not lean on the same attribution word twice.** If the Phase 2 stories already used _"researchers,"_ _"scientists,"_ _"a study,"_ or _"the experiment"_ to describe where the evidence came from, the topic-reveal sentence in Phase 4 should not open with the same word again. Reach back to what was actually shown, not the people who showed it. _"What kept showing up in those trials has a name: <c:g>...</c:g>"_ beats _"Researchers later called this <c:g>...</c:g>"_ when "researchers" already appeared three times in Phase 2. The reader notices the repetition before they notice the topic name, and the reveal loses its click.
+
 **Do not mention the source book or its author anywhere in the course text.** The reader is here to learn a concept, not to be told which book it came from. Book titles and author names go only in the `@course` metadata fields (`title` and `author`), never in `@text`, consequences, explanations, or hints. _"Researchers call this identity-based habit change"_ is fine. _"James Clear calls this identity-based habit change"_ is not.
 
-**Color highlights (`<c:g>`, `<c:r>`) have two jobs.** The `.rlockie` format has two color markers: `<c:g>...</c:g>` for green and `<c:r>...</c:r>` for red. They work only inside `@text` swipes. Do not use them in `@question`, `@true_false`, `@estimate`, `@pause`, `@reflect`, `@quote`, or any property field.
+**Color highlights (`<c:g>`, `<c:r>`) only work inside `@text` swipes.** The `.rlockie` format has two color markers: `<c:g>...</c:g>` for green and `<c:r>...</c:r>` for red. **No other swipe type supports them. No property field supports them.** Color highlights belong to `@text` swipes and nothing else.
 
 Each color has one job:
 
-1. **Green (`<c:g>`) marks the topic of the package.** The name of the concept the package is about. Appears once in Phase 4, on the sentence that names the topic. Can appear one more time later only if it is the same term. Does not work in `@true_false`, `@reflect`, `@question`, `@pause`, or property fields.
-2. **Red (`<c:r>`) marks a wrong thing stated in the text.** A misconception or a mistake the narrator is pointing at so the reader can see it is wrong. Never on the topic. Never on anything correct. Only inside `@text`.
+1. **Green (`<c:g>`) marks the topic of the package.** The name of the concept the package is about. Appears once in Phase 4, on the sentence that names the topic. Can appear one more time later only if it is the same term.
+2. **Red (`<c:r>`) marks a wrong thing stated in the text.** A misconception or a mistake the narrator is pointing at so the reader can see it is wrong. Never on the topic. Never on anything correct.
 
 More rules:
 
@@ -680,6 +691,8 @@ A statement that tests whether the reader understood the concept. Often a common
 
 **The statement should feel semi-obvious.** The reader should be able to catch a plausible-sounding mistake after a moment of thought. Not too easy, not a trap. The satisfaction is spotting the flaw in something that sounded fine at first.
 
+**Phase 5 is skipped if the package opens with a true/false intro.** A package can have one `@true_false` swipe total. If that swipe is the intro (see "Other ways to start a package" in Phase 1), Phase 5 is empty for this package and the package goes from Phase 4 directly to Phase 6 or the outro.
+
 ### Phase 6, Reflect (optional)
 
 A quiet moment to connect what was taught to the reader's own life. Phase 6 is a prompt to the reader, not a summary.
@@ -717,8 +730,6 @@ Every package ends with a `@text` swipe as its last element. This is the outro. 
 
 **Tone.** Quiet and slightly open-ended. The narrator pauses one last time to reflect on what the course was really about. Not listing what was taught.
 
-**Structure.** A good outro does two things:
-
 **What the last-package outro must never sound like:**
 
 - _"In conclusion," "To summarize," "In this course you learned," "We covered,"_ or any other recap.
@@ -744,7 +755,7 @@ All lengths and counts for a course live in this table. If anything else in the 
 
 | Phase                         | Swipes per phase   | Swipe type(s)              | Length per swipe                                                                                                                                      |
 | ----------------------------- | ------------------ | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1. Intro                      | 1                  | `@text`                    | 2 to 3 sentences, 4 at most.                                                                                                                          |
+| 1. Intro                      | 1                  | `@text`                    | 2 to 4 sentences.                                                                                                                                     |
 | 2. Stories / Narratives       | 2 to 3 consecutive | `@text`                    | 5 to 7 sentences per swipe. Each sentence ~14 words (can go to 17-18). Short beats allowed when the moment calls for one.                             |
 | 3. Questions                  | 1 to 2, rarely 3   | `@question`, `@true_false` | One question or statement per swipe. Answer options short and distinct.                                                                               |
 | Optional pause                | 0 or 1             | `@pause`                   | One sentence only. Goes after Phase 3, before Phase 4. Must not name or hint at the topic.                                                            |
@@ -757,7 +768,7 @@ All lengths and counts for a course live in this table. If anything else in the 
 
 **Phase order:** 1 → 2 → 3 → (optional pause) → 4 → (optional estimate) → 5 → (optional reflect) → outro.
 
-**No more than 3 `@text` swipes in a row** anywhere in a package, **not counting the Phase 1 intro.** The intro is one swipe in its own phase. After it, you can run up to 3 `@text` swipes in Phase 2. Four in a row is a wall of text. Cut it, or break it with a `@question`, `@true_false`, or `@pause`.
+**Table constraint: no more than 3 `@text` swipes in a row.** Anywhere in a package, not counting the Phase 1 intro. The intro is one `@text` swipe in its own phase. After it, you can run up to 3 `@text` swipes in Phase 2. Four `@text` swipes in a row is a wall of text. Cut it, or break it with a `@question`, `@true_false`, or `@pause`.
 
 **First package of the first segment is always free.** Mark it with `Free` on its own line after the package title.
 
