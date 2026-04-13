@@ -1,6 +1,6 @@
 @course
 
-id: book:emotional-design-kvtm
+id: book:emotional-design-rwmt
 title: Emotional Design
 author: Readlock
 description: How three layers of feeling decide which objects we love and which we forget.
@@ -13,368 +13,211 @@ Three Layers of Feeling
 TLF
 
 @package
-The Pretty Machine That Worked Better
+Before the Mind Catches Up
 Free
+# @text, @text, @text, @question, @pause, @text, @true_false, @text
 
 @text
-Two coffee makers sit on the same kitchen counter.
-One is rough plastic. The other is smooth and warm to the touch.
-Both pour coffee at the same speed.
-So why does the prettier one feel easier to use?
+Some objects in a shop catch the eye before the price tag has been read.
+The hand reaches for the scissors, the coffee cup, or the wooden spoon.
+The choice happens before any thought arrives.
+So what is making the decision in that half-second?
 
 @text
-In the 1990s, when ATMs were still a new sight on city streets, researchers ran a small study.
-They built two versions of the same machine.
-The buttons did the same thing in the same order.
-The wiring, the speed, and the menu were all identical.
-Only the look changed.
-One screen was plain and clunky, the other was clean and balanced.
-Then they asked people to try both machines and rate how easy each one felt.
+Newborns just hours old will turn their heads toward a face shape drawn on a card.
+The face does not need to be a real person.
+Two black dots and a curve are enough.
+The same babies ignore a card with the same dots arranged in any other pattern.
+Nobody taught them what a face is.
+The eyes were already looking for one before the babies had ever seen a face.
 
 @text
-People rated the prettier machine as easier to use, even though both machines were identical inside.
-They could not name the difference, but they felt it.
-When the same researchers tried the test in another country, the result came back the same.
-The look of the machine was reaching into the person who used it.
-A pleasant design made the testers more patient with the machine when things went wrong.
+Researchers find the same kind of pull in adults, just hidden under decades of habit.
+A symmetrical face is rated more attractive than an asymmetrical one without the rater knowing why.
+A round, smooth shape draws the hand before an angular one does.
+A polished surface holds the eye longer than a rough one.
+None of these preferences need to be learned.
+They were already wired into the body before any culture could teach them otherwise.
 
 @question
-Why did the prettier machine feel easier to use?
+What is the experiment with the newborns showing?
 
-answer: The buttons on the pretty version were actually faster.
-consequence: The two machines were identical on the inside, button by button.
+answer: Babies need to see real faces to learn what a face looks like.
+consequence: The babies had never seen a face before the test, but they still preferred the face shape.
 
-answer: The pleasant look made people more patient and forgiving when something went wrong.
-consequence: A pleasant design loosens the mind, which makes small problems feel smaller.
+answer: The brain is born already looking for face shapes, before any learning happens.
+consequence: The wiring for face shapes is built into the body before any face has been seen.
 
-answer: The pretty version had a simpler menu hiding harder steps.
-consequence: The menus were the same on both machines, button by button.
-
-correct_answers: 2
-explanation: When the body feels good, the brain becomes more flexible and forgiving with mistakes. The same broken button stops feeling broken once the mood lifts.
-hint: Both machines were identical inside, so the change was happening somewhere else.
-
-@text
-What kept showing up in those trials has a name: <c:g>the aesthetic-usability effect</c:g>.
-When something looks pleasant, people find it easier and more forgiving.
-The change happens inside the person looking at the screen.
-A relaxed, slightly happy brain is better at thinking around small obstacles than a tense one.
-So the most useful work a designer can do is sometimes also the most decorative.
-
-@true_false
-A frustrated user is better at problem-solving than a relaxed user, because frustration sharpens focus.
-
-true: True, frustration helps focus and improves problem-solving.
-consequence: Frustration narrows attention to the immediate problem, which makes creative workarounds harder to find.
-
-false: False, a relaxed mind solves problems more flexibly than a frustrated one.
-consequence: Positive feeling broadens thinking, so a relaxed user finds workarounds the frustrated user misses.
+answer: The shapes had nothing to do with face recognition; the babies were just curious.
+consequence: The babies turned only toward the face shape and ignored the other patterns made of the same dots.
 
 correct_answers: 2
-explanation: Positive affect broadens cognition, while frustration narrows it to the immediate obstacle.
-hint: Think about whether stress widens or narrows what the brain can see.
-
-@text
-The look of an object reaches into the person using it and changes how the world feels.
-That is one of the layers where design touches feeling.
-The next layer sits underneath, in the first half-second of seeing something new.
-
-@package
-The Half-Second Before Thought
-
-@text
-Sometimes a hand reaches for something on a shop shelf.
-The body says yes before the mind has weighed anything.
-No label has been read, and no spec has been checked.
-So what is making the decision before thought has time to arrive?
-
-@text
-A child stands in front of a basket of apples at a market stall.
-Without checking the price, she reaches for the roundest and shiniest one.
-Every apple on the table tastes the same.
-None of them is worth more than the next.
-The round, shiny one has already been chosen, and the choice happened in less than a second.
-
-@text
-A man walks down a long museum hall lined with hundreds of small Greek clay pots.
-He has been walking for half an hour, and his feet hurt.
-Then his eyes catch one pot, and his body stops.
-The pot is smooth and balanced.
-The pots around it are slightly off in shape and slightly heavier on one side.
-He could not say why this one made him stop, only that it did.
-
-@text
-A woman walks along a beach at the end of a long day.
-The sand is full of stones, all roughly the same colour.
-She is not collecting anything.
-Then her hand bends down on its own and picks up one polished, oval stone.
-Hours later, she puts the stone on her windowsill and cannot quite explain why she kept it.
-
-@question
-What do these three moments have in common?
-
-answer: The people knew exactly what to look for in advance.
-consequence: None of the three were following a plan or a checklist.
-
-answer: The choice happened in the body before the mind had time to weigh it.
-consequence: Something visual triggered a yes before any conscious thought arrived.
-
-answer: Each person was looking for the cheapest option.
-consequence: Price had nothing to do with any of these three moments.
-
-correct_answers: 2
-explanation: The body reacts to certain shapes and surfaces faster than the conscious mind can catch up.
-hint: Notice how fast each decision was made, before any thinking happened.
+explanation: The brain is born with a small bias toward certain shapes, faces among the strongest of them.
+hint: Notice that the babies had never seen a real face before the test.
 
 @pause
-A round, polished shape can stop a person in a market or a museum just the same.
+Long before there were knives or coffee cups, the eye had already decided which berries to pick first.
 
 @text
-The first layer of how design touches the human is called <c:g>the visceral level</c:g>.
-It is the part of the brain that fires before any thought.
-The signal arrives in the half-second between seeing something and knowing what it is.
-Round, smooth, symmetrical, and warm: humans have been wired for these shapes for thousands of generations.
+<c:g>The visceral level</c:g> is the first layer of how design reaches inside the person.
+It is the wiring that turned the newborn's head toward the face card, before the baby had ever seen a face.
+The same wiring makes the adult hand reach for the smooth handle instead of the angular one.
+It decides in the half-second between seeing and knowing, before any thought arrives.
 The wiring sits below culture and below language.
-A child in a market and a man in a museum are running on the same instincts.
+A child in a market and an engineer in a lab obey the same instincts.
 
 @true_false
-Aesthetic preferences are mostly learned from culture, not built into the body.
+Aesthetic taste is mostly learned from culture, with very little built into the body at birth.
 
-true: True, all aesthetic taste is shaped by culture.
-consequence: Most aesthetic taste is cultural, but the layer underneath is built-in and the same everywhere.
+true: True, taste is almost entirely cultural.
+consequence: The visceral layer underneath the cultural one is built in and runs the same in any country.
 
-false: False, the visceral layer of preference is built into the body.
-consequence: The visceral layer is built into the body and runs the same across very different cultures.
+false: False, the visceral layer is hardwired before any culture arrives.
+consequence: A newborn turns toward a face card the same way in every country.
 
 correct_answers: 2
-explanation: The visceral level of aesthetic response is largely hardwired, while the layers above it are shaped by culture.
-hint: Think about what a child and an adult in different cultures both find appealing.
-
-@reflect
-A kitchen tool kept for its looks alone: a hand-painted bowl or a pretty mug.
-A surface that hands keep touching for no clear reason: a pebble or a handle.
-A small item kept on a shelf for no practical reason: a stone or a postcard.
+explanation: The visceral level is hardwired. The layers above it are shaped by where someone grew up, but the foundation is shared.
+hint: A baby in any country reaches for the same shapes before learning a single word.
 
 @text
-The visceral layer is the half-second jolt, the body reacting before thought arrives.
-It is only the start.
-A second layer wakes up later, when the object stops being looked at and starts being used.
+The visceral layer is the half-second jolt, the body recognising shapes before the mind catches up.
+That layer is only the start.
+A second layer wakes up later, when the eye gives way to the hand.
 
 @package
-The Knife That Knew Her Hand
+What the Hand Learns Next
+# @text, @text, @text, @question, @text, @true_false, @reflect, @text
 
 @text
-Why do some kitchen tools get used every day while others sit untouched in the drawer?
-There is always one favourite knife, one favourite pen, one favourite coffee cup.
-The hand keeps coming back to the same one, day after day.
-What is it about that one tool that the others lack?
+Most people assume the favourite kitchen tool is <c:r>the one that looked best in the shop</c:r>.
+Pretty knives, shiny pans, and famous-brand mugs all win the day they arrive home.
+They sit on the counter like trophies, ready to be used.
 
 @text
-A woman receives a chef's knife as a gift on her thirtieth birthday.
-It looks plain compared to the others in her drawer.
-The handle is wood, the blade is slightly worn, and the look is nothing special.
-The first time she uses it, she notices how the handle fits her palm exactly.
-The blade tilts forward when she lifts it, almost as if the knife wants to do the work.
-By the end of the meal, the other knives in the drawer have started to feel awkward.
+A woman receives two knives as a gift on the same day.
+The first is a sleek German blade, expensive, with a polished black handle.
+The second is a battered wooden-handled knife from her grandmother's kitchen, slightly chipped along the edge.
+The German knife is the one she shows off when guests visit.
+The grandmother's knife is the one she reaches for every time she actually cooks.
+After six months, the German knife still feels like a display.
 
 @text
-A year passes.
-The woman has cooked hundreds of meals with the new knife.
-Her hand reaches for it without looking, the way it reaches for a pen.
-The other knives sit clean in the back of the drawer.
-When she travels, she has to use other knives in friends' kitchens.
-Each one feels strange and clumsy in her hand.
-What she loves about the knife is how it answers her hand.
+Years pass.
+The woman has cooked thousands of meals with the grandmother's knife.
+Her hand reaches for it without looking, the way the hand reaches for a familiar pen.
+The German knife sits clean in the drawer, almost as new as the day it arrived.
+When she uses other knives in friends' kitchens, every one feels strange and unbalanced.
+What she loves about the old knife is how it answers her grip.
 
 @question
-What is it about the favourite knife that the others lack?
+What is making the woman keep choosing the grandmother's knife?
 
-answer: It looks more expensive than the other knives in the drawer.
-consequence: Looks were the visceral layer. This story is about a different part of the brain.
+answer: The German knife is poorly designed and uncomfortable.
+consequence: The German knife is well made. The story is about a different kind of fit.
 
-answer: The way it fits the hand and the way it moves during the work.
-consequence: The knife rewards the hand on every use, which is why the hand keeps returning.
+answer: The grandmother's knife rewards the hand each time it is picked up.
+consequence: The grandmother's knife sits in the hand like a familiar pen, and the hand keeps returning for that reward.
 
-answer: It was a gift, so the woman feels guilty about not using it.
-consequence: The hand keeps choosing the knife because it likes the choice, not from guilt.
+answer: Sentimental value, because the knife belonged to her grandmother.
+consequence: Sentiment matters in another layer of the brain. This story is about the hand and the body.
 
 correct_answers: 2
-explanation: A tool that fits the hand rewards the body every time it is picked up.
-hint: Notice what part of the body keeps choosing the knife, and why.
+explanation: A tool that fits the hand becomes a small reward every time it is picked up. The body files those rewards away over time.
+hint: Notice what the hand is feeling, not what the eye is seeing.
 
 @text
-<c:g>The behavioral level</c:g> is the second layer of how design touches feeling.
-It is what happens during the long minutes of using something, after the half-second of looking.
-A tool that fits the hand becomes a small reward every time it is picked up.
-The body files away these rewards without the mind noticing.
-Over months and years, the favourite tool becomes the one that has rewarded the hand the most often.
+<c:g>The behavioral level</c:g> plays out after the half-second of looking is over.
+It is the second layer of how design reaches inside the person, running during the long minutes of actually using something.
+It is what the grandmother's knife is using to win, every time the hand reaches into the drawer.
+Every time the hand picks the knife up, the fit and the balance reward the body without the mind noticing.
+The favourite tool, in any drawer, is the one that has rewarded the hand the most.
 
 @true_false
-A favourite tool is usually the one that looked best in the shop.
+A well-designed tool is one that always wins the buying decision in the shop.
 
-true: True, the look in the shop is what makes a tool a favourite.
+true: True, the best tools win on first sight.
 consequence: Looks decide what is bought. Use decides what becomes the favourite.
 
-false: False, what makes a favourite happens after the tool is brought home.
+false: False, what makes a favourite tool happens after the tool reaches home.
 consequence: The favourite is built over months of use, not chosen in the shop window.
 
 correct_answers: 2
-explanation: The visceral level shapes what gets bought, and the behavioral level shapes what stays in use.
-hint: Think about how often the prettiest tool in a kitchen actually gets picked up.
+explanation: The visceral level shapes what gets bought, and the behavioral level shapes what stays in the hand.
+hint: Think about which tool in any kitchen actually gets used most often.
 
 @reflect
-A tool the hand keeps choosing, even with newer options nearby: a mug or a pen.
-A tool that looked right in the shop and turned out to feel wrong in use.
+A tool that looked right in the shop and felt wrong in the hand: a chef's knife or a fancy peeler.
+A favourite kitchen item kept for how it sits in the hand: an old wooden spoon.
 A small daily friction a better-shaped object would erase: a stiff handle or a sharp edge.
 
 @text
-The hand learns the tool, and the tool wins or loses on what it gives the hand.
-The visceral and the behavioral layers are now in place.
-The third sits above both, in the part of the mind that does not touch the tool, but tells stories about it.
+The hand is the slow judge.
+It learns the tool over months of use, and rewards the tool that fits.
+But there is a third layer of how design touches feeling, and it lives somewhere even quieter than the hand.
 
 @package
-The Watch That Was More Than a Watch
+More Than the Object Itself
+# @true_false, @text, @text, @question, @text, @reflect, @text
 
-@text
-For most of human history, people have decorated their things with marks that did nothing useful.
-There were patterns on clay pots, feathers in hats, and names carved into bowls.
-The pot still held water and the bowl still held soup.
-So why did people spend any time on the marks at all?
+@true_false
+A pair of running shoes that no longer fits will usually be thrown away within the year.
+
+true: True, broken shoes get replaced quickly.
+consequence: That is what logic says. Look at any closet and the answer is often different.
+
+false: False, some pairs sit in the closet for years after they fall apart.
+consequence: The shoes that meant something tend to outlive the shoes that just worked.
+
+correct_answers: 2
+explanation: A shoe that was part of an important moment can stay in the closet for years after it stops fitting. The body alone cannot hold the memory, so the object holds it instead.
+hint: Look at any closet and count the items that still fit but are never worn.
 
 @text
 A man owns two watches.
 Both keep time perfectly, both cost about the same, and both look fine on the wrist.
 He almost always wears the second one.
-The first watch was bought from a shop.
-The second was given to him by his father, a year before his father died.
+The first watch was bought from a shop window.
+The second was a gift from his father, given the month before his father died.
 Asked which watch is better, he would say neither.
 Asked which one he would feel terrible about losing, he would name the second without thinking.
 
 @text
-A young woman keeps a cracked mug at the back of her cupboard.
+A young woman keeps a single mug at the back of her cupboard.
 The handle is chipped, the glaze is fading, and the inside is stained from years of tea.
-She has plenty of newer mugs that look better and pour cleaner.
-She bought the cracked mug for herself when she first moved into her own flat.
+She has six newer mugs that look better and pour cleaner.
+She bought the chipped mug for herself the week she moved into her own flat.
 On the days when life is going badly, she takes the mug down and drinks tea from it.
-After holding the mug for a few minutes, the day starts to feel more bearable.
+Holding the mug for a few minutes makes the day feel slightly less heavy.
 
 @question
-Why do the second watch and the cracked mug matter so much to their owners?
+What do the second watch and the chipped mug have in common?
 
 answer: They are objectively better than the alternatives.
-consequence: Both pairs of objects are equal in function. The second one wins on something else entirely.
+consequence: Both pairs of objects are equal in function. The second one wins on something else.
 
-answer: They carry a memory and a story that the alternatives do not.
-consequence: An object can carry a piece of someone's history, and that piece becomes part of using it.
+answer: They each carry a moment from the owner's life, and that moment is part of the object now.
+consequence: An object can carry a piece of someone's history, and that piece becomes part of using the object.
 
-answer: They are more expensive than the other options.
-consequence: Price has nothing to do with either story.
+answer: They were both more expensive than the alternatives.
+consequence: Price has nothing to do with either story. The chipped mug was the cheapest in the cupboard.
 
 correct_answers: 2
-explanation: Some objects become small monuments to a person or moment, and we keep using them long after better versions exist.
-hint: Compare the function of each object with what each one means to the person who owns it.
-
-@pause
-The objects we cannot throw away are often the cheapest ones we ever owned.
+explanation: Some objects become small monuments to a person or a moment. The owners keep using them long after better versions exist.
+hint: Compare the function of each object with what each one means to the person holding it.
 
 @text
-<c:g>The reflective level</c:g> is the third layer of how design touches feeling.
-It is the part of the mind that tells the story about owning an object.
-A second-hand watch becomes a small monument to a father, and the time it keeps turns secondary.
-A cracked mug becomes the marker of a first home, and the tea it pours hardly matters.
-Reflective design is the layer where objects become parts of who we are.
-
-@true_false
-A favourite object always becomes a favourite because of how well it works at its job.
-
-true: True, function is what makes an object a favourite.
-consequence: The deepest favourites are kept for the meaning they carry, even when they no longer work well.
-
-false: False, meaning often matters more than function.
-consequence: The deepest favourites are kept for what they mean. The cracked mug is the worst cup in the cupboard.
-
-correct_answers: 2
-explanation: An object can become a small monument to a person or a moment, and that monument outlives any newer model.
-hint: Think of an object kept long after a better one was available.
+A second-hand watch becomes a small monument to a father, and the time it keeps quietly turns secondary.
+A chipped mug becomes the marker of a first home, and the tea it pours hardly matters anymore.
+<c:g>The reflective level</c:g> sits above both the visceral and the behavioral, in the part of the mind that tells stories about the objects we keep.
+It is what makes the watch and the mug refuse to leave, long after their use is gone.
+The strongest objects in any home live on all three layers at once.
 
 @reflect
 An object kept at home for no practical reason: a postcard or a small stone.
-A gift impossible to replace, even though a perfect copy could be bought tomorrow.
-Something carried daily because of the person who chose it: a pen or a key ring.
-
-@text
-The third layer is where objects start carrying memories the body alone could not hold.
-The visceral, the behavioral, and the reflective are now all in place.
-Some of these objects refuse to leave their owners long after the use is gone.
-
-@package
-The Shoes That Refused to Leave
-
-@text
-Most people know someone who has kept a pair of shoes for years after they fell apart.
-The soles are worn through, the laces have been replaced, and the leather is scuffed.
-Better shoes sit in the same closet, untouched.
-Why does that one pair refuse to go?
-
-@text
-In her early twenties, a woman buys a pair of running shoes from a small shop.
-They are nothing special, just the cheapest pair the shop had in her size.
-She wears them for the first time on the morning she decides to start running.
-The first run lasts ten minutes and ends with her bent over a fence, gasping.
-Three months later, she runs her first five-kilometre race in them, and finishes crying.
-
-@text
-Years pass.
-The shoes go with her on hundreds of runs, through rain, heat, and dark mornings before work.
-The soles wear through, and the laces fray.
-Eventually they sit at the bottom of the closet, falling apart.
-By her mid-thirties, she could buy ten better pairs without thinking.
-None of the new ones are the shoes she ran her first race in.
-She still cannot bring herself to throw the old pair away.
-
-@question
-What is keeping the old pair of shoes in the closet?
-
-answer: They still run better than any of the newer pairs.
-consequence: The shoes are worn out and unusable. The keeping has nothing to do with running.
-
-answer: They hold the memory of a moment that changed her life.
-consequence: The object has become a small monument to the morning she became someone who runs.
-
-answer: They cost more than the newer pairs and would be wasteful to throw away.
-consequence: The shoes were the cheapest pair in the shop. Cost is not what is keeping them.
-
-correct_answers: 2
-explanation: The deepest attachments combine all three layers, but the reflective layer is the one that refuses to let go.
-hint: Think about which of the three layers is doing the keeping.
-
-@text
-The deepest attachments do not come from one layer alone, but from all three working together.
-The visceral catches the eye in the shop.
-Years of use teach the hand to keep coming back, which is the behavioral layer.
-By the time an object has been part of an important moment, the reflective layer has bound it to that moment for good.
-Together, all three form what is sometimes called <c:g>emotional design</c:g>.
-It refuses to separate how a thing looks, how it feels, and what it means.
-
-@true_false
-The strongest connection a person can have with an object always comes from how well it works.
-
-true: True, the strongest connections are about function.
-consequence: Function helps, but the strongest connections also carry memory and meaning the body cannot replace.
-
-false: False, the strongest connections are not about function alone.
-consequence: A pair of worn-out shoes can mean more than ten better pairs, because of what they were there for.
-
-correct_answers: 2
-explanation: The deepest attachments layer function, comfort, and meaning together, with the meaning usually lasting longest.
-hint: Compare the function of an object with the role it has played in someone's life.
-
-@reflect
-An object too important to throw away, even with a perfect replacement available: an old notebook.
-Something with a beautiful look, a satisfying touch, and a memory in it: an old pen.
+A daily-use object that quietly holds a memory: a pen, a watch, or a ring.
 A replacement that turned out quietly worse than the original: a chair or a knife.
 
 @text
-The thread running through this course is that an object is never just an object to the person holding it.
-It enters the body, the hand learns to return, and the object slowly carries pieces of a life.
-Maybe the harder question is which objects in any home are quietly doing all three at once.
+The thread of this course is that an object is never just an object to the person who owns it.
+What gets called emotional design is the moment when all three layers line up inside the same object.
+Maybe the harder question is which object in any room is quietly doing that right now.

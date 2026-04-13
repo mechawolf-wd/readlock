@@ -213,6 +213,28 @@ Years are plain digits with no comma: _"1969," "1789," "170."_ Decades: _"the 19
 
 **Do not state opinions as facts.** _"The eye has already formed an opinion about the entire screen"_ as settled fact is overreach. For broad claims about human behavior, say _"Research suggests..."_ instead.
 
+**Every abstract idea needs an anchor from everyday life.** This is the same rule as "every number needs a picture next to it," but for ideas instead of numbers. The reader forgets abstract words within a day. The reader keeps abstract words that sit next to an everyday object they already know.
+
+How to do it:
+
+1. Find one ordinary object, scene, or moment that the new idea fits inside. A snowflake. A coffee cup. A parking meter. A kitchen counter. A shop shelf. Something the reader has seen with their own eyes.
+2. Put the anchor right next to the idea, not after a paragraph of explanation.
+3. Use ONE anchor per concept in a package. If a second anchor appears, the first one was too weak. Replace it, do not stack.
+4. The anchor must be something the reader has actually lived. Not a poetic image, not a metaphor for sounding clever.
+
+Test: after one read, can the reader recall the concept by recalling the anchor? If yes, the anchor works. If the reader has to rebuild the concept from the words, the anchor failed and the package needs a new one.
+
+> **Wrong:** _"Compound effects describe how repeated small actions create growing results over time."_ (no anchor, all abstraction)
+> **Correct:** _"One small daily change does almost nothing on its own. But thousands of them add up the way thousands of snowflakes add up to an avalanche."_ (the avalanche is the anchor)
+
+> **Wrong:** _"Anchoring bias is when an initial value influences subsequent judgments."_ (dictionary entry)
+> **Correct:** _"The first price the seller names becomes the centre of every other price the buyer considers, the way the first number on a parking meter quietly sets the budget for the whole afternoon."_ (the parking meter is the anchor)
+
+> **Wrong:** _"The behavioral level concerns how a tool feels in use over repeated interactions."_ (concept floating without an anchor)
+> **Correct:** _"A favourite knife in a kitchen drawer is the behavioral level. The hand returns to it every meal, while the other knives sit untouched."_ (the kitchen drawer is the anchor)
+
+If the package teaches a concept and no anchor comes to mind, stop. The package is not ready to write yet. Find the anchor first.
+
 ### Metaphors
 
 **Metaphors must be clear and easy to understand.** A metaphor is allowed when it helps the reader understand something new and a B2 reader would get it without stopping to translate. If the metaphor exists to sound clever, remove it. If the sentence works without the metaphor, remove it. If you keep it, make sure it refers to something the reader has actually seen or experienced.
@@ -461,6 +483,40 @@ Each package follows a narrative arc. Not every package uses every phase, but th
 >
 > If any swipe feels out of order, the package is broken. Fix the order before fixing the sentences.
 
+### Package titles
+
+The package title is the first thing the reader sees in the segment menu. It is also the easiest thing to template. The default trap is **"The X That Y"** (_"The Door That Argued With Everyone," "The Knife That Knew Her Hand," "The Watch That Was More Than a Watch"_). One per segment is fine. Three in a row tells the reader the writer ran out of shapes.
+
+Rotate through different title shapes across packages in the same segment:
+
+| Shape                                  | Example                                  |
+| -------------------------------------- | ---------------------------------------- |
+| **Question**                           | _"Why Couldn't She Throw Them Away?"_    |
+| **Open-ended fragment with three dots**| _"What the Hand Already Knew..."_        |
+| **Short noun phrase**                  | _"More Than a Watch"_                    |
+| **Why / when statement**               | _"Why Beauty Helps the Hand"_            |
+| **Narrative beat**                     | _"And Then She Could Not Let Them Go"_   |
+| **Single concept fragment**            | _"The Half-Second Before Thought"_       |
+| **The X That Y (use sparingly)**       | _"The Watch That Outlived Its Owner"_    |
+
+Rules:
+
+1. **No two consecutive packages share the same shape.** If package 2 was a "The X That Y," package 3 is not. Different syntactic shape, not just different nouns.
+2. **No more than one "The X That Y" title per 5-package segment.** It is the easy default. Using it once is fine, twice tells the reader the segment was written on autopilot.
+3. **Titles can hint at the topic, but never name it.** _"What the Hand Already Knew..."_ hints at the behavioral level without saying "behavioral level."
+4. **Endings can vary.** A question mark, three dots, or no punctuation at all are all good. Open-ended is fine. Forced symmetry is bad.
+5. **No subtitles, no colons.** _"Coffee Cups: A Study in Affordances"_ is a textbook chapter, not a Readlock package.
+6. **Title length: 2 to 7 words.** One-word titles work occasionally. Eight or more words read as full sentences and the menu UI cannot fit them.
+7. **No banned words in titles.** "Things," "stuff," banned verbs, banned adjectives all stay out of titles too.
+
+> **Wrong (segment with five "The X That Y" titles):**
+> _"The Pretty Machine That Worked Better,"_ _"The Half-Second Before Thought,"_ _"The Knife That Knew Her Hand,"_ _"The Watch That Was More Than a Watch,"_ _"The Shoes That Refused to Leave."_ (four out of five share the same shape — this is a pattern, not a set of titles)
+>
+> **Correct (same five packages, varied shapes):**
+> _"Why Beauty Helps the Hand,"_ _"The Half-Second Before Thought,"_ _"What the Hand Already Knew...,"_ _"More Than a Watch,"_ _"Why Couldn't She Throw Them Away?"_ (five different shapes: why-statement, noun phrase, open-ended dots, short fragment, question)
+
+The rule applies across the whole segment, not just inside one package. Read the segment menu top to bottom: if the titles look like a list of variants of the same shape, rewrite them.
+
 ### Phase 1, Intro
 
 **The intro has one job: make the reader curious.** Open with a broad, human hook. Do not name the topic yet. Set the stage. (One exception: the misconception-first intro variant, described below, can name the everyday term for the topic, because the package is built around correcting the picture the reader already has of it.)
@@ -634,14 +690,68 @@ This should feel like a satisfying click. The reader's intuition confirmed, or g
 
 **Vary how you name the topic.** Do not default to _"Researchers call this [topic]"_ or _"Researchers describe this as [topic]."_ These become repetitive across packages. Mix the structure:
 
-- _"The term for this is <c:g>anchoring effect</c:g>, and it explains why the first number wins."_
-- _"In behavioral research, this pattern has a name: <c:g>the habit loop</c:g>."_
-- _"<c:g>Environment design</c:g> is the principle behind all three kitchens."_
-- _"What makes this work has a name. <c:g>The aggregation of marginal gains</c:g> describes how..."_
+- _"<c:g>The anchoring effect</c:g> is what makes the first number on the price tag quietly set the budget for every number that comes after."_
+- _"<c:g>The habit loop</c:g> is what turned the evening coffee into a trigger for the next three hours."_
+- _"<c:g>Environment design</c:g> is what kept each of the three kitchens winning without willpower."_
+- _"<c:g>The aggregation of marginal gains</c:g> is what turned a thousand one-percent choices into a new person inside a year."_
 
-The concept name can appear at the start, middle, or end of a sentence. The only rule: wrap the term in `<c:g>` and make sure the sentence says what the concept does, not just what it is called.
+The concept name can appear at the start, middle, or end of a sentence.
+
+**The reveal sentence must place the concept inside the course's topic, not just label it with a name.** A sentence like _"This effect is called <c:g>the visceral level</c:g>"_ or _"That wiring has a name: <c:g>the visceral level</c:g>"_ is too broad. It could sit in any psychology course, in any chapter, about any effect. It does not tell the reader how the visceral level fits into the specific thing THIS course is teaching, or why THIS package is about it. The moment of the reveal is the moment to connect the concept to the framework the whole course has been building. Label-only sentences waste that moment.
+
+The rule: **the sentence containing the green term must anchor the concept inside the course's framework** — the thread, the organizing idea, or the overall thing the course is teaching. Ideally, the same sentence also ties the concept to the Phase 2 scenes the reader just saw, but the course-framework anchor is the one that cannot be missing.
+
+What "course framework" means: the specific spine the course is built on. In a course about Emotional Design, the framework is _"three layers of how design reaches inside the person."_ In a course about habits, the framework might be _"the four parts of the habit loop"_ or _"the identity beneath the action."_ In a course about cognitive biases, the framework might be _"the shortcuts the mind uses when thinking feels expensive."_ Every reveal in the course connects the new concept back to that spine.
+
+> **Wrong:** _"This effect is called <c:g>the visceral level</c:g>."_
+> (label sentence, could appear in any psychology course, has no connection to what this course is teaching)
+>
+> **Correct:** _"<c:g>The visceral level</c:g> is the first layer of how design reaches inside the person. It is the wiring that turned the newborn's head toward the face card, before the baby had ever seen a face."_
+> (the green term is placed inside the course framework — three layers of how design reaches inside the person — and the next sentence ties it to the specific scene from Phase 2)
+
+> **Wrong:** _"In behavioral research, this pattern has a name: <c:g>the habit loop</c:g>."_
+> (pattern-and-name only, no connection to the course topic)
+>
+> **Correct:** _"<c:g>The habit loop</c:g> is the four-part cycle the whole course has been circling: the cue, the routine, the reward, and the craving. It is what turned the evening coffee into a trigger for the next three hours of scrolling."_
+> (the first sentence places the term inside the course's framework, the second ties it to the Phase 2 scene)
+
+> **Wrong:** _"Researchers call this <c:g>anchoring bias</c:g>."_
+> (label sentence, no connection to what the course is teaching about)
+>
+> **Correct:** _"<c:g>Anchoring bias</c:g> is the first shortcut the course has been circling, the mind reaching for the first number it heard and refusing to let go. It is what pulled every counter-offer the buyer made back toward the seller's first price."_
+> (the course's framework — "shortcuts the mind reaches for" — is the anchor, the Phase 2 scene is the second anchor)
+
+Two tests for the reveal sentence:
+
+1. **The substitution test.** Replace the green term with any other concept name from a completely different course. Does the sentence still fit? If yes, the sentence was too generic and has no connection to the course's topic. Rewrite it so the concept is placed inside this course's specific framework.
+2. **The framework test.** Read the reveal sentence in isolation. Can a reader who has never seen the package tell what the course is actually about? If yes, the sentence is doing its job of anchoring the concept inside the course topic. If no, the sentence is a label and must be rewritten.
 
 **Do not lean on the same attribution word twice.** If the Phase 2 stories already used _"researchers,"_ _"scientists,"_ _"a study,"_ or _"the experiment"_ to describe where the evidence came from, the topic-reveal sentence in Phase 4 should not open with the same word again. Reach back to what was actually shown, not the people who showed it. _"What kept showing up in those trials has a name: <c:g>...</c:g>"_ beats _"Researchers later called this <c:g>...</c:g>"_ when "researchers" already appeared three times in Phase 2. The reader notices the repetition before they notice the topic name, and the reveal loses its click.
+
+**Never break the immersion with classroom voice.** The reveal sentence in Phase 4 must not step out of the stories to announce what is about to happen. Phase 2 put the reader inside scenes (a kitchen, a museum, a beach). A meta sentence yanks the reader out of those scenes and into a classroom. The click is lost.
+
+How to do it:
+
+1. The reveal sentence keeps the same scene language as Phase 2. If Phase 2 was about a coffee cup and a museum vase, the reveal sentence still mentions the cup or the vase.
+2. The topic name lands INSIDE a sentence that is still doing the work of the scene. It does not arrive after a "now let me explain" lead-in.
+3. The narrator never refers to "us" or "we" as a teacher-and-student pair. (Humanity-wide "we" is fine.)
+4. Read the reveal sentence aloud right after the last Phase 2 sentence. If the tone shifts, the reveal failed. If the two sentences flow as one breath, the reveal works.
+
+Banned openers for the reveal sentence:
+
+- _"We have seen..."_, _"We just saw..."_, _"As we have just learned..."_
+- _"Now it is time to..."_, _"Now let us..."_, _"Now we will see..."_
+- _"Let us look at..."_, _"Let us name..."_, _"Let us turn to..."_
+- _"What all three stories have in common is..."_ (this is a checklist sentence, not a reveal)
+- Any sentence whose main verb is _"see," "look at," "examine,"_ or _"turn to"_ when the subject is the narrator-and-reader.
+
+> **Wrong:** _"We have seen three different scenes. Now it is time to name the pattern. Researchers call this <c:g>the aesthetic-usability effect</c:g>."_ (steps out of the stories twice, then uses the banned "researchers call this" formula)
+
+> **Correct:** _"The same quiet effect ran through the kitchen, the office, and the museum. <c:g>The aesthetic-usability effect</c:g> is the name for it, and it explains why the prettier machine kept winning."_ (the reveal stays inside the scenes and lets the topic name land)
+
+> **Wrong:** _"What all three stories have in common is that the choice happened in the body before the mind. This is called <c:g>the visceral level</c:g>."_ (checklist sentence followed by "this is" — both banned)
+
+> **Correct:** _"The child's hand, the museum visitor's eyes, the woman's fingers on the polished stone: all three were obeying <c:g>the visceral level</c:g> before any thought had time to arrive."_ (the scenes carry the reveal)
 
 **Do not mention the source book or its author anywhere in the course text.** The reader is here to learn a concept, not to be told which book it came from. Book titles and author names go only in the `@course` metadata fields (`title` and `author`), never in `@text`, consequences, explanations, or hints. _"Researchers call this identity-based habit change"_ is fine. _"James Clear calls this identity-based habit change"_ is not.
 

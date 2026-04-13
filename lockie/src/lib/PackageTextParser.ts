@@ -4,6 +4,12 @@
 // Packages separated by @package
 // Segments defined with @segment (title on line 1, symbol on line 2)
 //
+// Comments: any line whose first non-whitespace character is "#" is a
+// comment. Comment lines are stripped before parsing and never appear in
+// the output. Comments can sit anywhere in the file (between blocks,
+// inside blocks, between properties). Inline comments are NOT supported,
+// because "#" is also used in hex color values like "color: #6366f1".
+//
 // @text
 // Each line becomes a text segment.
 // Supports <c:r>red</c:r> and <c:g>green</c:g> markup.
@@ -51,6 +57,19 @@
 // Thinking point two
 
 import type { Swipe, Accelerator, Segment, Package } from "@/types/Course";
+
+// * Comment stripping
+
+// Removes full-line comments before any other parsing happens.
+// A line is a comment when its first non-whitespace character is "#".
+// Comments never reach the block splitter, so they cannot affect block
+// boundaries, property parsing, or text-segment output.
+function stripComments(input: string): string {
+  return input
+    .split("\n")
+    .filter((line) => !line.trimStart().startsWith("#"))
+    .join("\n");
+}
 
 // * Block splitting
 
@@ -340,7 +359,8 @@ function extractPackageMetadata(sectionText: string, fallbackTitle: string): Pac
 // * Main parser
 
 export function parsePackageText(input: string): Swipe[] {
-  const blocks = splitIntoBlocks(input);
+  const cleaned = stripComments(input);
+  const blocks = splitIntoBlocks(cleaned);
   const swipes: Swipe[] = [];
 
   for (const block of blocks) {
@@ -460,8 +480,10 @@ function parseSegmentBlock(text: string, segmentNumber: number, courseId: string
 }
 
 export function parseCourseText(input: string): Accelerator {
+  const cleaned = stripComments(input);
+
   // Strip @course header if present
-  const strippedInput = input.replace(/^@course\s*\n/, "");
+  const strippedInput = cleaned.replace(/^@course\s*\n/, "");
 
   const sections = strippedInput.split(/\n@package\n/);
 
@@ -627,6 +649,17 @@ export function parseCourseText(input: string): Accelerator {
 export const PACKAGE_TEXT_FORMAT_GUIDE = {
   extension: ".rlockie",
   blocks: [
+    {
+      name: "Comment",
+      tag: "#",
+      description:
+        "Any line whose first non-whitespace character is # is a comment. Comment lines are stripped before parsing and never appear in the output. Use them to leave notes for yourself or other writers, mark draft sections, or temporarily disable a swipe by prefixing every line with #. Inline comments are not supported because # is also used inside hex color values.",
+      example: `# This package still needs a stronger Phase 2 anchor.
+# TODO: rewrite the museum scene.
+
+@text
+A man walks into a museum.`,
+    },
     {
       name: "Course",
       tag: "@course",

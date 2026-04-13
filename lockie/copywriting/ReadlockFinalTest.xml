@@ -95,6 +95,13 @@
       <rule ref="guide: Section 5, Phase 4, No book or author">Zero mentions of source book or author in course text. Only in @course metadata.</rule>
       <rule ref="guide: Section 5, Phase 4, Topic naming">Topic naming varies across packages. Zero repetitive "Researchers call/describe this as..." formula.</rule>
       <rule ref="guide: Section 5, Phase 4, Attribution variation">Reveal sentence does not lean on the same attribution word that already appeared in Phase 2. If "researchers," "scientists," "study," or "experiment" was used in the stories, the reveal opens with a different construction.</rule>
+      <rule ref="guide: Section 5, Phase 4, No meta-narration">Zero meta-narration in the reveal. Banned openers: "We have seen...", "We just saw...", "As we have just learned...", "Now it is time to...", "Now let us...", "Now we will see...", "Let us look at...", "Let us name...", "Let us turn to...", "What all three stories have in common is...". Banned verbs as the main verb of the reveal sentence with narrator-and-reader as subject: see, look at, examine, turn to.</rule>
+      <rule ref="guide: Section 5, Phase 4, No meta-narration">The reveal sentence stays inside the same scene language as Phase 2. The topic name lands inside a sentence that is still doing the work of the scene (mentions the kitchen, the museum, the watch, etc.), not after a "now let me explain" lead-in.</rule>
+      <rule ref="guide: Section 5, Phase 4, No meta-narration">Read-aloud test: the reveal sentence flows directly from the last Phase 2 sentence with no tonal shift. If reading the two sentences in a row triggers an "and now..." classroom shift, the reveal failed.</rule>
+      <rule ref="guide: Section 5, Phase 4, Reveal places concept inside course framework">Zero label-only reveal sentences. "This effect is called X", "That wiring has a name: Y", "In research this is known as Z" all fail because they are too broad and have no connection to the course's specific framework.</rule>
+      <rule ref="guide: Section 5, Phase 4, Reveal places concept inside course framework">Every green-highlighted term sits inside a sentence that anchors the concept inside the course's specific framework (for Emotional Design: "three layers of how design reaches inside the person"; for habits: "the four parts of the habit loop"; for cognitive biases: "the shortcuts the mind reaches for"). The course-framework anchor cannot be missing.</rule>
+      <rule ref="guide: Section 5, Phase 4, Reveal places concept inside course framework">Substitution test: replace the green term with any concept name from a completely different course. If the sentence still fits, it was generic and must be rewritten.</rule>
+      <rule ref="guide: Section 5, Phase 4, Reveal places concept inside course framework">Framework test: read the reveal sentence in isolation. A reader who has never seen the package can tell what the course is actually about. If not, the sentence is a label and must be rewritten.</rule>
     </group>
 
     <group name="Color highlights" rlockie_field="c:g, c:r">
@@ -180,6 +187,10 @@
       <rule ref="guide: Section 2, Numbers as numerals">Every quantity larger than ~10 in digits, not words.</rule>
       <rule ref="guide: Section 2, US English format">US English number format. Comma thousands, period decimals. Years as plain 4-digit numerals. Decades as "the 1920s". Percentages use % symbol ("1%" not "1 percent"). Use the word only when % would look odd.</rule>
       <rule ref="guide: Section 2, Subjective claims">Zero subjective claims presented as universal truth.</rule>
+      <rule ref="guide: Section 2, Cognitive anchors">Every abstract concept in the package has ONE everyday anchor next to it (an object, scene, or moment from ordinary life that the reader has actually lived). Examples: snowflake-and-avalanche for compound effects, parking meter for anchoring bias, kitchen drawer for the behavioral level.</rule>
+      <rule ref="guide: Section 2, Cognitive anchors">One anchor per concept, never two. If two anchors appear for the same concept in one package, the first was too weak — replace it, do not stack.</rule>
+      <rule ref="guide: Section 2, Cognitive anchors">Retention test: after one read, can the concept be recalled by recalling the anchor? If no, the anchor failed.</rule>
+      <rule ref="guide: Section 2, Cognitive anchors">Zero abstract dictionary-entry sentences ("X describes how...", "Y is when..."). Every concept arrives wrapped around a concrete picture from daily life.</rule>
     </group>
 
     <group name="Word choice">
@@ -328,6 +339,24 @@
       <rule>Every @package has at least one content block.</rule>
       <rule>Title and optional "Free" flag come before any content declarations.</rule>
       <rule>First package of first segment has "Free" on its own line.</rule>
+      <rule ref="RlockieFormatGuide.xml, Section 8, Mandatory package structure comment">Every @package starts with a mandatory structure-comment line listing the swipe-type sequence of the package in order. Format: "# @text, @text, @text, @question, @text, @true_false, @reflect, @text". The comment goes immediately after the package title (and the "Free" line if present), and before the first content block. The comment list length equals the swipe count of the package. If the package uses an intro variant, the comment reflects it.</rule>
+    </group>
+
+    <group name="Package titles">
+      <rule ref="guide: Section 5, Package titles">Title length is 2 to 7 words. One-word titles allowed occasionally, eight-plus-word titles forbidden.</rule>
+      <rule ref="guide: Section 5, Package titles">Titles vary in shape across the segment. At most ONE "The X That Y" title per 5-package segment.</rule>
+      <rule ref="guide: Section 5, Package titles">No two consecutive packages share the same syntactic shape (different shape, not just different nouns).</rule>
+      <rule ref="guide: Section 5, Package titles">Title shapes used across the segment span multiple categories: question, open-ended fragment with three dots, short noun phrase, why/when statement, narrative beat, single concept fragment. Zero segments where every title is built from the same template.</rule>
+      <rule ref="guide: Section 5, Package titles">Titles hint at the topic but never name it.</rule>
+      <rule ref="guide: Section 5, Package titles">Zero subtitles, zero colons in titles ("Coffee Cups: A Study in Affordances" is wrong).</rule>
+      <rule ref="guide: Section 5, Package titles">Zero banned words in titles ("things", "stuff", banned verbs, banned adjectives stay out of titles too).</rule>
+      <rule ref="guide: Section 5, Package titles">Read-the-menu test: read the segment titles top to bottom. If they look like a list of variants of the same shape, the segment fails.</rule>
+    </group>
+
+    <group name="Comments">
+      <rule ref="RlockieFormatGuide.xml, Section 8, Comments">Comment lines (any line whose first non-whitespace character is "#") are stripped by the parser before any other parsing. Comments never appear in the output. Comment content does not count toward any length rule, sentence count, or swipe count.</rule>
+      <rule ref="RlockieFormatGuide.xml, Section 8, Comments">Inline comments are NOT supported. Only full-line comments (line starts with "#" after optional whitespace).</rule>
+      <rule ref="RlockieFormatGuide.xml, Section 8, Mandatory package structure comment">Every @package has the mandatory structure comment as its first non-blank line after the title and Free flag.</rule>
     </group>
 
     <group name="@text">

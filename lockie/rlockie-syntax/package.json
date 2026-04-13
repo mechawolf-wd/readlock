@@ -38,6 +38,13 @@
       "editor.tokenColorCustomizations": {
         "textMateRules": [
           {
+            "scope": "comment.line.number-sign.rlockie",
+            "settings": {
+              "foreground": "#9ca3af",
+              "fontStyle": "italic"
+            }
+          },
+          {
             "scope": "rlockie.declaration.course",
             "settings": {
               "foreground": "#ffffff",

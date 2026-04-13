@@ -4,6 +4,9 @@
   "scopeName": "source.rlockie",
   "patterns": [
     {
+      "include": "#line-comment"
+    },
+    {
       "include": "#course-declaration"
     },
     {
@@ -32,6 +35,14 @@
     }
   ],
   "repository": {
+    "line-comment": {
+      "patterns": [
+        {
+          "match": "^\\s*#.*$",
+          "name": "comment.line.number-sign.rlockie"
+        }
+      ]
+    },
     "course-declaration": {
       "patterns": [
         {

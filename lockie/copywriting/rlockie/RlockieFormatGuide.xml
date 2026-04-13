@@ -19,6 +19,7 @@
     <item id="5">@package</item>
     <item id="6">Content blocks: @text, @question, @true_false, @estimate, @quote, @pause, @reflect</item>
     <item id="7">Formatting rules</item>
+    <item id="8">Comments</item>
   </contents>
 
   <section id="1" name="Metadata writing rules">
@@ -334,6 +335,87 @@ hint: [Hint text]
     <rule id="4">No blank lines inside the body of @quote, @pause, or @estimate.</rule>
     <rule id="5">One blank line between the last content block and the next @package or @segment.</rule>
     <rule id="6">Properties (answer:, consequence:, correct_answers:, explanation:, hint:, true:, false:) are NOT declarations. They use "key: value" syntax with a colon and space.</rule>
+  </section>
+
+  <section id="8" name="Comments">
+    <description>The .rlockie format supports full-line comments. Comments are a writer-only feature: the parser strips them before any other parsing happens, so they never reach the reader and never affect block boundaries, properties, or text segments.</description>
+
+    <syntax>Any line whose first non-whitespace character is "#" is a comment.</syntax>
+
+    <template>
+# This is a comment. It will be stripped before parsing.
+# Use it for notes, TODOs, draft markers, or to temporarily disable a swipe.
+
+@text
+First line of text.
+    </template>
+
+    <rules>
+      <rule>A comment is recognised by its first non-whitespace character being "#". Leading whitespace before the "#" is allowed.</rule>
+      <rule>Comments are FULL-LINE only. Inline comments (text followed by "#" on the same line) are NOT supported, because "#" is also used inside hex color values like "color: #6366f1".</rule>
+      <rule>Comments can sit anywhere in the file: between blocks, inside blocks, between properties, even between an answer: line and its consequence: line. The parser strips them before block splitting.</rule>
+      <rule>To temporarily disable a swipe, prefix every line of the swipe (including the @declaration line) with "#".</rule>
+      <rule>Comments do NOT count toward any length rule, swipe count, or character budget. They are invisible to the parser and to ReadlockFinalTest.xml.</rule>
+      <rule>Comments are highlighted in the same muted grey (#9ca3af, italic) that property names (answer:, consequence:, hint:, explanation:) use, so comments sit quietly in the same visual register as format scaffolding rather than content.</rule>
+    </rules>
+
+    <example_use_cases>
+      <case>Marking a draft section: <code># DRAFT, needs a stronger anchor in Phase 2</code></case>
+      <case>Leaving a note for another writer: <code># Verify the 1990s ATM study citation before publishing</code></case>
+      <case>Temporarily disabling a swipe by prefixing every line with "#".</case>
+      <case>Explaining a non-obvious choice: <code># Using misconception-first intro here because the reader almost certainly believes the wrong picture</code></case>
+    </example_use_cases>
+
+    <mandatory_package_structure_comment>
+      <description>Every @package MUST start with a comment line that lists the swipe-type sequence of the package, in order. This is a writer-facing structure summary that makes the package shape visible at a glance before reading any content. The comment is required for every package, in every course.</description>
+
+      <syntax>The comment is a single line that begins with "#" and lists the swipe types (without leading "@") separated by commas, in the order they appear inside the package. The list includes EVERY swipe in the package: intro, stories, question, optional pause, reveal, optional estimate, true/false, optional reflect, outro.</syntax>
+
+      <placement>The comment goes IMMEDIATELY after the package title line (and after the "Free" line if the package is free), and BEFORE the first content block.</placement>
+
+      <template>
+@package
+The Pretty Machine That Worked Better
+Free
+# @text, @text, @text, @question, @text, @true_false, @text
+
+@text
+Two coffee makers sit on the same kitchen counter.
+...
+      </template>
+
+      <rules>
+        <rule>The comment is required, not optional. Every package has one.</rule>
+        <rule>The comment lists swipe types in the same order they appear in the package body.</rule>
+        <rule>Every swipe in the package appears in the list. The list length equals the swipe count.</rule>
+        <rule>Use the bare type name without the "@" prefix is allowed, but including "@" (as "# @text, @text, @question, ...") is the canonical form.</rule>
+        <rule>If the package uses an intro variant (skip-intro, quote intro, true/false intro, misconception-first), the structure comment reflects it. A quote intro starts the list with "@quote". A skip-intro package starts the list with "@text" (the first story).</rule>
+        <rule>The structure comment is NOT a substitute for the content. It is a writer-facing index. It is stripped by the parser before any other parsing, so it never reaches the reader.</rule>
+      </rules>
+
+      <examples>
+        <example label="Default spine">
+          <code># @text, @text, @text, @text, @question, @text, @true_false, @reflect, @text</code>
+          <description>Intro, three stories, question, reveal, true/false, reflect, outro.</description>
+        </example>
+        <example label="Quote intro, no reflect">
+          <code># @quote, @text, @text, @question, @text, @true_false, @text</code>
+          <description>Quote intro, two stories, question, reveal, true/false, outro. Phase 6 reflect skipped.</description>
+        </example>
+        <example label="True/false intro, Phase 5 empty">
+          <code># @true_false, @text, @text, @question, @text, @text</code>
+          <description>True/false intro replaces Phase 5. Two stories, question, reveal, outro. No Phase 5 true/false because the intro is the package's only one.</description>
+        </example>
+        <example label="Skip-intro package">
+          <code># @text, @text, @text, @question, @pause, @text, @true_false, @reflect, @text</code>
+          <description>Phase 1 intro skipped. Package opens directly at Phase 2 with three stories. Includes a pause before the reveal.</description>
+        </example>
+        <example label="Misconception-first intro">
+          <code># @text, @text, @text, @question, @text, @true_false, @text</code>
+          <description>Misconception-first intro looks like a normal @text intro in the structure comment. The misconception is signalled inside the swipe by the &lt;c:r&gt; markup, not by a different swipe type.</description>
+        </example>
+      </examples>
+    </mandatory_package_structure_comment>
   </section>
 
 </rlockie_format_guide>
