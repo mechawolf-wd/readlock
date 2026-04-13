@@ -1,0 +1,129 @@
+PORÓWNANIE: PRZYKŁADY GROKA vs. AKTUALNY PRZEWODNIK READLOCK
+
+Każdy punkt: zły przykład Groka, lepszy przykład Groka, jak faktycznie
+napisałby to przewodnik, krótki werdykt.
+
+================================================================================
+
+1. EMOCJE / STAWKA W SCENIE
+
+Grok "zły":
+  Mężczyzna siedzi przy stole. Patrzy na zegar. Sekundy mijają.
+
+Grok "lepszy":
+  Siedzi sam przy kuchennym stole. Zegar tyka. Każda sekunda wydaje się
+  ciężka, bo wciąż nie dotrzymał obietnicy, którą złożył swojej córce
+  rok temu.
+
+Przewodnik napisałby:
+  Siedzi przy kuchennym stole. Zegar tyka. Minęła już ta godzina, o której
+  miał zadzwonić na urodziny.
+
+Werdykt: Grok ma PÓŁ racji. Sceny potrzebują stawki — to luka.
+Ale "wydaje się ciężka" mówi czytelnikowi co czuć (zakazane), a córka
+i obietnica to sfabrykowana tragedia (zakazana). Stawka tak, sentyment nie.
+
+================================================================================
+
+2. IMMERSJA / META-NARRACJA PRZY PRZEJŚCIACH
+
+Grok "zły":
+  Widzieliśmy trzy historie. Teraz czas nazwać wzór.
+
+Grok "lepszy":
+  Ta sama ukryta siła pojawiła się w kuchni tamtego poranka, na spotkaniu
+  w biurze i w wyblakłym liście sprzed dziesięcioleci. Ukształtowała wybór,
+  zanim ktokolwiek to zauważył.
+
+Przewodnik napisałby:
+  To samo ciche pchnięcie przeszło przez kuchnię, spotkanie w biurze
+  i wyblakły list. Ukształtowało każdy wybór, zanim ktokolwiek to zauważył.
+
+Werdykt: Grok ma RACJĘ. "Widzieliśmy" + "teraz czas" to meta-narracja
+łamiąca immersję, a przewodnik nie zakazuje tego wprost. Prawdziwa luka.
+Lepszy przykład Groka jest prawie dobry, tylko za długi.
+
+================================================================================
+
+3. KOTWICA POZNAWCZA
+
+Grok "zły":
+  Proces obejmuje wiele powiązanych kroków, które tworzą rosnące rezultaty
+  w długich okresach czasu poprzez powtarzane małe działania.
+
+Grok "lepszy":
+  Pomyśl o śniegu na górze. Jeden płatek nic nie robi. Ale tysiące małych
+  płatków razem mogą wywołać lawinę. To samo dzieje się z drobnymi
+  codziennymi zmianami.
+
+Przewodnik napisałby:
+  Wyobraź sobie śnieg na górze. Jeden płatek nic nie robi. Tysiące płatków
+  razem mogą uruchomić lawinę. Drobne codzienne zmiany działają tak samo.
+
+Werdykt: Grok ma RACJĘ. To największa prawdziwa luka — przewodnik nie ma
+reguły "każda trudna koncepcja potrzebuje obrazu z życia czytelnika".
+Lepszy przykład Groka prawie przechodzi, tylko "thing" w ostatnim zdaniu
+jest zakazane.
+
+================================================================================
+
+4. WYRAFINOWANIE / BOGATSZY JĘZYK
+
+Grok "zły":
+  Idea jest ważna. Zmienia to, jak ludzie decydują. Wiele badań to pokazuje.
+
+Grok "lepszy":
+  Idea sięga głębiej, niż większość ludzi się spodziewa. Cicho zmienia
+  wybory w sposób, który wydaje się naturalny, nawet gdy nikt nie zauważa
+  zmiany.
+
+Przewodnik napisałby:
+  Idea sięga głębiej, niż większość ludzi się spodziewa. Cicho zmienia
+  wybory w sposób, którego nikt nie zauważa.
+
+Werdykt: Grok NIE MA RACJI. "Sięga głębiej", "cicho zmienia" to dokładnie
+te czasowniki z ciałem, które przewodnik już rekomenduje w Fazie 1.
+Grok myli "prosty" z "płaski" — to różne rzeczy. Brak luki.
+
+================================================================================
+
+5. SUCCESs / IDEE KTÓRE ZOSTAJĄ
+
+Grok "zły":
+  Ten błąd poznawczy wpływa na decyzje każdego dnia.
+
+Grok "lepszy":
+  Matka słyszy pierwszą cenę, którą podaje sprzedawca i nagle ta liczba
+  wydaje się sprawiedliwa, nawet gdy wie, że rzeczywista wartość jest
+  niższa. Ten mały moment kosztuje ją setki dolarów — i dzieje się to nam
+  wszystkim.
+
+Przewodnik napisałby:
+  Matka słyszy pierwszą cenę, którą podaje sprzedawca. Ta liczba staje się
+  środkiem jej myśli. Każda kolejna oferta dryfuje blisko pierwszej. Jedna
+  wypowiedziana liczba po cichu kosztuje ją setki, zanim wychodzi ze sklepu.
+
+Werdykt: Grok ma PÓŁ racji co do wiarygodności. Ale "lepszy" przykład
+łamie TRZY reguły naraz: "wydaje się sprawiedliwa" (mówi co czuć),
+pauza em (zakazana globalnie), "dzieje się to nam wszystkim" (wymuszone
+"my", zakazane). Najgorszy przykład na całej liście.
+
+================================================================================
+
+PODSUMOWANIE
+
+  Punkt 1 (emocje):           pół racji   — stawka tak, sentyment nie
+  Punkt 2 (immersja):         RACJA       — luka, dodać regułę
+  Punkt 3 (kotwica poznawcza): RACJA       — największa luka, dodać regułę
+  Punkt 4 (wyrafinowanie):    BŁĄD        — myli prosty z płaskim
+  Punkt 5 (SUCCESs):          pół racji   — recepta łamie 3 reguły
+
+Diagnozy Groka warto słuchać w 3/5 punktów. Recept Groka NIE kopiować —
+połowa z nich łamie reguły, które sam przewodnik wprost wymienia.
+
+Pięć poprawek wartych wprowadzenia do przewodnika:
+  1. Reguła "kotwica poznawcza" w Sekcji 2 (największa luka).
+  2. Reguła "stawka w scenach" w Fazie 2 (stawka ≠ sentyment).
+  3. Reguła "żadnej meta-narracji przy przejściach" w Fazie 4.
+  4. Awansować "prosty nie znaczy płaski" z Fazy 1 do Sekcji 2.
+  5. Jedno zdanie o narracyjnej wiarygodności w Sekcji 2.

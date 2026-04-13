@@ -46,9 +46,10 @@ Readlock is a mobile app where readers swipe through educational content one scr
     Read it completely before reading any other file. Absorb:
     - The voice (Veritasium/Kurzgesagt, not textbook/TED/LinkedIn).
     - The sentence length rule (~14 words, can go to 17-18 occasionally).
-    - The "we" not "you" rule (use "we" for shared human behavior, "you" only in Variant A).
+    - The "we" rule. "We" is only for humanity-wide observations ("we have always trusted what we can see"). Never use "you" to address the reader. For Variant A reader-immersion scenes, use a gerund or imperative ("Imagine standing in a kitchen..."), not "we" and not "you."
     - The banned words and AI sentence structures.
-    - The 6-phase package structure.
+    - The 6-phase package structure AND the variation rules: intro can be skipped, replaced with @quote, @true_false, or a misconception-first @text. Phase 3 can sometimes be skipped. @reflect is optional. The structure is a default, not a template — varying it across packages is the goal, not the exception.
+    - The no em dashes rule. Never use the em dash (—). Use a comma, period, colon, or parentheses instead.
     - The consequence, hint, and reflect point length rules.
     - The no-book-no-author rule.
     - The visual anchor rule for numbers.
@@ -96,10 +97,10 @@ Your job: produce one complete, valid .rlockie file that follows every rule in t
     <step id="1" name="Read the writing guide">
       Read ReadlockCopywritingGuide.md completely. This is the most important file. Pay attention especially to:
       - Section 1 (Identity): the Veritasium/Kurzgesagt voice.
-      - Section 2 (Writing Rules): sentence length (~14 words), word choice (no "things", no "stuff", no "like" as example-intro), B2 register, idiom and phrasal verb rules, metaphor rules, number format and visual anchors, no public-speaking tricks.
-      - Section 3 (Relationship): "we" not "you", no narrating the reader's inner life, invite never assert.
+      - Section 2 (Writing Rules): sentence length (~14 words), word choice (no "things", no "stuff", no "like" as example-intro), B2 register, idiom and phrasal verb rules, metaphor rules, number format and visual anchors, no public-speaking tricks, NO EM DASHES anywhere.
+      - Section 3 (Relationship): "we" only for humanity-wide observations, NEVER use "you" to address the reader, no narrating the reader's inner life, invite never assert.
       - Section 4 (Banned Patterns): every banned word and AI sentence structure.
-      - Section 5 (Package Flow): the 6-phase structure, consequence and hint rules, color highlights, @pause placement, transitions, final outro, length reference table.
+      - Section 5 (Package Flow): the 6-phase structure as a DEFAULT, plus the variation rules: intro can be skipped or replaced (quote, true/false, misconception-first), Phase 3 can be skipped, @reflect is optional, dialogue lines are allowed in some Phase 2 variants. Read "Other ways to start a package" carefully — using these variants is encouraged, not exceptional.
       - Section 6 (Factual Accuracy): textbook-canonical facts only, no fabrication.
     </step>
 
@@ -140,25 +141,44 @@ Your job: produce one complete, valid .rlockie file that follows every rule in t
     </step>
 
     <step id="7" name="Write each package through all phases">
-      For each package, follow this order:
+      The phase order below is the DEFAULT shape, not a rigid template. Variation across packages in a segment is the goal, not the exception. If the segment has 5 packages and they all use the exact same phase spine (intro → 3 stories → @question → reveal → @true_false → @reflect → outro), the segment is wrong. Different packages should use different intro variants, skip phases when the package arc does not need them, and vary which content blocks appear after the stories.
 
-      Phase 1, Intro: 1 @text swipe, 2 to 3 sentences (4 at most). Broad human hook. Do not name the topic. Rotate opener styles. Use "we" not "you."
+      Phase 1, Intro: 1 swipe, 2 to 4 sentences. The default is 1 @text swipe with a broad human hook that does not name the topic. Rotate opener styles across packages.
 
-      Phase 2, Stories / Narratives: 2 to 3 @text swipes, 5 to 7 sentences each. Pick the most suitable variant (A through G) for the concept being taught, not a random one. A scientific concept fits Variant E. A personal behavior fits Variant A or B. A pattern across different people fits Variant D. Match the variant to the content. Build toward a pattern the reader can sense before you name it. Stories create a question, not a conclusion. "Suppose" and "Imagine" are optional, scenes can start directly.
+      The intro can ALSO take any of these forms (use them often, not rarely — at least one or two per segment):
+      - **Skip the intro entirely** when the first story is strong enough to open the package directly.
+      - **Quote intro**: 1 @quote swipe with a real, verifiable quote. Never invented. Once per segment.
+      - **True/False intro**: 1 @true_false swipe. The statement must be visual, must not name the topic, and the package then has zero @true_false swipes in Phase 5 (the intro replaces Phase 5). Once per segment.
+      - **Misconception-first intro**: 1 @text swipe stating a wrong belief with the wrong part wrapped in <c:r>...</c:r>. CAN name the everyday term for the topic. Phase 2 must contradict the misconception. Once per segment.
 
-      Phase 3, Questions: 1 to 2 swipes using @question or @true_false, rarely 3. Questions test understanding, not recall. Answerable from what came before.
+      Phase 2, Stories / Narratives: 2 to 3 @text swipes, 5 to 7 sentences each. Pick the most suitable variant (A through G) for the concept being taught, not a random one. A scientific concept fits Variant E. A personal behavior fits Variant A or B. A pattern across different people fits Variant D. Match the variant to the content. Build toward a pattern the reader can sense before you name it. Stories create a question, not a conclusion. "Suppose" and "Imagine" are optional, scenes can start directly. Stories in variants A, B, C, D, and F can include a short line of dialogue when it brings the scene closer to the reader.
+
+      Phase 3, Questions: 1 to 2 swipes using @question or @true_false, rarely 3. Questions test understanding, not recall. Answerable from what came before. **Phase 3 can be skipped entirely** when the story phase already brings the reader to the realisation on its own. When skipped, the package goes from Phase 2 directly to Phase 4. Use the skip rarely, at most once per segment.
 
       Optional @pause: 0 or 1, after Phase 3, BEFORE Phase 4. One sentence. An interesting fact or reframing. Must not name or hint at the topic. Not "Did you know..." or "Fun fact:".
 
-      Phase 4, Topic Reveal: 1 to 2 @text swipes, 5 to 7 sentences each. Name the concept with green highlight. Vary how you introduce the topic name, do not always use "Researchers call this..." Do not mention the source book or author.
+      Phase 4, Topic Reveal: 1 to 2 @text swipes, 5 to 7 sentences each. Name the concept with green highlight. Vary how you introduce the topic name, do not always use "Researchers call this...". If Phase 2 already used "researchers," "scientists," "study," or "experiment" several times, the reveal sentence should not open with the same word. Do not mention the source book or author.
 
       Optional @estimate: 0 or 1, after Phase 4. Only if the topic has a numerical element.
 
-      Phase 5, True/False: 1 to 2 @true_false swipes. A statement the reader can catch as semi-obvious after a moment of thought.
+      Phase 5, True/False: 1 to 2 @true_false swipes. A statement the reader can catch as semi-obvious after a moment of thought. **If the package opened with a true/false intro, Phase 5 is empty for this package.** A package never has two @true_false swipes when one of them is the intro.
 
-      Phase 6, Reflect (optional): 0 or 1 @reflect swipe. 2 to 3 points, each 14 to 16 words, each with a concrete example after a colon. Skip when the package arc feels complete without it.
+      Phase 6, Reflect (optional): 0 or 1 @reflect swipe. 2 to 3 points, each 14 to 16 words, each with a concrete example after a colon. Skip when the package arc feels complete without it. Skipping @reflect in some packages of the segment is encouraged for variation.
 
       Package outro: 1 @text swipe, always the LAST swipe of every package. 2 to 3 sentences. Non-last packages close the thought and weave in a transition to the next package. Last package names the thread of the course and ends on an open question.
+    </step>
+
+    <step id="7b" name="Vary the structure across packages — MANDATORY">
+      A 5-package segment where every package follows intro → 3 stories → @question → reveal → @true_false → @reflect → outro is WRONG, even if every individual package passes the rules.
+
+      Concrete variation goals for a segment:
+      - At least one package uses an intro variant (skip, quote, true/false, or misconception-first), not a plain @text intro.
+      - Phase 3 alternates between @question and @true_false across packages, or skips Phase 3 in one package.
+      - @reflect appears in some packages and is skipped in others. Default is to include it only when the topic has a personal application.
+      - @pause appears in 1 or 2 packages of a 5-package segment, not in every one and not in zero.
+      - Phase 2 variants (A through G) are different across packages. The same variant should not appear twice in a row.
+
+      If you find yourself writing the same swipe sequence for the third package in a row, stop and ask which phase the package can drop, or which variant can replace the current one.
     </step>
 
     <step id="8" name="Vary transitions">
@@ -188,14 +208,16 @@ Your job: produce one complete, valid .rlockie file that follows every rule in t
     <step id="13" name="Final sentence-level scan">
       Read through the draft one more time and check:
       - Are sentences around 14 words? (Not 20, not 25.)
-      - Is "we" used for shared behavior, not "you"?
-      - Are there any em dashes?
+      - Is "we" used only for humanity-wide observations? Is "you" absent everywhere in course text?
+      - Are there any em dashes anywhere? (There should be zero.)
       - Are there any banned verbs, AI structures, or inflated assertions?
       - Are there any choppy sentence pairs that should be merged?
       - Does every number have a visual anchor?
       - Are consequences short (1 sentence default, ~20 words max)?
       - Are explanations 1-2 sentences, not paragraphs?
       - Does every package end with an outro @text as its last swipe?
+      - Look at the WHOLE segment side by side: do all packages use the same phase spine? If yes, vary at least one of them by skipping a phase or using an intro variant.
+      - Across the segment, are different Phase 2 variants used? Same variant should not appear twice in a row.
       - Run through ReadlockBlacklist.xml one more time. AI patterns creep back during editing.
       Fix any problem you find.
     </step>
@@ -208,7 +230,7 @@ Your job: produce one complete, valid .rlockie file that follows every rule in t
   <rule id="1" name="Sentence length">Target ~14 words per sentence. Can go to 17-18 occasionally. Not on every other line. 14 is the default.</rule>
   <rule id="2" name="Line length">Each line in @text is at most ~16 words total, whether it holds one or two sentences.</rule>
   <rule id="3" name="Sentences per line">One sentence per line is the default. Two allowed only when they read as one beat. Three on one line: never.</rule>
-  <rule id="4" name="We vs you">Use "we" for shared human behavior. Use "you" only in Variant A reader-immersion scenarios.</rule>
+  <rule id="4" name="We vs you">Use "we" only for humanity-wide observations ("we have always trusted what we can see"). Never use "you" to address the reader anywhere in course text. For Variant A reader-immersion scenes, use a gerund or imperative ("Imagine standing in a kitchen..."), not "we" and not "you."</rule>
   <rule id="5" name="No book or author names">No book titles or author names in @text, consequences, explanations, or hints. They go only in @course metadata.</rule>
   <rule id="6" name="Color highlights">Green marks the topic name. Red marks a wrong thing stated in the text. Both only inside @text. 1 to 2 highlights per package maximum. At most 1 highlight per @text swipe.</rule>
   <rule id="7" name="Consequences" rlockie_field="consequence:">1 sentence is the default, 2 occasional, 3 rare. Should not exceed ~20 words total. No verdict language ("Wrong.", "Incorrect."). Vary the approach across answers.</rule>
@@ -276,16 +298,20 @@ Your job: produce one complete, valid .rlockie file that follows every rule in t
   <rule id="15">Merge choppy pairs: "Goals end. Identities persist." should be one sentence, not two.</rule>
 
   <!-- Content rules -->
-  <rule id="16">Use "we" not "you" outside of Variant A.</rule>
+  <rule id="16">Never use "you" to address the reader anywhere in course text. "We" is only for humanity-wide observations ("we figure out most objects without reading the manual"). Variant A scenes use a gerund or imperative ("Imagine standing..."), not "we" or "you." This rule has no exceptions inside @text, @question, @true_false, @reflect, or any other course-facing block.</rule>
   <rule id="17">No book or author names in the course text. Only in @course metadata.</rule>
   <rule id="18">Every number has something the reader can picture next to it.</rule>
 
   <!-- Structure rules -->
   <rule id="19">Consequences: 1 sentence default, 2 occasional, 3 rare. Should not exceed ~20 words total. Explanations: 1-2 sentences max.</rule>
-  <rule id="20">Every package ends with a @text outro as its last swipe. @reflect is optional.</rule>
-  <rule id="21">Vary topic naming across packages. Do not always use "Researchers call/describe this as..."</rule>
+  <rule id="20">Every package ends with a @text outro as its last swipe. @reflect is optional and should be skipped in some packages of a segment, not added to every one.</rule>
+  <rule id="21">Vary topic naming across packages. Do not always use "Researchers call/describe this as..." If Phase 2 already used "researchers" or "study" several times, the reveal sentence does not open with the same word.</rule>
   <rule id="22">Vary transition phrasing. Do not repeat "The next package asks/looks at..." across packages.</rule>
-  <rule id="23">@pause goes after Phase 3 (questions), before Phase 4 (reveal). Must not name the topic.</rule>
+  <rule id="23">@pause goes after Phase 3 (questions), before Phase 4 (reveal). Must not name the topic. Use it in 1 or 2 packages per segment, not every one.</rule>
+  <rule id="24" critical="true">Structural variation across packages is mandatory. The default phase spine (intro → 3 stories → @question → reveal → @true_false → @reflect → outro) must NOT repeat in every package of a segment. At least one package per segment uses an intro variant (skip, quote, true/false, or misconception-first). At least one package skips @reflect. Phase 2 variants (A through G) differ across consecutive packages. A 5-package segment with five identical phase spines is wrong, even if every package passes the line-level rules.</rule>
+  <rule id="25">No em dashes anywhere in course text. The em dash (—) is banned in @text, @question, @true_false, @reflect, @pause, @quote, and every property field. Use a comma, period, colon, or parentheses instead.</rule>
+  <rule id="26">A true/false intro replaces Phase 5. If the package opens with a @true_false intro, Phase 5 is empty for that package. The package never has two @true_false swipes when one of them is the intro.</rule>
+  <rule id="27">A misconception-first intro CAN name the everyday term for the topic, with the wrong part wrapped in <c:r>...</c:r>. This is the only intro variant allowed to mention the topic in Phase 1.</rule>
 
   <!-- Blacklist enforcement -->
   <rule id="24">ReadlockBlacklist.xml is non-negotiable. Every item in it is banned. AI writing patterns creep in constantly and are invisible to the writer. After writing, go through every section of the blacklist and check every sentence. Any match means the sentence is rewritten from scratch. This is the most important check.</rule>

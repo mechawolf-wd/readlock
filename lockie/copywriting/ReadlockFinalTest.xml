@@ -25,8 +25,9 @@
     <rule ref="guide: Section 3, Never tell them what they think">Zero narration of the reader's inner life ("You think...", "You feel...", "You just processed...").</rule>
     <rule ref="guide: Section 3, Never tell them what they think">Zero identity assignments ("You have an incredible superpower", "You are not just X, you are Y").</rule>
     <rule ref="guide: Section 3, Respect their intelligence">Zero condescending explanations. Zero congratulating the reader for understanding something simple.</rule>
-    <rule ref="guide: Section 3, Use we in intros">"We" for shared human behavior. "You" only in Variant A reader-immersion scenarios.</rule>
-    <rule ref="guide: Section 3, Invite never assert">Invitations only ("Imagine...", "You may be asking..."), never assertions about what the reader did or is.</rule>
+    <rule ref="guide: Section 3, We rule">"We" appears ONLY in humanity-wide observations ("we figure out most objects without reading the manual"). Zero uses of "you" to address the reader anywhere in course text.</rule>
+    <rule ref="guide: Section 3, We rule">Reader-immersion scenes (Variant A) use a gerund or imperative ("Imagine standing..."), never "we" and never "you." Zero "we are standing in a kitchen" or similar fake-intimacy "we."</rule>
+    <rule ref="guide: Section 3, Invite never assert">Invitations only ("Imagine standing at..."), never assertions about what the reader did or is.</rule>
     <rule ref="guide: Section 3, Never assume who they are">Zero assumptions about job, age, education, or context.</rule>
   </block>
 
@@ -38,21 +39,33 @@
     </group>
 
     <group name="Phase 1, Intro">
-      <rule ref="guide: Section 5, Length reference">Exactly 1 intro @text swipe, 2 to 3 sentences (4 at most).</rule>
-      <rule ref="guide: Section 5, Phase 1">Opens with a broad human hook. Does not name the topic.</rule>
+      <rule ref="guide: Section 5, Length reference">Exactly 1 intro swipe (or zero, if the package uses the skip-intro variant), 2 to 4 sentences when @text. The swipe type can be @text (default), @quote, @true_false, OR a misconception-first @text. See "Other ways to start a package" in the guide.</rule>
+      <rule ref="guide: Section 5, Phase 1">Default intro opens with a broad human hook and does not name the topic. Exception: a misconception-first intro CAN name the everyday term for the topic, with the wrong part wrapped in &lt;c:r&gt;...&lt;/c:r&gt;.</rule>
       <rule ref="guide: Section 5, Phase 1">Opener style rotates across packages. Same type never repeated consecutively.</rule>
+      <rule ref="guide: Section 5, How to make the reader curious">Every line of the intro puts a picture in the reader's head. Visualisation is the test, not just word count.</rule>
+    </group>
+
+    <group name="Intro variants (when used)">
+      <rule ref="guide: Section 5, Other ways to start a package">Quote intro: 1 @quote swipe with a real, verifiable, attributed quote. Zero invented quotes. Once per segment maximum.</rule>
+      <rule ref="guide: Section 5, Other ways to start a package">True/false intro: 1 @true_false swipe. Statement is visual, does not name the topic, only "true" and "false" are options. Once per segment maximum. When used, the package has zero @true_false swipes in Phase 5 (the intro replaces it).</rule>
+      <rule ref="guide: Section 5, Other ways to start a package">Misconception-first intro: 1 @text swipe stating a wrong belief, with the wrong part wrapped in &lt;c:r&gt;...&lt;/c:r&gt;. Phase 2 must contradict the misconception. Once per segment maximum.</rule>
+      <rule ref="guide: Section 5, Other ways to start a package">Skip-intro: a package can begin directly at Phase 2 if the first story is strong enough. Once per segment maximum.</rule>
+      <rule ref="guide: Section 5, Other ways to start a package">No two intro variants in the same package. Pick one per package, never two.</rule>
     </group>
 
     <group name="Phase 2, Stories / Narratives">
       <rule ref="guide: Section 5, Length reference">2 to 3 consecutive @text swipes, each 5 to 7 sentences. Each sentence targets ~14 words (can overflow to 17-18).</rule>
-      <rule ref="guide: Section 5, Phase 2">Package follows one of 7 variants (A-G) or a mix. Swipe structure matches the variant.</rule>
+      <rule ref="guide: Section 5, Phase 2">Package follows one of 7 variants (A-G) or a mix. Swipe structure matches the variant. Same Phase 2 variant should not appear twice in a row across consecutive packages.</rule>
       <rule ref="guide: Section 5, Phase 2">Stories create a question, not a conclusion.</rule>
+      <rule ref="guide: Section 5, Phase 2 dialogue">Variants A, B, C, D, and F can include a short line of dialogue when it brings the scene closer to the reader. Variants E and G never include dialogue. One line per swipe, two at most. No back-and-forth scripts. Real, plain speech only.</rule>
     </group>
 
     <group name="Phase 3, Questions">
       <rule ref="guide: Section 5, Length reference">1 to 2 swipes using @question or @true_false, rarely 3. No @estimate here.</rule>
       <rule ref="guide: Section 5, Phase 3">Question tone is curious, not testing. Reader feels safe.</rule>
       <rule ref="guide: Section 5, Phase 3">Every question is answerable from what came before.</rule>
+      <rule ref="guide: Section 5, Phase 3 skip">Phase 3 can be skipped entirely when the story phase already brings the reader to the realisation. When skipped, the package goes from Phase 2 directly to Phase 4. Use this rarely, at most once per segment.</rule>
+      <rule ref="guide: Section 5, Phase 3">Across the segment, Phase 3 alternates between @question and @true_false in different packages. Same swipe type should not appear in every package.</rule>
     </group>
 
     <group name="Consequences" rlockie_field="consequence:">
@@ -81,6 +94,7 @@
       <rule ref="guide: Section 5, Phase 4">Names the pattern. Makes the connection explicit. Feels like a click, not a lecture.</rule>
       <rule ref="guide: Section 5, Phase 4, No book or author">Zero mentions of source book or author in course text. Only in @course metadata.</rule>
       <rule ref="guide: Section 5, Phase 4, Topic naming">Topic naming varies across packages. Zero repetitive "Researchers call/describe this as..." formula.</rule>
+      <rule ref="guide: Section 5, Phase 4, Attribution variation">Reveal sentence does not lean on the same attribution word that already appeared in Phase 2. If "researchers," "scientists," "study," or "experiment" was used in the stories, the reveal opens with a different construction.</rule>
     </group>
 
     <group name="Color highlights" rlockie_field="c:g, c:r">
@@ -109,6 +123,7 @@
       <rule ref="guide: Section 5, Phase 5">Statement is semi-obvious after a moment of thought. Not dumb, not a trap.</rule>
       <rule ref="RlockieFormatGuide.xml, @true_false">true: and false: texts are descriptive, not literally "True" and "False".</rule>
       <rule ref="guide: Section 5, Phase 3 rules apply">Consequences and hints follow the same rules as @question.</rule>
+      <rule ref="guide: Section 5, Phase 5, Intro replacement">If the package opened with a true/false intro, Phase 5 is empty for that package. The package never has two @true_false swipes when one of them is the intro.</rule>
     </group>
 
     <group name="Phase 6, Reflect (optional)" rlockie_field="@reflect">
@@ -116,6 +131,8 @@
       <rule ref="guide: Section 5, Length reference">When present: 2 or 3 points, each 14 to 16 words.</rule>
       <rule ref="guide: Section 5, Phase 6, concrete example">Each point contains one concrete example, introduced with a colon.</rule>
       <rule ref="guide: Section 5, Phase 6, no cliche">Zero platitudes, zero fridge-magnet wisdom.</rule>
+      <rule ref="guide: Section 3, We rule">Reflect points use no "you." Phrase as a noun phrase the reader can match to their own life ("A kitchen tool kept for its looks alone:..."), not a direct address.</rule>
+      <rule ref="guide: Section 5, Phase 6, structural variation">@reflect appears in some packages of a segment and is skipped in others. A segment where every package ends in @reflect is over-templated.</rule>
     </group>
 
     <group name="Package outro">
@@ -133,9 +150,18 @@
     </group>
 
     <group name="Package totals">
-      <rule ref="guide: Section 5, Length reference">Total swipes per package: 7 to 11.</rule>
-      <rule ref="guide: Section 5, Length reference">Phase order: 1 → 2 → 3 → (optional pause) → 4 → (optional estimate) → 5 → (optional reflect) → outro.</rule>
+      <rule ref="guide: Section 5, Length reference">Total swipes per package: 6 to 11. (6 is the floor when Phase 3 is skipped or @reflect is omitted.)</rule>
+      <rule ref="guide: Section 5, Length reference">Default phase order: 1 → 2 → 3 → (optional pause) → 4 → (optional estimate) → 5 → (optional reflect) → outro. Phases that can be skipped: 1 (skip-intro variant), 3 (when stories already land the realisation), 5 (when intro was @true_false), 6 (always optional).</rule>
       <rule ref="guide: Section 5, Free package">First package of first segment is marked Free.</rule>
+    </group>
+
+    <group name="Structural variation across the segment — MANDATORY">
+      <rule ref="guide: Section 5, Other ways to start a package">A segment is wrong if every package uses the exact same phase spine. Concretely: a 5-package segment where every package goes intro @text → 3 stories → @question → reveal → @true_false → @reflect → outro fails this check, even if every individual package passes every other rule.</rule>
+      <rule ref="guide: Section 5, Other ways to start a package">At least one package per segment uses an intro variant (skip-intro, quote, true/false, or misconception-first), not a plain @text intro.</rule>
+      <rule ref="guide: Section 5, Phase 3 skip">Across the segment, Phase 3 alternates between @question and @true_false, or skips Phase 3 in at least one package.</rule>
+      <rule ref="guide: Section 5, Phase 6">@reflect is included in some packages and skipped in others. A segment where every package ends in @reflect is over-templated.</rule>
+      <rule ref="guide: Section 5, @pause">@pause appears in 1 or 2 packages of a 5-package segment, not in zero and not in every one.</rule>
+      <rule ref="guide: Section 5, Phase 2">Phase 2 variant (A through G) differs across consecutive packages. Same variant should not appear twice in a row.</rule>
     </group>
 
     <group name="Course totals">
@@ -177,7 +203,8 @@
 
     <group name="Craft techniques">
       <rule ref="guide: Section 2, Difficult concepts">Plain reframes only when genuinely needed, not reflexively.</rule>
-      <rule ref="guide: Section 2, Read aloud">Draft reads naturally aloud. Zero stumbles, zero excessive dashes, zero fragments.</rule>
+      <rule ref="guide: Section 2, Read aloud">Draft reads naturally aloud. Zero stumbles, zero fragments.</rule>
+      <rule ref="guide: Section 2, No em dashes">Zero em dashes (—) anywhere in any swipe or property field. Use a comma, period, colon, or parentheses instead.</rule>
       <rule ref="guide: Section 2, No public-speaking tricks">Zero ascending lists of three, dramatic pauses, rhetorical Q-then-A, callback lines, "let that sink in."</rule>
     </group>
 
