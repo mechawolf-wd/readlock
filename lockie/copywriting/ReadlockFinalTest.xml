@@ -66,6 +66,7 @@
       <rule ref="guide: Section 5, Phase 3">Every question is answerable from what came before.</rule>
       <rule ref="guide: Section 5, Phase 3 skip">Phase 3 can be skipped entirely when the story phase already brings the reader to the realisation. When skipped, the package goes from Phase 2 directly to Phase 4. Use this rarely, at most once per segment.</rule>
       <rule ref="guide: Section 5, Phase 3">Across the segment, Phase 3 alternates between @question and @true_false in different packages. Same swipe type should not appear in every package.</rule>
+      <rule ref="guide: Section 5, Phase 3, Question openers">Question openers vary across packages. Zero segments where every @question starts with "What...". Rotate through "Why...", "How...", "Where...", or sentence-first openers. No two consecutive packages use the same interrogative.</rule>
     </group>
 
     <group name="Consequences" rlockie_field="consequence:">
@@ -184,7 +185,7 @@
       <rule ref="guide: Section 2, Ground every claim">Every claim anchored in history, evolution, or a scenario. Zero isolated facts.</rule>
       <rule ref="guide: Section 2, Visual anchors">Every number has a visual anchor the reader can picture.</rule>
       <rule ref="guide: Section 2, Universal anchors">Visual anchors are universal. Zero obviously local references ("Super Bowl", "when your grandparents were in school").</rule>
-      <rule ref="guide: Section 2, Numbers as numerals">Every quantity larger than ~10 in digits, not words.</rule>
+      <rule ref="guide: Section 2, Numbers as numerals">Every quantity 10 and above in digits, not words. Boundary inclusive: "10 years", never "ten years".</rule>
       <rule ref="guide: Section 2, US English format">US English number format. Comma thousands, period decimals. Years as plain 4-digit numerals. Decades as "the 1920s". Percentages use % symbol ("1%" not "1 percent"). Use the word only when % would look odd.</rule>
       <rule ref="guide: Section 2, Times of day">Times of day in digits ("10am", "3pm", or "10:00"), never spelled out ("ten", "three o'clock").</rule>
       <rule ref="guide: Section 2, Subjective claims">Zero subjective claims presented as universal truth.</rule>
@@ -199,8 +200,8 @@
       <rule ref="guide: Section 2, Cut redundant">Zero redundant words. "In order to" is "to". "Make a decision" is "decide".</rule>
       <rule ref="guide: Section 2, No things or stuff">Zero "things" or "stuff". Zero placeholder nouns ("factors", "aspects", "elements", "matters").</rule>
       <rule ref="guide: Section 2, No like as example-intro">Zero "like" as example-introducer. Use "such as", a colon, or a separate sentence.</rule>
-      <rule ref="guide: Section 2, Accessible language">Register between CEFR B2 and C1, closer to B2.</rule>
-      <rule ref="guide: Section 2, Idioms">Zero obscure idioms. Well-known B2 idioms at most once per package.</rule>
+      <rule ref="guide: Section 2, Accessible language">Register between CEFR B1 and B2, closer to B2. A B1 reader should understand every sentence without a dictionary.</rule>
+      <rule ref="guide: Section 2, Idioms">Zero obscure idioms. Well-known B1 idioms at most once per package.</rule>
       <rule ref="guide: Section 2, Phrasal verbs">Zero rare phrasal verbs unless plain version would genuinely weaken the sentence.</rule>
     </group>
 
@@ -208,7 +209,7 @@
       <rule ref="guide: Section 2, One idea per line">Every @text line is one thought.</rule>
       <rule ref="guide: Section 2, One sentence per line">One sentence per line default. Up to two when they land as one beat. Three: never.</rule>
       <rule ref="guide: Section 2, Line length">Every line targets ~16 words total. Single sentence targets ~14 (can go to 17-18 occasionally).</rule>
-      <rule ref="guide: Section 2, Metaphors">Every metaphor is clear, relatable, B2-readable. Metaphors that exist to sound clever are removed.</rule>
+      <rule ref="guide: Section 2, Metaphors">Every metaphor is clear, relatable, B1-readable. Metaphors that exist to sound clever are removed.</rule>
       <rule ref="guide: Section 2, No tangled metaphors">Zero tangled metaphors. No stacking. One per sentence maximum.</rule>
       <rule ref="guide: Section 4, List connector rule">Every list of 3+ items uses "or" or "and" before the last item. Zero drumrolls.</rule>
     </group>
@@ -357,7 +358,9 @@
     <group name="Comments">
       <rule ref="RlockieFormatGuide.xml, Section 8, Comments">Comment lines (any line whose first non-whitespace character is "#") are stripped by the parser before any other parsing. Comments never appear in the output. Comment content does not count toward any length rule, sentence count, or swipe count.</rule>
       <rule ref="RlockieFormatGuide.xml, Section 8, Comments">Inline comments are NOT supported. Only full-line comments (line starts with "#" after optional whitespace).</rule>
-      <rule ref="RlockieFormatGuide.xml, Section 8, Mandatory package structure comment">Every @package has the mandatory structure comment as its first non-blank line after the title and Free flag.</rule>
+      <rule ref="RlockieFormatGuide.xml, Section 8, Mandatory package structure comment, Line 1">Every @package has the swipe-sequence comment as its first non-blank line after the title and Free flag. Format: "# @type, @type, ..." listing every swipe in order.</rule>
+      <rule ref="RlockieFormatGuide.xml, Section 8, Mandatory package structure comment, Line 2">Every @package has the package summary comment directly under the swipe-sequence comment. Format: "# Variant X (N stories), [default|quote|true/false|misconception|skip] intro, teaching: [concept]". All three fields present, in this order, comma-separated.</rule>
+      <rule ref="RlockieFormatGuide.xml, Section 8, Mandatory package structure comment, Line 2">The variant letter (A through G) in line 2 matches the Phase 2 variant actually used. The story count matches the number of @text swipes in Phase 2. The intro type matches line 1. The concept is the term that carries the green &lt;c:g&gt; highlight in Phase 4.</rule>
     </group>
 
     <group name="@text">

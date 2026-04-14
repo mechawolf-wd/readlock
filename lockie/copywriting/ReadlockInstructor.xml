@@ -106,7 +106,7 @@ Your job: produce one complete, valid .rlockie file that follows every rule in t
     <step id="1" name="Read the writing guide">
       Read guides/readlock_course_copywriting_guide.md completely. This is the most important file. Pay attention especially to:
       - Section 1 (Identity): the Veritasium/Kurzgesagt voice.
-      - Section 2 (Writing Rules): sentence length (~14 words), word choice (no "things", no "stuff", no "like" as example-intro), B2 register, idiom and phrasal verb rules, metaphor rules, number format and visual anchors, no public-speaking tricks, NO EM DASHES anywhere.
+      - Section 2 (Writing Rules): sentence length (~14 words), word choice (no "things", no "stuff", no "like" as example-intro), B1-B2 register, idiom and phrasal verb rules, metaphor rules, number format and visual anchors, no public-speaking tricks, NO EM DASHES anywhere.
       - Section 3 (Relationship): "we" only for humanity-wide observations, NEVER use "you" to address the reader, no narrating the reader's inner life, invite never assert.
       - Section 4 (Banned Patterns): every banned word and AI sentence structure.
       - Section 5 (Package Flow): the 6-phase structure as a DEFAULT, plus the variation rules: intro can be skipped or replaced (quote, true/false, misconception-first), Phase 3 can be skipped, @reflect is optional, dialogue lines are allowed in some Phase 2 variants. Read "Other ways to start a package" carefully — using these variants is encouraged, not exceptional.
@@ -209,20 +209,41 @@ Your job: produce one complete, valid .rlockie file that follows every rule in t
       Add the word "Free" on its own line after the package title in the first package of the first segment.
     </step>
 
-    <step id="10b" name="Add the mandatory package structure comment">
-      Every @package MUST start with a comment line that lists the swipe-type sequence of the whole package, in order. The comment goes immediately after the package title (and after the "Free" line if present), and BEFORE the first content block. The comment is required for every package, in every course.
+    <step id="10b" name="Add the mandatory package structure comment (two lines)">
+      Every @package MUST start with TWO comment lines, in this order. Both go immediately after the package title (and after the "Free" line if present), and BEFORE the first content block. Both are required for every package, in every course.
 
-      Format: a single line beginning with "#" listing every swipe type in order, separated by commas, with the "@" prefix. Example: # @text, @text, @text, @question, @text, @true_false, @reflect, @text
+      LINE 1: the swipe-type sequence.
+      A single line beginning with "#" listing every swipe type in order, separated by commas, with the "@" prefix.
+      Example: # @text, @text, @text, @question, @text, @true_false, @reflect, @text
 
-      The list reflects the actual structure of the package. If the package uses an intro variant, the comment shows it: a quote intro starts with "# @quote, ...", a true/false intro starts with "# @true_false, ...", a skip-intro package starts directly with the first story swipe type. If a phase is skipped, it does not appear in the comment. If a @pause is included, it appears in its position.
+      The list reflects the actual structure of the package. If the package uses an intro variant, the comment shows it: a quote intro starts with "# @quote, ...", a true/false intro starts with "# @true_false, ...", a skip-intro package starts directly with the first story swipe type. If a phase is skipped, it does not appear in the comment. If a @pause is included, it appears in its position. The list length equals the swipe count of the package.
 
-      Examples:
-      - Default spine: # @text, @text, @text, @text, @question, @text, @true_false, @reflect, @text
-      - Quote intro, no reflect: # @quote, @text, @text, @question, @text, @true_false, @text
-      - True/false intro (Phase 5 empty): # @true_false, @text, @text, @question, @text, @text
-      - Skip-intro: # @text, @text, @text, @question, @pause, @text, @true_false, @reflect, @text
+      LINE 2: the package summary.
+      A single line beginning with "#" with three comma-separated fields in this exact order:
+      1. Phase 2 variant letter + story count in parentheses: "Variant A (3 stories)", "Variant E (2 stories)".
+      2. Intro type: "default intro", "quote intro", "true/false intro", "misconception intro", or "skip intro".
+      3. "teaching: " followed by the concept name (the term that will carry the green &lt;c:g&gt; highlight in Phase 4).
 
-      The structure comment is stripped by the parser before any other parsing, so it never reaches the reader. It is a writer-facing index that makes the package shape visible at a glance. The comment line count equals the swipe count of the package.
+      Example: # Variant C (3 stories), default intro, teaching: monopoly
+
+      Full two-line examples:
+      - Default spine, Variant C:
+        # @text, @text, @text, @text, @question, @text, @true_false, @reflect, @text
+        # Variant C (3 stories), default intro, teaching: the habit loop
+      - Quote intro, Variant A:
+        # @quote, @text, @text, @question, @text, @true_false, @text
+        # Variant A (2 stories), quote intro, teaching: the anchoring effect
+      - True/false intro, Variant E, Phase 5 empty:
+        # @true_false, @text, @text, @question, @text, @text
+        # Variant E (2 stories), true/false intro, teaching: the power law
+      - Skip-intro, Variant D:
+        # @text, @text, @text, @question, @pause, @text, @true_false, @reflect, @text
+        # Variant D (3 stories), skip intro, teaching: definite optimism
+      - Misconception-first, Variant B:
+        # @text, @text, @text, @question, @text, @true_false, @text
+        # Variant B (2 stories), misconception intro, teaching: the visceral level
+
+      Both comment lines are stripped by the parser before any other parsing, so they never reach the reader. They are a writer-facing index that makes the package shape AND the package's creative choices visible at a glance. Both lines are required. A package missing either line is an error.
     </step>
 
   </phase>
@@ -269,7 +290,7 @@ Your job: produce one complete, valid .rlockie file that follows every rule in t
   <rule id="8" name="Hints" rlockie_field="hint:">Exactly 1 sentence, at most 14 words. Points at the topic, not at the answer.</rule>
   <rule id="9" name="Explanations" rlockie_field="explanation:">1 to 2 sentences. Not a paragraph. Each sentence ~14 words.</rule>
   <rule id="10" name="Reflect points" rlockie_field="@reflect">14 to 16 words each, with a concrete example after a colon. @reflect is optional, not every package needs one.</rule>
-  <rule id="11" name="Visual anchors">Every number needs something the reader can picture next to it. Numbers over 10 in digits. US format (comma thousands, period decimals). Years as plain 4-digit numerals. Percentages use the % symbol ("1%" not "1 percent"). Use the word only when % would look odd. Times of day use digits: "10am", "3pm", or "10:00", never "ten" or "three o'clock".</rule>
+  <rule id="11" name="Visual anchors">Every number needs something the reader can picture next to it. Numbers 10 and above in digits, always ("10 years", "12 seconds", "70,000"), never spelled out. The boundary is inclusive: 10 is digits, not "ten". US format (comma thousands, period decimals). Years as plain 4-digit numerals. Percentages use the % symbol ("1%" not "1 percent"). Use the word only when % would look odd. Times of day use digits: "10am", "3pm", or "10:00", never "ten" or "three o'clock".</rule>
   <rule id="11b" name="Cognitive anchors">Every abstract idea needs an anchor from everyday life. One ordinary object, scene, or moment that the new idea fits inside. Snowflake-and-avalanche for compound effects. Parking meter for anchoring bias. Kitchen drawer for the behavioral level. ONE anchor per concept, never two. If two anchors appear for the same concept, the first was too weak — replace it. If no anchor comes to mind, the package is not ready to write.</rule>
   <rule id="12" name="No em dashes">Rewrite as two sentences or use a comma, period, or colon.</rule>
   <rule id="13" name="No things/stuff/like">No "things", "stuff", or "like" as example-introducer. Use "such as", a colon, or a separate sentence.</rule>
@@ -277,13 +298,14 @@ Your job: produce one complete, valid .rlockie file that follows every rule in t
   <rule id="15" name="No AI sentence structures">not-A-actually-B (including split into two sentences like "X did not fail. It just has not Y."), mirror sentences, colon-punchlines, false profundity closers, emotional imperatives, rhetorical-Q-then-A, imagine-if chains, bookend callbacks, starting with "This.", inflated assertions ("The math is real.", "That number is not a metaphor.").</rule>
   <rule id="16" name="No triple lists without connector">No triple-adjective lists. No triple-noun drumrolls without "or"/"and". Every list of 3+ items needs a connector before the last item.</rule>
   <rule id="17" name="No slang or filler">No slang, no filler, no internet-speak, no forced familiarity.</rule>
-  <rule id="18" name="B2 register">CEFR B2 to C1 (closer to B2). No obscure idioms. No rare phrasal verbs unless the plain version would genuinely weaken the sentence.</rule>
+  <rule id="18" name="B1-B2 register">CEFR B1 to B2 (closer to B2). No obscure idioms. No rare phrasal verbs unless the plain version would genuinely weaken the sentence. Test: a B1 reader should understand the sentence without reaching for a dictionary.</rule>
   <rule id="19" name="Facts must be canonical">All facts must be textbook-canonical or hedged. Do not fabricate statistics, studies, quotes, or names.</rule>
   <rule id="20" name="Max 3 consecutive @text">No more than 3 consecutive @text swipes in a row (not counting the Phase 1 intro).</rule>
   <rule id="21" name="No public-speaking tricks">No ascending lists of three, no dramatic pauses, no callback lines, no "let that sink in."</rule>
   <rule id="22" name="Merge choppy sentence pairs">Two short sentences that form one thought should be one sentence. "Goals end. Identities persist." is "Goals end, but identities persist."</rule>
   <rule id="23" name="Vary topic naming">Do not default to "Researchers call/describe this as..." Vary how the concept name is introduced across packages.</rule>
   <rule id="24" name="Vary transitions">Do not repeat "The next package asks/looks at..." across packages. Weave transitions into the closing thought with different structures.</rule>
+  <rule id="24a" name="Vary question openers">Do not start every @question in a segment with "What...". Rotate through "Why...", "How...", "Where...", and sentence-first constructions ("In each of the three stories, where does..."). No two consecutive packages open with the same interrogative.</rule>
   <rule id="25" name="Package outro">Every package ends with a @text outro as its last swipe. 2 to 3 sentences. This is mandatory for every package, not just the last one.</rule>
 </rules>
 
@@ -310,8 +332,8 @@ Your job: produce one complete, valid .rlockie file that follows every rule in t
 <critical_rules_reminder summary="RESTATED — the rules most often broken. This is the last thing you read before generating. Check every one of these before returning your output.">
 
   <!-- Language level and register -->
-  <rule id="1">Write for B2 English, closer to B2 than C1. If a sentence needs a dictionary, rewrite it simpler.</rule>
-  <rule id="2">No obscure idioms. Only well-known ones a B2 class would teach, and at most one per package.</rule>
+  <rule id="1">Write for B1 to B2 English, closer to B2. If a B1 reader would need a dictionary, rewrite it simpler.</rule>
+  <rule id="2">No obscure idioms. Only well-known ones a B1 class would teach, and at most one per package.</rule>
   <rule id="3">No rare phrasal verbs ("put up with", "pan out", "chalk up to", "wind up", "bring about"). Use the plain verb.</rule>
 
   <!-- AI writing patterns -->

@@ -131,11 +131,11 @@ When in doubt, split.
 > **Wrong:** _"There are many things to consider."_
 > **Correct:** _"There are three reasons this matters."_ (name them)
 
-**Write for someone who learned English in school but it is not their first language.** The target is between CEFR B2 and C1, closer to B2. The writing should feel clear, calm, and trustworthy, but not stiff or formal. No slang, no filler, no texting shortcuts.
+**Write for someone who learned English in school but it is not their first language.** The target is between CEFR B1 and B2, closer to B2. The writing should feel clear, calm, and trustworthy, but not stiff or formal. No slang, no filler, no texting shortcuts.
 
-**Use idioms only when they are well-known and the plain version would be clunkier.** Most idioms require the reader to already know the English metaphor. A B2 reader often does not. Default to plain language. Idioms are allowed when all three of these are true:
+**Use idioms only when they are well-known and the plain version would be clunkier.** Most idioms require the reader to already know the English metaphor. A B1 reader often does not. Default to plain language. Idioms are allowed when all three of these are true:
 
-1. A B2 English class would teach it (_"once in a while," "on the other hand," "for the most part"_).
+1. A B1 English class would teach it (_"once in a while," "on the other hand," "for the most part"_).
 2. The plain version would be noticeably longer or clunkier.
 3. Only one idiom per sentence, and no more than one per swipe.
 
@@ -147,7 +147,7 @@ Obscure idioms are never allowed. _"Kick the can down the road," "bite the bulle
 > **Wrong:** _"The number had already moved the goalposts before he stepped up to kick."_
 > **Correct:** _"The number had already changed what he thought was a reasonable offer."_
 
-**Phrasal verbs: same rule.** Common ones a B2 reader knows (_"give up," "find out," "end up," "turn into," "pick up"_) are fine. Rare ones (_"put up with," "wind up," "pan out," "chalk up to," "bring about"_) should be swapped for a plain verb unless the plain version would genuinely weaken the sentence:
+**Phrasal verbs: same rule.** Common ones a B1 reader knows (_"give up," "find out," "end up," "turn into," "pick up"_) are fine. Rare ones (_"put up with," "wind up," "pan out," "chalk up to," "bring about"_) should be swapped for a plain verb unless the plain version would genuinely weaken the sentence:
 
 - _"put up with"_ → "accept," "tolerate"
 - _"pan out"_ → "work," "succeed"
@@ -198,7 +198,7 @@ The raw number can appear as long as the picture is doing the real work. _"70,00
 
 **Keep picture references universal.** The reader could be from any country. Do not overthink this, but avoid obviously local things. _"When dinosaurs ruled the Earth"_ works everywhere. _"Before humans had writing"_ works everywhere. _"When your grandparents were in school"_ does not, because some readers' grandparents were not in school. _"Around the time of the Super Bowl"_ does not, because most of the world does not watch it. When unsure, pick a different picture.
 
-**Write numbers as digits, not words.** Any number larger than about 10 should be in digits. _"70,000 years ago"_ not _"seventy thousand years ago."_ Digits are language-independent and faster to read.
+**Write numbers as digits, not words.** Any number 10 or above is in digits, always. _"10 years," "12 seconds," "70,000 years ago"_ — never _"ten years," "twelve seconds," "seventy thousand years ago."_ Digits are language-independent and faster to read. The boundary is inclusive: 10 itself is digits, not _"ten."_
 
 > **Correct:** _"Roughly 70,000 years ago, long before any city existed, something changed."_
 > **Wrong:** _"Roughly seventy thousand years ago, something changed."_
@@ -248,7 +248,7 @@ If the package teaches a concept and no anchor comes to mind, stop. The package 
 
 ### Metaphors
 
-**Metaphors must be clear and easy to understand.** A metaphor is allowed when it helps the reader understand something new and a B2 reader would get it without stopping to translate. If the metaphor exists to sound clever, remove it. If the sentence works without the metaphor, remove it. If you keep it, make sure it refers to something the reader has actually seen or experienced.
+**Metaphors must be clear and easy to understand.** A metaphor is allowed when it helps the reader understand something new and a B1 reader would get it without stopping to translate. If the metaphor exists to sound clever, remove it. If the sentence works without the metaphor, remove it. If you keep it, make sure it refers to something the reader has actually seen or experienced.
 
 **Do not stack metaphors.** One metaphor per sentence, maximum. Two metaphors in one sentence is always confusing.
 
@@ -264,7 +264,7 @@ If the package teaches a concept and no anchor comes to mind, stop. The package 
 Metaphor rules:
 
 1. One per sentence, maximum.
-2. A B2 reader gets it immediately.
+2. A B1 reader gets it immediately.
 3. If the literal version is the same length, use the literal version.
 4. Never use a metaphor to sound wise. Use one to explain.
 
@@ -657,6 +657,8 @@ These test understanding, not recall. They work because the reader has been thin
 **Questions should feel curious, not like a test.** The reader should feel safe. Every question should be answerable from what came before. Do not require knowledge the course has not provided.
 
 Do not write questions that punish the reader. The tone is collaborative. The narrator and the reader are thinking together. The narrator just happens to already know the answer.
+
+**Vary question openers across packages.** Do not start every `@question` in a segment with _"What..."_. Rotate through _"Why..."_, _"How..."_, _"Where..."_, and sentence-first constructions (_"In each of the three stories, where does..."_). No two consecutive packages should open their question with the same interrogative. If a segment has three or more packages with questions, at least two different openers must appear.
 
 **Sometimes Phase 3 can be skipped completely.** If the story phase already brings the reader to the answer on its own, asking a question feels like going backwards. When that happens, the package jumps from Phase 2 straight to Phase 4 (topic reveal). Use this rarely. At most once per segment. Only do it when the package really does not need the reader to pick an answer first. If you are not sure, keep the question.
 

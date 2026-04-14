@@ -16,6 +16,7 @@ TLF
 Before the Mind Catches Up
 Free
 # @text, @text, @text, @question, @pause, @text, @true_false, @text
+# Variant E (2 stories), default intro, teaching: the visceral level
 
 @text
 Some objects in a shop catch the eye before the price tag has been read.
@@ -87,6 +88,7 @@ A second layer wakes up later, when the eye gives way to the hand.
 @package
 What the Hand Learns Next
 # @text, @text, @text, @question, @text, @true_false, @reflect, @text
+# Variant B (2 stories), misconception intro, teaching: the behavioral level
 
 @text
 Most people assume the favourite kitchen tool is <c:r>the one that looked best in the shop</c:r>.
@@ -158,6 +160,7 @@ But there is a third layer of how design touches feeling, and it lives somewhere
 @package
 More Than the Object Itself
 # @true_false, @text, @text, @question, @text, @reflect, @text
+# Variant D (2 stories), true/false intro, teaching: the reflective level
 
 @true_false
 A pair of running shoes that no longer fits will usually be thrown away within the year.

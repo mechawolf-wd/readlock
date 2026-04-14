@@ -367,17 +367,35 @@ First line of text.
     </example_use_cases>
 
     <mandatory_package_structure_comment>
-      <description>Every @package MUST start with a comment line that lists the swipe-type sequence of the package, in order. This is a writer-facing structure summary that makes the package shape visible at a glance before reading any content. The comment is required for every package, in every course.</description>
+      <description>Every @package MUST start with TWO comment lines. The first lists the swipe-type sequence; the second summarises the package's creative choices (Phase 2 variant, intro type, concept taught). Together they give a writer-facing index that makes both the shape AND the intent of the package visible at a glance before reading any content. Both comments are required for every package, in every course.</description>
 
-      <syntax>The comment is a single line that begins with "#" and lists the swipe types (without leading "@") separated by commas, in the order they appear inside the package. The list includes EVERY swipe in the package: intro, stories, question, optional pause, reveal, optional estimate, true/false, optional reflect, outro.</syntax>
+      <placement>Both comment lines go IMMEDIATELY after the package title line (and after the "Free" line if the package is free), and BEFORE the first content block. Line 1 (swipe sequence) goes first, then line 2 (package summary) directly underneath.</placement>
 
-      <placement>The comment goes IMMEDIATELY after the package title line (and after the "Free" line if the package is free), and BEFORE the first content block.</placement>
+      <line name="1" label="Swipe sequence">
+        <syntax>A single line that begins with "#" and lists the swipe types (with the "@" prefix) separated by commas, in the order they appear inside the package. The list includes EVERY swipe: intro, stories, question, optional pause, reveal, optional estimate, true/false, optional reflect, outro.</syntax>
+        <rules>
+          <rule>The list lists swipe types in the same order they appear in the package body.</rule>
+          <rule>Every swipe in the package appears in the list. The list length equals the swipe count.</rule>
+          <rule>If the package uses an intro variant (skip-intro, quote intro, true/false intro, misconception-first), the swipe list reflects it. A quote intro starts with "@quote". A skip-intro package starts with "@text" (the first story).</rule>
+        </rules>
+      </line>
+
+      <line name="2" label="Package summary">
+        <syntax>A single line that begins with "#" and contains three comma-separated fields in this exact order: (1) Phase 2 variant letter with story count in parentheses, (2) intro type, (3) "teaching: " followed by the concept name.</syntax>
+        <rules>
+          <rule>Field 1 format: "Variant X (N stories)" where X is A through G and N is the number of @text swipes in Phase 2 (2 or 3).</rule>
+          <rule>Field 2 values: "default intro" | "quote intro" | "true/false intro" | "misconception intro" | "skip intro". Exactly one of these.</rule>
+          <rule>Field 3 format: "teaching: [concept name]" where the concept is the term that carries the green &lt;c:g&gt; highlight in Phase 4. Lowercase, no article, no quotes.</rule>
+          <rule>Fields are separated by a comma and a single space. No em dashes, no semicolons.</rule>
+        </rules>
+      </line>
 
       <template>
 @package
 The Pretty Machine That Worked Better
 Free
 # @text, @text, @text, @question, @text, @true_false, @text
+# Variant C (2 stories), default intro, teaching: the aesthetic-usability effect
 
 @text
 Two coffee makers sit on the same kitchen counter.
@@ -385,34 +403,36 @@ Two coffee makers sit on the same kitchen counter.
       </template>
 
       <rules>
-        <rule>The comment is required, not optional. Every package has one.</rule>
-        <rule>The comment lists swipe types in the same order they appear in the package body.</rule>
-        <rule>Every swipe in the package appears in the list. The list length equals the swipe count.</rule>
-        <rule>Use the bare type name without the "@" prefix is allowed, but including "@" (as "# @text, @text, @question, ...") is the canonical form.</rule>
-        <rule>If the package uses an intro variant (skip-intro, quote intro, true/false intro, misconception-first), the structure comment reflects it. A quote intro starts the list with "@quote". A skip-intro package starts the list with "@text" (the first story).</rule>
-        <rule>The structure comment is NOT a substitute for the content. It is a writer-facing index. It is stripped by the parser before any other parsing, so it never reaches the reader.</rule>
+        <rule>Both comment lines are required, not optional. Every package has both.</rule>
+        <rule>The two comments are stripped by the parser before any other parsing, so they never reach the reader.</rule>
+        <rule>A package missing either comment line is an error.</rule>
       </rules>
 
       <examples>
-        <example label="Default spine">
-          <code># @text, @text, @text, @text, @question, @text, @true_false, @reflect, @text</code>
-          <description>Intro, three stories, question, reveal, true/false, reflect, outro.</description>
+        <example label="Default spine, Variant C">
+          <code># @text, @text, @text, @text, @question, @text, @true_false, @reflect, @text
+# Variant C (3 stories), default intro, teaching: the habit loop</code>
+          <description>Intro, three stories, question, reveal, true/false, reflect, outro. Phase 2 variant C (one extended case built across three swipes).</description>
         </example>
-        <example label="Quote intro, no reflect">
-          <code># @quote, @text, @text, @question, @text, @true_false, @text</code>
-          <description>Quote intro, two stories, question, reveal, true/false, outro. Phase 6 reflect skipped.</description>
+        <example label="Quote intro, Variant A">
+          <code># @quote, @text, @text, @question, @text, @true_false, @text
+# Variant A (2 stories), quote intro, teaching: the anchoring effect</code>
+          <description>Quote intro, two reader-immersion stories, question, reveal, true/false, outro. Phase 6 reflect skipped.</description>
         </example>
-        <example label="True/false intro, Phase 5 empty">
-          <code># @true_false, @text, @text, @question, @text, @text</code>
-          <description>True/false intro replaces Phase 5. Two stories, question, reveal, outro. No Phase 5 true/false because the intro is the package's only one.</description>
+        <example label="True/false intro, Variant E, Phase 5 empty">
+          <code># @true_false, @text, @text, @question, @text, @text
+# Variant E (2 stories), true/false intro, teaching: the power law</code>
+          <description>True/false intro replaces Phase 5. Two experiment/findings stories, question, reveal, outro.</description>
         </example>
-        <example label="Skip-intro package">
-          <code># @text, @text, @text, @question, @pause, @text, @true_false, @reflect, @text</code>
-          <description>Phase 1 intro skipped. Package opens directly at Phase 2 with three stories. Includes a pause before the reveal.</description>
+        <example label="Skip-intro, Variant D">
+          <code># @text, @text, @text, @question, @pause, @text, @true_false, @reflect, @text
+# Variant D (3 stories), skip intro, teaching: definite optimism</code>
+          <description>Phase 1 intro skipped. Package opens directly at Phase 2 with three scenes showing the same pattern. Pause before the reveal.</description>
         </example>
-        <example label="Misconception-first intro">
-          <code># @text, @text, @text, @question, @text, @true_false, @text</code>
-          <description>Misconception-first intro looks like a normal @text intro in the structure comment. The misconception is signalled inside the swipe by the &lt;c:r&gt; markup, not by a different swipe type.</description>
+        <example label="Misconception-first, Variant B">
+          <code># @text, @text, @text, @question, @text, @true_false, @text
+# Variant B (2 stories), misconception intro, teaching: the visceral level</code>
+          <description>Misconception-first intro looks like a normal @text intro in line 1. The misconception is signalled inside the swipe by the &lt;c:r&gt; markup, and line 2 names it.</description>
         </example>
       </examples>
     </mandatory_package_structure_comment>
