@@ -186,6 +186,7 @@
       <rule ref="guide: Section 2, Universal anchors">Visual anchors are universal. Zero obviously local references ("Super Bowl", "when your grandparents were in school").</rule>
       <rule ref="guide: Section 2, Numbers as numerals">Every quantity larger than ~10 in digits, not words.</rule>
       <rule ref="guide: Section 2, US English format">US English number format. Comma thousands, period decimals. Years as plain 4-digit numerals. Decades as "the 1920s". Percentages use % symbol ("1%" not "1 percent"). Use the word only when % would look odd.</rule>
+      <rule ref="guide: Section 2, Times of day">Times of day in digits ("10am", "3pm", or "10:00"), never spelled out ("ten", "three o'clock").</rule>
       <rule ref="guide: Section 2, Subjective claims">Zero subjective claims presented as universal truth.</rule>
       <rule ref="guide: Section 2, Cognitive anchors">Every abstract concept in the package has ONE everyday anchor next to it (an object, scene, or moment from ordinary life that the reader has actually lived). Examples: snowflake-and-avalanche for compound effects, parking meter for anchoring bias, kitchen drawer for the behavioral level.</rule>
       <rule ref="guide: Section 2, Cognitive anchors">One anchor per concept, never two. If two anchors appear for the same concept in one package, the first was too weak — replace it, do not stack.</rule>

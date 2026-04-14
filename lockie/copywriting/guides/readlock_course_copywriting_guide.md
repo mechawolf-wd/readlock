@@ -220,6 +220,8 @@ Small numbers that read naturally as words (_"one," "two," "three"_) can stay as
 
 Years are plain digits with no comma: _"1969," "1789," "170."_ Decades: _"the 1920s,"_ not _"the nineteen-twenties."_
 
+**Times of day use digits**, with am/pm (_"10am," "3pm"_) or 24-hour (_"10:00," "15:30"_). Never _"ten,"_ _"three o'clock,"_ or _"half past two."_
+
 **Do not state opinions as facts.** _"The eye has already formed an opinion about the entire screen"_ as settled fact is overreach. For broad claims about human behavior, say _"Research suggests..."_ instead.
 
 **Every abstract idea needs an anchor from everyday life.** This is the same rule as "every number needs a picture next to it," but for ideas instead of numbers. The reader forgets abstract words within a day. The reader keeps abstract words that sit next to an everyday object they already know.
