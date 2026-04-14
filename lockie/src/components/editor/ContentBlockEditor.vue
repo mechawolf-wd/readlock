@@ -241,6 +241,26 @@ function toggleCorrectAnswer(optionIndex: number) {
     return
   }
 
+  const entityType = (props.block as any)['entity-type']
+  const isSingleAnswer =
+    entityType === 'single-choice-question' ||
+    entityType === 'true-false-question'
+
+  // Single-choice and true/false: selecting an option REPLACES the current correct answer.
+  // Clicking the already-correct option leaves it as-is (there must always be exactly one).
+  if (isSingleAnswer) {
+    const currentCorrect = (props.block as any)['correct-answer-indices'][0]
+    const alreadyCorrect = currentCorrect === optionIndex
+
+    if (alreadyCorrect) {
+      return
+    }
+
+    ;(props.block as any)['correct-answer-indices'] = [optionIndex]
+    return
+  }
+
+  // Multi-answer fallback: toggle additively.
   const indices: number[] = (props.block as any)['correct-answer-indices']
   const currentPosition = indices.indexOf(optionIndex)
   const isCurrentlyCorrect = currentPosition !== -1

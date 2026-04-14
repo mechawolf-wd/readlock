@@ -158,6 +158,15 @@ Obscure idioms are never allowed. _"Kick the can down the road," "bite the bulle
 
 One idiom or rare phrasal verb per package at most. Zero is fine. More than one starts to read as slang.
 
+**Avoid rare or made-up hyphenated words unless the plain word really does not fit.** Words like _"half-second," "split-second," "mid-thought," "near-miss," "half-heartbeat"_ sound clever but are harder to read. A simple word is usually better:
+
+- _"half-second"_ → "instant," "moment," "a single beat"
+- _"split-second"_ → "instant," "moment"
+- _"mid-thought"_ → "while still thinking"
+- _"near-miss"_ → "almost a mistake"
+
+Use the compound only when it carries a meaning the plain word would lose. Default to the plain word.
+
 ### Claims and evidence
 
 **Anchor every claim.** Do not state a fact alone. Attach it to history, a scenario, or a reason so the reader understands WHY it is true, not just THAT it is true.
@@ -508,6 +517,7 @@ Rules:
 5. **No subtitles, no colons.** _"Coffee Cups: A Study in Affordances"_ is a textbook chapter, not a Readlock package.
 6. **Title length: 2 to 7 words.** One-word titles work occasionally. Eight or more words read as full sentences and the menu UI cannot fit them.
 7. **No banned words in titles.** "Things," "stuff," banned verbs, banned adjectives all stay out of titles too.
+8. **Numbers in titles use digits, not words.** This applies to segment titles AND package titles, and it overrides the "small numbers can stay as words" rule from the number-format section. In titles, digits pop in the menu UI, read faster, and give the eye something to anchor on. _"3 Layers of Feeling"_ not _"Three Layers of Feeling."_ _"2 Minutes Before Thought"_ not _"Two Minutes Before Thought."_ The only exception is when the number is part of a fixed idiom where the word form is the idiom (_"On Second Thought"_ stays as a word because "2nd Thought" is not the idiom).
 
 > **Wrong (segment with five "The X That Y" titles):**
 > _"The Pretty Machine That Worked Better,"_ _"The Half-Second Before Thought,"_ _"The Knife That Knew Her Hand,"_ _"The Watch That Was More Than a Watch,"_ _"The Shoes That Refused to Leave."_ (four out of five share the same shape — this is a pattern, not a set of titles)
@@ -697,34 +707,45 @@ This should feel like a satisfying click. The reader's intuition confirmed, or g
 
 The concept name can appear at the start, middle, or end of a sentence.
 
-**The reveal sentence must place the concept inside the course's topic, not just label it with a name.** A sentence like _"This effect is called <c:g>the visceral level</c:g>"_ or _"That wiring has a name: <c:g>the visceral level</c:g>"_ is too broad. It could sit in any psychology course, in any chapter, about any effect. It does not tell the reader how the visceral level fits into the specific thing THIS course is teaching, or why THIS package is about it. The moment of the reveal is the moment to connect the concept to the framework the whole course has been building. Label-only sentences waste that moment.
+**The reveal sentence must connect the concept to the main idea of the whole course, not just name it.** A sentence like _"This effect is called <c:g>the visceral level</c:g>"_ is too general. It could appear in any course, in any chapter, about any effect. It does not tell the reader what THIS course is actually about, or why THIS package is teaching this concept. The reveal is the one moment to connect the concept to the main idea the whole course has been building. Label-only sentences waste that moment.
 
-The rule: **the sentence containing the green term must anchor the concept inside the course's framework** — the thread, the organizing idea, or the overall thing the course is teaching. Ideally, the same sentence also ties the concept to the Phase 2 scenes the reader just saw, but the course-framework anchor is the one that cannot be missing.
+**Every course has one main idea.** Find it before writing the reveal. The green term must connect back to it.
 
-What "course framework" means: the specific spine the course is built on. In a course about Emotional Design, the framework is _"three layers of how design reaches inside the person."_ In a course about habits, the framework might be _"the four parts of the habit loop"_ or _"the identity beneath the action."_ In a course about cognitive biases, the framework might be _"the shortcuts the mind uses when thinking feels expensive."_ Every reveal in the course connects the new concept back to that spine.
+Examples of a course's main idea:
+
+- **A course on Emotional Design** → _"three layers of how design reaches inside the person"_
+- **A course on habits** → _"the four parts of the habit loop"_ or _"the identity beneath the action"_
+- **A course on cognitive biases** → _"the shortcuts the mind reaches for when thinking feels hard"_
+
+**How to write the reveal sentence:**
+
+1. Pick the main idea of the whole course.
+2. Write a sentence that says where the new concept sits inside that main idea.
+3. In the next sentence, tie the concept to the specific scenes from Phase 2.
+4. The green highlight wraps the concept name inside the first sentence.
 
 > **Wrong:** _"This effect is called <c:g>the visceral level</c:g>."_
-> (label sentence, could appear in any psychology course, has no connection to what this course is teaching)
+> (says nothing about the main idea of the course, could appear in any course)
 >
 > **Correct:** _"<c:g>The visceral level</c:g> is the first layer of how design reaches inside the person. It is the wiring that turned the newborn's head toward the face card, before the baby had ever seen a face."_
-> (the green term is placed inside the course framework — three layers of how design reaches inside the person — and the next sentence ties it to the specific scene from Phase 2)
+> (the first sentence connects the concept to the main idea: three layers of how design reaches inside the person. The second sentence ties the concept to the Phase 2 story.)
 
 > **Wrong:** _"In behavioral research, this pattern has a name: <c:g>the habit loop</c:g>."_
-> (pattern-and-name only, no connection to the course topic)
+> (just a label, says nothing about the main idea of the course)
 >
-> **Correct:** _"<c:g>The habit loop</c:g> is the four-part cycle the whole course has been circling: the cue, the routine, the reward, and the craving. It is what turned the evening coffee into a trigger for the next three hours of scrolling."_
-> (the first sentence places the term inside the course's framework, the second ties it to the Phase 2 scene)
+> **Correct:** _"<c:g>The habit loop</c:g> is the four-part cycle the course has been circling: the cue, the routine, the reward, and the craving. It is what turned the evening coffee into a trigger for three hours of scrolling."_
+> (first sentence connects to the main idea. Second sentence ties to the Phase 2 scene.)
 
 > **Wrong:** _"Researchers call this <c:g>anchoring bias</c:g>."_
-> (label sentence, no connection to what the course is teaching about)
+> (just a label)
 >
-> **Correct:** _"<c:g>Anchoring bias</c:g> is the first shortcut the course has been circling, the mind reaching for the first number it heard and refusing to let go. It is what pulled every counter-offer the buyer made back toward the seller's first price."_
-> (the course's framework — "shortcuts the mind reaches for" — is the anchor, the Phase 2 scene is the second anchor)
+> **Correct:** _"<c:g>Anchoring bias</c:g> is one of the shortcuts the mind reaches for, the first number it heard refusing to let go. It pulled every counter-offer the buyer made back toward the seller's first price."_
+> (first sentence connects to the main idea. Second sentence ties to the Phase 2 scene.)
 
-Two tests for the reveal sentence:
+Two quick tests:
 
-1. **The substitution test.** Replace the green term with any other concept name from a completely different course. Does the sentence still fit? If yes, the sentence was too generic and has no connection to the course's topic. Rewrite it so the concept is placed inside this course's specific framework.
-2. **The framework test.** Read the reveal sentence in isolation. Can a reader who has never seen the package tell what the course is actually about? If yes, the sentence is doing its job of anchoring the concept inside the course topic. If no, the sentence is a label and must be rewritten.
+1. **Swap test.** Replace the green term with a concept name from a completely different course. Does the sentence still fit? If yes, the sentence was too general. Rewrite it so it fits only THIS course.
+2. **Main-idea test.** Read the reveal sentence alone, with no other context. Can a reader guess what the whole course is about? If yes, the sentence is working. If no, the sentence is just a label and must be rewritten.
 
 **Do not lean on the same attribution word twice.** If the Phase 2 stories already used _"researchers,"_ _"scientists,"_ _"a study,"_ or _"the experiment"_ to describe where the evidence came from, the topic-reveal sentence in Phase 4 should not open with the same word again. Reach back to what was actually shown, not the people who showed it. _"What kept showing up in those trials has a name: <c:g>...</c:g>"_ beats _"Researchers later called this <c:g>...</c:g>"_ when "researchers" already appeared three times in Phase 2. The reader notices the repetition before they notice the topic name, and the reveal loses its click.
 

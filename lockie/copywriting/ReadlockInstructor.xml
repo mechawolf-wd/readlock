@@ -40,7 +40,7 @@ Readlock is a mobile app where readers swipe through educational content one scr
 
 <reference_files>
 
-  <file priority="1" name="ReadlockCopywritingGuide.md" load_order="FIRST — read this before anything else">
+  <file priority="1" name="guides/readlock_course_copywriting_guide.md" load_order="FIRST — read this before anything else">
     This is the most important file. It contains every writing rule: tone, register, sentence length, word choice, banned patterns, phase structure (Phases 1-6), consequence and hint rules, reflect point rules, color highlights, visual anchors, number format, factual accuracy, and self-check tests. This file is the authority on WHAT to write. If anything in any other file contradicts this one, this file wins.
 
     Read it completely before reading any other file. Absorb:
@@ -56,16 +56,24 @@ Readlock is a mobile app where readers swipe through educational content one scr
     - The no meta-narration rule for Phase 4: the topic-reveal sentence never steps out of the stories to announce itself ("we have seen three stories", "now it is time to name the pattern", "let us look at"). The reveal stays inside the scene language of Phase 2.
   </file>
 
-  <file priority="2" name="RlockieFormatGuide.xml" load_order="SECOND">
+  <file priority="2" name="format-guide/RlockieFormatGuide.xml" load_order="SECOND">
     The .rlockie file format. What blocks exist (@course, @segment, @package, @text, @question, @true_false, @estimate, @quote, @pause, @reflect), what fields each block needs, and how to format them. This file is the authority on HOW to structure the output file.
   </file>
 
-  <file priority="3" name="ReadlockBlacklist.xml" load_order="THIRD — this file must be followed strictly">
+  <file priority="3" name="blacklist/ReadlockBlacklist.xml" load_order="THIRD — this file must be followed strictly">
     A searchable list of every banned word, phrase, opener, closer, and sentence structure. This file is non-negotiable. AI writing patterns creep in constantly. Every single item in this file is banned, no exceptions, no "just this once." After writing, search your entire draft against every section of this list. Any match means the sentence is rewritten from scratch, not patched.
   </file>
 
   <file priority="4" name="ReadlockFinalTest.xml" load_order="FOURTH — use this after writing, not before">
     Every rule from the guide as pass/fail checkboxes. Do not read this before writing. Read it after writing and use it to check your draft. Fix any failure before returning.
+  </file>
+
+  <file priority="5" name="golden-example/emotional_design.rlockie" load_order="LAST — reference only, NOT a template">
+    One finished course that passes the guide. Use it only to calibrate the voice level, how sentences sit on the page, how consequences and explanations sound in practice, and how highlights land inside a sentence.
+
+    CRITICAL: this is ONE example of ONE course on ONE topic. It is NOT a template. Do not copy its phase spine, its intro choice, its reveal phrasing, its topic (three-layer framework), its subject matter (design), or its specific scenes (knives, watches, mugs). Every new course makes its own structural choices based on what the topic needs. If the draft you produce feels anything like emotional_design.rlockie in shape, rhythm, or scene selection, you are mimicking instead of writing and the draft is wrong.
+
+    The guide is the authority. This file is only a sanity check for what "passing the guide" looks like in a finished piece.
   </file>
 
 </reference_files>
@@ -96,7 +104,7 @@ Your job: produce one complete, valid .rlockie file that follows every rule in t
   <phase name="A — Preparation (before writing a single word)">
 
     <step id="1" name="Read the writing guide">
-      Read ReadlockCopywritingGuide.md completely. This is the most important file. Pay attention especially to:
+      Read guides/readlock_course_copywriting_guide.md completely. This is the most important file. Pay attention especially to:
       - Section 1 (Identity): the Veritasium/Kurzgesagt voice.
       - Section 2 (Writing Rules): sentence length (~14 words), word choice (no "things", no "stuff", no "like" as example-intro), B2 register, idiom and phrasal verb rules, metaphor rules, number format and visual anchors, no public-speaking tricks, NO EM DASHES anywhere.
       - Section 3 (Relationship): "we" only for humanity-wide observations, NEVER use "you" to address the reader, no narrating the reader's inner life, invite never assert.
@@ -106,40 +114,19 @@ Your job: produce one complete, valid .rlockie file that follows every rule in t
     </step>
 
     <step id="2" name="Read the format guide">
-      Read RlockieFormatGuide.xml. Learn what a valid .rlockie file looks like: the @course metadata fields, @segment structure, @package structure, and every content block.
+      Read format-guide/RlockieFormatGuide.xml. Learn what a valid .rlockie file looks like: the @course metadata fields, @segment structure, @package structure, and every content block.
     </step>
 
     <step id="3" name="Read the blacklist">
-      Read ReadlockBlacklist.xml. You will check against this after writing. Load every banned word, opener, closer, and structural pattern.
+      Read blacklist/ReadlockBlacklist.xml. You will check against this after writing. Load every banned word, opener, closer, and structural pattern.
     </step>
 
     <step id="4" name="Read the user's prompt">
       Identify the topic, the source type (book, topic, or article), any structure the user specified (segments, packages), and any specific constraints.
     </step>
 
-    <step id="4b" name="If the source is a book — roughly 50/50 fresh examples and book examples">
-      When the prompt names a book as the source, aim for roughly 50/50 between FRESH examples and examples from the book. The decision is made per-scene, not per-course.
-
-      The principle: the course teaches the same CONCEPTS as the book. How each concept is illustrated is a per-scene judgment call. Sometimes the book's example is the clearest way to teach the idea. Sometimes a fresh scene can do the job just as well or better. Use the one that teaches more clearly.
-
-      Decision rule for each package:
-      1. Pick the concept (from the book's framework).
-      2. Ask: can a fresh everyday scene, easily reached for, teach this concept just as well? (A coffee cup, a stuck door, a kitchen drawer, a market stall, a closet — things the reader already lives with.)
-      3. If yes — use the fresh scene. It will feel discovered rather than borrowed, and the reader will carry the anchor further.
-      4. If no — the book's example is probably the clearest and the course should use it, reworded in Readlock's voice.
-      5. Never force a fresh example when the book's example is genuinely the strongest. A weak fresh scene is worse than a well-rewritten book scene.
-
-      What a "fresh" scene looks like: an invented character in an ordinary situation that fits the concept (a woman with two knives, a man who keeps his father's watch, a child reaching for the roundest apple). The character and situation are invented. The concept they illustrate is the book's.
-
-      What counts as "using the book's example": drawing on the same core case study the book uses (a famous product, a named designer's work, a documented incident the book builds the chapter around). When the course uses a book example, it must be REWORDED in Readlock's voice, not paraphrased line by line. The scene is retold, not copied.
-
-      Hard rules that always apply, in BOTH directions:
-      - No book title or author name anywhere in the course text. Ever. That rule is independent of this one.
-      - No long verbatim quotes from the book. If a book example is used, the scene is retold in fresh sentences.
-      - Technical terms and framework names from the book DO appear (visceral level, anchoring effect, compound effects). Those are the concepts being taught, and the green &lt;c:g&gt; highlight is for them.
-      - Textbook-canonical experiments (Milgram, Stanford marshmallow, Tractinsky ATM aesthetics) are always fine to reference, because they belong to the whole field and not just to this book.
-
-      A good rhythm for a 3 to 5 package segment: one or two packages use fresh scenes, one or two packages retell book examples in Readlock's voice, and the split is driven by which choice teaches each specific concept best.
+    <step id="4b" name="If the source is a book">
+      If the prompt names a book as the source, open the &lt;conditional_rules source="book"&gt; block further down. Those rules apply only to book-sourced courses and override nothing in the guide.
     </step>
 
     <step id="5" name="Plan the structure">
@@ -148,7 +135,7 @@ Your job: produce one complete, valid .rlockie file that follows every rule in t
       - How many packages per segment (3 to 5 maximum).
       - What each package will teach (one concept per package).
       - Which Phase 2 variant (A through G) fits each package best.
-      - For a book-sourced course: for EACH package, decide whether a fresh scene or the book's own example teaches the concept better. Aim for roughly 50/50 across the segment. If a good fresh scene comes to mind easily, use it. If the book's example is the strongest way to teach the idea, retell that example in Readlock's voice. Never force a fresh example when a weak one is the result.
+      - For a book-sourced course: also apply the &lt;conditional_rules source="book"&gt; block when deciding per-package whether to use a fresh scene or retell a book example.
       If the user specified the structure, use theirs. If not, decide yourself.
       Do not write yet. Plan first.
     </step>
@@ -186,7 +173,7 @@ Your job: produce one complete, valid .rlockie file that follows every rule in t
 
       Phase 4, Topic Reveal: 1 to 2 @text swipes, 5 to 7 sentences each. Name the concept with green highlight. Vary how you introduce the topic name, do not always use "Researchers call this...". If Phase 2 already used "researchers," "scientists," "study," or "experiment" several times, the reveal sentence should not open with the same word. Do not mention the source book or author. NEVER step out of the stories to announce the reveal: ban "we have seen three stories", "now it is time to", "let us look at", "what all three stories have in common is". The reveal sentence stays inside the same scene language as Phase 2 and lets the topic name land inside a sentence that is still doing the work of the scene.
 
-      CRITICAL for Phase 4: the reveal sentence must place the concept inside the COURSE'S FRAMEWORK, not just label it with a name. Label-only sentences like "This effect is called X", "That wiring has a name: X", "In research this is known as Y" are BANNED because they are too broad — they could appear in any course about any effect, and they do not tell the reader how the concept fits into what THIS course is teaching. The sentence containing the green term must anchor the concept inside the course's specific framework (for a course on Emotional Design, that framework is "three layers of how design reaches inside the person"; for a course on habits, it might be "the four parts of the habit loop"). Ideally, the same sentence (or the next one) also ties the concept to the Phase 2 scenes. But the course-framework anchor cannot be missing. Two tests: (1) Substitution test: replace the green term with any concept from a different course — does the sentence still fit? If yes, it is too generic. (2) Framework test: read the reveal sentence in isolation — can a reader who has never seen the package tell what the course is actually about? If yes, the sentence is anchored to the course topic. If no, it is a label and must be rewritten.
+      CRITICAL for Phase 4: the reveal sentence must connect the concept to the main idea of the whole course, not just name it. Label-only sentences like "This effect is called X" or "This has a name: Y" are BANNED. They are too general. They could appear in any course about any effect. They do not tell the reader what THIS course is about. Every course has one main idea. For Emotional Design, the main idea is "three layers of how design reaches inside the person". For a course on habits, it might be "the four parts of the habit loop". For a course on cognitive biases, it might be "the shortcuts the mind reaches for when thinking feels hard". The sentence with the green term must connect the concept to this main idea. The next sentence should tie the concept to the Phase 2 scenes. Two tests. Swap test: replace the green term with any concept from a different course. If the sentence still fits, it is too general and must be rewritten. Main-idea test: read the reveal sentence alone. Can the reader tell what the course is about? If no, the sentence is a label and must be rewritten.
 
       Optional @estimate: 0 or 1, after Phase 4. Only if the topic has a numerical element.
 
@@ -243,7 +230,7 @@ Your job: produce one complete, valid .rlockie file that follows every rule in t
   <phase name="C — Checking (after writing, before returning)">
 
     <step id="11" name="Check against the blacklist — MOST IMPORTANT CHECK">
-      Open ReadlockBlacklist.xml. Go through every section, every group, every item. Search your entire draft for any match: banned word, opener, closer, verb, adjective, noun, filler phrase, structural pattern, inflated assertion, split correction, or punctuation tell. Check every sentence you wrote, not just the ones that feel suspicious. AI writing patterns are invisible to the writer and obvious to the reader. If you find a match, rewrite the sentence from scratch. Do not swap the word for a synonym, because the sentence that needed a banned word was already broken. This step catches more problems than any other step. Do it thoroughly.
+      Open blacklist/ReadlockBlacklist.xml. Go through every section, every group, every item. Search your entire draft for any match: banned word, opener, closer, verb, adjective, noun, filler phrase, structural pattern, inflated assertion, split correction, or punctuation tell. Check every sentence you wrote, not just the ones that feel suspicious. AI writing patterns are invisible to the writer and obvious to the reader. If you find a match, rewrite the sentence from scratch. Do not swap the word for a synonym, because the sentence that needed a banned word was already broken. This step catches more problems than any other step. Do it thoroughly.
     </step>
 
     <step id="12" name="Check against the final test">
@@ -263,7 +250,7 @@ Your job: produce one complete, valid .rlockie file that follows every rule in t
       - Does every package end with an outro @text as its last swipe?
       - Look at the WHOLE segment side by side: do all packages use the same phase spine? If yes, vary at least one of them by skipping a phase or using an intro variant.
       - Across the segment, are different Phase 2 variants used? Same variant should not appear twice in a row.
-      - Run through ReadlockBlacklist.xml one more time. AI patterns creep back during editing.
+      - Run through blacklist/ReadlockBlacklist.xml one more time. AI patterns creep back during editing.
       Fix any problem you find.
     </step>
 
@@ -277,7 +264,6 @@ Your job: produce one complete, valid .rlockie file that follows every rule in t
   <rule id="3" name="Sentences per line">One sentence per line is the default. Two allowed only when they read as one beat. Three on one line: never.</rule>
   <rule id="4" name="We vs you">Use "we" only for humanity-wide observations ("we have always trusted what we can see"). Never use "you" to address the reader anywhere in course text. For Variant A reader-immersion scenes, use a gerund or imperative ("Imagine standing in a kitchen..."), not "we" and not "you."</rule>
   <rule id="5" name="No book or author names">No book titles or author names in @text, consequences, explanations, or hints. They go only in @course metadata.</rule>
-  <rule id="5b" name="Roughly 50/50 fresh vs book examples for book-sourced courses">When the prompt names a book as the source, aim for roughly 50/50 between fresh scenes (invented everyday characters and objects) and scenes drawn from the book itself. The decision is per-package, not per-course. Use a fresh scene when one comes to mind easily and teaches the concept as well or better. Use the book's example when it is genuinely the clearest way to teach the idea, and retell it in Readlock's voice rather than paraphrasing line by line. Never force a fresh example when the book's is stronger — a weak fresh scene is worse than a well-rewritten book scene. Technical terms from the book always appear; the book's title and author never do.</rule>
   <rule id="6" name="Color highlights">Green marks the topic name. Red marks a wrong thing stated in the text. Both only inside @text. 1 to 2 highlights per package maximum. At most 1 highlight per @text swipe.</rule>
   <rule id="7" name="Consequences" rlockie_field="consequence:">1 sentence is the default, 2 occasional, 3 rare. Should not exceed ~20 words total. No verdict language ("Wrong.", "Incorrect."). Vary the approach across answers.</rule>
   <rule id="8" name="Hints" rlockie_field="hint:">Exactly 1 sentence, at most 14 words. Points at the topic, not at the answer.</rule>
@@ -347,11 +333,10 @@ Your job: produce one complete, valid .rlockie file that follows every rule in t
   <!-- Content rules -->
   <rule id="16">Never use "you" to address the reader anywhere in course text. "We" is only for humanity-wide observations ("we figure out most objects without reading the manual"). Variant A scenes use a gerund or imperative ("Imagine standing..."), not "we" or "you." This rule has no exceptions inside @text, @question, @true_false, @reflect, or any other course-facing block.</rule>
   <rule id="17">No book or author names in the course text. Only in @course metadata.</rule>
-  <rule id="17b">For book-sourced courses: roughly 50/50 between fresh scenes and book examples, decided per package. If a fresh everyday scene teaches the concept as well or better, use it. If the book's example is genuinely the strongest, retell it in Readlock's voice (never paraphrased line by line, never with the book or author named). Never force a fresh example when it would be weaker than the book's. Technical terms and framework names from the book always appear; the book's title and author never do.</rule>
   <rule id="18">Every number has something the reader can picture next to it.</rule>
   <rule id="18b">Every abstract concept has an everyday anchor next to it (snowflake-and-avalanche for compound effects, parking meter for anchoring bias, kitchen drawer for the behavioral level). One anchor per concept. If no anchor comes to mind, the package is not ready.</rule>
   <rule id="18c">The Phase 4 reveal sentence never says "we have seen", "now it is time to", "let us look at", "what all three stories have in common is", or any other meta-narration that steps out of the stories. The reveal lives inside the same scene language as Phase 2.</rule>
-  <rule id="18d">Label-only reveals are BANNED. "This effect is called X" and "This pattern has a name: Y" fail because they are too broad — they could appear in any course, and they do not tell the reader what THIS course is teaching. The sentence containing the green term must place the concept inside the course's specific framework ("X is the first layer of how design reaches inside the person" works; "X has a name" does not). Substitution test: replace the green term with any other concept — if the sentence still fits, it is generic and must be rewritten. Framework test: can the sentence alone tell the reader what the course is about? If not, rewrite.</rule>
+  <rule id="18d">Label-only reveals are banned. "This effect is called X" and "This has a name: Y" fail. They are too general. The sentence with the green term must connect the concept to the main idea of the course. "X is the first layer of how design reaches inside the person" works. "X has a name" does not. Swap test: replace the green term with any other concept. If the sentence still fits, rewrite it. Main-idea test: read the sentence alone. Can the reader tell what the course is about? If no, rewrite.</rule>
 
   <!-- Structure rules -->
   <rule id="19">Consequences: 1 sentence default, 2 occasional, 3 rare. Should not exceed ~20 words total. Explanations: 1-2 sentences max.</rule>
@@ -360,17 +345,16 @@ Your job: produce one complete, valid .rlockie file that follows every rule in t
   <rule id="22">Vary transition phrasing. Do not repeat "The next package asks/looks at..." across packages.</rule>
   <rule id="23">@pause goes after Phase 3 (questions), before Phase 4 (reveal). Must not name the topic. Use it in 1 or 2 packages per segment, not every one.</rule>
   <rule id="23b" name="No meta-narration in reveal">The Phase 4 reveal sentence never steps out of the stories to announce itself. Banned openers: "We have seen...", "We just saw...", "Now it is time to...", "Now let us...", "Let us look at...", "Let us name...", "What all three stories have in common is...", and any sentence whose main verb is "see/look at/examine/turn to" with the narrator-and-reader as subject. The reveal stays inside the same scene language as Phase 2 and lets the topic name land inside a sentence that is still doing the work of the scene.</rule>
-  <rule id="23b2" name="Reveal sentence must place the concept inside the course framework">Label-only reveal sentences are BANNED. "This effect is called X", "That wiring has a name: X", "In research this is known as Y" all fail because they are too broad — they could appear in any course about any effect, and they do not tell the reader how the concept fits into what THIS course is teaching. The sentence containing the green term must anchor the concept inside the course's specific framework (for Emotional Design: "three layers of how design reaches inside the person"; for habits: "the four parts of the habit loop"; for cognitive biases: "the shortcuts the mind reaches for"). Ideally, the same sentence or the next one also ties the concept to the Phase 2 scenes. But the course-framework anchor cannot be missing. Substitution test: replace the green term with any concept from a different course — does the sentence still fit? If yes, rewrite. Framework test: read the reveal sentence in isolation — can the reader tell what the course is actually about? If no, rewrite.</rule>
+  <rule id="23b2" name="Reveal sentence must connect to the main idea of the course">Label-only reveal sentences are banned. "This effect is called X" and "This has a name: Y" fail. They are too general. They could appear in any course. Every course has one main idea. The sentence with the green term must connect the concept to that main idea. For Emotional Design, the main idea is "three layers of how design reaches inside the person". For habits, "the four parts of the habit loop". For cognitive biases, "the shortcuts the mind reaches for". The next sentence after the reveal should tie the concept to the Phase 2 scenes. Swap test: replace the green term with any concept from a different course. If the sentence still fits, it is too general. Rewrite it. Main-idea test: read the reveal sentence alone. Can the reader tell what the course is about? If no, rewrite.</rule>
   <rule id="23c" name="Comments in source file">The .rlockie format supports full-line comments. Any line whose first non-whitespace character is "#" is a comment. The parser strips comments before any other parsing, so they never reach the reader. Use comments for writer notes, TODOs, draft markers, or to temporarily disable a swipe by prefixing every line with "#". Inline comments are NOT supported (because "#" is also used in hex color values like "color: #6366f1"). Comments do not count toward any length rule or swipe count.</rule>
-  <rule id="23d" name="Mandatory package structure comment">Every @package MUST start with a comment line that lists the swipe-type sequence of the package, in order, with "@" prefixes, separated by commas. The comment goes immediately after the package title (and the "Free" line if present), and BEFORE the first content block. Example: # @text, @text, @text, @text, @question, @text, @true_false, @reflect, @text. The list length equals the swipe count of the package. If the package uses an intro variant, the comment reflects it (# @quote, ... / # @true_false, ... / # @text, ... for skip-intro starting at Phase 2). The comment is required for every package, in every course.</rule>
-  <rule id="23e" name="Package title variation">Package titles must be varied across the segment. The default trap is "The X That Y" ("The Knife That Knew Her Hand", "The Watch That Was More Than a Watch"). At most ONE "The X That Y" title per 5-package segment. Rotate through different shapes: question ("Why Couldn't She Throw Them Away?"), open-ended fragment with three dots ("What the Hand Already Knew..."), short noun phrase ("More Than a Watch"), why/when statement ("Why Beauty Helps the Hand"), narrative beat ("And Then She Could Not Let Them Go"), single concept fragment ("The Half-Second Before Thought"). No two consecutive packages share the same shape. Title length: 2 to 7 words. Titles can hint at the topic but never name it. No subtitles, no colons, no banned words.</rule>
+  <rule id="23e" name="Package title variation">Package titles must be varied across the segment. The default trap is "The X That Y" ("The Knife That Knew Her Hand", "The Watch That Was More Than a Watch"). At most ONE "The X That Y" title per 5-package segment. Rotate through different shapes: question ("Why Couldn't She Throw Them Away?"), open-ended fragment with three dots ("What the Hand Already Knew..."), short noun phrase ("More Than a Watch"), why/when statement ("Why Beauty Helps the Hand"), narrative beat ("And Then She Could Not Let Them Go"), single concept fragment ("The Half-Second Before Thought"). No two consecutive packages share the same shape. Title length: 2 to 7 words. Titles can hint at the topic but never name it. No subtitles, no colons, no banned words. Numbers in titles always use digits, not words, for both segment and package titles ("3 Layers of Feeling", not "Three Layers of Feeling"). This overrides the small-number-as-word default from the number-format rules — in titles, digits pop visually and read faster in the menu UI.</rule>
   <rule id="24" critical="true">Structural variation across packages is mandatory. The default phase spine (intro → 3 stories → @question → reveal → @true_false → @reflect → outro) must NOT repeat in every package of a segment. At least one package per segment uses an intro variant (skip, quote, true/false, or misconception-first). At least one package skips @reflect. Phase 2 variants (A through G) differ across consecutive packages. A 5-package segment with five identical phase spines is wrong, even if every package passes the line-level rules.</rule>
   <rule id="25">No em dashes anywhere in course text. The em dash (—) is banned in @text, @question, @true_false, @reflect, @pause, @quote, and every property field. Use a comma, period, colon, or parentheses instead.</rule>
   <rule id="26">A true/false intro replaces Phase 5. If the package opens with a @true_false intro, Phase 5 is empty for that package. The package never has two @true_false swipes when one of them is the intro.</rule>
   <rule id="27">A misconception-first intro CAN name the everyday term for the topic, with the wrong part wrapped in <c:r>...</c:r>. This is the only intro variant allowed to mention the topic in Phase 1.</rule>
 
   <!-- Blacklist enforcement -->
-  <rule id="24">ReadlockBlacklist.xml is non-negotiable. Every item in it is banned. AI writing patterns creep in constantly and are invisible to the writer. After writing, go through every section of the blacklist and check every sentence. Any match means the sentence is rewritten from scratch. This is the most important check.</rule>
+  <rule id="24">blacklist/ReadlockBlacklist.xml is non-negotiable. Every item in it is banned. AI writing patterns creep in constantly and are invisible to the writer. After writing, go through every section of the blacklist and check every sentence. Any match means the sentence is rewritten from scratch. This is the most important check.</rule>
 
 </critical_rules_reminder>
 

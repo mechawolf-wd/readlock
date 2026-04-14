@@ -98,6 +98,18 @@
       <rule>Pick one word. Three means the point is weak.</rule>
     </group>
 
+    <group name="Rare or made-up hyphenated words (use only when necessary)">
+      <item>half-second</item>
+      <item>split-second</item>
+      <item>quarter-turn</item>
+      <item>mid-thought</item>
+      <item>near-miss</item>
+      <item>half-heartbeat</item>
+      <item>half-breath</item>
+      <item>half-glance</item>
+      <rule>Not a hard ban. These sound clever but are harder to read, so default to "instant," "moment," or "a single beat." Keep the compound only when the plain word would lose meaning the sentence needs.</rule>
+    </group>
+
   </section>
 
   <section id="3" name="Buzzwords and empty verbs" summary="These add volume, not meaning. Replace with the specific thing you actually mean.">
