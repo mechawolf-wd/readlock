@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<style_reference>
+
+  <source>Veritasium — "The World's Most Wanted Blue LED" (YouTube)</source>
+
+  <purpose>
+    Read these paragraphs for prose style only. The subject matter is irrelevant.
+    What to absorb: how short sentences carry weight, how cause-and-effect chains are
+    built without connective filler, how concrete nouns do the work that abstract nouns
+    try to do, how a number alone can close an argument, and how obstacles are stated
+    without commentary. Do not write about LEDs, semiconductors, or Nakamura.
+    Only the sentence rhythm and density are the reference.
+  </purpose>
+
+  <warning>
+    Sentence lengths in these examples run longer than Readlock's ~14-word target (some reach 20+ words). This is because the source is a video script, written for audio, not swipe reading. Do NOT copy sentence length. Copy only the technique named in each paragraph's note.
+  </warning>
+
+  <paragraphs>
+
+    <paragraph>
+      <note>Character under pressure. Short sentences stacked. Each one adds one fact. No sentence explains another — the accumulation does the work.</note>
+      <text>Tensions started to run high. Younger employees begged Nakamura to create new products, while senior workers called his research a waste of money. And at Nichia, money was in short supply. Nakamura's lab mainly consisted of machinery he had scavenged and welded together himself. Phosphorus leaks in his lab created so many explosions, that his coworkers had stopped checking in on him. By 1988, Nakamura's supervisors were so disillusioned with his research that they told him to quit.</text>
+    </paragraph>
+
+    <paragraph>
+      <note>Routine as character. Specific times anchor it. The rhythm mimics the routine itself. The final sentence lands without comment.</note>
+      <text>He began following the same routine each day, arrive at the lab at 7:00 AM. Spend the first half of the day welding, cutting, and rewiring the reactor. Spend the rest of the day experimenting with the modified reactor to see what it can do. At 7:00 PM go home, eat dinner, wash and sleep. Nakamura repeated this routine every single day, taking no weekends and no holidays except for New Year's Day, the most important holiday in Japan.</text>
+    </paragraph>
+
+    <paragraph>
+      <note>Mechanism explained through cause-and-effect. Each sentence follows from the last. The discovery is stated once, plainly, at the end.</note>
+      <text>His trick was to add a second nozzle to the MOCVD reactor. The gallium nitride reactant gases had been rising in the hot chamber, mixing in the air to form a powdery waste. But the second nozzle released a downward stream of inert gas, pinning the first flow to the substrate to form a uniform crystal. For years, scientists had avoided adding a second stream to MOCVD because they thought it would only introduce more turbulence. But Nakamura used a special nozzle so that even when the streams combined, they remained laminar. He called his invention the two-flow reactor.</text>
+    </paragraph>
+
+    <paragraph>
+      <note>Surprising cause revealed after the effect is named. Four sentences, each a single move. The concrete image (atoms plugging holes) does what a paragraph of explanation could not.</note>
+      <text>His work also revealed why the p-type had been so difficult. To make gallium nitride with MOCVD, you supply the nitrogen from ammonia, but ammonia also contains hydrogen. Where there should have been holes in the magnesium doped gallium nitride, these hydrogen atoms were sneaking in and bonding with the magnesium, plugging all the holes. Adding energy to the system, released the hydrogen from the material, freeing up the holes again.</text>
+    </paragraph>
+
+    <paragraph>
+      <note>A number closes the argument. "500 attendees" then "five." No commentary. The contrast speaks. Notice the sentence after the number does not explain the contrast — it moves on.</note>
+      <text>When Nakamura attended the biggest applied physics conference in Japan, the talks on zinc selenide had over 500 attendees. The talks on gallium nitride had five. Two of those five attendees were the world experts on gallium nitride, Dr. Isamu Akasaki and his former grad student, Dr. Hiroshi Amano. In contrast to Nakamura's academic background, they were researchers at Nagoya University, one of Japan's best. A few years earlier, they had made a breakthrough on the first problem of high quality crystal.</text>
+    </paragraph>
+
+  </paragraphs>
+
+</style_reference>

@@ -1,0 +1,899 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Readlock — no-bs app for microlearning</title>
+    <meta
+      name="description"
+      content="No-bs app for microlearning. Read f**cking lock. Readlock."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #000000;
+        --fg: #ffffff;
+        --muted: #8a8a8a;
+        --line: #1a1a1a;
+        --red: #e63946;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        background: var(--bg);
+        color: var(--fg);
+        font-family: "Inter", -apple-system, BlinkMacSystemFont, "Helvetica Neue",
+          Arial, sans-serif;
+        font-feature-settings: "ss01", "cv11";
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        scroll-behavior: smooth;
+      }
+
+      body {
+        min-height: 100vh;
+        overflow-x: hidden;
+      }
+
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      .container {
+        width: 100%;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 32px;
+      }
+
+      /* Nav */
+      nav {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 10;
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        background: rgba(0, 0, 0, 0.6);
+        border-bottom: 1px solid var(--line);
+      }
+
+      nav .container {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        height: 64px;
+      }
+
+      .brand {
+        font-weight: 800;
+        font-size: 18px;
+        letter-spacing: -0.02em;
+      }
+
+      .brand-dot {
+        color: var(--red);
+      }
+
+      .nav-links {
+        display: flex;
+        gap: 32px;
+        font-size: 14px;
+        color: var(--muted);
+        font-weight: 500;
+      }
+
+      .nav-links a {
+        transition: color 0.2s ease;
+      }
+
+      .nav-links a:hover {
+        color: var(--fg);
+      }
+
+      .nav-cta {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: var(--fg);
+        color: var(--bg);
+        padding: 10px 18px;
+        border-radius: 100px;
+        font-size: 14px;
+        font-weight: 600;
+        transition: transform 0.15s ease, background 0.2s ease;
+      }
+
+      .nav-cta:hover {
+        transform: translateY(-1px);
+      }
+
+      /* Hero */
+      .hero {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 120px 0 80px;
+        position: relative;
+      }
+
+      .hero::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(
+          ellipse 60% 50% at 50% 30%,
+          rgba(230, 57, 70, 0.12),
+          transparent 70%
+        );
+        pointer-events: none;
+      }
+
+      .hero-content {
+        position: relative;
+        text-align: center;
+      }
+
+      .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 16px;
+        border: 1px solid var(--line);
+        border-radius: 100px;
+        font-size: 13px;
+        font-weight: 500;
+        color: var(--muted);
+        margin-bottom: 32px;
+      }
+
+      .eyebrow .dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--red);
+        box-shadow: 0 0 12px var(--red);
+      }
+
+      h1 {
+        font-size: clamp(44px, 8vw, 112px);
+        font-weight: 900;
+        line-height: 0.92;
+        letter-spacing: -0.04em;
+        max-width: 14ch;
+        margin: 0 auto;
+      }
+
+      h1 .accent {
+        color: var(--red);
+      }
+
+      .hero-cite {
+        margin-top: 24px;
+        font-size: clamp(14px, 1vw, 16px);
+        font-weight: 600;
+        color: var(--muted);
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .hero-prelude {
+        max-width: 48ch;
+        margin: 0 auto 32px;
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--muted);
+        line-height: 1.55;
+        letter-spacing: 0.01em;
+      }
+
+      .hero-sub {
+        margin-top: 32px;
+        font-size: clamp(16px, 1.4vw, 20px);
+        color: var(--muted);
+        max-width: 56ch;
+        margin-left: auto;
+        margin-right: auto;
+        line-height: 1.5;
+      }
+
+      .hero-cta {
+        margin-top: 48px;
+        display: flex;
+        gap: 16px;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 16px 28px;
+        border-radius: 100px;
+        font-size: 15px;
+        font-weight: 600;
+        transition: transform 0.15s ease, background 0.2s ease,
+          border-color 0.2s ease;
+        cursor: pointer;
+        border: 1px solid transparent;
+      }
+
+      .btn-primary {
+        background: var(--fg);
+        color: var(--bg);
+      }
+
+      .btn-primary:hover {
+        transform: translateY(-2px);
+      }
+
+      .btn-ghost {
+        border-color: var(--line);
+        color: var(--fg);
+      }
+
+      .btn-ghost:hover {
+        border-color: #333;
+        background: rgba(255, 255, 255, 0.03);
+      }
+
+      /* Interrupt */
+      .interrupt {
+        padding: 100px 0;
+        border-top: 1px solid var(--line);
+        text-align: center;
+      }
+
+      .interrupt-text {
+        font-size: clamp(32px, 5vw, 72px);
+        font-weight: 900;
+        line-height: 1.05;
+        letter-spacing: -0.03em;
+        max-width: 24ch;
+        margin: 0 auto;
+      }
+
+      .interrupt-text .cliche {
+        color: var(--muted);
+        font-style: italic;
+        font-weight: 600;
+      }
+
+      .interrupt-text .reply {
+        color: var(--red);
+      }
+
+      /* Image showcase */
+      .showcase {
+        padding: 40px 0 80px;
+      }
+
+      .showcase-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 24px;
+      }
+
+      .showcase-card {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+
+      .showcase-frame {
+        position: relative;
+        border: 1px solid var(--line);
+        border-radius: 28px;
+        overflow: hidden;
+        background: linear-gradient(180deg, #0a0a0a, #000);
+        aspect-ratio: 4 / 3;
+      }
+
+      .showcase-frame img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .showcase-caption {
+        font-size: 14px;
+        color: var(--muted);
+        line-height: 1.5;
+        padding: 0 8px;
+      }
+
+      .showcase-caption strong {
+        color: var(--fg);
+        font-weight: 600;
+      }
+
+      @media (max-width: 720px) {
+        .showcase-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      /* Manifesto section */
+      .manifesto {
+        padding: 120px 0;
+        border-top: 1px solid var(--line);
+      }
+
+      .manifesto-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 80px;
+        align-items: start;
+      }
+
+      .section-label {
+        font-size: 13px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        color: var(--red);
+        margin-bottom: 24px;
+      }
+
+      .section-title {
+        font-size: clamp(32px, 4vw, 56px);
+        font-weight: 800;
+        line-height: 1;
+        letter-spacing: -0.03em;
+      }
+
+      .manifesto-body {
+        font-size: 18px;
+        line-height: 1.6;
+        color: var(--muted);
+      }
+
+      .manifesto-body p + p {
+        margin-top: 20px;
+      }
+
+      .manifesto-body strong {
+        color: var(--fg);
+        font-weight: 600;
+      }
+
+      /* Pillars */
+      .pillars {
+        padding: 120px 0;
+        border-top: 1px solid var(--line);
+      }
+
+      .pillars-header {
+        text-align: center;
+        margin-bottom: 80px;
+      }
+
+      .pillars-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 24px;
+      }
+
+      .pillar {
+        padding: 40px;
+        border: 1px solid var(--line);
+        border-radius: 24px;
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent);
+        transition: border-color 0.2s ease, transform 0.2s ease;
+      }
+
+      .pillar:hover {
+        border-color: #2a2a2a;
+        transform: translateY(-4px);
+      }
+
+      .pillar-num {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--red);
+        margin-bottom: 24px;
+        letter-spacing: 0.08em;
+      }
+
+      .pillar-title {
+        font-size: 22px;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        margin-bottom: 12px;
+      }
+
+      .pillar-body {
+        font-size: 15px;
+        line-height: 1.55;
+        color: var(--muted);
+      }
+
+      /* Love list */
+      .love-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+
+      .love-list li {
+        padding: 20px 0;
+        border-bottom: 1px solid var(--line);
+        display: flex;
+        gap: 24px;
+        align-items: baseline;
+      }
+
+      .love-list li:first-child {
+        padding-top: 0;
+      }
+
+      .love-list li:last-child {
+        border-bottom: none;
+        padding-bottom: 0;
+      }
+
+      .love-list .name {
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--fg);
+        flex-shrink: 0;
+        min-width: 160px;
+        letter-spacing: -0.01em;
+      }
+
+      .love-list .why {
+        font-size: 16px;
+        color: var(--muted);
+        line-height: 1.55;
+      }
+
+      @media (max-width: 600px) {
+        .love-list li {
+          flex-direction: column;
+          gap: 6px;
+        }
+        .love-list .name {
+          min-width: 0;
+        }
+      }
+
+      /* Creed */
+      .creed {
+        padding: 140px 0;
+        border-top: 1px solid var(--line);
+        text-align: center;
+      }
+
+      .creed-text {
+        font-size: clamp(36px, 5.5vw, 80px);
+        font-weight: 900;
+        line-height: 1;
+        letter-spacing: -0.04em;
+        max-width: 22ch;
+        margin: 0 auto;
+      }
+
+      .creed-text .accent {
+        color: var(--red);
+      }
+
+      /* Big claim */
+      .claim {
+        padding: 160px 0;
+        text-align: center;
+        border-top: 1px solid var(--line);
+      }
+
+      .claim-text {
+        font-size: clamp(36px, 6vw, 88px);
+        font-weight: 900;
+        line-height: 0.95;
+        letter-spacing: -0.04em;
+        max-width: 18ch;
+        margin: 0 auto;
+      }
+
+      .claim-text .strike {
+        position: relative;
+        color: var(--muted);
+        white-space: nowrap;
+      }
+
+      .claim-text .strike::after {
+        content: "";
+        position: absolute;
+        left: -4%;
+        right: -4%;
+        top: 52%;
+        height: 6px;
+        background: var(--red);
+        transform: rotate(-3deg);
+      }
+
+      /* CTA */
+      .cta {
+        padding: 120px 0 160px;
+        border-top: 1px solid var(--line);
+        text-align: center;
+      }
+
+      .cta h2 {
+        font-size: clamp(40px, 6vw, 80px);
+        font-weight: 900;
+        letter-spacing: -0.04em;
+        line-height: 1;
+        margin-bottom: 24px;
+      }
+
+      .cta p {
+        font-size: 18px;
+        color: var(--muted);
+        margin-bottom: 40px;
+      }
+
+      /* Footer */
+      footer {
+        border-top: 1px solid var(--line);
+        padding: 48px 0;
+      }
+
+      footer .container {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 16px;
+      }
+
+      .footer-meta {
+        font-size: 13px;
+        color: var(--muted);
+      }
+
+      .footer-links {
+        display: flex;
+        gap: 24px;
+        font-size: 13px;
+        color: var(--muted);
+      }
+
+      /* Responsive */
+      @media (max-width: 880px) {
+        .nav-links {
+          display: none;
+        }
+        .manifesto-grid {
+          grid-template-columns: 1fr;
+          gap: 32px;
+        }
+        .pillars-grid {
+          grid-template-columns: 1fr;
+        }
+        .hero {
+          padding: 100px 0 60px;
+        }
+        .manifesto,
+        .pillars {
+          padding: 80px 0;
+        }
+        .claim {
+          padding: 100px 0;
+        }
+        .cta {
+          padding: 80px 0 100px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <nav>
+      <div class="container">
+        <a href="#" class="brand">READLOCK<span class="brand-dot">.</span></a>
+        <div class="nav-links">
+          <a href="#manifesto">Manifesto</a>
+          <a href="#pillars">How</a>
+          <a href="#download">Download</a>
+        </div>
+        <a href="#download" class="nav-cta">Download →</a>
+      </div>
+    </nav>
+
+    <section class="hero">
+      <div class="container hero-content">
+        <p class="hero-prelude">
+          We are not aggressive. We respect you way more than these clowns do.
+        </p>
+        <h1>
+          "No <span class="accent">f**kfest</span> app<br />for learning."
+        </h1>
+        <p class="hero-cite">— Readlock</p>
+        <p class="hero-sub">
+          People have been learning carefully for centuries. Sitting with one
+          idea long enough that it had somewhere to live. We still believe in
+          that. If you are here, the cartoon mascots and the confetti probably
+          stopped working on you a long time ago.
+        </p>
+        <div class="hero-cta">
+          <a href="#download" class="btn btn-primary">Start reading →</a>
+          <a href="#manifesto" class="btn btn-ghost">Read the manifesto</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="interrupt">
+      <div class="container">
+        <p class="interrupt-text">
+          <span class="cliche">"TikTok for smart peop—"</span><br />
+          <span class="reply">Shut the f**k up.</span>
+        </p>
+      </div>
+    </section>
+
+    <section class="showcase">
+      <div class="container">
+        <div class="showcase-grid">
+          <div class="showcase-card">
+            <div class="showcase-frame">
+              <img src="northern_cardinal_bird.jpg" alt="Northern cardinal" loading="lazy" />
+            </div>
+            <p class="showcase-caption">
+              <strong>8-bit birds.</strong> Because we are s3xy, and why
+              the f**k not?
+            </p>
+          </div>
+
+          <div class="showcase-card">
+            <div class="showcase-frame">
+              <img src="memphis.webp" alt="Corporate Memphis illustration" loading="lazy" />
+            </div>
+            <p class="showcase-caption">
+              <strong>Corporate Memphis.</strong> The look every other app
+              is leaving us with. We are not.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="manifesto" id="manifesto">
+      <div class="container manifesto-grid">
+        <div>
+          <div class="section-label">Manifesto</div>
+          <h2 class="section-title">What microlearning became.<br />And what it should be.</h2>
+        </div>
+        <div class="manifesto-body">
+          <p>
+            The current shape of microlearning is some f**cking corporate
+            Memphis illustration, a smiling mascot, and a weekly streak that
+            turns a missed day into guilt. The whole loop is a slot machine
+            wearing a smile.
+          </p>
+          <p>
+            <strong>People once had a clay tablet and a sharp stick.</strong>
+            From those, they worked out arithmetic, written law, the calendar,
+            and the first stories that outlived their authors. The tools were
+            almost nothing, and the attention was everything.
+          </p>
+          <p>
+            Real learning is slow on purpose. It asks the reader to sit with
+            one idea long enough that the idea has somewhere to live. Readlock
+            is built for that, and nothing else.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="pillars" id="pillars">
+      <div class="container">
+        <div class="pillars-header">
+          <div class="section-label">How it works</div>
+          <h2 class="section-title">Three rules, and nothing else.</h2>
+        </div>
+        <div class="pillars-grid">
+          <div class="pillar">
+            <div class="pillar-num">01 / READ</div>
+            <h3 class="pillar-title">Ideas worth the read</h3>
+            <p class="pillar-body">
+              Each lesson is built on something a careful reader would
+              underline. We cut the throat-clearing and keep the part that
+              actually changes how a subject is understood.
+            </p>
+          </div>
+          <div class="pillar">
+            <div class="pillar-num">02 / LOCK</div>
+            <h3 class="pillar-title">Built so it stays</h3>
+            <p class="pillar-body">
+              Every package ends with a small check: a question, a true or
+              false, a moment to reflect. Not a test. A second pass through
+              memory before the app closes.
+            </p>
+          </div>
+          <div class="pillar">
+            <div class="pillar-num">03 / GO</div>
+            <h3 class="pillar-title">No streaks, no guilt</h3>
+            <p class="pillar-body">
+              Skip a day, or skip a month. The lessons wait. There are no
+              streaks to defend, and nothing to feel bad about when life
+              gets in the way.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="manifesto" id="investors">
+      <div class="container manifesto-grid">
+        <div>
+          <div class="section-label">Investors we said no to</div>
+          <h2 class="section-title">All of them,<br />so far.</h2>
+        </div>
+        <div class="manifesto-body">
+          <p>
+            We said no to investors trying to make our app into another crappy
+            f**kfest. Every pitch deck asked for the same three things: a
+            brighter mascot, a longer streak, and a louder daily push to drag
+            the user back into the app.
+          </p>
+          <p>
+            That is the part of microlearning we are leaving behind. The only
+            deal we would take is the one that lets the app stay calm, slow,
+            and worth a careful reader's time.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="manifesto" id="love">
+      <div class="container manifesto-grid">
+        <div>
+          <div class="section-label">Companies we love</div>
+          <h2 class="section-title">The ones quietly<br />doing it right.</h2>
+        </div>
+        <div>
+          <ul class="love-list">
+            <li>
+              <span class="name">Veritasium</span>
+              <span class="why">Long videos that respect the viewer enough to slow down.</span>
+            </li>
+            <li>
+              <span class="name">Kurzgesagt</span>
+              <span class="why">A studio that explains hard things without performing wonder.</span>
+            </li>
+            <li>
+              <span class="name">Wikipedia</span>
+              <span class="why">Still the best paragraph on the internet, written by people who care.</span>
+            </li>
+            <li>
+              <span class="name">Are.na</span>
+              <span class="why">A calm corner of the web where attention is the whole point.</span>
+            </li>
+            <li>
+              <span class="name">Linear</span>
+              <span class="why">Software with opinions, built for people who actually do the work.</span>
+            </li>
+            <li>
+              <span class="name">iA Writer</span>
+              <span class="why">A writing tool that disappears so the writing can show up.</span>
+            </li>
+            <li>
+              <span class="name">Cultured Code</span>
+              <span class="why">Things 3. No streaks, no badges, and nothing shouting at the user.</span>
+            </li>
+            <li>
+              <span class="name">Panic</span>
+              <span class="why">Mac software with care in every pixel and every release note.</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="manifesto" id="copycats">
+      <div class="container manifesto-grid">
+        <div>
+          <div class="section-label">The imbeciles that tried to copy us</div>
+          <h2 class="section-title">A small graveyard,<br />five entries deep.</h2>
+        </div>
+        <div>
+          <ul class="love-list">
+            <li>
+              <span class="name">Lockify</span>
+              <span class="why">Stole our name, slapped a smiling padlock mascot on it, and pitched the result on Product Hunt as "the Duolingo of microlearning." The team was three twenty-two-year-olds and an uncle in finance. Dead in five months, which is the only thing they got right.</span>
+            </li>
+            <li>
+              <span class="name">Skimrr</span>
+              <span class="why">Ripped off the one-idea-per-swipe structure and immediately ruined it with a streak counter, a mascot named Skimi, and a 6am push that reads "don't break the chain." Their CEO posts daily on LinkedIn about discipline, to an audience of 11 followers and a beige headshot.</span>
+            </li>
+            <li>
+              <span class="name">Brainjar</span>
+              <span class="why">Squatted on the URL three days after our launch post. The site is one page with an animated brain in a jar and an email field. Two years later the brain is still rotating, and there is still no f**king app.</span>
+            </li>
+            <li>
+              <span class="name">Microwise</span>
+              <span class="why">Cloned our manifesto, ran it through a thesaurus, and shipped it on a Squarespace template. The result reads like a fortune cookie that swallowed a TED talk and threw it back up at a brunch.</span>
+            </li>
+            <li>
+              <span class="name">Bytemind</span>
+              <span class="why">Tried to hire our second-favourite copywriter the week after she turned us down. They paid her in equity, which is now worth a sandwich. Her first draft for them was about confirmation bias, which is the only lesson their founders should be reading.</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="creed">
+      <div class="container">
+        <p class="creed-text">
+          F**k you, motherf**kers.<br />
+          We are doing this the <span class="accent">cool f**cking way</span>.
+        </p>
+      </div>
+    </section>
+
+    <section class="claim">
+      <div class="container">
+        <p class="claim-text">
+          <span class="strike">Streaks, mascots, or confetti.</span><br />
+          Just&nbsp;<span class="accent" style="color: var(--red)">learning</span>.
+        </p>
+      </div>
+    </section>
+
+    <section class="manifesto" id="careers">
+      <div class="container manifesto-grid">
+        <div>
+          <div class="section-label">Careers</div>
+          <h2 class="section-title">Wanted: people who hate<br />the same things we do.</h2>
+        </div>
+        <div class="manifesto-body">
+          <p>
+            We are hiring slowly, the way the rest of the app was built. If
+            you write, design, or code with care, and the current state of
+            edtech makes you tired, we want to hear from you.
+          </p>
+          <p>
+            Email <strong>work@readlock.app</strong> with one paragraph about
+            what bothers you about the apps you use today, and one thing you
+            have made that you are still proud of.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="cta" id="download">
+      <div class="container">
+        <h2>Join the cult.</h2>
+        <p>Coming to iOS and Android. The list is open.</p>
+        <a href="#" class="btn btn-primary">Join the cult →</a>
+      </div>
+    </section>
+
+    <footer>
+      <div class="container">
+        <div class="footer-meta">© Readlock 2026. No-bs microlearning.</div>
+        <div class="footer-links">
+          <a href="#careers">Careers</a>
+          <a href="#">Privacy</a>
+          <a href="#">Terms</a>
+          <a href="#">Contact</a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
