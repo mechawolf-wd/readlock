@@ -3,14 +3,14 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:readlock/screens/ReaderPassScreen.dart';
 import 'package:readlock/utility_widgets/Utility.dart';
+import 'package:readlock/utility_widgets/SelectableFilterChips.dart';
+import 'package:readlock/utility_widgets/BookListCard.dart';
+import 'package:readlock/utility_widgets/RLCard.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/constants/RLUIStrings.dart';
-import 'package:readlock/MainNavigation.dart';
 import 'package:readlock/constants/DartAliases.dart';
-import 'package:readlock/utility_widgets/RLCard.dart';
 
 class CoursesScreen extends StatefulWidget {
   const CoursesScreen({super.key});
@@ -79,29 +79,6 @@ class CoursesScreenState extends State<CoursesScreen> {
     });
   }
 
-  void handlePromoBannerTap() {
-    Navigator.push(
-      context,
-      PageRouteBuilder(
-        pageBuilder: (context, animation, secondaryAnimation) => const ReaderPassScreen(),
-        transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          const Offset begin = Offset(0.0, 1.0);
-          const Offset end = Offset.zero;
-          const Curve curve = Curves.easeInOut;
-
-          final Animatable<Offset> tween = Tween(
-            begin: begin,
-            end: end,
-          ).chain(CurveTween(curve: curve));
-
-          final Animation<Offset> offsetAnimation = animation.drive(tween);
-
-          return SlideTransition(position: offsetAnimation, child: child);
-        },
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final bool hasSearchText = searchController.text.isNotEmpty;
@@ -135,18 +112,10 @@ class CoursesScreenState extends State<CoursesScreen> {
   }) {
     return SingleChildScrollView(
       child: Div.column([
-        // Promotional banner (no padding)
-        SeasonPromoBanner(),
-
         // Main content (with padding)
         Padding(
-          padding: EdgeInsets.all(24.0),
+          padding: const EdgeInsets.all(RLDS.spacing24),
           child: Div.column([
-            // Search heading
-            RLTypography.headingLarge(RLUIStrings.SEARCH_TAB_LABEL),
-
-            const Spacing.height(24),
-
             // Search bar (hidden when genre is selected)
             RenderIf.condition(
               shouldShowSearchBar,
@@ -171,9 +140,6 @@ class CoursesScreenState extends State<CoursesScreen> {
 
             // Trending section
             TrendingSection(),
-
-            // Bottom spacing for floating navigation
-            const Spacing.height(MainNavigation.bottomOffset),
           ], crossAxisAlignment: CrossAxisAlignment.stretch),
         ),
       ], crossAxisAlignment: CrossAxisAlignment.stretch),
@@ -187,18 +153,15 @@ class CoursesScreenState extends State<CoursesScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        // Promotional banner (no padding)
-        SeasonPromoBanner(),
-
         // Fixed header content (with padding)
         Padding(
-          padding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
+          padding: const EdgeInsets.fromLTRB(
+            RLDS.spacing24,
+            RLDS.spacing24,
+            RLDS.spacing24,
+            0,
+          ),
           child: Div.column([
-            // Search heading
-            RLTypography.headingLarge(RLUIStrings.SEARCH_TAB_LABEL),
-
-            const Spacing.height(24),
-
             // Search bar (hidden when genre is selected)
             RenderIf.condition(
               shouldShowSearchBar,
@@ -226,7 +189,7 @@ class CoursesScreenState extends State<CoursesScreen> {
         // Expanded search results (scrollable)
         Expanded(
           child: Padding(
-            padding: const EdgeInsets.fromLTRB(24, 0, 24, MainNavigation.bottomOffset),
+            padding: const EdgeInsets.symmetric(horizontal: RLDS.spacing24),
             child: SearchResults(),
           ),
         ),
@@ -234,37 +197,17 @@ class CoursesScreenState extends State<CoursesScreen> {
     );
   }
 
-  Widget SeasonPromoBanner() {
-    return GestureDetector(
-      onTap: handlePromoBannerTap,
-      child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-        color: RLDS.black,
-        child: Div.row([
-          Flexible(
-            child: RLTypography.bodyMedium(
-              RLUIStrings.PROMO_BANNER_TEXT,
-              color: RLDS.white,
-              textAlign: TextAlign.center,
-            ),
-          ),
-        ], mainAxisAlignment: MainAxisAlignment.center),
-      ),
-    );
-  }
-
   Widget MockSearchBar() {
     final BoxDecoration searchBarDecoration = BoxDecoration(
       color: RLDS.backgroundLight.withValues(alpha: 0.1),
-      borderRadius: BorderRadius.circular(12.0),
-      border: Border.all(color: RLDS.grey300.withValues(alpha: 0.3)),
+      borderRadius: RLDS.borderRadiusSmall,
+      border: Border.all(color: RLDS.textMuted.withValues(alpha: 0.3)),
     );
 
-    final Widget SearchIcon = Icon(
+    final Widget SearchIcon = const Icon(
       Icons.search,
       color: RLDS.textSecondary,
-      size: 20.0,
+      size: RLDS.iconMedium,
     );
 
     return RenderIf.condition(
@@ -281,7 +224,10 @@ class CoursesScreenState extends State<CoursesScreen> {
     return GestureDetector(
       onTap: activateSearch,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        padding: const EdgeInsets.symmetric(
+          horizontal: RLDS.spacing16,
+          vertical: RLDS.spacing12,
+        ),
         decoration: searchBarDecoration,
         child: Div.row([
           searchIcon,
@@ -301,25 +247,32 @@ class CoursesScreenState extends State<CoursesScreen> {
     required BoxDecoration searchBarDecoration,
     required Widget searchIcon,
   }) {
-    final Widget CloseIcon = Icon(Icons.close, color: RLDS.textSecondary, size: 20);
+    final Widget CloseIcon = const Icon(
+      Icons.close,
+      color: RLDS.textSecondary,
+      size: RLDS.iconMedium,
+    );
 
     final bool hasSearchText = searchController.text.isNotEmpty;
 
     final Color borderColor = hasSearchText
-        ? RLDS.primaryBlue
-        : RLDS.grey300.withValues(alpha: 0.3);
+        ? RLDS.info
+        : RLDS.textMuted.withValues(alpha: 0.3);
 
     final double borderWidth = hasSearchText ? 1.5 : 1;
 
     final BoxDecoration activeSearchBarDecoration = BoxDecoration(
       color: RLDS.backgroundLight.withValues(alpha: 0.08),
-      borderRadius: BorderRadius.circular(12),
+      borderRadius: RLDS.borderRadiusSmall,
       border: Border.all(color: borderColor, width: borderWidth),
     );
 
     return AnimatedContainer(
       duration: const Duration(milliseconds: 200),
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      padding: const EdgeInsets.symmetric(
+        horizontal: RLDS.spacing16,
+        vertical: RLDS.spacing12,
+      ),
       decoration: activeSearchBarDecoration,
       child: Div.row([
         searchIcon,
@@ -363,49 +316,32 @@ class CoursesScreenState extends State<CoursesScreen> {
 
     return Div.column([
       Div.row([
-        Text(RLUIStrings.GENRES_LABEL, style: RLTypography.bodyMediumStyle.copyWith(color: RLDS.textSecondary)),
+        Text(
+          RLUIStrings.GENRES_LABEL,
+          style: RLTypography.bodyMediumStyle.copyWith(color: RLDS.textSecondary),
+        ),
       ], mainAxisAlignment: MainAxisAlignment.start),
 
       const Spacing.height(12),
 
-      Wrap(spacing: 8, runSpacing: 8, children: CategoryChips(categories)),
+      SelectableFilterChips(
+        options: categories,
+        selectedOption: selectedGenre,
+        onChanged: handleGenreChipTap,
+      ),
     ], crossAxisAlignment: CrossAxisAlignment.start);
   }
 
-  List<Widget> CategoryChips(List<String> categories) {
-    return categories.map((category) {
-      final bool isSelected = selectedGenre == category;
+  void handleGenreChipTap(String category) {
+    HapticFeedback.lightImpact();
 
-      final BoxDecoration chipDecoration = BoxDecoration(
-        color: isSelected ? RLDS.primaryBlue : RLDS.backgroundLight.withValues(alpha: 0.08),
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: RLDS.primaryBlue.withValues(alpha: 0.3)),
-      );
+    final bool isAlreadySelected = selectedGenre == category;
 
-      final Color chipTextColor = isSelected ? RLDS.white : RLDS.primaryBlue;
-
-      void handleCategoryChipTap() {
-        HapticFeedback.lightImpact();
-
-        if (isSelected) {
-          clearGenreSelection();
-        } else {
-          selectGenre(category);
-        }
-      }
-
-      return GestureDetector(
-        onTap: handleCategoryChipTap,
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          decoration: chipDecoration,
-          child: Text(
-            category,
-            style: RLTypography.bodyMediumStyle.copyWith(color: chipTextColor),
-          ),
-        ),
-      );
-    }).toList();
+    if (isAlreadySelected) {
+      clearGenreSelection();
+    } else {
+      selectGenre(category);
+    }
   }
 
   Widget TrendingHeader() {
@@ -456,68 +392,12 @@ class CoursesScreenState extends State<CoursesScreen> {
       final String bookAuthor = book['author'] ?? '';
       final String? coverImagePath = book['coverImage'];
 
-      final BoxDecoration coverPlaceholderDecoration = BoxDecoration(
-        color: RLDS.primaryBlue.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(6),
-        border: Border.all(color: RLDS.primaryBlue.withValues(alpha: 0.2)),
-      );
-
-      return RLCard.subtle(
-        padding: const EdgeInsets.all(12),
-        margin: const EdgeInsets.only(bottom: 12),
-        child: Div.row([
-          // Book cover
-          BookCover(
-            coverImagePath: coverImagePath,
-            coverPlaceholderDecoration: coverPlaceholderDecoration,
-          ),
-
-          const Spacing.width(12),
-
-          // Book info
-          Expanded(
-            child: Div.column([
-              RLTypography.bodyLarge(bookTitle),
-
-              const Spacing.height(4),
-
-              Text(
-                bookAuthor,
-                style: RLTypography.bodyMediumStyle.copyWith(color: RLDS.textSecondary),
-              ),
-            ], crossAxisAlignment: CrossAxisAlignment.start),
-          ),
-
-          // Bookmark icon
-          Container(margin: const EdgeInsets.only(top: 8), child: BookmarkIcon),
-        ]),
+      return BookListCard(
+        title: bookTitle,
+        author: bookAuthor,
+        coverImagePath: coverImagePath,
       );
     }).toList();
-  }
-
-  static const Widget BookmarkIcon = Icon(Icons.bookmark_border, color: Colors.grey, size: 24);
-
-  Widget BookCover({
-    required String? coverImagePath,
-    required BoxDecoration coverPlaceholderDecoration,
-  }) {
-    final bool hasCover = coverImagePath != null;
-
-    final Widget BookIcon = Icon(Icons.book, color: RLDS.primaryBlue, size: 20);
-
-    if (hasCover) {
-      return ClipRRect(
-        borderRadius: BorderRadius.circular(6),
-        child: Image.asset(coverImagePath, width: 40, height: 60, fit: BoxFit.cover),
-      );
-    }
-
-    return Container(
-      width: 40,
-      height: 60,
-      decoration: coverPlaceholderDecoration,
-      child: BookIcon,
-    );
   }
 
   Widget TrendingSection() {
@@ -632,104 +512,35 @@ class CoursesScreenState extends State<CoursesScreen> {
       final String bookAuthor = book['author'] ?? '';
       final String? coverImagePath = book['coverImage'];
 
-      final BoxDecoration coverPlaceholderDecoration = BoxDecoration(
-        color: RLDS.primaryBlue.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(6),
-        border: Border.all(color: RLDS.primaryBlue.withValues(alpha: 0.2)),
-      );
-
-      return RLCard.subtle(
-        padding: const EdgeInsets.all(12),
-        margin: const EdgeInsets.only(bottom: 12),
-        child: Div.row([
-          // Book cover
-          SearchResultBookCover(
-            coverImagePath: coverImagePath,
-            coverPlaceholderDecoration: coverPlaceholderDecoration,
-          ),
-
-          const Spacing.width(12),
-
-          // Book info
-          Expanded(
-            child: Div.column([
-              RLTypography.bodyLarge(bookTitle),
-
-              const Spacing.height(4),
-
-              Text(
-                bookAuthor,
-                style: RLTypography.bodyMediumStyle.copyWith(color: RLDS.textSecondary),
-              ),
-            ], crossAxisAlignment: CrossAxisAlignment.start),
-          ),
-
-          // Bookmark icon
-          Container(margin: const EdgeInsets.only(top: 8), child: SearchBookmarkIcon),
-        ]),
+      return BookListCard(
+        title: bookTitle,
+        author: bookAuthor,
+        coverImagePath: coverImagePath,
       );
     }).toList();
   }
 
-  static const Widget SearchBookmarkIcon = Icon(
-    Icons.bookmark_border,
-    color: Colors.grey,
-    size: 24,
-  );
-
-  Widget SearchResultBookCover({
-    required String? coverImagePath,
-    required BoxDecoration coverPlaceholderDecoration,
-  }) {
-    final bool hasCover = coverImagePath != null;
-
-    final Widget BookIcon = Icon(Icons.book, color: RLDS.primaryBlue, size: 20);
-
-    if (hasCover) {
-      return ClipRRect(
-        borderRadius: BorderRadius.circular(6),
-        child: Image.asset(coverImagePath, width: 40, height: 60, fit: BoxFit.cover),
-      );
-    }
-
-    return Container(
-      width: 40,
-      height: 60,
-      decoration: coverPlaceholderDecoration,
-      child: BookIcon,
-    );
-  }
-
-  static final Widget ArrowDownIcon = Icon(
+  static final Widget ArrowDownIcon = const Icon(
     Icons.arrow_downward,
-    color: RLDS.primaryBlue,
+    color: RLDS.info,
     size: 16,
   );
 
   Widget LoadNextButton() {
-    final BoxDecoration buttonDecoration = BoxDecoration(
-      color: RLDS.backgroundLight.withValues(alpha: 0.08),
-      borderRadius: BorderRadius.circular(12),
-      border: Border.all(color: RLDS.primaryBlue.withValues(alpha: 0.3)),
-    );
-
-    return GestureDetector(
+    return RLCard.subtle(
+      padding: const EdgeInsets.symmetric(vertical: RLDS.spacing12),
+      borderColor: RLDS.info.withValues(alpha: 0.3),
       onTap: loadMoreResults,
-      child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.symmetric(vertical: 12),
-        decoration: buttonDecoration,
-        child: Div.row([
-          Text(
-            RLUIStrings.LOAD_NEXT_LABEL,
-            style: RLTypography.bodyMediumStyle.copyWith(color: RLDS.primaryBlue),
-          ),
+      child: Div.row([
+        Text(
+          RLUIStrings.LOAD_NEXT_LABEL,
+          style: RLTypography.bodyMediumStyle.copyWith(color: RLDS.info),
+        ),
 
-          const Spacing.width(8),
+        const Spacing.width(8),
 
-          ArrowDownIcon,
-        ], mainAxisAlignment: MainAxisAlignment.center),
-      ),
+        ArrowDownIcon,
+      ], mainAxisAlignment: MainAxisAlignment.center),
     );
   }
 }

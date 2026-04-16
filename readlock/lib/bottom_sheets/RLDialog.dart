@@ -4,6 +4,7 @@
 import 'package:flutter/material.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/constants/RLTypography.dart';
+import 'package:readlock/utility_widgets/RLButton.dart';
 import 'package:readlock/utility_widgets/Utility.dart';
 
 class RLDialog {
@@ -41,8 +42,9 @@ class RLDialog {
     Color? confirmColor,
     Color? cancelColor,
     bool isDismissible = true,
+    bool horizontalButtons = false,
   }) {
-    final Color buttonColor = confirmColor ?? RLDS.primaryGreen;
+    final Color buttonColor = confirmColor ?? RLDS.success;
     final Color secondaryColor = cancelColor ?? RLDS.textSecondary;
 
     show(
@@ -55,6 +57,7 @@ class RLDialog {
         cancelLabel: cancelLabel,
         confirmColor: buttonColor,
         cancelColor: secondaryColor,
+        horizontalButtons: horizontalButtons,
         onConfirm: () {
           Navigator.of(context).pop();
           onConfirm();
@@ -78,7 +81,7 @@ class RLDialog {
     String buttonLabel = 'OK',
     Color? buttonColor,
   }) {
-    final Color actionColor = buttonColor ?? RLDS.primaryBlue;
+    final Color actionColor = buttonColor ?? RLDS.info;
 
     show(
       context,
@@ -110,16 +113,16 @@ class DialogContainer extends StatelessWidget {
 
     final BoxDecoration dialogDecoration = BoxDecoration(
       color: dialogColor,
-      borderRadius: BorderRadius.circular(20),
+      borderRadius: RLDS.borderRadiusLarge,
     );
 
     return Center(
       child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 32),
+        margin: const EdgeInsets.symmetric(horizontal: RLDS.spacing32),
         decoration: dialogDecoration,
         clipBehavior: Clip.antiAlias,
         child: Material(
-          color: Colors.transparent,
+          color: RLDS.transparent,
           child: child,
         ),
       ),
@@ -135,6 +138,7 @@ class ConfirmDialogContent extends StatelessWidget {
   final String cancelLabel;
   final Color confirmColor;
   final Color cancelColor;
+  final bool horizontalButtons;
   final VoidCallback onConfirm;
   final VoidCallback onCancel;
 
@@ -148,12 +152,13 @@ class ConfirmDialogContent extends StatelessWidget {
     required this.cancelColor,
     required this.onConfirm,
     required this.onCancel,
+    this.horizontalButtons = false,
   });
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(24),
+      padding: const EdgeInsets.all(RLDS.spacing24),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -161,54 +166,72 @@ class ConfirmDialogContent extends StatelessWidget {
           // Title
           RLTypography.headingMedium(title),
 
-          const Spacing.height(8),
+          const Spacing.height(RLDS.spacing8),
 
           // Message
           RLTypography.bodyMedium(message, color: RLDS.textSecondary),
 
-          const Spacing.height(24),
+          const Spacing.height(RLDS.spacing24),
 
-          // Confirm button
-          ConfirmButton(),
-
-          const Spacing.height(12),
-
-          // Cancel button
-          CancelButton(),
+          // Action buttons (layout depends on horizontalButtons flag)
+          ActionButtons(),
         ],
       ),
     );
   }
 
-  Widget ConfirmButton() {
-    final BoxDecoration buttonDecoration = BoxDecoration(
-      color: confirmColor,
-      borderRadius: BorderRadius.circular(12),
-    );
+  Widget ActionButtons() {
+    if (horizontalButtons) {
+      return Row(
+        children: [
+          Expanded(
+            child: RLButton.primary(
+              label: cancelLabel,
+              color: cancelColor,
+              onTap: onCancel,
+              padding: dialogButtonPadding,
+            ),
+          ),
 
-    return GestureDetector(
-      onTap: onConfirm,
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 14),
-        decoration: buttonDecoration,
-        child: Center(
-          child: RLTypography.bodyLarge(confirmLabel, color: RLDS.white),
+          const Spacing.width(RLDS.spacing12),
+
+          Expanded(
+            child: RLButton.primary(
+              label: confirmLabel,
+              color: confirmColor,
+              onTap: onConfirm,
+              padding: dialogButtonPadding,
+            ),
+          ),
+        ],
+      );
+    }
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        RLButton.primary(
+          label: confirmLabel,
+          color: confirmColor,
+          onTap: onConfirm,
+          padding: dialogButtonPadding,
         ),
-      ),
+
+        const Spacing.height(RLDS.spacing12),
+
+        RLButton.tertiary(
+          label: cancelLabel,
+          color: cancelColor,
+          onTap: onCancel,
+        ),
+      ],
     );
   }
 
-  Widget CancelButton() {
-    return GestureDetector(
-      onTap: onCancel,
-      child: Center(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8),
-          child: RLTypography.bodyMedium(cancelLabel, color: cancelColor),
-        ),
-      ),
-    );
-  }
+  static const EdgeInsets dialogButtonPadding = EdgeInsets.symmetric(
+    vertical: RLDS.spacing16,
+  );
 }
 
 // * Alert dialog content — single-action layout
@@ -231,7 +254,7 @@ class AlertDialogContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(24),
+      padding: const EdgeInsets.all(RLDS.spacing24),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -239,34 +262,21 @@ class AlertDialogContent extends StatelessWidget {
           // Title
           RLTypography.headingMedium(title),
 
-          const Spacing.height(8),
+          const Spacing.height(RLDS.spacing8),
 
           // Message
           RLTypography.bodyMedium(message, color: RLDS.textSecondary),
 
-          const Spacing.height(24),
+          const Spacing.height(RLDS.spacing24),
 
           // Action button
-          ActionButton(),
+          RLButton.primary(
+            label: buttonLabel,
+            color: buttonColor,
+            onTap: onTap,
+            padding: const EdgeInsets.symmetric(vertical: RLDS.spacing16),
+          ),
         ],
-      ),
-    );
-  }
-
-  Widget ActionButton() {
-    final BoxDecoration buttonDecoration = BoxDecoration(
-      color: buttonColor,
-      borderRadius: BorderRadius.circular(12),
-    );
-
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 14),
-        decoration: buttonDecoration,
-        child: Center(
-          child: RLTypography.bodyLarge(buttonLabel, color: RLDS.white),
-        ),
       ),
     );
   }

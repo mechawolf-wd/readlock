@@ -31,9 +31,9 @@ class CCEstimatePercentageState extends State<CCEstimatePercentage>
   late Animation<double> revealAnimation;
 
   // Icon and styling definitions
-  static final Icon CheckIcon = Icon(Icons.check_circle, color: RLDS.primaryGreen, size: 20);
+  static final Icon CheckIcon = const Icon(Icons.check_circle, color: RLDS.success, size: 20);
   static const Icon InfoIcon = Icon(Icons.info_outline, size: 20);
-  static final Icon StarIcon = Icon(Icons.star, color: RLDS.white, size: 16);
+  static final Icon StarIcon = const Icon(Icons.star, color: RLDS.white, size: 16);
 
   int getCorrectPercentage() {
     return widget.content.correctPercentage;
@@ -116,9 +116,9 @@ class CCEstimatePercentageState extends State<CCEstimatePercentage>
 
       const Spacing.width(12),
 
-      RLTypography.headingLarge('${currentEstimate.round()}', color: RLDS.primaryBlue),
+      RLTypography.headingLarge('${currentEstimate.round()}', color: RLDS.info),
 
-      RLTypography.headingMedium('%', color: RLDS.primaryBlue.withValues(alpha: 0.7)),
+      RLTypography.headingMedium('%', color: RLDS.info.withValues(alpha: 0.7)),
     ], mainAxisAlignment: MainAxisAlignment.center);
   }
 
@@ -178,7 +178,7 @@ class CCEstimatePercentageState extends State<CCEstimatePercentage>
   Widget SubmitButton() {
     final bool shouldShow = !hasSubmittedEstimate;
 
-    final Widget TouchAppIcon = Icon(Icons.touch_app, color: RLDS.white, size: 18);
+    final Widget TouchAppIcon = const Icon(Icons.touch_app, color: RLDS.white, size: 18);
 
     return RenderIf.condition(
       shouldShow,
@@ -228,13 +228,13 @@ class CCEstimatePercentageState extends State<CCEstimatePercentage>
       return Div.row([
         CheckIcon,
         const Spacing.width(12),
-        RLTypography.headingMedium(RLUIStrings.ESTIMATE_EXCELLENT_LABEL, color: RLDS.primaryGreen),
+        RLTypography.headingMedium(RLUIStrings.ESTIMATE_EXCELLENT_LABEL, color: RLDS.success),
       ]);
     }
 
-    final Widget LightbulbIcon = Icon(
+    final Widget LightbulbIcon = const Icon(
       Icons.lightbulb_outline,
-      color: RLDS.warningDark,
+      color: RLDS.warning,
       size: 20,
     );
 
@@ -249,7 +249,7 @@ class CCEstimatePercentageState extends State<CCEstimatePercentage>
       Div.row([
         LightbulbIcon,
         const Spacing.width(12),
-        RLTypography.headingMedium(headerText, color: RLDS.warningDark),
+        RLTypography.headingMedium(headerText, color: RLDS.warning),
       ]),
 
       const Spacing.height(8),
@@ -299,7 +299,7 @@ class CCEstimatePercentageState extends State<CCEstimatePercentage>
           const Spacing.height(4),
           RLTypography.headingMedium(
             '${getCorrectPercentage()}%',
-            color: RLDS.primaryGreen,
+            color: RLDS.success,
             textAlign: TextAlign.center,
           ),
         ]),
@@ -318,16 +318,16 @@ class CCEstimatePercentageState extends State<CCEstimatePercentage>
   }
 
   BoxDecoration getResultCardDecoration(bool isClose) {
-    Color backgroundColor = RLDS.warningColor.withValues(alpha: 0.08);
+    Color backgroundColor = RLDS.warning.withValues(alpha: 0.08);
 
     if (isClose) {
-      backgroundColor = RLDS.primaryGreen.withValues(alpha: 0.08);
+      backgroundColor = RLDS.success.withValues(alpha: 0.08);
     }
 
-    Color borderColor = RLDS.warningLight.withValues(alpha: 0.3);
+    Color borderColor = RLDS.warning.withValues(alpha: 0.3);
 
     if (isClose) {
-      borderColor = RLDS.primaryGreen.withValues(alpha: 0.3);
+      borderColor = RLDS.success.withValues(alpha: 0.3);
     }
 
     return BoxDecoration(
@@ -380,7 +380,7 @@ class CCEstimatePercentageState extends State<CCEstimatePercentage>
               RLTypography.bodyLarge('+8 experience', color: RLDS.white),
             ],
           ),
-          backgroundColor: RLDS.successDark,
+          backgroundColor: RLDS.success,
           duration: const Duration(seconds: 2),
           behavior: SnackBarBehavior.floating,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
@@ -396,10 +396,10 @@ class Style {
 
   static SliderThemeData getSliderTheme() {
     return SliderThemeData(
-      activeTrackColor: RLDS.primaryBlue,
+      activeTrackColor: RLDS.info,
       inactiveTrackColor: RLDS.textPrimary.withValues(alpha: 0.1),
-      thumbColor: RLDS.primaryBlue,
-      overlayColor: RLDS.primaryBlue.withValues(alpha: 0.1),
+      thumbColor: RLDS.info,
+      overlayColor: RLDS.info.withValues(alpha: 0.1),
       thumbShape: const RoundSliderThumbShape(),
       trackHeight: 4,
       tickMarkShape: const RoundSliderTickMarkShape(),
@@ -409,7 +409,7 @@ class Style {
   static const double submitButtonHeight = 44.0;
 
   static final BoxDecoration submitButtonDecoration = BoxDecoration(
-    color: RLDS.primaryBlue,
+    color: RLDS.info,
     borderRadius: BorderRadius.circular(16),
   );
 }

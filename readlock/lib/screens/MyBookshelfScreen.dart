@@ -3,12 +3,12 @@
 
 import 'package:flutter/material.dart';
 import 'package:readlock/screens/profile/LearningStatsCard.dart';
-import 'package:readlock/utility_widgets/StatisticsTopBar.dart';
 import 'package:readlock/utility_widgets/Utility.dart';
+import 'package:readlock/utility_widgets/BookListCard.dart';
+import 'package:readlock/utility_widgets/RLProgressBar.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/constants/RLUIStrings.dart';
-import 'package:readlock/MainNavigation.dart';
 import 'package:readlock/bottom_sheets/user/SettingsBottomSheet.dart';
 import 'package:readlock/bottom_sheets/bookshelf/AllTitlesBottomSheet.dart';
 import 'package:readlock/constants/DartAliases.dart';
@@ -33,13 +33,8 @@ class MyBookshelfScreenState extends State<MyBookshelfScreen> {
       body: SafeArea(
         bottom: false,
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(24),
+          padding: const EdgeInsets.all(RLDS.spacing24),
           child: Div.column([
-            // Top stats bar
-            const StatisticsTopBar(),
-
-            const Spacing.height(24),
-
             // Bookshelf title with settings
             BookshelfHeaderWithSettings(),
 
@@ -52,50 +47,31 @@ class MyBookshelfScreenState extends State<MyBookshelfScreen> {
 
             // Learning statistics
             const LearningStatsCard(),
-
-            // Bottom spacing for floating navigation
-            const Spacing.height(MainNavigation.bottomOffset),
           ], crossAxisAlignment: CrossAxisAlignment.stretch),
         ),
       ),
     );
   }
 
-  static final Widget ArrowForwardIcon = Icon(
+  static final Widget ArrowForwardIcon = const Icon(
     Icons.arrow_forward_ios,
-    color: RLDS.primaryBlue,
+    color: RLDS.info,
     size: 12,
   );
 
-  static final Widget SettingsIcon = Icon(Icons.settings, color: RLDS.textSecondary, size: 24);
+  static final Widget SettingsIcon = const Icon(Icons.settings, color: RLDS.textSecondary, size: 24);
 
   Widget BookshelfHeaderWithSettings() {
-    final BoxDecoration settingsIconDecoration = BoxDecoration(
-      color: RLDS.backgroundLight.withValues(alpha: 0.08),
-      borderRadius: BorderRadius.circular(12),
-    );
-
     return Div.row([
       Expanded(
         child: Div.column([
           RLTypography.headingLarge(RLUIStrings.BOOKSHELF_TITLE),
-
-          const Spacing.height(4),
-
-          Text(
-            RLUIStrings.BOOKSHELF_SUBTITLE,
-            style: RLTypography.bodyMediumStyle.copyWith(color: RLDS.textSecondary),
-          ),
         ], crossAxisAlignment: CrossAxisAlignment.start),
       ),
 
       GestureDetector(
         onTap: () => SettingsBottomSheet.show(context),
-        child: Container(
-          padding: const EdgeInsets.only(top: 8, right: 12),
-          decoration: settingsIconDecoration,
-          child: SettingsIcon,
-        ),
+        child: SettingsIcon,
       ),
     ], crossAxisAlignment: CrossAxisAlignment.start);
   }
@@ -138,20 +114,15 @@ class MyBookshelfScreenState extends State<MyBookshelfScreen> {
       final String? coverImagePath = book['coverImage'];
       final int progressPercent = (bookProgress * 100).toInt();
 
-      final BoxDecoration coverPlaceholderDecoration = BoxDecoration(
-        color: RLDS.primaryBlue.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: RLDS.primaryBlue.withValues(alpha: 0.2)),
-      );
-
       return RLCard.subtle(
-        padding: const EdgeInsets.all(12),
-        margin: const EdgeInsets.only(bottom: 12),
+        padding: const EdgeInsets.all(RLDS.spacing12),
+        margin: const EdgeInsets.only(bottom: RLDS.spacing12),
         child: Div.row([
           // Book cover
-          BookCover(
+          BookCoverThumbnail(
             coverImagePath: coverImagePath,
-            coverPlaceholderDecoration: coverPlaceholderDecoration,
+            width: 60,
+            height: 80,
           ),
 
           const Spacing.width(12),
@@ -170,19 +141,15 @@ class MyBookshelfScreenState extends State<MyBookshelfScreen> {
 
               const Spacing.height(12),
 
-              Div.column([
-                Div.row([
-                  Expanded(
-                    child: ProgressBar(progress: bookProgress, color: RLDS.primaryGreen),
-                  ),
+              Div.row([
+                Expanded(child: RLProgressBar(progress: bookProgress)),
 
-                  const Spacing.width(8),
+                const Spacing.width(8),
 
-                  Text(
-                    '$progressPercent%',
-                    style: RLTypography.bodyMediumStyle.copyWith(color: RLDS.primaryGreen),
-                  ),
-                ]),
+                Text(
+                  '$progressPercent%',
+                  style: RLTypography.bodyMediumStyle.copyWith(color: RLDS.success),
+                ),
               ]),
             ], crossAxisAlignment: CrossAxisAlignment.start),
           ),
@@ -191,73 +158,23 @@ class MyBookshelfScreenState extends State<MyBookshelfScreen> {
     }).toList();
   }
 
-  Widget BookCover({
-    required String? coverImagePath,
-    required BoxDecoration coverPlaceholderDecoration,
-  }) {
-    final bool hasCover = coverImagePath != null;
-
-    final Widget BookIcon = Icon(Icons.book, color: RLDS.primaryBlue, size: 24);
-
-    if (hasCover) {
-      return ClipRRect(
-        borderRadius: BorderRadius.circular(8),
-        child: Image.asset(coverImagePath, width: 60, height: 80, fit: BoxFit.cover),
-      );
-    }
-
-    return Container(
-      width: 60,
-      height: 80,
-      decoration: coverPlaceholderDecoration,
-      child: BookIcon,
-    );
-  }
-
-  Widget ProgressBar({required double progress, required Color color}) {
-    final BoxDecoration trackDecoration = BoxDecoration(
-      color: color.withValues(alpha: 0.2),
-      borderRadius: BorderRadius.circular(4),
-    );
-
-    final BoxDecoration fillDecoration = BoxDecoration(
-      color: color,
-      borderRadius: BorderRadius.circular(4),
-    );
-
-    return Container(
-      height: 4,
-      decoration: trackDecoration,
-      child: FractionallySizedBox(
-        alignment: Alignment.centerLeft,
-        widthFactor: progress,
-        child: Container(decoration: fillDecoration),
-      ),
-    );
-  }
-
   Widget ViewAllBooksButton() {
-    final BoxDecoration buttonDecoration = BoxDecoration(
-      color: RLDS.backgroundLight.withValues(alpha: 0.08),
-      borderRadius: BorderRadius.circular(8),
-    );
-
-    return GestureDetector(
-      onTap: showAllTitlesBottomSheet,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-        decoration: buttonDecoration,
-        child: Div.row([
-          Text(
-            RLUIStrings.TITLES_AND_HISTORY_LABEL,
-            style: RLTypography.bodyMediumStyle.copyWith(color: RLDS.primaryBlue),
-          ),
-
-          const Spacing.width(4),
-
-          ArrowForwardIcon,
-        ]),
+    return RLCard.subtle(
+      padding: const EdgeInsets.symmetric(
+        horizontal: RLDS.spacing12,
+        vertical: RLDS.spacing8,
       ),
+      onTap: showAllTitlesBottomSheet,
+      child: Div.row([
+        Text(
+          RLUIStrings.TITLES_AND_HISTORY_LABEL,
+          style: RLTypography.bodyMediumStyle.copyWith(color: RLDS.info),
+        ),
+
+        const Spacing.width(4),
+
+        ArrowForwardIcon,
+      ]),
     );
   }
 }

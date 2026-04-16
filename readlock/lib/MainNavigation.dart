@@ -1,5 +1,5 @@
 // Main navigation wrapper with bottom navigation bar
-// Provides navigation between course roadmap and profile screens
+// Provides navigation between home, courses and bookshelf screens
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -11,10 +11,6 @@ import 'package:readlock/screens/MyBookshelfScreen.dart';
 import 'package:readlock/bottom_sheets/user/LoginBottomSheet.dart';
 
 class MainNavigation extends StatefulWidget {
-  static const double navHeight = 56.0;
-  static const double navMargin = 16.0;
-  static const double bottomOffset = navHeight + navMargin + 16.0;
-
   final int initialTabIndex;
 
   const MainNavigation({super.key, this.initialTabIndex = 0});
@@ -32,11 +28,7 @@ class MainNavigationState extends State<MainNavigation> {
     super.initState();
     currentIndex = widget.initialTabIndex;
 
-    screens = [
-      const HomeScreen(),
-      const CoursesScreen(),
-      const MyBookshelfScreen(),
-    ];
+    screens = [const HomeScreen(), const CoursesScreen(), const MyBookshelfScreen()];
 
     WidgetsBinding.instance.addPostFrameCallback(showLoginSheet);
   }
@@ -59,75 +51,6 @@ class MainNavigationState extends State<MainNavigation> {
     });
   }
 
-  Widget fadeTransitionBuilder(Widget child, Animation<double> animation) {
-    return FadeTransition(opacity: animation, child: child);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: RLDS.backgroundDark,
-      body: Stack(
-        children: [
-          // Main content
-          AnimatedSwitcher(
-            duration: const Duration(milliseconds: 150),
-            switchInCurve: Curves.easeInOut,
-            switchOutCurve: Curves.easeInOut,
-            transitionBuilder: fadeTransitionBuilder,
-            child: KeyedSubtree(key: ValueKey<int>(currentIndex), child: screens[currentIndex]),
-          ),
-
-          // Floating bottom navigation with SafeArea
-          Positioned(
-            left: 16,
-            right: 16,
-            bottom: 0,
-            child: SafeArea(
-              child: Padding(
-                padding: const EdgeInsets.only(bottom: 16),
-                child: FloatingNavigationBar(),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget FloatingNavigationBar() {
-    const BorderRadius navBarBorderRadius = BorderRadius.all(Radius.circular(28));
-
-    final BoxDecoration navBarDecoration = BoxDecoration(
-      color: RLDS.white,
-      borderRadius: navBarBorderRadius,
-      border: Border.all(color: const Color(0xFF1A1A1A), width: 1.5),
-    );
-
-    return Container(
-      decoration: navBarDecoration,
-      child: MediaQuery.removePadding(
-        context: context,
-        removeBottom: true,
-        child: Theme(
-          data: ThemeData(splashColor: Colors.transparent, highlightColor: Colors.transparent),
-          child: BottomNavigationBar(
-            currentIndex: currentIndex,
-            onTap: handleNavigationTap,
-            backgroundColor: Colors.transparent,
-            selectedItemColor: RLDS.primaryGreen,
-            unselectedItemColor: RLDS.textSecondary,
-            type: BottomNavigationBarType.fixed,
-            items: NavigationItems(),
-            selectedFontSize: 11,
-            unselectedFontSize: 11,
-            elevation: 0,
-          ),
-        ),
-      ),
-    );
-  }
-
   // Icon definitions for navigation items
   static const Icon HomeIcon = Icon(Icons.home_outlined);
   static const Icon HomeActiveIcon = Icon(Icons.home_rounded);
@@ -135,6 +58,23 @@ class MainNavigationState extends State<MainNavigation> {
   static const Icon ExploreActiveIcon = Icon(Icons.explore_rounded);
   static const Icon BookshelfIcon = Icon(Icons.menu_book_outlined);
   static const Icon BookshelfActiveIcon = Icon(Icons.menu_book_rounded);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: RLDS.backgroundDark,
+      body: screens[currentIndex],
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: currentIndex,
+        onTap: handleNavigationTap,
+        selectedItemColor: RLDS.success,
+        unselectedItemColor: RLDS.textSecondary,
+        type: BottomNavigationBarType.fixed,
+        items: NavigationItems(),
+      ),
+    );
+  }
+
   List<BottomNavigationBarItem> NavigationItems() {
     return [
       const BottomNavigationBarItem(

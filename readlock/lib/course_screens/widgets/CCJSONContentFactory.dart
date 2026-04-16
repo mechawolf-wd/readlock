@@ -109,9 +109,8 @@ class UnknownContentWidget extends StatelessWidget {
     // Error message display
     return Div.column(
       [
-        Text(
-          '$RLUIStrings.UNKNOWN_CONTENT_TYPE_MESSAGE$entityType',
-          style: RLTypography.bodyMediumStyle,
+        RLTypography.bodyMedium(
+          '${RLUIStrings.UNKNOWN_CONTENT_TYPE_MESSAGE}$entityType',
           textAlign: TextAlign.center,
         ),
       ],
@@ -323,7 +322,8 @@ class JsonSingleChoiceQuestionWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final List<QuestionOption> options = parseQuestionOptions(contentData);
     final List<int> indices = List<int>.from(contentData['correct-answer-indices'] ?? []);
-    final int correctAnswerIndex = indices.isNotEmpty ? indices.first : -1;
+    final bool hasCorrectAnswerIndex = indices.isNotEmpty;
+    final int correctAnswerIndex = hasCorrectAnswerIndex ? indices.first : -1;
 
     final SingleChoiceQuestionContent content = SingleChoiceQuestionContent(
       id: contentData['id'] ?? '',
@@ -349,7 +349,8 @@ class JsonTrueFalseQuestionWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final List<QuestionOption> options = parseQuestionOptions(contentData);
     final List<int> indices = List<int>.from(contentData['correct-answer-indices'] ?? []);
-    final int correctAnswerIndex = indices.isNotEmpty ? indices.first : -1;
+    final bool hasCorrectAnswerIndex = indices.isNotEmpty;
+    final int correctAnswerIndex = hasCorrectAnswerIndex ? indices.first : -1;
 
     final TrueFalseQuestionContent content = TrueFalseQuestionContent(
       id: contentData['id'] ?? '',

@@ -60,10 +60,10 @@ class RLCard extends StatelessWidget {
 
     if (isElevated) {
       return BoxDecoration(
-        color: RLDS.white,
+        color: RLDS.surface,
         borderRadius: RLDS.borderRadiusSmall,
         border: Border.all(
-          color: borderColor ?? const Color(0xFF1A1A1A),
+          color: borderColor ?? RLDS.onSurface,
           width: 1.5,
         ),
       );
@@ -73,7 +73,7 @@ class RLCard extends StatelessWidget {
       color: RLDS.backgroundLight.withValues(alpha: 0.08),
       borderRadius: RLDS.borderRadiusSmall,
       border: Border.all(
-        color: borderColor ?? RLDS.grey300.withValues(alpha: 0.3),
+        color: borderColor ?? RLDS.textMuted.withValues(alpha: 0.3),
       ),
     );
   }

@@ -64,15 +64,15 @@ class CCReflectionQuestionState extends State<CCReflectionQuestion> {
     );
 
     selectedThoughtDecoration = BoxDecoration(
-      color: RLDS.primaryBlue.withValues(alpha: 0.05),
+      color: RLDS.info.withValues(alpha: 0.05),
       borderRadius: BorderRadius.circular(16),
-      border: Border.all(color: RLDS.primaryBlue.withValues(alpha: 0.5), width: 2),
+      border: Border.all(color: RLDS.info.withValues(alpha: 0.5), width: 2),
     );
 
     reflectedDecoration = BoxDecoration(
-      color: RLDS.primaryGreen.withValues(alpha: 0.05),
+      color: RLDS.success.withValues(alpha: 0.05),
       borderRadius: BorderRadius.circular(16),
-      border: Border.all(color: RLDS.primaryGreen.withValues(alpha: 0.4), width: 1.5),
+      border: Border.all(color: RLDS.success.withValues(alpha: 0.4), width: 1.5),
     );
 
     headerTextStyle = RLTypography.headingMediumStyle.copyWith(
@@ -85,7 +85,7 @@ class CCReflectionQuestionState extends State<CCReflectionQuestion> {
     insightHeaderTextStyle = RLTypography.bodyLargeStyle.copyWith(
       fontWeight: FontWeight.w600,
       fontSize: 14,
-      color: RLDS.primaryGreen,
+      color: RLDS.success,
     );
 
     insightContentTextStyle = RLTypography.bodyMediumStyle.copyWith(
@@ -98,15 +98,15 @@ class CCReflectionQuestionState extends State<CCReflectionQuestion> {
   void initializeIcons() {
     ReflectionIcon = Icon(
       Icons.self_improvement,
-      color: RLDS.primaryBlue.withValues(alpha: 0.7),
+      color: RLDS.info.withValues(alpha: 0.7),
       size: 32,
     );
 
-    CheckIcon = Icon(Icons.check_circle_outline, color: RLDS.primaryGreen, size: 20);
+    CheckIcon = const Icon(Icons.check_circle_outline, color: RLDS.success, size: 20);
 
     InsightIcon = Icon(
       Icons.auto_awesome,
-      color: RLDS.primaryGreen.withValues(alpha: 0.8),
+      color: RLDS.success.withValues(alpha: 0.8),
       size: 20,
     );
   }
@@ -215,7 +215,7 @@ class CCReflectionQuestionState extends State<CCReflectionQuestion> {
   Widget ReflectionInsightContent() {
     final Widget InsightIcon = Icon(
       Icons.auto_awesome,
-      color: RLDS.primaryGreen.withValues(alpha: 0.8),
+      color: RLDS.success.withValues(alpha: 0.8),
       size: 20,
     );
 
@@ -231,7 +231,7 @@ class CCReflectionQuestionState extends State<CCReflectionQuestion> {
             style: RLTypography.bodyLargeStyle.copyWith(
               fontWeight: FontWeight.w600,
               fontSize: 14,
-              color: RLDS.primaryGreen,
+              color: RLDS.success,
             ),
           ),
         ]),
@@ -248,7 +248,7 @@ class CCReflectionQuestionState extends State<CCReflectionQuestion> {
         ),
       ],
       padding: 20,
-      color: RLDS.primaryGreen.withValues(alpha: 0.05),
+      color: RLDS.success.withValues(alpha: 0.05),
       radius: 12,
     );
   }
@@ -305,13 +305,13 @@ class CCReflectionQuestionState extends State<CCReflectionQuestion> {
     FontWeight fontWeight = FontWeight.normal;
 
     if (hasReflected && isCorrect) {
-      textColor = RLDS.primaryGreen;
+      textColor = RLDS.success;
       fontWeight = FontWeight.w500;
     } else if (hasReflected && !isCorrect) {
       textColor = RLDS.textPrimary.withValues(alpha: 0.5);
     } else if (isSelected && !hasReflected) {
       fontWeight = FontWeight.w500;
-      textColor = RLDS.primaryBlue;
+      textColor = RLDS.info;
     }
 
     return RLTypography.bodyMediumStyle.copyWith(

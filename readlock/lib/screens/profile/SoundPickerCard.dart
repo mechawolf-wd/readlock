@@ -38,7 +38,6 @@ class SoundPickerCardState extends State<SoundPickerCard> {
     final JSONList soundOptions = [
       {'name': RLUIStrings.TYPEWRITER_SOUND, 'icon': Icons.keyboard},
       {'name': RLUIStrings.SWITCHES_SOUND, 'icon': Icons.toggle_on},
-      {'name': RLUIStrings.OIIA_SOUND, 'icon': Icons.music_note},
     ];
 
     final List<Widget> soundBlocks = SoundBlockItems(soundOptions);
@@ -68,16 +67,16 @@ class SoundPickerCardState extends State<SoundPickerCard> {
     required VoidCallback onTap,
   }) {
     final Color backgroundColor = isSelected
-        ? RLDS.primaryBlue.withValues(alpha: 0.1)
+        ? RLDS.info.withValues(alpha: 0.1)
         : Colors.transparent;
 
     final Color borderColor = isSelected
-        ? RLDS.primaryBlue
+        ? RLDS.info
         : RLDS.textPrimary.withValues(alpha: 0.2);
 
-    final Color iconColor = isSelected ? RLDS.primaryBlue : RLDS.textSecondary;
+    final Color iconColor = isSelected ? RLDS.info : RLDS.textSecondary;
 
-    final Color textColor = isSelected ? RLDS.primaryBlue : RLDS.textPrimary;
+    final Color textColor = isSelected ? RLDS.info : RLDS.textPrimary;
 
     final BoxDecoration blockDecoration = BoxDecoration(
       color: backgroundColor,
@@ -91,7 +90,7 @@ class SoundPickerCardState extends State<SoundPickerCard> {
       onTap: onTap,
       child: Container(
         decoration: blockDecoration,
-        padding: EdgeInsets.all(12.0),
+        padding: const EdgeInsets.all(12.0),
         margin: const EdgeInsets.symmetric(horizontal: 4.0),
         child: Div.column([
           SoundIcon,

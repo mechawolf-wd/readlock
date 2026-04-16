@@ -81,7 +81,7 @@ class SheetContainer extends StatelessWidget {
     );
 
     return Container(
-      color: RLDS.white,
+      color: RLDS.surface,
       child: SafeArea(
         top: false,
         child: Container(

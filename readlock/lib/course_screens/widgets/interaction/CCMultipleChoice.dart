@@ -44,13 +44,13 @@ class CCMultipleChoiceState extends State<CCMultipleChoice> {
     selectedOptionDecoration = BoxDecoration(
       color: RLDS.backgroundLight,
       borderRadius: RLDS.borderRadiusSmall,
-      border: Border.all(color: RLDS.primaryBlue, width: 2),
+      border: Border.all(color: RLDS.info, width: 2),
     );
 
     correctOptionDecoration = BoxDecoration(
-      color: RLDS.primaryGreen.withValues(alpha: 0.1),
+      color: RLDS.success.withValues(alpha: 0.1),
       borderRadius: RLDS.borderRadiusSmall,
-      border: Border.all(color: RLDS.primaryGreen, width: 2),
+      border: Border.all(color: RLDS.success, width: 2),
     );
 
     incorrectOptionDecoration = BoxDecoration(
@@ -175,7 +175,7 @@ class CCMultipleChoiceState extends State<CCMultipleChoice> {
     FontWeight fontWeight = FontWeight.normal;
 
     if (shouldShowCorrect) {
-      textColor = RLDS.primaryGreen;
+      textColor = RLDS.success;
       fontWeight = FontWeight.w500;
     } else if (shouldShowIncorrect) {
       textColor = RLDS.textPrimary.withValues(alpha: 0.5);

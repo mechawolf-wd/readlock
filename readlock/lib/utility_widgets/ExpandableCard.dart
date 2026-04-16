@@ -114,7 +114,7 @@ class ExpandableCardState extends State<ExpandableCard> {
       return RLDS.white;
     }
 
-    return RLDS.primaryBlue;
+    return RLDS.info;
   }
 
   Widget HeaderSection(Color titleColor, Color iconColor) {

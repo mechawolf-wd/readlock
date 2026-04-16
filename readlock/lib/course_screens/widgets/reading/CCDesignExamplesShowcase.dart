@@ -143,7 +143,7 @@ class CCDesignExamplesShowcaseState extends State<CCDesignExamplesShowcase> {
   }
 
   Widget RevealProgressIndicator() {
-    final Widget LightbulbIcon = Icon(Icons.lightbulb, color: RLDS.primaryGreen, size: 20);
+    final Widget LightbulbIcon = const Icon(Icons.lightbulb, color: RLDS.success, size: 20);
 
     final bool isAllRevealed = revealedCards.length == examples.length;
 
@@ -176,7 +176,7 @@ class CCDesignExamplesShowcaseState extends State<CCDesignExamplesShowcase> {
 
   Widget CompleteChip() {
     final BoxDecoration chipDecoration = BoxDecoration(
-      color: RLDS.primaryGreen,
+      color: RLDS.success,
       borderRadius: BorderRadius.circular(8),
     );
 
@@ -193,10 +193,10 @@ class CCDesignExamplesShowcaseState extends State<CCDesignExamplesShowcase> {
     required bool isRevealed,
     required VoidCallback onTap,
   }) {
-    Color themeColor = RLDS.errorColor;
+    Color themeColor = RLDS.error;
 
     if (example.isGoodDesign) {
-      themeColor = RLDS.primaryGreen;
+      themeColor = RLDS.success;
     }
 
     // Card styling

@@ -76,17 +76,17 @@ class FeedbackSnackBar {
     snackbarController.show(
       context: context,
       content: content,
-      backgroundColor: RLDS.primaryGreen,
+      backgroundColor: RLDS.success,
     );
   }
 
   static void showWrongAnswer(BuildContext context, {String? hint}) {
     final bool hasHint = hint != null && hint.isNotEmpty;
 
-    Duration duration = Duration(milliseconds: 3000);
+    Duration duration = const Duration(milliseconds: 3000);
 
     if (hasHint) {
-      duration = Duration(seconds: 5);
+      duration = const Duration(seconds: 5);
     }
 
     final Widget content = WrongAnswerContent(hasHint: hasHint, hint: hint);
@@ -94,16 +94,16 @@ class FeedbackSnackBar {
     snackbarController.show(
       context: context,
       content: content,
-      backgroundColor: RLDS.primaryBlue,
+      backgroundColor: RLDS.info,
       duration: duration,
     );
   }
 
   static void showCustomFeedback(BuildContext context, String message, bool isCorrect) {
-    Color backgroundColor = RLDS.primaryBlue;
+    Color backgroundColor = RLDS.info;
 
     if (isCorrect) {
-      backgroundColor = RLDS.primaryGreen;
+      backgroundColor = RLDS.success;
     }
 
     final Widget content = RLTypography.bodyLarge(message, color: RLDS.white);
@@ -132,7 +132,7 @@ class AnimatedSnackbar extends StatefulWidget {
   final VoidCallback onDismiss;
   final void Function(AnimatedSnackbarState) onStateCreated;
 
-  const AnimatedSnackbar({
+  const AnimatedSnackbar({super.key, 
     required this.content,
     required this.backgroundColor,
     required this.duration,
@@ -157,7 +157,7 @@ class AnimatedSnackbarState extends State<AnimatedSnackbar>
 
     animationController = AnimationController(
       vsync: this,
-      duration: Duration(milliseconds: 250),
+      duration: const Duration(milliseconds: 250),
     );
 
     slideAnimation = Tween<Offset>(begin: const Offset(0, 1), end: Offset.zero).animate(
@@ -223,9 +223,9 @@ class CorrectAnswerContent extends StatelessWidget {
   final bool hasExplanation;
   final String? explanation;
 
-  const CorrectAnswerContent({required this.hasExplanation, this.explanation});
+  const CorrectAnswerContent({super.key, required this.hasExplanation, this.explanation});
 
-  static final Icon StarIcon = Icon(Icons.star, color: RLDS.white, size: 20);
+  static final Icon StarIcon = const Icon(Icons.star, color: RLDS.white, size: 20);
 
   @override
   Widget build(BuildContext context) {
@@ -245,7 +245,7 @@ class CorrectAnswerContent extends StatelessWidget {
 class WhyButton extends StatelessWidget {
   final String? explanation;
 
-  const WhyButton({this.explanation});
+  const WhyButton({super.key, this.explanation});
 
   void handleTap(BuildContext context) {
     FeedbackSnackBar.dismissAnimated();
@@ -277,9 +277,9 @@ class WrongAnswerContent extends StatelessWidget {
   final bool hasHint;
   final String? hint;
 
-  const WrongAnswerContent({required this.hasHint, this.hint});
+  const WrongAnswerContent({super.key, required this.hasHint, this.hint});
 
-  static final Icon LightbulbIcon = Icon(
+  static final Icon LightbulbIcon = const Icon(
     Icons.lightbulb_outline,
     color: RLDS.white,
     size: 20,
@@ -303,7 +303,7 @@ class WrongAnswerContent extends StatelessWidget {
 class HintButton extends StatelessWidget {
   final String? hint;
 
-  const HintButton({this.hint});
+  const HintButton({super.key, this.hint});
 
   void handleTap(BuildContext context) {
     FeedbackSnackBar.dismissAnimated();

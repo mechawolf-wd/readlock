@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:readlock/MainNavigation.dart';
+import 'package:readlock/constants/RLDesignSystem.dart';
 
 void main() {
   runApp(const ReadlockApp());
@@ -20,16 +21,19 @@ class ReadlockApp extends StatelessWidget {
 
   ThemeData getTheme() {
     return ThemeData(
-      colorScheme: ColorScheme.fromSeed(seedColor: Colors.tealAccent),
-      scaffoldBackgroundColor: Colors.white,
+      colorScheme: ColorScheme.fromSeed(
+        seedColor: Colors.tealAccent,
+        brightness: Brightness.dark,
+      ),
+      scaffoldBackgroundColor: RLDS.backgroundDark,
       appBarTheme: const AppBarTheme(
-        backgroundColor: Colors.white,
-        foregroundColor: Colors.black,
+        backgroundColor: RLDS.backgroundDark,
+        foregroundColor: RLDS.textPrimary,
         elevation: 0,
-        iconTheme: IconThemeData(color: Colors.black),
+        iconTheme: IconThemeData(color: RLDS.textPrimary),
       ),
       useMaterial3: true,
-      textTheme: GoogleFonts.poppinsTextTheme(ThemeData.light().textTheme),
+      textTheme: GoogleFonts.poppinsTextTheme(ThemeData.dark().textTheme),
     );
   }
 }

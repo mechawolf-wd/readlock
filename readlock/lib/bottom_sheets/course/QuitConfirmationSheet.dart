@@ -17,7 +17,8 @@ class QuitConfirmationSheet {
       message: RLUIStrings.QUIT_CONFIRMATION_MESSAGE,
       confirmLabel: RLUIStrings.QUIT_CONFIRMATION_LEARN_BUTTON,
       cancelLabel: RLUIStrings.QUIT_CONFIRMATION_QUIT_BUTTON,
-      cancelColor: RLDS.errorColor,
+      cancelColor: RLDS.error,
+      horizontalButtons: true,
       onConfirm: () {},
       onCancel: onQuitTap,
     );

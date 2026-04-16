@@ -165,7 +165,7 @@ class StreakplierRewardScreenState extends State<StreakplierRewardScreen>
       // Congratulations text
       RLTypography.headingLarge(
         RLUIStrings.REWARD_CONGRATULATIONS,
-        color: RLDS.primaryGreen,
+        color: RLDS.success,
         textAlign: TextAlign.center,
       ),
 
@@ -183,11 +183,11 @@ class StreakplierRewardScreenState extends State<StreakplierRewardScreen>
   // Large celebration check mark icon
   Widget CelebrationIcon() {
     final BoxDecoration iconDecoration = BoxDecoration(
-      color: RLDS.primaryGreen.withValues(alpha: 0.1),
+      color: RLDS.success.withValues(alpha: 0.1),
       borderRadius: BorderRadius.circular(32),
     );
 
-    final Widget CheckIcon = Icon(Icons.check_circle, color: RLDS.primaryGreen, size: 48);
+    final Widget CheckIcon = const Icon(Icons.check_circle, color: RLDS.success, size: 48);
 
     return Container(width: 64, height: 64, decoration: iconDecoration, child: CheckIcon);
   }
@@ -210,17 +210,17 @@ class StreakplierRewardScreenState extends State<StreakplierRewardScreen>
   // Featured reading time card with enhanced visual prominence
   Widget FeaturedReadingTimeCard(String formattedLessonTime) {
     final BoxDecoration featuredCardDecoration = BoxDecoration(
-      color: RLDS.warningColor.withValues(alpha: 0.1),
+      color: RLDS.warning.withValues(alpha: 0.1),
       borderRadius: BorderRadius.circular(20),
-      border: Border.all(color: RLDS.warningColor.withValues(alpha: 0.3), width: 2),
+      border: Border.all(color: RLDS.warning.withValues(alpha: 0.3), width: 2),
     );
 
     final BoxDecoration timerIconDecoration = BoxDecoration(
-      color: RLDS.warningColor.withValues(alpha: 0.2),
+      color: RLDS.warning.withValues(alpha: 0.2),
       borderRadius: BorderRadius.circular(40),
     );
 
-    final Widget TimerIcon = Icon(Icons.timer_rounded, color: RLDS.warningColor, size: 40);
+    final Widget TimerIcon = const Icon(Icons.timer_rounded, color: RLDS.warning, size: 40);
 
     return AnimatedOpacity(
       opacity: lessonTimeOpacity,
@@ -247,7 +247,7 @@ class StreakplierRewardScreenState extends State<StreakplierRewardScreen>
           Text(
             formattedLessonTime,
             style: RLTypography.headingLargeStyle.copyWith(
-              color: RLDS.warningColor,
+              color: RLDS.warning,
               fontSize: 36,
               fontWeight: FontWeight.bold,
             ),
@@ -277,12 +277,12 @@ class StreakplierRewardScreenState extends State<StreakplierRewardScreen>
                 builder: (context, child) {
                   return RLTypography.bodyLarge(
                     '${streakplierCountAnimation.value.toStringAsFixed(2)}x',
-                    color: RLDS.primaryGreen,
+                    color: RLDS.success,
                     textAlign: TextAlign.center,
                   );
                 },
               ),
-              color: RLDS.primaryGreen,
+              color: RLDS.success,
             ),
           ),
         ),
@@ -301,12 +301,12 @@ class StreakplierRewardScreenState extends State<StreakplierRewardScreen>
                 builder: (context, child) {
                   return RLTypography.bodyLarge(
                     '+${experiencePointsCountAnimation.value} XP',
-                    color: RLDS.primaryBlue,
+                    color: RLDS.info,
                     textAlign: TextAlign.center,
                   );
                 },
               ),
-              color: RLDS.primaryBlue,
+              color: RLDS.info,
             ),
           ),
         ),
@@ -366,7 +366,7 @@ class StreakplierRewardScreenState extends State<StreakplierRewardScreen>
           width: double.infinity,
           padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
           decoration: BoxDecoration(
-            color: RLDS.primaryGreen,
+            color: RLDS.success,
             borderRadius: BorderRadius.circular(12),
           ),
           child: Row(

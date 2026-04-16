@@ -17,7 +17,7 @@ class ReaderPassScreen extends StatefulWidget {
 }
 
 class ReaderPassScreenState extends State<ReaderPassScreen> {
-  static final Widget BackArrowIcon = Icon(Icons.arrow_back, color: RLDS.textPrimary, size: 24);
+  static final Widget BackArrowIcon = const Icon(Icons.arrow_back, color: RLDS.textPrimary, size: 24);
 
   void handleBackButton() {
     Navigator.of(context).pop();
@@ -76,11 +76,11 @@ class ReaderPassScreenState extends State<ReaderPassScreen> {
   Widget HeaderSection() {
     final BorderRadius backButtonRadius = BorderRadius.circular(36);
 
-    return Container(
-      padding: const EdgeInsets.all(20),
-      child: Div.row([
+    return Div.row(
+      [
         Div.row([BackArrowIcon], padding: 8, radius: backButtonRadius, onTap: handleBackButton),
-      ]),
+      ],
+      padding: 20,
     );
   }
 
@@ -100,15 +100,15 @@ class ReaderPassScreenState extends State<ReaderPassScreen> {
 
   Widget DiscountBadge() {
     final BoxDecoration badgeDecoration = BoxDecoration(
-      color: RLDS.primaryGreen,
+      color: RLDS.success,
       borderRadius: BorderRadius.circular(8),
     );
 
     return Center(
-      child: Container(
+      child: Div.column(
+        [RLTypography.headingMedium(RLUIStrings.DISCOUNT_TEXT, color: RLDS.white)],
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: badgeDecoration,
-        child: RLTypography.headingMedium(RLUIStrings.DISCOUNT_TEXT, color: RLDS.white),
       ),
     );
   }
@@ -117,13 +117,11 @@ class ReaderPassScreenState extends State<ReaderPassScreen> {
     final BoxDecoration pricingCardDecoration = BoxDecoration(
       color: RLDS.backgroundLight.withValues(alpha: 0.08),
       borderRadius: BorderRadius.circular(16),
-      border: Border.all(color: RLDS.primaryGreen.withValues(alpha: 0.3)),
+      border: Border.all(color: RLDS.success.withValues(alpha: 0.3)),
     );
 
-    return Container(
-      padding: const EdgeInsets.all(24),
-      decoration: pricingCardDecoration,
-      child: Div.column([
+    return Div.column(
+      [
         // Original price (strikethrough)
         RLTypography.bodyLarge(
           RLUIStrings.ORIGINAL_PRICE,
@@ -135,11 +133,14 @@ class ReaderPassScreenState extends State<ReaderPassScreen> {
 
         // Discounted price
         Div.row([
-          RLTypography.headingLarge(RLUIStrings.DISCOUNTED_PRICE, color: RLDS.primaryGreen),
+          RLTypography.headingLarge(RLUIStrings.DISCOUNTED_PRICE, color: RLDS.success),
 
           RLTypography.bodyLarge(RLUIStrings.PRICE_PERIOD, color: RLDS.textSecondary),
         ], mainAxisAlignment: MainAxisAlignment.center),
-      ], crossAxisAlignment: CrossAxisAlignment.center),
+      ],
+      crossAxisAlignment: CrossAxisAlignment.center,
+      padding: 24,
+      decoration: pricingCardDecoration,
     );
   }
 
@@ -176,64 +177,72 @@ class ReaderPassScreenState extends State<ReaderPassScreen> {
     ], crossAxisAlignment: CrossAxisAlignment.start);
   }
 
+  Widget BenefitCard(JSONMap benefit) {
+    final IconData benefitIconData = benefit['icon'] as IconData? ?? Icons.check;
+    final String benefitTitle = benefit['title'] as String? ?? '';
+    final String benefitDescription = benefit['description'] as String? ?? '';
+
+    final Widget BenefitIcon = Icon(benefitIconData, color: RLDS.success, size: 24);
+
+    final BoxDecoration iconDecoration = BoxDecoration(
+      color: RLDS.success.withValues(alpha: 0.1),
+      borderRadius: BorderRadius.circular(8),
+    );
+
+    return RLCard.subtle(
+      borderColor: RLDS.success.withValues(alpha: 0.2),
+      padding: const EdgeInsets.all(16),
+      margin: const EdgeInsets.only(bottom: 12),
+      child: Div.row([
+        Div.column(
+          [BenefitIcon],
+          padding: 8,
+          decoration: iconDecoration,
+        ),
+
+        const Spacing.width(16),
+
+        Expanded(
+          child: Div.column([
+            RLTypography.bodyLarge(benefitTitle),
+
+            const Spacing.height(4),
+
+            RLTypography.bodyMedium(benefitDescription, color: RLDS.textSecondary),
+          ], crossAxisAlignment: CrossAxisAlignment.start),
+        ),
+      ]),
+    );
+  }
+
   List<Widget> BenefitCards(JSONList benefits) {
-    return benefits.map((benefit) {
-      final IconData benefitIcon = benefit['icon'] ?? Icons.check;
-      final String benefitTitle = benefit['title'] ?? '';
-      final String benefitDescription = benefit['description'] ?? '';
+    final List<Widget> cards = [];
 
-      final BoxDecoration iconDecoration = BoxDecoration(
-        color: RLDS.primaryGreen.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(8),
-      );
+    for (final JSONMap benefit in benefits) {
+      cards.add(BenefitCard(benefit));
+    }
 
-      final Widget BenefitIcon = Icon(benefitIcon, color: RLDS.primaryGreen, size: 24);
-
-      return RLCard.subtle(
-        borderColor: RLDS.primaryGreen.withValues(alpha: 0.2),
-        padding: const EdgeInsets.all(16),
-        margin: const EdgeInsets.only(bottom: 12),
-        child: Div.row([
-          Container(
-            padding: const EdgeInsets.all(8),
-            decoration: iconDecoration,
-            child: BenefitIcon,
-          ),
-
-          const Spacing.width(16),
-
-          Expanded(
-            child: Div.column([
-              RLTypography.bodyLarge(benefitTitle),
-
-              const Spacing.height(4),
-
-              RLTypography.bodyMedium(benefitDescription, color: RLDS.textSecondary),
-            ], crossAxisAlignment: CrossAxisAlignment.start),
-          ),
-        ]),
-      );
-    }).toList();
+    return cards;
   }
 
   Widget SubscribeButton() {
     final BoxDecoration buttonDecoration = BoxDecoration(
-      color: RLDS.primaryGreen,
+      color: RLDS.success,
       borderRadius: BorderRadius.circular(12),
     );
 
-    return GestureDetector(
-      onTap: handleSubscribe,
-      child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.symmetric(vertical: 16),
-        decoration: buttonDecoration,
-        child: RLTypography.headingMedium(
+    return Div.column(
+      [
+        RLTypography.headingMedium(
           RLUIStrings.SUBSCRIBE_BUTTON_TEXT,
           color: RLDS.white,
           textAlign: TextAlign.center,
         ),
-      ),
+      ],
+      width: 'full',
+      padding: const EdgeInsets.symmetric(vertical: 16),
+      decoration: buttonDecoration,
+      onTap: handleSubscribe,
     );
   }
 }

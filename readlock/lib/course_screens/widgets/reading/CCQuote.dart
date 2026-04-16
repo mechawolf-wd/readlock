@@ -25,7 +25,7 @@ class CCQuoteState extends State<CCQuote> {
     final BoxDecoration quoteContainerDecoration = BoxDecoration(
       color: RLDS.backgroundLight,
       borderRadius: BorderRadius.circular(16),
-      border: Border.all(color: RLDS.warningColor.withValues(alpha: 0.2)),
+      border: Border.all(color: RLDS.warning.withValues(alpha: 0.2)),
     );
 
     return Container(
@@ -52,7 +52,7 @@ class CCQuoteState extends State<CCQuote> {
   }
 
   Widget QuoteHeader() {
-    final Widget QuoteIcon = Icon(Icons.format_quote, color: RLDS.warningColor, size: 24);
+    final Widget QuoteIcon = const Icon(Icons.format_quote, color: RLDS.warning, size: 24);
 
     IconData bookmarkIconData = Icons.bookmark_border;
 
@@ -62,7 +62,7 @@ class CCQuoteState extends State<CCQuote> {
 
     final Widget BookmarkToggleIcon = Icon(
       bookmarkIconData,
-      color: RLDS.warningColor,
+      color: RLDS.warning,
       size: 24,
     );
 
@@ -85,9 +85,9 @@ class CCQuoteState extends State<CCQuote> {
 
   Widget QuoteText() {
     final BoxDecoration quoteTextDecoration = BoxDecoration(
-      color: RLDS.warningColor.withValues(alpha: 0.05),
+      color: RLDS.warning.withValues(alpha: 0.05),
       borderRadius: BorderRadius.circular(12),
-      border: Border.all(color: RLDS.warningColor.withValues(alpha: 0.2), width: 2),
+      border: Border.all(color: RLDS.warning.withValues(alpha: 0.2), width: 2),
     );
 
     return Container(
@@ -108,7 +108,7 @@ class CCQuoteState extends State<CCQuote> {
 
       RenderIf.condition(
         isBookmarked,
-        RLTypography.bodyMedium(RLUIStrings.QUOTE_BOOKMARKED_LABEL, color: RLDS.warningColor),
+        RLTypography.bodyMedium(RLUIStrings.QUOTE_BOOKMARKED_LABEL, color: RLDS.warning),
       ),
     ]);
   }

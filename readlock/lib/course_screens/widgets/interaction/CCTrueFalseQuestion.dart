@@ -75,7 +75,7 @@ class CCTrueFalseQuestionState extends State<CCTrueFalseQuestion> {
         child: AnswerButton(
           answerIndex: 0,
           label: RLUIStrings.TRUE_LABEL,
-          baseColor: RLDS.primaryBlue,
+          baseColor: RLDS.info,
           icon: Icons.check_circle_outline,
         ),
       ),
@@ -87,7 +87,7 @@ class CCTrueFalseQuestionState extends State<CCTrueFalseQuestion> {
         child: AnswerButton(
           answerIndex: 1,
           label: RLUIStrings.FALSE_LABEL,
-          baseColor: RLDS.errorDark,
+          baseColor: RLDS.error,
           icon: Icons.cancel_outlined,
         ),
       ),
@@ -191,10 +191,10 @@ class CCTrueFalseQuestionState extends State<CCTrueFalseQuestion> {
   }) {
     if (shouldShowCorrect) {
       return ButtonColors(
-        backgroundColor: RLDS.primaryGreen.withValues(alpha: 0.1),
-        borderColor: RLDS.primaryGreen,
-        textColor: RLDS.primaryGreen,
-        iconColor: RLDS.primaryGreen,
+        backgroundColor: RLDS.success.withValues(alpha: 0.1),
+        borderColor: RLDS.success,
+        textColor: RLDS.success,
+        iconColor: RLDS.success,
       );
     }
 
@@ -257,7 +257,7 @@ class CCTrueFalseQuestionState extends State<CCTrueFalseQuestion> {
       return widget.content.hint!;
     }
 
-    return 'Think about the design principle and try again.';
+    return RLUIStrings.DEFAULT_WRONG_ANSWER_HINT;
   }
 
   void showCorrectAnswerFeedback(int answerIndex) {

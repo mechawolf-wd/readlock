@@ -569,43 +569,43 @@ class Div extends StatelessWidget {
   Color? getColorFromString(String colorString) {
     switch (colorString.toLowerCase()) {
       case 'red': {
-        return RLDS.errorColor;
+        return RLDS.error;
       }
       case 'blue': {
-        return RLDS.primaryBlue;
+        return RLDS.info;
       }
       case 'green': {
-        return RLDS.primaryGreen;
+        return RLDS.success;
       }
       case 'yellow': {
-        return RLDS.accentYellow;
+        return RLDS.warning;
       }
       case 'orange': {
-        return RLDS.warningColor;
+        return RLDS.warning;
       }
       case 'purple': {
-        return RLDS.accentPurple;
+        return RLDS.primary;
       }
       case 'pink': {
-        return RLDS.accentPink;
+        return RLDS.primary;
       }
       case 'cyan': {
-        return RLDS.accentCyan;
+        return RLDS.info;
       }
       case 'teal': {
-        return RLDS.accentTeal;
+        return RLDS.info;
       }
       case 'lime': {
-        return RLDS.accentLime;
+        return RLDS.success;
       }
       case 'indigo': {
-        return RLDS.accentIndigo;
+        return RLDS.primary;
       }
       case 'amber': {
-        return RLDS.accentAmber;
+        return RLDS.warning;
       }
       case 'brown': {
-        return RLDS.accentBrown;
+        return RLDS.warning;
       }
       case 'grey': {
         return Colors.grey;

@@ -391,21 +391,23 @@ These are the skeleton of AI writing. Even clean vocabulary cannot hide them. Re
 
 **Contrast and reversal patterns:**
 
-**The "not A, actually B" reversal**
-_"Vision is the default. Reading is the workaround."_
-Just state what is true. Skip the theatrical contrast.
+**Correctio (the "not X, it's Y" move)**
+_"Vision is the default. Reading is the workaround."_ / _"It's not a mistake. It's a feature."_ / _"The method did not fail. It has not crossed the threshold."_
+The speaker states something, then pretends to retract it to land the second clause harder. A classical rhetorical device (Latin: _correctio_; Greek: _epanorthosis_). Overused in AI writing because it performs insight without earning it. Banned altogether, in all forms:
+
+- As one sentence: _"It's not X, it's Y."_
+- As two sentences: _"It is not X. It is Y."_ (split correctio — same pattern with a period)
+- With a softener: _"It's not just X, it's Y."_ / _"Not so much X as Y."_
+
+Just state what is true. If Y is the real claim, write only Y. The reader does not need to see X denied first.
 
 **The mirror sentence**
 _"The question is not whether X, the question is Y."_
-Just state Y.
+A correctio built around repeating the same noun. Just state Y.
 
 **The definition-then-reframe**
 _"X is defined as Y. But what it really means is Z."_
-Just say Z.
-
-**The split correction**
-_"The method did not fail. It has not crossed the threshold."_ / _"The math did not stop. The timeline was wrong."_
-Two short sentences where the first negates and the second corrects. Write them as one sentence: _"The method has not failed, it just has not crossed the threshold yet."_ This is not-A-actually-B broken into two periods.
+Correctio dressed as a definition. Just say Z.
 
 **Inflation and enumeration tricks:**
 
@@ -500,15 +502,15 @@ The package title is the first thing the reader sees in the segment menu. It is 
 
 Rotate through different title shapes across packages in the same segment:
 
-| Shape                                  | Example                                  |
-| -------------------------------------- | ---------------------------------------- |
-| **Question**                           | _"Why Couldn't She Throw Them Away?"_    |
-| **Open-ended fragment with three dots**| _"What the Hand Already Knew..."_        |
-| **Short noun phrase**                  | _"More Than a Watch"_                    |
-| **Why / when statement**               | _"Why Beauty Helps the Hand"_            |
-| **Narrative beat**                     | _"And Then She Could Not Let Them Go"_   |
-| **Single concept fragment**            | _"The Half-Second Before Thought"_       |
-| **The X That Y (use sparingly)**       | _"The Watch That Outlived Its Owner"_    |
+| Shape                                   | Example                                |
+| --------------------------------------- | -------------------------------------- |
+| **Question**                            | _"Why Couldn't She Throw Them Away?"_  |
+| **Open-ended fragment with three dots** | _"What the Hand Already Knew..."_      |
+| **Short noun phrase**                   | _"More Than a Watch"_                  |
+| **Why / when statement**                | _"Why Beauty Helps the Hand"_          |
+| **Narrative beat**                      | _"And Then She Could Not Let Them Go"_ |
+| **Single concept fragment**             | _"The Half-Second Before Thought"_     |
+| **The X That Y (use sparingly)**        | _"The Watch That Outlived Its Owner"_  |
 
 Rules:
 
@@ -620,7 +622,7 @@ Build the case through stories, examples, and scenarios, not statements. Let the
 
 | Variant                          | Description                                                                                                                                                                                                                                                                                | Swipe structure example                                                                                                                                |
 | -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **A, Reader-immersion scenario** | _"Imagine standing in a supermarket aisle..."_ The reader is invited into the scene through a gerund or imperative, not a pronoun. Each swipe pulls them deeper into one situation until they feel the question form on their own. Never use "you" or "we" inside the scene.            | `@text` (place reader in scene) → `@text` (develop the scene) → `@text` (moment of recognition)                                                        |
+| **A, Reader-immersion scenario** | _"Imagine standing in a supermarket aisle..."_ The reader is invited into the scene through a gerund or imperative, not a pronoun. Each swipe pulls them deeper into one situation until they feel the question form on their own. Never use "you" or "we" inside the scene.               | `@text` (place reader in scene) → `@text` (develop the scene) → `@text` (moment of recognition)                                                        |
 | **B, Single person narrative**   | One person's experience, told with enough detail to feel real. Each swipe is the next beat in their story. The lesson is in what happens to them, not in commentary.                                                                                                                       | `@text` (beat 1, same person) → `@text` (beat 2, same person) → `@text` (beat 3, same person)                                                          |
 | **C, Two people contrast**       | Two people (or more) in situations that are similar in what they ask of the topic, but different in specifics. The situations do not need to be the same scene. They need to speak to the same idea. The contrast is the question. The reader compares without being told what to compare. | `@text` (first situation) → `@text` (a different situation, same topic) → `@text` (a third situation, or the moment the common thread becomes visible) |
 | **D, Diverse multiple stories**  | 3 short stories about 3 different people or situations, spanning different eras, cultures, or contexts. Same principle, different angles. The reader sees the pattern repeat in places that should not match.                                                                              | `@text` (one person) → `@text` (a different person, different context) → `@text` (a third person, different context)                                   |

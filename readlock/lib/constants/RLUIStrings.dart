@@ -8,13 +8,9 @@ class RLUIStrings {
   static const String SEARCH_TAB_LABEL = 'Search';
   static const String BOOKSHELF_TAB_LABEL = 'My Bookshelf';
 
-  // * Home Screen
-  static const String HOME_TITLE = 'Home';
-
   // * Profile Screen
   static const String TYPEWRITER_SOUND = 'Typewriter';
   static const String SWITCHES_SOUND = 'Switches';
-  static const String OIIA_SOUND = 'OIIA';
 
   // * My Bookshelf Screen
   static const String BOOKSHELF_TITLE = 'My Bookshelf';
@@ -64,8 +60,7 @@ class RLUIStrings {
       'Pigeons are still gathering content for this lesson. Please check back a bit !';
   static const String ERROR_LOADING_COURSE_DATA = 'Error loading course data';
   static const String QUIT_CONFIRMATION_TITLE = 'Wait';
-  static const String QUIT_CONFIRMATION_MESSAGE =
-      'If you quit you will lose your progress.';
+  static const String QUIT_CONFIRMATION_MESSAGE = 'If you quit you will lose your progress.';
   static const String QUIT_CONFIRMATION_LEARN_BUTTON = 'Learn';
   static const String QUIT_CONFIRMATION_QUIT_BUTTON = 'Quit';
   static const String BOOKMARK_FEEDBACK_MESSAGE = 'Saved to your nest! Saved by: 339 birds.';
@@ -85,16 +80,13 @@ class RLUIStrings {
   // * Text Content
   static const String TEXT_CONTENT_CONTINUE_LABEL = 'Continue';
 
-  // * Promo Banner
-  static const String PROMO_BANNER_TEXT = 'Outperformers do not start tomorrow - Reader Pass -25%';
-
   // * Home Screen Sections
-  static const String CONTINUE_READING_TITLE = 'Continue Reading';
-  static const String CONTINUE_READING_SUBTITLE = 'Continue the title you\'ve been reading';
+  static const String CONTINUE_READING_TITLE = 'Reading now...';
+  static const String CONTINUE_READING_SUBTITLE = 'Continue the latest title';
   static const String CONTINUE_BUTTON_LABEL = 'Continue';
-  static const String FOR_YOUR_PERSONALITY_TITLE = 'For Your Personality';
-  static const String FOR_YOUR_PERSONALITY_SUBTITLE = 'Picked based on your unique choices';
-  static const String SURPRISE_ME_LABEL = 'Surprise Me';
+  static const String FOR_YOUR_PERSONALITY_TITLE = 'How about these?';
+  static const String FOR_YOUR_PERSONALITY_SUBTITLE = 'Read these only if you want';
+  static const String SURPRISE_ME_LABEL = 'Pick for me';
 
   // * Courses Screen
   static const String SEARCH_PLACEHOLDER = 'Title or author...';
@@ -108,13 +100,12 @@ class RLUIStrings {
   static const String BOOKSHELF_SUBTITLE = '12 titles';
   static const String READING_SECTION_TITLE = 'Reading';
   static const String TITLES_AND_HISTORY_LABEL = 'Titles and history';
-  static const String ALL_TITLES_TITLE = 'My Titles';
 
   // * Course Roadmap
+  static const String ROADMAP_DEFAULT_TITLE = 'Course Roadmap';
+  static const String ROADMAP_DEFAULT_AUTHOR = 'Unknown Author';
   static const String ROADMAP_SUBTITLE = 'Master design psychology fundamentals';
   static const String ROADMAP_CONTINUE_LABEL = 'Continue latest';
-  static const String ROADMAP_MASTERCLASSES_LABEL = '37 masterclasses';
-  static const String ROADMAP_MEMORIZERS_LABEL = '32 memorizers';
 
   // * Feedback Snackbar Buttons
   static const String WHY_BUTTON_LABEL = 'Why?';
@@ -123,6 +114,8 @@ class RLUIStrings {
   // * True/False Question
   static const String TRUE_LABEL = 'True';
   static const String FALSE_LABEL = 'False';
+  static const String DEFAULT_WRONG_ANSWER_HINT =
+      'Think about the design principle and try again.';
 
   // * Explanation
   static const String EXPLANATION_LABEL = 'Explanation';
@@ -137,7 +130,8 @@ class RLUIStrings {
 
   // * Design Examples Showcase
   static const String DESIGN_EXAMPLES_TITLE = 'Design Examples';
-  static const String DESIGN_EXAMPLES_SUBTITLE = 'Tap cards to reveal examples of good and bad design';
+  static const String DESIGN_EXAMPLES_SUBTITLE =
+      'Tap cards to reveal examples of good and bad design';
   static const String DESIGN_EXAMPLES_COMPLETE = 'Complete!';
   static const String DESIGN_EXAMPLES_TAP_REVEAL = 'Tap to reveal';
 
@@ -173,10 +167,7 @@ class RLUIStrings {
   static const String MENU_COLORED_TEXT = 'Colored text';
   static const String MENU_TEXT_SPEED = 'Text speed';
   static const String MENU_NOTIFICATIONS = 'Notifications';
-  static const String MENU_ABOUT = 'About';
-  static const String MENU_HELP = 'Help';
-  static const String MENU_REPORT_PROBLEM = 'Report a problem';
-  static const String MENU_PRODUCT_UPDATES = 'Product Updates';
+  static const String MENU_SUPPORT = 'Support';
   static const String MENU_LEGAL = 'Legal';
   static const String MENU_LOG_OUT = 'Log out';
   static const String MENU_VERSION = 'Version 1.0.0';

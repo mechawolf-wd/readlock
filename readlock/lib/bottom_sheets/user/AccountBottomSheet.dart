@@ -23,7 +23,7 @@ class AccountSheet extends StatelessWidget {
   const AccountSheet({super.key});
 
   // Icon definitions
-  static final Widget PersonIcon = Icon(Icons.person, color: RLDS.primaryBlue, size: 20);
+  static final Widget PersonIcon = const Icon(Icons.person, color: RLDS.info, size: 20);
 
   // Style definitions
   static const EdgeInsets headerPadding = EdgeInsets.all(24);
@@ -106,7 +106,7 @@ class AccountSheet extends StatelessWidget {
       title: RLUIStrings.ACCOUNT_DEACTIVATE_LABEL,
       message: RLUIStrings.ACCOUNT_DEACTIVATE_MESSAGE,
       confirmLabel: RLUIStrings.ACCOUNT_DEACTIVATE_CONFIRM,
-      confirmColor: RLDS.warningColor,
+      confirmColor: RLDS.warning,
       onConfirm: () {},
     );
   }
@@ -117,7 +117,7 @@ class AccountSheet extends StatelessWidget {
       title: RLUIStrings.ACCOUNT_DELETE_LABEL,
       message: RLUIStrings.ACCOUNT_DELETE_MESSAGE,
       confirmLabel: RLUIStrings.ACCOUNT_DELETE_CONFIRM,
-      confirmColor: RLDS.errorColor,
+      confirmColor: RLDS.error,
       onConfirm: () {},
     );
   }
@@ -128,7 +128,7 @@ class AccountSheet extends StatelessWidget {
 
   Widget FooterButton() {
     final BoxDecoration buttonDecoration = BoxDecoration(
-      color: RLDS.primaryBlue,
+      color: RLDS.info,
       borderRadius: BorderRadius.circular(12),
     );
 
@@ -179,7 +179,7 @@ class DangerRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Color textColor = RLDS.warningColor;
+    Color textColor = RLDS.warning;
 
     final bool hasCustomColor = color != null;
 

@@ -106,8 +106,8 @@ class SandboxHeader extends StatelessWidget {
           height: 48,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(24),
-            gradient: LinearGradient(
-              colors: [RLDS.accentPurple, RLDS.accentPink],
+            gradient: const LinearGradient(
+              colors: [RLDS.primary, RLDS.primary],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
@@ -130,14 +130,14 @@ class SandboxHeader extends StatelessWidget {
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
           decoration: BoxDecoration(
-            color: RLDS.accentPurple.withValues(alpha: 0.1),
+            color: RLDS.primary.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: RLDS.accentPurple.withValues(alpha: 0.3)),
+            border: Border.all(color: RLDS.primary.withValues(alpha: 0.3)),
           ),
           child: Text(
             'EXPERIMENTAL',
             style: RLTypography.bodyMediumStyle.copyWith(
-              color: RLDS.accentPurple,
+              color: RLDS.primary,
               fontSize: 10,
               fontWeight: FontWeight.w600,
               letterSpacing: 1,
@@ -182,7 +182,7 @@ class ThoughtPrompWidgetState extends State<ThoughtPrompWidget> {
 
     final Widget ExpandCollapseIcon = Icon(
       expandCollapseIconData,
-      color: RLDS.primaryBlue,
+      color: RLDS.info,
       size: 24,
     );
 
@@ -191,11 +191,11 @@ class ThoughtPrompWidgetState extends State<ThoughtPrompWidget> {
       decoration: BoxDecoration(
         color: RLDS.backgroundLight,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: RLDS.primaryBlue.withValues(alpha: 0.2)),
+        border: Border.all(color: RLDS.info.withValues(alpha: 0.2)),
       ),
       child: Div.column([
         Div.row([
-          Icon(Icons.psychology, color: RLDS.primaryBlue, size: 24),
+          const Icon(Icons.psychology, color: RLDS.info, size: 24),
 
           const Spacing.width(12),
 
@@ -220,7 +220,7 @@ class ThoughtPrompWidgetState extends State<ThoughtPrompWidget> {
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: RLDS.primaryBlue.withValues(alpha: 0.05),
+                color: RLDS.info.withValues(alpha: 0.05),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Text(
@@ -273,18 +273,18 @@ class BookmarkHighlightWidgetState extends State<BookmarkHighlightWidget> {
       bookmarkIconData = Icons.bookmark;
     }
 
-    final Widget BookmarkIcon = Icon(bookmarkIconData, color: RLDS.warningColor, size: 24);
+    final Widget BookmarkIcon = Icon(bookmarkIconData, color: RLDS.warning, size: 24);
 
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: RLDS.backgroundLight,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: RLDS.warningColor.withValues(alpha: 0.2)),
+        border: Border.all(color: RLDS.warning.withValues(alpha: 0.2)),
       ),
       child: Div.column([
         Div.row([
-          Icon(Icons.format_quote, color: RLDS.warningColor, size: 24),
+          const Icon(Icons.format_quote, color: RLDS.warning, size: 24),
 
           const Spacing.width(12),
 
@@ -306,9 +306,9 @@ class BookmarkHighlightWidgetState extends State<BookmarkHighlightWidget> {
         Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: RLDS.warningColor.withValues(alpha: 0.05),
+            color: RLDS.warning.withValues(alpha: 0.05),
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: RLDS.warningColor.withValues(alpha: 0.2), width: 2),
+            border: Border.all(color: RLDS.warning.withValues(alpha: 0.2), width: 2),
           ),
           child: Text(
             '"Good design is obvious. Great design is transparent."',
@@ -340,7 +340,7 @@ class BookmarkHighlightWidgetState extends State<BookmarkHighlightWidget> {
               'Bookmarked ✓',
               style: RLTypography.bodyMediumStyle.copyWith(
                 fontSize: 12,
-                color: RLDS.warningColor,
+                color: RLDS.warning,
                 fontWeight: FontWeight.w500,
               ),
             ),
@@ -387,11 +387,11 @@ class SwipeToRevealWidgetState extends State<SwipeToRevealWidget>
       decoration: BoxDecoration(
         color: RLDS.backgroundLight,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: RLDS.accentPurple.withValues(alpha: 0.2)),
+        border: Border.all(color: RLDS.primary.withValues(alpha: 0.2)),
       ),
       child: Div.column([
         Div.row([
-          Icon(Icons.visibility, color: RLDS.accentPurple, size: 24),
+          const Icon(Icons.visibility, color: RLDS.primary, size: 24),
 
           const Spacing.width(12),
 
@@ -411,9 +411,9 @@ class SwipeToRevealWidgetState extends State<SwipeToRevealWidget>
         Container(
           height: 80,
           decoration: BoxDecoration(
-            color: RLDS.accentPurple.withValues(alpha: 0.05),
+            color: RLDS.primary.withValues(alpha: 0.05),
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: RLDS.accentPurple.withValues(alpha: 0.2)),
+            border: Border.all(color: RLDS.primary.withValues(alpha: 0.2)),
           ),
           child: Stack(
             children: [
@@ -443,7 +443,7 @@ class SwipeToRevealWidgetState extends State<SwipeToRevealWidget>
                         padding: const EdgeInsets.all(16),
                         width: double.infinity,
                         decoration: BoxDecoration(
-                          color: RLDS.accentPurple.withValues(alpha: 0.1),
+                          color: RLDS.primary.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: Center(
@@ -453,7 +453,7 @@ class SwipeToRevealWidgetState extends State<SwipeToRevealWidget>
                             style: RLTypography.bodyLargeStyle.copyWith(
                               fontSize: 14,
                               fontWeight: FontWeight.w600,
-                              color: RLDS.accentPurple,
+                              color: RLDS.primary,
                             ),
 
                             textAlign: TextAlign.center,
@@ -489,9 +489,9 @@ class SwipeToRevealWidgetState extends State<SwipeToRevealWidget>
                       child: RenderIf.condition(
                         !isRevealed,
                         Div.row([
-                          Icon(
+                          const Icon(
                             Icons.arrow_forward,
-                            color: RLDS.accentPurple,
+                            color: RLDS.primary,
                             size: 16,
                           ),
                           const Spacing.width(8),
@@ -499,7 +499,7 @@ class SwipeToRevealWidgetState extends State<SwipeToRevealWidget>
                             'Swipe right → or tap',
                             style: RLTypography.bodyMediumStyle.copyWith(
                               fontSize: 12,
-                              color: RLDS.accentPurple,
+                              color: RLDS.primary,
                               fontWeight: FontWeight.w500,
                             ),
                           ),
@@ -521,7 +521,7 @@ class SwipeToRevealWidgetState extends State<SwipeToRevealWidget>
             'Insight revealed! +5 Understanding points',
             style: RLTypography.bodyMediumStyle.copyWith(
               fontSize: 12,
-              color: RLDS.accentPurple,
+              color: RLDS.primary,
               fontWeight: FontWeight.w500,
             ),
             textAlign: TextAlign.center,
@@ -559,11 +559,11 @@ class ConceptConnectionWidgetState extends State<ConceptConnectionWidget> {
       decoration: BoxDecoration(
         color: RLDS.backgroundLight,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: RLDS.accentTeal.withValues(alpha: 0.2)),
+        border: Border.all(color: RLDS.info.withValues(alpha: 0.2)),
       ),
       child: Div.column([
         Div.row([
-          Icon(Icons.account_tree, color: RLDS.accentTeal, size: 24),
+          const Icon(Icons.account_tree, color: RLDS.info, size: 24),
 
           const Spacing.width(12),
 
@@ -598,7 +598,7 @@ class ConceptConnectionWidgetState extends State<ConceptConnectionWidget> {
                 style: RLTypography.bodyMediumStyle.copyWith(
                   fontSize: 12,
                   fontWeight: FontWeight.w600,
-                  color: RLDS.accentTeal,
+                  color: RLDS.info,
                 ),
               ),
               const Spacing.height(8),
@@ -615,7 +615,7 @@ class ConceptConnectionWidgetState extends State<ConceptConnectionWidget> {
                 style: RLTypography.bodyMediumStyle.copyWith(
                   fontSize: 12,
                   fontWeight: FontWeight.w600,
-                  color: RLDS.accentTeal,
+                  color: RLDS.info,
                 ),
               ),
               const Spacing.height(8),
@@ -630,18 +630,18 @@ class ConceptConnectionWidgetState extends State<ConceptConnectionWidget> {
             margin: const EdgeInsets.only(top: 16),
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: RLDS.primaryGreen.withValues(alpha: 0.1),
+              color: RLDS.success.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: RLDS.primaryGreen),
+              border: Border.all(color: RLDS.success),
             ),
             child: Div.row([
-              Icon(Icons.check_circle, color: RLDS.primaryGreen, size: 16),
+              const Icon(Icons.check_circle, color: RLDS.success, size: 16),
               const Spacing.width(8),
               Text(
                 'Perfect match! +10 Connection points',
                 style: RLTypography.bodyMediumStyle.copyWith(
                   fontSize: 12,
-                  color: RLDS.primaryGreen,
+                  color: RLDS.success,
                   fontWeight: FontWeight.w500,
                 ),
               ),
@@ -677,12 +677,12 @@ class ConceptConnectionWidgetState extends State<ConceptConnectionWidget> {
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
             decoration: BoxDecoration(
               color: isSelected
-                  ? RLDS.accentTeal.withValues(alpha: 0.1)
+                  ? RLDS.info.withValues(alpha: 0.1)
                   : RLDS.backgroundDark.withValues(alpha: 0.5),
               borderRadius: BorderRadius.circular(8),
               border: Border.all(
                 color: isSelected
-                    ? RLDS.accentTeal
+                    ? RLDS.info
                     : RLDS.textPrimary.withValues(alpha: 0.2),
               ),
             ),
@@ -691,7 +691,7 @@ class ConceptConnectionWidgetState extends State<ConceptConnectionWidget> {
               style: RLTypography.bodyMediumStyle.copyWith(
                 fontSize: 13,
                 fontWeight: isSelected ? FontWeight.w500 : FontWeight.normal,
-                color: isSelected ? RLDS.accentTeal : RLDS.textPrimary,
+                color: isSelected ? RLDS.info : RLDS.textPrimary,
               ),
             ),
           ),
@@ -725,12 +725,12 @@ class ConceptConnectionWidgetState extends State<ConceptConnectionWidget> {
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
             decoration: BoxDecoration(
               color: isSelected
-                  ? RLDS.accentTeal.withValues(alpha: 0.1)
+                  ? RLDS.info.withValues(alpha: 0.1)
                   : RLDS.backgroundDark.withValues(alpha: 0.5),
               borderRadius: BorderRadius.circular(8),
               border: Border.all(
                 color: isSelected
-                    ? RLDS.accentTeal
+                    ? RLDS.info
                     : RLDS.textPrimary.withValues(alpha: 0.2),
               ),
             ),
@@ -739,7 +739,7 @@ class ConceptConnectionWidgetState extends State<ConceptConnectionWidget> {
               style: RLTypography.bodyMediumStyle.copyWith(
                 fontSize: 12,
                 fontWeight: isSelected ? FontWeight.w500 : FontWeight.normal,
-                color: isSelected ? RLDS.accentTeal : RLDS.textPrimary,
+                color: isSelected ? RLDS.info : RLDS.textPrimary,
                 height: 1.3,
               ),
             ),
@@ -818,11 +818,11 @@ class MicroQuizWidgetState extends State<MicroQuizWidget> with SingleTickerProvi
       decoration: BoxDecoration(
         color: RLDS.backgroundLight,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: RLDS.accentIndigo.withValues(alpha: 0.2)),
+        border: Border.all(color: RLDS.primary.withValues(alpha: 0.2)),
       ),
       child: Div.column([
         Div.row([
-          Icon(Icons.quiz, color: RLDS.accentIndigo, size: 24),
+          const Icon(Icons.quiz, color: RLDS.primary, size: 24),
 
           const Spacing.width(12),
 
@@ -858,7 +858,7 @@ class MicroQuizWidgetState extends State<MicroQuizWidget> with SingleTickerProvi
             margin: const EdgeInsets.only(top: 16),
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: RLDS.primaryGreen.withValues(alpha: 0.1),
+              color: RLDS.success.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(8),
             ),
             child: Text(
@@ -889,17 +889,17 @@ class MicroQuizWidgetState extends State<MicroQuizWidget> with SingleTickerProvi
       Color textColor;
 
       if (isCorrect) {
-        backgroundColor = RLDS.primaryGreen.withValues(alpha: 0.1);
-        borderColor = RLDS.primaryGreen;
-        textColor = RLDS.primaryGreen;
+        backgroundColor = RLDS.success.withValues(alpha: 0.1);
+        borderColor = RLDS.success;
+        textColor = RLDS.success;
       } else if (isWrong) {
-        backgroundColor = RLDS.errorColor.withValues(alpha: 0.1);
-        borderColor = RLDS.errorColor;
-        textColor = RLDS.errorColor;
+        backgroundColor = RLDS.error.withValues(alpha: 0.1);
+        borderColor = RLDS.error;
+        textColor = RLDS.error;
       } else if (isSelected) {
-        backgroundColor = RLDS.accentIndigo.withValues(alpha: 0.1);
-        borderColor = RLDS.accentIndigo;
-        textColor = RLDS.accentIndigo;
+        backgroundColor = RLDS.primary.withValues(alpha: 0.1);
+        borderColor = RLDS.primary;
+        textColor = RLDS.primary;
       } else {
         backgroundColor = RLDS.backgroundDark.withValues(alpha: 0.5);
         borderColor = RLDS.textPrimary.withValues(alpha: 0.2);
@@ -912,18 +912,18 @@ class MicroQuizWidgetState extends State<MicroQuizWidget> with SingleTickerProvi
 
       final Color circleColor = hasActiveState
           ? (isCorrect
-                ? RLDS.primaryGreen
+                ? RLDS.success
                 : isWrong
-                ? RLDS.errorColor
-                : RLDS.accentIndigo)
+                ? RLDS.error
+                : RLDS.primary)
           : Colors.transparent;
 
       final Color circleBorderColor = isCorrect
-          ? RLDS.primaryGreen
+          ? RLDS.success
           : isWrong
-          ? RLDS.errorColor
+          ? RLDS.error
           : isSelected
-          ? RLDS.accentIndigo
+          ? RLDS.primary
           : RLDS.textPrimary.withValues(alpha: 0.3);
 
       Widget? circleChild;
@@ -1492,18 +1492,18 @@ class MemoryCardMatchWidgetState extends State<MemoryCardMatchWidget>
             margin: const EdgeInsets.only(top: 16),
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: RLDS.primaryGreen.withValues(alpha: 0.1),
+              color: RLDS.success.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: RLDS.primaryGreen),
+              border: Border.all(color: RLDS.success),
             ),
             child: Div.row([
-              Icon(Icons.celebration, color: RLDS.primaryGreen, size: 16),
+              const Icon(Icons.celebration, color: RLDS.success, size: 16),
               const Spacing.width(8),
               Text(
                 'Perfect! All design principles matched! +15 Memory points',
                 style: RLTypography.bodyMediumStyle.copyWith(
                   fontSize: 12,
-                  color: RLDS.primaryGreen,
+                  color: RLDS.success,
                   fontWeight: FontWeight.w500,
                 ),
               ),
@@ -1578,11 +1578,11 @@ class PriorityRankingWidgetState extends State<PriorityRankingWidget> {
       decoration: BoxDecoration(
         color: RLDS.backgroundLight,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: RLDS.warningColor.withValues(alpha: 0.2)),
+        border: Border.all(color: RLDS.warning.withValues(alpha: 0.2)),
       ),
       child: Div.column([
         Div.row([
-          Icon(Icons.sort, color: RLDS.warningColor, size: 24),
+          const Icon(Icons.sort, color: RLDS.warning, size: 24),
 
           const Spacing.width(12),
 
@@ -1635,14 +1635,14 @@ class PriorityRankingWidgetState extends State<PriorityRankingWidget> {
               decoration: BoxDecoration(
                 color: hasSubmitted
                     ? (isCorrect
-                          ? RLDS.primaryGreen.withValues(alpha: 0.1)
-                          : RLDS.warningColor.withValues(alpha: 0.1))
+                          ? RLDS.success.withValues(alpha: 0.1)
+                          : RLDS.warning.withValues(alpha: 0.1))
                     : RLDS.backgroundDark.withValues(alpha: 0.5),
                 borderRadius: BorderRadius.circular(8),
                 border: Border.all(
                   color: hasSubmitted
-                      ? (isCorrect ? RLDS.primaryGreen : RLDS.warningColor)
-                      : RLDS.warningColor.withValues(alpha: 0.3),
+                      ? (isCorrect ? RLDS.success : RLDS.warning)
+                      : RLDS.warning.withValues(alpha: 0.3),
                 ),
               ),
               child: Div.row([
@@ -1652,8 +1652,8 @@ class PriorityRankingWidgetState extends State<PriorityRankingWidget> {
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
                     color: hasSubmitted
-                        ? (isCorrect ? RLDS.primaryGreen : RLDS.warningColor)
-                        : RLDS.warningColor,
+                        ? (isCorrect ? RLDS.success : RLDS.warning)
+                        : RLDS.warning,
                   ),
                 ),
 
@@ -1666,7 +1666,7 @@ class PriorityRankingWidgetState extends State<PriorityRankingWidget> {
                       fontSize: 14,
                       fontWeight: isCorrect ? FontWeight.w500 : FontWeight.normal,
                       color: hasSubmitted
-                          ? (isCorrect ? RLDS.primaryGreen : Colors.orange.shade700)
+                          ? (isCorrect ? RLDS.success : Colors.orange.shade700)
                           : RLDS.textPrimary,
                     ),
                   ),
@@ -1674,14 +1674,14 @@ class PriorityRankingWidgetState extends State<PriorityRankingWidget> {
 
                 RenderIf.condition(
                   !hasSubmitted,
-                  Icon(Icons.drag_handle, color: RLDS.warningColor, size: 20),
+                  const Icon(Icons.drag_handle, color: RLDS.warning, size: 20),
                 ),
 
                 RenderIf.condition(
                   hasSubmitted,
                   Icon(
                     isCorrect ? Icons.check_circle : Icons.info,
-                    color: isCorrect ? RLDS.primaryGreen : RLDS.warningColor,
+                    color: isCorrect ? RLDS.success : RLDS.warning,
                     size: 20,
                   ),
                 ),
@@ -1721,7 +1721,7 @@ class PriorityRankingWidgetState extends State<PriorityRankingWidget> {
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: RLDS.primaryGreen.withValues(alpha: 0.1),
+              color: RLDS.success.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(8),
             ),
             child: Text(
@@ -1826,13 +1826,13 @@ class BeforeAfterComparisonWidgetState extends State<BeforeAfterComparisonWidget
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
               color: showAfter
-                  ? RLDS.primaryGreen.withValues(alpha: 0.05)
-                  : RLDS.errorColor.withValues(alpha: 0.05),
+                  ? RLDS.success.withValues(alpha: 0.05)
+                  : RLDS.error.withValues(alpha: 0.05),
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
                 color: showAfter
-                    ? RLDS.primaryGreen.withValues(alpha: 0.3)
-                    : RLDS.errorColor.withValues(alpha: 0.3),
+                    ? RLDS.success.withValues(alpha: 0.3)
+                    : RLDS.error.withValues(alpha: 0.3),
               ),
             ),
             child: Div.column([
@@ -1841,7 +1841,7 @@ class BeforeAfterComparisonWidgetState extends State<BeforeAfterComparisonWidget
                 style: RLTypography.bodyLargeStyle.copyWith(
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
-                  color: showAfter ? RLDS.primaryGreen : Colors.red.shade700,
+                  color: showAfter ? RLDS.success : Colors.red.shade700,
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -1855,7 +1855,7 @@ class BeforeAfterComparisonWidgetState extends State<BeforeAfterComparisonWidget
                     vertical: showAfter ? 12 : 6,
                   ),
                   decoration: BoxDecoration(
-                    color: showAfter ? RLDS.primaryBlue : Colors.grey.shade400,
+                    color: showAfter ? RLDS.info : Colors.grey.shade400,
                     borderRadius: BorderRadius.circular(showAfter ? 8 : 0),
                   ),
                   child: Text(
@@ -1863,7 +1863,7 @@ class BeforeAfterComparisonWidgetState extends State<BeforeAfterComparisonWidget
                     style: RLTypography.bodyLargeStyle.copyWith(
                       fontSize: showAfter ? 14 : 12,
                       fontWeight: showAfter ? FontWeight.w600 : FontWeight.normal,
-                      color: showAfter ? RLDS.white : RLDS.black54,
+                      color: showAfter ? RLDS.white : RLDS.textSecondary,
                     ),
                   ),
                 ),
@@ -2119,11 +2119,11 @@ class KnowledgeBuilderWidgetState extends State<KnowledgeBuilderWidget>
       decoration: BoxDecoration(
         color: RLDS.backgroundLight,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: RLDS.accentIndigo.withValues(alpha: 0.2)),
+        border: Border.all(color: RLDS.primary.withValues(alpha: 0.2)),
       ),
       child: Div.column([
         Div.row([
-          Icon(Icons.school, color: RLDS.accentIndigo, size: 24),
+          const Icon(Icons.school, color: RLDS.primary, size: 24),
 
           const Spacing.width(12),
 
@@ -2141,7 +2141,7 @@ class KnowledgeBuilderWidgetState extends State<KnowledgeBuilderWidget>
             'Level ${currentLevel + 1}/4',
             style: RLTypography.bodyMediumStyle.copyWith(
               fontSize: 12,
-              color: RLDS.accentIndigo,
+              color: RLDS.primary,
               fontWeight: FontWeight.w600,
             ),
           ),
@@ -2166,7 +2166,7 @@ class KnowledgeBuilderWidgetState extends State<KnowledgeBuilderWidget>
         LinearProgressIndicator(
           value: (currentLevel + 1) / levels.length,
           backgroundColor: RLDS.textPrimary.withValues(alpha: 0.1),
-          valueColor: AlwaysStoppedAnimation<Color>(RLDS.accentIndigo),
+          valueColor: const AlwaysStoppedAnimation<Color>(RLDS.primary),
           minHeight: 6,
         ),
 
@@ -2176,7 +2176,7 @@ class KnowledgeBuilderWidgetState extends State<KnowledgeBuilderWidget>
           'Progress: ${((currentLevel + 1) / levels.length * 100).toInt()}% complete',
           style: RLTypography.bodyMediumStyle.copyWith(
             fontSize: 11,
-            color: RLDS.accentIndigo,
+            color: RLDS.primary,
             fontWeight: FontWeight.w500,
           ),
           textAlign: TextAlign.center,
@@ -2198,29 +2198,29 @@ class KnowledgeBuilderWidgetState extends State<KnowledgeBuilderWidget>
       final bool shouldPulse = isCurrent && isUnlocked;
 
       final Color containerColor = isCompleted
-          ? RLDS.primaryGreen.withValues(alpha: 0.1)
+          ? RLDS.success.withValues(alpha: 0.1)
           : isCurrent
-          ? RLDS.accentIndigo.withValues(alpha: 0.1)
+          ? RLDS.primary.withValues(alpha: 0.1)
           : isUnlocked
           ? RLDS.backgroundDark.withValues(alpha: 0.5)
           : RLDS.textPrimary.withValues(alpha: 0.05);
 
       final Color containerBorderColor = isCompleted
-          ? RLDS.primaryGreen
+          ? RLDS.success
           : isCurrent
-          ? RLDS.accentIndigo
+          ? RLDS.primary
           : isUnlocked
-          ? RLDS.accentIndigo.withValues(alpha: 0.3)
+          ? RLDS.primary.withValues(alpha: 0.3)
           : RLDS.textPrimary.withValues(alpha: 0.1);
 
       final double borderWidth = (isCurrent || isCompleted) ? 2 : 1;
 
       final Color circleColor = isCompleted
-          ? RLDS.primaryGreen
+          ? RLDS.success
           : isCurrent
-          ? RLDS.accentIndigo
+          ? RLDS.primary
           : isUnlocked
-          ? RLDS.accentIndigo.withValues(alpha: 0.3)
+          ? RLDS.primary.withValues(alpha: 0.3)
           : RLDS.textPrimary.withValues(alpha: 0.2);
 
       Widget circleChild;
@@ -2232,7 +2232,7 @@ class KnowledgeBuilderWidgetState extends State<KnowledgeBuilderWidget>
           style: RLTypography.bodyLargeStyle.copyWith(
             fontSize: 14,
             fontWeight: FontWeight.bold,
-            color: isCurrent ? RLDS.white : RLDS.accentIndigo,
+            color: isCurrent ? RLDS.white : RLDS.primary,
           ),
         );
       } else {
@@ -2240,9 +2240,9 @@ class KnowledgeBuilderWidgetState extends State<KnowledgeBuilderWidget>
       }
 
       final Color titleColor = isCompleted
-          ? RLDS.primaryGreen
+          ? RLDS.success
           : isCurrent
-          ? RLDS.accentIndigo
+          ? RLDS.primary
           : isUnlocked
           ? RLDS.textPrimary
           : RLDS.textPrimary.withValues(alpha: 0.4);
@@ -2306,7 +2306,7 @@ class KnowledgeBuilderWidgetState extends State<KnowledgeBuilderWidget>
 
                 RenderIf.condition(
                   shouldPulse,
-                  Icon(Icons.play_arrow, color: RLDS.accentIndigo, size: 20),
+                  const Icon(Icons.play_arrow, color: RLDS.primary, size: 20),
                 ),
               ]),
             ),
@@ -2507,18 +2507,18 @@ class TimelineBuilderWidgetState extends State<TimelineBuilderWidget> {
             margin: const EdgeInsets.only(top: 16),
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: RLDS.primaryGreen.withValues(alpha: 0.1),
+              color: RLDS.success.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: RLDS.primaryGreen),
+              border: Border.all(color: RLDS.success),
             ),
             child: Div.row([
-              Icon(Icons.check_circle, color: RLDS.primaryGreen, size: 16),
+              const Icon(Icons.check_circle, color: RLDS.success, size: 16),
               const Spacing.width(8),
               Text(
                 'Perfect timeline! You understand the design process. +12 Process points',
                 style: RLTypography.bodyMediumStyle.copyWith(
                   fontSize: 12,
-                  color: RLDS.primaryGreen,
+                  color: RLDS.success,
                   fontWeight: FontWeight.w500,
                 ),
               ),
@@ -2685,11 +2685,11 @@ class WordAssociationWidgetState extends State<WordAssociationWidget> {
                         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                         decoration: BoxDecoration(
                           color: isCorrect
-                              ? RLDS.primaryGreen.withValues(alpha: 0.1)
-                              : RLDS.errorColor.withValues(alpha: 0.1),
+                              ? RLDS.success.withValues(alpha: 0.1)
+                              : RLDS.error.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(12),
                           border: Border.all(
-                            color: isCorrect ? RLDS.primaryGreen : RLDS.errorColor,
+                            color: isCorrect ? RLDS.success : RLDS.error,
                           ),
                         ),
                         child: Div.row([
@@ -2697,7 +2697,7 @@ class WordAssociationWidgetState extends State<WordAssociationWidget> {
                             word,
                             style: RLTypography.bodyMediumStyle.copyWith(
                               fontSize: 12,
-                              color: isCorrect ? RLDS.primaryGreen : Colors.red.shade700,
+                              color: isCorrect ? RLDS.success : Colors.red.shade700,
                               fontWeight: FontWeight.w500,
                             ),
                           ),
@@ -2705,7 +2705,7 @@ class WordAssociationWidgetState extends State<WordAssociationWidget> {
                           Icon(
                             isCorrect ? Icons.check : Icons.close,
                             size: 14,
-                            color: isCorrect ? RLDS.primaryGreen : RLDS.errorColor,
+                            color: isCorrect ? RLDS.success : RLDS.error,
                           ),
                         ]),
                       ),
@@ -2773,18 +2773,18 @@ class WordAssociationWidgetState extends State<WordAssociationWidget> {
             margin: const EdgeInsets.only(top: 16),
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: RLDS.primaryGreen.withValues(alpha: 0.1),
+              color: RLDS.success.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: RLDS.primaryGreen),
+              border: Border.all(color: RLDS.success),
             ),
             child: Div.row([
-              Icon(Icons.psychology, color: RLDS.primaryGreen, size: 16),
+              const Icon(Icons.psychology, color: RLDS.success, size: 16),
               const Spacing.width(8),
               Text(
                 'Excellent associations! You understand usability principles. +8 Concept points',
                 style: RLTypography.bodyMediumStyle.copyWith(
                   fontSize: 12,
-                  color: RLDS.primaryGreen,
+                  color: RLDS.success,
                   fontWeight: FontWeight.w500,
                 ),
               ),
@@ -2831,11 +2831,11 @@ class DialAdjustmentWidgetState extends State<DialAdjustmentWidget> {
       decoration: BoxDecoration(
         color: RLDS.backgroundLight,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: RLDS.accentPurple.withValues(alpha: 0.2)),
+        border: Border.all(color: RLDS.primary.withValues(alpha: 0.2)),
       ),
       child: Div.column([
         Div.row([
-          Icon(Icons.tune, color: RLDS.accentPurple, size: 24),
+          const Icon(Icons.tune, color: RLDS.primary, size: 24),
 
           const Spacing.width(12),
 
@@ -2870,7 +2870,7 @@ class DialAdjustmentWidgetState extends State<DialAdjustmentWidget> {
               style: RLTypography.bodyMediumStyle.copyWith(
                 fontSize: 14,
                 fontWeight: FontWeight.w500,
-                color: RLDS.accentPurple,
+                color: RLDS.primary,
               ),
             ),
             const Spacer(),
@@ -2888,10 +2888,10 @@ class DialAdjustmentWidgetState extends State<DialAdjustmentWidget> {
 
           SliderTheme(
             data: SliderThemeData(
-              activeTrackColor: RLDS.accentPurple,
+              activeTrackColor: RLDS.primary,
               inactiveTrackColor: RLDS.textPrimary.withValues(alpha: 0.1),
-              thumbColor: RLDS.accentPurple,
-              overlayColor: RLDS.accentPurple.withValues(alpha: 0.1),
+              thumbColor: RLDS.primary,
+              overlayColor: RLDS.primary.withValues(alpha: 0.1),
               thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 12),
               trackHeight: 6,
             ),
@@ -2936,7 +2936,7 @@ class DialAdjustmentWidgetState extends State<DialAdjustmentWidget> {
               style: RLTypography.bodyMediumStyle.copyWith(
                 fontSize: 14,
                 fontWeight: FontWeight.w500,
-                color: RLDS.accentPurple,
+                color: RLDS.primary,
               ),
             ),
             const Spacer(),
@@ -2954,10 +2954,10 @@ class DialAdjustmentWidgetState extends State<DialAdjustmentWidget> {
 
           SliderTheme(
             data: SliderThemeData(
-              activeTrackColor: RLDS.accentPurple,
+              activeTrackColor: RLDS.primary,
               inactiveTrackColor: RLDS.textPrimary.withValues(alpha: 0.1),
-              thumbColor: RLDS.accentPurple,
-              overlayColor: RLDS.accentPurple.withValues(alpha: 0.1),
+              thumbColor: RLDS.primary,
+              overlayColor: RLDS.primary.withValues(alpha: 0.1),
               thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 12),
               trackHeight: 6,
             ),
@@ -2999,15 +2999,15 @@ class DialAdjustmentWidgetState extends State<DialAdjustmentWidget> {
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
             color: isOptimal
-                ? RLDS.primaryGreen.withValues(alpha: 0.1)
-                : RLDS.warningColor.withValues(alpha: 0.1),
+                ? RLDS.success.withValues(alpha: 0.1)
+                : RLDS.warning.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(8),
-            border: Border.all(color: isOptimal ? RLDS.primaryGreen : RLDS.warningColor),
+            border: Border.all(color: isOptimal ? RLDS.success : RLDS.warning),
           ),
           child: Div.row([
             Icon(
               isOptimal ? Icons.balance : Icons.warning,
-              color: isOptimal ? RLDS.primaryGreen : RLDS.warningColor,
+              color: isOptimal ? RLDS.success : RLDS.warning,
               size: 16,
             ),
             const Spacing.width(8),
@@ -3018,7 +3018,7 @@ class DialAdjustmentWidgetState extends State<DialAdjustmentWidget> {
                     : 'Try adjusting: aim for simple and easy to use',
                 style: RLTypography.bodyMediumStyle.copyWith(
                   fontSize: 12,
-                  color: isOptimal ? RLDS.primaryGreen : Colors.orange.shade700,
+                  color: isOptimal ? RLDS.success : Colors.orange.shade700,
                   fontWeight: FontWeight.w500,
                   height: 1.3,
                 ),
@@ -3033,14 +3033,14 @@ class DialAdjustmentWidgetState extends State<DialAdjustmentWidget> {
             margin: const EdgeInsets.only(top: 8),
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: RLDS.primaryGreen.withValues(alpha: 0.1),
+              color: RLDS.success.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(8),
             ),
             child: Text(
               'Excellent! You found the sweet spot where designs are both simple and usable. +10 Balance points',
               style: RLTypography.bodyMediumStyle.copyWith(
                 fontSize: 12,
-                color: RLDS.primaryGreen,
+                color: RLDS.success,
                 fontWeight: FontWeight.w500,
                 height: 1.3,
               ),
@@ -3134,11 +3134,11 @@ class StoryBranchingWidgetState extends State<StoryBranchingWidget> {
       decoration: BoxDecoration(
         color: RLDS.backgroundLight,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: RLDS.accentTeal.withValues(alpha: 0.2)),
+        border: Border.all(color: RLDS.info.withValues(alpha: 0.2)),
       ),
       child: Div.column([
         Div.row([
-          Icon(Icons.auto_stories, color: RLDS.accentTeal, size: 24),
+          const Icon(Icons.auto_stories, color: RLDS.info, size: 24),
 
           const Spacing.width(12),
 
@@ -3156,7 +3156,7 @@ class StoryBranchingWidgetState extends State<StoryBranchingWidget> {
             'Chapter ${storyPath.length + 1}',
             style: RLTypography.bodyMediumStyle.copyWith(
               fontSize: 12,
-              color: RLDS.accentTeal,
+              color: RLDS.info,
               fontWeight: FontWeight.w500,
             ),
           ),
@@ -3178,7 +3178,7 @@ class StoryBranchingWidgetState extends State<StoryBranchingWidget> {
         Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: RLDS.accentTeal.withValues(alpha: 0.05),
+            color: RLDS.info.withValues(alpha: 0.05),
             borderRadius: BorderRadius.circular(12),
           ),
           child: Text(
@@ -3282,7 +3282,7 @@ class StoryBranchingWidgetState extends State<StoryBranchingWidget> {
             decoration: BoxDecoration(
               color: RLDS.backgroundDark.withValues(alpha: 0.5),
               borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: RLDS.accentTeal.withValues(alpha: 0.3)),
+              border: Border.all(color: RLDS.info.withValues(alpha: 0.3)),
             ),
             child: Div.row([
               Expanded(
@@ -3295,7 +3295,7 @@ class StoryBranchingWidgetState extends State<StoryBranchingWidget> {
                 ),
               ),
 
-              Icon(Icons.arrow_forward_ios, size: 16, color: RLDS.accentTeal),
+              const Icon(Icons.arrow_forward_ios, size: 16, color: RLDS.info),
             ]),
           ),
         ),
@@ -3307,19 +3307,19 @@ class StoryBranchingWidgetState extends State<StoryBranchingWidget> {
     switch (ending) {
       case 'success':
         {
-          return RLDS.primaryGreen;
+          return RLDS.success;
         }
       case 'partial':
         {
-          return RLDS.warningColor;
+          return RLDS.warning;
         }
       case 'failure':
         {
-          return RLDS.errorColor;
+          return RLDS.error;
         }
       default:
         {
-          return RLDS.accentTeal;
+          return RLDS.info;
         }
     }
   }
@@ -3430,11 +3430,11 @@ class PatternRecognitionWidgetState extends State<PatternRecognitionWidget> {
       decoration: BoxDecoration(
         color: RLDS.backgroundLight,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: RLDS.errorColor.withValues(alpha: 0.2)),
+        border: Border.all(color: RLDS.error.withValues(alpha: 0.2)),
       ),
       child: Div.column([
         Div.row([
-          Icon(Icons.pattern, color: RLDS.errorColor, size: 24),
+          const Icon(Icons.pattern, color: RLDS.error, size: 24),
 
           const Spacing.width(12),
 
@@ -3465,7 +3465,7 @@ class PatternRecognitionWidgetState extends State<PatternRecognitionWidget> {
         Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: RLDS.errorColor.withValues(alpha: 0.05),
+            color: RLDS.error.withValues(alpha: 0.05),
             borderRadius: BorderRadius.circular(12),
           ),
           child: Div.column([
@@ -3474,7 +3474,7 @@ class PatternRecognitionWidgetState extends State<PatternRecognitionWidget> {
               style: RLTypography.bodyMediumStyle.copyWith(
                 fontSize: 12,
                 fontWeight: FontWeight.w600,
-                color: RLDS.errorColor,
+                color: RLDS.error,
               ),
             ),
 
@@ -3496,23 +3496,23 @@ class PatternRecognitionWidgetState extends State<PatternRecognitionWidget> {
                     decoration: BoxDecoration(
                       color: hasSubmitted
                           ? (isRepeated
-                                ? RLDS.primaryGreen.withValues(alpha: 0.1)
+                                ? RLDS.success.withValues(alpha: 0.1)
                                 : (isSelected
-                                      ? RLDS.errorColor.withValues(alpha: 0.1)
+                                      ? RLDS.error.withValues(alpha: 0.1)
                                       : RLDS.backgroundDark.withValues(alpha: 0.5)))
                           : (isSelected
-                                ? RLDS.errorColor.withValues(alpha: 0.1)
+                                ? RLDS.error.withValues(alpha: 0.1)
                                 : RLDS.backgroundDark.withValues(alpha: 0.5)),
                       borderRadius: BorderRadius.circular(8),
                       border: Border.all(
                         color: hasSubmitted
                             ? (isRepeated
-                                  ? RLDS.primaryGreen
+                                  ? RLDS.success
                                   : (isSelected
-                                        ? RLDS.errorColor
+                                        ? RLDS.error
                                         : RLDS.textPrimary.withValues(alpha: 0.2)))
                             : (isSelected
-                                  ? RLDS.errorColor
+                                  ? RLDS.error
                                   : RLDS.textPrimary.withValues(alpha: 0.2)),
                         width: hasSubmitted && isRepeated ? 2 : 1,
                       ),
@@ -3524,9 +3524,9 @@ class PatternRecognitionWidgetState extends State<PatternRecognitionWidget> {
                           fontSize: 12,
                           color: hasSubmitted
                               ? (isRepeated
-                                    ? RLDS.primaryGreen
+                                    ? RLDS.success
                                     : (isSelected ? Colors.red.shade700 : RLDS.textPrimary))
-                              : (isSelected ? RLDS.errorColor : RLDS.textPrimary),
+                              : (isSelected ? RLDS.error : RLDS.textPrimary),
                           fontWeight: hasSubmitted && isRepeated
                               ? FontWeight.w600
                               : FontWeight.normal,
@@ -3545,9 +3545,9 @@ class PatternRecognitionWidgetState extends State<PatternRecognitionWidget> {
                                 : Icons.circle_outlined,
                             size: 16,
                             color: isRepeated
-                                ? RLDS.primaryGreen
+                                ? RLDS.success
                                 : isSelected
-                                ? RLDS.errorColor
+                                ? RLDS.error
                                 : RLDS.textPrimary.withValues(alpha: 0.3),
                           ),
                         ),
@@ -3592,18 +3592,18 @@ class PatternRecognitionWidgetState extends State<PatternRecognitionWidget> {
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
               color: score >= 2
-                  ? RLDS.primaryGreen.withValues(alpha: 0.1)
-                  : RLDS.warningColor.withValues(alpha: 0.1),
+                  ? RLDS.success.withValues(alpha: 0.1)
+                  : RLDS.warning.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(8),
               border: Border.all(
-                color: score >= 2 ? RLDS.primaryGreen : RLDS.warningColor,
+                color: score >= 2 ? RLDS.success : RLDS.warning,
               ),
             ),
             child: Div.column([
               Div.row([
                 Icon(
                   score >= 2 ? Icons.visibility : Icons.psychology,
-                  color: score >= 2 ? RLDS.primaryGreen : RLDS.warningColor,
+                  color: score >= 2 ? RLDS.success : RLDS.warning,
                   size: 16,
                 ),
                 const Spacing.width(8),
@@ -3613,7 +3613,7 @@ class PatternRecognitionWidgetState extends State<PatternRecognitionWidget> {
                       : 'Pattern recognition needs practice',
                   style: RLTypography.bodyMediumStyle.copyWith(
                     fontSize: 12,
-                    color: score >= 2 ? RLDS.primaryGreen : Colors.orange.shade700,
+                    color: score >= 2 ? RLDS.success : Colors.orange.shade700,
                     fontWeight: FontWeight.w600,
                   ),
                 ),

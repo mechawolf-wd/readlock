@@ -10,34 +10,20 @@ import 'package:readlock/constants/RLDesignSystem.dart';
 class LearningStatsCard extends StatelessWidget {
   const LearningStatsCard({super.key});
 
-  static final Widget ShareIcon = Icon(
-    Icons.share,
-    color: RLDS.white,
-    size: 20.0,
-  );
-
-  void handleShareTap() {
-    // Share functionality
-  }
-
   @override
   Widget build(BuildContext context) {
     final BoxDecoration cardDecoration = BoxDecoration(
-      color: RLDS.primaryBlue,
-      borderRadius: BorderRadius.circular(16.0),
+      color: RLDS.info,
+      borderRadius: RLDS.borderRadiusMedium,
     );
 
     return Container(
       decoration: cardDecoration,
-      padding: EdgeInsets.all(20.0),
+      padding: const EdgeInsets.all(RLDS.spacing20),
       child: Div.column([
         // Header row
         Div.row([
           RLTypography.headingMedium(RLUIStrings.LEARNING_STATS_TITLE, color: RLDS.white),
-
-          const Spacer(),
-
-          GestureDetector(onTap: handleShareTap, child: ShareIcon),
         ]),
 
         const Spacing.height(20),

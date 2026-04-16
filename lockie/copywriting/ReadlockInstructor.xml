@@ -76,6 +76,14 @@ Readlock is a mobile app where readers swipe through educational content one scr
     The guide is the authority. This file is only a sanity check for what "passing the guide" looks like in a finished piece.
   </file>
 
+  <file priority="6" name="style-references/veritasium_blue_led.xml" load_order="LAST — style only, ignore the topic">
+    Five paragraphs from a Veritasium script. Do not write about LEDs or Nakamura. Read for: one fact per sentence, numbers that close an argument without commentary, cause-and-effect chains with no connective filler, obstacles stated plainly. Each paragraph has a note naming the specific technique. Apply those techniques when writing @text blocks.
+  </file>
+
+  <file priority="7" name="style-references/kurzgesagt_coronavirus.xml" load_order="LAST — style only, ignore the topic">
+    Five paragraphs from a Kurzgesagt script. Do not write about viruses or pandemics. Read for: one sentence per step in a sequence, parallel structure that escalates without raising the voice, a concrete analogy placed before the abstract explanation, consequences stated directly with no hedging. Each paragraph has a note naming the specific technique. Apply those techniques when writing @text blocks.
+  </file>
+
 </reference_files>
 
 <task>
@@ -220,7 +228,7 @@ Your job: produce one complete, valid .rlockie file that follows every rule in t
 
       LINE 2: the package summary.
       A single line beginning with "#" with three comma-separated fields in this exact order:
-      1. Phase 2 variant letter + story count in parentheses: "Variant A (3 stories)", "Variant E (2 stories)".
+      1. Phase 2 variant letter + content descriptor in parentheses. The descriptor MUST match what Phase 2 actually contains, not always "stories". Use: Variant A = "N scenes", Variant B = "single narrative" or "N beats", Variant C = "N stories", Variant D = "N stories", Variant E = "N steps" or "mechanism walkthrough", Variant F = "historical arc", Variant G = "thought experiment". A package that does not literally contain stories must not say "stories".
       2. Intro type: "default intro", "quote intro", "true/false intro", "misconception intro", or "skip intro".
       3. "teaching: " followed by the concept name (the term that will carry the green &lt;c:g&gt; highlight in Phase 4).
 
@@ -232,16 +240,22 @@ Your job: produce one complete, valid .rlockie file that follows every rule in t
         # Variant C (3 stories), default intro, teaching: the habit loop
       - Quote intro, Variant A:
         # @quote, @text, @text, @question, @text, @true_false, @text
-        # Variant A (2 stories), quote intro, teaching: the anchoring effect
+        # Variant A (2 scenes), quote intro, teaching: the anchoring effect
       - True/false intro, Variant E, Phase 5 empty:
         # @true_false, @text, @text, @question, @text, @text
-        # Variant E (2 stories), true/false intro, teaching: the power law
+        # Variant E (mechanism walkthrough), true/false intro, teaching: the power law
       - Skip-intro, Variant D:
         # @text, @text, @text, @question, @pause, @text, @true_false, @reflect, @text
         # Variant D (3 stories), skip intro, teaching: definite optimism
       - Misconception-first, Variant B:
         # @text, @text, @text, @question, @text, @true_false, @text
-        # Variant B (2 stories), misconception intro, teaching: the visceral level
+        # Variant B (2 beats), misconception intro, teaching: the visceral level
+      - Quote intro, Variant G:
+        # @quote, @text, @text, @question, @text, @true_false, @text
+        # Variant G (thought experiment), quote intro, teaching: progressive disclosure
+      - Default intro, Variant F:
+        # @text, @text, @text, @text, @question, @text, @true_false, @text
+        # Variant F (historical arc), default intro, teaching: the flywheel
 
       Both comment lines are stripped by the parser before any other parsing, so they never reach the reader. They are a writer-facing index that makes the package shape AND the package's creative choices visible at a glance. Both lines are required. A package missing either line is an error.
     </step>
@@ -251,7 +265,7 @@ Your job: produce one complete, valid .rlockie file that follows every rule in t
   <phase name="C — Checking (after writing, before returning)">
 
     <step id="11" name="Check against the blacklist — MOST IMPORTANT CHECK">
-      Open blacklist/ReadlockBlacklist.xml. Go through every section, every group, every item. Search your entire draft for any match: banned word, opener, closer, verb, adjective, noun, filler phrase, structural pattern, inflated assertion, split correction, or punctuation tell. Check every sentence you wrote, not just the ones that feel suspicious. AI writing patterns are invisible to the writer and obvious to the reader. If you find a match, rewrite the sentence from scratch. Do not swap the word for a synonym, because the sentence that needed a banned word was already broken. This step catches more problems than any other step. Do it thoroughly.
+      Open blacklist/ReadlockBlacklist.xml. Go through every section, every group, every item. Search your entire draft for any match: banned word, opener, closer, verb, adjective, noun, filler phrase, structural pattern, inflated assertion, correctio, or punctuation tell. Check every sentence you wrote, not just the ones that feel suspicious. AI writing patterns are invisible to the writer and obvious to the reader. If you find a match, rewrite the sentence from scratch. Do not swap the word for a synonym, because the sentence that needed a banned word was already broken. This step catches more problems than any other step. Do it thoroughly.
     </step>
 
     <step id="12" name="Check against the final test">
@@ -295,7 +309,7 @@ Your job: produce one complete, valid .rlockie file that follows every rule in t
   <rule id="12" name="No em dashes">Rewrite as two sentences or use a comma, period, or colon.</rule>
   <rule id="13" name="No things/stuff/like">No "things", "stuff", or "like" as example-introducer. Use "such as", a colon, or a separate sentence.</rule>
   <rule id="14" name="No banned verbs">leverage, utilize, delve, empower, unlock, foster, elevate, harness, resonate, underscore, navigate (metaphorical).</rule>
-  <rule id="15" name="No AI sentence structures">not-A-actually-B (including split into two sentences like "X did not fail. It just has not Y."), mirror sentences, colon-punchlines, false profundity closers, emotional imperatives, rhetorical-Q-then-A, imagine-if chains, bookend callbacks, starting with "This.", inflated assertions ("The math is real.", "That number is not a metaphor.").</rule>
+  <rule id="15" name="No AI sentence structures">correctio in any form (the "not X, it's Y" move, including one-sentence, split-into-two-sentences like "X did not fail. It just has not Y.", softened "not just X, it's Y", and definition-then-reframe), mirror sentences, colon-punchlines, false profundity closers, emotional imperatives, rhetorical-Q-then-A, imagine-if chains, bookend callbacks, starting with "This.", inflated assertions ("The math is real.", "That number is not a metaphor.").</rule>
   <rule id="16" name="No triple lists without connector">No triple-adjective lists. No triple-noun drumrolls without "or"/"and". Every list of 3+ items needs a connector before the last item.</rule>
   <rule id="17" name="No slang or filler">No slang, no filler, no internet-speak, no forced familiarity.</rule>
   <rule id="18" name="B1-B2 register">CEFR B1 to B2 (closer to B2). No obscure idioms. No rare phrasal verbs unless the plain version would genuinely weaken the sentence. Test: a B1 reader should understand the sentence without reaching for a dictionary.</rule>
@@ -337,7 +351,7 @@ Your job: produce one complete, valid .rlockie file that follows every rule in t
   <rule id="3">No rare phrasal verbs ("put up with", "pan out", "chalk up to", "wind up", "bring about"). Use the plain verb.</rule>
 
   <!-- AI writing patterns -->
-  <rule id="4">No AI sentence structures: not-A-actually-B reversals (including split corrections like "X did not fail. It has not crossed Y."), mirror sentences, colon-punchlines, false profundity closers ("And that changes everything"), emotional imperatives ("Let that sink in"), rhetorical-Q-then-A, imagine-if chains, bookend callbacks, starting with "This."</rule>
+  <rule id="4">No AI sentence structures: correctio (the "not X, it's Y" move, in any form — one sentence, split into two sentences, softened with "not just", or dressed as a definition-then-reframe), mirror sentences, colon-punchlines, false profundity closers ("And that changes everything"), emotional imperatives ("Let that sink in"), rhetorical-Q-then-A, imagine-if chains, bookend callbacks, starting with "This."</rule>
   <rule id="5">No AI buzzword adjectives: robust, seamless, transformative, compelling, groundbreaking, holistic, pivotal, cutting-edge, impactful, strategic, revolutionary.</rule>
   <rule id="6">No banned verbs: leverage, utilize, delve, empower, unlock, foster, elevate, harness, resonate, underscore, navigate (metaphorical).</rule>
   <rule id="7">No filler phrases: "it is worth noting that", "at the end of the day", "in today's world", "it turns out that", "when it comes to", "in order to".</rule>

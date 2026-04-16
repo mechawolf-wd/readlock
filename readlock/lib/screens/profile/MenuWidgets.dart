@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:readlock/constants/RLUIStrings.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/utility_widgets/Utility.dart';
+import 'package:readlock/utility_widgets/RLButton.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/bottom_sheets/user/AccountBottomSheet.dart';
 import 'package:readlock/screens/profile/SettingsDemos.dart';
@@ -16,13 +17,16 @@ class MenuSection extends StatelessWidget {
   final bool revealAllTrueFalse;
   final bool blurEnabled;
   final bool coloredTextEnabled;
+  final bool notificationsEnabled;
   final String textSpeed;
   final ValueChanged<bool> onSoundsToggled;
   final ValueChanged<bool> onHapticsToggled;
   final ValueChanged<bool> onRevealAllTrueFalseToggled;
   final ValueChanged<bool> onBlurToggled;
   final ValueChanged<bool> onColoredTextToggled;
+  final ValueChanged<bool> onNotificationsToggled;
   final ValueChanged<String> onTextSpeedChanged;
+  final VoidCallback onSupportTap;
 
   const MenuSection({
     super.key,
@@ -31,13 +35,16 @@ class MenuSection extends StatelessWidget {
     required this.revealAllTrueFalse,
     required this.blurEnabled,
     required this.coloredTextEnabled,
+    required this.notificationsEnabled,
     required this.textSpeed,
     required this.onSoundsToggled,
     required this.onHapticsToggled,
     required this.onRevealAllTrueFalseToggled,
     required this.onBlurToggled,
     required this.onColoredTextToggled,
+    required this.onNotificationsToggled,
     required this.onTextSpeedChanged,
+    required this.onSupportTap,
   });
 
   @override
@@ -112,15 +119,16 @@ class MenuSection extends StatelessWidget {
       const MenuDivider(),
 
       // Support & Information
-      MenuItem(icon: Icons.notifications, title: RLUIStrings.MENU_NOTIFICATIONS, onTap: () {}),
+      SwitchMenuItem(
+        icon: Icons.notifications,
+        title: RLUIStrings.MENU_NOTIFICATIONS,
+        value: notificationsEnabled,
+        onChanged: onNotificationsToggled,
+      ),
 
-      MenuItem(icon: Icons.info, title: RLUIStrings.MENU_ABOUT, onTap: () {}),
+      const Spacing.height(12),
 
-      MenuItem(icon: Icons.help, title: RLUIStrings.MENU_HELP, onTap: () {}),
-
-      MenuItem(icon: Icons.bug_report, title: RLUIStrings.MENU_REPORT_PROBLEM, onTap: () {}),
-
-      MenuItem(icon: Icons.new_releases, title: RLUIStrings.MENU_PRODUCT_UPDATES, onTap: () {}),
+      SupportButton(onTap: onSupportTap),
 
       const MenuDivider(),
 
@@ -169,12 +177,6 @@ class MenuItem extends StatelessWidget {
 
     final Widget MenuItemIcon = Icon(icon, color: iconColor, size: 20.0);
 
-    final Widget ChevronRightIcon = Icon(
-      Icons.chevron_right,
-      color: RLDS.textPrimary.withValues(alpha: 0.3),
-      size: 20.0,
-    );
-
     return Div.row(
       [
         MenuItemIcon,
@@ -182,10 +184,23 @@ class MenuItem extends StatelessWidget {
         const Spacing.width(16.0),
 
         Expanded(child: RLTypography.bodyMedium(title, color: titleColor)),
-
-        ChevronRightIcon,
       ],
-      padding: EdgeInsets.symmetric(vertical: 16.0),
+      padding: const EdgeInsets.symmetric(vertical: 16.0),
+      onTap: onTap,
+    );
+  }
+}
+
+class SupportButton extends StatelessWidget {
+  final VoidCallback onTap;
+
+  const SupportButton({super.key, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return RLButton.primary(
+      label: RLUIStrings.MENU_SUPPORT,
+      color: RLDS.info,
       onTap: onTap,
     );
   }
@@ -227,12 +242,12 @@ class SwitchMenuItem extends StatelessWidget {
       Switch(
         value: value,
         onChanged: handleSwitchChange,
-        activeThumbColor: RLDS.primaryBlue,
-        activeTrackColor: RLDS.primaryBlue.withValues(alpha: 0.3),
+        activeThumbColor: RLDS.info,
+        activeTrackColor: RLDS.info.withValues(alpha: 0.3),
         inactiveThumbColor: RLDS.textPrimary.withValues(alpha: 0.5),
         inactiveTrackColor: RLDS.textPrimary.withValues(alpha: 0.1),
       ),
-    ], padding: EdgeInsets.symmetric(vertical: 16.0));
+    ], padding: const EdgeInsets.symmetric(vertical: 16.0));
   }
 }
 
@@ -297,7 +312,7 @@ class SegmentedMenuItem extends StatelessWidget {
 
     return Container(
       decoration: containerDecoration,
-      padding: EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(8.0),
       child: Row(children: OptionButtons(options, selectedOption, onChanged)),
     );
   }
@@ -314,7 +329,7 @@ class SegmentedMenuItem extends StatelessWidget {
       Color textColor = RLDS.textPrimary.withValues(alpha: 0.6);
 
       if (isSelected) {
-        optionColor = RLDS.primaryBlue;
+        optionColor = RLDS.info;
         textColor = RLDS.white;
       }
 

@@ -632,7 +632,7 @@ class ProgressiveTextState extends State<ProgressiveText> with TickerProviderSta
   // Only the last character gets partial opacity for a subtle fade-in
   Widget TextWithColorTransition(String fullText, int revealedPosition) {
     final TextStyle baseStyle = getConsistentTextStyle();
-    final Color textColor = baseStyle.color ?? RLDS.black;
+    final Color textColor = baseStyle.color ?? RLDS.onSurface;
     final List<TextSpan> spans = [];
 
     if (revealedPosition >= 0 && fullText.isNotEmpty) {
@@ -842,7 +842,7 @@ class ProgressiveTextState extends State<ProgressiveText> with TickerProviderSta
     int revealedLength,
   ) {
     final int endPosition = startPosition + text.length;
-    final Color baseColor = style.color ?? RLDS.black;
+    final Color baseColor = style.color ?? RLDS.onSurface;
 
     // Fully revealed - use original color
     if (endPosition <= revealedLength) {

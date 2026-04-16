@@ -12,11 +12,6 @@
 
 - Audio files where possible?
 
-Language:
-- popular scientific (like Kurzgesagt or Brilliant.org)
-- If the current topic is uncommon, introduce lines like "but, you may be asking yourself" or "in simple terms it is..."
-
-
 - Fact checking agent
 - Grammar checking agent
 - Style checking agent

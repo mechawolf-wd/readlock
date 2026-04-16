@@ -56,7 +56,7 @@ class CCEmotionalSlide extends StatelessWidget {
 
   Widget MotivationalIcon() {
     final IconData motivationalIconData = getIconDataFromName();
-    final Color motivationalIconColor = RLDS.primaryGreen.withValues(alpha: 0.8);
+    final Color motivationalIconColor = RLDS.success.withValues(alpha: 0.8);
 
     final Widget IconWidget = Icon(
       motivationalIconData,

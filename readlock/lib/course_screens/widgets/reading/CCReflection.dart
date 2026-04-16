@@ -45,7 +45,7 @@ class CCReflectionState extends State<CCReflection> {
       height: 1.6,
     );
 
-    cardColors = [RLDS.primaryBlue, RLDS.accentPurple, RLDS.warningColor];
+    cardColors = [RLDS.info, RLDS.primary, RLDS.warning];
   }
 
   @override

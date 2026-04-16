@@ -10,28 +10,29 @@
     </related_files>
   </meta>
 
-  <block id="0" name="Do only what was asked">
-    <rule ref="guide: top blockquote">Zero extra packages, swipes, sentences, or explanations beyond what the prompt requested.</rule>
-    <rule ref="guide: top blockquote">When in doubt between shorter and longer, the draft is shorter.</rule>
+  <block id="1" name="Do only what was asked">
+    <rule ref="guide: Do only what was asked blockquote">Zero extra packages, swipes, sentences, or explanations beyond what the prompt requested.</rule>
+    <rule ref="guide: Do only what was asked blockquote">When in doubt between shorter and longer, the draft is shorter.</rule>
   </block>
 
-  <block id="1" name="Identity" guide_section="1">
+  <block id="2" name="Identity" guide_section="1">
     <rule ref="guide: Section 1">Voice: Veritasium or Kurzgesagt, not textbook, TED talk, LinkedIn post, friend texting, salesman, or forcing teacher.</rule>
     <rule ref="guide: Section 1">No authority posture, no performed insight, no urgency, no fear, no pressure.</rule>
     <rule ref="guide: Section 1">The package reads as a calm essayist who respects the reader.</rule>
   </block>
 
-  <block id="2" name="Relationship with the Reader" guide_section="3">
+  <block id="3" name="Relationship with the Reader" guide_section="3">
     <rule ref="guide: Section 3, Never tell them what they think">Zero narration of the reader's inner life ("You think...", "You feel...", "You just processed...").</rule>
     <rule ref="guide: Section 3, Never tell them what they think">Zero identity assignments ("You have an incredible superpower", "You are not just X, you are Y").</rule>
     <rule ref="guide: Section 3, Respect their intelligence">Zero condescending explanations. Zero congratulating the reader for understanding something simple.</rule>
     <rule ref="guide: Section 3, We rule">"We" appears ONLY in humanity-wide observations ("we figure out most objects without reading the manual"). Zero uses of "you" to address the reader anywhere in course text.</rule>
     <rule ref="guide: Section 3, We rule">Reader-immersion scenes (Variant A) use a gerund or imperative ("Imagine standing..."), never "we" and never "you." Zero "we are standing in a kitchen" or similar fake-intimacy "we."</rule>
     <rule ref="guide: Section 3, Invite never assert">Invitations only ("Imagine standing at..."), never assertions about what the reader did or is.</rule>
+    <rule ref="guide: Section 3, Acknowledge shared reasoning">When the reader is likely forming a guess, meet them there with phrases like "This seems counterintuitive at first" or "At first glance, the answer seems obvious" or "By now, the question of X is probably forming". Acknowledge the shared thinking without assigning thoughts.</rule>
     <rule ref="guide: Section 3, Never assume who they are">Zero assumptions about job, age, education, or context.</rule>
   </block>
 
-  <block id="3" name="Package Flow and Phase Structure" guide_section="5">
+  <block id="4" name="Package Flow and Phase Structure" guide_section="5">
 
     <group name="Flow integrity">
       <rule ref="guide: Section 5, opening blockquote">The package reads as one unbroken line of thought. No swipe out of order.</rule>
@@ -43,6 +44,10 @@
       <rule ref="guide: Section 5, Phase 1">Default intro opens with a broad human hook and does not name the topic. Exception: a misconception-first intro CAN name the everyday term for the topic, with the wrong part wrapped in &lt;c:r&gt;...&lt;/c:r&gt;.</rule>
       <rule ref="guide: Section 5, Phase 1">Opener style rotates across packages. Same type never repeated consecutively.</rule>
       <rule ref="guide: Section 5, How to make the reader curious">Every line of the intro puts a picture in the reader's head. Visualisation is the test, not just word count.</rule>
+      <rule ref="guide: Section 5, How to make the reader curious">Use picture-able nouns ("coffee cup", "stuck door", "light switch"), not invisible abstract nouns ("system", "process", "concept", "context", "framework", "approach").</rule>
+      <rule ref="guide: Section 5, How to make the reader curious">Use verbs the reader can watch happening ("whisper", "lean", "tug", "slip", "crack open", "fumble"), not flat explainer verbs ("communicate", "represent", "involve", "is about").</rule>
+      <rule ref="guide: Section 5, How to make the reader curious">End the intro on something unfinished. The last sentence leaves a question in the reader's mind, a "but" that flips what came before, or a small contradiction. A flat ending kills curiosity.</rule>
+      <rule ref="guide: Section 5, How to make the reader curious">Zero intros that answer their own setup. If the intro already explains the idea, the next swipe has nothing to do.</rule>
     </group>
 
     <group name="Intro variants (when used)">
@@ -55,71 +60,72 @@
 
     <group name="Phase 2, Stories / Narratives">
       <rule ref="guide: Section 5, Length reference">2 to 3 consecutive @text swipes, each 5 to 7 sentences. Each sentence targets ~14 words (can overflow to 17-18).</rule>
-      <rule ref="guide: Section 5, Phase 2">Package follows one of 7 variants (A-G) or a mix. Swipe structure matches the variant. Same Phase 2 variant should not appear twice in a row across consecutive packages.</rule>
+      <rule ref="guide: Section 5, Phase 2">Package follows one of 7 variants (A-G) or a mix. Swipe structure matches the variant. Variants are starting points, not rigid templates, and can be mixed. The variants: A = reader-immersion scenario (gerund or imperative, never "you"/"we"); B = single person narrative; C = two (or more) people contrast; D = diverse multiple stories across contexts; E = scientific walkthrough (observation → mechanism → result); F = historical arc across eras; G = thought experiment ("Suppose...").</rule>
       <rule ref="guide: Section 5, Phase 2">Stories create a question, not a conclusion.</rule>
-      <rule ref="guide: Section 5, Phase 2 dialogue">Variants A, B, C, D, and F can include a short line of dialogue when it brings the scene closer to the reader. Variants E and G never include dialogue. One line per swipe, two at most. No back-and-forth scripts. Real, plain speech only.</rule>
+      <rule ref="guide: Section 5, Phase 2">"Suppose..." and "Imagine..." prefixes are optional. A scene can start directly without them.</rule>
+      <rule ref="guide: Section 5, Phase 2, Stories can include a line of dialogue">Variants A, B, C, D, and F can include a short line of dialogue when it brings the scene closer to the reader. Variants E and G never include dialogue. One line per swipe, two at most. No back-and-forth scripts.</rule>
+      <rule ref="guide: Section 5, Phase 2, Stories can include a line of dialogue">Dialogue is written as people actually talk, plain words, no theatre voice. The narrator never comments on the spoken line or explains what it means.</rule>
     </group>
 
     <group name="Phase 3, Questions">
       <rule ref="guide: Section 5, Length reference">1 to 2 swipes using @question or @true_false, rarely 3. No @estimate here.</rule>
-      <rule ref="guide: Section 5, Phase 3">Question tone is curious, not testing. Reader feels safe.</rule>
-      <rule ref="guide: Section 5, Phase 3">Every question is answerable from what came before.</rule>
-      <rule ref="guide: Section 5, Phase 3 skip">Phase 3 can be skipped entirely when the story phase already brings the reader to the realisation. When skipped, the package goes from Phase 2 directly to Phase 4. Use this rarely, at most once per segment.</rule>
-      <rule ref="guide: Section 5, Phase 3">Across the segment, Phase 3 alternates between @question and @true_false in different packages. Same swipe type should not appear in every package.</rule>
-      <rule ref="guide: Section 5, Phase 3, Question openers">Question openers vary across packages. Zero segments where every @question starts with "What...". Rotate through "Why...", "How...", "Where...", or sentence-first openers. No two consecutive packages use the same interrogative.</rule>
+      <rule ref="guide: Section 5, Phase 3, Questions">Question tone is curious, not testing. Reader feels safe.</rule>
+      <rule ref="guide: Section 5, Phase 3, Questions">Every question is answerable from what came before.</rule>
+      <rule ref="guide: Section 5, Phase 3, Sometimes Phase 3 can be skipped completely">Phase 3 can be skipped entirely when the story phase already brings the reader to the realisation. When skipped, the package goes from Phase 2 directly to Phase 4. Use this rarely, at most once per segment.</rule>
+      <rule ref="guide: Section 5, Phase 3, Vary question openers across packages">Question openers vary across packages. Zero segments where every @question starts with "What...". Rotate through "Why...", "How...", "Where...", or sentence-first openers. No two consecutive packages use the same interrogative. If a segment has 3 or more packages with questions, at least 2 different openers must appear.</rule>
     </group>
 
     <group name="Consequences" rlockie_field="consequence:">
-      <rule ref="guide: Section 5, Phase 3, consequences rule 0">1 sentence default, 2 occasional, 3 rare. Should not exceed ~20 words total.</rule>
-      <rule ref="guide: Section 5, Phase 3, consequences rule 1">Zero verdict language ("Wrong.", "Incorrect.", "This would not work.").</rule>
-      <rule ref="guide: Section 5, Phase 3, consequences rule 2">Wrong-but-intuitive: brief acknowledgment then correction. Sometimes just the correction. Vary the approach.</rule>
-      <rule ref="guide: Section 5, Phase 3, consequences rule 3">Wrong-but-not-intuitive: plain correction, no invented reasoning.</rule>
-      <rule ref="guide: Section 5, Phase 3, consequences rule 4">Correct answers: brief confirmation plus reasoning. No "Exactly!" or "Great job!".</rule>
-      <rule ref="guide: Section 5, Phase 3, consequences rule 5">Zero sugarcoating. Wrong is wrong, stated honestly.</rule>
-      <rule ref="guide: Section 5, Phase 3, consequences rule 0">Nuance beyond 2 sentences belongs in explanation (explanation:), not consequence.</rule>
+      <rule ref="guide: Section 5, Writing @question consequences, rule 1">1 sentence default, 2 occasional, 3 rare. Should almost never exceed 20 words total.</rule>
+      <rule ref="guide: Section 5, Writing @question consequences, rule 2">Zero verdict language ("Wrong.", "Incorrect.", "This would not work.").</rule>
+      <rule ref="guide: Section 5, Writing @question consequences, rule 3">Wrong-but-intuitive: brief acknowledgment then correction. Sometimes just the correction. Vary the approach.</rule>
+      <rule ref="guide: Section 5, Writing @question consequences, rule 4">Wrong-but-not-intuitive: plain correction, no invented reasoning.</rule>
+      <rule ref="guide: Section 5, Writing @question consequences, rule 5">Correct answers: brief confirmation plus reasoning. No "Exactly!" or "Great job!".</rule>
+      <rule ref="guide: Section 5, Writing @question consequences, rule 6">Zero sugarcoating. Wrong is wrong, stated honestly.</rule>
+      <rule ref="guide: Section 5, Writing @question consequences, rule 1">Nuance beyond 2 sentences belongs in explanation (explanation:), not consequence.</rule>
     </group>
 
     <group name="Hints" rlockie_field="hint:">
-      <rule ref="guide: Section 5, Phase 3, hints rule 0">Exactly one sentence, at most 14 words (can overflow to 17-18).</rule>
-      <rule ref="guide: Section 5, Phase 3, hints rule 1">Points at the topic of the question, not at the answer.</rule>
-      <rule ref="guide: Section 5, Phase 3, hints rule 2">Also useful as context the reader carries forward.</rule>
-      <rule ref="guide: Section 5, Phase 3, hints rule 3">Not a rephrasing of the question.</rule>
+      <rule ref="guide: Section 5, Writing @question hints, rule 1">Exactly one sentence, at most 14 words (can overflow to 17-18 when needed).</rule>
+      <rule ref="guide: Section 5, Writing @question hints, rule 2">Points at the topic of the question, not at the answer.</rule>
+      <rule ref="guide: Section 5, Writing @question hints, rule 3">Also useful as context the reader carries forward.</rule>
+      <rule ref="guide: Section 5, Writing @question hints, rule 4">Not a rephrasing of the question.</rule>
     </group>
 
     <group name="Explanations" rlockie_field="explanation:">
-      <rule ref="guide: Section 5, Phase 3, explanations">1 to 2 sentences. Not a paragraph. Each sentence targets ~14 words.</rule>
+      <rule ref="guide: Section 5, Writing @question explanations">1 to 2 sentences. Not a paragraph. Each sentence targets ~14 words.</rule>
     </group>
 
     <group name="Phase 4, Topic Reveal">
       <rule ref="guide: Section 5, Length reference">1 to 2 @text swipes, 5 to 7 sentences each.</rule>
       <rule ref="guide: Section 5, Phase 4">Names the pattern. Makes the connection explicit. Feels like a click, not a lecture.</rule>
-      <rule ref="guide: Section 5, Phase 4, No book or author">Zero mentions of source book or author in course text. Only in @course metadata.</rule>
-      <rule ref="guide: Section 5, Phase 4, Topic naming">Topic naming varies across packages. Zero repetitive "Researchers call/describe this as..." formula.</rule>
-      <rule ref="guide: Section 5, Phase 4, Attribution variation">Reveal sentence does not lean on the same attribution word that already appeared in Phase 2. If "researchers," "scientists," "study," or "experiment" was used in the stories, the reveal opens with a different construction.</rule>
-      <rule ref="guide: Section 5, Phase 4, No meta-narration">Zero meta-narration in the reveal. Banned openers: "We have seen...", "We just saw...", "As we have just learned...", "Now it is time to...", "Now let us...", "Now we will see...", "Let us look at...", "Let us name...", "Let us turn to...", "What all three stories have in common is...". Banned verbs as the main verb of the reveal sentence with narrator-and-reader as subject: see, look at, examine, turn to.</rule>
-      <rule ref="guide: Section 5, Phase 4, No meta-narration">The reveal sentence stays inside the same scene language as Phase 2. The topic name lands inside a sentence that is still doing the work of the scene (mentions the kitchen, the museum, the watch, etc.), not after a "now let me explain" lead-in.</rule>
-      <rule ref="guide: Section 5, Phase 4, No meta-narration">Read-aloud test: the reveal sentence flows directly from the last Phase 2 sentence with no tonal shift. If reading the two sentences in a row triggers an "and now..." classroom shift, the reveal failed.</rule>
-      <rule ref="guide: Section 5, Phase 4, Reveal connects to course main idea">Zero label-only reveal sentences. "This effect is called X" and "This has a name: Y" fail. They are too general and could appear in any course.</rule>
-      <rule ref="guide: Section 5, Phase 4, Reveal connects to course main idea">The sentence with the green term connects the concept to the main idea of the whole course. Examples of a course main idea: for Emotional Design, "three layers of how design reaches inside the person"; for habits, "the four parts of the habit loop"; for cognitive biases, "the shortcuts the mind reaches for".</rule>
-      <rule ref="guide: Section 5, Phase 4, Reveal connects to course main idea">Swap test: replace the green term with any concept from a different course. If the sentence still fits, it was too general and must be rewritten.</rule>
-      <rule ref="guide: Section 5, Phase 4, Reveal connects to course main idea">Main-idea test: read the reveal sentence alone. A reader can tell what the whole course is about from this one sentence. If not, the sentence is a label and must be rewritten.</rule>
+      <rule ref="guide: Section 5, Phase 4, Do not mention the source book or its author">Zero mentions of source book or author in course text. Only in @course metadata.</rule>
+      <rule ref="guide: Section 5, Phase 4, Vary how you name the topic">Topic naming varies across packages. Zero repetitive "Researchers call/describe this as..." formula.</rule>
+      <rule ref="guide: Section 5, Phase 4, Do not lean on the same attribution word twice">Reveal sentence does not lean on the same attribution word that already appeared in Phase 2. If "researchers," "scientists," "study," or "experiment" was used in the stories, the reveal opens with a different construction.</rule>
+      <rule ref="guide: Section 5, Phase 4, Never break the immersion with classroom voice">Zero meta-narration in the reveal. Banned openers: "We have seen...", "We just saw...", "As we have just learned...", "Now it is time to...", "Now let us...", "Now we will see...", "Let us look at...", "Let us name...", "Let us turn to...", "What all three stories have in common is...". Banned verbs as the main verb of the reveal sentence with narrator-and-reader as subject: see, look at, examine, turn to.</rule>
+      <rule ref="guide: Section 5, Phase 4, Never break the immersion with classroom voice">The reveal sentence stays inside the same scene language as Phase 2. The topic name lands inside a sentence that is still doing the work of the scene (mentions the kitchen, the museum, the watch, etc.), not after a "now let me explain" lead-in.</rule>
+      <rule ref="guide: Section 5, Phase 4, Never break the immersion with classroom voice">Read-aloud test: the reveal sentence flows directly from the last Phase 2 sentence with no tonal shift. If reading the two sentences in a row triggers an "and now..." classroom shift, the reveal failed.</rule>
+      <rule ref="guide: Section 5, Phase 4, The reveal sentence must connect the concept to the main idea of the whole course">Zero label-only reveal sentences. "This effect is called X" and "This has a name: Y" fail. They are too general and could appear in any course.</rule>
+      <rule ref="guide: Section 5, Phase 4, The reveal sentence must connect the concept to the main idea of the whole course">The sentence with the green term connects the concept to the main idea of the whole course. Examples of a course main idea: for Emotional Design, "three layers of how design reaches inside the person"; for habits, "the four parts of the habit loop"; for cognitive biases, "the shortcuts the mind reaches for".</rule>
+      <rule ref="guide: Section 5, Phase 4, The reveal sentence must connect the concept to the main idea of the whole course">Swap test: replace the green term with any concept from a different course. If the sentence still fits, it was too general and must be rewritten.</rule>
+      <rule ref="guide: Section 5, Phase 4, The reveal sentence must connect the concept to the main idea of the whole course">Main-idea test: read the reveal sentence alone. A reader can tell what the whole course is about from this one sentence. If not, the sentence is a label and must be rewritten.</rule>
     </group>
 
     <group name="Color highlights" rlockie_field="c:g, c:r">
-      <rule ref="guide: Section 5, Phase 4, Color highlights rule 1">Green marks the topic only. Appears once in Phase 4. May repeat once if same term. Only inside @text.</rule>
-      <rule ref="guide: Section 5, Phase 4, Color highlights rule 2">Red marks only a wrong thing. Never on the topic, never on anything correct. Only inside @text.</rule>
-      <rule ref="guide: Section 5, Phase 4, Color highlights rule 3">1 to 2 highlights per package total across both colors.</rule>
-      <rule ref="guide: Section 5, Phase 4, Color highlights rule 4">At most 1 highlight per @text swipe. No two highlights in the same swipe.</rule>
-      <rule ref="guide: Section 5, Phase 4, Color highlights rule 4">Highlights wrap the exact term, not a whole sentence.</rule>
-      <rule ref="guide: Section 5, Phase 4, Color highlights rule 5">Zero highlights on generic words ("decision", "number", "thing").</rule>
+      <rule ref="guide: Section 5, Phase 4, Color highlights, rule 1">Green marks the topic only. Appears once in Phase 4. May repeat once if same term. Only inside @text.</rule>
+      <rule ref="guide: Section 5, Phase 4, Color highlights, rule 2">Red marks only a wrong thing. Never on the topic, never on anything correct. Only inside @text.</rule>
+      <rule ref="guide: Section 5, Phase 4, Color highlights, rule 3">1 to 2 highlights per package total across both colors.</rule>
+      <rule ref="guide: Section 5, Phase 4, Color highlights, rule 4">At most 1 highlight per @text swipe. No two highlights in the same swipe.</rule>
+      <rule ref="guide: Section 5, Phase 4, Color highlights, rule 5">Highlights wrap the exact term, not a whole sentence.</rule>
+      <rule ref="guide: Section 5, Phase 4, Color highlights, rule 6">Zero highlights on generic words ("decision", "number", "thing").</rule>
       <rule ref="guide: Section 5, Phase 4, Color highlights">Zero color markup inside @question, @true_false, @estimate, @pause, @reflect, @quote, or any property field.</rule>
     </group>
 
     <group name="Optional @pause" rlockie_field="@pause">
-      <rule ref="guide: Section 5, @pause">Zero or one per package. Single sentence. Goes after Phase 3 (questions), before Phase 4 (reveal).</rule>
-      <rule ref="guide: Section 5, @pause">Small interesting fact or reframing. Not a quiz, recap, or motivational line.</rule>
-      <rule ref="guide: Section 5, @pause">Zero "Did you know...", "Fun fact:", "Pro tip:".</rule>
-      <rule ref="guide: Section 5, @pause">Must not name or hint at the topic. The reader has not reached Phase 4 yet.</rule>
+      <rule ref="guide: Section 5, Optional: @pause swipes">Zero or one per package. Single sentence. Goes after Phase 3 (questions), before Phase 4 (reveal).</rule>
+      <rule ref="guide: Section 5, Optional: @pause swipes">Small interesting fact or reframing. Not a quiz, recap, or motivational line.</rule>
+      <rule ref="guide: Section 5, Optional: @pause swipes">Zero "Did you know...", "Fun fact:", "Pro tip:".</rule>
+      <rule ref="guide: Section 5, Optional: @pause swipes">Must not name or hint at the topic. The reader has not reached Phase 4 yet.</rule>
     </group>
 
     <group name="Optional @estimate" rlockie_field="@estimate">
@@ -130,69 +136,70 @@
       <rule ref="guide: Section 5, Length reference">1 to 2 @true_false swipes. Statement on one line.</rule>
       <rule ref="guide: Section 5, Phase 5">Statement is semi-obvious after a moment of thought. Not dumb, not a trap.</rule>
       <rule ref="RlockieFormatGuide.xml, @true_false">true: and false: texts are descriptive, not literally "True" and "False".</rule>
-      <rule ref="guide: Section 5, Phase 3 rules apply">Consequences and hints follow the same rules as @question.</rule>
-      <rule ref="guide: Section 5, Phase 5, Intro replacement">If the package opened with a true/false intro, Phase 5 is empty for that package. The package never has two @true_false swipes when one of them is the intro.</rule>
+      <rule ref="guide: Section 5, Writing @question consequences and hints">Consequences and hints follow the same rules as @question.</rule>
+      <rule ref="guide: Section 5, Phase 5, Phase 5 is skipped if the package opens with a true/false intro">If the package opened with a true/false intro, Phase 5 is empty for that package. The package never has two @true_false swipes when one of them is the intro.</rule>
     </group>
 
     <group name="Phase 6, Reflect (optional)" rlockie_field="@reflect">
       <rule ref="guide: Section 5, Phase 6">0 or 1 @reflect swipe. Optional. Skip when the package arc feels complete without it. Phase 6 contains @reflect only, no @text.</rule>
       <rule ref="guide: Section 5, Length reference">When present: 2 or 3 points, each 14 to 16 words.</rule>
-      <rule ref="guide: Section 5, Phase 6, concrete example">Each point contains one concrete example, introduced with a colon.</rule>
-      <rule ref="guide: Section 5, Phase 6, no cliche">Zero platitudes, zero fridge-magnet wisdom.</rule>
+      <rule ref="guide: Section 5, Phase 6, Each reflect point needs one concrete example">Each point contains one concrete example: a situation, an object, a moment, or a type of person.</rule>
+      <rule ref="guide: Section 5, Phase 6, Reflect points should not be cliche">Zero platitudes, zero fridge-magnet wisdom.</rule>
       <rule ref="guide: Section 3, We rule">Reflect points use no "you." Phrase as a noun phrase the reader can match to their own life ("A kitchen tool kept for its looks alone:..."), not a direct address.</rule>
-      <rule ref="guide: Section 5, Phase 6, structural variation">@reflect appears in some packages of a segment and is skipped in others. A segment where every package ends in @reflect is over-templated.</rule>
     </group>
 
     <group name="Package outro">
       <rule ref="guide: Section 5, Package outro">Every package ends with a @text outro as its LAST swipe. This is mandatory for all packages.</rule>
       <rule ref="guide: Section 5, Package outro, Length">2 to 3 sentences. Never longer. Each sentence targets ~14 words.</rule>
-      <rule ref="guide: Section 5, Package outro, Non-last packages">Non-last packages: outro closes the thought and weaves in a transition to the next package's topic.</rule>
-      <rule ref="guide: Section 5, Package outro, Transitions">Transition phrasing varies across packages. Zero repetitive "The next package asks/looks at/examines..." formula.</rule>
-      <rule ref="guide: Section 5, Package outro, Last package">Last package: names the thread of the course without listing packages. Ends on a question or alternative angle, not a resolution.</rule>
-      <rule ref="guide: Section 5, Package outro, Last package">Zero recap language ("In conclusion", "To summarize", "We covered", "And that changes everything").</rule>
-      <rule ref="guide: Section 5, Package outro, closing">The structure is not copied from the guide's examples. Every outro sounds different.</rule>
+      <rule ref="guide: Section 5, Package outro, For non-last packages">Non-last packages: outro closes the thought and weaves in a transition to the next package's topic.</rule>
+      <rule ref="guide: Section 5, Package outro, Vary transition phrasing">Transition phrasing varies across packages. Zero repetitive "The next package asks/looks at/examines..." formula.</rule>
+      <rule ref="guide: Section 5, Package outro, For the last package of the course">Last package: names the thread of the course without listing packages. Ends on a question or alternative angle, not a resolution.</rule>
+      <rule ref="guide: Section 5, Package outro, For the last package of the course">Zero recap language ("In conclusion", "To summarize", "We covered", "And that changes everything").</rule>
+      <rule ref="guide: Section 5, Package outro, Vary the opener, the closer, and the sentence count">The structure is not copied from the guide's examples. Every outro sounds different.</rule>
     </group>
 
     <group name="Consecutive @text swipes">
-      <rule ref="guide: Section 5, Consecutive @text">No more than 3 @text in a row anywhere, not counting Phase 1 intro.</rule>
+      <rule ref="guide: Section 5, Length reference, no more than 3 @text swipes in a row">No more than 3 @text in a row anywhere, not counting Phase 1 intro.</rule>
     </group>
 
     <group name="Package totals">
-      <rule ref="guide: Section 5, Length reference">Total swipes per package: 6 to 11. (6 is the floor when Phase 3 is skipped or @reflect is omitted.)</rule>
+      <rule ref="guide: Section 5, Length reference">Total swipes per package: 7 to 11.</rule>
       <rule ref="guide: Section 5, Length reference">Default phase order: 1 → 2 → 3 → (optional pause) → 4 → (optional estimate) → 5 → (optional reflect) → outro. Phases that can be skipped: 1 (skip-intro variant), 3 (when stories already land the realisation), 5 (when intro was @true_false), 6 (always optional).</rule>
-      <rule ref="guide: Section 5, Free package">First package of first segment is marked Free.</rule>
+      <rule ref="guide: Section 5, Length reference, First package of the first segment is always free">First package of first segment is marked Free.</rule>
     </group>
 
-    <group name="Structural variation across the segment — MANDATORY">
-      <rule ref="guide: Section 5, Other ways to start a package">A segment is wrong if every package uses the exact same phase spine. Concretely: a 5-package segment where every package goes intro @text → 3 stories → @question → reveal → @true_false → @reflect → outro fails this check, even if every individual package passes every other rule.</rule>
-      <rule ref="guide: Section 5, Other ways to start a package">At least one package per segment uses an intro variant (skip-intro, quote, true/false, or misconception-first), not a plain @text intro.</rule>
-      <rule ref="guide: Section 5, Phase 3 skip">Across the segment, Phase 3 alternates between @question and @true_false, or skips Phase 3 in at least one package.</rule>
-      <rule ref="guide: Section 5, Phase 6">@reflect is included in some packages and skipped in others. A segment where every package ends in @reflect is over-templated.</rule>
-      <rule ref="guide: Section 5, @pause">@pause appears in 1 or 2 packages of a 5-package segment, not in zero and not in every one.</rule>
-      <rule ref="guide: Section 5, Phase 2">Phase 2 variant (A through G) differs across consecutive packages. Same variant should not appear twice in a row.</rule>
+    <group name="Structural variation across the segment">
+      <rule ref="guide: Section 5, Other ways to start a package">Intro variants (skip-intro, quote, true/false, misconception-first) are available alongside the default @text intro. Each variant is capped at once per segment when used. Zero is also fine.</rule>
+      <rule ref="guide: Section 5, Phase 3, Vary question openers across packages">Question openers are varied across packages: no two consecutive packages share the same interrogative, and a 3+ question segment uses at least 2 different openers.</rule>
+      <rule ref="guide: Section 5, Package outro, Vary transition phrasing">Outro transitions vary across packages. Zero repetitive "The next package asks/looks at/examines..." formula. Vary the opener, the closer, and the sentence count across packages.</rule>
     </group>
 
     <group name="Course totals">
-      <rule ref="guide: Section 5, Course level">Segments per course: 2 to 3 maximum.</rule>
-      <rule ref="guide: Section 5, Course level">Packages per segment: 3 to 5 maximum.</rule>
+      <rule ref="guide: Section 5, Length reference, Course level">Segments per course: 2 to 3 maximum.</rule>
+      <rule ref="guide: Section 5, Length reference, Course level">Packages per segment: 3 to 5 maximum.</rule>
     </group>
 
   </block>
 
-  <block id="4" name="Writing Rules" guide_section="2">
+  <block id="5" name="Writing Rules" guide_section="2">
 
     <group name="Claims and evidence">
       <rule ref="guide: Section 2, Ground every claim">Every claim anchored in history, evolution, or a scenario. Zero isolated facts.</rule>
       <rule ref="guide: Section 2, Visual anchors">Every number has a visual anchor the reader can picture.</rule>
+      <rule ref="guide: Section 2, Visual anchors, ordering">Put the picture first or wrap it around the number. Never lead with the raw number. Correct: "70,000 years ago, long before any city existed". Wrong: "In 70,000 BCE, a population appeared."</rule>
       <rule ref="guide: Section 2, Universal anchors">Visual anchors are universal. Zero obviously local references ("Super Bowl", "when your grandparents were in school").</rule>
-      <rule ref="guide: Section 2, Numbers as numerals">Every quantity 10 and above in digits, not words. Boundary inclusive: "10 years", never "ten years".</rule>
-      <rule ref="guide: Section 2, US English format">US English number format. Comma thousands, period decimals. Years as plain 4-digit numerals. Decades as "the 1920s". Percentages use % symbol ("1%" not "1 percent"). Use the word only when % would look odd.</rule>
-      <rule ref="guide: Section 2, Times of day">Times of day in digits ("10am", "3pm", or "10:00"), never spelled out ("ten", "three o'clock").</rule>
+      <rule ref="guide: Section 2, Numbers as numerals">Every quantity 10 and above is in digits, always. The boundary is inclusive: 10 itself is digits, not "ten". Correct: "10 years", "12 seconds", "70,000 years ago". Wrong: "ten years", "twelve seconds", "seventy thousand years ago".</rule>
+      <rule ref="guide: Section 2, Small numbers exception">Small numbers that read naturally as words ("one", "two", "three") can stay as words in body text. The test: is the reader supposed to picture a specific amount? If yes, use digits. If the number is just a count that flows with the sentence, words are fine.</rule>
+      <rule ref="guide: Section 2, US English format">Number format is US English. Comma for thousands ("1,200", "70,000", "299,792 kilometers per second"). Period for decimals ("3.14"). Zero spaces as separators, zero periods for thousands. Wrong: "1.200", "70 000", "3,14".</rule>
+      <rule ref="guide: Section 2, Percentages">Percentages use the % symbol. Write "1%" not "1 percent". Use the word "percent" only when the % symbol would look odd in the sentence.</rule>
+      <rule ref="guide: Section 2, Years and decades">Years are plain digits with no comma: "1969", "1789", "170". Zero thousands separator in years. Decades as "the 1920s", never "the nineteen-twenties".</rule>
+      <rule ref="guide: Section 2, Times of day">Times of day in digits, with am/pm ("10am", "3pm") or 24-hour ("10:00", "15:30"). Never "ten", "three o'clock", or "half past two".</rule>
       <rule ref="guide: Section 2, Subjective claims">Zero subjective claims presented as universal truth.</rule>
-      <rule ref="guide: Section 2, Cognitive anchors">Every abstract concept in the package has ONE everyday anchor next to it (an object, scene, or moment from ordinary life that the reader has actually lived). Examples: snowflake-and-avalanche for compound effects, parking meter for anchoring bias, kitchen drawer for the behavioral level.</rule>
-      <rule ref="guide: Section 2, Cognitive anchors">One anchor per concept, never two. If two anchors appear for the same concept in one package, the first was too weak — replace it, do not stack.</rule>
-      <rule ref="guide: Section 2, Cognitive anchors">Retention test: after one read, can the concept be recalled by recalling the anchor? If no, the anchor failed.</rule>
-      <rule ref="guide: Section 2, Cognitive anchors">Zero abstract dictionary-entry sentences ("X describes how...", "Y is when..."). Every concept arrives wrapped around a concrete picture from daily life.</rule>
+      <rule ref="guide: Section 2, Claims and evidence, Every abstract idea needs an anchor from everyday life">Every abstract concept in the package has ONE everyday anchor next to it (an object, scene, or moment from ordinary life that the reader has actually lived). Examples: snowflake-and-avalanche for compound effects, parking meter for anchoring bias, kitchen drawer for the behavioral level.</rule>
+      <rule ref="guide: Section 2, Claims and evidence, Every abstract idea needs an anchor from everyday life">The anchor must be something the reader has actually lived, not a poetic image or metaphor for sounding clever.</rule>
+      <rule ref="guide: Section 2, Claims and evidence, Every abstract idea needs an anchor from everyday life">One anchor per concept, never two. If two anchors appear for the same concept in one package, the first was too weak — replace it, do not stack.</rule>
+      <rule ref="guide: Section 2, Claims and evidence, Every abstract idea needs an anchor from everyday life">Retention test: after one read, can the concept be recalled by recalling the anchor? If no, the anchor failed.</rule>
+      <rule ref="guide: Section 2, Claims and evidence, Every abstract idea needs an anchor from everyday life">Zero abstract dictionary-entry sentences ("X describes how...", "Y is when..."). Every concept arrives wrapped around a concrete picture from daily life.</rule>
     </group>
 
     <group name="Word choice">
@@ -201,17 +208,22 @@
       <rule ref="guide: Section 2, No things or stuff">Zero "things" or "stuff". Zero placeholder nouns ("factors", "aspects", "elements", "matters").</rule>
       <rule ref="guide: Section 2, No like as example-intro">Zero "like" as example-introducer. Use "such as", a colon, or a separate sentence.</rule>
       <rule ref="guide: Section 2, Accessible language">Register between CEFR B1 and B2, closer to B2. A B1 reader should understand every sentence without a dictionary.</rule>
-      <rule ref="guide: Section 2, Idioms">Zero obscure idioms. Well-known B1 idioms at most once per package.</rule>
+      <rule ref="guide: Section 2, Idioms">Zero obscure idioms. Well-known B1 idioms allowed only when the plain version would be clunkier.</rule>
       <rule ref="guide: Section 2, Phrasal verbs">Zero rare phrasal verbs unless plain version would genuinely weaken the sentence.</rule>
+      <rule ref="guide: Section 2, Idioms and phrasal verbs, combined cap">One idiom OR one rare phrasal verb per package, maximum. Not one of each. Zero is fine.</rule>
+      <rule ref="guide: Section 2, Hyphenated compounds">Zero rare or made-up hyphenated words ("half-second", "split-second", "mid-thought", "near-miss") unless the plain word would lose meaning. Default to the plain word.</rule>
     </group>
 
     <group name="Sentence construction">
       <rule ref="guide: Section 2, One idea per line">Every @text line is one thought.</rule>
       <rule ref="guide: Section 2, One sentence per line">One sentence per line default. Up to two when they land as one beat. Three: never.</rule>
-      <rule ref="guide: Section 2, Line length">Every line targets ~16 words total. Single sentence targets ~14 (can go to 17-18 occasionally).</rule>
+      <rule ref="guide: Section 2, Line length">Every line targets ~16 words total. Single sentence targets ~14 (can go to 17-18 occasionally). When a line holds two sentences, they together still fit in ~16 words.</rule>
+      <rule ref="guide: Section 2, Sentence construction">Zero fragments anywhere, including inside two-sentence beats. Both halves of a two-sentence beat must be full sentences. "Not accomplishments." is banned.</rule>
+      <rule ref="guide: Section 2, Merge short sentences">Merge choppy sentence pairs that form one thought. "Goals end. Identities persist." becomes "Goals end, but identities persist."</rule>
       <rule ref="guide: Section 2, Metaphors">Every metaphor is clear, relatable, B1-readable. Metaphors that exist to sound clever are removed.</rule>
       <rule ref="guide: Section 2, No tangled metaphors">Zero tangled metaphors. No stacking. One per sentence maximum.</rule>
-      <rule ref="guide: Section 4, List connector rule">Every list of 3+ items uses "or" or "and" before the last item. Zero drumrolls.</rule>
+      <rule ref="guide: Section 2, Metaphors rule 3">If the literal version is the same length as the metaphor, use the literal version.</rule>
+      <rule ref="guide: Section 4, Every list of 3 or more items needs 'or' or 'and' before the last item">Every list of 3+ items uses "or" or "and" before the last item. Zero drumrolls. Two-item lists also use a connector.</rule>
     </group>
 
     <group name="Craft techniques">
@@ -223,46 +235,46 @@
 
   </block>
 
-  <block id="5" name="Banned Words and Phrases" guide_section="4">
+  <block id="6" name="Banned Words and Phrases" guide_section="4">
     <rule ref="guide: Section 4, Empty action verbs">Zero banned verbs: leverage, utilize, delve, foster, elevate, empower, resonate, underscore, navigate (metaphorical), unlock (metaphorical).</rule>
     <rule ref="guide: Section 4, Inflated nouns">Zero banned nouns/adjectives: synergy, paradigm, holistic, pivotal, multifaceted, game-changer, tapestry, realm, landscape (metaphorical), arguably.</rule>
-    <rule ref="guide: Section 4, Empty filler">Zero filler phrases: "at the end of the day", "it goes without saying", "in today's world", "it is worth noting that", "it turns out that", "when it comes to", "in order to".</rule>
-    <rule ref="guide: Section 4, Pseudo-profound">Zero pseudo-profound: "at its core", "the power of", "serves as a testament to".</rule>
+    <rule ref="guide: Section 4, Empty filler phrases">Zero filler phrases: "at the end of the day", "it goes without saying", "in today's world", "it is worth noting that", "it turns out that", "when it comes to", "in order to".</rule>
+    <rule ref="guide: Section 4, Pseudo-profound phrases">Zero pseudo-profound: "at its core", "the power of", "serves as a testament to".</rule>
   </block>
 
-  <block id="6" name="AI Sentence Structures" guide_section="4">
+  <block id="7" name="AI Sentence Structures" guide_section="4">
 
     <group name="Contrast and reversal">
-      <rule ref="guide: Section 4, AI structures">Zero "not A, actually B" reversals, including split corrections ("X did not fail. It has not crossed Y.").</rule>
-      <rule ref="guide: Section 4, AI structures">Zero mirror sentences ("The question is not whether X, the question is Y.").</rule>
-      <rule ref="guide: Section 4, AI structures">Zero definition-then-reframe ("X is defined as Y. But what it really means is Z.").</rule>
+      <rule ref="guide: Section 4, AI sentence structures to avoid">Zero correctio in any form: the "not X, it's Y" move (Latin: correctio; Greek: epanorthosis). Banned as one sentence ("It's not X, it's Y."), as two sentences ("It is not X. It is Y."), softened ("It's not just X, it's Y." / "Not so much X as Y."), and as definition-then-reframe. If Y is the real claim, write only Y.</rule>
+      <rule ref="guide: Section 4, AI sentence structures to avoid">Zero mirror sentences ("The question is not whether X, the question is Y.").</rule>
+      <rule ref="guide: Section 4, AI sentence structures to avoid">Zero definition-then-reframe ("X is defined as Y. But what it really means is Z.").</rule>
     </group>
 
     <group name="Inflation and enumeration">
-      <rule ref="guide: Section 4, AI structures">Zero triple-adjective lists.</rule>
-      <rule ref="guide: Section 4, AI structures">Zero triple-noun drumrolls. If 3 nouns needed, "or"/"and" before the last.</rule>
-      <rule ref="guide: Section 4, AI structures">Zero list-of-three with ascending intensity.</rule>
+      <rule ref="guide: Section 4, AI sentence structures to avoid">Zero triple-adjective lists.</rule>
+      <rule ref="guide: Section 4, AI sentence structures to avoid">Zero triple-noun drumrolls. If 3 nouns needed, "or"/"and" before the last.</rule>
+      <rule ref="guide: Section 4, AI sentence structures to avoid">Zero list-of-three with ascending intensity.</rule>
     </group>
 
     <group name="Dramatic framing">
-      <rule ref="guide: Section 4, AI structures">Zero colon-punchlines.</rule>
-      <rule ref="guide: Section 4, AI structures">Zero false profundity closers ("And that changes everything").</rule>
-      <rule ref="guide: Section 4, AI structures">Zero emotional imperatives ("Let that sink in", "Read that again").</rule>
+      <rule ref="guide: Section 4, AI sentence structures to avoid">Zero colon-punchlines.</rule>
+      <rule ref="guide: Section 4, AI sentence structures to avoid">Zero false profundity closers ("And that changes everything").</rule>
+      <rule ref="guide: Section 4, AI sentence structures to avoid">Zero emotional imperatives ("Let that sink in", "Read that again").</rule>
     </group>
 
     <group name="Rhetorical manipulation">
-      <rule ref="guide: Section 4, AI structures">Zero rhetorical questions immediately answered.</rule>
-      <rule ref="guide: Section 4, AI structures">Zero "imagine if" escalation chains.</rule>
-      <rule ref="guide: Section 4, AI structures">Zero bookend callbacks.</rule>
+      <rule ref="guide: Section 4, AI sentence structures to avoid">Zero rhetorical questions immediately answered.</rule>
+      <rule ref="guide: Section 4, AI sentence structures to avoid">Zero "imagine if" escalation chains.</rule>
+      <rule ref="guide: Section 4, AI sentence structures to avoid">Zero bookend callbacks.</rule>
     </group>
 
     <group name="Weak references">
-      <rule ref="guide: Section 4, AI structures">Zero sentences starting with "This." as vague reference.</rule>
-      <rule ref="guide: Section 4, AI structures">Zero paragraphs ending with a question the next paragraph immediately answers.</rule>
+      <rule ref="guide: Section 4, AI sentence structures to avoid">Zero sentences starting with "This." as vague reference.</rule>
+      <rule ref="guide: Section 4, AI sentence structures to avoid">Zero paragraphs ending with a question the next paragraph immediately answers.</rule>
     </group>
 
     <group name="Inflated assertions">
-      <rule ref="guide: Section 2, Tone pitfalls">Zero inflated assertions: "The math is real.", "That number is not a metaphor.", "The science is settled.", "The data is clear.", "The evidence speaks for itself."</rule>
+      <rule ref="guide: Section 2, Tone pitfalls to avoid">Zero inflated assertions: "The math is real.", "That number is not a metaphor.", "The science is settled.", "The data is clear.", "The evidence speaks for itself."</rule>
     </group>
 
     <group name="Choppy sentence pairs">
@@ -271,58 +283,58 @@
 
   </block>
 
-  <block id="7" name="Casual Slang and Filler" guide_section="2">
-    <rule ref="guide: Section 2, Casual slang">Zero filler: "basically", "essentially", "literally" (non-literal), "I mean", "look", "listen", "so" (opener), "honestly", "actually" (uncorrecting).</rule>
-    <rule ref="guide: Section 2, Casual slang">Zero fake enthusiasm: "wild", "insane", "mind-blowing", "incredible", "amazing", "fascinating" (unearned).</rule>
-    <rule ref="guide: Section 2, Casual slang">Zero forced familiarity: "you guys", "folks", "friends", "we" (when no we), "right?" (mid-sentence), "let's be real", "here's the thing", "spoiler alert".</rule>
-    <rule ref="guide: Section 2, Casual slang">Zero internet-speak: "hot take", "fun fact", "pro tip", "next-level", "deep dive", "low-key", "high-key", "vibe", "energy" (metaphorical).</rule>
-    <rule ref="guide: Section 2, Casual slang">Zero inflated informality: "a ton of", "a bunch of", "super" (intensifier), "kind of"/"sort of" (hedging), "pretty much".</rule>
-    <rule ref="guide: Section 2, Casual slang">Zero em dashes anywhere.</rule>
-    <rule ref="guide: Section 2, Casual slang">Zero dramatic fragmentation ("Sixty. Thousand.", "One word. Design.").</rule>
+  <block id="8" name="Casual Slang and Filler" guide_section="2">
+    <rule ref="guide: Section 2, Casual slang and filler to avoid">Zero filler: "basically", "essentially", "literally" (non-literal), "I mean", "look", "listen", "so" (opener), "honestly", "actually" (uncorrecting).</rule>
+    <rule ref="guide: Section 2, Casual slang and filler to avoid">Zero fake enthusiasm: "wild", "insane", "mind-blowing", "incredible", "amazing", "fascinating" (unearned).</rule>
+    <rule ref="guide: Section 2, Casual slang and filler to avoid">Zero forced familiarity: "you guys", "folks", "friends", "we" (when no we), "right?" (mid-sentence), "let's be real", "here's the thing", "spoiler alert".</rule>
+    <rule ref="guide: Section 2, Casual slang and filler to avoid">Zero internet-speak: "hot take", "fun fact", "pro tip", "next-level", "deep dive", "low-key", "high-key", "vibe", "energy" (metaphorical).</rule>
+    <rule ref="guide: Section 2, Casual slang and filler to avoid">Zero inflated informality: "a ton of", "a bunch of", "super" (intensifier), "kind of"/"sort of" (hedging), "pretty much".</rule>
+    <rule ref="guide: Section 2, Casual slang and filler to avoid">Zero em dashes anywhere.</rule>
+    <rule ref="guide: Section 2, Casual slang and filler to avoid">Zero dramatic fragmentation ("Sixty. Thousand.", "One word. Design.").</rule>
   </block>
 
-  <block id="8" name="Tone Pitfalls" guide_section="2">
-    <rule ref="guide: Section 2, Tone pitfalls">Zero corporate dryness. No passive constructions that strip personality.</rule>
-    <rule ref="guide: Section 2, Tone pitfalls">Zero salesman pressure. No urgency, scarcity, or fear.</rule>
+  <block id="9" name="Tone Pitfalls" guide_section="2">
+    <rule ref="guide: Section 2, Tone pitfalls to avoid">Zero corporate dryness. No passive constructions that strip personality.</rule>
+    <rule ref="guide: Section 2, Tone pitfalls to avoid">Zero salesman pressure. No urgency, scarcity, or fear.</rule>
   </block>
 
-  <block id="9" name="Self-Check (judgment checks)" guide_section="7">
-    <rule ref="guide: Section 7, substitution test">Substitution test: no sentence works when topic is swapped for a different subject.</rule>
-    <rule ref="guide: Section 7, aloud test">Aloud test: every sentence sounds natural in a calm adult conversation.</rule>
-    <rule ref="guide: Section 7, who wrote this">Who-wrote-this test: a reader can tell a human wrote the draft.</rule>
-    <rule ref="guide: Section 7, so what">So-what test: every statement is answered by the next sentence.</rule>
-    <rule ref="guide: Section 7, deletion">Deletion test: no sentence can be removed without the paragraph losing something.</rule>
+  <block id="10" name="Self-Check (judgment checks)" guide_section="7">
+    <rule ref="guide: Section 7, Substitution test">Substitution test: no sentence works when topic is swapped for a different subject.</rule>
+    <rule ref="guide: Section 7, Aloud test">Aloud test: every sentence sounds natural in a calm adult conversation.</rule>
+    <rule ref="guide: Section 7, Who wrote this test">Who-wrote-this test: a reader can tell a human wrote the draft.</rule>
+    <rule ref="guide: Section 7, So what test">So-what test: every statement is answered by the next sentence.</rule>
+    <rule ref="guide: Section 7, Deletion test">Deletion test: no sentence can be removed without the paragraph losing something.</rule>
   </block>
 
-  <block id="10" name="Factual Accuracy" guide_section="6">
-    <rule ref="guide: Section 6, opening">Every factual claim presented as fact is true.</rule>
-    <rule ref="guide: Section 6, opening">Invented stories never read as documented real cases. Zero fake names, dates, or institutions.</rule>
-    <rule ref="guide: Section 6, Canonical facts">Every specific date, number, name, quote, or study is textbook-canonical, hedged, or omitted.</rule>
+  <block id="11" name="Factual Accuracy" guide_section="6">
+    <rule ref="guide: Section 6, intro paragraph">Every factual claim presented as fact is true.</rule>
+    <rule ref="guide: Section 6, intro paragraph">Invented stories never read as documented real cases. Zero fake names, dates, or institutions.</rule>
+    <rule ref="guide: Section 6, Textbook-canonical facts only">Every specific date, number, name, quote, or study is textbook-canonical, hedged, or omitted.</rule>
 
     <group name="High-risk categories (100% verifiable or hedged/removed)">
-      <rule ref="guide: Section 6, High-risk">Exact dates.</rule>
-      <rule ref="guide: Section 6, High-risk">Specific statistics ("73% of people...").</rule>
-      <rule ref="guide: Section 6, High-risk">Study citations (author, year, institution).</rule>
-      <rule ref="guide: Section 6, High-risk">Direct quotes attributed to real people.</rule>
-      <rule ref="guide: Section 6, High-risk">Obscure names (minor historical figures).</rule>
-      <rule ref="guide: Section 6, High-risk">Superlatives ("the first", "the oldest", "the largest").</rule>
-      <rule ref="guide: Section 6, High-risk">Book or paper titles.</rule>
+      <rule ref="guide: Section 6, High-risk categories">Exact dates.</rule>
+      <rule ref="guide: Section 6, High-risk categories">Specific statistics ("73% of people...").</rule>
+      <rule ref="guide: Section 6, High-risk categories">Study citations (author, year, institution).</rule>
+      <rule ref="guide: Section 6, High-risk categories">Direct quotes attributed to real people.</rule>
+      <rule ref="guide: Section 6, High-risk categories">Obscure names (minor historical figures).</rule>
+      <rule ref="guide: Section 6, High-risk categories">Superlatives ("the first", "the oldest", "the largest").</rule>
+      <rule ref="guide: Section 6, High-risk categories">Book or paper titles.</rule>
     </group>
 
     <rule ref="guide: Section 6, Concepts over specifics">Package defaults to mechanism, not measurement.</rule>
 
     <group name="Self-verification pass">
-      <rule ref="guide: Section 6, Self-verification">Every specific claim walked through individually.</rule>
-      <rule ref="guide: Section 6, Self-verification">Every claim clears 95% confidence.</rule>
-      <rule ref="guide: Section 6, Self-verification">Claims that did not clear are hedged, removed, or replaced with the mechanism.</rule>
-      <rule ref="guide: Section 6, Self-verification">Zero swapping one specific for another without verifying both.</rule>
-      <rule ref="guide: Section 6, Self-verification">High-risk categories re-checked after writing.</rule>
+      <rule ref="guide: Section 6, Self-verification pass">Every specific claim walked through individually.</rule>
+      <rule ref="guide: Section 6, Self-verification pass">Every claim clears 95% confidence.</rule>
+      <rule ref="guide: Section 6, Self-verification pass">Claims that did not clear are hedged, removed, or replaced with the mechanism.</rule>
+      <rule ref="guide: Section 6, Self-verification pass">Zero swapping one specific for another without verifying both.</rule>
+      <rule ref="guide: Section 6, Self-verification pass">High-risk categories re-checked after writing.</rule>
     </group>
 
-    <rule ref="guide: Section 6, Never fabricate">Zero fabricated claims to fill a quota.</rule>
+    <rule ref="guide: Section 6, Do not fabricate facts to fill quotas">Zero fabricated claims to fill a quota.</rule>
   </block>
 
-  <block id="11" name="rlockie Format" source="RlockieFormatGuide.xml">
+  <block id="12" name="rlockie Format" source="RlockieFormatGuide.xml">
 
     <group name="@course">
       <rule>@course is the first line. Blank line, then metadata fields.</rule>
@@ -352,6 +364,7 @@
       <rule ref="guide: Section 5, Package titles">Titles hint at the topic but never name it.</rule>
       <rule ref="guide: Section 5, Package titles">Zero subtitles, zero colons in titles ("Coffee Cups: A Study in Affordances" is wrong).</rule>
       <rule ref="guide: Section 5, Package titles">Zero banned words in titles ("things", "stuff", banned verbs, banned adjectives stay out of titles too).</rule>
+      <rule ref="guide: Section 5, Package titles">Numbers in titles use digits, not words. This applies to segment AND package titles and overrides the "small numbers can stay as words" rule from the number-format section. "3 Layers of Feeling", not "Three Layers of Feeling".</rule>
       <rule ref="guide: Section 5, Package titles">Read-the-menu test: read the segment titles top to bottom. If they look like a list of variants of the same shape, the segment fails.</rule>
     </group>
 

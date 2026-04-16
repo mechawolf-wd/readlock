@@ -48,9 +48,9 @@ class StreakBottomSheet extends StatelessWidget {
     );
   }
 
-  static final Widget LargeFireIcon = Icon(
+  static final Widget LargeFireIcon = const Icon(
     Icons.local_fire_department,
-    color: RLDS.warningColor,
+    color: RLDS.warning,
     size: 48,
   );
 
@@ -96,7 +96,7 @@ class StreakBottomSheet extends StatelessWidget {
 
   Color getDayColor(bool isCompleted) {
     if (isCompleted) {
-      return RLDS.warningColor;
+      return RLDS.warning;
     }
     return RLDS.textSecondary.withValues(alpha: 0.2);
   }

@@ -381,9 +381,9 @@ First line of text.
       </line>
 
       <line name="2" label="Package summary">
-        <syntax>A single line that begins with "#" and contains three comma-separated fields in this exact order: (1) Phase 2 variant letter with story count in parentheses, (2) intro type, (3) "teaching: " followed by the concept name.</syntax>
+        <syntax>A single line that begins with "#" and contains three comma-separated fields in this exact order: (1) Phase 2 variant letter with content descriptor in parentheses, (2) intro type, (3) "teaching: " followed by the concept name.</syntax>
         <rules>
-          <rule>Field 1 format: "Variant X (N stories)" where X is A through G and N is the number of @text swipes in Phase 2 (2 or 3).</rule>
+          <rule>Field 1 format: "Variant X (descriptor)". X is A through G. The descriptor names what Phase 2 actually contains, not always "stories". Use the descriptor that matches the variant: Variant A = "N scenes", Variant B = "single narrative" or "N beats", Variant C = "N stories", Variant D = "N stories", Variant E = "N steps" or "mechanism walkthrough", Variant F = "historical arc", Variant G = "thought experiment". A package that does not literally contain stories must not say "stories".</rule>
           <rule>Field 2 values: "default intro" | "quote intro" | "true/false intro" | "misconception intro" | "skip intro". Exactly one of these.</rule>
           <rule>Field 3 format: "teaching: [concept name]" where the concept is the term that carries the green &lt;c:g&gt; highlight in Phase 4. Lowercase, no article, no quotes.</rule>
           <rule>Fields are separated by a comma and a single space. No em dashes, no semicolons.</rule>
@@ -431,8 +431,18 @@ Two coffee makers sit on the same kitchen counter.
         </example>
         <example label="Misconception-first, Variant B">
           <code># @text, @text, @text, @question, @text, @true_false, @text
-# Variant B (2 stories), misconception intro, teaching: the visceral level</code>
-          <description>Misconception-first intro looks like a normal @text intro in line 1. The misconception is signalled inside the swipe by the &lt;c:r&gt; markup, and line 2 names it.</description>
+# Variant B (2 beats), misconception intro, teaching: the visceral level</code>
+          <description>Misconception-first intro looks like a normal @text intro in line 1. The misconception is signalled inside the swipe by the &lt;c:r&gt; markup, and line 2 names it. Variant B is a single narrative, so the descriptor counts beats, not stories.</description>
+        </example>
+        <example label="Quote intro, Variant G">
+          <code># @quote, @text, @text, @question, @text, @true_false, @text
+# Variant G (thought experiment), quote intro, teaching: progressive disclosure</code>
+          <description>Variant G builds the case from a hypothetical instead of stories. The descriptor is "thought experiment", never "N stories", because there are no characters or real scenes to count.</description>
+        </example>
+        <example label="Default intro, Variant F">
+          <code># @text, @text, @text, @text, @question, @text, @true_false, @text
+# Variant F (historical arc), default intro, teaching: the flywheel</code>
+          <description>Variant F is one long story told across eras. The descriptor is "historical arc", not "3 stories", because it is one continuous arc split across swipes.</description>
         </example>
       </examples>
     </mandatory_package_structure_comment>

@@ -71,7 +71,7 @@ class RevealDemoState extends State<RevealDemo> with SingleTickerProviderStateMi
     return Container(
       width: double.infinity,
       decoration: containerDecoration,
-      padding: EdgeInsets.all(12.0),
+      padding: const EdgeInsets.all(12.0),
       margin: const EdgeInsets.only(bottom: 16),
       child: AnimatedTextDisplay(),
     );
@@ -91,7 +91,7 @@ class RevealDemoState extends State<RevealDemo> with SingleTickerProviderStateMi
 
         return RichText(
           text: TextSpan(
-            style: TextStyle(fontSize: 14, color: RLDS.textPrimary),
+            style: const TextStyle(fontSize: 14, color: RLDS.textPrimary),
             children: [
               TextSpan(text: visibleText),
 
@@ -124,7 +124,7 @@ class BlurDemo extends StatelessWidget {
     return Container(
       width: double.infinity,
       decoration: containerDecoration,
-      padding: EdgeInsets.all(12.0),
+      padding: const EdgeInsets.all(12.0),
       margin: const EdgeInsets.only(bottom: 16),
       child: Div.column([
         BlurredSentence(),
@@ -170,7 +170,7 @@ class ColoredTextDemo extends StatelessWidget {
     Color highlightColor = RLDS.textPrimary;
 
     if (isEnabled) {
-      highlightColor = RLDS.primaryBlue;
+      highlightColor = RLDS.info;
     }
 
     FontWeight keyTermsFontWeight = FontWeight.normal;
@@ -182,11 +182,11 @@ class ColoredTextDemo extends StatelessWidget {
     return Container(
       width: double.infinity,
       decoration: containerDecoration,
-      padding: EdgeInsets.all(12.0),
+      padding: const EdgeInsets.all(12.0),
       margin: const EdgeInsets.only(bottom: 16),
       child: RichText(
         text: TextSpan(
-          style: TextStyle(fontSize: 14, color: RLDS.textPrimary, height: 1.5),
+          style: const TextStyle(fontSize: 14, color: RLDS.textPrimary, height: 1.5),
           children: [
             TextSpan(
               text: RLUIStrings.DEMO_COLORED_HIGHLIGHT,
@@ -220,11 +220,11 @@ class TextSpeedDemo extends StatelessWidget {
     return Container(
       width: double.infinity,
       decoration: containerDecoration,
-      padding: EdgeInsets.all(12.0),
+      padding: const EdgeInsets.all(12.0),
       margin: const EdgeInsets.only(bottom: 16),
       child: Div.row([
         Div.column([
-          RLTypography.headingMedium('$wordsPerMinute', color: RLDS.primaryBlue),
+          RLTypography.headingMedium('$wordsPerMinute', color: RLDS.info),
 
           Text(RLUIStrings.DEMO_SPEED_UNIT, style: RLTypography.bodyMediumStyle.copyWith(color: RLDS.textSecondary)),
         ], crossAxisAlignment: CrossAxisAlignment.start),

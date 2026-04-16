@@ -50,7 +50,7 @@ class CCSingleChoiceState extends State<CCSingleChoice> {
     );
 
     correctOptionDecoration = BoxDecoration(
-      color: RLDS.primaryGreen.withValues(alpha: 0.1),
+      color: RLDS.success.withValues(alpha: 0.1),
       borderRadius: optionRadius,
     );
 
@@ -136,9 +136,9 @@ class CCSingleChoiceState extends State<CCSingleChoice> {
       shouldMute: shouldMute,
     );
 
-    final Widget CorrectCheckIcon = Icon(
+    final Widget CorrectCheckIcon = const Icon(
       Icons.check_circle,
-      color: RLDS.primaryGreen,
+      color: RLDS.success,
       size: RLDS.iconMedium,
     );
 
@@ -254,7 +254,7 @@ class CCSingleChoiceState extends State<CCSingleChoice> {
     required bool shouldMute,
   }) {
     if (shouldShowCorrect) {
-      return RLTypography.bodyMediumStyle.copyWith(color: RLDS.primaryGreen);
+      return RLTypography.bodyMediumStyle.copyWith(color: RLDS.success);
     }
 
     if (shouldMute) {

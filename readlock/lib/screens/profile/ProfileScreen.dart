@@ -17,7 +17,7 @@ class ProfileScreen extends StatefulWidget {
 class ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const Scaffold(
       backgroundColor: RLDS.backgroundDark,
       body: SafeArea(
         child: SingleChildScrollView(
@@ -42,6 +42,7 @@ class ProfileContentState extends State<ProfileContent> {
   bool revealAllTrueFalse = false;
   bool blurEnabled = true;
   bool coloredTextEnabled = true;
+  bool notificationsEnabled = true;
   String textSpeed = 'Classic';
 
   void handleSoundsToggled(bool value) {
@@ -64,9 +65,15 @@ class ProfileContentState extends State<ProfileContent> {
     setState(() => coloredTextEnabled = value);
   }
 
+  void handleNotificationsToggled(bool value) {
+    setState(() => notificationsEnabled = value);
+  }
+
   void handleTextSpeedChanged(String value) {
     setState(() => textSpeed = value);
   }
+
+  void handleSupportTap() {}
 
   @override
   Widget build(BuildContext context) {
@@ -83,13 +90,16 @@ class ProfileContentState extends State<ProfileContent> {
           revealAllTrueFalse: revealAllTrueFalse,
           blurEnabled: blurEnabled,
           coloredTextEnabled: coloredTextEnabled,
+          notificationsEnabled: notificationsEnabled,
           textSpeed: textSpeed,
           onSoundsToggled: handleSoundsToggled,
           onHapticsToggled: handleHapticsToggled,
           onRevealAllTrueFalseToggled: handleRevealAllTrueFalseToggled,
           onBlurToggled: handleBlurToggled,
           onColoredTextToggled: handleColoredTextToggled,
+          onNotificationsToggled: handleNotificationsToggled,
           onTextSpeedChanged: handleTextSpeedChanged,
+          onSupportTap: handleSupportTap,
         ),
       ],
     );

@@ -1,6 +1,8 @@
 // Course detail screen displaying individual course content with navigation
 // Supports various content types including text, questions, intro/outro, and design examples
 
+import 'dart:ui' as ui;
+
 import 'package:flutter/material.dart';
 import 'package:readlock/course_screens/widgets/CCJSONContentFactory.dart';
 import 'package:readlock/course_screens/data/CourseData.dart';
@@ -50,6 +52,10 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
   // Loading state
   bool isLoading = true;
 
+  // Progress bar reveal state (tap progress bar to reveal; tap elsewhere to blur)
+  bool isProgressBarRevealed = false;
+  final GlobalKey progressBarKey = GlobalKey();
+
   // Icon definitions
   static const Icon BackNavigationIcon = Icon(
     Icons.close_rounded,
@@ -57,7 +63,11 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
     size: RLDS.iconMedium,
   );
 
-  static const Icon BookmarkIcon = Icon(Icons.bookmark_rounded, color: Colors.amber, size: 24);
+  static const Icon BookmarkIcon = Icon(
+    Icons.bookmark_rounded,
+    color: RLDS.warning,
+    size: RLDS.iconLarge,
+  );
 
   // Initializes widget state and loads course data
   @override
@@ -99,9 +109,9 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
 
   // Loading screen widget
   Widget LoadingScreen() {
-    return Scaffold(
+    return const Scaffold(
       backgroundColor: RLDS.backgroundDark,
-      body: const Center(child: CircularProgressIndicator()),
+      body: Center(child: CircularProgressIndicator()),
     );
   }
 
@@ -110,15 +120,57 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
     return SafeArea(
       child: Scaffold(
         backgroundColor: RLDS.backgroundDark,
-        body: Div.column([
-          // Progress bar and navigation header
-          TopProgressBar(),
+        body: Listener(
+          behavior: HitTestBehavior.translucent,
+          onPointerDown: handleGlobalPointerDown,
+          child: Div.column([
+            // Progress bar and navigation header
+            TopProgressBar(),
 
-          // Main course content area
-          Expanded(child: CourseBody()),
-        ]),
+            // Main course content area
+            Expanded(child: CourseBody()),
+          ]),
+        ),
       ),
     );
+  }
+
+  // Re-blur the progress bar when the user taps anywhere outside of it
+  void handleGlobalPointerDown(PointerDownEvent event) {
+    if (!isProgressBarRevealed) {
+      return;
+    }
+
+    final RenderBox? progressBarBox =
+        progressBarKey.currentContext?.findRenderObject() as RenderBox?;
+
+    if (progressBarBox == null) {
+      return;
+    }
+
+    final Offset barOrigin = progressBarBox.localToGlobal(Offset.zero);
+    final Rect barRect = barOrigin & progressBarBox.size;
+    final bool isTapInsideBar = barRect.contains(event.position);
+
+    if (isTapInsideBar) {
+      return;
+    }
+
+    setState(() {
+      isProgressBarRevealed = false;
+    });
+  }
+
+  void handleProgressBarTap() {
+    final bool isAlreadyRevealed = isProgressBarRevealed;
+
+    if (isAlreadyRevealed) {
+      return;
+    }
+
+    setState(() {
+      isProgressBarRevealed = true;
+    });
   }
 
   // Course body containing page view or empty state
@@ -176,18 +228,34 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
     return GestureDetector(onTap: handleBookmarkTap, child: BookmarkIcon);
   }
 
-  // Progress indicator for course content
+  // Progress indicator for course content — blurred and dimmed until tapped
   Widget ProgressIndicator() {
     final double progressValue = calculateProgress();
+    final bool isRevealed = isProgressBarRevealed;
+    final double targetOpacity = isRevealed ? 1.0 : 0.25;
+    final double blurSigma = isRevealed ? 0.0 : 6.0;
 
-    return SizedBox(
+    final Widget progressBar = SizedBox(
+      key: progressBarKey,
       height: 12.0,
       child: ClipRRect(
         borderRadius: BorderRadius.circular(8.0),
         child: LinearProgressIndicator(
           value: progressValue,
           backgroundColor: RLDS.backgroundLight,
-          valueColor: const AlwaysStoppedAnimation<Color>(Colors.green),
+          valueColor: const AlwaysStoppedAnimation<Color>(RLDS.success),
+        ),
+      ),
+    );
+
+    return GestureDetector(
+      onTap: handleProgressBarTap,
+      child: AnimatedOpacity(
+        duration: const Duration(milliseconds: 200),
+        opacity: targetOpacity,
+        child: ImageFiltered(
+          imageFilter: ui.ImageFilter.blur(sigmaX: blurSigma, sigmaY: blurSigma),
+          child: progressBar,
         ),
       ),
     );
@@ -215,7 +283,7 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
         allContent = await getAllContent();
       }
     } on Exception catch (error) {
-      debugPrint('$RLUIStrings.ERROR_LOADING_COURSE_DATA: $error');
+      debugPrint('${RLUIStrings.ERROR_LOADING_COURSE_DATA}: $error');
     } finally {
       // Update loading state
       if (mounted) {

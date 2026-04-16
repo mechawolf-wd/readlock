@@ -14,7 +14,7 @@
   <critical_rules>
     <rule id="1">Never use em dashes. Rewrite as two sentences or use a comma, period, or colon.</rule>
     <rule id="2">Never use any word from the banned verbs list. Use the plain replacement.</rule>
-    <rule id="3">Never use structural templates (not-A-actually-B, split-correction, colon-punchline, mirror sentence, rhetorical-Q-then-A, inflated assertions, etc.).</rule>
+    <rule id="3">Never use structural templates (correctio, colon-punchline, mirror sentence, rhetorical-Q-then-A, inflated assertions, etc.).</rule>
     <rule id="4">Never open or close with a cliched frame ("In today's world...", "In conclusion...", "At the end of the day...").</rule>
     <rule id="5">If you remove a word and the sentence still works, the word was not earning its place. Leave it out.</rule>
   </critical_rules>
@@ -37,13 +37,11 @@
     </group>
 
     <group name="Named structural patterns">
-      <pattern name="not-A-actually-B">State what IS true. Skip the theatrical contrast. BANNED ALTOGETHER.</pattern>
-      <pattern name="split-correction">"The method did not fail. It has not crossed the threshold." Two short sentences where the first negates and the second corrects. Write them as one: "The method has not failed, it just has not crossed the threshold yet."</pattern>
-      <pattern name="mirror-sentence">"The question is not whether X, the question is Y." Just state Y.</pattern>
+      <pattern name="correctio">The "not X, it's Y" move. Latin: correctio. Greek: epanorthosis. The speaker states something, then pretends to retract it so the second clause lands harder. BANNED ALTOGETHER in every form: one sentence ("It's not X, it's Y."), two sentences ("It is not X. It is Y."), softened ("It's not just X, it's Y." / "Not so much X as Y."), and dressed-up variants like definition-then-reframe ("X is defined as Y. But what it really means is Z."). If Y is the real claim, write only Y. The reader does not need X denied first.</pattern>
+      <pattern name="mirror-sentence">"The question is not whether X, the question is Y." A correctio built around repeating the same noun. Just state Y.</pattern>
       <pattern name="colon-punchline">"The result: [dramatic claim]." Write a normal sentence.</pattern>
-      <pattern name="definition-then-reframe">"X is defined as Y. But what it really means is Z." Just say Z.</pattern>
       <pattern name="rhetorical-Q-then-A">"But why does this matter? Because..." Either let the question sit or make the statement directly.</pattern>
-      <pattern name="ascending-list-of-three">"It is not just A. It is B. It is C." Ascending drama is inflation, not emphasis.</pattern>
+      <pattern name="ascending-list-of-three">"It is not just A. It is B. It is C." Ascending drama is inflation, not emphasis. This is correctio stacked three times.</pattern>
       <pattern name="imagine-if-escalation">"Imagine X. Now imagine Y. Now imagine Z." One is an invitation. A chain is manipulation.</pattern>
       <pattern name="bookend-callback">"Remember the story from the beginning? It turns out..." If the connection is strong, the reader already made it.</pattern>
     </group>
@@ -476,7 +474,7 @@
   </section>
 
   <verification>
-    <check section="1">No structural shells, no named patterns (not-A-actually-B, split-correction, mirror, colon-punchline, etc.).</check>
+    <check section="1">No structural shells, no named patterns (correctio, mirror, colon-punchline, etc.).</check>
     <check section="2">No em dashes, no inflated assertions, no fragmentation, no emotional imperatives, no triple-adjective lists.</check>
     <check section="3">No buzzword verbs or adjectives.</check>
     <check section="4">No inflating modifiers or wildcard constructions.</check>
@@ -497,7 +495,7 @@
   </verification>
 
   <critical_rules_reminder>
-    <rule id="1">Never use structural templates (not-A-actually-B, split-correction, colon-punchline, mirror sentence, rhetorical-Q-then-A, inflated assertions, etc.). These are BANNED ALTOGETHER.</rule>
+    <rule id="1">Never use structural templates (correctio, colon-punchline, mirror sentence, rhetorical-Q-then-A, inflated assertions, etc.). These are BANNED ALTOGETHER.</rule>
     <rule id="2">Never use em dashes.</rule>
     <rule id="3">Never use any banned verb (leverage, utilize, delve, empower, unlock, foster, elevate, harness, etc.).</rule>
     <rule id="4">Never open or close with a cliched frame.</rule>

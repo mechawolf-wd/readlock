@@ -10,15 +10,15 @@ import 'package:readlock/constants/RLUIStrings.dart';
 
 class FeedbackBottomSheets {
   // Icon definitions
-  static final Widget ExperienceIcon = Icon(
+  static final Widget ExperienceIcon = const Icon(
     Icons.lightbulb,
-    color: RLDS.primaryGreen,
+    color: RLDS.success,
     size: 20,
   );
 
-  static final Widget HintIcon = Icon(
+  static final Widget HintIcon = const Icon(
     Icons.tips_and_updates_outlined,
-    color: RLDS.primaryBlue,
+    color: RLDS.info,
     size: 20,
   );
 
@@ -28,7 +28,7 @@ class FeedbackBottomSheets {
       context: context,
       title: RLUIStrings.FEEDBACK_DIALOG_TITLE,
       content: explanation,
-      buttonColor: RLDS.primaryGreen,
+      buttonColor: RLDS.success,
       icon: ExperienceIcon,
     );
   }
@@ -39,7 +39,7 @@ class FeedbackBottomSheets {
       context: context,
       title: RLUIStrings.HINT_DIALOG_TITLE,
       content: hint,
-      buttonColor: RLDS.primaryBlue,
+      buttonColor: RLDS.info,
       icon: HintIcon,
     );
   }

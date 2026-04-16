@@ -73,7 +73,7 @@ class CCOutroState extends State<CCOutro> {
 
   // Completion check circle icon
   Widget CompletionIcon() {
-    return Icon(Icons.check_circle, color: RLDS.primaryGreen, size: 24);
+    return const Icon(Icons.check_circle, color: RLDS.success, size: 24);
   }
 
   // Progressive text animation section
@@ -102,7 +102,7 @@ class CCOutroState extends State<CCOutro> {
   // Finish button
   Widget FinishButton() {
     final BoxDecoration buttonDecoration = BoxDecoration(
-      color: RLDS.primaryGreen,
+      color: RLDS.success,
       borderRadius: BorderRadius.circular(12),
     );
 

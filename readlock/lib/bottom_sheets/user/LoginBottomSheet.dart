@@ -150,7 +150,7 @@ class LoginSheetState extends State<LoginSheet> {
   }
 
   Widget AppleLoginButton() {
-    final Icon AppleIcon = Icon(Icons.apple, color: RLDS.white, size: 20);
+    final Icon AppleIcon = const Icon(Icons.apple, color: RLDS.white, size: 20);
 
     final BoxDecoration buttonDecoration = BoxDecoration(
       color: RLDS.black,
@@ -256,7 +256,7 @@ class LoginSheetState extends State<LoginSheet> {
 
   Widget ActionButton() {
     final BoxDecoration buttonDecoration = BoxDecoration(
-      color: RLDS.primaryGreen,
+      color: RLDS.success,
       borderRadius: BorderRadius.circular(12),
     );
 

@@ -64,7 +64,7 @@ class CCTextContentState extends State<CCTextContent> {
     final Widget buttonText = RLTypography.bodyMedium(RLUIStrings.TEXT_CONTENT_CONTINUE_LABEL);
 
     final BoxDecoration buttonDecoration = BoxDecoration(
-      color: RLDS.primaryGreen,
+      color: RLDS.success,
       borderRadius: BorderRadius.circular(12),
     );
 
