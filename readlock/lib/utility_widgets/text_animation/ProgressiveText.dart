@@ -4,10 +4,10 @@
 import 'package:flutter/material.dart' hide Typography;
 import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/constants/RLTypography.dart';
-import 'package:readlock/utility_widgets/Utility.dart';
+import 'package:readlock/design_system/RLUtility.dart';
 import 'package:readlock/utility_widgets/visual_effects/BlurOverlay.dart';
-import 'package:readlock/services/SoundService.dart';
-import 'package:readlock/services/HapticsService.dart';
+import 'package:readlock/services/feedback/HapticsService.dart';
+import 'package:readlock/services/feedback/SoundService.dart';
 
 const double progressiveTextDefaultBottomSpacing = 8.0;
 const Duration progressiveTextAutoRevealDelay = Duration(milliseconds: 7);

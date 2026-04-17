@@ -1,39 +1,38 @@
-// Course data structure that mirrors course_data.json
+// Course data structure that mirrors Firestore /courses collection
+// Top-level models use json_serializable for clean API serialization
+// Content-level models (Swipe subclasses) are parsed by CCJSONContentFactory
 
-class CourseData {
-  final String language;
-  final List<Accelerator> courses;
+import 'package:json_annotation/json_annotation.dart';
+import 'package:readlock/constants/DartAliases.dart';
 
-  const CourseData({required this.language, required this.courses});
-}
+part 'CourseModel.g.dart';
 
+// * Top-level serializable models
+
+@JsonSerializable(explicitToJson: true)
 class Accelerator {
-  // The course identificator (eg. book:atomic-habits)
+  @JsonKey(name: 'course-id')
   final String courseId;
 
-  // Display title (eg. "Atomic Habits")
   final String title;
 
-  // Display author name (eg. "James Clear")
   final String author;
 
-  // Display description (eg. "The book that describes...")
   final String description;
 
-  // Network image path (eg. https://example.com/atomic-habits)
+  @JsonKey(name: 'cover-image-path')
   final String coverImagePath;
 
-  // Color of the course later used for UI elements (eg. "#ffffff")
   final String color;
 
-  // List of people for whom the course would be relevant for
-  // (eg. Entrepreneurs - building products that users intuitively understand)
+  @JsonKey(name: 'relevant-for')
   final List<String> relevantFor;
 
-  // List of genres later used for personalization
   final List<String> genres;
 
-  // List of course segments (eg. "Fundamentals", "Adanced", ...)
+  @JsonKey(name: 'preloaded-assets', defaultValue: [])
+  final List<String> preloadedAssets;
+
   final List<Segment> segments;
 
   const Accelerator({
@@ -45,60 +44,94 @@ class Accelerator {
     required this.color,
     required this.relevantFor,
     required this.genres,
+    required this.preloadedAssets,
     required this.segments,
   });
+
+  factory Accelerator.fromJson(JSONMap json) => _$AcceleratorFromJson(json);
+
+  JSONMap toJson() => _$AcceleratorToJson(this);
 }
 
+@JsonSerializable(explicitToJson: true)
 class Segment {
-  // Segment identificator (eg. ""book:atomic-habits;segment:1)
+  @JsonKey(name: 'segment-id')
   final String segmentId;
 
-  // Display title
+  @JsonKey(name: 'segment-title')
   final String segmentTitle;
 
-  // Display description
+  @JsonKey(name: 'segment-description')
   final String segmentDescription;
 
-  // List of lessons
-  final List<Package> units;
+  @JsonKey(name: 'segment-symbol', defaultValue: '')
+  final String segmentSymbol;
+
+  @JsonKey(name: 'lessons')
+  final List<Package> lessons;
 
   const Segment({
     required this.segmentId,
     required this.segmentTitle,
     required this.segmentDescription,
-    required this.units,
+    required this.segmentSymbol,
+    required this.lessons,
   });
+
+  factory Segment.fromJson(JSONMap json) => _$SegmentFromJson(json);
+
+  JSONMap toJson() => _$SegmentToJson(this);
 }
 
+@JsonSerializable(explicitToJson: true)
 class Package {
+  @JsonKey(name: 'lesson-id')
   final String lessonId;
+
   final String title;
+
+  @JsonKey(name: 'lesson-version', defaultValue: '1.0')
   final String lessonVersion;
+
   final bool isFree;
-  final List<Swipe> slides;
+
+  @JsonKey(fromJson: _contentFromJson)
+  final List<JSONMap> content;
 
   const Package({
     required this.lessonId,
     required this.title,
     required this.lessonVersion,
     required this.isFree,
-    required this.slides,
+    required this.content,
   });
+
+  factory Package.fromJson(JSONMap json) => _$PackageFromJson(json);
+
+  JSONMap toJson() => _$PackageToJson(this);
+
+  static List<JSONMap> _contentFromJson(dynamic json) {
+    if (json == null) {
+      return [];
+    }
+
+    return (json as List).map((item) => JSONMap.from(item as Map)).toList();
+  }
 }
+
+// * Content type identifiers — matches lockie PackageTextParser entity types
 
 enum LessonContentType {
   text,
-  singleChoiceQuestion,
+  question,
   trueFalseQuestion,
-  estimatePercentageQuestion,
-  estimatePercentage,
-  emotionalSlide,
-  reflection,
-  intro,
-  outro,
+  estimate,
+  pause,
+  reflect,
+  quote,
 }
 
-// Widget-compatible content types used by course content widgets
+// * Widget-compatible content types used by course content widgets
 
 abstract class Swipe {
   final String id;
@@ -107,21 +140,11 @@ abstract class Swipe {
   const Swipe({required this.id, required this.title});
 }
 
-class IntroContent extends Swipe {
-  final List<String> introTextSegments;
-
-  const IntroContent({
-    required super.id,
-    required super.title,
-    required this.introTextSegments,
-  });
-}
-
-class TextContent extends Swipe {
+class TextSwipe extends Swipe {
   final List<String> textSegments;
   final String? text;
 
-  const TextContent({
+  const TextSwipe({
     required super.id,
     required super.title,
     required this.textSegments,
@@ -129,22 +152,12 @@ class TextContent extends Swipe {
   });
 }
 
-class OutroContent extends Swipe {
-  final List<String> outroTextSegments;
-
-  const OutroContent({
-    required super.id,
-    required super.title,
-    required this.outroTextSegments,
-  });
-}
-
-class ReflectionContent extends Swipe {
+class ReflectSwipe extends Swipe {
   final String prompt;
   final List<String> thinkingPoints;
   final String? emoji;
 
-  const ReflectionContent({
+  const ReflectSwipe({
     required super.id,
     required super.title,
     required this.prompt,
@@ -153,11 +166,11 @@ class ReflectionContent extends Swipe {
   });
 }
 
-class QuoteContent extends Swipe {
+class QuoteSwipe extends Swipe {
   final String quote;
   final String author;
 
-  const QuoteContent({
+  const QuoteSwipe({
     required super.id,
     required super.title,
     required this.quote,
@@ -176,32 +189,14 @@ class QuestionOption {
 
 // * Question content entities — one per question type
 
-class MultipleChoiceQuestionContent extends Swipe {
-  final String question;
-  final List<QuestionOption> options;
-  final List<int> correctAnswerIndices;
-  final String explanation;
-  final String? hint;
-
-  const MultipleChoiceQuestionContent({
-    required super.id,
-    required super.title,
-    required this.question,
-    required this.options,
-    required this.correctAnswerIndices,
-    required this.explanation,
-    this.hint,
-  });
-}
-
-class SingleChoiceQuestionContent extends Swipe {
+class QuestionSwipe extends Swipe {
   final String question;
   final List<QuestionOption> options;
   final int correctAnswerIndex;
   final String explanation;
   final String? hint;
 
-  const SingleChoiceQuestionContent({
+  const QuestionSwipe({
     required super.id,
     required super.title,
     required this.question,
@@ -212,14 +207,14 @@ class SingleChoiceQuestionContent extends Swipe {
   });
 }
 
-class TrueFalseQuestionContent extends Swipe {
+class TrueFalseSwipe extends Swipe {
   final String question;
   final List<QuestionOption> options;
   final int correctAnswerIndex;
   final String explanation;
   final String? hint;
 
-  const TrueFalseQuestionContent({
+  const TrueFalseSwipe({
     required super.id,
     required super.title,
     required this.question,
@@ -230,30 +225,14 @@ class TrueFalseQuestionContent extends Swipe {
   });
 }
 
-class ReflectionQuestionContent extends Swipe {
-  final String question;
-  final List<QuestionOption> options;
-  final List<int> correctAnswerIndices;
-  final String explanation;
-
-  const ReflectionQuestionContent({
-    required super.id,
-    required super.title,
-    required this.question,
-    required this.options,
-    required this.correctAnswerIndices,
-    required this.explanation,
-  });
-}
-
-class EstimatePercentageContent extends Swipe {
+class EstimateSwipe extends Swipe {
   final String question;
   final int correctPercentage;
   final String explanation;
   final String? hint;
   final int closeThreshold;
 
-  const EstimatePercentageContent({
+  const EstimateSwipe({
     required super.id,
     required super.title,
     required this.question,

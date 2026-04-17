@@ -2,12 +2,12 @@
 // Displays subscription benefits and pricing
 
 import 'package:flutter/material.dart' hide Typography;
-import 'package:readlock/utility_widgets/Utility.dart';
+import 'package:readlock/design_system/RLUtility.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/constants/RLUIStrings.dart';
 import 'package:readlock/constants/DartAliases.dart';
-import 'package:readlock/utility_widgets/RLCard.dart';
+import 'package:readlock/design_system/RLCard.dart';
 
 class ReaderPassScreen extends StatefulWidget {
   const ReaderPassScreen({super.key});

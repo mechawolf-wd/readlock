@@ -3,13 +3,13 @@
 
 import 'package:flutter/material.dart' hide Typography;
 import 'package:readlock/models/CourseModel.dart';
-import 'package:readlock/utility_widgets/Utility.dart';
+import 'package:readlock/design_system/RLUtility.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/constants/RLUIStrings.dart';
 
 class CCQuote extends StatefulWidget {
-  final QuoteContent content;
+  final QuoteSwipe content;
 
   const CCQuote({super.key, required this.content});
 
@@ -93,7 +93,7 @@ class CCQuoteState extends State<CCQuote> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: quoteTextDecoration,
-      child: RLTypography.bodyLarge('"${widget.content.quote}"'),
+      child: RLTypography.readingLarge('"${widget.content.quote}"'),
     );
   }
 

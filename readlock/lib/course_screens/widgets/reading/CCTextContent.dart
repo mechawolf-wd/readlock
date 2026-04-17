@@ -4,7 +4,7 @@
 import 'package:flutter/material.dart' hide Typography;
 import 'package:readlock/models/CourseModel.dart';
 import 'package:readlock/utility_widgets/text_animation/ProgressiveText.dart';
-import 'package:readlock/utility_widgets/Utility.dart';
+import 'package:readlock/design_system/RLUtility.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/constants/RLUIStrings.dart';
@@ -12,7 +12,7 @@ import 'package:readlock/course_screens/CourseContentViewer.dart';
 
 class CCTextContent extends StatefulWidget {
   // Text content data to display
-  final TextContent content;
+  final TextSwipe content;
 
   const CCTextContent({super.key, required this.content});
 
@@ -46,7 +46,7 @@ class CCTextContentState extends State<CCTextContent> {
   Widget ProgressiveTextSection() {
     return ProgressiveText(
       textSegments: widget.content.textSegments,
-      textStyle: RLTypography.bodyMediumStyle,
+      textStyle: RLTypography.readingMediumStyle,
       textAlignment: CrossAxisAlignment.start,
       onAllSegmentsRevealed: handleAllSegmentsRevealed,
     );

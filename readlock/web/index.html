@@ -31,8 +31,48 @@
 
   <title>readlock</title>
   <link rel="manifest" href="manifest.json">
+
+  <!-- Deter copy/selection of course content on web. OS-level screenshots cannot be blocked from a webpage. -->
+  <style>
+    html, body {
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+      -webkit-touch-callout: none;
+    }
+    img {
+      -webkit-user-drag: none;
+      user-drag: none;
+    }
+    @media print {
+      html, body {
+        display: none !important;
+      }
+    }
+  </style>
 </head>
 <body>
+  <script src="https://www.gstatic.com/firebasejs/12.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/12.12.0/firebase-firestore-compat.js"></script>
+  <script>
+    firebase.initializeApp({
+      apiKey: "AIzaSyAcKL7UCkGiWASDXBs080RjcVt8pPQfc5k",
+      authDomain: "readlock-production.firebaseapp.com",
+      projectId: "readlock-production",
+      storageBucket: "readlock-production.firebasestorage.app",
+      messagingSenderId: "976267746377",
+      appId: "1:976267746377:web:8bd98125ac35c3cd507398"
+    });
+  </script>
+  <script>
+    // Block right-click menu, drag, copy, cut, and selection events on the page
+    document.addEventListener('contextmenu', function (event) { event.preventDefault(); });
+    document.addEventListener('dragstart', function (event) { event.preventDefault(); });
+    document.addEventListener('copy', function (event) { event.preventDefault(); });
+    document.addEventListener('cut', function (event) { event.preventDefault(); });
+    document.addEventListener('selectstart', function (event) { event.preventDefault(); });
+  </script>
   <script src="flutter_bootstrap.js" async></script>
 </body>
 </html>

@@ -34,6 +34,7 @@ class RLDS {
 
   // * Spacing — all multiples of 4
 
+  static const double spacing0 = 0.0;
   static const double spacing4 = 4.0;
   static const double spacing8 = 8.0;
   static const double spacing12 = 12.0;

@@ -3,16 +3,16 @@
 
 import 'package:flutter/material.dart';
 import 'package:readlock/screens/profile/LearningStatsCard.dart';
-import 'package:readlock/utility_widgets/Utility.dart';
-import 'package:readlock/utility_widgets/BookListCard.dart';
-import 'package:readlock/utility_widgets/RLProgressBar.dart';
+import 'package:readlock/design_system/RLUtility.dart';
+import 'package:readlock/design_system/RLBookListCard.dart';
+import 'package:readlock/design_system/RLProgressBar.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/constants/RLUIStrings.dart';
 import 'package:readlock/bottom_sheets/user/SettingsBottomSheet.dart';
 import 'package:readlock/bottom_sheets/bookshelf/AllTitlesBottomSheet.dart';
 import 'package:readlock/constants/DartAliases.dart';
-import 'package:readlock/utility_widgets/RLCard.dart';
+import 'package:readlock/design_system/RLCard.dart';
 
 class MyBookshelfScreen extends StatefulWidget {
   const MyBookshelfScreen({super.key});

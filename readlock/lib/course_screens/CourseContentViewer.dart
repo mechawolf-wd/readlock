@@ -8,13 +8,14 @@ import 'package:readlock/course_screens/widgets/CCJSONContentFactory.dart';
 import 'package:readlock/course_screens/data/CourseData.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/constants/RLUIStrings.dart';
-import 'package:readlock/utility_widgets/Utility.dart';
-import 'package:readlock/utility_widgets/FeedbackSnackbar.dart';
+import 'package:readlock/design_system/RLUtility.dart';
+import 'package:readlock/design_system/RLFeedbackSnackbar.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/screens/StreakplierRewardScreen.dart';
 import 'package:readlock/bottom_sheets/course/QuitConfirmationSheet.dart';
 import 'package:readlock/constants/DartAliases.dart';
-import 'package:readlock/services/SoundService.dart';
+import 'package:readlock/services/ScreenProtectionService.dart';
+import 'package:readlock/services/feedback/SoundService.dart';
 
 class CourseDetailScreen extends StatefulWidget {
   // Course identifier to load
@@ -86,11 +87,15 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
 
     // Start atmosphere audio loop
     SoundService.playAtmosphere();
+
+    // Block screenshots while course content is visible
+    ScreenProtectionService.enableProtection();
   }
 
-  // Cleanup page controller and stop atmosphere when widget is disposed
+  // Cleanup resources when widget is disposed
   @override
   void dispose() {
+    ScreenProtectionService.disableProtection();
     SoundService.stopAtmosphere();
     pageController.dispose();
     super.dispose();
@@ -104,7 +109,7 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
       return LoadingScreen();
     }
 
-    return MainCourseScreen();
+    return SelectionContainer.disabled(child: MainCourseScreen());
   }
 
   // Loading screen widget
@@ -265,10 +270,7 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
   Widget getContentItem(BuildContext context, int contentItemIndex) {
     final JSONMap content = allContent[contentItemIndex];
 
-    return CCJSONContentFactory.createContentWidget(
-      content,
-      onLessonComplete: showStreakplierRewardScreen,
-    );
+    return CCJSONContentFactory.createContentWidget(content);
   }
 
   // Load course data from service

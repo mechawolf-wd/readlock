@@ -48,12 +48,12 @@ class RLTextField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final BoxDecoration fieldDecoration = BoxDecoration(
-      color: RLDS.backgroundDark,
-      borderRadius: BorderRadius.circular(12.0),
+      color: RLDS.backgroundLight,
+      borderRadius: RLDS.borderRadiusSmall,
     );
 
     final TextStyle hintStyle = RLTypography.bodyLargeStyle.copyWith(
-      color: RLDS.textSecondary,
+      color: RLDS.textMuted,
     );
 
     final InputDecoration inputDecoration = InputDecoration(
@@ -64,13 +64,14 @@ class RLTextField extends StatelessWidget {
 
     return Container(
       decoration: fieldDecoration,
-      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      padding: const EdgeInsets.symmetric(horizontal: RLDS.spacing16),
       child: TextField(
         controller: controller,
         focusNode: focusNode,
         obscureText: obscureText,
         keyboardType: keyboardType,
         style: RLTypography.bodyLargeStyle,
+        cursorColor: RLDS.primary,
         decoration: inputDecoration,
         onChanged: onChanged,
         onEditingComplete: onEditingComplete,

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-// Login screen — mockup authentication for Lockie
+// Login screen — hardcoded admin/admin authentication
 
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
@@ -21,15 +21,17 @@ const router = useRouter()
 
 // * State
 
-const email = ref('')
+const username = ref('')
 const password = ref('')
 
 // * Methods
 
 function handleLogin() {
-  auth.login(email.value, password.value)
+  const isSuccess = auth.login(username.value, password.value)
 
-  router.push('/editor')
+  if (isSuccess) {
+    router.push('/editor')
+  }
 }
 </script>
 
@@ -48,9 +50,9 @@ function handleLogin() {
       <CardContent>
         <form class="flex flex-col gap-4" @submit.prevent="handleLogin">
           <Input
-            v-model="email"
-            type="email"
-            placeholder="Email"
+            v-model="username"
+            type="text"
+            placeholder="Username"
             class="h-12"
           />
 
@@ -60,6 +62,11 @@ function handleLogin() {
             placeholder="Password"
             class="h-12"
           />
+
+          <!-- Error message -->
+          <p v-if="auth.loginError" class="text-sm text-red-500">
+            {{ auth.loginError }}
+          </p>
 
           <Button type="submit" class="w-full h-12 font-medium mt-4">
             Sign in

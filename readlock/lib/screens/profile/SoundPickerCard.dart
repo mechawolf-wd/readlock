@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLUIStrings.dart';
-import 'package:readlock/utility_widgets/Utility.dart';
+import 'package:readlock/design_system/RLUtility.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
-import 'package:readlock/utility_widgets/ExpandableCard.dart';
+import 'package:readlock/design_system/RLExpandableCard.dart';
 import 'package:readlock/constants/DartAliases.dart';
 
 class SoundPickerCard extends StatefulWidget {
@@ -67,16 +67,16 @@ class SoundPickerCardState extends State<SoundPickerCard> {
     required VoidCallback onTap,
   }) {
     final Color backgroundColor = isSelected
-        ? RLDS.info.withValues(alpha: 0.1)
+        ? RLDS.primary.withValues(alpha: 0.1)
         : Colors.transparent;
 
     final Color borderColor = isSelected
-        ? RLDS.info
+        ? RLDS.primary
         : RLDS.textPrimary.withValues(alpha: 0.2);
 
-    final Color iconColor = isSelected ? RLDS.info : RLDS.textSecondary;
+    final Color iconColor = isSelected ? RLDS.primary : RLDS.textSecondary;
 
-    final Color textColor = isSelected ? RLDS.info : RLDS.textPrimary;
+    final Color textColor = isSelected ? RLDS.primary : RLDS.textPrimary;
 
     final BoxDecoration blockDecoration = BoxDecoration(
       color: backgroundColor,

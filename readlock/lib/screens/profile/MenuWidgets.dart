@@ -5,11 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:readlock/constants/RLUIStrings.dart';
 import 'package:readlock/constants/RLTypography.dart';
-import 'package:readlock/utility_widgets/Utility.dart';
-import 'package:readlock/utility_widgets/RLButton.dart';
+import 'package:readlock/design_system/RLUtility.dart';
+import 'package:readlock/design_system/RLSwitch.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/bottom_sheets/user/AccountBottomSheet.dart';
 import 'package:readlock/screens/profile/SettingsDemos.dart';
+import 'package:readlock/screens/profile/SoundPickerCard.dart';
 
 class MenuSection extends StatelessWidget {
   final bool soundsEnabled;
@@ -49,103 +50,115 @@ class MenuSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Div.column([
-      // Account & Subscription
-      MenuItem(
-        icon: Icons.person,
-        title: RLUIStrings.MENU_ACCOUNT,
-        onTap: () => AccountBottomSheet.show(context),
-      ),
-
-      MenuItem(icon: Icons.card_membership, title: RLUIStrings.MENU_READER_PASS, onTap: () {}),
-
-      const MenuDivider(),
-
-      // App Settings
-      SwitchMenuItem(
-        icon: Icons.volume_up,
-        title: RLUIStrings.MENU_SOUNDS,
-        value: soundsEnabled,
-        onChanged: onSoundsToggled,
-      ),
-
-      SwitchMenuItem(
-        icon: Icons.vibration,
-        title: RLUIStrings.MENU_HAPTICS,
-        value: hapticsEnabled,
-        onChanged: onHapticsToggled,
-      ),
-
-      const MenuDivider(),
-
-      // Reading Settings
-      SwitchMenuItem(
-        icon: Icons.visibility,
-        title: RLUIStrings.MENU_REVEAL,
-        value: revealAllTrueFalse,
-        onChanged: onRevealAllTrueFalseToggled,
-      ),
-
-      RevealDemo(isEnabled: revealAllTrueFalse),
-
-      SwitchMenuItem(
-        icon: Icons.blur_on,
-        title: RLUIStrings.MENU_BLUR,
-        value: blurEnabled,
-        onChanged: onBlurToggled,
-      ),
-
-      BlurDemo(isEnabled: blurEnabled),
-
-      SwitchMenuItem(
-        icon: Icons.format_color_text,
-        title: RLUIStrings.MENU_COLORED_TEXT,
-        value: coloredTextEnabled,
-        onChanged: onColoredTextToggled,
-      ),
-
-      ColoredTextDemo(isEnabled: coloredTextEnabled),
-
-      SegmentedMenuItem(
-        icon: Icons.speed,
-        title: RLUIStrings.MENU_TEXT_SPEED,
-        options: const [RLUIStrings.SPEED_CAREFUL, RLUIStrings.SPEED_CLASSIC, RLUIStrings.SPEED_SPEED],
-        selectedOption: textSpeed,
-        onChanged: onTextSpeedChanged,
-      ),
-
-      TextSpeedDemo(selectedSpeed: textSpeed),
-
-      const MenuDivider(),
-
-      // Support & Information
-      SwitchMenuItem(
-        icon: Icons.notifications,
-        title: RLUIStrings.MENU_NOTIFICATIONS,
-        value: notificationsEnabled,
-        onChanged: onNotificationsToggled,
-      ),
-
-      const Spacing.height(12),
-
-      SupportButton(onTap: onSupportTap),
-
-      const MenuDivider(),
-
-      // Account Actions & Legal
-      MenuItem(icon: Icons.gavel, title: RLUIStrings.MENU_LEGAL, onTap: () {}),
-
-      MenuItem(icon: Icons.logout, title: RLUIStrings.MENU_LOG_OUT, onTap: () {}),
-
-      const Spacing.height(24),
-
-      Center(
-        child: RLTypography.bodyMedium(
-          RLUIStrings.MENU_VERSION,
-          color: RLDS.textPrimary.withValues(alpha: 0.5),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        // Account & Subscription
+        MenuItem(
+          icon: Icons.person,
+          title: RLUIStrings.MENU_ACCOUNT,
+          onTap: () => AccountBottomSheet.show(context),
         ),
-      ),
-    ]);
+
+        MenuItem(icon: Icons.card_membership, title: RLUIStrings.MENU_READER_PASS, onTap: () {}),
+
+        const MenuDivider(),
+
+        // Sound Settings
+        SwitchMenuItem(
+          icon: Icons.volume_up,
+          title: RLUIStrings.MENU_SOUNDS,
+          value: soundsEnabled,
+          onChanged: onSoundsToggled,
+        ),
+
+        SwitchMenuItem(
+          icon: Icons.vibration,
+          title: RLUIStrings.MENU_HAPTICS,
+          value: hapticsEnabled,
+          onChanged: onHapticsToggled,
+        ),
+
+        const Spacing.height(RLDS.spacing8),
+
+        const SoundPickerCard(),
+
+        const MenuDivider(),
+
+        // Reading Settings
+        SwitchMenuItem(
+          icon: Icons.visibility,
+          title: RLUIStrings.MENU_REVEAL,
+          value: revealAllTrueFalse,
+          onChanged: onRevealAllTrueFalseToggled,
+        ),
+
+        RevealDemo(isEnabled: revealAllTrueFalse),
+
+        SwitchMenuItem(
+          icon: Icons.blur_on,
+          title: RLUIStrings.MENU_BLUR,
+          value: blurEnabled,
+          onChanged: onBlurToggled,
+        ),
+
+        BlurDemo(isEnabled: blurEnabled),
+
+        SwitchMenuItem(
+          icon: Icons.format_color_text,
+          title: RLUIStrings.MENU_COLORED_TEXT,
+          value: coloredTextEnabled,
+          onChanged: onColoredTextToggled,
+        ),
+
+        ColoredTextDemo(isEnabled: coloredTextEnabled),
+
+        SegmentedMenuItem(
+          icon: Icons.speed,
+          title: RLUIStrings.MENU_TEXT_SPEED,
+          options: const [RLUIStrings.SPEED_CAREFUL, RLUIStrings.SPEED_CLASSIC, RLUIStrings.SPEED_SPEED],
+          selectedOption: textSpeed,
+          onChanged: onTextSpeedChanged,
+        ),
+
+        TextSpeedDemo(selectedSpeed: textSpeed),
+
+        const MenuDivider(),
+
+        // Notifications & Support
+        SwitchMenuItem(
+          icon: Icons.notifications,
+          title: RLUIStrings.MENU_NOTIFICATIONS,
+          value: notificationsEnabled,
+          onChanged: onNotificationsToggled,
+        ),
+
+        MenuItem(icon: Icons.support_agent, title: RLUIStrings.MENU_SUPPORT, onTap: onSupportTap),
+
+        const MenuDivider(),
+
+        // Legal
+        MenuItem(icon: Icons.shield_outlined, title: RLUIStrings.MENU_PRIVACY_POLICY, onTap: () {}),
+
+        MenuItem(icon: Icons.description_outlined, title: RLUIStrings.MENU_TERMS_AND_CONDITIONS, onTap: () {}),
+
+        MenuItem(icon: Icons.gavel, title: RLUIStrings.MENU_EULA, onTap: () {}),
+
+        const MenuDivider(),
+
+        // Log out
+        MenuItem(icon: Icons.logout, title: RLUIStrings.MENU_LOG_OUT, onTap: () {}),
+
+        const Spacing.height(RLDS.spacing24),
+
+        Center(
+          child: RLTypography.bodyMedium(
+            RLUIStrings.MENU_VERSION,
+            color: RLDS.textPrimary.withValues(alpha: 0.5),
+          ),
+        ),
+      ],
+    );
   }
 }
 
@@ -175,33 +188,22 @@ class MenuItem extends StatelessWidget {
       titleColor = textColor!;
     }
 
-    final Widget MenuItemIcon = Icon(icon, color: iconColor, size: 20.0);
+    final Widget MenuItemIcon = Icon(icon, color: iconColor, size: RLDS.iconMedium);
 
-    return Div.row(
-      [
-        MenuItemIcon,
-
-        const Spacing.width(16.0),
-
-        Expanded(child: RLTypography.bodyMedium(title, color: titleColor)),
-      ],
-      padding: const EdgeInsets.symmetric(vertical: 16.0),
+    return GestureDetector(
       onTap: onTap,
-    );
-  }
-}
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: RLDS.spacing16),
+        child: Row(
+          children: [
+            MenuItemIcon,
 
-class SupportButton extends StatelessWidget {
-  final VoidCallback onTap;
+            const Spacing.width(RLDS.spacing16),
 
-  const SupportButton({super.key, required this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    return RLButton.primary(
-      label: RLUIStrings.MENU_SUPPORT,
-      color: RLDS.info,
-      onTap: onTap,
+            Expanded(child: RLTypography.bodyMedium(title, color: titleColor)),
+          ],
+        ),
+      ),
     );
   }
 }
@@ -230,24 +232,22 @@ class SwitchMenuItem extends StatelessWidget {
     final Color iconColor = RLDS.textPrimary.withValues(alpha: 0.7);
     final Color titleColor = RLDS.textPrimary;
 
-    final Widget MenuItemIcon = Icon(icon, color: iconColor, size: 20.0);
+    final Widget MenuItemIcon = Icon(icon, color: iconColor, size: RLDS.iconMedium);
 
-    return Div.row([
-      MenuItemIcon,
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: RLDS.spacing16),
+      child: Row(
+        children: [
+          MenuItemIcon,
 
-      const Spacing.width(16.0),
+          const Spacing.width(RLDS.spacing16),
 
-      Expanded(child: RLTypography.bodyMedium(title, color: titleColor)),
+          Expanded(child: RLTypography.bodyMedium(title, color: titleColor)),
 
-      Switch(
-        value: value,
-        onChanged: handleSwitchChange,
-        activeThumbColor: RLDS.info,
-        activeTrackColor: RLDS.info.withValues(alpha: 0.3),
-        inactiveThumbColor: RLDS.textPrimary.withValues(alpha: 0.5),
-        inactiveTrackColor: RLDS.textPrimary.withValues(alpha: 0.1),
+          RLSwitch(value: value, onChanged: handleSwitchChange),
+        ],
       ),
-    ], padding: const EdgeInsets.symmetric(vertical: 16.0));
+    );
   }
 }
 
@@ -272,30 +272,31 @@ class SegmentedMenuItem extends StatelessWidget {
     final Color iconColor = RLDS.textPrimary.withValues(alpha: 0.7);
     final Color titleColor = RLDS.textPrimary;
 
-    final Widget MenuItemIcon = Icon(icon, color: iconColor, size: 20.0);
+    final Widget MenuItemIcon = Icon(icon, color: iconColor, size: RLDS.iconMedium);
 
-    return Div.column(
-      [
-        Div.row([
-          MenuItemIcon,
+    return Padding(
+      padding: const EdgeInsets.only(top: RLDS.spacing32, bottom: RLDS.spacing16),
+      child: Column(
+        children: [
+          Row(
+            children: [
+              MenuItemIcon,
 
-          const Spacing.width(16.0),
+              const Spacing.width(RLDS.spacing16),
 
-          Expanded(child: RLTypography.bodyMedium(title, color: titleColor)),
-        ]),
+              Expanded(child: RLTypography.bodyMedium(title, color: titleColor)),
+            ],
+          ),
 
-        const Spacing.height(16.0),
+          const Spacing.height(RLDS.spacing16),
 
-        // Segmented options
-        SegmentedOptions(
-          options: options,
-          selectedOption: selectedOption,
-          onChanged: onChanged,
-        ),
-      ],
-      padding: const EdgeInsets.only(
-        top: 32.0,
-        bottom: 16.0,
+          // Segmented options
+          SegmentedOptions(
+            options: options,
+            selectedOption: selectedOption,
+            onChanged: onChanged,
+          ),
+        ],
       ),
     );
   }
@@ -307,12 +308,12 @@ class SegmentedMenuItem extends StatelessWidget {
   }) {
     final BoxDecoration containerDecoration = BoxDecoration(
       color: RLDS.textPrimary.withValues(alpha: 0.05),
-      borderRadius: BorderRadius.circular(8.0),
+      borderRadius: BorderRadius.circular(RLDS.spacing8),
     );
 
     return Container(
       decoration: containerDecoration,
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(RLDS.spacing8),
       child: Row(children: OptionButtons(options, selectedOption, onChanged)),
     );
   }
@@ -329,13 +330,13 @@ class SegmentedMenuItem extends StatelessWidget {
       Color textColor = RLDS.textPrimary.withValues(alpha: 0.6);
 
       if (isSelected) {
-        optionColor = RLDS.info;
+        optionColor = RLDS.primary;
         textColor = RLDS.white;
       }
 
       final BoxDecoration optionDecoration = BoxDecoration(
         color: optionColor,
-        borderRadius: BorderRadius.circular(6.0),
+        borderRadius: BorderRadius.circular(RLDS.spacing4 + 2),
       );
 
       return Expanded(
@@ -345,7 +346,7 @@ class SegmentedMenuItem extends StatelessWidget {
             onChanged(option);
           },
           child: Container(
-            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            padding: const EdgeInsets.symmetric(vertical: RLDS.spacing8),
             decoration: optionDecoration,
             child: Center(child: RLTypography.bodyMedium(option, color: textColor)),
           ),
@@ -362,7 +363,7 @@ class MenuDivider extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       height: 1.0,
-      margin: const EdgeInsets.symmetric(vertical: 8.0),
+      margin: const EdgeInsets.symmetric(vertical: RLDS.spacing8),
       color: RLDS.textPrimary.withValues(alpha: 0.1),
     );
   }

@@ -391,7 +391,7 @@ defineExpose({ handleContentTap })
             </template>
 
             <!-- * Estimate Percentage -->
-            <template v-else-if="(currentSwipe as any)['entity-type'] === 'estimate-percentage-question'">
+            <template v-else-if="(currentSwipe as any)['entity-type'] === 'estimate'">
               <p class="text-sm font-medium text-card-foreground leading-relaxed" v-html="renderColorMarkup((currentSwipe as any).question)" />
 
               <div class="mt-4 flex flex-col items-center gap-3">
@@ -432,7 +432,7 @@ defineExpose({ handleContentTap })
             </template>
 
             <!-- * Emotional Slide -->
-            <template v-else-if="(currentSwipe as any)['entity-type'] === 'emotional-slide'">
+            <template v-else-if="(currentSwipe as any)['entity-type'] === 'pause'">
               <div class="flex-1 flex flex-col items-center justify-center gap-4 py-12">
                 <div class="text-3xl" :style="{ color: courseColor }">✦</div>
                 <p class="text-sm text-center text-card-foreground/80 font-medium">{{ (currentSwipe as any).text }}</p>
@@ -440,7 +440,7 @@ defineExpose({ handleContentTap })
             </template>
 
             <!-- * Reflection -->
-            <template v-else-if="(currentSwipe as any)['entity-type'] === 'reflection'">
+            <template v-else-if="(currentSwipe as any)['entity-type'] === 'reflect'">
               <p class="text-sm font-medium text-card-foreground leading-relaxed">{{ (currentSwipe as any).prompt }}</p>
               <div class="flex flex-col gap-2 mt-2">
                 <div v-for="(point, pointIndex) in (currentSwipe as any)['thinking-points']" :key="pointIndex" class="px-4 py-3 rounded-xl bg-muted text-sm text-card-foreground/80">{{ point }}</div>

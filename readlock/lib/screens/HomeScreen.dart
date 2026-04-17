@@ -6,13 +6,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:readlock/course_screens/CourseRoadmapScreen.dart';
 import 'package:readlock/constants/RLUIStrings.dart';
-import 'package:readlock/utility_widgets/Utility.dart';
-import 'package:readlock/utility_widgets/BookListCard.dart';
-import 'package:readlock/utility_widgets/RLButton.dart';
-import 'package:readlock/utility_widgets/RLProgressBar.dart';
+import 'package:readlock/design_system/RLUtility.dart';
+import 'package:readlock/design_system/RLBookListCard.dart';
+import 'package:readlock/design_system/RLButton.dart';
+import 'package:readlock/design_system/RLProgressBar.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
-import 'package:readlock/utility_widgets/RLCard.dart';
+import 'package:readlock/design_system/RLCard.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -119,7 +119,8 @@ class HomeScreenState extends State<HomeScreen> {
       const Spacing.height(16),
 
       RLCard.elevated(
-        padding: const EdgeInsets.all(RLDS.spacing16),
+        padding: const EdgeInsets.all(RLDS.spacing0),
+        borderColor: Colors.transparent,
         child: Column(
           children: [
             Div.row([
@@ -141,9 +142,7 @@ class HomeScreenState extends State<HomeScreen> {
                   const Spacing.height(12),
 
                   Div.row([
-                    Expanded(
-                      child: RLProgressBar(progress: bookProgress),
-                    ),
+                    Expanded(child: RLProgressBar(progress: bookProgress)),
 
                     const Spacing.width(8),
 

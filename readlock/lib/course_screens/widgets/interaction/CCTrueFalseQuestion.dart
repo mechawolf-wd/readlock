@@ -3,11 +3,11 @@
 
 import 'package:flutter/material.dart' hide Typography;
 import 'package:readlock/models/CourseModel.dart';
-import 'package:readlock/utility_widgets/Utility.dart';
+import 'package:readlock/design_system/RLUtility.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/utility_widgets/text_animation/ProgressiveText.dart';
-import 'package:readlock/utility_widgets/FeedbackSnackbar.dart';
+import 'package:readlock/design_system/RLFeedbackSnackbar.dart';
 import 'package:readlock/constants/RLUIStrings.dart';
 
 enum TrueFalseButtonState { normal, selected, correctAndAnswered, incorrectAndMuted }
@@ -27,7 +27,7 @@ class ButtonColors {
 }
 
 class CCTrueFalseQuestion extends StatefulWidget {
-  final TrueFalseQuestionContent content;
+  final TrueFalseSwipe content;
   final void Function(int selectedIndex, bool isCorrect) onAnswerSelected;
 
   const CCTrueFalseQuestion({super.key, required this.content, required this.onAnswerSelected});
@@ -65,7 +65,7 @@ class CCTrueFalseQuestionState extends State<CCTrueFalseQuestion> {
   }
 
   Widget QuestionText() {
-    return RLTypography.bodyLarge(widget.content.question, textAlign: TextAlign.center);
+    return RLTypography.readingLarge(widget.content.question, textAlign: TextAlign.center);
   }
 
   Widget ButtonRow() {
@@ -173,7 +173,7 @@ class CCTrueFalseQuestionState extends State<CCTrueFalseQuestion> {
         // Explanation text
         ProgressiveText(
           textSegments: [widget.content.explanation],
-          textStyle: RLTypography.bodyMediumStyle.copyWith(height: 1.5),
+          textStyle: RLTypography.readingMediumStyle,
         ),
       ],
       crossAxisAlignment: CrossAxisAlignment.start,

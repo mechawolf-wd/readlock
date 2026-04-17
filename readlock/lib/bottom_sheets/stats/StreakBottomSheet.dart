@@ -3,7 +3,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:readlock/bottom_sheets/RLBottomSheet.dart';
-import 'package:readlock/utility_widgets/Utility.dart';
+import 'package:readlock/design_system/RLUtility.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/constants/RLUIStrings.dart';

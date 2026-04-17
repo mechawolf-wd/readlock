@@ -3,9 +3,11 @@
 
 import 'package:flutter/material.dart';
 import 'package:readlock/bottom_sheets/RLBottomSheet.dart';
-import 'package:readlock/utility_widgets/Utility.dart';
-import 'package:readlock/utility_widgets/BookListCard.dart';
+import 'package:readlock/design_system/RLUtility.dart';
+import 'package:readlock/design_system/RLBookListCard.dart';
 import 'package:readlock/constants/DartAliases.dart';
+import 'package:readlock/constants/RLTypography.dart';
+import 'package:readlock/constants/RLUIStrings.dart';
 
 class AllTitlesBottomSheet extends StatelessWidget {
   const AllTitlesBottomSheet({super.key});
@@ -51,6 +53,14 @@ class AllTitlesBottomSheet extends StatelessWidget {
     ];
 
     return Div.column([
+      const Spacing.height(16),
+
+      // Heading
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        child: RLTypography.headingMedium(RLUIStrings.READING_HISTORY_TITLE),
+      ),
+
       const Spacing.height(16),
 
       // Books list

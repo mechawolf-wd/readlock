@@ -1,30 +1,36 @@
 // Readlock Typography System
-// Centralized text styles and text widgets for consistent typography across the app
+// Three font families: display (8-bit), UI (clean), reading (serif)
+//
+// Display — Press Start 2P: headings, author names, standout elements
+// UI — Poppins: buttons, labels, menus, general interface text
+// Reading — Playfair Display: course swipe content, long-form text
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 
 class RLTypography {
-  // * Text styles — use for .copyWith() and direct style references
+  // * Display font — Press Start 2P (8-bit, for headings and standout elements)
 
-  static final TextStyle headingLargeStyle = GoogleFonts.bricolageGrotesque(
-    fontSize: 28,
+  static final TextStyle headingLargeStyle = GoogleFonts.pressStart2p(
+    fontSize: 20,
     fontWeight: RLDS.weightBold,
     color: RLDS.textPrimary,
-    height: 1.2,
-    letterSpacing: -0.5,
-  );
-
-  static final TextStyle headingMediumStyle = GoogleFonts.bricolageGrotesque(
-    fontSize: 22,
-    fontWeight: RLDS.weightSemibold,
-    color: RLDS.textPrimary,
-    height: 1.3,
+    height: 1.5,
     letterSpacing: -0.3,
   );
 
-  static final TextStyle bodyLargeStyle = GoogleFonts.bricolageGrotesque(
+  static final TextStyle headingMediumStyle = GoogleFonts.pressStart2p(
+    fontSize: 14,
+    fontWeight: RLDS.weightSemibold,
+    color: RLDS.textPrimary,
+    height: 1.5,
+    letterSpacing: -0.2,
+  );
+
+  // * UI font — Poppins (clean, for buttons, labels, menus)
+
+  static final TextStyle bodyLargeStyle = GoogleFonts.poppins(
     fontSize: 16,
     fontWeight: RLDS.weightMedium,
     color: RLDS.textPrimary,
@@ -32,7 +38,7 @@ class RLTypography {
     letterSpacing: 0.1,
   );
 
-  static final TextStyle bodyMediumStyle = GoogleFonts.bricolageGrotesque(
+  static final TextStyle bodyMediumStyle = GoogleFonts.poppins(
     fontSize: 14,
     fontWeight: RLDS.weightRegular,
     color: RLDS.textPrimary,
@@ -40,7 +46,7 @@ class RLTypography {
     letterSpacing: 0.15,
   );
 
-  static final TextStyle bodySmallStyle = GoogleFonts.bricolageGrotesque(
+  static final TextStyle bodySmallStyle = GoogleFonts.poppins(
     fontSize: 12,
     fontWeight: RLDS.weightRegular,
     color: RLDS.textSecondary,
@@ -48,12 +54,31 @@ class RLTypography {
     letterSpacing: 0.2,
   );
 
-  // * Text widgets — use in widget tree instead of raw Text()
+  // * Reading font — Playfair Display (for course swipe content)
+
+  static final TextStyle readingLargeStyle = GoogleFonts.playfairDisplay(
+    fontSize: 18,
+    fontWeight: RLDS.weightMedium,
+    color: RLDS.textPrimary,
+    height: 1.6,
+    letterSpacing: 0.1,
+  );
+
+  static final TextStyle readingMediumStyle = GoogleFonts.playfairDisplay(
+    fontSize: 16,
+    fontWeight: RLDS.weightRegular,
+    color: RLDS.textPrimary,
+    height: 1.6,
+    letterSpacing: 0.15,
+  );
+
+  // * Display text widgets
 
   static Widget headingLarge(String content, {Color? color, TextAlign? textAlign}) {
     final TextStyle style = color != null
         ? headingLargeStyle.copyWith(color: color)
         : headingLargeStyle;
+
     return Text(content, style: style, textAlign: textAlign);
   }
 
@@ -61,13 +86,17 @@ class RLTypography {
     final TextStyle style = color != null
         ? headingMediumStyle.copyWith(color: color)
         : headingMediumStyle;
+
     return Text(content, style: style, textAlign: textAlign);
   }
+
+  // * UI text widgets
 
   static Widget bodyLarge(String content, {Color? color, TextAlign? textAlign}) {
     final TextStyle style = color != null
         ? bodyLargeStyle.copyWith(color: color)
         : bodyLargeStyle;
+
     return Text(content, style: style, textAlign: textAlign);
   }
 
@@ -75,6 +104,7 @@ class RLTypography {
     final TextStyle style = color != null
         ? bodyMediumStyle.copyWith(color: color)
         : bodyMediumStyle;
+
     return Text(content, style: style, textAlign: textAlign);
   }
 
@@ -82,6 +112,7 @@ class RLTypography {
     final TextStyle style = color != null
         ? bodySmallStyle.copyWith(color: color)
         : bodySmallStyle;
+
     return Text(content, style: style, textAlign: textAlign);
   }
 
@@ -89,6 +120,25 @@ class RLTypography {
     final TextStyle style = color != null
         ? bodyMediumStyle.copyWith(color: color)
         : bodyMediumStyle;
+
+    return Text(content, style: style, textAlign: textAlign);
+  }
+
+  // * Reading text widgets
+
+  static Widget readingLarge(String content, {Color? color, TextAlign? textAlign}) {
+    final TextStyle style = color != null
+        ? readingLargeStyle.copyWith(color: color)
+        : readingLargeStyle;
+
+    return Text(content, style: style, textAlign: textAlign);
+  }
+
+  static Widget readingMedium(String content, {Color? color, TextAlign? textAlign}) {
+    final TextStyle style = color != null
+        ? readingMediumStyle.copyWith(color: color)
+        : readingMediumStyle;
+
     return Text(content, style: style, textAlign: textAlign);
   }
 }

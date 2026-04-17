@@ -13,7 +13,7 @@ class RLUIStrings {
   static const String SWITCHES_SOUND = 'Switches';
 
   // * My Bookshelf Screen
-  static const String BOOKSHELF_TITLE = 'My Bookshelf';
+  static const String BOOKSHELF_TITLE = 'Bookshelf';
 
   // * Reader Pass Screen
   static const String READER_PASS_TITLE = 'Reader Pass';
@@ -100,6 +100,7 @@ class RLUIStrings {
   static const String BOOKSHELF_SUBTITLE = '12 titles';
   static const String READING_SECTION_TITLE = 'Reading';
   static const String TITLES_AND_HISTORY_LABEL = 'Titles and history';
+  static const String READING_HISTORY_TITLE = 'Reading history';
 
   // * Course Roadmap
   static const String ROADMAP_DEFAULT_TITLE = 'Course Roadmap';
@@ -151,7 +152,7 @@ class RLUIStrings {
   static const String REWARD_CONTINUE_LABEL = 'Continue';
 
   // * Learning Statistics
-  static const String LEARNING_STATS_TITLE = 'Learning Statistics';
+  static const String LEARNING_STATS_TITLE = 'Reading';
   static const String LEARNING_STATS_DAYS_UNIT = 'days';
   static const String LEARNING_STATS_DAYS_LABEL = 'at 10 minutes/day';
   static const String LEARNING_STATS_LESSONS_UNIT = 'lessons';
@@ -168,7 +169,9 @@ class RLUIStrings {
   static const String MENU_TEXT_SPEED = 'Text speed';
   static const String MENU_NOTIFICATIONS = 'Notifications';
   static const String MENU_SUPPORT = 'Support';
-  static const String MENU_LEGAL = 'Legal';
+  static const String MENU_PRIVACY_POLICY = 'Privacy Policy';
+  static const String MENU_TERMS_AND_CONDITIONS = 'Terms & Conditions';
+  static const String MENU_EULA = 'EULA';
   static const String MENU_LOG_OUT = 'Log out';
   static const String MENU_VERSION = 'Version 1.0.0';
 
@@ -199,4 +202,17 @@ class RLUIStrings {
   static const String ACCOUNT_DELETE_MESSAGE =
       'This action is permanent. All your data will be lost.';
   static const String ACCOUNT_DELETE_CONFIRM = 'Delete';
+
+  // * Auth Error Messages
+  static const String ERROR_INVALID_CREDENTIALS = 'Invalid email or password.';
+  static const String ERROR_EMAIL_IN_USE = 'An account with this email already exists.';
+  static const String ERROR_WEAK_PASSWORD = 'Password is too weak.';
+  static const String ERROR_INVALID_EMAIL = 'Please enter a valid email address.';
+  static const String ERROR_NETWORK = 'Network error. Please try again.';
+  static const String ERROR_TOO_MANY_REQUESTS = 'Too many attempts. Please try again later.';
+  static const String ERROR_REQUIRES_RECENT_LOGIN = 'Please sign in again to continue.';
+  static const String ERROR_USER_DISABLED = 'This account has been disabled.';
+  static const String ERROR_UNKNOWN = 'Something went wrong. Please try again.';
+  static const String ERROR_NO_USER_LOGGED_IN = 'No user is signed in.';
+  static const String ERROR_ACCOUNT_DELETION_FAILED = 'Account deletion failed.';
 }

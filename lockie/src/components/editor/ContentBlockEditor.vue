@@ -243,7 +243,7 @@ function toggleCorrectAnswer(optionIndex: number) {
 
   const entityType = (props.block as any)['entity-type']
   const isSingleAnswer =
-    entityType === 'single-choice-question' ||
+    entityType === 'question' ||
     entityType === 'true-false-question'
 
   // Single-choice and true/false: selecting an option REPLACES the current correct answer.
@@ -345,9 +345,9 @@ const OTHER_AI_GROUPS = [
 ]
 
 const QUESTION_TYPES = [
-  'single-choice-question',
+  'question',
   'true-false-question',
-  'estimate-percentage-question',
+  'estimate',
 ]
 
 const AI_ACTION_GROUPS = computed(() => {
@@ -596,11 +596,11 @@ function moveSegmentDown(segmentIndex: number) {
 
 const GUIDELINES: Record<string, string> = {
   'text': 'Use short, punchy sentences. Each segment = one thought. Use color markup for key terms (green) and warnings (red). Include image-link: for visuals.',
-  'single-choice-question': 'Straight to the point. Each option needs a consequence-message explaining why right/wrong. Include a hint.',
+  'question': 'Straight to the point. Each option needs a consequence-message explaining why right/wrong. Include a hint.',
   'true-false-question': 'Write a statement, not a question. The reader decides if it is true or false. Consequence messages should explain the reasoning.',
-  'estimate-percentage-question': 'Use real statistics. Let the reader guess before revealing the answer.',
-  'emotional-slide': 'Short motivational pause between sections. Keep it to one sentence.',
-  'reflection': 'Personal application prompt. Include 3-4 thinking points.',
+  'estimate': 'Use real statistics. Let the reader guess before revealing the answer.',
+  'pause': 'Short motivational pause between sections. Keep it to one sentence.',
+  'reflect': 'Personal application prompt. Include 3-4 thinking points.',
   'quote': 'Memorable insight from the author. Keep it impactful.',
 }
 
@@ -830,7 +830,7 @@ const currentGuideline = computed(() => {
     </div>
 
     <!-- Options with correct answer checkboxes -->
-    <div v-if="block['entity-type'] !== 'true-false-question' && block['entity-type'] !== 'estimate-percentage-question' && 'options' in block && block.options.length > 0" class="flex flex-col gap-2">
+    <div v-if="block['entity-type'] !== 'true-false-question' && block['entity-type'] !== 'estimate' && 'options' in block && block.options.length > 0" class="flex flex-col gap-2">
       <div class="flex items-center justify-between">
         <label class="text-sm text-muted-foreground">Options</label>
         <Button variant="ghost" size="icon" class="h-8 w-8" @click="addOption"><Plus class="h-4 w-4" /></Button>
@@ -869,7 +869,7 @@ const currentGuideline = computed(() => {
             <Input v-model="option.text" :placeholder="`Option ${Number(optionIndex) + 1}`" />
 
             <Input
-              v-if="'consequence-message' in option || block['entity-type'] === 'single-choice-question'"
+              v-if="'consequence-message' in option || block['entity-type'] === 'question'"
               v-model="option['consequence-message']"
               placeholder="Consequence message"
               variant="subtle"
@@ -905,7 +905,7 @@ const currentGuideline = computed(() => {
     </div>
 
     <!-- Estimate percentage fields -->
-    <div v-if="block['entity-type'] === 'estimate-percentage-question'" class="flex flex-col gap-4">
+    <div v-if="block['entity-type'] === 'estimate'" class="flex flex-col gap-4">
       <div class="flex flex-col gap-2">
         <label class="text-sm text-muted-foreground">Correct Percentage</label>
         <div class="flex items-center gap-3">
@@ -938,7 +938,7 @@ const currentGuideline = computed(() => {
     </div>
 
     <!-- Emotional slide fields -->
-    <div v-if="block['entity-type'] === 'emotional-slide'" class="flex flex-col gap-4">
+    <div v-if="block['entity-type'] === 'pause'" class="flex flex-col gap-4">
       <div class="flex flex-col gap-2">
         <label class="text-sm text-muted-foreground">Text</label>
         <Input v-model="(block as any).text" placeholder="Motivational message..." />
@@ -951,7 +951,7 @@ const currentGuideline = computed(() => {
     </div>
 
     <!-- Reflection fields -->
-    <div v-if="block['entity-type'] === 'reflection'" class="flex flex-col gap-4">
+    <div v-if="block['entity-type'] === 'reflect'" class="flex flex-col gap-4">
       <div class="flex flex-col gap-2">
         <label class="text-sm text-muted-foreground">Prompt</label>
         <Textarea v-model="(block as any).prompt" placeholder="Reflection prompt..." />

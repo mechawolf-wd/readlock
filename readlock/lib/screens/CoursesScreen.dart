@@ -3,10 +3,10 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:readlock/utility_widgets/Utility.dart';
-import 'package:readlock/utility_widgets/SelectableFilterChips.dart';
-import 'package:readlock/utility_widgets/BookListCard.dart';
-import 'package:readlock/utility_widgets/RLCard.dart';
+import 'package:readlock/design_system/RLUtility.dart';
+import 'package:readlock/design_system/RLSelectableFilterChips.dart';
+import 'package:readlock/design_system/RLBookListCard.dart';
+import 'package:readlock/design_system/RLCard.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/constants/RLUIStrings.dart';

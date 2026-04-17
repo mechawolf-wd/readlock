@@ -4,8 +4,8 @@
 import 'package:flutter/material.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/constants/RLTypography.dart';
-import 'package:readlock/utility_widgets/RLCard.dart';
-import 'package:readlock/utility_widgets/Utility.dart';
+import 'package:readlock/design_system/RLCard.dart';
+import 'package:readlock/design_system/RLUtility.dart';
 
 class BookListCard extends StatelessWidget {
   final String title;

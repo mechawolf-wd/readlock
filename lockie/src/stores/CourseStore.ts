@@ -2,7 +2,8 @@
 
 import { defineStore } from 'pinia'
 import { ref, computed, watch } from 'vue'
-import type { CourseData, Accelerator, Package, Swipe, EntityType } from '@/types/Course'
+import type { CourseData, Accelerator, Segment, Package, Swipe, EntityType } from '@/types/Course'
+import { fetchCourseById, saveCourse } from '@/lib/FirebaseCourseService'
 
 // * LocalStorage keys
 const STORAGE_KEY = 'lockie-course-data'
@@ -593,6 +594,45 @@ export const useCourseStore = defineStore('course', () => {
     }
   }
 
+  // * Firebase operations
+
+  const isSavingToFirebase = ref(false)
+  const firebaseSaveError = ref('')
+
+  async function fetchCourseFromFirebase(courseId: string): Promise<Accelerator | null> {
+    const course = await fetchCourseById(courseId)
+
+    if (course) {
+      ensureSwipeUids({ language: 'EN', courses: [course] })
+    }
+
+    return course
+  }
+
+  async function saveActiveCourseToFirebase(): Promise<boolean> {
+    const hasNoCourse = !activeCourse.value
+
+    if (hasNoCourse) {
+      return false
+    }
+
+    isSavingToFirebase.value = true
+    firebaseSaveError.value = ''
+
+    try {
+      await saveCourse(activeCourse.value!)
+
+      isSavingToFirebase.value = false
+
+      return true
+    } catch (error) {
+      firebaseSaveError.value = String(error)
+      isSavingToFirebase.value = false
+
+      return false
+    }
+  }
+
   return {
     courseData,
     trashedCourses,
@@ -604,6 +644,8 @@ export const useCourseStore = defineStore('course', () => {
     activeSegment,
     activePackage,
     activeSwipe,
+    isSavingToFirebase,
+    firebaseSaveError,
     loadCourseData,
     loadFromStorage,
     saveToStorage,
@@ -632,6 +674,8 @@ export const useCourseStore = defineStore('course', () => {
     importJSON,
     importCourse,
     importPackageFromSwipes,
+    fetchCourseFromFirebase,
+    saveActiveCourseToFirebase,
   }
 })
 
@@ -640,11 +684,11 @@ export const useCourseStore = defineStore('course', () => {
 function createEmptySwipe(entityType: EntityType): Swipe {
   switch (entityType) {
     case 'text': {
-      return { 'entity-type': 'text', 'text-segments': [''] }
+      return { 'entity-type': 'text', title: '', 'text-segments': [''] }
     }
-    case 'single-choice-question': {
+    case 'question': {
       return {
-        'entity-type': 'single-choice-question',
+        'entity-type': 'question', title: '',
         question: '', explanation: '', hint: '',
         options: [{ text: '' }, { text: '' }],
         'correct-answer-indices': [0],
@@ -652,28 +696,28 @@ function createEmptySwipe(entityType: EntityType): Swipe {
     }
     case 'true-false-question': {
       return {
-        'entity-type': 'true-false-question',
+        'entity-type': 'true-false-question', title: '',
         question: '', explanation: '', hint: '',
         options: [{ text: 'True' }, { text: 'False' }],
         'correct-answer-indices': [0],
       }
     }
-    case 'estimate-percentage-question': {
+    case 'estimate': {
       return {
-        'entity-type': 'estimate-percentage-question',
+        'entity-type': 'estimate', title: '',
         question: '', explanation: '',
         'correct-answer-indices': [50],
         'close-threshold': 10,
       }
     }
-    case 'emotional-slide': {
-      return { 'entity-type': 'emotional-slide', text: '', icon: 'check' }
+    case 'pause': {
+      return { 'entity-type': 'pause', title: '', text: '', icon: 'check' }
     }
-    case 'reflection': {
-      return { 'entity-type': 'reflection', prompt: '', 'thinking-points': [''] }
+    case 'reflect': {
+      return { 'entity-type': 'reflect', title: '', prompt: '', 'thinking-points': [''] }
     }
     case 'quote': {
-      return { 'entity-type': 'quote', quote: '', author: '' }
+      return { 'entity-type': 'quote', title: '', quote: '', author: '' }
     }
   }
 }

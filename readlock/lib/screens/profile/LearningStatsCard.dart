@@ -1,89 +1,30 @@
 // Learning statistics card showing reading progress
-// Displays days/lessons completed stats
+// Uses RLStatsCard component with days/lessons stats
 
 import 'package:flutter/material.dart';
 import 'package:readlock/constants/RLUIStrings.dart';
-import 'package:readlock/constants/RLTypography.dart';
-import 'package:readlock/utility_widgets/Utility.dart';
-import 'package:readlock/constants/RLDesignSystem.dart';
+import 'package:readlock/design_system/RLStatsCard.dart';
 
 class LearningStatsCard extends StatelessWidget {
   const LearningStatsCard({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final BoxDecoration cardDecoration = BoxDecoration(
-      color: RLDS.info,
-      borderRadius: RLDS.borderRadiusMedium,
-    );
-
-    return Container(
-      decoration: cardDecoration,
-      padding: const EdgeInsets.all(RLDS.spacing20),
-      child: Div.column([
-        // Header row
-        Div.row([
-          RLTypography.headingMedium(RLUIStrings.LEARNING_STATS_TITLE, color: RLDS.white),
-        ]),
-
-        const Spacing.height(20),
-
-        // Stats row
-        StatsRow(),
-      ]),
-    );
-  }
-
-  Widget StatsRow() {
-    return Div.row([
-      // Days equivalent stat
-      const Expanded(
-        child: StatItem(value: '320', unit: RLUIStrings.LEARNING_STATS_DAYS_UNIT, label: RLUIStrings.LEARNING_STATS_DAYS_LABEL),
-      ),
-
-      // Divider
-      Container(
-        width: 1.0,
-        height: 48.0,
-        color: RLDS.white.withValues(alpha: 0.2),
-      ),
-
-      // Lessons completed stat
-      const Expanded(
-        child: StatItem(value: '42', unit: RLUIStrings.LEARNING_STATS_LESSONS_UNIT, label: RLUIStrings.LEARNING_STATS_LESSONS_LABEL),
-      ),
-    ]);
-  }
-}
-
-class StatItem extends StatelessWidget {
-  final String value;
-  final String unit;
-  final String label;
-
-  const StatItem({super.key, required this.value, required this.unit, required this.label});
-
-  @override
-  Widget build(BuildContext context) {
-    return Div.column([
-      Div.row([
-        RLTypography.headingLarge(value, color: RLDS.white),
-
-        const Spacing.width(4),
-
-        RLTypography.bodyMedium(
-          unit,
-          color: RLDS.white.withValues(alpha: 0.8),
+    return const RLStatsCard(
+      title: RLUIStrings.LEARNING_STATS_TITLE,
+      items: [
+        RLStatItem(
+          value: '320',
+          unit: RLUIStrings.LEARNING_STATS_DAYS_UNIT,
+          label: RLUIStrings.LEARNING_STATS_DAYS_LABEL,
         ),
-      ], mainAxisAlignment: MainAxisAlignment.center),
 
-      const Spacing.height(4),
-
-      RLTypography.bodyMedium(
-        label,
-        color: RLDS.white.withValues(alpha: 0.6),
-        textAlign: TextAlign.center,
-      ),
-    ], crossAxisAlignment: CrossAxisAlignment.center);
+        RLStatItem(
+          value: '42',
+          unit: RLUIStrings.LEARNING_STATS_LESSONS_UNIT,
+          label: RLUIStrings.LEARNING_STATS_LESSONS_LABEL,
+        ),
+      ],
+    );
   }
 }

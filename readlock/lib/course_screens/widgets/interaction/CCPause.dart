@@ -2,25 +2,23 @@
 // Gives the reader a short emotional pause with an icon and an encouraging message
 
 import 'package:flutter/material.dart' hide Typography;
-import 'package:readlock/utility_widgets/Utility.dart';
+import 'package:readlock/design_system/RLUtility.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 
 
-class CCEmotionalSlide extends StatelessWidget {
+class CCPause extends StatelessWidget {
   final String text;
   final String? iconName;
 
-  const CCEmotionalSlide({super.key, required this.text, this.iconName});
+  const CCPause({super.key, required this.text, this.iconName});
 
   @override
   Widget build(BuildContext context) {
     // Extract styling above build method
-    final TextStyle motivationalTextStyle = RLTypography.bodyLargeStyle.copyWith(
-      fontSize: 16,
+    final TextStyle motivationalTextStyle = RLTypography.readingLargeStyle.copyWith(
       fontWeight: FontWeight.w600,
       color: RLDS.textPrimary.withValues(alpha: 0.7),
-      height: 1.2,
     );
 
     return Div.column(

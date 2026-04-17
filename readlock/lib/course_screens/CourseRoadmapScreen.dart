@@ -5,10 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:readlock/course_screens/CourseContentViewer.dart';
 import 'package:readlock/course_screens/data/CourseData.dart';
-import 'package:readlock/utility_widgets/Utility.dart';
-import 'package:readlock/utility_widgets/BookListCard.dart';
-import 'package:readlock/utility_widgets/RLButton.dart';
-import 'package:readlock/utility_widgets/RLCard.dart';
+import 'package:readlock/design_system/RLUtility.dart';
+import 'package:readlock/design_system/RLBookListCard.dart';
+import 'package:readlock/design_system/RLButton.dart';
+import 'package:readlock/design_system/RLCard.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/constants/RLUIStrings.dart';
@@ -352,35 +352,31 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
       child: Row(
         children: [
           // Progress ring with book
-          Stack(
-            clipBehavior: Clip.none,
-            children: [
-              ProgressRing(),
+          ProgressRing(),
 
-              // Percentage badge
-              Positioned(
-                bottom: -8,
-                left: 0,
-                right: 0,
-                child: Center(child: PercentageChip()),
-              ),
-            ],
-          ),
-
-          const Spacing.width(16),
+          const Spacing.width(RLDS.spacing16),
 
           // Course info
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                RLTypography.headingMedium(courseTitle),
+                // Percentage badge + title
+                Row(
+                  children: [
+                    PercentageChip(),
 
-                const Spacing.height(4),
+                    const Spacing.width(RLDS.spacing8),
+
+                    Expanded(child: RLTypography.headingMedium(courseTitle)),
+                  ],
+                ),
+
+                const Spacing.height(RLDS.spacing4),
 
                 RLTypography.bodyMedium(courseAuthor, color: RLDS.textSecondary),
 
-                const Spacing.height(12),
+                const Spacing.height(RLDS.spacing12),
 
                 // Mini stats row
                 MiniStatsRow(),

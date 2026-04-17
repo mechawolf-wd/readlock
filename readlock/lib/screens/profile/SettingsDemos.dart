@@ -6,7 +6,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:readlock/constants/RLUIStrings.dart';
 import 'package:readlock/constants/RLTypography.dart';
-import 'package:readlock/utility_widgets/Utility.dart';
+import 'package:readlock/design_system/RLUtility.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 
 // Demo widget for Reveal setting
@@ -65,14 +65,14 @@ class RevealDemoState extends State<RevealDemo> with SingleTickerProviderStateMi
   Widget build(BuildContext context) {
     final BoxDecoration containerDecoration = BoxDecoration(
       color: RLDS.backgroundLight,
-      borderRadius: BorderRadius.circular(8.0),
+      borderRadius: BorderRadius.circular(RLDS.spacing8),
     );
 
     return Container(
       width: double.infinity,
       decoration: containerDecoration,
-      padding: const EdgeInsets.all(12.0),
-      margin: const EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.all(RLDS.spacing12),
+      margin: const EdgeInsets.only(bottom: RLDS.spacing16),
       child: AnimatedTextDisplay(),
     );
   }
@@ -91,7 +91,7 @@ class RevealDemoState extends State<RevealDemo> with SingleTickerProviderStateMi
 
         return RichText(
           text: TextSpan(
-            style: const TextStyle(fontSize: 14, color: RLDS.textPrimary),
+            style: RLTypography.bodyMediumStyle,
             children: [
               TextSpan(text: visibleText),
 
@@ -118,38 +118,42 @@ class BlurDemo extends StatelessWidget {
   Widget build(BuildContext context) {
     final BoxDecoration containerDecoration = BoxDecoration(
       color: RLDS.backgroundLight,
-      borderRadius: BorderRadius.circular(8.0),
+      borderRadius: BorderRadius.circular(RLDS.spacing8),
     );
 
     return Container(
       width: double.infinity,
       decoration: containerDecoration,
-      padding: const EdgeInsets.all(12.0),
-      margin: const EdgeInsets.only(bottom: 16),
-      child: Div.column([
-        BlurredSentence(),
+      padding: const EdgeInsets.all(RLDS.spacing12),
+      margin: const EdgeInsets.only(bottom: RLDS.spacing16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          BlurredSentence(),
 
-        const Spacing.height(8),
+          const Spacing.height(RLDS.spacing8),
 
-        Text(RLUIStrings.DEMO_BLUR_CURRENT, style: RLTypography.bodyMediumStyle),
-      ], crossAxisAlignment: CrossAxisAlignment.start),
+          Text(RLUIStrings.DEMO_BLUR_CURRENT, style: RLTypography.bodyMediumStyle),
+        ],
+      ),
     );
   }
 
   Widget BlurredSentence() {
-    final Widget sentenceText = Text(
-      RLUIStrings.DEMO_BLUR_PREVIOUS,
-      style: RLTypography.bodyMediumStyle.copyWith(color: RLDS.textSecondary),
+    final TextStyle blurredStyle = RLTypography.bodyMediumStyle.copyWith(
+      color: RLDS.textSecondary,
     );
+
+    final Widget sentenceText = Text(RLUIStrings.DEMO_BLUR_PREVIOUS, style: blurredStyle);
 
     if (isEnabled) {
       return ImageFiltered(
         imageFilter: ImageFilter.blur(sigmaX: 2, sigmaY: 2),
-        child: Opacity(opacity: 0.4, child: sentenceText),
+        child: Opacity(opacity: 0.5, child: sentenceText),
       );
     }
 
-    return sentenceText;
+    return Opacity(opacity: 0.5, child: sentenceText);
   }
 }
 
@@ -164,29 +168,25 @@ class ColoredTextDemo extends StatelessWidget {
   Widget build(BuildContext context) {
     final BoxDecoration containerDecoration = BoxDecoration(
       color: RLDS.backgroundLight,
-      borderRadius: BorderRadius.circular(8.0),
+      borderRadius: BorderRadius.circular(RLDS.spacing8),
     );
 
     Color highlightColor = RLDS.textPrimary;
-
-    if (isEnabled) {
-      highlightColor = RLDS.info;
-    }
-
     FontWeight keyTermsFontWeight = FontWeight.normal;
 
     if (isEnabled) {
+      highlightColor = RLDS.primary;
       keyTermsFontWeight = FontWeight.w600;
     }
 
     return Container(
       width: double.infinity,
       decoration: containerDecoration,
-      padding: const EdgeInsets.all(12.0),
-      margin: const EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.all(RLDS.spacing12),
+      margin: const EdgeInsets.only(bottom: RLDS.spacing16),
       child: RichText(
         text: TextSpan(
-          style: const TextStyle(fontSize: 14, color: RLDS.textPrimary, height: 1.5),
+          style: RLTypography.bodyMediumStyle,
           children: [
             TextSpan(
               text: RLUIStrings.DEMO_COLORED_HIGHLIGHT,
@@ -211,7 +211,7 @@ class TextSpeedDemo extends StatelessWidget {
   Widget build(BuildContext context) {
     final BoxDecoration containerDecoration = BoxDecoration(
       color: RLDS.backgroundLight,
-      borderRadius: BorderRadius.circular(8.0),
+      borderRadius: BorderRadius.circular(RLDS.spacing8),
     );
 
     final int wordsPerMinute = getWordsPerMinute();
@@ -220,19 +220,32 @@ class TextSpeedDemo extends StatelessWidget {
     return Container(
       width: double.infinity,
       decoration: containerDecoration,
-      padding: const EdgeInsets.all(12.0),
-      margin: const EdgeInsets.only(bottom: 16),
-      child: Div.row([
-        Div.column([
-          RLTypography.headingMedium('$wordsPerMinute', color: RLDS.info),
+      padding: const EdgeInsets.all(RLDS.spacing12),
+      margin: const EdgeInsets.only(bottom: RLDS.spacing16),
+      child: Row(
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              RLTypography.headingMedium('$wordsPerMinute', color: RLDS.primary),
 
-          Text(RLUIStrings.DEMO_SPEED_UNIT, style: RLTypography.bodyMediumStyle.copyWith(color: RLDS.textSecondary)),
-        ], crossAxisAlignment: CrossAxisAlignment.start),
+              Text(
+                RLUIStrings.DEMO_SPEED_UNIT,
+                style: RLTypography.bodyMediumStyle.copyWith(color: RLDS.textSecondary),
+              ),
+            ],
+          ),
 
-        const Spacing.width(16),
+          const Spacing.width(RLDS.spacing16),
 
-        Expanded(child: Text(description, style: RLTypography.bodyMediumStyle.copyWith(color: RLDS.textSecondary))),
-      ]),
+          Expanded(
+            child: Text(
+              description,
+              style: RLTypography.bodyMediumStyle.copyWith(color: RLDS.textSecondary),
+            ),
+          ),
+        ],
+      ),
     );
   }
 

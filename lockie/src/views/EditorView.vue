@@ -72,8 +72,9 @@ import {
   parseCourseText,
   PACKAGE_TEXT_FORMAT_GUIDE,
 } from "@/lib/PackageTextParser";
-import { Upload } from "lucide-vue-next";
+import { Upload, CloudUpload } from "lucide-vue-next";
 import courseJSON from "../../../readlock/assets/data/course_data.json";
+import { fetchCourseById } from "@/lib/FirebaseCourseService";
 
 // * Store and router
 
@@ -111,6 +112,9 @@ const fileInputRef = ref<HTMLInputElement | null>(null);
 const showImportCourseDialog = ref(false);
 const importCourseInput = ref("");
 const courseFileInputRef = ref<HTMLInputElement | null>(null);
+
+const showSaveConfirmDialog = ref(false);
+const saveSuccessMessage = ref("");
 
 const sidebarScrollRef = ref<HTMLElement | null>(null);
 const phonePreviewRef = ref<InstanceType<typeof PhonePreview> | null>(null);
@@ -180,7 +184,7 @@ const totalPackageCount = computed(() => {
 
 // * Lifecycle
 
-onMounted(() => {
+onMounted(async () => {
   const hasStoredData = store.loadFromStorage();
 
   if (!hasStoredData) {
@@ -191,6 +195,26 @@ onMounted(() => {
 
   if (hasCourses) {
     store.selectCourse(0);
+  }
+
+  // Try loading the active course from Firebase if it exists
+  const activeCourseId = store.activeCourse?.['course-id'];
+  const hasActiveCourseId = activeCourseId !== undefined;
+
+  if (hasActiveCourseId) {
+    try {
+      const firebaseCourse = await fetchCourseById(activeCourseId);
+      const hasFirebaseCourse = firebaseCourse !== null;
+
+      if (hasFirebaseCourse) {
+        const courseIndex = store.activeCourseIndex ?? 0;
+
+        store.courseData.courses[courseIndex] = firebaseCourse;
+        store.selectCourse(courseIndex);
+      }
+    } catch {
+      // Firebase unavailable — continue with local data
+    }
   }
 });
 
@@ -498,6 +522,20 @@ function handleExport() {
   link.click();
 
   URL.revokeObjectURL(url);
+}
+
+async function handleSaveToFirebase() {
+  const isSuccess = await store.saveActiveCourseToFirebase();
+
+  if (isSuccess) {
+    saveSuccessMessage.value = "Saved successfully";
+
+    setTimeout(() => {
+      saveSuccessMessage.value = "";
+    }, 3000);
+  }
+
+  showSaveConfirmDialog.value = false;
 }
 
 function handleAISendMessage() {
@@ -1010,6 +1048,56 @@ function getNavItemStyle(isSelected: boolean): Record<string, string> {
             @click="handleExport"
             ><Download class="h-4 w-4"
           /></Button>
+
+          <!-- Save to Firebase -->
+          <AlertDialog v-model:open="showSaveConfirmDialog">
+            <AlertDialogTrigger as-child>
+              <Button
+                size="sm"
+                class="bg-emerald-600 hover:bg-emerald-700 text-white gap-1.5 ml-1"
+                :disabled="!hasActiveCourse || store.isSavingToFirebase"
+              >
+                <CloudUpload class="h-4 w-4" />
+                {{ store.isSavingToFirebase ? 'Saving...' : 'Save' }}
+              </Button>
+            </AlertDialogTrigger>
+
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Save to Firebase</AlertDialogTitle>
+                <AlertDialogDescription>
+                  This will overwrite the course "{{ store.activeCourse?.title }}" in production. Are you sure?
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+
+                <AlertDialogAction
+                  class="bg-emerald-600 hover:bg-emerald-700"
+                  @click="handleSaveToFirebase"
+                >
+                  Save
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+
+          <!-- Save success indicator -->
+          <span
+            v-if="saveSuccessMessage"
+            class="text-xs text-emerald-400 ml-1"
+          >
+            {{ saveSuccessMessage }}
+          </span>
+
+          <!-- Save error indicator -->
+          <span
+            v-if="store.firebaseSaveError"
+            class="text-xs text-red-400 ml-1"
+          >
+            Save failed
+          </span>
           <Button
             variant="ghost"
             size="icon"

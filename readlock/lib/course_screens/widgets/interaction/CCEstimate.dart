@@ -3,27 +3,27 @@
 
 import 'package:flutter/material.dart' hide Typography;
 import 'package:readlock/models/CourseModel.dart';
-import 'package:readlock/utility_widgets/Utility.dart';
+import 'package:readlock/design_system/RLUtility.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/utility_widgets/text_animation/ProgressiveText.dart';
 import 'package:readlock/constants/RLUIStrings.dart';
 
-class CCEstimatePercentage extends StatefulWidget {
-  final EstimatePercentageContent content;
+class CCEstimate extends StatefulWidget {
+  final EstimateSwipe content;
   final void Function(int selectedIndex, bool isCorrect) onAnswerSelected;
 
-  const CCEstimatePercentage({
+  const CCEstimate({
     super.key,
     required this.content,
     required this.onAnswerSelected,
   });
 
   @override
-  State<CCEstimatePercentage> createState() => CCEstimatePercentageState();
+  State<CCEstimate> createState() => CCEstimateState();
 }
 
-class CCEstimatePercentageState extends State<CCEstimatePercentage>
+class CCEstimateState extends State<CCEstimate>
     with SingleTickerProviderStateMixin {
   double currentEstimate = 50;
   bool hasSubmittedEstimate = false;
@@ -104,7 +104,7 @@ class CCEstimatePercentageState extends State<CCEstimatePercentage>
   }
 
   Widget QuestionText() {
-    return RLTypography.bodyLarge(widget.content.question, textAlign: TextAlign.center);
+    return RLTypography.readingLarge(widget.content.question, textAlign: TextAlign.center);
   }
 
   Widget CurrentEstimateDisplay() {
@@ -312,7 +312,7 @@ class CCEstimatePercentageState extends State<CCEstimatePercentage>
       opacity: revealAnimation,
       child: ProgressiveText(
         textSegments: [widget.content.explanation],
-        textStyle: RLTypography.bodyLargeStyle.copyWith(fontSize: 14, height: 1.5),
+        textStyle: RLTypography.readingMediumStyle,
       ),
     );
   }

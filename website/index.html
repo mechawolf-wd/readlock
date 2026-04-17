@@ -11,7 +11,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Press+Start+2P&display=swap"
       rel="stylesheet"
     />
     <style>
@@ -125,10 +125,10 @@
       .hero {
         min-height: 100vh;
         display: flex;
-        flex-direction: column;
-        justify-content: center;
+        align-items: center;
         padding: 120px 0 80px;
         position: relative;
+        overflow: hidden;
       }
 
       .hero::before {
@@ -136,16 +136,40 @@
         position: absolute;
         inset: 0;
         background: radial-gradient(
-          ellipse 60% 50% at 50% 30%,
-          rgba(230, 57, 70, 0.12),
+          ellipse 45% 55% at 75% 50%,
+          rgba(230, 57, 70, 0.18),
           transparent 70%
         );
         pointer-events: none;
+        z-index: 1;
       }
 
-      .hero-content {
+      .hero-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 48px;
+        align-items: center;
+        width: 100%;
         position: relative;
-        text-align: center;
+        z-index: 2;
+      }
+
+      .hero-text {
+        text-align: left;
+      }
+
+      .hero-visual {
+        position: relative;
+        aspect-ratio: 1 / 1;
+        min-height: 480px;
+      }
+
+      .hero-canvas {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
       }
 
       .eyebrow {
@@ -175,7 +199,7 @@
         line-height: 0.92;
         letter-spacing: -0.04em;
         max-width: 14ch;
-        margin: 0 auto;
+        margin: 0;
       }
 
       h1 .accent {
@@ -203,11 +227,11 @@
 
       .hero-sub {
         margin-top: 32px;
+        margin-left: 0;
+        margin-right: 0;
         font-size: clamp(16px, 1.4vw, 20px);
         color: var(--muted);
-        max-width: 56ch;
-        margin-left: auto;
-        margin-right: auto;
+        max-width: 40ch;
         line-height: 1.5;
       }
 
@@ -215,7 +239,7 @@
         margin-top: 48px;
         display: flex;
         gap: 16px;
-        justify-content: center;
+        justify-content: flex-start;
         flex-wrap: wrap;
       }
 
@@ -573,6 +597,168 @@
         color: var(--muted);
       }
 
+      /* === Font pairing: Press Start 2P + Playfair Display ===
+         Default is pixel font for identity/impact text; Playfair Display
+         takes over any long-form paragraph. Override block placed late in
+         the cascade so it wins over the earlier Inter-era rules. */
+
+      html,
+      body {
+        font-family: "Press Start 2P", ui-monospace, "Courier New", monospace;
+        font-feature-settings: normal;
+      }
+
+      /* Playfair Display only where people actually read multiple lines */
+      .hero-prelude,
+      .hero-sub,
+      .manifesto-body,
+      .manifesto-body p,
+      .pillar-body,
+      .showcase-caption,
+      .love-list .why,
+      .cta p {
+        font-family: "Playfair Display", Georgia, "Times New Roman", serif;
+        letter-spacing: normal;
+      }
+
+      /* Pixel-font size recalibration — Press Start 2P reads ~1.6–2x larger
+         than a sans-serif at the same pt, and negative letter-spacing crunches
+         pixel glyphs into mush. Scale impact text down and neutralise spacing. */
+      h1,
+      .section-title,
+      .interrupt-text,
+      .creed-text,
+      .claim-text,
+      .cta h2 {
+        letter-spacing: 0;
+        line-height: 1.25;
+      }
+
+      h1 {
+        font-size: clamp(22px, 4.2vw, 52px);
+        max-width: 22ch;
+        line-height: 1.2;
+      }
+
+      .section-title {
+        font-size: clamp(16px, 2.4vw, 30px);
+        line-height: 1.35;
+      }
+
+      .interrupt-text {
+        font-size: clamp(16px, 2.8vw, 36px);
+        line-height: 1.45;
+        max-width: 28ch;
+      }
+
+      .creed-text {
+        font-size: clamp(18px, 3.2vw, 42px);
+        max-width: 28ch;
+        line-height: 1.35;
+      }
+
+      .claim-text {
+        font-size: clamp(18px, 3.2vw, 42px);
+        max-width: 26ch;
+        line-height: 1.3;
+      }
+
+      .cta h2 {
+        font-size: clamp(20px, 3.2vw, 40px);
+        line-height: 1.25;
+      }
+
+      .brand {
+        font-size: 13px;
+        letter-spacing: 0;
+      }
+
+      .nav-links {
+        font-size: 9px;
+        letter-spacing: 0.04em;
+        gap: 24px;
+      }
+
+      .nav-cta {
+        font-size: 10px;
+        letter-spacing: 0.04em;
+        padding: 12px 18px;
+      }
+
+      .eyebrow,
+      .section-label,
+      .pillar-num,
+      .hero-cite,
+      .footer-meta,
+      .footer-links {
+        font-size: 9px;
+        letter-spacing: 0.08em;
+      }
+
+      .pillar-title {
+        font-size: 13px;
+        letter-spacing: 0;
+        line-height: 1.5;
+      }
+
+      .love-list .name {
+        font-size: 11px;
+        letter-spacing: 0;
+        min-width: 140px;
+        line-height: 1.5;
+      }
+
+      .btn {
+        font-size: 10px;
+        letter-spacing: 0.04em;
+        padding: 18px 24px;
+      }
+
+      /* Long-form sizing — Playfair Display handles these, so restore
+         comfortable reading sizes and line-heights. */
+      .manifesto-body,
+      .manifesto-body p {
+        font-size: 19px;
+        line-height: 1.7;
+        letter-spacing: normal;
+      }
+
+      .pillar-body {
+        font-size: 16px;
+        line-height: 1.7;
+      }
+
+      .hero-prelude {
+        font-size: 15px;
+        line-height: 1.7;
+      }
+
+      .hero-sub {
+        font-size: clamp(16px, 1.4vw, 20px);
+        line-height: 1.65;
+      }
+
+      .showcase-caption {
+        font-size: 15px;
+        line-height: 1.65;
+      }
+
+      .love-list .why {
+        font-size: 17px;
+        line-height: 1.6;
+      }
+
+      .cta p {
+        font-size: 19px;
+        line-height: 1.6;
+      }
+
+      /* Strike marker in .claim-text needs to clear the taller pixel glyphs */
+      .claim-text .strike::after {
+        top: 58%;
+        height: 4px;
+      }
+
       /* Responsive */
       @media (max-width: 880px) {
         .nav-links {
@@ -587,6 +773,24 @@
         }
         .hero {
           padding: 100px 0 60px;
+        }
+        .hero-grid {
+          grid-template-columns: 1fr;
+          gap: 32px;
+        }
+        .hero-text {
+          text-align: center;
+        }
+        .hero-text .hero-sub {
+          margin-left: auto;
+          margin-right: auto;
+        }
+        .hero-text .hero-cta {
+          justify-content: center;
+        }
+        .hero-visual {
+          min-height: 320px;
+          max-height: 60vh;
         }
         .manifesto,
         .pillars {
@@ -615,23 +819,24 @@
     </nav>
 
     <section class="hero">
-      <div class="container hero-content">
-        <p class="hero-prelude">
-          We are not aggressive. We respect you way more than these clowns do.
-        </p>
-        <h1>
-          "No <span class="accent">f**kfest</span> app<br />for learning."
-        </h1>
-        <p class="hero-cite">— Readlock</p>
-        <p class="hero-sub">
-          People have been learning carefully for centuries. Sitting with one
-          idea long enough that it had somewhere to live. We still believe in
-          that. If you are here, the cartoon mascots and the confetti probably
-          stopped working on you a long time ago.
-        </p>
-        <div class="hero-cta">
-          <a href="#download" class="btn btn-primary">Start reading →</a>
-          <a href="#manifesto" class="btn btn-ghost">Read the manifesto</a>
+      <div class="container">
+        <div class="hero-grid">
+          <div class="hero-text">
+            <h1>
+              No <span class="accent">cringefest</span> microlearning APP
+            </h1>
+            <p class="hero-cite">Readlock</p>
+            <p class="hero-sub">
+              If the mascots and confetti stopped working on you, you're in the right place.
+            </p>
+            <div class="hero-cta">
+              <a href="#download" class="btn btn-primary">Start reading →</a>
+              <a href="#manifesto" class="btn btn-ghost">Read the manifesto</a>
+            </div>
+          </div>
+          <div class="hero-visual">
+            <canvas class="hero-canvas" aria-hidden="true"></canvas>
+          </div>
         </div>
       </div>
     </section>
@@ -639,7 +844,7 @@
     <section class="interrupt">
       <div class="container">
         <p class="interrupt-text">
-          <span class="cliche">"TikTok for smart peop—"</span><br />
+          <span class="cliche">"TikTok for smart peop-"</span><br />
           <span class="reply">Shut the f**k up.</span>
         </p>
       </div>
@@ -895,5 +1100,142 @@
         </div>
       </div>
     </footer>
+
+    <script>
+      // === Hero background: rotating T(3,2) trefoil knot ===
+      // Parametric torus knot sampled as points, rotated in 3D each frame,
+      // projected with simple perspective, rendered as depth-shaded pixels.
+      // No WebGL dependency — the canvas 2D context is enough.
+      (function () {
+        const canvas = document.querySelector(".hero-canvas");
+        if (!canvas) return;
+
+        const ctx = canvas.getContext("2d", { alpha: true });
+        const prefersReducedMotion = window.matchMedia(
+          "(prefers-reduced-motion: reduce)"
+        ).matches;
+
+        let cssWidth = 0;
+        let cssHeight = 0;
+        let devicePixelRatioCached = 1;
+
+        function resizeCanvas() {
+          devicePixelRatioCached = window.devicePixelRatio || 1;
+          cssWidth = canvas.clientWidth;
+          cssHeight = canvas.clientHeight;
+          canvas.width = Math.floor(cssWidth * devicePixelRatioCached);
+          canvas.height = Math.floor(cssHeight * devicePixelRatioCached);
+          ctx.setTransform(
+            devicePixelRatioCached,
+            0,
+            0,
+            devicePixelRatioCached,
+            0,
+            0
+          );
+        }
+
+        resizeCanvas();
+        window.addEventListener("resize", resizeCanvas);
+
+        // Torus knot T(p, q) — (3, 2) is the trefoil
+        const TOROIDAL_WINDINGS = 3;
+        const POLOIDAL_WINDINGS = 2;
+        const MAJOR_RADIUS = 1;
+        const MINOR_RADIUS = 0.42;
+        const SAMPLE_COUNT = 520;
+        const CAMERA_DISTANCE = 2.8;
+
+        // Precompute the knot in model space
+        const knotPoints = [];
+        for (let sampleIndex = 0; sampleIndex < SAMPLE_COUNT; sampleIndex++) {
+          const t = (sampleIndex / SAMPLE_COUNT) * Math.PI * 2;
+          const poloidal = MINOR_RADIUS * Math.cos(POLOIDAL_WINDINGS * t);
+          const radial = MAJOR_RADIUS + poloidal;
+          knotPoints.push({
+            x: radial * Math.cos(TOROIDAL_WINDINGS * t),
+            y: radial * Math.sin(TOROIDAL_WINDINGS * t),
+            z: MINOR_RADIUS * Math.sin(POLOIDAL_WINDINGS * t),
+          });
+        }
+
+        let angleX = 0.3;
+        let angleY = 0;
+        let lastFrameTime = performance.now();
+
+        function renderFrame(now) {
+          const deltaSeconds = Math.min((now - lastFrameTime) / 1000, 0.05);
+          lastFrameTime = now;
+
+          ctx.clearRect(0, 0, cssWidth, cssHeight);
+
+          const centerX = cssWidth / 2;
+          const centerY = cssHeight / 2;
+          const baseScale = Math.min(cssWidth, cssHeight) * 0.42;
+
+          const cosX = Math.cos(angleX);
+          const sinX = Math.sin(angleX);
+          const cosY = Math.cos(angleY);
+          const sinY = Math.sin(angleY);
+
+          for (let i = 0; i < knotPoints.length; i++) {
+            const point = knotPoints[i];
+
+            // Rotate around X axis
+            const xAfterX = point.x;
+            const yAfterX = point.y * cosX - point.z * sinX;
+            const zAfterX = point.y * sinX + point.z * cosX;
+
+            // Rotate around Y axis
+            const xAfterY = xAfterX * cosY + zAfterX * sinY;
+            const zAfterY = -xAfterX * sinY + zAfterX * cosY;
+
+            // Perspective projection
+            const zShifted = zAfterY + CAMERA_DISTANCE;
+            const perspectiveScale = baseScale / zShifted;
+            const screenX = xAfterY * perspectiveScale + centerX;
+            const screenY = yAfterX * perspectiveScale + centerY;
+
+            // Depth-shaded opacity — far points fade into the black
+            const depthFactor = Math.max(
+              0.12,
+              Math.min(1, 2.2 / zShifted)
+            );
+
+            // Accent every 20th point in red — brand pulse
+            const isAccentPoint = i % 20 === 0;
+            const pixelSize = isAccentPoint ? 3 : 2;
+
+            if (isAccentPoint) {
+              ctx.fillStyle =
+                "rgba(230, 57, 70, " + depthFactor.toFixed(3) + ")";
+            } else {
+              ctx.fillStyle =
+                "rgba(255, 255, 255, " +
+                (depthFactor * 0.85).toFixed(3) +
+                ")";
+            }
+
+            ctx.fillRect(
+              Math.round(screenX),
+              Math.round(screenY),
+              pixelSize,
+              pixelSize
+            );
+          }
+
+          // Two-axis rotation at incommensurable rates so the silhouette never repeats.
+          // Reduced-motion users get a gentler rotation instead of a full freeze —
+          // the animation is subtle enough that total stasis would just look broken.
+          const rotationBoost = prefersReducedMotion ? 0.25 : 1;
+          angleY += deltaSeconds * 0.22 * rotationBoost;
+          angleX += deltaSeconds * 0.09 * rotationBoost;
+
+          requestAnimationFrame(renderFrame);
+        }
+
+        requestAnimationFrame(renderFrame);
+      })();
+    </script>
   </body>
 </html>

@@ -175,7 +175,7 @@ function parseQuestionBlock(lines: string[]): Swipe {
   const question = questionParts.join(" ");
 
   return {
-    "entity-type": "single-choice-question",
+    "entity-type": "question",
     question,
     explanation,
     hint,
@@ -278,7 +278,7 @@ function parseEstimateBlock(lines: string[]): Swipe {
   const question = questionParts.join(" ");
 
   return {
-    "entity-type": "estimate-percentage-question",
+    "entity-type": "estimate",
     question,
     explanation,
     hint,
@@ -291,7 +291,7 @@ function parsePauseBlock(lines: string[]): Swipe {
   const contentLines = lines.filter((line) => line.trim() !== "");
   const text = contentLines.map((l) => l.trim()).join(" ");
 
-  return { "entity-type": "emotional-slide", text, icon: "check" };
+  return { "entity-type": "pause", text, icon: "check" };
 }
 
 function parseQuoteBlock(lines: string[]): Swipe {
@@ -309,7 +309,7 @@ function parseReflectionBlock(lines: string[]): Swipe {
     .map((line) => line.trim());
 
   return {
-    "entity-type": "reflection",
+    "entity-type": "reflect",
     prompt: "",
     "thinking-points": thinkingPoints.length > 0 ? thinkingPoints : [""],
   };

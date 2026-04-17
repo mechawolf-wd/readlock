@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "976267746377",
+    "project_id": "readlock-production",
+    "storage_bucket": "readlock-production.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:976267746377:android:f685520649f9c5b1507398",
+        "android_client_info": {
+          "package_name": "org.readlock.readlock"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAOGhRV482BHQ2NiKT2t8WY0mjk8N53zno"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

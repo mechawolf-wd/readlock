@@ -3,24 +3,24 @@
 
 import 'package:flutter/material.dart' hide Typography;
 import 'package:readlock/models/CourseModel.dart';
-import 'package:readlock/utility_widgets/Utility.dart';
+import 'package:readlock/design_system/RLUtility.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
-import 'package:readlock/utility_widgets/FeedbackSnackbar.dart';
-import 'package:readlock/services/SoundService.dart';
-import 'package:readlock/services/HapticsService.dart';
+import 'package:readlock/design_system/RLFeedbackSnackbar.dart';
+import 'package:readlock/services/feedback/HapticsService.dart';
+import 'package:readlock/services/feedback/SoundService.dart';
 
-class CCSingleChoice extends StatefulWidget {
-  final SingleChoiceQuestionContent content;
+class CCQuestion extends StatefulWidget {
+  final QuestionSwipe content;
   final void Function(int selectedIndex, bool isCorrect) onAnswerSelected;
 
-  const CCSingleChoice({super.key, required this.content, required this.onAnswerSelected});
+  const CCQuestion({super.key, required this.content, required this.onAnswerSelected});
 
   @override
-  State<CCSingleChoice> createState() => CCSingleChoiceState();
+  State<CCQuestion> createState() => CCQuestionState();
 }
 
-class CCSingleChoiceState extends State<CCSingleChoice> {
+class CCQuestionState extends State<CCQuestion> {
   int? selectedAnswerIndex;
   bool hasAnsweredQuestion = false;
 
@@ -82,7 +82,7 @@ class CCSingleChoiceState extends State<CCSingleChoice> {
   }
 
   Widget QuestionTextSection() {
-    return RLTypography.bodyMedium(widget.content.question);
+    return RLTypography.readingMedium(widget.content.question);
   }
 
   Widget OptionsListSection() {
@@ -150,7 +150,7 @@ class CCSingleChoiceState extends State<CCSingleChoice> {
 
     return Div.row(
       [
-        Expanded(child: RLTypography.bodyMedium(option.text, color: optionTextStyle.color)),
+        Expanded(child: RLTypography.readingMedium(option.text, color: optionTextStyle.color)),
 
         // Visual feedback indicators
         RenderIf.condition(shouldShowCorrect, CorrectCheckIcon, const SizedBox.shrink()),
@@ -254,15 +254,15 @@ class CCSingleChoiceState extends State<CCSingleChoice> {
     required bool shouldMute,
   }) {
     if (shouldShowCorrect) {
-      return RLTypography.bodyMediumStyle.copyWith(color: RLDS.success);
+      return RLTypography.readingMediumStyle.copyWith(color: RLDS.success);
     }
 
     if (shouldMute) {
-      return RLTypography.bodyMediumStyle.copyWith(
+      return RLTypography.readingMediumStyle.copyWith(
         color: RLDS.textPrimary.withValues(alpha: 0.4),
       );
     }
 
-    return RLTypography.bodyMediumStyle;
+    return RLTypography.readingMediumStyle;
   }
 }

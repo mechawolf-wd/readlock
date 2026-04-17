@@ -4,8 +4,8 @@
 import 'package:flutter/material.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/constants/RLTypography.dart';
-import 'package:readlock/utility_widgets/RLButton.dart';
-import 'package:readlock/utility_widgets/Utility.dart';
+import 'package:readlock/design_system/RLButton.dart';
+import 'package:readlock/design_system/RLUtility.dart';
 
 class RLDialog {
   // * Standard dialog — centered card with title, content, and action buttons

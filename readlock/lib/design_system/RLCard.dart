@@ -62,19 +62,14 @@ class RLCard extends StatelessWidget {
       return BoxDecoration(
         color: RLDS.surface,
         borderRadius: RLDS.borderRadiusSmall,
-        border: Border.all(
-          color: borderColor ?? RLDS.onSurface,
-          width: 1.5,
-        ),
+        border: Border.all(color: borderColor ?? RLDS.textMuted.withValues(alpha: 0.3)),
       );
     }
 
     return BoxDecoration(
       color: RLDS.backgroundLight.withValues(alpha: 0.08),
       borderRadius: RLDS.borderRadiusSmall,
-      border: Border.all(
-        color: borderColor ?? RLDS.textMuted.withValues(alpha: 0.3),
-      ),
+      border: Border.all(color: borderColor ?? RLDS.textMuted.withValues(alpha: 0.3)),
     );
   }
 }

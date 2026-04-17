@@ -3,22 +3,22 @@
 
 import 'package:flutter/material.dart' hide Typography;
 import 'package:readlock/models/CourseModel.dart';
-import 'package:readlock/utility_widgets/Utility.dart';
+import 'package:readlock/design_system/RLUtility.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/constants/RLUIStrings.dart';
 import 'package:readlock/utility_widgets/text_animation/ProgressiveText.dart';
 
-class CCReflection extends StatefulWidget {
-  final ReflectionContent content;
+class CCReflect extends StatefulWidget {
+  final ReflectSwipe content;
 
-  const CCReflection({super.key, required this.content});
+  const CCReflect({super.key, required this.content});
 
   @override
-  State<CCReflection> createState() => CCReflectionState();
+  State<CCReflect> createState() => CCReflectState();
 }
 
-class CCReflectionState extends State<CCReflection> {
+class CCReflectState extends State<CCReflect> {
   Set<int> selectedPoints = {};
   Set<int> swipingPoints = {};
 
@@ -39,11 +39,7 @@ class CCReflectionState extends State<CCReflection> {
       borderRadius: BorderRadius.circular(16),
     );
 
-    promptTextStyle = RLTypography.bodyLargeStyle.copyWith(
-      fontSize: 16,
-      fontWeight: FontWeight.w500,
-      height: 1.6,
-    );
+    promptTextStyle = RLTypography.readingLargeStyle;
 
     cardColors = [RLDS.info, RLDS.primary, RLDS.warning];
   }
@@ -320,7 +316,7 @@ class CCReflectionState extends State<CCReflection> {
     return Expanded(
       child: Div.column([
         // Main point text
-        RLTypography.bodyMedium(point, color: textColor),
+        RLTypography.readingMedium(point, color: textColor),
 
         // Swipe instruction
         RenderIf.condition(

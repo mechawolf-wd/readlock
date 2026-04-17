@@ -18,6 +18,7 @@ export interface Accelerator {
   color: string
   'relevant-for': string[]
   genres: string[]
+  'preloaded-assets'?: string[]
   segments: Segment[]
 }
 
@@ -38,15 +39,16 @@ export interface Package {
 
 export type Swipe =
   | TextBlock
-  | SingleChoiceQuestionBlock
+  | QuestionBlock
   | TrueFalseQuestionBlock
-  | EstimatePercentageQuestionBlock
-  | EmotionalSlideBlock
-  | ReflectionBlock
+  | EstimateBlock
+  | PauseBlock
+  | ReflectBlock
   | QuoteBlock
 
 export interface TextBlock {
   'entity-type': 'text'
+  title?: string
   'text-segments': string[]
 }
 
@@ -56,8 +58,9 @@ export interface QuestionOption {
   hint?: string
 }
 
-export interface SingleChoiceQuestionBlock {
-  'entity-type': 'single-choice-question'
+export interface QuestionBlock {
+  'entity-type': 'question'
+  title?: string
   question: string
   explanation: string
   hint?: string
@@ -67,6 +70,7 @@ export interface SingleChoiceQuestionBlock {
 
 export interface TrueFalseQuestionBlock {
   'entity-type': 'true-false-question'
+  title?: string
   question: string
   explanation: string
   hint?: string
@@ -74,8 +78,9 @@ export interface TrueFalseQuestionBlock {
   'correct-answer-indices': number[]
 }
 
-export interface EstimatePercentageQuestionBlock {
-  'entity-type': 'estimate-percentage-question'
+export interface EstimateBlock {
+  'entity-type': 'estimate'
+  title?: string
   question: string
   explanation: string
   hint?: string
@@ -83,20 +88,23 @@ export interface EstimatePercentageQuestionBlock {
   'close-threshold'?: number
 }
 
-export interface EmotionalSlideBlock {
-  'entity-type': 'emotional-slide'
+export interface PauseBlock {
+  'entity-type': 'pause'
+  title?: string
   text: string
   icon?: string
 }
 
-export interface ReflectionBlock {
-  'entity-type': 'reflection'
+export interface ReflectBlock {
+  'entity-type': 'reflect'
+  title?: string
   prompt: string
   'thinking-points': string[]
 }
 
 export interface QuoteBlock {
   'entity-type': 'quote'
+  title?: string
   quote: string
   author: string
 }
@@ -105,11 +113,11 @@ export interface QuoteBlock {
 
 export const ENTITY_TYPES = [
   'text',
-  'single-choice-question',
+  'question',
   'true-false-question',
-  'estimate-percentage-question',
-  'emotional-slide',
-  'reflection',
+  'estimate',
+  'pause',
+  'reflect',
   'quote',
 ] as const
 
@@ -117,31 +125,31 @@ export type EntityType = typeof ENTITY_TYPES[number]
 
 export const ENTITY_TYPE_LABELS: Record<EntityType, string> = {
   'text': 'Page',
-  'single-choice-question': 'Question',
+  'question': 'Question',
   'true-false-question': 'True/False',
-  'estimate-percentage-question': 'Estimate',
-  'emotional-slide': 'Pause',
-  'reflection': 'Reflect',
+  'estimate': 'Estimate',
+  'pause': 'Pause',
+  'reflect': 'Reflect',
   'quote': 'Quote',
 }
 
 export const ENTITY_TYPE_ICONS: Record<EntityType, Component> = {
   'text': BookOpen,
-  'single-choice-question': CircleHelp,
+  'question': CircleHelp,
   'true-false-question': ToggleLeft,
-  'estimate-percentage-question': Percent,
-  'emotional-slide': Heart,
-  'reflection': Brain,
+  'estimate': Percent,
+  'pause': Heart,
+  'reflect': Brain,
   'quote': MessageSquareQuote,
 }
 
 export const ENTITY_TYPE_COLORS: Record<EntityType, string> = {
   'text': 'var(--entity-text)',
-  'single-choice-question': 'var(--entity-question)',
+  'question': 'var(--entity-question)',
   'true-false-question': 'var(--entity-question)',
-  'estimate-percentage-question': 'var(--entity-question)',
-  'emotional-slide': 'var(--entity-emotional)',
-  'reflection': 'var(--entity-text)',
+  'estimate': 'var(--entity-question)',
+  'pause': 'var(--entity-emotional)',
+  'reflect': 'var(--entity-text)',
   'quote': 'var(--entity-text)',
 }
 
@@ -153,25 +161,25 @@ export interface EntityTypeGroup {
 export const ENTITY_TYPE_GROUPS: EntityTypeGroup[] = [
   {
     label: 'Reading',
-    types: ['text', 'quote', 'reflection'],
+    types: ['text', 'quote', 'reflect'],
   },
   {
     label: 'Questions',
     types: [
-      'single-choice-question',
+      'question',
       'true-false-question',
-      'estimate-percentage-question',
+      'estimate',
     ],
   },
   {
     label: 'Interactive',
-    types: ['emotional-slide'],
+    types: ['pause'],
   },
 ]
 
 export const QUICK_ADD_TYPES: EntityType[] = [
   'text',
-  'single-choice-question',
+  'question',
   'true-false-question',
 ]
 

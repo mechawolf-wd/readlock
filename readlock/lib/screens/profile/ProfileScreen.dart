@@ -1,10 +1,8 @@
-// Gamified profile screen
-// Showcases mockups of engaging learning patterns adapted for book reading
+// Profile settings screen
+// Contains all settings organized into menu sections
 
 import 'package:flutter/material.dart';
-import 'package:readlock/utility_widgets/Utility.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
-import 'package:readlock/screens/profile/SoundPickerCard.dart';
 import 'package:readlock/screens/profile/MenuWidgets.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -21,7 +19,7 @@ class ProfileScreenState extends State<ProfileScreen> {
       backgroundColor: RLDS.backgroundDark,
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: EdgeInsets.all(20.0),
+          padding: EdgeInsets.all(RLDS.spacing20),
           child: ProfileContent(),
         ),
       ),
@@ -77,31 +75,22 @@ class ProfileContentState extends State<ProfileContent> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        const SoundPickerCard(),
-
-        const Spacing.height(24),
-
-        MenuSection(
-          soundsEnabled: soundsEnabled,
-          hapticsEnabled: hapticsEnabled,
-          revealAllTrueFalse: revealAllTrueFalse,
-          blurEnabled: blurEnabled,
-          coloredTextEnabled: coloredTextEnabled,
-          notificationsEnabled: notificationsEnabled,
-          textSpeed: textSpeed,
-          onSoundsToggled: handleSoundsToggled,
-          onHapticsToggled: handleHapticsToggled,
-          onRevealAllTrueFalseToggled: handleRevealAllTrueFalseToggled,
-          onBlurToggled: handleBlurToggled,
-          onColoredTextToggled: handleColoredTextToggled,
-          onNotificationsToggled: handleNotificationsToggled,
-          onTextSpeedChanged: handleTextSpeedChanged,
-          onSupportTap: handleSupportTap,
-        ),
-      ],
+    return MenuSection(
+      soundsEnabled: soundsEnabled,
+      hapticsEnabled: hapticsEnabled,
+      revealAllTrueFalse: revealAllTrueFalse,
+      blurEnabled: blurEnabled,
+      coloredTextEnabled: coloredTextEnabled,
+      notificationsEnabled: notificationsEnabled,
+      textSpeed: textSpeed,
+      onSoundsToggled: handleSoundsToggled,
+      onHapticsToggled: handleHapticsToggled,
+      onRevealAllTrueFalseToggled: handleRevealAllTrueFalseToggled,
+      onBlurToggled: handleBlurToggled,
+      onColoredTextToggled: handleColoredTextToggled,
+      onNotificationsToggled: handleNotificationsToggled,
+      onTextSpeedChanged: handleTextSpeedChanged,
+      onSupportTap: handleSupportTap,
     );
   }
 }

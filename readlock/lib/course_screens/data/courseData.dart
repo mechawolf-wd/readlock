@@ -1,16 +1,15 @@
-import 'package:readlock/course_screens/services/JSONCourseDataService.dart';
+// Course data facade — abstracts the data source for course loading
+// Currently reads from Firestore /courses collection
+
+import 'package:readlock/course_screens/services/FirebaseCourseService.dart';
 import 'package:readlock/constants/DartAliases.dart';
 
 class CourseDataService {
   static Future<JSONList> fetchAvailableCourses() async {
-    return await JSONCourseDataService.fetchCourses();
+    return await FirebaseCourseService.fetchCourses();
   }
 
   static Future<JSONMap?> fetchCourseById(String courseId) {
-    return JSONCourseDataService.fetchCourseById(courseId);
-  }
-
-  static void clearCache() {
-    // No cache to clear - data is loaded fresh each time
+    return FirebaseCourseService.fetchCourseById(courseId);
   }
 }

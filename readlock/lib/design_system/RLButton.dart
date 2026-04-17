@@ -140,7 +140,6 @@ class RLButton extends StatelessWidget {
           return RLButtonColors(
             backgroundColor: resolvedColor,
             textColor: RLDS.white,
-            borderColor: Colors.transparent,
           );
         }
       case RLButtonVariant.secondary:
@@ -148,7 +147,6 @@ class RLButton extends StatelessWidget {
           return RLButtonColors(
             backgroundColor: Colors.transparent,
             textColor: resolvedColor,
-            borderColor: resolvedColor.withValues(alpha: 0.3),
           );
         }
       case RLButtonVariant.tertiary:
@@ -156,7 +154,6 @@ class RLButton extends StatelessWidget {
           return RLButtonColors(
             backgroundColor: Colors.transparent,
             textColor: resolvedColor,
-            borderColor: Colors.transparent,
           );
         }
     }

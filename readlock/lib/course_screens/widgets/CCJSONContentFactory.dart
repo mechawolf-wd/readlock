@@ -1,50 +1,36 @@
 // Factory class for creating course content widgets from JSON data
 // Provides wrapper widgets that convert JSON data to proper model objects
+// Supports entity types produced by lockie PackageTextParser
 
 import 'package:flutter/material.dart' hide Typography;
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLUIStrings.dart';
-import 'package:readlock/utility_widgets/Utility.dart';
+import 'package:readlock/design_system/RLUtility.dart';
 import 'package:readlock/constants/DartAliases.dart';
 import 'package:readlock/models/CourseModel.dart';
-import 'package:readlock/course_screens/widgets/reading/CCIntro.dart';
 import 'package:readlock/course_screens/widgets/reading/CCTextContent.dart';
-import 'package:readlock/course_screens/widgets/reading/CCOutro.dart';
-import 'package:readlock/course_screens/widgets/reading/CCDesignExamplesShowcase.dart';
-import 'package:readlock/course_screens/widgets/reading/CCReflection.dart';
+import 'package:readlock/course_screens/widgets/reading/CCReflect.dart';
 import 'package:readlock/course_screens/widgets/reading/CCQuote.dart';
 import 'package:readlock/course_screens/widgets/interaction/CCTrueFalseQuestion.dart';
-import 'package:readlock/course_screens/widgets/interaction/CCEstimatePercentage.dart';
-import 'package:readlock/course_screens/widgets/interaction/CCMultipleChoice.dart';
-import 'package:readlock/course_screens/widgets/interaction/CCSingleChoiceQuestion.dart';
-import 'package:readlock/course_screens/widgets/interaction/CCReflectionQuestion.dart';
-import 'package:readlock/course_screens/widgets/interaction/CCEmotionalSlide.dart';
+import 'package:readlock/course_screens/widgets/interaction/CCEstimate.dart';
+import 'package:readlock/course_screens/widgets/interaction/CCQuestion.dart';
+import 'package:readlock/course_screens/widgets/interaction/CCPause.dart';
 
 class CCJSONContentFactory {
   // Factory method for creating content widgets from JSON data
-  static Widget createContentWidget(JSONMap contentData, {VoidCallback? onLessonComplete}) {
+  static Widget createContentWidget(JSONMap contentData) {
     final String entityType = contentData['entity-type'] ?? '';
 
     // Content type switching based on entity type
     switch (entityType) {
-      case 'intro':
-        {
-          return JsonIntroContentWidget(contentData: contentData);
-        }
-
       case 'text':
         {
-          return JsonTextContentWidget(contentData: contentData);
+          return JsonTextWidget(contentData: contentData);
         }
 
-      case 'multiple-choice-question':
+      case 'question':
         {
-          return JsonMultipleChoiceQuestionWidget(contentData: contentData);
-        }
-
-      case 'single-choice-question':
-        {
-          return JsonSingleChoiceQuestionWidget(contentData: contentData);
+          return JsonQuestionWidget(contentData: contentData);
         }
 
       case 'true-false-question':
@@ -52,42 +38,24 @@ class CCJSONContentFactory {
           return JsonTrueFalseQuestionWidget(contentData: contentData);
         }
 
-      case 'reflection-question':
+      case 'estimate':
         {
-          return JsonReflectionQuestionWidget(contentData: contentData);
+          return JsonEstimateWidget(contentData: contentData);
         }
 
-      case 'estimate-percentage-question':
+      case 'reflect':
         {
-          return JsonEstimatePercentageQuestionWidget(contentData: contentData);
-        }
-
-      case 'outro':
-        {
-          return JsonOutroContentWidget(
-            contentData: contentData,
-            onLessonComplete: onLessonComplete,
-          );
-        }
-
-      case 'reflection':
-        {
-          return JsonReflectionContentWidget(contentData: contentData);
+          return JsonReflectWidget(contentData: contentData);
         }
 
       case 'quote':
         {
-          return JsonQuoteContentWidget(contentData: contentData);
+          return JsonQuoteWidget(contentData: contentData);
         }
 
-      case 'estimate-percentage':
+      case 'pause':
         {
-          return JsonEstimatePercentageWidget(contentData: contentData);
-        }
-
-      case 'emotional-slide':
-        {
-          return JsonEmotionalSlideWidget(contentData: contentData);
+          return JsonPauseWidget(contentData: contentData);
         }
 
       default:
@@ -120,53 +88,25 @@ class UnknownContentWidget extends StatelessWidget {
   }
 }
 
-// Wrapper widgets that convert JSON data to the expected format
+// * Wrapper widgets that convert JSON data to the expected format
 
-// Intro content wrapper widget
-class JsonIntroContentWidget extends StatelessWidget {
+// Text content wrapper
+class JsonTextWidget extends StatelessWidget {
   final JSONMap contentData;
 
-  const JsonIntroContentWidget({super.key, required this.contentData});
+  const JsonTextWidget({super.key, required this.contentData});
 
   @override
   Widget build(BuildContext context) {
-    // Data transformation from JSON to model
-    final introContent = createIntroContentModel();
+    final textContent = createTextSwipeModel();
 
-    // Widget rendering
-    return CCIntro(content: introContent);
-  }
-
-  IntroContent createIntroContentModel() {
-    final List<String> textSegments = List<String>.from(contentData['text-segments'] ?? []);
-
-    return IntroContent(
-      id: contentData['id'] ?? '',
-      title: contentData['title'] ?? '',
-      introTextSegments: textSegments,
-    );
-  }
-}
-
-// Text content wrapper widget
-class JsonTextContentWidget extends StatelessWidget {
-  final JSONMap contentData;
-
-  const JsonTextContentWidget({super.key, required this.contentData});
-
-  @override
-  Widget build(BuildContext context) {
-    // Data transformation from JSON to model
-    final textContent = createTextContentModel();
-
-    // Widget rendering
     return CCTextContent(content: textContent);
   }
 
-  TextContent createTextContentModel() {
+  TextSwipe createTextSwipeModel() {
     final List<String> textSegments = List<String>.from(contentData['text-segments'] ?? []);
 
-    return TextContent(
+    return TextSwipe(
       id: contentData['id'] ?? '',
       title: contentData['title'] ?? '',
       textSegments: textSegments,
@@ -175,65 +115,23 @@ class JsonTextContentWidget extends StatelessWidget {
   }
 }
 
-// Outro content wrapper widget
-class JsonOutroContentWidget extends StatelessWidget {
+// Reflect content wrapper
+class JsonReflectWidget extends StatelessWidget {
   final JSONMap contentData;
-  final VoidCallback? onLessonComplete;
 
-  const JsonOutroContentWidget({super.key, required this.contentData, this.onLessonComplete});
+  const JsonReflectWidget({super.key, required this.contentData});
 
   @override
   Widget build(BuildContext context) {
-    // Data transformation from JSON to model
-    final outroContent = createOutroContentModel();
+    final reflectionContent = createReflectSwipeModel();
 
-    // Widget rendering
-    return CCOutro(content: outroContent, onLessonComplete: onLessonComplete);
+    return CCReflect(content: reflectionContent);
   }
 
-  OutroContent createOutroContentModel() {
-    final List<String> textSegments = List<String>.from(contentData['text-segments'] ?? []);
-
-    return OutroContent(
-      id: contentData['id'] ?? '',
-      title: contentData['title'] ?? '',
-      outroTextSegments: textSegments,
-    );
-  }
-}
-
-// Design examples showcase wrapper widget
-class JsonDesignExamplesShowcaseWidget extends StatelessWidget {
-  final JSONMap contentData;
-
-  const JsonDesignExamplesShowcaseWidget({super.key, required this.contentData});
-
-  @override
-  Widget build(BuildContext context) {
-    // Static design examples showcase
-    return const CCDesignExamplesShowcase();
-  }
-}
-
-// Reflection content wrapper widget
-class JsonReflectionContentWidget extends StatelessWidget {
-  final JSONMap contentData;
-
-  const JsonReflectionContentWidget({super.key, required this.contentData});
-
-  @override
-  Widget build(BuildContext context) {
-    // Data transformation from JSON to model
-    final reflectionContent = createReflectionContentModel();
-
-    // Widget rendering
-    return CCReflection(content: reflectionContent);
-  }
-
-  ReflectionContent createReflectionContentModel() {
+  ReflectSwipe createReflectSwipeModel() {
     final List<String> thinkingPoints = List<String>.from(contentData['thinking-points'] ?? []);
 
-    return ReflectionContent(
+    return ReflectSwipe(
       id: contentData['id'] ?? '',
       title: contentData['title'] ?? '',
       prompt: contentData['prompt'] ?? '',
@@ -242,23 +140,21 @@ class JsonReflectionContentWidget extends StatelessWidget {
   }
 }
 
-// Quote content wrapper widget
-class JsonQuoteContentWidget extends StatelessWidget {
+// Quote content wrapper
+class JsonQuoteWidget extends StatelessWidget {
   final JSONMap contentData;
 
-  const JsonQuoteContentWidget({super.key, required this.contentData});
+  const JsonQuoteWidget({super.key, required this.contentData});
 
   @override
   Widget build(BuildContext context) {
-    // Data transformation from JSON to model
-    final quoteContent = createQuoteContentModel();
+    final quoteContent = createQuoteSwipeModel();
 
-    // Widget rendering
     return CCQuote(content: quoteContent);
   }
 
-  QuoteContent createQuoteContentModel() {
-    return QuoteContent(
+  QuoteSwipe createQuoteSwipeModel() {
+    return QuoteSwipe(
       id: contentData['id'] ?? '',
       title: contentData['title'] ?? '',
       quote: contentData['quote'] ?? '',
@@ -267,10 +163,9 @@ class JsonQuoteContentWidget extends StatelessWidget {
   }
 }
 
-// Question wrapper widgets for specific question types
+// * Question wrapper widgets
 
-// * Shared helper for parsing question options from JSON
-
+// Shared helper for parsing question options from JSON
 List<QuestionOption> parseQuestionOptions(JSONMap contentData) {
   final JSONList optionsData = JSONList.from(contentData['options'] ?? []);
 
@@ -285,38 +180,11 @@ List<QuestionOption> parseQuestionOptions(JSONMap contentData) {
       .toList();
 }
 
-// Multiple choice question wrapper widget
-class JsonMultipleChoiceQuestionWidget extends StatelessWidget {
+// Question wrapper (single-choice)
+class JsonQuestionWidget extends StatelessWidget {
   final JSONMap contentData;
 
-  const JsonMultipleChoiceQuestionWidget({super.key, required this.contentData});
-
-  @override
-  Widget build(BuildContext context) {
-    final List<QuestionOption> options = parseQuestionOptions(contentData);
-    final List<int> correctAnswerIndices = List<int>.from(
-      contentData['correct-answer-indices'] ?? [],
-    );
-
-    final MultipleChoiceQuestionContent content = MultipleChoiceQuestionContent(
-      id: contentData['id'] ?? '',
-      title: contentData['title'] ?? '',
-      question: contentData['question'] ?? '',
-      options: options,
-      correctAnswerIndices: correctAnswerIndices,
-      explanation: contentData['explanation'] ?? '',
-      hint: contentData['hint'],
-    );
-
-    return CCMultipleChoice(content: content, onAnswerSelected: (int index, bool isCorrect) {});
-  }
-}
-
-// Single choice question wrapper widget
-class JsonSingleChoiceQuestionWidget extends StatelessWidget {
-  final JSONMap contentData;
-
-  const JsonSingleChoiceQuestionWidget({super.key, required this.contentData});
+  const JsonQuestionWidget({super.key, required this.contentData});
 
   @override
   Widget build(BuildContext context) {
@@ -325,7 +193,7 @@ class JsonSingleChoiceQuestionWidget extends StatelessWidget {
     final bool hasCorrectAnswerIndex = indices.isNotEmpty;
     final int correctAnswerIndex = hasCorrectAnswerIndex ? indices.first : -1;
 
-    final SingleChoiceQuestionContent content = SingleChoiceQuestionContent(
+    final QuestionSwipe content = QuestionSwipe(
       id: contentData['id'] ?? '',
       title: contentData['title'] ?? '',
       question: contentData['question'] ?? '',
@@ -335,11 +203,11 @@ class JsonSingleChoiceQuestionWidget extends StatelessWidget {
       hint: contentData['hint'],
     );
 
-    return CCSingleChoice(content: content, onAnswerSelected: (int index, bool isCorrect) {});
+    return CCQuestion(content: content, onAnswerSelected: (int index, bool isCorrect) {});
   }
 }
 
-// True/False question wrapper widget
+// True/False question wrapper
 class JsonTrueFalseQuestionWidget extends StatelessWidget {
   final JSONMap contentData;
 
@@ -352,7 +220,7 @@ class JsonTrueFalseQuestionWidget extends StatelessWidget {
     final bool hasCorrectAnswerIndex = indices.isNotEmpty;
     final int correctAnswerIndex = hasCorrectAnswerIndex ? indices.first : -1;
 
-    final TrueFalseQuestionContent content = TrueFalseQuestionContent(
+    final TrueFalseSwipe content = TrueFalseSwipe(
       id: contentData['id'] ?? '',
       title: contentData['title'] ?? '',
       question: contentData['question'] ?? '',
@@ -369,46 +237,17 @@ class JsonTrueFalseQuestionWidget extends StatelessWidget {
   }
 }
 
-// Reflection question wrapper widget
-class JsonReflectionQuestionWidget extends StatelessWidget {
+// Estimate wrapper
+class JsonEstimateWidget extends StatelessWidget {
   final JSONMap contentData;
 
-  const JsonReflectionQuestionWidget({super.key, required this.contentData});
-
-  @override
-  Widget build(BuildContext context) {
-    final List<QuestionOption> options = parseQuestionOptions(contentData);
-    final List<int> correctAnswerIndices = List<int>.from(
-      contentData['correct-answer-indices'] ?? [],
-    );
-
-    final ReflectionQuestionContent content = ReflectionQuestionContent(
-      id: contentData['id'] ?? '',
-      title: contentData['title'] ?? '',
-      question: contentData['question'] ?? '',
-      options: options,
-      correctAnswerIndices: correctAnswerIndices,
-      explanation: contentData['explanation'] ?? '',
-    );
-
-    return CCReflectionQuestion(
-      content: content,
-      onAnswerSelected: (int index, bool isCorrect) {},
-    );
-  }
-}
-
-// Estimate percentage question wrapper widget
-class JsonEstimatePercentageQuestionWidget extends StatelessWidget {
-  final JSONMap contentData;
-
-  const JsonEstimatePercentageQuestionWidget({super.key, required this.contentData});
+  const JsonEstimateWidget({super.key, required this.contentData});
 
   @override
   Widget build(BuildContext context) {
     final int correctPercentage = getCorrectPercentage();
 
-    final estimateContent = EstimatePercentageContent(
+    final estimateContent = EstimateSwipe(
       id: contentData['id'] ?? '',
       title: contentData['title'] ?? '',
       question: contentData['question'] ?? '',
@@ -418,7 +257,7 @@ class JsonEstimatePercentageQuestionWidget extends StatelessWidget {
       closeThreshold: contentData['close-threshold'] ?? 10,
     );
 
-    return CCEstimatePercentage(
+    return CCEstimate(
       content: estimateContent,
       onAnswerSelected: (int index, bool isCorrect) {},
     );
@@ -436,48 +275,17 @@ class JsonEstimatePercentageQuestionWidget extends StatelessWidget {
   }
 }
 
-// Estimate percentage content wrapper widget
-class JsonEstimatePercentageWidget extends StatelessWidget {
+// Pause wrapper (emotional slide)
+class JsonPauseWidget extends StatelessWidget {
   final JSONMap contentData;
 
-  const JsonEstimatePercentageWidget({super.key, required this.contentData});
-
-  @override
-  Widget build(BuildContext context) {
-    // Data transformation from JSON to model
-    final estimateContent = createEstimatePercentageContentModel();
-
-    // Widget rendering with empty callback
-    return CCEstimatePercentage(
-      content: estimateContent,
-      onAnswerSelected: (int index, bool isCorrect) {},
-    );
-  }
-
-  EstimatePercentageContent createEstimatePercentageContentModel() {
-    return EstimatePercentageContent(
-      id: contentData['id'] ?? '',
-      title: contentData['title'] ?? '',
-      question: contentData['question'] ?? '',
-      correctPercentage: contentData['correct-percentage'] ?? 50,
-      explanation: contentData['explanation'] ?? '',
-      hint: contentData['hint'],
-      closeThreshold: contentData['close-threshold'] ?? 10,
-    );
-  }
-}
-
-// Emotional slide wrapper widget
-class JsonEmotionalSlideWidget extends StatelessWidget {
-  final JSONMap contentData;
-
-  const JsonEmotionalSlideWidget({super.key, required this.contentData});
+  const JsonPauseWidget({super.key, required this.contentData});
 
   @override
   Widget build(BuildContext context) {
     final String motivationalText = contentData['text'] ?? '';
     final String? iconName = contentData['icon'];
 
-    return CCEmotionalSlide(text: motivationalText, iconName: iconName);
+    return CCPause(text: motivationalText, iconName: iconName);
   }
 }
