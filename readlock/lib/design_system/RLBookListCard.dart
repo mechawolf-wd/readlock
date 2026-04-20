@@ -7,6 +7,7 @@ import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/design_system/RLCard.dart';
 import 'package:readlock/design_system/RLUtility.dart';
 
+import 'package:pixelarticons/pixel.dart';
 class BookListCard extends StatelessWidget {
   final String title;
   final String author;
@@ -65,22 +66,46 @@ class BookCoverThumbnail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool hasCover = coverImagePath != null;
+    final String? resolvedPath = coverImagePath;
+    final bool hasCover = resolvedPath != null && resolvedPath.isNotEmpty;
+    final bool isNetworkCover = hasCover && resolvedPath.startsWith('http');
+    final bool isAssetCover = hasCover && resolvedPath.startsWith('assets/');
 
-    if (hasCover) {
+    if (isNetworkCover) {
       return ClipRRect(
         borderRadius: BorderRadius.circular(6),
-        child: Image.asset(coverImagePath!, width: width, height: height, fit: BoxFit.cover),
+        child: Image.network(
+          resolvedPath,
+          width: width,
+          height: height,
+          fit: BoxFit.cover,
+          errorBuilder: CoverErrorFallback,
+        ),
       );
     }
 
+    if (isAssetCover) {
+      return ClipRRect(
+        borderRadius: BorderRadius.circular(6),
+        child: Image.asset(resolvedPath, width: width, height: height, fit: BoxFit.cover),
+      );
+    }
+
+    return CoverPlaceholder();
+  }
+
+  Widget CoverErrorFallback(BuildContext context, Object error, StackTrace? stackTrace) {
+    return CoverPlaceholder();
+  }
+
+  Widget CoverPlaceholder() {
     final BoxDecoration placeholderDecoration = BoxDecoration(
       color: RLDS.info.withValues(alpha: 0.1),
       borderRadius: BorderRadius.circular(6),
       border: Border.all(color: RLDS.info.withValues(alpha: 0.2)),
     );
 
-    final Widget BookIcon = const Icon(Icons.book, color: RLDS.info, size: 20);
+    final Widget BookIcon = const Icon(Pixel.book, color: RLDS.info, size: 20);
 
     return Container(
       width: width,

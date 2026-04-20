@@ -10,6 +10,7 @@ import 'package:readlock/design_system/RLFeedbackSnackbar.dart';
 import 'package:readlock/services/feedback/HapticsService.dart';
 import 'package:readlock/services/feedback/SoundService.dart';
 
+import 'package:pixelarticons/pixel.dart';
 class CCQuestion extends StatefulWidget {
   final QuestionSwipe content;
   final void Function(int selectedIndex, bool isCorrect) onAnswerSelected;
@@ -137,13 +138,13 @@ class CCQuestionState extends State<CCQuestion> {
     );
 
     final Widget CorrectCheckIcon = const Icon(
-      Icons.check_circle,
+      Pixel.check,
       color: RLDS.success,
       size: RLDS.iconMedium,
     );
 
     final Widget IncorrectCancelIcon = Icon(
-      Icons.cancel,
+      Pixel.close,
       color: RLDS.textPrimary.withValues(alpha: 0.6),
       size: RLDS.iconMedium,
     );

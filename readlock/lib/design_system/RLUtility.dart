@@ -22,7 +22,7 @@ class Div extends StatelessWidget {
   /// Examples:
   /// ```dart
   /// children: [Text('Hello'), Text('World')]
-  /// children: [Icon(Icons.home), SizedBox(width: 10), Text('Home')]
+  /// children: [Icon(Pixel.home), SizedBox(width: 10), Text('Home')]
   /// ```
   final List<Widget>? children;
 

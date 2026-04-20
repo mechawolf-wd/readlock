@@ -8,16 +8,17 @@ import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/constants/RLUIStrings.dart';
 
+import 'package:pixelarticons/pixel.dart';
 class FeedbackBottomSheets {
   // Icon definitions
   static final Widget ExperienceIcon = const Icon(
-    Icons.lightbulb,
+    Pixel.infobox,
     color: RLDS.success,
     size: 20,
   );
 
   static final Widget HintIcon = const Icon(
-    Icons.tips_and_updates_outlined,
+    Pixel.infobox,
     color: RLDS.info,
     size: 20,
   );

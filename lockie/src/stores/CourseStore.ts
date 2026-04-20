@@ -17,10 +17,26 @@ function generateUid(): string {
   return `swipe-${Date.now()}-${uidCounter}`
 }
 
+// Assigns internal _uid to segments, packages, swipes, and options.
+// The _uid provides a stable Vue :key across mutations — segment-id / lesson-id
+// are derived from position and course id, so they change on reorder / rename,
+// and using them as keys would force spurious remounts.
 function ensureSwipeUids(data: CourseData) {
   for (const course of data.courses) {
     for (const segment of course.segments) {
+      const segmentHasNoUid = !(segment as any)._uid
+
+      if (segmentHasNoUid) {
+        (segment as any)._uid = generateUid()
+      }
+
       for (const pkg of segment.lessons) {
+        const packageHasNoUid = !(pkg as any)._uid
+
+        if (packageHasNoUid) {
+          (pkg as any)._uid = generateUid()
+        }
+
         for (const swipe of pkg.content) {
           const hasNoUid = !(swipe as any)._uid
 
@@ -42,6 +58,27 @@ function ensureSwipeUids(data: CourseData) {
           }
         }
       }
+    }
+  }
+}
+
+// Derives every segment-id and lesson-id in a course from the course id + 1-based
+// position. Call after any mutation that changes course-id, segment order,
+// or package order, so in-memory ids always match what exportJSON would produce.
+function rebuildCourseIds(course: Accelerator) {
+  const courseId = course['course-id']
+
+  for (let segmentIndex = 0; segmentIndex < course.segments.length; segmentIndex++) {
+    const segment = course.segments[segmentIndex]
+    const segmentNumber = segmentIndex + 1
+
+    segment['segment-id'] = `${courseId};segment:${segmentNumber}`
+
+    for (let lessonIndex = 0; lessonIndex < segment.lessons.length; lessonIndex++) {
+      const lesson = segment.lessons[lessonIndex]
+      const lessonNumber = lessonIndex + 1
+
+      lesson['lesson-id'] = `${courseId};segment:${segmentNumber};lesson:${lessonNumber}`
     }
   }
 }
@@ -176,6 +213,18 @@ export const useCourseStore = defineStore('course', () => {
   watch(courseData, debouncedSave, { deep: true })
   watch(trashedCourses, saveTrashToStorage, { deep: true })
 
+  // Keep segment-id and lesson-id canonical whenever the course-id is edited in settings.
+  watch(
+    () => activeCourseIndex.value !== null ? courseData.value.courses[activeCourseIndex.value]?.['course-id'] : undefined,
+    () => {
+      const course = activeCourseIndex.value !== null ? courseData.value.courses[activeCourseIndex.value] : null
+
+      if (course) {
+        rebuildCourseIds(course)
+      }
+    },
+  )
+
   // * Course trash actions
 
   function trashCourse(index: number) {
@@ -276,17 +325,22 @@ export const useCourseStore = defineStore('course', () => {
     }
 
     const segmentCount = activeCourse.value!.segments.length
-    const newSegment = {
-      'segment-id': `segment-${segmentCount + 1}`,
-      'segment-title': `Segment ${segmentCount + 1}`,
-      'segment-description': '',
+    const courseId = activeCourse.value!['course-id']
+    const segmentNumber = segmentCount + 1
+    const newSegment: Segment = {
+      'segment-id': `${courseId};segment:${segmentNumber}`,
+      'segment-title': `Segment ${segmentNumber}`,
       'segment-symbol': String.fromCharCode(65 + segmentCount),
       lessons: [],
     }
 
+    ;(newSegment as any)._uid = generateUid()
+
     activeCourse.value!.segments.push(newSegment)
     activeSegmentIndex.value = activeCourse.value!.segments.length - 1
     activePackageIndex.value = 0
+
+    rebuildCourseIds(activeCourse.value!)
   }
 
   function addPackage() {
@@ -297,15 +351,22 @@ export const useCourseStore = defineStore('course', () => {
     }
 
     const packageCount = activeSegment.value!.lessons.length
-    const newPackage = {
-      'lesson-id': `package-${packageCount + 1}`,
-      title: `Package ${packageCount + 1}`,
+    const courseId = activeCourse.value!['course-id']
+    const segmentNumber = activeSegmentIndex.value + 1
+    const lessonNumber = packageCount + 1
+    const newPackage: Package = {
+      'lesson-id': `${courseId};segment:${segmentNumber};lesson:${lessonNumber}`,
+      title: `Package ${lessonNumber}`,
       isFree: false,
       content: [],
     }
 
+    ;(newPackage as any)._uid = generateUid()
+
     activeSegment.value!.lessons.push(newPackage)
     activePackageIndex.value = activeSegment.value!.lessons.length - 1
+
+    rebuildCourseIds(activeCourse.value!)
   }
 
   function removeSegment(index: number) {
@@ -322,6 +383,8 @@ export const useCourseStore = defineStore('course', () => {
     activeSegmentIndex.value = Math.max(0, clampedIndex)
     activePackageIndex.value = 0
     activeSwipeUid.value = null
+
+    rebuildCourseIds(activeCourse.value!)
   }
 
   function removePackage(index: number) {
@@ -337,6 +400,8 @@ export const useCourseStore = defineStore('course', () => {
 
     activePackageIndex.value = Math.max(0, clampedIndex)
     activeSwipeUid.value = null
+
+    rebuildCourseIds(activeCourse.value!)
   }
 
   function addSwipe(entityType: EntityType) {
@@ -438,6 +503,44 @@ export const useCourseStore = defineStore('course', () => {
     return JSON.stringify(exportData, replacer, 2)
   }
 
+  // * Active-course JSON for the in-editor viewer (per-course, not the whole dataset)
+  function exportActiveCourseJSON(): string {
+    const hasNoCourse = !activeCourse.value
+
+    if (hasNoCourse) {
+      return ''
+    }
+
+    const courseCopy = JSON.parse(JSON.stringify(activeCourse.value)) as Accelerator
+    const courseId = courseCopy['course-id']
+
+    for (let segmentIndex = 0; segmentIndex < courseCopy.segments.length; segmentIndex++) {
+      const segment = courseCopy.segments[segmentIndex]
+      const segmentNumber = segmentIndex + 1
+
+      segment['segment-id'] = `${courseId};segment:${segmentNumber}`
+
+      for (let lessonIndex = 0; lessonIndex < segment.lessons.length; lessonIndex++) {
+        const lesson = segment.lessons[lessonIndex]
+        const lessonNumber = lessonIndex + 1
+
+        lesson['lesson-id'] = `${courseId};segment:${segmentNumber};lesson:${lessonNumber}`
+      }
+    }
+
+    const replacer = (key: string, value: any) => {
+      const isInternalUid = key === '_uid'
+
+      if (isInternalUid) {
+        return undefined
+      }
+
+      return value
+    }
+
+    return JSON.stringify(courseCopy, replacer, 2)
+  }
+
   // * Reorder segments
 
   function moveSegmentUp() {
@@ -456,6 +559,8 @@ export const useCourseStore = defineStore('course', () => {
       segments.splice(index - 1, 0, moved)
       activeSegmentIndex.value = index - 1
     }
+
+    rebuildCourseIds(activeCourse.value!)
   }
 
   function moveSegmentDown() {
@@ -479,6 +584,8 @@ export const useCourseStore = defineStore('course', () => {
       segments.splice(index + 1, 0, moved)
       activeSegmentIndex.value = index + 1
     }
+
+    rebuildCourseIds(activeCourse.value!)
   }
 
   // * Reorder packages
@@ -499,6 +606,8 @@ export const useCourseStore = defineStore('course', () => {
       lessons.splice(index - 1, 0, moved)
       activePackageIndex.value = index - 1
     }
+
+    rebuildCourseIds(activeCourse.value!)
   }
 
   function movePackageDown() {
@@ -522,6 +631,8 @@ export const useCourseStore = defineStore('course', () => {
       lessons.splice(index + 1, 0, moved)
       activePackageIndex.value = index + 1
     }
+
+    rebuildCourseIds(activeCourse.value!)
   }
 
   function importJSON(json: string) {
@@ -531,22 +642,8 @@ export const useCourseStore = defineStore('course', () => {
   }
 
   function importCourse(course: Accelerator) {
-    // Assign UIDs to all swipes and their options
-    for (const segment of course.segments) {
-      for (const pkg of segment.lessons) {
-        for (const swipe of pkg.content) {
-          (swipe as any)._uid = generateUid()
-
-          const hasOptions = 'options' in swipe && Array.isArray((swipe as any).options)
-
-          if (hasOptions) {
-            for (const option of (swipe as any).options) {
-              option._uid = generateUid()
-            }
-          }
-        }
-      }
-    }
+    ensureSwipeUids({ language: 'EN', courses: [course] })
+    rebuildCourseIds(course)
 
     courseData.value.courses.push(course)
 
@@ -575,17 +672,23 @@ export const useCourseStore = defineStore('course', () => {
       }
     }
 
-    const packageCount = activeSegment.value!.lessons.length
+    const courseId = activeCourse.value!['course-id']
+    const segmentNumber = activeSegmentIndex.value + 1
+    const lessonNumber = activeSegment.value!.lessons.length + 1
     const newPackage: Package = {
-      'lesson-id': `package-${packageCount + 1}`,
+      'lesson-id': `${courseId};segment:${segmentNumber};lesson:${lessonNumber}`,
       title,
       isFree: false,
       content: swipes,
     }
 
+    ;(newPackage as any)._uid = generateUid()
+
     activeSegment.value!.lessons.push(newPackage)
     activePackageIndex.value = activeSegment.value!.lessons.length - 1
     activeSwipeUid.value = null
+
+    rebuildCourseIds(activeCourse.value!)
 
     const hasSwipes = swipes.length > 0
 
@@ -626,6 +729,8 @@ export const useCourseStore = defineStore('course', () => {
 
       return true
     } catch (error) {
+      console.error('[CourseStore.saveActiveCourseToFirebase]', error)
+
       firebaseSaveError.value = String(error)
       isSavingToFirebase.value = false
 
@@ -671,6 +776,7 @@ export const useCourseStore = defineStore('course', () => {
     selectSwipeByUid,
     clearSwipeSelection,
     exportJSON,
+    exportActiveCourseJSON,
     importJSON,
     importCourse,
     importPackageFromSwipes,

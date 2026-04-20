@@ -53,6 +53,7 @@ import {
   BookOpen,
   Code,
   FileText,
+  ImageIcon,
 } from "lucide-vue-next";
 import {
   AlertDialog,
@@ -75,6 +76,7 @@ import {
 import { Upload, CloudUpload } from "lucide-vue-next";
 import courseJSON from "../../../readlock/assets/data/course_data.json";
 import { fetchCourseById } from "@/lib/FirebaseCourseService";
+import { uploadCourseCoverImage } from "@/lib/FirebaseStorageService";
 
 // * Store and router
 
@@ -113,6 +115,10 @@ const showImportCourseDialog = ref(false);
 const importCourseInput = ref("");
 const courseFileInputRef = ref<HTMLInputElement | null>(null);
 
+const coverImageInputRef = ref<HTMLInputElement | null>(null);
+const isUploadingCoverImage = ref(false);
+const coverImageUploadError = ref("");
+
 const showSaveConfirmDialog = ref(false);
 const saveSuccessMessage = ref("");
 
@@ -134,7 +140,7 @@ const availableGenres = computed(() => {
   return PREMADE_GENRES.filter((genre) => !currentGenres.includes(genre));
 });
 
-const formattedJson = computed(() => store.exportJSON());
+const formattedJson = computed(() => store.exportActiveCourseJSON());
 const highlightedJson = ref("");
 
 watch(
@@ -212,8 +218,8 @@ onMounted(async () => {
         store.courseData.courses[courseIndex] = firebaseCourse;
         store.selectCourse(courseIndex);
       }
-    } catch {
-      // Firebase unavailable — continue with local data
+    } catch (error) {
+      console.error('[EditorView.onMounted] Firebase fetch failed, continuing with local data', error)
     }
   }
 });
@@ -652,6 +658,40 @@ function handleImportFromText() {
   showImportTextDialog.value = false;
 }
 
+async function handleCoverImageUpload(event: Event) {
+  const input = event.target as HTMLInputElement;
+  const file = input.files?.[0];
+  const hasNoFile = !file;
+  const hasNoActiveCourse = !store.activeCourse;
+
+  if (hasNoFile || hasNoActiveCourse) {
+    return;
+  }
+
+  const courseId = store.activeCourse!["course-id"];
+  const hasNoCourseId = !courseId || courseId.trim() === "";
+
+  if (hasNoCourseId) {
+    coverImageUploadError.value = "Set a course id first.";
+    input.value = "";
+    return;
+  }
+
+  isUploadingCoverImage.value = true;
+  coverImageUploadError.value = "";
+
+  try {
+    const downloadUrl = await uploadCourseCoverImage(courseId, file!);
+
+    store.activeCourse!["cover-image-path"] = downloadUrl;
+  } catch (error) {
+    coverImageUploadError.value = String(error);
+  } finally {
+    isUploadingCoverImage.value = false;
+    input.value = "";
+  }
+}
+
 function handleCourseFileUpload(event: Event) {
   const input = event.target as HTMLInputElement;
   const file = input.files?.[0];
@@ -891,11 +931,12 @@ function getNavItemStyle(isSelected: boolean): Record<string, string> {
                 ><Settings class="h-4 w-4"
               /></Button>
             </DialogTrigger>
-            <DialogContent class="max-w-lg max-h-[85vh] overflow-auto">
+            <DialogContent class="max-w-lg max-h-[85vh] grid-rows-[auto_minmax(0,1fr)]">
               <DialogHeader>
                 <DialogTitle>Course Settings</DialogTitle>
               </DialogHeader>
 
+              <ScrollArea class="min-h-0 -mr-3 pr-3">
               <div v-if="hasActiveCourse" class="flex flex-col gap-6">
                 <!-- Course ID -->
                 <div class="flex flex-col gap-2">
@@ -928,6 +969,63 @@ function getNavItemStyle(isSelected: boolean): Record<string, string> {
                   <Textarea
                     v-model="store.activeCourse!.description"
                     class="min-h-20"
+                  />
+                </div>
+
+                <Separator />
+
+                <!-- Cover Image -->
+                <div class="flex flex-col gap-2">
+                  <label class="text-sm text-muted-foreground">Cover Image</label>
+
+                  <div class="flex gap-3">
+                    <!-- Preview -->
+                    <div
+                      class="w-20 h-20 rounded-md border border-border bg-muted/40 shrink-0 overflow-hidden flex items-center justify-center"
+                    >
+                      <img
+                        v-if="store.activeCourse!['cover-image-path']"
+                        :src="store.activeCourse!['cover-image-path']"
+                        class="w-full h-full object-cover"
+                      />
+                      <ImageIcon v-else class="h-6 w-6 text-muted-foreground" />
+                    </div>
+
+                    <!-- Upload + url -->
+                    <div class="flex flex-col gap-2 flex-1 min-w-0">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        class="self-start gap-2"
+                        :disabled="isUploadingCoverImage"
+                        @click="coverImageInputRef?.click()"
+                      >
+                        <Upload class="h-3.5 w-3.5" />
+                        {{ isUploadingCoverImage ? 'Uploading...' : 'Upload image' }}
+                      </Button>
+
+                      <Input
+                        v-model="store.activeCourse!['cover-image-path']"
+                        variant="subtle"
+                        placeholder="https://..."
+                        class="font-mono text-xs"
+                      />
+
+                      <p
+                        v-if="coverImageUploadError"
+                        class="text-xs text-destructive"
+                      >
+                        {{ coverImageUploadError }}
+                      </p>
+                    </div>
+                  </div>
+
+                  <input
+                    ref="coverImageInputRef"
+                    type="file"
+                    accept="image/*"
+                    class="hidden"
+                    @change="handleCoverImageUpload"
                   />
                 </div>
 
@@ -1031,6 +1129,7 @@ function getNavItemStyle(isSelected: boolean): Record<string, string> {
                   Fill with AI
                 </Button>
               </div>
+              </ScrollArea>
             </DialogContent>
           </Dialog>
           <Button
@@ -1129,8 +1228,9 @@ function getNavItemStyle(isSelected: boolean): Record<string, string> {
       </div>
 
       <div class="w-[420px] flex flex-col shrink-0">
+        <ScrollArea class="border-b border-border shrink-0 max-h-[50vh]">
         <div
-          class="p-4 border-b border-border flex flex-col gap-4 shrink-0 overflow-auto max-h-[50vh]"
+          class="p-4 flex flex-col gap-4"
         >
           <span class="text-sm font-medium">Course Creator</span>
           <div class="flex flex-col gap-2">
@@ -1193,7 +1293,9 @@ function getNavItemStyle(isSelected: boolean): Record<string, string> {
             />
           </div>
         </div>
-        <div class="flex-1 overflow-auto p-4 flex flex-col gap-3">
+        </ScrollArea>
+        <ScrollArea class="flex-1 min-h-0">
+        <div class="p-4 flex flex-col gap-3">
           <div
             v-if="aiChatMessages.length === 0"
             class="flex-1 flex items-center justify-center text-muted-foreground text-sm text-center px-8"
@@ -1217,6 +1319,7 @@ function getNavItemStyle(isSelected: boolean): Record<string, string> {
             </div>
           </div>
         </div>
+        </ScrollArea>
         <div class="p-4 border-t border-border flex gap-2 shrink-0">
           <Input
             v-model="aiChatInput"
@@ -1292,7 +1395,7 @@ function getNavItemStyle(isSelected: boolean): Record<string, string> {
                 <div
                   v-for="(segment, segmentIndex) in store.activeCourse!
                     .segments"
-                  :key="segment['segment-id']"
+                  :key="(segment as any)._uid ?? segment['segment-id']"
                   class="text-sm px-4 py-3 rounded-lg cursor-pointer transition-colors flex items-center gap-2 group/seg"
                   :class="getNavItemClass(isSegmentSelected(segmentIndex))"
                   :style="getNavItemStyle(isSegmentSelected(segmentIndex))"
@@ -1442,7 +1545,7 @@ function getNavItemStyle(isSelected: boolean): Record<string, string> {
               >
                 <div
                   v-for="(pkg, packageIndex) in store.activeSegment!.lessons"
-                  :key="pkg['lesson-id']"
+                  :key="(pkg as any)._uid ?? pkg['lesson-id']"
                   :data-package-index="packageIndex"
                   class="text-sm px-4 py-3 rounded-lg cursor-pointer transition-colors flex items-center gap-2 group/pkg"
                   :class="getNavItemClass(isPackageSelected(packageIndex))"
@@ -1484,8 +1587,8 @@ function getNavItemStyle(isSelected: boolean): Record<string, string> {
 
                         <div class="flex items-center gap-2">
                           <Checkbox
-                            :checked="pkg.isFree"
-                            @update:checked="
+                            :model-value="pkg.isFree"
+                            @update:model-value="
                               (val: boolean) => (pkg.isFree = val)
                             "
                           />

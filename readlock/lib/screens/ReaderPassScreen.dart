@@ -9,6 +9,7 @@ import 'package:readlock/constants/RLUIStrings.dart';
 import 'package:readlock/constants/DartAliases.dart';
 import 'package:readlock/design_system/RLCard.dart';
 
+import 'package:pixelarticons/pixel.dart';
 class ReaderPassScreen extends StatefulWidget {
   const ReaderPassScreen({super.key});
 
@@ -17,7 +18,7 @@ class ReaderPassScreen extends StatefulWidget {
 }
 
 class ReaderPassScreenState extends State<ReaderPassScreen> {
-  static final Widget BackArrowIcon = const Icon(Icons.arrow_back, color: RLDS.textPrimary, size: 24);
+  static final Widget BackArrowIcon = const Icon(Pixel.arrowleft, color: RLDS.textPrimary, size: 24);
 
   void handleBackButton() {
     Navigator.of(context).pop();
@@ -147,22 +148,22 @@ class ReaderPassScreenState extends State<ReaderPassScreen> {
   Widget BenefitsSection() {
     final JSONList benefits = [
       {
-        'icon': Icons.menu_book,
+        'icon': Pixel.bookopen,
         'title': 'Unlimited Books',
         'description': 'Access to our entire library',
       },
       {
-        'icon': Icons.offline_bolt,
+        'icon': Pixel.zap,
         'title': 'Offline Reading',
         'description': 'Download and read anywhere',
       },
       {
-        'icon': Icons.psychology,
+        'icon': Pixel.human,
         'title': 'Interactive Lessons',
         'description': 'Quizzes and reflections',
       },
       {
-        'icon': Icons.stars,
+        'icon': Pixel.moonstars,
         'title': 'Premium Features',
         'description': 'All features unlocked',
       },
@@ -178,7 +179,7 @@ class ReaderPassScreenState extends State<ReaderPassScreen> {
   }
 
   Widget BenefitCard(JSONMap benefit) {
-    final IconData benefitIconData = benefit['icon'] as IconData? ?? Icons.check;
+    final IconData benefitIconData = benefit['icon'] as IconData? ?? Pixel.check;
     final String benefitTitle = benefit['title'] as String? ?? '';
     final String benefitDescription = benefit['description'] as String? ?? '';
 

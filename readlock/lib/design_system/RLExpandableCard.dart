@@ -6,6 +6,7 @@ import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/design_system/RLUtility.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 
+import 'package:pixelarticons/pixel.dart';
 class ExpandableCard extends StatefulWidget {
   final String title;
   final IconData icon;
@@ -138,10 +139,10 @@ class ExpandableCardState extends State<ExpandableCard> {
   }
 
   Widget ArrowIcon(Color titleColor) {
-    IconData chevronIcon = Icons.expand_more;
+    IconData chevronIcon = Pixel.chevrondown;
 
     if (isExpanded) {
-      chevronIcon = Icons.expand_less;
+      chevronIcon = Pixel.chevronup;
     }
 
     return Icon(chevronIcon, color: titleColor.withValues(alpha: 0.7), size: 20.0);

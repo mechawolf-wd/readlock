@@ -25,7 +25,6 @@ export interface Accelerator {
 export interface Segment {
   'segment-id': string
   'segment-title': string
-  'segment-description': string
   'segment-symbol': string
   lessons: Package[]
 }

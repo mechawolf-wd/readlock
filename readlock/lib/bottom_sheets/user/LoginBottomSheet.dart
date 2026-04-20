@@ -125,16 +125,14 @@ class LoginSheetState extends State<LoginSheet> {
 
   Widget HeaderSection() {
     return Div.column([
-      const Spacing.height(16),
-
       // Title
       RLTypography.headingLarge(RLUIStrings.LOGIN_TITLE),
 
-      const Spacing.height(4),
+      const Spacing.height(RLDS.spacing4),
 
       // Subtitle
       RLTypography.bodyMedium(RLUIStrings.LOGIN_SUBTITLE, color: RLDS.textSecondary),
-    ], padding: const EdgeInsets.all(24));
+    ], padding: const EdgeInsets.fromLTRB(24, 24, 24, 16));
   }
 
   Widget SocialLoginSection() {
@@ -264,7 +262,7 @@ class LoginSheetState extends State<LoginSheet> {
       onTap: handleSignInTap,
       child: Container(
         width: double.infinity,
-        margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+        margin: const EdgeInsets.fromLTRB(24, 20, 24, 8),
         padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
         decoration: buttonDecoration,
         child: Row(
@@ -291,7 +289,7 @@ class LoginSheetState extends State<LoginSheet> {
         ),
       ],
       mainAxisAlignment: MainAxisAlignment.center,
-      padding: const EdgeInsets.only(top: 16, bottom: 8),
+      padding: const EdgeInsets.symmetric(vertical: 12),
     );
   }
 }

@@ -9,6 +9,7 @@ import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/constants/RLUIStrings.dart';
 
+import 'package:pixelarticons/pixel.dart';
 class AccountBottomSheet {
   static void show(BuildContext context) {
     RLBottomSheet.show(
@@ -23,7 +24,7 @@ class AccountSheet extends StatelessWidget {
   const AccountSheet({super.key});
 
   // Icon definitions
-  static final Widget PersonIcon = const Icon(Icons.person, color: RLDS.info, size: 20);
+  static final Widget PersonIcon = const Icon(Pixel.user, color: RLDS.info, size: 20);
 
   // Style definitions
   static const EdgeInsets headerPadding = EdgeInsets.all(24);
@@ -188,7 +189,7 @@ class DangerRow extends StatelessWidget {
     }
 
     final Widget ChevronIcon = Icon(
-      Icons.chevron_right,
+      Pixel.chevronright,
       color: textColor.withValues(alpha: 0.5),
       size: 20,
     );

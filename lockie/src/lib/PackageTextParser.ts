@@ -473,7 +473,6 @@ function parseSegmentBlock(text: string, segmentNumber: number, courseId: string
   return {
     "segment-id": `${courseId};segment:${segmentNumber}`,
     "segment-title": title,
-    "segment-description": "",
     "segment-symbol": symbol,
     lessons: [],
   };
@@ -531,7 +530,6 @@ export function parseCourseText(input: string): Accelerator {
     return {
       "segment-id": `${courseId};segment:${segmentNumber}`,
       "segment-title": `Segment ${segmentNumber}`,
-      "segment-description": "",
       "segment-symbol": String.fromCharCode(64 + segmentNumber),
       lessons: [],
     };
@@ -625,7 +623,6 @@ export function parseCourseText(input: string): Accelerator {
     segments.push({
       "segment-id": `${courseId};segment:1`,
       "segment-title": "Segment 1",
-      "segment-description": "",
       "segment-symbol": "A",
       lessons: [],
     });

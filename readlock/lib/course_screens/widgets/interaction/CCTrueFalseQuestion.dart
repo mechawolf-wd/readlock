@@ -10,6 +10,7 @@ import 'package:readlock/utility_widgets/text_animation/ProgressiveText.dart';
 import 'package:readlock/design_system/RLFeedbackSnackbar.dart';
 import 'package:readlock/constants/RLUIStrings.dart';
 
+import 'package:pixelarticons/pixel.dart';
 enum TrueFalseButtonState { normal, selected, correctAndAnswered, incorrectAndMuted }
 
 class ButtonColors {
@@ -76,7 +77,7 @@ class CCTrueFalseQuestionState extends State<CCTrueFalseQuestion> {
           answerIndex: 0,
           label: RLUIStrings.TRUE_LABEL,
           baseColor: RLDS.info,
-          icon: Icons.check_circle_outline,
+          icon: Pixel.check,
         ),
       ),
 
@@ -88,7 +89,7 @@ class CCTrueFalseQuestionState extends State<CCTrueFalseQuestion> {
           answerIndex: 1,
           label: RLUIStrings.FALSE_LABEL,
           baseColor: RLDS.error,
-          icon: Icons.cancel_outlined,
+          icon: Pixel.close,
         ),
       ),
     ]);
@@ -149,7 +150,7 @@ class CCTrueFalseQuestionState extends State<CCTrueFalseQuestion> {
 
   Widget ExplanationContent() {
     final Widget LightbulbIcon = Icon(
-      Icons.lightbulb_outline,
+      Pixel.infobox,
       color: RLDS.textPrimary.withValues(alpha: 0.6),
       size: RLDS.iconMedium,
     );

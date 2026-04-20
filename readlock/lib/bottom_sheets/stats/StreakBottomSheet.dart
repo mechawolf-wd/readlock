@@ -8,6 +8,7 @@ import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/constants/RLUIStrings.dart';
 
+import 'package:pixelarticons/pixel.dart';
 class StreakBottomSheet extends StatelessWidget {
   const StreakBottomSheet({super.key});
 
@@ -49,7 +50,7 @@ class StreakBottomSheet extends StatelessWidget {
   }
 
   static final Widget LargeFireIcon = const Icon(
-    Icons.local_fire_department,
+    Pixel.zap,
     color: RLDS.warning,
     size: 48,
   );

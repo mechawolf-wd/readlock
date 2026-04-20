@@ -9,7 +9,8 @@ class RLDS {
 
   static const Color primary = Color(0xFFE63946); // warm vivid red
   static const Color info = Color(0xFF1E88E5); // bright blue
-  static const Color success = Color(0xFF2EAE6E); // fresh green
+  static const Color success = Color(0xFFE63946); // shares the primary red (semantic accent)
+  static const Color green = Color(0xFF2EAE6E); // fresh green (reserved for CTAs like Continue)
   static const Color warning = Color(0xFFF5A509); // amber
   static const Color error = Color(0xFFE63946); // shares the primary red
 
@@ -93,6 +94,34 @@ class RLDS {
 
   static const EdgeInsets contentPaddingInsets = EdgeInsets.all(spacing24);
   static const EdgeInsets contentPaddingMediumInsets = EdgeInsets.all(spacing12);
+
+  // * Hex color parsing
+
+  static Color? parseHexColor(String? hex) {
+    final bool hasNoHex = hex == null || hex.isEmpty;
+
+    if (hasNoHex) {
+      return null;
+    }
+
+    final String cleaned = hex.replaceAll('#', '').trim();
+    final bool isRgb = cleaned.length == 6;
+    final bool isArgb = cleaned.length == 8;
+
+    if (!isRgb && !isArgb) {
+      return null;
+    }
+
+    final String normalized = isRgb ? 'FF$cleaned' : cleaned;
+    final int? value = int.tryParse(normalized, radix: 16);
+    final bool hasInvalidValue = value == null;
+
+    if (hasInvalidValue) {
+      return null;
+    }
+
+    return Color(value);
+  }
 
   // * Navigation transitions
 

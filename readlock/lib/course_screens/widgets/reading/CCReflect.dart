@@ -9,6 +9,7 @@ import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/constants/RLUIStrings.dart';
 import 'package:readlock/utility_widgets/text_animation/ProgressiveText.dart';
 
+import 'package:pixelarticons/pixel.dart';
 class CCReflect extends StatefulWidget {
   final ReflectSwipe content;
 
@@ -261,10 +262,10 @@ class CCReflectState extends State<CCReflect> {
       isSwiping: isSwiping,
     );
 
-    IconData indicatorIcon = Icons.arrow_forward_ios;
+    IconData indicatorIcon = Pixel.chevronright;
 
     if (isSelected) {
-      indicatorIcon = Icons.check;
+      indicatorIcon = Pixel.check;
     }
 
     Color iconColor = cardColor;

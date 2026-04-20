@@ -47,6 +47,8 @@ dependencies:
   firebase_messaging: ^15.2.10
   sign_in_with_apple: ^7.0.1
   crypto: ^3.0.7
+  flame: ^1.35.1
+  pixelarticons: ^0.4.0
 
 dev_dependencies:
   flutter_test:
@@ -78,6 +80,7 @@ flutter:
     - assets/
     - assets/audio/
     - assets/covers/
+    - assets/birds/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

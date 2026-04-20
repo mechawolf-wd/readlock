@@ -7,20 +7,25 @@ import type { Accelerator } from '@/types/Course'
 const COURSES_COLLECTION = 'courses'
 
 export async function fetchCourseById(courseId: string): Promise<Accelerator | null> {
-  const courseRef = doc(firestore, COURSES_COLLECTION, courseId)
-  const snapshot = await getDoc(courseRef)
+  try {
+    const courseRef = doc(firestore, COURSES_COLLECTION, courseId)
+    const snapshot = await getDoc(courseRef)
 
-  const hasNoDocument = !snapshot.exists()
+    const hasNoDocument = !snapshot.exists()
 
-  if (hasNoDocument) {
-    return null
+    if (hasNoDocument) {
+      return null
+    }
+
+    const data = snapshot.data() as Accelerator
+
+    data['course-id'] ??= snapshot.id
+
+    return data
+  } catch (error) {
+    console.error('[FirebaseCourseService.fetchCourseById] courseId=', courseId, error)
+    throw error
   }
-
-  const data = snapshot.data() as Accelerator
-
-  data['course-id'] ??= snapshot.id
-
-  return data
 }
 
 export async function saveCourse(course: Accelerator): Promise<void> {
@@ -39,7 +44,28 @@ export async function saveCourse(course: Accelerator): Promise<void> {
     })
   ) as Accelerator
 
-  const courseRef = doc(firestore, COURSES_COLLECTION, courseId)
+  // Diagnostics: Firestore silently rejects payloads over 1 MiB and certain
+  // field shapes; log size + structure alongside any error so the cause is
+  // visible in the console.
+  const serialised = JSON.stringify(cleanCourse)
+  const sizeKb = (serialised.length / 1024).toFixed(1)
+  const segmentCount = cleanCourse.segments?.length ?? 0
+  const lessonCount = cleanCourse.segments?.reduce((sum, seg) => sum + (seg.lessons?.length ?? 0), 0) ?? 0
 
-  await setDoc(courseRef, cleanCourse)
+  try {
+    const courseRef = doc(firestore, COURSES_COLLECTION, courseId)
+
+    await setDoc(courseRef, cleanCourse)
+
+    console.info(
+      `[FirebaseCourseService.saveCourse] saved courseId=${courseId} size=${sizeKb}KB segments=${segmentCount} lessons=${lessonCount}`,
+    )
+  } catch (error) {
+    console.error(
+      `[FirebaseCourseService.saveCourse] FAILED courseId=${courseId} size=${sizeKb}KB segments=${segmentCount} lessons=${lessonCount}`,
+      error,
+      '\nPayload:', cleanCourse,
+    )
+    throw error
+  }
 }

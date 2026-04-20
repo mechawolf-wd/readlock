@@ -17,6 +17,7 @@ import 'package:readlock/constants/DartAliases.dart';
 import 'package:readlock/services/ScreenProtectionService.dart';
 import 'package:readlock/services/feedback/SoundService.dart';
 
+import 'package:pixelarticons/pixel.dart';
 class CourseDetailScreen extends StatefulWidget {
   // Course identifier to load
   final String courseId;
@@ -57,16 +58,25 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
   bool isProgressBarRevealed = false;
   final GlobalKey progressBarKey = GlobalKey();
 
-  // Icon definitions
+  Color getCourseAccentColor() {
+    final String? hex = courseData?['color'] as String?;
+    final Color? parsed = RLDS.parseHexColor(hex);
+
+    return parsed ?? RLDS.success;
+  }
+
+  // Icon definitions — share the muted grey used across the progress chrome
+  static const Color progressChromeColor = Color.fromARGB(255, 157, 157, 157);
+
   static const Icon BackNavigationIcon = Icon(
-    Icons.close_rounded,
-    color: Color.fromARGB(255, 157, 157, 157),
+    Pixel.close,
+    color: progressChromeColor,
     size: RLDS.iconMedium,
   );
 
   static const Icon BookmarkIcon = Icon(
-    Icons.bookmark_rounded,
-    color: RLDS.warning,
+    Pixel.bookmark,
+    color: progressChromeColor,
     size: RLDS.iconLarge,
   );
 
@@ -223,22 +233,42 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
     ], padding: RLDS.spacing16);
   }
 
-  // Back button for navigation
+  // Back button for navigation — matches the blurred progress chrome
   Widget BackNavigationButton() {
-    return GestureDetector(onTap: showQuitConfirmationSheet, child: BackNavigationIcon);
+    return GestureDetector(
+      onTap: showQuitConfirmationSheet,
+      child: ChromeBlur(child: BackNavigationIcon),
+    );
   }
 
-  // Bookmark button for slide favoriting
+  // Bookmark button for slide favoriting — matches the blurred progress chrome
   Widget BookmarkButton() {
-    return GestureDetector(onTap: handleBookmarkTap, child: BookmarkIcon);
+    return GestureDetector(
+      onTap: handleBookmarkTap,
+      child: ChromeBlur(child: BookmarkIcon),
+    );
+  }
+
+  // Shared blur + dim treatment for the top chrome (close, progress, bookmark)
+  Widget ChromeBlur({required Widget child}) {
+    final bool isRevealed = isProgressBarRevealed;
+    final double targetOpacity = isRevealed ? 1.0 : 0.25;
+    final double blurSigma = isRevealed ? 0.0 : 6.0;
+
+    return AnimatedOpacity(
+      duration: const Duration(milliseconds: 200),
+      opacity: targetOpacity,
+      child: ImageFiltered(
+        imageFilter: ui.ImageFilter.blur(sigmaX: blurSigma, sigmaY: blurSigma),
+        child: child,
+      ),
+    );
   }
 
   // Progress indicator for course content — blurred and dimmed until tapped
   Widget ProgressIndicator() {
     final double progressValue = calculateProgress();
-    final bool isRevealed = isProgressBarRevealed;
-    final double targetOpacity = isRevealed ? 1.0 : 0.25;
-    final double blurSigma = isRevealed ? 0.0 : 6.0;
+    final Color accentColor = getCourseAccentColor();
 
     final Widget progressBar = SizedBox(
       key: progressBarKey,
@@ -248,21 +278,14 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
         child: LinearProgressIndicator(
           value: progressValue,
           backgroundColor: RLDS.backgroundLight,
-          valueColor: const AlwaysStoppedAnimation<Color>(RLDS.success),
+          valueColor: AlwaysStoppedAnimation<Color>(accentColor),
         ),
       ),
     );
 
     return GestureDetector(
       onTap: handleProgressBarTap,
-      child: AnimatedOpacity(
-        duration: const Duration(milliseconds: 200),
-        opacity: targetOpacity,
-        child: ImageFiltered(
-          imageFilter: ui.ImageFilter.blur(sigmaX: blurSigma, sigmaY: blurSigma),
-          child: progressBar,
-        ),
-      ),
+      child: ChromeBlur(child: progressBar),
     );
   }
 

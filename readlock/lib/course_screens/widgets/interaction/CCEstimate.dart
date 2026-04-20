@@ -9,6 +9,7 @@ import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/utility_widgets/text_animation/ProgressiveText.dart';
 import 'package:readlock/constants/RLUIStrings.dart';
 
+import 'package:pixelarticons/pixel.dart';
 class CCEstimate extends StatefulWidget {
   final EstimateSwipe content;
   final void Function(int selectedIndex, bool isCorrect) onAnswerSelected;
@@ -31,9 +32,9 @@ class CCEstimateState extends State<CCEstimate>
   late Animation<double> revealAnimation;
 
   // Icon and styling definitions
-  static final Icon CheckIcon = const Icon(Icons.check_circle, color: RLDS.success, size: 20);
-  static const Icon InfoIcon = Icon(Icons.info_outline, size: 20);
-  static final Icon StarIcon = const Icon(Icons.star, color: RLDS.white, size: 16);
+  static final Icon CheckIcon = const Icon(Pixel.check, color: RLDS.success, size: 20);
+  static const Icon InfoIcon = Icon(Pixel.infobox, size: 20);
+  static final Icon StarIcon = const Icon(Pixel.moonstars, color: RLDS.white, size: 16);
 
   int getCorrectPercentage() {
     return widget.content.correctPercentage;
@@ -178,7 +179,7 @@ class CCEstimateState extends State<CCEstimate>
   Widget SubmitButton() {
     final bool shouldShow = !hasSubmittedEstimate;
 
-    final Widget TouchAppIcon = const Icon(Icons.touch_app, color: RLDS.white, size: 18);
+    final Widget TouchAppIcon = const Icon(Pixel.mouse, color: RLDS.white, size: 18);
 
     return RenderIf.condition(
       shouldShow,
@@ -233,7 +234,7 @@ class CCEstimateState extends State<CCEstimate>
     }
 
     final Widget LightbulbIcon = const Icon(
-      Icons.lightbulb_outline,
+      Pixel.infobox,
       color: RLDS.warning,
       size: 20,
     );
@@ -263,7 +264,7 @@ class CCEstimateState extends State<CCEstimate>
 
   Widget getComparisonDisplay(int difference) {
     final Widget ArrowForwardIcon = Icon(
-      Icons.arrow_forward,
+      Pixel.arrowright,
       color: RLDS.textPrimary.withValues(alpha: 0.3),
       size: 20,
     );

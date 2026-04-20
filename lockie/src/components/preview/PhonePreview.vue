@@ -7,6 +7,7 @@ import { useCourseStore } from '@/stores/CourseStore'
 import type { Swipe } from '@/types/Course'
 import { ENTITY_TYPE_LABELS, type EntityType } from '@/types/Course'
 import { Button } from '@/components/ui/button'
+import { ScrollArea } from '@/components/ui/scroll-area'
 import { Eye } from 'lucide-vue-next'
 
 const store = useCourseStore()
@@ -359,7 +360,7 @@ defineExpose({ handleContentTap })
       </div>
 
       <!-- Swipe content — tap to reveal -->
-      <div class="flex-1 flex flex-col overflow-auto cursor-pointer" @click="handleContentTap">
+      <ScrollArea class="flex-1 min-h-0 cursor-pointer" @click="handleContentTap">
         <!-- Empty state -->
         <div v-if="hasNoSwipes" class="flex-1 flex items-center justify-center text-muted-foreground text-sm px-6 text-center cursor-default">
           No swipes yet
@@ -462,7 +463,7 @@ defineExpose({ handleContentTap })
             </template>
           </div>
         </template>
-      </div>
+      </ScrollArea>
 
       <!-- Bottom navigation -->
       <div class="h-12 border-t border-border flex items-center justify-between px-6 shrink-0">

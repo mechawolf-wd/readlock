@@ -74,8 +74,8 @@ title: [course display title]
 author: [author display name]
 description: [one-line description]
 color: [hex color, e.g. #6366f1]
-genres: [comma-separated keys, e.g. design, psychology]
-relevant_for: [comma-separated keys, e.g. ux-designers, product-managers]
+genres: [3 to 5 comma-separated keys, e.g. design, psychology, ux]
+relevant_for: [comma-separated keys from the closed list: designers, product-managers, founders, engineers, writers, marketers, leaders, investors, students, anyone]
     </template>
 
     <rules>
@@ -83,6 +83,8 @@ relevant_for: [comma-separated keys, e.g. ux-designers, product-managers]
       <rule>One blank line between @course and the first field.</rule>
       <rule>description must be a single line.</rule>
       <rule>color must be a valid hex code.</rule>
+      <rule>genres must contain 3 to 5 comma-separated tags.</rule>
+      <rule>relevant_for values must come from the closed list: designers, product-managers, founders, engineers, writers, marketers, leaders, investors, students, anyone.</rule>
     </rules>
 
     <id_format>

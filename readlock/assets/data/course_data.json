@@ -27,7 +27,6 @@
         {
           "segment-id": "book:design-everyday-things;segment:1",
           "segment-title": "Design Fundamentals",
-          "segment-description": "Core principles and psychology behind effective design",
           "segment-symbol": "A",
           "lessons": [
             {
@@ -103,7 +102,7 @@
                   ]
                 },
                 {
-                  "entity-type": "single-choice-question",
+                  "entity-type": "question",
                   "title": "Door Design",
                   "question": "Quick question: When you see a door with a handle, what does your brain assume?",
                   "explanation": "Handles suggest pulling. This is called an \"affordance\" - what the design tells you to do.",
@@ -127,7 +126,7 @@
                   ]
                 },
                 {
-                  "entity-type": "single-choice-question",
+                  "entity-type": "question",
                   "title": "Glass Door Mystery",
                   "question": "Why was Emma confused by the glass door?",
                   "options": [
@@ -151,7 +150,7 @@
                   "hint": "Consider what visual information the door provided about its operation."
                 },
                 {
-                  "entity-type": "single-choice-question",
+                  "entity-type": "question",
                   "title": "Water Bottle Confusion",
                   "question": "Why did Alex struggle with the water bottle cap?",
                   "options": [
@@ -205,12 +204,12 @@
                   ]
                 },
                 {
-                  "entity-type": "emotional-slide",
+                  "entity-type": "pause",
                   "text": "Good work so far!",
                   "icon": "check"
                 },
                 {
-                  "entity-type": "single-choice-question",
+                  "entity-type": "question",
                   "title": "The USB Mystery",
                   "question": "Why does a USB cable never fit on the first try?",
                   "options": [
@@ -279,10 +278,9 @@
                   "explanation": "Good design should be intuitive and self-explanatory. If it needs a manual, the design has failed to communicate its function clearly."
                 },
                 {
-                  "entity-type": "estimate-percentage-question",
+                  "entity-type": "estimate",
                   "title": "Door Study Results",
                   "question": "In Norman's study of door-related accidents, what percentage of people pulled a push door on their first attempt?",
-                  "options": [],
                   "correct-answer-indices": [
                     73
                   ],
@@ -299,12 +297,12 @@
                   ]
                 },
                 {
-                  "entity-type": "emotional-slide",
+                  "entity-type": "pause",
                   "text": "You're getting it!",
                   "icon": "progress"
                 },
                 {
-                  "entity-type": "reflection",
+                  "entity-type": "reflect",
                   "title": "Affordances in Your Life",
                   "prompt": "Think about an object you use daily that has excellent affordances. What makes it so intuitive?",
                   "thinking-points": [
@@ -405,7 +403,6 @@
         {
           "segment-id": "book:design-everyday-things;segment:2",
           "segment-title": "Advanced Applications",
-          "segment-description": "Applying design principles to complex real-world scenarios",
           "segment-symbol": "B",
           "lessons": [
             {
@@ -455,7 +452,6 @@
         {
           "segment-id": "book:design-everyday-things;segment:3",
           "segment-title": "Mastery and Innovation",
-          "segment-description": "Advanced techniques and creating breakthrough design solutions",
           "segment-symbol": "C",
           "lessons": [
             {

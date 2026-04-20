@@ -2,11 +2,11 @@
 
 id: book:emotional-design-rwmt
 title: Emotional Design
-author: Readlock
+author: Donald A. Norman
 description: How three layers of feeling decide which objects we love and which we forget.
 color: #db2777
-genres: design, psychology
-relevant_for: designers, product managers, anyone
+genres: design, psychology, ux
+relevant_for: designers, product-managers, anyone
 
 @segment
 Three Layers of Feeling

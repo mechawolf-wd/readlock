@@ -10,6 +10,7 @@ import 'package:readlock/screens/HomeScreen.dart';
 import 'package:readlock/screens/MyBookshelfScreen.dart';
 import 'package:readlock/bottom_sheets/user/LoginBottomSheet.dart';
 
+import 'package:pixelarticons/pixel.dart';
 class MainNavigation extends StatefulWidget {
   final int initialTabIndex;
 
@@ -52,12 +53,12 @@ class MainNavigationState extends State<MainNavigation> {
   }
 
   // Icon definitions for navigation items
-  static const Icon HomeIcon = Icon(Icons.home_outlined);
-  static const Icon HomeActiveIcon = Icon(Icons.home_rounded);
-  static const Icon ExploreIcon = Icon(Icons.explore_outlined);
-  static const Icon ExploreActiveIcon = Icon(Icons.explore_rounded);
-  static const Icon BookshelfIcon = Icon(Icons.menu_book_outlined);
-  static const Icon BookshelfActiveIcon = Icon(Icons.menu_book_rounded);
+  static const Icon HomeIcon = Icon(Pixel.home);
+  static const Icon HomeActiveIcon = Icon(Pixel.home);
+  static const Icon ExploreIcon = Icon(Pixel.map);
+  static const Icon ExploreActiveIcon = Icon(Pixel.map);
+  static const Icon BookshelfIcon = Icon(Pixel.bookopen);
+  static const Icon BookshelfActiveIcon = Icon(Pixel.bookopen);
 
   @override
   Widget build(BuildContext context) {

@@ -62,9 +62,10 @@ class CCTextContentState extends State<CCTextContent> {
   // Button widget for continuing to next content
   Widget ContinueButton() {
     final Widget buttonText = RLTypography.bodyMedium(RLUIStrings.TEXT_CONTENT_CONTINUE_LABEL);
+    final Color accentColor = resolveCourseAccentColor();
 
     final BoxDecoration buttonDecoration = BoxDecoration(
-      color: RLDS.success,
+      color: accentColor,
       borderRadius: BorderRadius.circular(12),
     );
 
@@ -77,6 +78,19 @@ class CCTextContentState extends State<CCTextContent> {
         child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [buttonText]),
       ),
     );
+  }
+
+  Color resolveCourseAccentColor() {
+    final CourseDetailScreenState? courseDetailScreen = context
+        .findAncestorStateOfType<CourseDetailScreenState>();
+
+    final bool hasAncestor = courseDetailScreen != null;
+
+    if (!hasAncestor) {
+      return RLDS.green;
+    }
+
+    return courseDetailScreen.getCourseAccentColor();
   }
 
   // Handle when all text segments are revealed

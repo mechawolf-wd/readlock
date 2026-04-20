@@ -8,12 +8,12 @@ class RLUIStrings {
   static const String SEARCH_TAB_LABEL = 'Search';
   static const String BOOKSHELF_TAB_LABEL = 'My Bookshelf';
 
-  // * Profile Screen
-  static const String TYPEWRITER_SOUND = 'Typewriter';
-  static const String SWITCHES_SOUND = 'Switches';
-
   // * My Bookshelf Screen
   static const String BOOKSHELF_TITLE = 'Bookshelf';
+  static const String BOOKSHELF_EMPTY_MESSAGE = 'Nothing on your shelf yet.';
+
+  // * Empty / loading states
+  static const String NO_COURSES_MESSAGE = 'No courses available yet.';
 
   // * Reader Pass Screen
   static const String READER_PASS_TITLE = 'Reader Pass';
@@ -161,7 +161,7 @@ class RLUIStrings {
   // * Profile / Settings Menu
   static const String MENU_ACCOUNT = 'Account';
   static const String MENU_READER_PASS = 'Reader Pass';
-  static const String MENU_SOUNDS = 'Sounds';
+  static const String MENU_TYPING_SOUND = 'Typing sound';
   static const String MENU_HAPTICS = 'Haptics';
   static const String MENU_REVEAL = 'Reveal';
   static const String MENU_BLUR = 'Blur';
@@ -175,8 +175,14 @@ class RLUIStrings {
   static const String MENU_LOG_OUT = 'Log out';
   static const String MENU_VERSION = 'Version 1.0.0';
 
-  // * Sound Picker
-  static const String SOUND_SETTINGS_TITLE = 'Sound Settings';
+  // * Bird Picker
+  static const String MENU_PROFILE_BIRD = 'Profile bird';
+  static const String BIRD_PICKER_TITLE = 'Pick your bird';
+  static const String BIRD_COLLARED_DOVE = 'Collared Dove';
+  static const String BIRD_CROW = 'Crow';
+  static const String BIRD_PEACOCK = 'Peacock';
+  static const String BIRD_PIGEON = 'Pigeon';
+  static const String BIRD_SPARROW = 'Sparrow';
 
   // * Settings Demos
   static const String DEMO_REVEAL_TEXT = 'Design is not just what it looks like.';

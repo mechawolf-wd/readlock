@@ -8,6 +8,7 @@ import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/bottom_sheets/course/FeedbackBottomSheet.dart';
 import 'package:readlock/design_system/RLUtility.dart';
 
+import 'package:pixelarticons/pixel.dart';
 // Snackbar controller singleton
 class SnackbarController {
   OverlayEntry? overlayEntry;
@@ -225,7 +226,7 @@ class CorrectAnswerContent extends StatelessWidget {
 
   const CorrectAnswerContent({super.key, required this.hasExplanation, this.explanation});
 
-  static final Icon StarIcon = const Icon(Icons.star, color: RLDS.white, size: 20);
+  static final Icon StarIcon = const Icon(Pixel.moonstars, color: RLDS.white, size: 20);
 
   @override
   Widget build(BuildContext context) {
@@ -280,7 +281,7 @@ class WrongAnswerContent extends StatelessWidget {
   const WrongAnswerContent({super.key, required this.hasHint, this.hint});
 
   static final Icon LightbulbIcon = const Icon(
-    Icons.lightbulb_outline,
+    Pixel.infobox,
     color: RLDS.white,
     size: 20,
   );

@@ -809,9 +809,9 @@ const currentGuideline = computed(() => {
 
             <Checkbox
               v-if="'correct-answer-indices' in block"
-              :checked="isCorrectAnswer(Number(optionIndex))"
+              :model-value="isCorrectAnswer(Number(optionIndex))"
               class="h-9 w-9 rounded-lg data-[state=checked]:bg-success data-[state=checked]:border-success"
-              @update:checked="() => toggleCorrectAnswer(Number(optionIndex))"
+              @update:model-value="() => toggleCorrectAnswer(Number(optionIndex))"
             />
           </div>
 
@@ -879,9 +879,9 @@ const currentGuideline = computed(() => {
           <!-- Correct answer checkbox -->
           <Checkbox
             v-if="'correct-answer-indices' in block"
-            :checked="isCorrectAnswer(Number(optionIndex))"
+            :model-value="isCorrectAnswer(Number(optionIndex))"
             class="self-start mt-0.5 h-9 w-9 rounded-lg data-[state=checked]:bg-success data-[state=checked]:border-success"
-            @update:checked="() => toggleCorrectAnswer(Number(optionIndex))"
+            @update:model-value="() => toggleCorrectAnswer(Number(optionIndex))"
           />
         </div>
       </TransitionGroup>

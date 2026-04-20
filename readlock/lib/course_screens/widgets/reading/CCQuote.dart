@@ -8,6 +8,7 @@ import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/constants/RLUIStrings.dart';
 
+import 'package:pixelarticons/pixel.dart';
 class CCQuote extends StatefulWidget {
   final QuoteSwipe content;
 
@@ -52,12 +53,12 @@ class CCQuoteState extends State<CCQuote> {
   }
 
   Widget QuoteHeader() {
-    final Widget QuoteIcon = const Icon(Icons.format_quote, color: RLDS.warning, size: 24);
+    final Widget QuoteIcon = const Icon(Pixel.message, color: RLDS.warning, size: 24);
 
-    IconData bookmarkIconData = Icons.bookmark_border;
+    IconData bookmarkIconData = Pixel.bookmark;
 
     if (isBookmarked) {
-      bookmarkIconData = Icons.bookmark;
+      bookmarkIconData = Pixel.bookmark;
     }
 
     final Widget BookmarkToggleIcon = Icon(

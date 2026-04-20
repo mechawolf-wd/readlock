@@ -54,7 +54,7 @@ class RLButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Color resolvedColor = color ?? RLDS.success;
+    final Color resolvedColor = color ?? RLDS.green;
     final RLButtonColors style = getStyleForVariant(resolvedColor);
 
     final EdgeInsets resolvedPadding = padding ??

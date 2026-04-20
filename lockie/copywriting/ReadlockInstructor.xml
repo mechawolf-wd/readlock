@@ -155,11 +155,12 @@ Your job: produce one complete, valid .rlockie file that follows every rule in t
     <step id="6" name="Write @course metadata">
       - id: [type]:[kebab-case-title]-[4-char-random-hash]. Type is "book", "topic", or "article".
       - title: the course display title.
-      - author: Readlock (unless the prompt says otherwise).
+      - author: the real author of the book when the id type is "book" (e.g. "Donald A. Norman", "James Clear"). For "topic" or "article" types — or when no real author exists — use "Readlock".
       - description: one line. Says what the course is about. Does not sell it.
       - color: a hex color that fits the topic.
-      - genres: comma-separated tags.
-      - relevant_for: comma-separated audience tags.
+      - genres: 3 to 5 comma-separated tags.
+      - relevant_for: comma-separated audience tags drawn from this closed list only:
+          designers, product-managers, founders, engineers, writers, marketers, leaders, investors, students, anyone.
     </step>
 
     <step id="7" name="Write each package through all phases">
@@ -383,7 +384,23 @@ Your job: produce one complete, valid .rlockie file that follows every rule in t
   <rule id="23b" name="No meta-narration in reveal">The Phase 4 reveal sentence never steps out of the stories to announce itself. Banned openers: "We have seen...", "We just saw...", "Now it is time to...", "Now let us...", "Let us look at...", "Let us name...", "What all three stories have in common is...", and any sentence whose main verb is "see/look at/examine/turn to" with the narrator-and-reader as subject. The reveal stays inside the same scene language as Phase 2 and lets the topic name land inside a sentence that is still doing the work of the scene.</rule>
   <rule id="23b2" name="Reveal sentence must connect to the main idea of the course">Label-only reveal sentences are banned. "This effect is called X" and "This has a name: Y" fail. They are too general. They could appear in any course. Every course has one main idea. The sentence with the green term must connect the concept to that main idea. For Emotional Design, the main idea is "three layers of how design reaches inside the person". For habits, "the four parts of the habit loop". For cognitive biases, "the shortcuts the mind reaches for". The next sentence after the reveal should tie the concept to the Phase 2 scenes. Swap test: replace the green term with any concept from a different course. If the sentence still fits, it is too general. Rewrite it. Main-idea test: read the reveal sentence alone. Can the reader tell what the course is about? If no, rewrite.</rule>
   <rule id="23c" name="Comments in source file">The .rlockie format supports full-line comments. Any line whose first non-whitespace character is "#" is a comment. The parser strips comments before any other parsing, so they never reach the reader. Use comments for writer notes, TODOs, draft markers, or to temporarily disable a swipe by prefixing every line with "#". Inline comments are NOT supported (because "#" is also used in hex color values like "color: #6366f1"). Comments do not count toward any length rule or swipe count.</rule>
-  <rule id="23e" name="Package title variation">Package titles must be varied across the segment. The default trap is "The X That Y" ("The Knife That Knew Her Hand", "The Watch That Was More Than a Watch"). At most ONE "The X That Y" title per 5-package segment. Rotate through different shapes: question ("Why Couldn't She Throw Them Away?"), open-ended fragment with three dots ("What the Hand Already Knew..."), short noun phrase ("More Than a Watch"), why/when statement ("Why Beauty Helps the Hand"), narrative beat ("And Then She Could Not Let Them Go"), single concept fragment ("The Half-Second Before Thought"). No two consecutive packages share the same shape. Title length: 2 to 7 words. Titles can hint at the topic but never name it. No subtitles, no colons, no banned words. Numbers in titles always use digits, not words, for both segment and package titles ("3 Layers of Feeling", not "Three Layers of Feeling"). This overrides the small-number-as-word default from the number-format rules — in titles, digits pop visually and read faster in the menu UI.</rule>
+  <rule id="23e" name="Package title variation">Package titles must be varied across the segment. Repetition of shape, cadence, or opening word is the biggest trap. Before writing a title, pick a DIFFERENT strategy from the one used in the previous package. Never two titles in a row from the same strategy. In a 5-package segment, aim to use at least 4 distinct strategies. Strategy catalog (rotate through these, do not lean on any single one):
+      1. Interrogative — a real question ending with "?". Example: "Why Couldn't She Throw Them Away?"
+      2. Open fragment with ellipsis — an unfinished thought ending with "...". Example: "What the Hand Already Knew..."
+      3. Short noun phrase — 2 to 4 words, no verb. Example: "More Than a Watch"
+      4. Temporal or prepositional fragment — starts with Before / After / Between / Under / Inside / Past. Example: "Before the Mind Catches Up"
+      5. Narrative beat — a scene-style fragment that reads like a line from a story. Example: "The Half-Second Before Thought"
+      6. Declarative observation — a short sentence making a claim. Example: "The Hand Is the Slow Judge"
+      7. Contrast pair — two phrases separated by a comma. Example: "Strange Knife, Familiar Hand"
+      8. Number-led fragment — opens with a digit. Example: "3 Seconds of Certainty"
+      9. "The X That Y" — the default trap. At most ONCE per 5-package segment. Example: "The Knife That Knew Her Hand"
+
+      Additional constraints:
+      - Title length: 2 to 7 words.
+      - Titles can hint at the topic but never name it.
+      - No subtitles, no colons, no banned words.
+      - No two titles in a segment start with the same word (including "The", "What", "Why", "When", "How").
+      - Numbers in titles always use digits, not words, for both segment and package titles ("3 Layers of Feeling", not "Three Layers of Feeling"). This overrides the small-number-as-word default from the number-format rules — in titles, digits pop visually and read faster in the menu UI.</rule>
   <rule id="24" critical="true">Structural variation across packages is mandatory. The default phase spine (intro → 3 stories → @question → reveal → @true_false → @reflect → outro) must NOT repeat in every package of a segment. At least one package per segment uses an intro variant (skip, quote, true/false, or misconception-first). At least one package skips @reflect. Phase 2 variants (A through G) differ across consecutive packages. A 5-package segment with five identical phase spines is wrong, even if every package passes the line-level rules.</rule>
   <rule id="25">No em dashes anywhere in course text. The em dash (—) is banned in @text, @question, @true_false, @reflect, @pause, @quote, and every property field. Use a comma, period, colon, or parentheses instead.</rule>
   <rule id="26">A true/false intro replaces Phase 5. If the package opens with a @true_false intro, Phase 5 is empty for that package. The package never has two @true_false swipes when one of them is the intro.</rule>

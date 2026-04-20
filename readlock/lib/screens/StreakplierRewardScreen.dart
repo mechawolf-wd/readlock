@@ -7,6 +7,7 @@ import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/design_system/RLUtility.dart';
 import 'package:readlock/constants/RLUIStrings.dart';
 
+import 'package:pixelarticons/pixel.dart';
 // Reward data model
 class LessonReward {
   final int experiencePointsGained;
@@ -187,7 +188,7 @@ class StreakplierRewardScreenState extends State<StreakplierRewardScreen>
       borderRadius: BorderRadius.circular(32),
     );
 
-    final Widget CheckIcon = const Icon(Icons.check_circle, color: RLDS.success, size: 48);
+    final Widget CheckIcon = const Icon(Pixel.check, color: RLDS.success, size: 48);
 
     return Container(width: 64, height: 64, decoration: iconDecoration, child: CheckIcon);
   }
@@ -220,7 +221,7 @@ class StreakplierRewardScreenState extends State<StreakplierRewardScreen>
       borderRadius: BorderRadius.circular(40),
     );
 
-    final Widget TimerIcon = const Icon(Icons.timer_rounded, color: RLDS.warning, size: 40);
+    final Widget TimerIcon = const Icon(Pixel.clock, color: RLDS.warning, size: 40);
 
     return AnimatedOpacity(
       opacity: lessonTimeOpacity,
@@ -270,7 +271,7 @@ class StreakplierRewardScreenState extends State<StreakplierRewardScreen>
             opacity: streakplierOpacity,
             duration: const Duration(milliseconds: 300),
             child: CompactRewardStatisticItem(
-              icon: Icons.trending_up,
+              icon: Pixel.trendingup,
               label: RLUIStrings.REWARD_STREAKPLIER_LABEL,
               animatedValue: AnimatedBuilder(
                 animation: streakplierCountAnimation,
@@ -366,7 +367,7 @@ class StreakplierRewardScreenState extends State<StreakplierRewardScreen>
           width: double.infinity,
           padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
           decoration: BoxDecoration(
-            color: RLDS.success,
+            color: RLDS.green,
             borderRadius: BorderRadius.circular(12),
           ),
           child: Row(

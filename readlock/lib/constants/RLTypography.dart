@@ -28,6 +28,24 @@ class RLTypography {
     letterSpacing: -0.2,
   );
 
+  // Small pixel-font caption (e.g., roadmap tile titles).
+  static final TextStyle pixelLabelStyle = GoogleFonts.pressStart2p(
+    fontSize: 9,
+    fontWeight: RLDS.weightSemibold,
+    color: RLDS.textPrimary,
+    height: 1.4,
+    letterSpacing: 0,
+  );
+
+  // Large pixel-font number (e.g., level number inside a roadmap tile).
+  static final TextStyle pixelNumberStyle = GoogleFonts.pressStart2p(
+    fontSize: 20,
+    fontWeight: RLDS.weightBold,
+    color: RLDS.textPrimary,
+    height: 1.0,
+    letterSpacing: 0,
+  );
+
   // * UI font — Poppins (clean, for buttons, labels, menus)
 
   static final TextStyle bodyLargeStyle = GoogleFonts.poppins(
@@ -86,6 +104,22 @@ class RLTypography {
     final TextStyle style = color != null
         ? headingMediumStyle.copyWith(color: color)
         : headingMediumStyle;
+
+    return Text(content, style: style, textAlign: textAlign);
+  }
+
+  static Widget pixelLabel(String content, {Color? color, TextAlign? textAlign}) {
+    final TextStyle style = color != null
+        ? pixelLabelStyle.copyWith(color: color)
+        : pixelLabelStyle;
+
+    return Text(content, style: style, textAlign: textAlign);
+  }
+
+  static Widget pixelNumber(String content, {Color? color, TextAlign? textAlign}) {
+    final TextStyle style = color != null
+        ? pixelNumberStyle.copyWith(color: color)
+        : pixelNumberStyle;
 
     return Text(content, style: style, textAlign: textAlign);
   }

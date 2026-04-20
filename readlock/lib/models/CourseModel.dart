@@ -61,9 +61,6 @@ class Segment {
   @JsonKey(name: 'segment-title')
   final String segmentTitle;
 
-  @JsonKey(name: 'segment-description')
-  final String segmentDescription;
-
   @JsonKey(name: 'segment-symbol', defaultValue: '')
   final String segmentSymbol;
 
@@ -73,7 +70,6 @@ class Segment {
   const Segment({
     required this.segmentId,
     required this.segmentTitle,
-    required this.segmentDescription,
     required this.segmentSymbol,
     required this.lessons,
   });

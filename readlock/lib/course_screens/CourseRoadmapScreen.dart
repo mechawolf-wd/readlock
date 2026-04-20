@@ -15,6 +15,7 @@ import 'package:readlock/constants/RLUIStrings.dart';
 import 'package:readlock/course_screens/CourseLoadingScreen.dart';
 import 'package:readlock/constants/DartAliases.dart';
 
+import 'package:pixelarticons/pixel.dart';
 // * Roadmap layout constants
 const double roadmapNodeSize = 72.0;
 const double roadmapPathHorizontalOffset = 60.0;
@@ -41,6 +42,13 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
   late ScrollController scrollController;
 
   double? screenHeight;
+
+  Color getCourseAccentColor() {
+    final String? hex = courseData?['color'] as String?;
+    final Color? parsed = RLDS.parseHexColor(hex);
+
+    return parsed ?? RLDS.success;
+  }
 
   @override
   void initState() {
@@ -156,6 +164,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
             lessons: courseLessons,
             segmentIndex: 0,
             lessonKeys: lessonKeys,
+            accentColor: getCourseAccentColor(),
             onLessonTap: showLoadingScreenThenNavigate,
           ),
         ),
@@ -173,29 +182,20 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
             // Scrollable content with sticky headers
             CustomScrollView(controller: scrollController, slivers: slivers),
 
-            // Bottom floating section
+            // Top-right up button — slides down into view as you scroll,
+            // retracts back up off-screen when you return to top.
+            Positioned(
+              top: 12,
+              right: 16,
+              child: BackToTopButton(),
+            ),
+
+            // Bottom continue bar
             Positioned(
               left: 20,
               right: 20,
               bottom: 16,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  // Back to top button (above the bar, only when scrolled)
-                  RenderIf.condition(
-                    showBackToTop,
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [BackToTopButton(), const Spacing.height(12)],
-                    ),
-                  ),
-
-                  // Navigation bar
-                  BottomFloatingBar(),
-                ],
-              ),
+              child: BottomFloatingBar(),
             ),
           ],
         ),
@@ -204,25 +204,72 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
   }
 
   static final Widget ChevronUpIcon = const Icon(
-    Icons.keyboard_arrow_up,
+    Pixel.chevronup,
     color: RLDS.textPrimary,
     size: 28,
   );
 
+  static const double backToTopTileSize = 44.0;
+  static const double backToTopShadowOffset = 3.0;
+  static const Duration backToTopSlideDuration = Duration(milliseconds: 220);
+
   Widget BackToTopButton() {
-    final BoxDecoration buttonDecoration = BoxDecoration(
+    // Slide in from above when shown, slide up out of view when hidden.
+    // Offset units are multiples of the widget's own height — (-1.4, y) places
+    // the whole button fully above its slot plus a bit of breathing room.
+    final Offset slideOffset = showBackToTop
+        ? Offset.zero
+        : const Offset(0, -1.4);
+
+    return AnimatedSlide(
+      offset: slideOffset,
+      duration: backToTopSlideDuration,
+      curve: Curves.easeOutCubic,
+      child: AnimatedOpacity(
+        opacity: showBackToTop ? 1.0 : 0.0,
+        duration: backToTopSlideDuration,
+        child: GestureDetector(
+          onTap: handleBackToTop,
+          child: BackToTopTile(),
+        ),
+      ),
+    );
+  }
+
+  Widget BackToTopTile() {
+    final BoxDecoration tileDecoration = BoxDecoration(
       color: RLDS.surface,
-      shape: BoxShape.circle,
-      border: Border.all(color: RLDS.onSurface, width: 1.5),
+      border: Border.all(color: RLDS.onSurface, width: 3),
     );
 
-    return GestureDetector(
-      onTap: handleBackToTop,
-      child: Div.column(
-        [Center(child: ChevronUpIcon)],
-        width: 48,
-        height: 48,
-        decoration: buttonDecoration,
+    final BoxDecoration shadowDecoration = BoxDecoration(
+      color: RLDS.black.withValues(alpha: 0.5),
+    );
+
+    return SizedBox(
+      width: backToTopTileSize + backToTopShadowOffset,
+      height: backToTopTileSize + backToTopShadowOffset,
+      child: Stack(
+        children: [
+          // Pixel drop shadow
+          Positioned(
+            left: backToTopShadowOffset,
+            top: backToTopShadowOffset,
+            child: Container(
+              width: backToTopTileSize,
+              height: backToTopTileSize,
+              decoration: shadowDecoration,
+            ),
+          ),
+
+          // Foreground tile
+          Container(
+            width: backToTopTileSize,
+            height: backToTopTileSize,
+            decoration: tileDecoration,
+            child: const Center(child: Icon(Pixel.chevronup, color: RLDS.textPrimary, size: 24)),
+          ),
+        ],
       ),
     );
   }
@@ -245,7 +292,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
   }
 
   static final Widget BackChevronIcon = const Icon(
-    Icons.keyboard_arrow_down,
+    Pixel.chevrondown,
     color: RLDS.textPrimary,
     size: 28,
   );
@@ -291,16 +338,19 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
 
   static final BoxDecoration progressRingDecoration = BoxDecoration(
     shape: BoxShape.circle,
-    border: Border.all(color: RLDS.success.withValues(alpha: 0.2), width: 3),
-  );
-
-  static const Widget BookCover = BookCoverThumbnail(
-    coverImagePath: 'assets/covers/doet-cover.png',
-    width: 52,
-    height: 72,
+    border: Border.all(color: RLDS.backgroundLight, width: 3),
   );
 
   Widget ProgressRing() {
+    final String? courseCoverPath = courseData?['cover-image-path'] as String?;
+    final Color accentColor = getCourseAccentColor();
+
+    final Widget bookCover = BookCoverThumbnail(
+      coverImagePath: courseCoverPath,
+      width: 52,
+      height: 72,
+    );
+
     return SizedBox(
       width: 128,
       height: 128,
@@ -317,27 +367,29 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
             child: CustomPaint(
               painter: ProgressArcPainter(
                 progress: 0.35,
-                color: RLDS.success,
+                color: accentColor,
                 strokeWidth: 3,
               ),
             ),
           ),
 
           // Book cover in center
-          BookCover,
+          bookCover,
         ],
       ),
     );
   }
 
   Widget PercentageChip() {
+    final Color accentColor = getCourseAccentColor();
+
     final BoxDecoration chipDecoration = BoxDecoration(
-      color: RLDS.success,
+      color: accentColor,
       borderRadius: RLDS.borderRadiusSmall,
     );
 
     return Div.column(
-      [RLTypography.bodyMedium('35%', color: RLDS.white)],
+      [RLTypography.headingMedium('35%', color: RLDS.white)],
       padding: const EdgeInsets.symmetric(
         horizontal: RLDS.spacing8,
         vertical: RLDS.spacing4,
@@ -388,16 +440,17 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
     );
   }
 
-  static final Widget LessonIcon = const Icon(Icons.auto_stories, color: RLDS.success, size: 14);
-
   Widget MiniStatsRow() {
     final int totalLessons = countTotalLessons();
     final String lessonsLabel = '$totalLessons packages';
+    final Color accentColor = getCourseAccentColor();
+
+    final Widget lessonIcon = Icon(Pixel.bookopen, color: accentColor, size: 14);
 
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        LessonIcon,
+        lessonIcon,
 
         const Spacing.width(4),
 
@@ -407,8 +460,11 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
   }
 
   Widget ContinueButton() {
+    final Color accentColor = getCourseAccentColor();
+
     return RLButton.primary(
       label: RLUIStrings.ROADMAP_CONTINUE_LABEL,
+      color: accentColor,
       onTap: handleContinueTap,
     );
   }
@@ -459,6 +515,7 @@ class PathWithNodes extends StatelessWidget {
   final List<dynamic> lessons;
   final int segmentIndex;
   final List<GlobalKey> lessonKeys;
+  final Color accentColor;
   final Function(int, int) onLessonTap;
 
   const PathWithNodes({
@@ -466,6 +523,7 @@ class PathWithNodes extends StatelessWidget {
     required this.lessons,
     required this.segmentIndex,
     required this.lessonKeys,
+    required this.accentColor,
     required this.onLessonTap,
   });
 
@@ -500,6 +558,7 @@ class PathWithNodes extends StatelessWidget {
           lesson: lesson,
           lessonIndex: lessonIndex,
           alignment: alignment,
+          accentColor: accentColor,
           isCompleted: isCompleted,
           isCurrent: isCurrent,
           isLocked: isLocked,
@@ -546,6 +605,7 @@ class PathLessonNode extends StatelessWidget {
   final JSONMap lesson;
   final int lessonIndex;
   final PathNodeAlignment alignment;
+  final Color accentColor;
   final bool isCompleted;
   final bool isCurrent;
   final bool isLocked;
@@ -556,6 +616,7 @@ class PathLessonNode extends StatelessWidget {
     required this.lesson,
     required this.lessonIndex,
     required this.alignment,
+    required this.accentColor,
     required this.isCompleted,
     required this.isCurrent,
     required this.isLocked,
@@ -579,15 +640,15 @@ class PathLessonNode extends StatelessWidget {
       offset: Offset(offsetX, 0),
       child: Column(
         children: [
-          // Node circle
-          GestureDetector(onTap: tapHandler, child: NodeCircle()),
+          // Pixel-style square tile
+          GestureDetector(onTap: tapHandler, child: NodeTile()),
 
-          const Spacing.height(8),
+          const Spacing.height(10),
 
-          // Lesson title
+          // Lesson title in 8-bit font
           SizedBox(
-            width: 120,
-            child: RLTypography.bodyMedium(
+            width: 128,
+            child: RLTypography.pixelLabel(
               title,
               color: titleColor,
               textAlign: TextAlign.center,
@@ -623,32 +684,59 @@ class PathLessonNode extends StatelessWidget {
     return RLDS.textPrimary;
   }
 
-  Widget NodeCircle() {
+  static const double roadmapTileShadowOffset = 4.0;
+
+  Widget NodeTile() {
     final Color bgColor = getBackgroundColor();
     final Color borderColor = getBorderColor();
-    final Widget nodeIcon = NodeIcon();
+    final Widget nodeContent = NodeIcon();
 
-    final BoxDecoration nodeDecoration = BoxDecoration(
+    // Sharp-cornered pixel tile — chunky 3px border, no radius for an 8-bit feel.
+    final BoxDecoration tileDecoration = BoxDecoration(
       color: bgColor,
-      shape: BoxShape.circle,
       border: Border.all(color: borderColor, width: 3),
     );
 
-    return Div.column(
-      [Center(child: nodeIcon)],
-      width: roadmapNodeSize,
-      height: roadmapNodeSize,
-      decoration: nodeDecoration,
+    // Pixel-art drop shadow — solid dark rectangle offset down+right.
+    final BoxDecoration shadowDecoration = BoxDecoration(
+      color: RLDS.black.withValues(alpha: 0.5),
+    );
+
+    return SizedBox(
+      width: roadmapNodeSize + roadmapTileShadowOffset,
+      height: roadmapNodeSize + roadmapTileShadowOffset,
+      child: Stack(
+        children: [
+          // Offset drop shadow
+          Positioned(
+            left: roadmapTileShadowOffset,
+            top: roadmapTileShadowOffset,
+            child: Container(
+              width: roadmapNodeSize,
+              height: roadmapNodeSize,
+              decoration: shadowDecoration,
+            ),
+          ),
+
+          // Foreground tile
+          Container(
+            width: roadmapNodeSize,
+            height: roadmapNodeSize,
+            decoration: tileDecoration,
+            child: Center(child: nodeContent),
+          ),
+        ],
+      ),
     );
   }
 
   Color getBackgroundColor() {
     if (isCompleted) {
-      return RLDS.success;
+      return accentColor;
     }
 
     if (isCurrent) {
-      return RLDS.success.withValues(alpha: 0.15);
+      return accentColor.withValues(alpha: 0.15);
     }
 
     return RLDS.backgroundLight;
@@ -656,11 +744,11 @@ class PathLessonNode extends StatelessWidget {
 
   Color getBorderColor() {
     if (isCompleted) {
-      return RLDS.success;
+      return accentColor;
     }
 
     if (isCurrent) {
-      return RLDS.success;
+      return accentColor;
     }
 
     if (isLocked) {
@@ -670,25 +758,38 @@ class PathLessonNode extends StatelessWidget {
     return RLDS.textSecondary.withValues(alpha: 0.3);
   }
 
-  static final Widget CompletedCheckIcon = const Icon(Icons.check, color: RLDS.white, size: 32);
+  // * Tile glyphs — 32px so they land on pixelarticons' 16×16 grid (2x).
 
-  static final Widget CurrentPlayIcon = const Icon(
-    Icons.play_arrow,
-    color: RLDS.success,
-    size: 32,
+  static const double roadmapTileIconSize = 32.0;
+
+  static final Widget CompletedCheckIcon = const Icon(
+    Pixel.check,
+    color: RLDS.white,
+    size: roadmapTileIconSize,
   );
 
   static final Widget LockedIcon = Icon(
-    Icons.lock,
+    Pixel.lock,
     color: RLDS.textSecondary.withValues(alpha: 0.4),
-    size: 28,
+    size: roadmapTileIconSize,
   );
 
-  static final Widget DefaultNodeIcon = const Icon(
-    Icons.auto_stories,
-    color: RLDS.textSecondary,
-    size: 28,
-  );
+  Widget CurrentPlayIcon() {
+    return Icon(
+      Pixel.play,
+      color: accentColor,
+      size: roadmapTileIconSize,
+    );
+  }
+
+  Widget DefaultLessonNumber() {
+    final String lessonLabel = (lessonIndex + 1).toString();
+
+    return RLTypography.pixelNumber(
+      lessonLabel,
+      color: RLDS.textSecondary,
+    );
+  }
 
   Widget NodeIcon() {
     if (isCompleted) {
@@ -696,14 +797,14 @@ class PathLessonNode extends StatelessWidget {
     }
 
     if (isCurrent) {
-      return CurrentPlayIcon;
+      return CurrentPlayIcon();
     }
 
     if (isLocked) {
       return LockedIcon;
     }
 
-    return DefaultNodeIcon;
+    return DefaultLessonNumber();
   }
 }
 

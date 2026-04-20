@@ -7,6 +7,7 @@ import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 
 
+import 'package:pixelarticons/pixel.dart';
 class CCPause extends StatelessWidget {
   final String text;
   final String? iconName;
@@ -73,55 +74,55 @@ class CCPause extends StatelessWidget {
     switch (iconName?.toLowerCase()) {
       case 'rocket':
         {
-          return Icons.rocket_launch;
+          return Pixel.trendingup;
         }
       case 'star':
         {
-          return Icons.star;
+          return Pixel.moonstars;
         }
       case 'fire':
         {
-          return Icons.local_fire_department;
+          return Pixel.zap;
         }
       case 'trophy':
         {
-          return Icons.emoji_events;
+          return Pixel.trophy;
         }
       case 'heart':
         {
-          return Icons.favorite;
+          return Pixel.heart;
         }
       case 'thumbs_up':
         {
-          return Icons.thumb_up;
+          return Pixel.heart;
         }
       case 'celebration':
         {
-          return Icons.celebration;
+          return Pixel.trophy;
         }
       case 'target':
         {
-          return Icons.track_changes;
+          return Pixel.reload;
         }
       case 'lightning':
         {
-          return Icons.flash_on;
+          return Pixel.zap;
         }
       case 'crown':
         {
-          return Icons.workspace_premium;
+          return Pixel.trophy;
         }
       case 'check':
         {
-          return Icons.check_circle_outline;
+          return Pixel.check;
         }
       case 'progress':
         {
-          return Icons.trending_up;
+          return Pixel.trendingup;
         }
       default:
         {
-          return Icons.rocket_launch;
+          return Pixel.trendingup;
         }
     }
   }

@@ -9,9 +9,10 @@ import 'package:readlock/design_system/RLUtility.dart';
 import 'package:readlock/design_system/RLSwitch.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/bottom_sheets/user/AccountBottomSheet.dart';
+import 'package:readlock/bottom_sheets/user/BirdPickerBottomSheet.dart';
 import 'package:readlock/screens/profile/SettingsDemos.dart';
-import 'package:readlock/screens/profile/SoundPickerCard.dart';
 
+import 'package:pixelarticons/pixel.dart';
 class MenuSection extends StatelessWidget {
   final bool soundsEnabled;
   final bool hapticsEnabled;
@@ -55,39 +56,41 @@ class MenuSection extends StatelessWidget {
       children: [
         // Account & Subscription
         MenuItem(
-          icon: Icons.person,
+          icon: Pixel.user,
           title: RLUIStrings.MENU_ACCOUNT,
           onTap: () => AccountBottomSheet.show(context),
         ),
 
-        MenuItem(icon: Icons.card_membership, title: RLUIStrings.MENU_READER_PASS, onTap: () {}),
+        MenuItem(icon: Pixel.card, title: RLUIStrings.MENU_READER_PASS, onTap: () {}),
+
+        MenuItem(
+          icon: Pixel.human,
+          title: RLUIStrings.MENU_PROFILE_BIRD,
+          onTap: () => BirdPickerBottomSheet.show(context),
+        ),
 
         const MenuDivider(),
 
-        // Sound Settings
+        // Sound & Haptics
         SwitchMenuItem(
-          icon: Icons.volume_up,
-          title: RLUIStrings.MENU_SOUNDS,
+          icon: Pixel.keyboard,
+          title: RLUIStrings.MENU_TYPING_SOUND,
           value: soundsEnabled,
           onChanged: onSoundsToggled,
         ),
 
         SwitchMenuItem(
-          icon: Icons.vibration,
+          icon: Pixel.alert,
           title: RLUIStrings.MENU_HAPTICS,
           value: hapticsEnabled,
           onChanged: onHapticsToggled,
         ),
 
-        const Spacing.height(RLDS.spacing8),
-
-        const SoundPickerCard(),
-
         const MenuDivider(),
 
         // Reading Settings
         SwitchMenuItem(
-          icon: Icons.visibility,
+          icon: Pixel.visible,
           title: RLUIStrings.MENU_REVEAL,
           value: revealAllTrueFalse,
           onChanged: onRevealAllTrueFalseToggled,
@@ -96,7 +99,7 @@ class MenuSection extends StatelessWidget {
         RevealDemo(isEnabled: revealAllTrueFalse),
 
         SwitchMenuItem(
-          icon: Icons.blur_on,
+          icon: Pixel.eye,
           title: RLUIStrings.MENU_BLUR,
           value: blurEnabled,
           onChanged: onBlurToggled,
@@ -105,7 +108,7 @@ class MenuSection extends StatelessWidget {
         BlurDemo(isEnabled: blurEnabled),
 
         SwitchMenuItem(
-          icon: Icons.format_color_text,
+          icon: Pixel.edit,
           title: RLUIStrings.MENU_COLORED_TEXT,
           value: coloredTextEnabled,
           onChanged: onColoredTextToggled,
@@ -114,7 +117,7 @@ class MenuSection extends StatelessWidget {
         ColoredTextDemo(isEnabled: coloredTextEnabled),
 
         SegmentedMenuItem(
-          icon: Icons.speed,
+          icon: Pixel.chartbar,
           title: RLUIStrings.MENU_TEXT_SPEED,
           options: const [RLUIStrings.SPEED_CAREFUL, RLUIStrings.SPEED_CLASSIC, RLUIStrings.SPEED_SPEED],
           selectedOption: textSpeed,
@@ -127,27 +130,27 @@ class MenuSection extends StatelessWidget {
 
         // Notifications & Support
         SwitchMenuItem(
-          icon: Icons.notifications,
+          icon: Pixel.notification,
           title: RLUIStrings.MENU_NOTIFICATIONS,
           value: notificationsEnabled,
           onChanged: onNotificationsToggled,
         ),
 
-        MenuItem(icon: Icons.support_agent, title: RLUIStrings.MENU_SUPPORT, onTap: onSupportTap),
+        MenuItem(icon: Pixel.message, title: RLUIStrings.MENU_SUPPORT, onTap: onSupportTap),
 
         const MenuDivider(),
 
         // Legal
-        MenuItem(icon: Icons.shield_outlined, title: RLUIStrings.MENU_PRIVACY_POLICY, onTap: () {}),
+        MenuItem(icon: Pixel.shield, title: RLUIStrings.MENU_PRIVACY_POLICY, onTap: () {}),
 
-        MenuItem(icon: Icons.description_outlined, title: RLUIStrings.MENU_TERMS_AND_CONDITIONS, onTap: () {}),
+        MenuItem(icon: Pixel.article, title: RLUIStrings.MENU_TERMS_AND_CONDITIONS, onTap: () {}),
 
-        MenuItem(icon: Icons.gavel, title: RLUIStrings.MENU_EULA, onTap: () {}),
+        MenuItem(icon: Pixel.scale, title: RLUIStrings.MENU_EULA, onTap: () {}),
 
         const MenuDivider(),
 
         // Log out
-        MenuItem(icon: Icons.logout, title: RLUIStrings.MENU_LOG_OUT, onTap: () {}),
+        MenuItem(icon: Pixel.logout, title: RLUIStrings.MENU_LOG_OUT, onTap: () {}),
 
         const Spacing.height(RLDS.spacing24),
 

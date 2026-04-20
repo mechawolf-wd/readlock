@@ -212,40 +212,63 @@ class TextSpeedDemo extends StatelessWidget {
     final BoxDecoration containerDecoration = BoxDecoration(
       color: RLDS.backgroundLight,
       borderRadius: BorderRadius.circular(RLDS.spacing8),
+      border: Border.all(color: RLDS.primary.withValues(alpha: 0.2)),
     );
 
     final int wordsPerMinute = getWordsPerMinute();
     final String description = getSpeedDescription();
 
+    final Widget metricRow = MetricRow(wordsPerMinute);
+    final Widget speedDivider = SpeedDivider();
+    final Widget descriptionText = DescriptionText(description);
+
     return Container(
       width: double.infinity,
       decoration: containerDecoration,
-      padding: const EdgeInsets.all(RLDS.spacing12),
+      padding: const EdgeInsets.all(RLDS.spacing16),
       margin: const EdgeInsets.only(bottom: RLDS.spacing16),
-      child: Row(
-        children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              RLTypography.headingMedium('$wordsPerMinute', color: RLDS.primary),
+      child: Div.column([
+        metricRow,
 
-              Text(
-                RLUIStrings.DEMO_SPEED_UNIT,
-                style: RLTypography.bodyMediumStyle.copyWith(color: RLDS.textSecondary),
-              ),
-            ],
-          ),
+        const Spacing.height(RLDS.spacing12),
 
-          const Spacing.width(RLDS.spacing16),
+        speedDivider,
 
-          Expanded(
-            child: Text(
-              description,
-              style: RLTypography.bodyMediumStyle.copyWith(color: RLDS.textSecondary),
-            ),
-          ),
-        ],
-      ),
+        const Spacing.height(RLDS.spacing12),
+
+        descriptionText,
+      ], crossAxisAlignment: CrossAxisAlignment.start),
+    );
+  }
+
+  Widget MetricRow(int wordsPerMinute) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.baseline,
+      textBaseline: TextBaseline.alphabetic,
+      children: [
+        RLTypography.headingLarge('$wordsPerMinute', color: RLDS.primary),
+
+        const Spacing.width(RLDS.spacing8),
+
+        Text(
+          RLUIStrings.DEMO_SPEED_UNIT,
+          style: RLTypography.bodyMediumStyle.copyWith(color: RLDS.textSecondary),
+        ),
+      ],
+    );
+  }
+
+  Widget SpeedDivider() {
+    return Container(
+      height: 1,
+      color: RLDS.primary.withValues(alpha: 0.15),
+    );
+  }
+
+  Widget DescriptionText(String description) {
+    return Text(
+      description,
+      style: RLTypography.bodyMediumStyle.copyWith(color: RLDS.textPrimary),
     );
   }
 

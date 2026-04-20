@@ -44,7 +44,6 @@ Map<String, dynamic> _$AcceleratorToJson(Accelerator instance) =>
 Segment _$SegmentFromJson(Map<String, dynamic> json) => Segment(
   segmentId: json['segment-id'] as String,
   segmentTitle: json['segment-title'] as String,
-  segmentDescription: json['segment-description'] as String,
   segmentSymbol: json['segment-symbol'] as String? ?? '',
   lessons: (json['lessons'] as List<dynamic>)
       .map((e) => Package.fromJson(e as Map<String, dynamic>))
@@ -54,7 +53,6 @@ Segment _$SegmentFromJson(Map<String, dynamic> json) => Segment(
 Map<String, dynamic> _$SegmentToJson(Segment instance) => <String, dynamic>{
   'segment-id': instance.segmentId,
   'segment-title': instance.segmentTitle,
-  'segment-description': instance.segmentDescription,
   'segment-symbol': instance.segmentSymbol,
   'lessons': instance.lessons.map((e) => e.toJson()).toList(),
 };
