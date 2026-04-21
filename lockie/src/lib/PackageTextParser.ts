@@ -7,8 +7,8 @@
 // Comments: any line whose first non-whitespace character is "#" is a
 // comment. Comment lines are stripped before parsing and never appear in
 // the output. Comments can sit anywhere in the file (between blocks,
-// inside blocks, between properties). Inline comments are NOT supported,
-// because "#" is also used in hex color values like "color: #6366f1".
+// inside blocks, between properties). Inline comments are NOT supported.
+// Course colors are authored without a leading "#" (e.g. "color: 8461BD").
 //
 // @text
 // Each line becomes a text segment.
@@ -57,6 +57,7 @@
 // Thinking point two
 
 import type { Swipe, Accelerator, Segment, Package } from "@/types/Course";
+import { DEFAULT_COURSE_COLOR } from "@/types/Course";
 
 // * Comment stripping
 
@@ -425,7 +426,7 @@ function parseCourseInfoSection(text: string): ParsedCourseInfo {
     title: "",
     author: "",
     description: "",
-    color: "#6366f1",
+    color: DEFAULT_COURSE_COLOR,
     genres: [],
     relevantFor: [],
   };
@@ -444,7 +445,10 @@ function parseCourseInfoSection(text: string): ParsedCourseInfo {
     } else if (trimmed.startsWith("description:")) {
       info.description = trimmed.slice("description:".length).trim();
     } else if (trimmed.startsWith("color:")) {
-      info.color = trimmed.slice("color:".length).trim();
+      // .rlockie files are authored without a leading "#" (it would be parsed as a comment marker).
+      // Internally we keep the "#" so the value can flow directly into CSS backgroundColor bindings.
+      const rawColor = trimmed.slice("color:".length).trim().replace(/^#/, "");
+      info.color = rawColor === "" ? info.color : `#${rawColor}`;
     } else if (trimmed.startsWith("genres:")) {
       info.genres = trimmed
         .slice("genres:".length)
@@ -500,7 +504,7 @@ export function parseCourseText(input: string): Accelerator {
       author: "",
       description: "",
       "cover-image-path": "",
-      color: "#6366f1",
+      color: DEFAULT_COURSE_COLOR,
       "relevant-for": [],
       genres: [],
       segments: [],
@@ -675,7 +679,7 @@ language: EN
 title: My Course
 author: Author Name
 description: A short description
-color: #6366f1
+color: 8461BD
 genres: design, psychology
 relevant_for: Designers, Developers`,
     },

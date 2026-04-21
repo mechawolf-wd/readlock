@@ -6,6 +6,24 @@ import type { Accelerator } from '@/types/Course'
 
 const COURSES_COLLECTION = 'courses'
 
+// Firestore stores course colors as bare hex ("6A99D4"), the editor works
+// with CSS-prefixed form ("#6A99D4"). These helpers keep the two in sync.
+function stripHashPrefix(hex: string): string {
+  if (hex.startsWith('#')) {
+    return hex.slice(1)
+  }
+
+  return hex
+}
+
+function ensureHashPrefix(hex: string): string {
+  if (hex.startsWith('#')) {
+    return hex
+  }
+
+  return `#${hex}`
+}
+
 export async function fetchCourseById(courseId: string): Promise<Accelerator | null> {
   try {
     const courseRef = doc(firestore, COURSES_COLLECTION, courseId)
@@ -21,6 +39,12 @@ export async function fetchCourseById(courseId: string): Promise<Accelerator | n
 
     data['course-id'] ??= snapshot.id
     data.language ??= 'EN'
+
+    const hasColor = typeof data.color === 'string' && data.color.length > 0
+
+    if (hasColor) {
+      data.color = ensureHashPrefix(data.color)
+    }
 
     return data
   } catch (error) {
@@ -46,6 +70,13 @@ export async function saveCourse(course: Accelerator): Promise<void> {
       return value
     })
   ) as Accelerator
+
+  // Normalise color to Firestore's stored form (no '#').
+  const hasColor = typeof cleanCourse.color === 'string' && cleanCourse.color.length > 0
+
+  if (hasColor) {
+    cleanCourse.color = stripHashPrefix(cleanCourse.color)
+  }
 
   // Diagnostics: Firestore silently rejects payloads over 1 MiB and certain
   // field shapes; log size + structure alongside any error so the cause is

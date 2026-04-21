@@ -108,12 +108,9 @@ class LoginSupportPickerContentState extends State<LoginSupportPickerContent> {
 
         const Spacing.width(RLDS.spacing12),
 
-        RLTypography.headingMedium(
-          RLUIStrings.SUPPORT_OPTIONS_TITLE,
-          textAlign: TextAlign.center,
-        ),
+        RLTypography.headingMedium(RLUIStrings.SUPPORT_OPTIONS_TITLE),
       ],
-      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.start,
     );
   }
 
@@ -287,7 +284,7 @@ class ResetPasswordSupportContentState extends State<ResetPasswordSupportContent
             focusNode: emailFocusNode,
           ),
 
-          const Spacing.height(RLDS.spacing12),
+          const Spacing.height(RLDS.spacing24),
 
           RLButton.primary(
             label: RLUIStrings.SUPPORT_SEND_RESET_LINK_LABEL,
@@ -373,10 +370,11 @@ class ResendVerificationSupportContentState
   }
 
   Future<void> handleResendVerification() async {
-    final bool isSignedOut = !AuthService.isSignedIn;
+    final String email = emailController.text.trim();
+    final bool hasNoEmail = email.isEmpty;
 
-    if (isSignedOut) {
-      RLToast.error(context, RLUIStrings.RESEND_VERIFICATION_SIGN_IN_REQUIRED);
+    if (hasNoEmail) {
+      RLToast.warning(context, RLUIStrings.RESET_PASSWORD_EMAIL_REQUIRED);
       return;
     }
 
@@ -384,20 +382,26 @@ class ResendVerificationSupportContentState
       isBusy = true;
     });
 
-    final bool isAlreadyVerified = await AuthService.isEmailVerified();
-    final bool isUnmountedAfterCheck = !mounted;
+    // If a user is currently signed in, check + send through their session
+    // directly. Otherwise fall through to the signed-out path below.
+    final bool isSignedIn = AuthService.isSignedIn;
 
-    if (isUnmountedAfterCheck) {
-      return;
-    }
+    if (isSignedIn) {
+      final bool isAlreadyVerified = await AuthService.isEmailVerified();
+      final bool isUnmountedAfterCheck = !mounted;
 
-    if (isAlreadyVerified) {
-      setState(() {
-        isBusy = false;
-      });
+      if (isUnmountedAfterCheck) {
+        return;
+      }
 
-      RLToast.info(context, RLUIStrings.RESEND_VERIFICATION_ALREADY_VERIFIED);
-      return;
+      if (isAlreadyVerified) {
+        setState(() {
+          isBusy = false;
+        });
+
+        RLToast.info(context, RLUIStrings.RESEND_VERIFICATION_ALREADY_VERIFIED);
+        return;
+      }
     }
 
     final bool wasSent = await AuthService.sendEmailVerification();
@@ -441,7 +445,7 @@ class ResendVerificationSupportContentState
             focusNode: emailFocusNode,
           ),
 
-          const Spacing.height(RLDS.spacing12),
+          const Spacing.height(RLDS.spacing24),
 
           RLButton.primary(
             label: RLUIStrings.SUPPORT_RESEND_VERIFICATION_BUTTON_LABEL,
@@ -538,7 +542,7 @@ class EmailSupportContentState extends State<EmailSupportContent> {
             textAlign: TextAlign.center,
           ),
 
-          const Spacing.height(RLDS.spacing16),
+          const Spacing.height(RLDS.spacing24),
 
           RLButton.primary(
             label: RLUIStrings.SUPPORT_COPY_EMAIL_BUTTON_LABEL,
@@ -569,17 +573,13 @@ class SheetHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         TitleRow(),
 
         const Spacing.height(RLDS.spacing8),
 
-        RLTypography.bodyMedium(
-          description,
-          color: RLDS.textSecondary,
-          textAlign: TextAlign.center,
-        ),
+        RLTypography.bodyMedium(description, color: RLDS.textSecondary),
       ],
     );
   }
@@ -591,18 +591,18 @@ class SheetHeader extends StatelessWidget {
     final bool hasIcon = iconWidget != null;
 
     if (!hasIcon) {
-      return RLTypography.headingMedium(title, textAlign: TextAlign.center);
+      return RLTypography.headingMedium(title);
     }
 
     return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
         iconWidget,
 
         const Spacing.width(RLDS.spacing12),
 
-        RLTypography.headingMedium(title, textAlign: TextAlign.center),
+        RLTypography.headingMedium(title),
       ],
     );
   }

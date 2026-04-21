@@ -92,7 +92,8 @@ class CCQuestionState extends State<CCQuestion> {
   Widget OptionButton({required int optionIndex, required QuestionOption option}) {
     final bool isRevealed = revealedAnswers.contains(optionIndex);
     final bool isSelected = selectedAnswerIndex == optionIndex;
-    final bool isCorrectAnswer = widget.content.correctAnswerIndex == optionIndex;
+    // correctAnswerIndex is 1-based on the data (1 = first answer).
+    final bool isCorrectAnswer = widget.content.correctAnswerIndex == optionIndex + 1;
     final bool shouldShowCorrect = hasAnsweredQuestion && isCorrectAnswer && isSelected;
     final bool shouldShowIncorrect = hasAnsweredQuestion && !isCorrectAnswer && isSelected;
 
@@ -113,8 +114,6 @@ class CCQuestionState extends State<CCQuestion> {
     final Widget optionRow = Div.row(
       [
         Expanded(child: RLTypography.readingLarge(option.text, color: optionTextColor)),
-
-        RenderIf.condition(shouldShowCorrect, CorrectCheckIcon(), const SizedBox.shrink()),
 
         RenderIf.condition(shouldShowIncorrect, IncorrectIcon(), const SizedBox.shrink()),
       ],
@@ -146,10 +145,6 @@ class CCQuestionState extends State<CCQuestion> {
     return () => handleOptionSelection(optionIndex);
   }
 
-  Widget CorrectCheckIcon() {
-    return const Icon(Pixel.check, color: RLDS.success, size: RLDS.iconMedium);
-  }
-
   Widget IncorrectIcon() {
     return Icon(
       Pixel.close,
@@ -173,7 +168,8 @@ class CCQuestionState extends State<CCQuestion> {
 
     HapticsService.lightImpact();
 
-    final bool isCorrectAnswer = widget.content.correctAnswerIndex == optionIndex;
+    // correctAnswerIndex is 1-based on the data (1 = first answer).
+    final bool isCorrectAnswer = widget.content.correctAnswerIndex == optionIndex + 1;
 
     if (!isCorrectAnswer) {
       showIncorrectAnswerFeedback(optionIndex);

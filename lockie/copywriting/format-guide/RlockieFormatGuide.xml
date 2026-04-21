@@ -74,8 +74,8 @@ language: [two-letter uppercase language code, e.g. EN]
 title: [course display title]
 author: [author display name]
 description: [one-line description]
-color: [hex color, e.g. #6366f1]
-genres: [3 to 5 comma-separated keys, e.g. design, psychology, ux]
+color: [one of the 12 allowed swatches, e.g. 8461BD — NO leading #]
+genres: [3 to 5 comma-separated keys from the closed list, e.g. design, psychology, productivity]
 relevant_for: [comma-separated keys from the closed list: designers, product-managers, founders, engineers, writers, marketers, leaders, investors, students, anyone]
     </template>
 
@@ -84,8 +84,8 @@ relevant_for: [comma-separated keys from the closed list: designers, product-man
       <rule>One blank line between @course and the first field.</rule>
       <rule>language is a two-letter uppercase code (e.g. EN, PL, DE). Defaults to EN when omitted.</rule>
       <rule>description must be a single line.</rule>
-      <rule>color must be a valid hex code.</rule>
-      <rule>genres must contain 3 to 5 comma-separated tags.</rule>
+      <rule>color must be exactly one of these 12 hex values, WITHOUT a leading "#": 9E7071, D0CBD6, C78871, FAF0A2, 8461BD, 78A3ED, 72ACAD, C85159, 6D7487, CAC7EE, 6A99D4, FFC1E2. The "#" is never written in the .rlockie file (e.g. "color: 8461BD", not "color: #8461BD"). Pick the swatch closest to the original book cover when available; otherwise pick the swatch that best fits the topic's mood. Never invent a new hex value.</rule>
+      <rule>genres must contain 3 to 5 comma-separated tags drawn from this closed list ONLY: design, psychology, business, technology, self-help, science, philosophy, history, economics, leadership, creativity, productivity, communication, user-experience, product-development. Never invent a new genre. Pick the closest tag from the list instead of coining a new one.</rule>
       <rule>relevant_for values must come from the closed list: designers, product-managers, founders, engineers, writers, marketers, leaders, investors, students, anyone.</rule>
     </rules>
 
@@ -354,7 +354,7 @@ First line of text.
 
     <rules>
       <rule>A comment is recognised by its first non-whitespace character being "#". Leading whitespace before the "#" is allowed.</rule>
-      <rule>Comments are FULL-LINE only. Inline comments (text followed by "#" on the same line) are NOT supported, because "#" is also used inside hex color values like "color: #6366f1".</rule>
+      <rule>Comments are FULL-LINE only. Inline comments (text followed by "#" on the same line) are NOT supported.</rule>
       <rule>Comments can sit anywhere in the file: between blocks, inside blocks, between properties, even between an answer: line and its consequence: line. The parser strips them before block splitting.</rule>
       <rule>To temporarily disable a swipe, prefix every line of the swipe (including the @declaration line) with "#".</rule>
       <rule>Comments do NOT count toward any length rule, swipe count, or character budget. They are invisible to the parser and to ReadlockFinalTest.xml.</rule>

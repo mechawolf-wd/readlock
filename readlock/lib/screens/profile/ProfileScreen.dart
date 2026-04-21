@@ -189,9 +189,7 @@ class ProfileContentState extends State<ProfileContent> {
 
         const Spacing.height(RLDS.spacing12),
 
-        IgnorePointer(
-          child: Opacity(opacity: 0.4, child: menu),
-        ),
+        IgnorePointer(child: Opacity(opacity: 0.4, child: menu)),
       ], crossAxisAlignment: CrossAxisAlignment.stretch);
     }
 
@@ -221,10 +219,7 @@ class ProfileContentState extends State<ProfileContent> {
           color: RLDS.textSecondary,
         ),
       ],
-      padding: const EdgeInsets.symmetric(
-        horizontal: RLDS.spacing16,
-        vertical: RLDS.spacing12,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: RLDS.spacing16, vertical: RLDS.spacing12),
       decoration: bannerDecoration,
       mainAxisAlignment: MainAxisAlignment.start,
     );

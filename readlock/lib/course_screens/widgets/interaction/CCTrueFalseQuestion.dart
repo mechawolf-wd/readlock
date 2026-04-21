@@ -103,7 +103,8 @@ class CCTrueFalseQuestionState extends State<CCTrueFalseQuestion> {
     required IconData icon,
   }) {
     final bool isSelected = selectedAnswerIndex == answerIndex;
-    final bool isCorrect = widget.content.correctAnswerIndex == answerIndex;
+    // correctAnswerIndex is 1-based on the data (1 = first answer / true).
+    final bool isCorrect = widget.content.correctAnswerIndex == answerIndex + 1;
     final bool shouldShowCorrect = hasAnswered && isCorrect;
     final bool shouldMute = hasAnswered && !isCorrect && !isSelected;
 
@@ -240,7 +241,8 @@ class CCTrueFalseQuestionState extends State<CCTrueFalseQuestion> {
       return;
     }
 
-    final bool isCorrect = widget.content.correctAnswerIndex == answerIndex;
+    // correctAnswerIndex is 1-based on the data (1 = first answer / true).
+    final bool isCorrect = widget.content.correctAnswerIndex == answerIndex + 1;
 
     if (!isCorrect) {
       showIncorrectAnswerFeedback(answerIndex);

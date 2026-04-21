@@ -150,9 +150,11 @@ class FullHeightSheetContainer extends StatelessWidget {
         child: Column(
           children: [
             // Grabber with top padding
-            const Spacing.height(12),
+            const Spacing.height(RLDS.spacing16),
 
             const BottomSheetGrabber(),
+
+            const Spacing.height(RLDS.spacing16),
 
             // Sheet content fills remaining space
             Expanded(child: child),

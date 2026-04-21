@@ -183,6 +183,26 @@ export const QUICK_ADD_TYPES: EntityType[] = [
   'true-false-question',
 ]
 
+// * Course theme colors — the closed palette. A course color MUST be one of these.
+// Writers are encouraged to pick whichever swatch best matches the original book cover.
+
+export const COURSE_COLORS: string[] = [
+  '#9E7071',
+  '#D0CBD6',
+  '#C78871',
+  '#FAF0A2',
+  '#8461BD',
+  '#78A3ED',
+  '#72ACAD',
+  '#C85159',
+  '#6D7487',
+  '#CAC7EE',
+  '#6A99D4',
+  '#FFC1E2',
+]
+
+export const DEFAULT_COURSE_COLOR: string = COURSE_COLORS[0]
+
 export const PREMADE_GENRES: string[] = [
   'design',
   'psychology',

@@ -6,9 +6,10 @@ import 'package:flutter/services.dart';
 import 'package:readlock/course_screens/CourseContentViewer.dart';
 import 'package:readlock/course_screens/data/CourseData.dart';
 import 'package:readlock/design_system/RLUtility.dart';
-import 'package:readlock/design_system/RLBookListCard.dart';
 import 'package:readlock/design_system/RLButton.dart';
 import 'package:readlock/design_system/RLCard.dart';
+import 'package:readlock/design_system/RLRelevantForChip.dart';
+import 'package:readlock/constants/RLCoursePalette.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/constants/RLUIStrings.dart';
@@ -20,6 +21,13 @@ import 'package:pixelarticons/pixel.dart';
 const double roadmapNodeSize = 72.0;
 const double roadmapPathHorizontalOffset = 60.0;
 const double roadmapNodeVerticalSpacing = 96.0;
+const double roadmapTileBorderWidth = 3.0;
+const double lessonTitleWidth = 128.0;
+const double floatingBarBottomClearance = 180.0;
+
+// Any course color outside KNOWN_COURSE_COLORS falls back to FALLBACK.png +
+// the palette's fallback accent (both defined in RLCoursePalette).
+const String COURSE_FALLBACK_ASSET = 'assets/books/FALLBACK.png';
 
 class CourseRoadmapScreen extends StatefulWidget {
   final String courseId;
@@ -43,9 +51,28 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
 
   double? screenHeight;
 
+  // Normalised course color — bare uppercase hex, empty string if missing.
+  String getNormalizedCourseColor() {
+    final String? raw = courseData?['color'] as String?;
+    final bool hasNoColor = raw == null || raw.isEmpty;
+
+    if (hasNoColor) {
+      return '';
+    }
+
+    return raw.replaceAll('#', '').trim().toUpperCase();
+  }
+
+  bool isPaletteColor() {
+    return KNOWN_COURSE_COLORS.contains(getNormalizedCourseColor());
+  }
+
   Color getCourseAccentColor() {
-    final String? hex = courseData?['color'] as String?;
-    final Color? parsed = RLDS.parseHexColor(hex);
+    final String normalized = getNormalizedCourseColor();
+    final bool isKnown = KNOWN_COURSE_COLORS.contains(normalized);
+
+    final String effectiveHex = isKnown ? normalized : COURSE_FALLBACK_COLOR_HEX;
+    final Color? parsed = RLDS.parseHexColor(effectiveHex);
 
     return parsed ?? RLDS.success;
   }
@@ -171,7 +198,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
       ),
 
       // Bottom padding for floating buttons
-      const SliverToBoxAdapter(child: Spacing.height(180)),
+      const SliverToBoxAdapter(child: Spacing.height(floatingBarBottomClearance)),
     ];
 
     return Material(
@@ -207,7 +234,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
   static final Widget ChevronUpIcon = const Icon(
     Pixel.chevronup,
     color: RLDS.textPrimary,
-    size: 24,
+    size: RLDS.iconLarge,
   );
 
   Widget BackToTopSlot() {
@@ -248,7 +275,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
   static final Widget BackChevronIcon = const Icon(
     Pixel.chevrondown,
     color: RLDS.textPrimary,
-    size: 28,
+    size: RLDS.iconLarge,
   );
 
   Widget RoadmapHeader() {
@@ -262,17 +289,17 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
         // Back button
         Div.row(
           [BackChevronIcon],
-          padding: 8,
-          radius: BorderRadius.circular(36),
+          padding: RLDS.spacing8,
+          radius: RLDS.borderRadiusCircle,
           onTap: handleBackTap,
         ),
 
-        const Spacing.height(16),
+        const Spacing.height(RLDS.spacing16),
 
         // Hero card with book and info
         HeroCard(courseTitle: courseTitle, courseAuthor: courseAuthor),
 
-        const Spacing.height(24),
+        const Spacing.height(RLDS.spacing24),
 
         // Subtitle below card
         Center(
@@ -283,7 +310,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
           ),
         ),
 
-        const Spacing.height(16),
+        const Spacing.height(RLDS.spacing16),
       ],
       crossAxisAlignment: CrossAxisAlignment.start,
       padding: const EdgeInsets.symmetric(
@@ -294,35 +321,66 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
   }
 
   static const double progressRingStrokeWidth = 6.0;
+  static const double progressRingSize = 176.0;
+  // Book assets are square (64x64). Square slot so contain doesn't letterbox.
+  // 96 = 1.5x the source — a clean nearest-neighbour scale that keeps the
+  // pixel-art edges crisp without swallowing the progress ring around it.
+  static const double courseBookSize = 96.0;
+  static const String courseBooksAssetPrefix = 'assets/books/';
 
   static final BoxDecoration progressRingDecoration = BoxDecoration(
     shape: BoxShape.circle,
     border: Border.all(color: RLDS.backgroundLight, width: progressRingStrokeWidth),
   );
 
-  Widget ProgressRing() {
-    final String? courseCoverPath = courseData?['cover-image-path'] as String?;
-    final Color accentColor = getCourseAccentColor();
+  // The course color doubles as the key into assets/books/{HEX}.png. If the
+  // color is outside the palette, render FALLBACK.png instead (the accent
+  // also falls back to 9E7071 via getCourseAccentColor).
+  Widget CourseBookImage() {
+    final bool isKnown = isPaletteColor();
+    final String assetPath = isKnown
+        ? '$courseBooksAssetPrefix${getNormalizedCourseColor()}.png'
+        : COURSE_FALLBACK_ASSET;
 
-    final Widget bookCover = BookCoverThumbnail(
-      coverImagePath: courseCoverPath,
-      width: 52,
-      height: 72,
+    return Image.asset(
+      assetPath,
+      width: courseBookSize,
+      height: courseBookSize,
+      fit: BoxFit.contain,
+      filterQuality: FilterQuality.none,
+      errorBuilder: (context, error, stackTrace) => Image.asset(
+        COURSE_FALLBACK_ASSET,
+        width: courseBookSize,
+        height: courseBookSize,
+        fit: BoxFit.contain,
+        filterQuality: FilterQuality.none,
+        errorBuilder: (context, error, stackTrace) => const SizedBox.shrink(),
+      ),
     );
+  }
+
+  Widget ProgressRing() {
+    final Color accentColor = getCourseAccentColor();
+    final Widget bookCover = CourseBookImage();
 
     return SizedBox(
-      width: 128,
-      height: 128,
+      width: progressRingSize,
+      height: progressRingSize,
       child: Stack(
         alignment: Alignment.center,
         children: [
           // Background ring
-          Div.column(const [], width: 128, height: 128, decoration: progressRingDecoration),
+          Div.column(
+            const [],
+            width: progressRingSize,
+            height: progressRingSize,
+            decoration: progressRingDecoration,
+          ),
 
           // Progress arc
           SizedBox(
-            width: 128,
-            height: 128,
+            width: progressRingSize,
+            height: progressRingSize,
             child: CustomPaint(
               painter: ProgressArcPainter(
                 progress: 0.35,
@@ -368,49 +426,64 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
 
           const Spacing.height(RLDS.spacing16),
 
-          // Percentage chip (progress readout) centered under the book
-          Center(child: PercentageChip()),
-
-          const Spacing.height(RLDS.spacing16),
-
-          // Title
+          // Title (heading)
           RLTypography.headingMedium(courseTitle, textAlign: TextAlign.center),
 
           const Spacing.height(RLDS.spacing4),
 
-          // Author
+          // Author (subheading)
           RLTypography.bodyMedium(
             courseAuthor,
             color: RLDS.textSecondary,
             textAlign: TextAlign.center,
           ),
 
-          const Spacing.height(RLDS.spacing12),
+          const Spacing.height(RLDS.spacing16),
 
-          // Number of packages
-          Center(child: PackageCountRow()),
+          // Percentage chip (progress readout) — below the heading + subheading
+          Center(child: PercentageChip()),
+
+          const Spacing.height(RLDS.spacing16),
+
+          // Relevant-for tags
+          Center(child: RelevantForRow()),
         ],
       ),
     );
   }
 
-  Widget PackageCountRow() {
-    final int totalLessons = countTotalLessons();
-    final String lessonsLabel = '$totalLessons packages';
-    final Color accentColor = getCourseAccentColor();
+  Widget RelevantForRow() {
+    final List<String> relevantFor = getCourseRelevantFor();
+    final bool hasNoTags = relevantFor.isEmpty;
 
-    final Widget lessonIcon = Icon(Pixel.bookopen, color: accentColor, size: RLDS.iconMedium);
+    if (hasNoTags) {
+      return const SizedBox.shrink();
+    }
 
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        lessonIcon,
-
-        const Spacing.width(4),
-
-        RLTypography.bodyMedium(lessonsLabel, color: RLDS.textSecondary),
-      ],
+    return Wrap(
+      alignment: WrapAlignment.center,
+      spacing: RLDS.spacing8,
+      runSpacing: RLDS.spacing8,
+      children: RelevantForChips(relevantFor),
     );
+  }
+
+  List<Widget> RelevantForChips(List<String> relevantFor) {
+    return relevantFor
+        .map((String key) => RLRelevantForChip(relevantForKey: key))
+        .toList();
+  }
+
+  List<String> getCourseRelevantFor() {
+    final dynamic raw = courseData?['relevant-for'];
+
+    final bool isList = raw is List;
+
+    if (!isList) {
+      return const <String>[];
+    }
+
+    return raw.whereType<String>().map((String tag) => tag.trim()).toList();
   }
 
   Widget ContinueButton() {
@@ -421,10 +494,6 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
       color: accentColor,
       onTap: handleContinueTap,
     );
-  }
-
-  int countTotalLessons() {
-    return courseLessons.length;
   }
 
   void handleContinueTap() {
@@ -597,11 +666,11 @@ class PathLessonNode extends StatelessWidget {
           // Pixel-style square tile
           GestureDetector(onTap: tapHandler, child: NodeTile()),
 
-          const Spacing.height(10),
+          const Spacing.height(RLDS.spacing8),
 
           // Lesson title in 8-bit font
           SizedBox(
-            width: 128,
+            width: lessonTitleWidth,
             child: RLTypography.pixelLabel(
               title,
               color: titleColor,
@@ -645,10 +714,10 @@ class PathLessonNode extends StatelessWidget {
     final Color borderColor = getBorderColor();
     final Widget nodeContent = NodeIcon();
 
-    // Circular tile with a chunky 3px border.
+    // Circular tile with a chunky border.
     final BoxDecoration tileDecoration = BoxDecoration(
       color: bgColor,
-      border: Border.all(color: borderColor, width: 3),
+      border: Border.all(color: borderColor, width: roadmapTileBorderWidth),
       shape: BoxShape.circle,
     );
 

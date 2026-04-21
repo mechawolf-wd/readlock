@@ -340,7 +340,8 @@
       <rule>@course is the first line. Blank line, then metadata fields.</rule>
       <rule>All 7 fields present: id, title, author, description, color, genres, relevant_for.</rule>
       <rule>description is a single line.</rule>
-      <rule>color is a valid hex code.</rule>
+      <rule>color is one of the 12 allowed swatches, written WITHOUT a leading "#": 9E7071, D0CBD6, C78871, FAF0A2, 8461BD, 78A3ED, 72ACAD, C85159, 6D7487, CAC7EE, 6A99D4, FFC1E2.</rule>
+      <rule>genres are 3 to 5 tags drawn ONLY from this closed list: design, psychology, business, technology, self-help, science, philosophy, history, economics, leadership, creativity, productivity, communication, user-experience, product-development. Zero invented genres.</rule>
       <rule>id follows [type]:[kebab-case-title]-[4-char-hash].</rule>
     </group>
 

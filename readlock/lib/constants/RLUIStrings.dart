@@ -30,7 +30,7 @@ class RLUIStrings {
 
   // * Feedback Snackbar
   static const String CORRECT_ANSWER_MESSAGE = '+5 experience';
-  static const String WRONG_ANSWER_TITLE = 'Common thought';
+  static const String WRONG_ANSWER_TITLE = 'Pick again';
 
   // * Login Bottom Sheet
   static const String LOGIN_TITLE = 'Welcome reader!';

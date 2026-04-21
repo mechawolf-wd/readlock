@@ -35,6 +35,8 @@ class FeedbackBottomSheets {
     RLBottomSheet.show(
       context,
       backgroundColor: RLDS.backgroundLight,
+      showGrabber: false,
+      applyBackdropBlur: true,
       child: FeedbackSheet(
         content: content,
         buttonColor: buttonColor,

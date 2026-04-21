@@ -13,6 +13,8 @@ import {
   ENTITY_TYPE_GROUPS,
   QUICK_ADD_TYPES,
   PREMADE_GENRES,
+  COURSE_COLORS,
+  DEFAULT_COURSE_COLOR,
   type EntityType,
 } from "@/types/Course";
 import { Button } from "@/components/ui/button";
@@ -403,6 +405,21 @@ onUnmounted(() => {
 const courseColor = computed(
   () => store.activeCourse?.color ?? "var(--primary)",
 );
+
+// * Course theme color picker — restricted to the closed COURSE_COLORS palette
+
+function isSelectedCourseColor(swatch: string): boolean {
+  const current = store.activeCourse?.color?.toUpperCase() ?? ''
+  return current === swatch.toUpperCase()
+}
+
+function handlePickCourseColor(swatch: string) {
+  if (!store.activeCourse) {
+    return
+  }
+
+  store.activeCourse.color = swatch
+}
 
 watch(
   courseColor,
@@ -1034,17 +1051,17 @@ function getNavItemStyle(isSelected: boolean): Record<string, string> {
                 <!-- Theme Color -->
                 <div class="flex flex-col gap-2">
                   <label class="text-sm text-muted-foreground">Theme Color</label>
-                  <div class="flex items-center gap-3">
-                    <input
-                      type="color"
-                      :value="store.activeCourse!.color"
-                      class="w-10 h-10 rounded-md border border-border cursor-pointer bg-transparent"
-                      @input="(e: any) => (store.activeCourse!.color = e.target.value)"
-                    />
-                    <Input
-                      v-model="store.activeCourse!.color"
-                      variant="subtle"
-                      class="flex-1 font-mono"
+                  <p class="text-xs text-muted-foreground">Pick the swatch that best matches the book's original cover.</p>
+                  <div class="flex flex-wrap gap-2">
+                    <button
+                      v-for="swatch in COURSE_COLORS"
+                      :key="swatch"
+                      type="button"
+                      class="w-8 h-8 rounded-md border-2 transition-transform hover:scale-110"
+                      :class="isSelectedCourseColor(swatch) ? 'border-foreground' : 'border-border'"
+                      :style="{ backgroundColor: swatch }"
+                      :title="swatch"
+                      @click="handlePickCourseColor(swatch)"
                     />
                   </div>
                 </div>
