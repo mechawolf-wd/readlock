@@ -57,8 +57,8 @@ class RLButton extends StatelessWidget {
     final Color resolvedColor = color ?? RLDS.green;
     final RLButtonColors style = getStyleForVariant(resolvedColor);
 
-    final EdgeInsets resolvedPadding = padding ??
-        const EdgeInsets.symmetric(vertical: 16, horizontal: 24);
+    final EdgeInsets resolvedPadding =
+        padding ?? const EdgeInsets.symmetric(vertical: 16, horizontal: 24);
 
     final bool isTertiary = variant == RLButtonVariant.tertiary;
 
@@ -105,9 +105,7 @@ class RLButton extends StatelessWidget {
         decoration: decoration,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            RLTypography.bodyLarge(label, color: style.textColor),
-          ],
+          children: [RLTypography.bodyLarge(label, color: style.textColor)],
         ),
       ),
     );
@@ -126,9 +124,7 @@ class RLButton extends StatelessWidget {
         width: double.infinity,
         margin: margin,
         padding: resolvedPadding,
-        child: Center(
-          child: RLTypography.bodyMedium(label, color: textColor),
-        ),
+        child: Center(child: RLTypography.bodyMedium(label, color: textColor)),
       ),
     );
   }
@@ -137,24 +133,15 @@ class RLButton extends StatelessWidget {
     switch (variant) {
       case RLButtonVariant.primary:
         {
-          return RLButtonColors(
-            backgroundColor: resolvedColor,
-            textColor: RLDS.white,
-          );
+          return RLButtonColors(backgroundColor: resolvedColor, textColor: RLDS.white);
         }
       case RLButtonVariant.secondary:
         {
-          return RLButtonColors(
-            backgroundColor: Colors.transparent,
-            textColor: resolvedColor,
-          );
+          return RLButtonColors(backgroundColor: RLDS.transparent, textColor: resolvedColor);
         }
       case RLButtonVariant.tertiary:
         {
-          return RLButtonColors(
-            backgroundColor: Colors.transparent,
-            textColor: resolvedColor,
-          );
+          return RLButtonColors(backgroundColor: RLDS.transparent, textColor: resolvedColor);
         }
     }
   }

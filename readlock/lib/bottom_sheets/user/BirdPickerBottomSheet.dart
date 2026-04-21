@@ -1,5 +1,5 @@
-// Bottom sheet that lets the user pick their profile bird
-// Renders the 5 birds as a vertical wheel (iOS picker style) backed by selectedBirdNotifier
+// Bottom sheet that lets the user pick their profile bird.
+// Horizontal snap-slider: one bird per page, name shown once above the slider.
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -11,10 +11,10 @@ import 'package:readlock/design_system/RLUtility.dart';
 import 'package:readlock/screens/profile/BirdPicker.dart';
 
 import 'package:pixelarticons/pixel.dart';
-// * Wheel geometry — item extent fits the bird sprite plus vertical breathing room
-const double BIRD_WHEEL_HEIGHT = 432.0;
-const double BIRD_WHEEL_ITEM_EXTENT = 144.0;
-const double BIRD_WHEEL_DIAMETER_RATIO = 2.5;
+
+// * Slider geometry
+const double BIRD_SLIDER_HEIGHT = 200.0;
+const double BIRD_SLIDER_VIEWPORT_FRACTION = 0.45;
 
 class BirdPickerBottomSheet {
   static void show(BuildContext context) {
@@ -34,31 +34,46 @@ class BirdPickerSheet extends StatefulWidget {
 }
 
 class BirdPickerSheetState extends State<BirdPickerSheet> {
-  late FixedExtentScrollController wheelController;
+  late PageController pageController;
+  late int selectedIndex;
 
   static final Widget HeaderIcon = const Icon(Pixel.human, color: RLDS.primary, size: 20);
-  static const EdgeInsets headerPadding = EdgeInsets.fromLTRB(24, 16, 24, 24);
-  static const EdgeInsets bodyPadding = EdgeInsets.fromLTRB(24, 0, 24, 24);
+  static const EdgeInsets headerPadding = EdgeInsets.fromLTRB(24, 16, 24, 16);
+  static const EdgeInsets bodyPadding = EdgeInsets.fromLTRB(0, 0, 0, 24);
 
   @override
   void initState() {
     super.initState();
 
-    final int initialIndex = BIRD_OPTIONS.indexWhere(
+    selectedIndex = BIRD_OPTIONS.indexWhere(
       (bird) => bird.name == selectedBirdNotifier.value.name,
     );
 
-    wheelController = FixedExtentScrollController(initialItem: initialIndex);
+    final bool hasNoMatch = selectedIndex < 0;
+
+    if (hasNoMatch) {
+      selectedIndex = 0;
+    }
+
+    pageController = PageController(
+      initialPage: selectedIndex,
+      viewportFraction: BIRD_SLIDER_VIEWPORT_FRACTION,
+    );
   }
 
   @override
   void dispose() {
-    wheelController.dispose();
+    pageController.dispose();
     super.dispose();
   }
 
-  void handleWheelChanged(int index) {
+  void handlePageChanged(int index) {
     HapticFeedback.selectionClick();
+
+    setState(() {
+      selectedIndex = index;
+    });
+
     selectedBirdNotifier.value = BIRD_OPTIONS[index];
   }
 
@@ -69,11 +84,13 @@ class BirdPickerSheetState extends State<BirdPickerSheet> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          // Header
           HeaderSection(),
 
-          // Wheel body
-          BodySection(),
+          SelectedBirdName(),
+
+          const Spacing.height(RLDS.spacing16),
+
+          SliderBody(),
         ],
       ),
     );
@@ -89,69 +106,40 @@ class BirdPickerSheetState extends State<BirdPickerSheet> {
     ], padding: headerPadding);
   }
 
-  Widget BodySection() {
-    final Widget wheel = WheelLayer();
-    final Widget lens = LensOverlay();
+  Widget SelectedBirdName() {
+    final BirdOption selectedBird = BIRD_OPTIONS[selectedIndex];
 
+    return RLTypography.headingLarge(selectedBird.name, color: RLDS.primary);
+  }
+
+  Widget SliderBody() {
     return Padding(
       padding: bodyPadding,
       child: SizedBox(
-        height: BIRD_WHEEL_HEIGHT,
-        child: Stack(
-          children: [
-            wheel,
-
-            lens,
-          ],
+        height: BIRD_SLIDER_HEIGHT,
+        child: PageView.builder(
+          controller: pageController,
+          physics: const PageScrollPhysics(),
+          onPageChanged: handlePageChanged,
+          itemCount: BIRD_OPTIONS.length,
+          itemBuilder: SliderItemBuilder,
         ),
       ),
     );
   }
 
-  Widget WheelLayer() {
-    final List<Widget> wheelItems = WheelItems();
-
-    return ListWheelScrollView(
-      controller: wheelController,
-      itemExtent: BIRD_WHEEL_ITEM_EXTENT,
-      physics: const FixedExtentScrollPhysics(),
-      diameterRatio: BIRD_WHEEL_DIAMETER_RATIO,
-      onSelectedItemChanged: handleWheelChanged,
-      children: wheelItems,
-    );
-  }
-
-  List<Widget> WheelItems() {
-    return BIRD_OPTIONS.map(WheelItem).toList();
-  }
-
-  Widget WheelItem(BirdOption bird) {
-    final Widget BirdSprite = BirdAnimationSprite(bird: bird);
+  Widget SliderItemBuilder(BuildContext context, int index) {
+    final BirdOption bird = BIRD_OPTIONS[index];
+    final bool isSelected = index == selectedIndex;
+    final double itemScale = isSelected ? 1.0 : 0.7;
+    final double itemOpacity = isSelected ? 1.0 : 0.5;
 
     return Center(
-      child: Div.row([
-        BirdSprite,
-
-        const Spacing.width(RLDS.spacing16),
-
-        RLTypography.headingMedium(bird.name, color: RLDS.primary),
-      ], mainAxisAlignment: MainAxisAlignment.center),
-    );
-  }
-
-  Widget LensOverlay() {
-    final BoxDecoration lensDecoration = BoxDecoration(
-      border: Border(
-        top: BorderSide(color: RLDS.primary.withValues(alpha: 0.4), width: 1.5),
-        bottom: BorderSide(color: RLDS.primary.withValues(alpha: 0.4), width: 1.5),
-      ),
-    );
-
-    return IgnorePointer(
-      child: Center(
-        child: SizedBox(
-          height: BIRD_WHEEL_ITEM_EXTENT,
-          child: Container(decoration: lensDecoration),
+      child: Opacity(
+        opacity: itemOpacity,
+        child: Transform.scale(
+          scale: itemScale,
+          child: BirdAnimationSprite(bird: bird),
         ),
       ),
     );

@@ -5,6 +5,18 @@ import 'package:readlock/models/UserModel.dart';
 import 'package:readlock/services/LoggingService.dart';
 import 'package:readlock/services/auth/AuthService.dart';
 
+// Preference field names stored under /users/{id}.
+// Matches UserModel.toJson so reads round-trip cleanly.
+class UserPreferenceField {
+  static const String TYPING_SOUND = 'typingSound';
+  static const String HAPTICS = 'haptics';
+  static const String REVEAL = 'reveal';
+  static const String BLUR = 'blur';
+  static const String COLORED_TEXT = 'coloredText';
+  static const String TEXT_SPEED = 'textSpeed';
+  static const String SAVED_COURSE_IDS = 'savedCourseIds';
+}
+
 class UserService {
   static final ServiceLogger logger = ServiceLogger.forService('UserService');
 
@@ -101,6 +113,14 @@ class UserService {
         'hasCompletedOnboarding': false,
         'hasReaderPass': false,
         'createdAt': FieldValue.serverTimestamp(),
+        // Preference defaults — mirror UserModel constructor defaults.
+        UserPreferenceField.TYPING_SOUND: true,
+        UserPreferenceField.HAPTICS: true,
+        UserPreferenceField.REVEAL: false,
+        UserPreferenceField.BLUR: true,
+        UserPreferenceField.COLORED_TEXT: true,
+        UserPreferenceField.TEXT_SPEED: TextSpeed.classic.storageValue,
+        UserPreferenceField.SAVED_COURSE_IDS: <String>[],
       };
 
       await userDoc(userId).set(profileData);
@@ -112,6 +132,32 @@ class UserService {
       logger.failure('createUser', '$error');
       return false;
     }
+  }
+
+  // * Preference updates — one field per call, cheap and round-trippable.
+
+  static Future<bool> updateTypingSound(bool enabled) {
+    return updateField(UserPreferenceField.TYPING_SOUND, enabled, 'updateTypingSound');
+  }
+
+  static Future<bool> updateHaptics(bool enabled) {
+    return updateField(UserPreferenceField.HAPTICS, enabled, 'updateHaptics');
+  }
+
+  static Future<bool> updateReveal(bool enabled) {
+    return updateField(UserPreferenceField.REVEAL, enabled, 'updateReveal');
+  }
+
+  static Future<bool> updateBlur(bool enabled) {
+    return updateField(UserPreferenceField.BLUR, enabled, 'updateBlur');
+  }
+
+  static Future<bool> updateColoredText(bool enabled) {
+    return updateField(UserPreferenceField.COLORED_TEXT, enabled, 'updateColoredText');
+  }
+
+  static Future<bool> updateTextSpeed(TextSpeed speed) {
+    return updateField(UserPreferenceField.TEXT_SPEED, speed.storageValue, 'updateTextSpeed');
   }
 
   // * Field updates
@@ -130,6 +176,54 @@ class UserService {
 
   static Future<bool> updateReaderPass(bool hasReaderPass) async {
     return updateField('hasReaderPass', hasReaderPass, 'updateReaderPass');
+  }
+
+  // * Saved courses (bookshelf)
+
+  static Future<bool> addSavedCourseId(String courseId) async {
+    final String? userId = AuthService.currentUserId;
+    final bool hasNoUser = userId == null;
+
+    if (hasNoUser) {
+      logger.info('addSavedCourseId', 'No user logged in');
+      return false;
+    }
+
+    try {
+      await userDoc(userId).update({
+        UserPreferenceField.SAVED_COURSE_IDS: FieldValue.arrayUnion([courseId]),
+      });
+
+      logger.success('addSavedCourseId', 'courseId=$courseId');
+
+      return true;
+    } on Exception catch (error) {
+      logger.failure('addSavedCourseId', '$error');
+      return false;
+    }
+  }
+
+  static Future<bool> removeSavedCourseId(String courseId) async {
+    final String? userId = AuthService.currentUserId;
+    final bool hasNoUser = userId == null;
+
+    if (hasNoUser) {
+      logger.info('removeSavedCourseId', 'No user logged in');
+      return false;
+    }
+
+    try {
+      await userDoc(userId).update({
+        UserPreferenceField.SAVED_COURSE_IDS: FieldValue.arrayRemove([courseId]),
+      });
+
+      logger.success('removeSavedCourseId', 'courseId=$courseId');
+
+      return true;
+    } on Exception catch (error) {
+      logger.failure('removeSavedCourseId', '$error');
+      return false;
+    }
   }
 
   // * FCM token management

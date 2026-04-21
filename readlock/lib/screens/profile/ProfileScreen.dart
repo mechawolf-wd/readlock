@@ -1,9 +1,17 @@
-// Profile settings screen
-// Contains all settings organized into menu sections
+// Profile settings screen.
+// Loads preferences from /users/{id} on mount, persists every toggle/segment
+// change back to Firestore so state survives across devices and sessions.
 
 import 'package:flutter/material.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
+import 'package:readlock/constants/RLTypography.dart';
+import 'package:readlock/constants/RLUIStrings.dart';
+import 'package:readlock/design_system/RLConfirmationDialog.dart';
+import 'package:readlock/design_system/RLUtility.dart';
+import 'package:readlock/models/UserModel.dart';
 import 'package:readlock/screens/profile/MenuWidgets.dart';
+import 'package:readlock/services/auth/AuthService.dart';
+import 'package:readlock/services/auth/UserService.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -35,62 +43,228 @@ class ProfileContent extends StatefulWidget {
 }
 
 class ProfileContentState extends State<ProfileContent> {
-  bool soundsEnabled = true;
+  bool typingSoundEnabled = true;
   bool hapticsEnabled = true;
-  bool revealAllTrueFalse = false;
+  bool revealEnabled = false;
   bool blurEnabled = true;
   bool coloredTextEnabled = true;
-  bool notificationsEnabled = true;
-  String textSpeed = 'Classic';
+  TextSpeed textSpeed = TextSpeed.classic;
+  bool isLoggingOut = false;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchUserPreferences();
+  }
+
+  // * Load preferences from /users/{id}.
+
+  Future<void> fetchUserPreferences() async {
+    final UserModel? user = await UserService.getCurrentUserProfile();
+    final bool hasNoUser = user == null;
+    final bool isUnmounted = !mounted;
+
+    if (isUnmounted) {
+      return;
+    }
+
+    if (hasNoUser) {
+      return;
+    }
+
+    setState(() {
+      typingSoundEnabled = user.typingSound;
+      hapticsEnabled = user.haptics;
+      revealEnabled = user.reveal;
+      blurEnabled = user.blur;
+      coloredTextEnabled = user.coloredText;
+      textSpeed = user.textSpeed;
+    });
+  }
+
+  // * Individual preference handlers — optimistic setState + fire-and-forget
+  // persistence to Firestore. Intentionally not awaited so the UI stays
+  // snappy; UserService logs any write failures for diagnostics.
 
   void handleSoundsToggled(bool value) {
-    setState(() => soundsEnabled = value);
+    setState(() => typingSoundEnabled = value);
+    UserService.updateTypingSound(value);
   }
 
   void handleHapticsToggled(bool value) {
     setState(() => hapticsEnabled = value);
+    UserService.updateHaptics(value);
   }
 
-  void handleRevealAllTrueFalseToggled(bool value) {
-    setState(() => revealAllTrueFalse = value);
+  void handleRevealToggled(bool value) {
+    setState(() => revealEnabled = value);
+    UserService.updateReveal(value);
   }
 
   void handleBlurToggled(bool value) {
     setState(() => blurEnabled = value);
+    UserService.updateBlur(value);
   }
 
   void handleColoredTextToggled(bool value) {
     setState(() => coloredTextEnabled = value);
+    UserService.updateColoredText(value);
   }
 
-  void handleNotificationsToggled(bool value) {
-    setState(() => notificationsEnabled = value);
+  void handleTextSpeedChanged(String uiLabel) {
+    final TextSpeed newSpeed = mapLabelToTextSpeed(uiLabel);
+
+    setState(() => textSpeed = newSpeed);
+    UserService.updateTextSpeed(newSpeed);
   }
 
-  void handleTextSpeedChanged(String value) {
-    setState(() => textSpeed = value);
+  TextSpeed mapLabelToTextSpeed(String uiLabel) {
+    switch (uiLabel) {
+      case RLUIStrings.SPEED_CAREFUL:
+        {
+          return TextSpeed.careful;
+        }
+      case RLUIStrings.SPEED_SPEED:
+        {
+          return TextSpeed.speed;
+        }
+      default:
+        {
+          return TextSpeed.classic;
+        }
+    }
+  }
+
+  String mapTextSpeedToLabel(TextSpeed speed) {
+    switch (speed) {
+      case TextSpeed.careful:
+        {
+          return RLUIStrings.SPEED_CAREFUL;
+        }
+      case TextSpeed.speed:
+        {
+          return RLUIStrings.SPEED_SPEED;
+        }
+      case TextSpeed.classic:
+        {
+          return RLUIStrings.SPEED_CLASSIC;
+        }
+    }
   }
 
   void handleSupportTap() {}
 
+  // * Logout flow.
+  //
+  // The settings sheet (and its confirmation dialog) must stay visible for the
+  // whole trip: tap → confirm → sign out → close. Only after AuthService.signOut
+  // resolves do we pop the sheet. MainNavigation listens to auth state changes
+  // and re-presents the login sheet on its own, so we don't push it manually.
+
+  void handleLogoutTap() {
+    if (isLoggingOut) {
+      return;
+    }
+
+    RLConfirmationDialog.show(
+      context,
+      title: RLUIStrings.LOGOUT_CONFIRMATION_TITLE,
+      message: RLUIStrings.LOGOUT_CONFIRMATION_MESSAGE,
+      cta: RLConfirmationAction(
+        label: RLUIStrings.LOGOUT_CONFIRMATION_CONFIRM,
+        variant: RLConfirmationVariant.destructive,
+        onTap: handleLogoutConfirmed,
+      ),
+      cancel: rlDismissCancelAction(),
+    );
+  }
+
+  Future<void> handleLogoutConfirmed() async {
+    if (isLoggingOut) {
+      return;
+    }
+
+    setState(() {
+      isLoggingOut = true;
+    });
+
+    await AuthService.signOut();
+
+    // The settings sheet is this widget's ancestor route — only pop it once
+    // the sign-out is complete so the user sees the in-progress state.
+    if (mounted) {
+      Navigator.of(context).maybePop();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return MenuSection(
-      soundsEnabled: soundsEnabled,
+    final String textSpeedLabel = mapTextSpeedToLabel(textSpeed);
+
+    final Widget menu = MenuSection(
+      soundsEnabled: typingSoundEnabled,
       hapticsEnabled: hapticsEnabled,
-      revealAllTrueFalse: revealAllTrueFalse,
+      revealAllTrueFalse: revealEnabled,
       blurEnabled: blurEnabled,
       coloredTextEnabled: coloredTextEnabled,
-      notificationsEnabled: notificationsEnabled,
-      textSpeed: textSpeed,
+      textSpeed: textSpeedLabel,
       onSoundsToggled: handleSoundsToggled,
       onHapticsToggled: handleHapticsToggled,
-      onRevealAllTrueFalseToggled: handleRevealAllTrueFalseToggled,
+      onRevealAllTrueFalseToggled: handleRevealToggled,
       onBlurToggled: handleBlurToggled,
       onColoredTextToggled: handleColoredTextToggled,
-      onNotificationsToggled: handleNotificationsToggled,
       onTextSpeedChanged: handleTextSpeedChanged,
       onSupportTap: handleSupportTap,
+      onLogoutTap: handleLogoutTap,
+    );
+
+    // During logout: freeze interactions so the user can't tap anything while
+    // the auth round-trip is in flight. A small banner tells them what's
+    // happening. The sheet itself stays open until handleLogoutConfirmed pops.
+    if (isLoggingOut) {
+      return Div.column([
+        LogoutProgressBanner(),
+
+        const Spacing.height(RLDS.spacing12),
+
+        IgnorePointer(
+          child: Opacity(opacity: 0.4, child: menu),
+        ),
+      ], crossAxisAlignment: CrossAxisAlignment.stretch);
+    }
+
+    return menu;
+  }
+
+  Widget LogoutProgressBanner() {
+    final BoxDecoration bannerDecoration = BoxDecoration(
+      color: RLDS.backgroundLight,
+      borderRadius: RLDS.borderRadiusSmall,
+    );
+
+    final Widget spinner = const SizedBox(
+      width: 16,
+      height: 16,
+      child: CircularProgressIndicator(strokeWidth: 2),
+    );
+
+    return Div.row(
+      [
+        spinner,
+
+        const Spacing.width(RLDS.spacing12),
+
+        RLTypography.bodyMedium(
+          RLUIStrings.LOGOUT_IN_PROGRESS_LABEL,
+          color: RLDS.textSecondary,
+        ),
+      ],
+      padding: const EdgeInsets.symmetric(
+        horizontal: RLDS.spacing16,
+        vertical: RLDS.spacing12,
+      ),
+      decoration: bannerDecoration,
+      mainAxisAlignment: MainAxisAlignment.start,
     );
   }
 }

@@ -12,4 +12,12 @@ class CourseDataService {
   static Future<JSONMap?> fetchCourseById(String courseId) {
     return FirebaseCourseService.fetchCourseById(courseId);
   }
+
+  static Future<JSONList> searchCoursesByTitle(String titlePrefix) {
+    return FirebaseCourseService.searchCoursesByTitle(titlePrefix);
+  }
+
+  static Future<JSONList> fetchCoursesByIds(List<String> courseIds) {
+    return FirebaseCourseService.fetchCoursesByIds(courseIds);
+  }
 }

@@ -3,6 +3,7 @@
 
 import 'package:flutter/material.dart' hide Typography;
 import 'package:readlock/bottom_sheets/RLBottomSheet.dart';
+import 'package:readlock/design_system/RLButton.dart';
 import 'package:readlock/design_system/RLUtility.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
@@ -126,27 +127,13 @@ class FeedbackSheet extends StatelessWidget {
   }
 
   Widget FooterButton() {
-    final BoxDecoration buttonDecoration = BoxDecoration(
-      color: buttonColor,
-      borderRadius: BorderRadius.circular(12),
-    );
-
     return Builder(
       builder: (context) {
-        return GestureDetector(
+        return RLButton.primary(
+          label: RLUIStrings.FEEDBACK_GOT_IT_LABEL,
+          color: buttonColor,
+          margin: const EdgeInsets.all(RLDS.spacing24),
           onTap: () => Navigator.of(context).pop(),
-          child: Container(
-            width: double.infinity,
-            margin: const EdgeInsets.all(24),
-            padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
-            decoration: buttonDecoration,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                RLTypography.bodyMedium(RLUIStrings.FEEDBACK_GOT_IT_LABEL, color: RLDS.white),
-              ],
-            ),
-          ),
         );
       },
     );

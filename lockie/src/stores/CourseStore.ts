@@ -23,6 +23,8 @@ function generateUid(): string {
 // and using them as keys would force spurious remounts.
 function ensureSwipeUids(data: CourseData) {
   for (const course of data.courses) {
+    course.language ??= 'EN'
+
     for (const segment of course.segments) {
       const segmentHasNoUid = !(segment as any)._uid
 

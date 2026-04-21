@@ -2,7 +2,7 @@
 // Three font families: display (8-bit), UI (clean), reading (serif)
 //
 // Display — Press Start 2P: headings, author names, standout elements
-// UI — Poppins: buttons, labels, menus, general interface text
+// UI — JetBrains MONO: buttons, labels, menus, general interface text
 // Reading — Playfair Display: course swipe content, long-form text
 
 import 'package:flutter/material.dart';
@@ -46,9 +46,9 @@ class RLTypography {
     letterSpacing: 0,
   );
 
-  // * UI font — Poppins (clean, for buttons, labels, menus)
+  // * UI font — JetBrains MONO (clean, for buttons, labels, menus)
 
-  static final TextStyle bodyLargeStyle = GoogleFonts.poppins(
+  static final TextStyle bodyLargeStyle = GoogleFonts.jetBrainsMono(
     fontSize: 16,
     fontWeight: RLDS.weightMedium,
     color: RLDS.textPrimary,
@@ -56,7 +56,7 @@ class RLTypography {
     letterSpacing: 0.1,
   );
 
-  static final TextStyle bodyMediumStyle = GoogleFonts.poppins(
+  static final TextStyle bodyMediumStyle = GoogleFonts.jetBrainsMono(
     fontSize: 14,
     fontWeight: RLDS.weightRegular,
     color: RLDS.textPrimary,
@@ -64,7 +64,7 @@ class RLTypography {
     letterSpacing: 0.15,
   );
 
-  static final TextStyle bodySmallStyle = GoogleFonts.poppins(
+  static final TextStyle bodySmallStyle = GoogleFonts.jetBrainsMono(
     fontSize: 12,
     fontWeight: RLDS.weightRegular,
     color: RLDS.textSecondary,

@@ -64,7 +64,7 @@ class CCEstimateState extends State<CCEstimate>
       child: Div.column(
         MainContent(),
         color: RLDS.backgroundDark,
-        padding: const [20, 16],
+        padding: RLDS.contentPaddingInsets,
         crossAxisAlignment: CrossAxisAlignment.stretch,
       ),
     );
@@ -280,7 +280,7 @@ class CCEstimateState extends State<CCEstimate>
       // Your estimate
       Expanded(
         child: Div.column([
-          Text('YOUR ESTIMATE', style: comparisonLabelStyle, textAlign: TextAlign.center),
+          Text(RLUIStrings.ESTIMATE_COMPARISON_YOUR_LABEL, style: comparisonLabelStyle, textAlign: TextAlign.center),
           const Spacing.height(4),
           RLTypography.headingMedium(
             '${currentEstimate.round()}%',
@@ -296,7 +296,7 @@ class CCEstimateState extends State<CCEstimate>
       // Actual answer
       Expanded(
         child: Div.column([
-          Text('ACTUAL', style: comparisonLabelStyle, textAlign: TextAlign.center),
+          Text(RLUIStrings.ESTIMATE_COMPARISON_ACTUAL_LABEL, style: comparisonLabelStyle, textAlign: TextAlign.center),
           const Spacing.height(4),
           RLTypography.headingMedium(
             '${getCorrectPercentage()}%',

@@ -10,6 +10,7 @@ import 'package:readlock/constants/RLUIStrings.dart';
 import 'package:readlock/constants/DartAliases.dart';
 import 'package:readlock/design_system/RLUtility.dart';
 import 'package:readlock/design_system/RLCard.dart';
+import 'package:readlock/design_system/RLLoadingIndicator.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 
@@ -119,28 +120,42 @@ class HomeScreenState extends State<HomeScreen> {
 
   Widget HomeBody() {
     if (isCoursesLoading) {
-      return const Center(child: CircularProgressIndicator());
-    }
-
-    final bool hasNoCourses = availableCourses.isEmpty;
-
-    if (hasNoCourses) {
-      return Center(
-        child: Text(
-          RLUIStrings.NO_COURSES_MESSAGE,
-          style: RLTypography.bodyMediumStyle.copyWith(color: RLDS.textSecondary),
-        ),
-      );
+      return const RLLoadingIndicator.bird();
     }
 
     return Padding(
       padding: const EdgeInsets.all(RLDS.spacing24),
       child: Div.column(
         [
-          RandomLessonSection(),
+          RLTypography.headingLarge(RLUIStrings.HOME_TAB_LABEL),
+
+          const Spacing.height(RLDS.spacing40),
+
+          Expanded(child: HomeContent()),
         ],
         crossAxisAlignment: CrossAxisAlignment.stretch,
       ),
+    );
+  }
+
+  Widget HomeContent() {
+    final bool hasNoCourses = availableCourses.isEmpty;
+
+    if (hasNoCourses) {
+      return Center(
+        child: RLTypography.bodyMedium(
+          RLUIStrings.NO_COURSES_MESSAGE,
+          color: RLDS.textSecondary,
+          textAlign: TextAlign.center,
+        ),
+      );
+    }
+
+    return Div.column(
+      [
+        RandomLessonSection(),
+      ],
+      crossAxisAlignment: CrossAxisAlignment.stretch,
     );
   }
 

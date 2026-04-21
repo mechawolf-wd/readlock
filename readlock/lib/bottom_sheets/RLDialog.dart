@@ -1,5 +1,5 @@
-// Centralized dialog wrapper for the Readlock application
-// Provides consistent styling and layout for all modal dialogs
+// Generic dialog primitives for the Readlock application.
+// For two-action confirmations, use RLConfirmationDialog in design_system/.
 
 import 'package:flutter/material.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
@@ -27,49 +27,6 @@ class RLDialog {
           child: child,
         );
       },
-    );
-  }
-
-  // * Confirm dialog — title, message, primary + secondary action
-  static void showConfirm(
-    BuildContext context, {
-    required String title,
-    required String message,
-    required String confirmLabel,
-    required VoidCallback onConfirm,
-    String cancelLabel = 'Cancel',
-    VoidCallback? onCancel,
-    Color? confirmColor,
-    Color? cancelColor,
-    bool isDismissible = true,
-    bool horizontalButtons = false,
-  }) {
-    final Color buttonColor = confirmColor ?? RLDS.success;
-    final Color secondaryColor = cancelColor ?? RLDS.textSecondary;
-
-    show(
-      context,
-      isDismissible: isDismissible,
-      child: ConfirmDialogContent(
-        title: title,
-        message: message,
-        confirmLabel: confirmLabel,
-        cancelLabel: cancelLabel,
-        confirmColor: buttonColor,
-        cancelColor: secondaryColor,
-        horizontalButtons: horizontalButtons,
-        onConfirm: () {
-          Navigator.of(context).pop();
-          onConfirm();
-        },
-        onCancel: () {
-          Navigator.of(context).pop();
-
-          if (onCancel != null) {
-            onCancel();
-          }
-        },
-      ),
     );
   }
 
@@ -118,7 +75,7 @@ class DialogContainer extends StatelessWidget {
 
     return Center(
       child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: RLDS.spacing32),
+        margin: const EdgeInsets.symmetric(horizontal: RLDS.spacing24),
         decoration: dialogDecoration,
         clipBehavior: Clip.antiAlias,
         child: Material(
@@ -128,110 +85,6 @@ class DialogContainer extends StatelessWidget {
       ),
     );
   }
-}
-
-// * Confirm dialog content — two-action layout
-class ConfirmDialogContent extends StatelessWidget {
-  final String title;
-  final String message;
-  final String confirmLabel;
-  final String cancelLabel;
-  final Color confirmColor;
-  final Color cancelColor;
-  final bool horizontalButtons;
-  final VoidCallback onConfirm;
-  final VoidCallback onCancel;
-
-  const ConfirmDialogContent({
-    super.key,
-    required this.title,
-    required this.message,
-    required this.confirmLabel,
-    required this.cancelLabel,
-    required this.confirmColor,
-    required this.cancelColor,
-    required this.onConfirm,
-    required this.onCancel,
-    this.horizontalButtons = false,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(RLDS.spacing24),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          // Title
-          RLTypography.headingMedium(title),
-
-          const Spacing.height(RLDS.spacing8),
-
-          // Message
-          RLTypography.bodyMedium(message, color: RLDS.textSecondary),
-
-          const Spacing.height(RLDS.spacing24),
-
-          // Action buttons (layout depends on horizontalButtons flag)
-          ActionButtons(),
-        ],
-      ),
-    );
-  }
-
-  Widget ActionButtons() {
-    if (horizontalButtons) {
-      return Row(
-        children: [
-          Expanded(
-            child: RLButton.primary(
-              label: cancelLabel,
-              color: cancelColor,
-              onTap: onCancel,
-              padding: dialogButtonPadding,
-            ),
-          ),
-
-          const Spacing.width(RLDS.spacing12),
-
-          Expanded(
-            child: RLButton.primary(
-              label: confirmLabel,
-              color: confirmColor,
-              onTap: onConfirm,
-              padding: dialogButtonPadding,
-            ),
-          ),
-        ],
-      );
-    }
-
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        RLButton.primary(
-          label: confirmLabel,
-          color: confirmColor,
-          onTap: onConfirm,
-          padding: dialogButtonPadding,
-        ),
-
-        const Spacing.height(RLDS.spacing12),
-
-        RLButton.tertiary(
-          label: cancelLabel,
-          color: cancelColor,
-          onTap: onCancel,
-        ),
-      ],
-    );
-  }
-
-  static const EdgeInsets dialogButtonPadding = EdgeInsets.symmetric(
-    vertical: RLDS.spacing16,
-  );
 }
 
 // * Alert dialog content — single-action layout

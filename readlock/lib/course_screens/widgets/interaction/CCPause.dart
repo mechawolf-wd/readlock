@@ -1,22 +1,25 @@
-// Motivational breathing slide between lesson sections
-// Gives the reader a short emotional pause with an icon and an encouraging message
+// Motivational breathing slide between lesson sections.
+// Shows the reader's chosen bird in its idle animation and progressively
+// types out the motivational message.
 
 import 'package:flutter/material.dart' hide Typography;
-import 'package:readlock/design_system/RLUtility.dart';
-import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
+import 'package:readlock/constants/RLTypography.dart';
+import 'package:readlock/design_system/RLUtility.dart';
+import 'package:readlock/screens/profile/BirdPicker.dart';
+import 'package:readlock/utility_widgets/text_animation/ProgressiveText.dart';
 
-
-import 'package:pixelarticons/pixel.dart';
 class CCPause extends StatelessWidget {
   final String text;
   final String? iconName;
 
   const CCPause({super.key, required this.text, this.iconName});
 
+  static const double birdPreviewSize = BIRD_PREVIEW_SIZE_SMALL;
+  static const double birdZoom = 1.0;
+
   @override
   Widget build(BuildContext context) {
-    // Extract styling above build method
     final TextStyle motivationalTextStyle = RLTypography.readingLargeStyle.copyWith(
       fontWeight: FontWeight.w600,
       color: RLDS.textPrimary.withValues(alpha: 0.7),
@@ -24,28 +27,22 @@ class CCPause extends StatelessWidget {
 
     return Div.column(
       [
-        // Simple motivational content on plain background
-        SimpleMotivationalContent(motivationalTextStyle: motivationalTextStyle),
+        MotivationalContent(motivationalTextStyle: motivationalTextStyle),
       ],
       color: RLDS.backgroundDark,
-      padding: const EdgeInsets.symmetric(
-        horizontal: 24,
-        vertical: 40,
-      ),
+      padding: RLDS.contentPaddingInsets,
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.center,
     );
   }
 
-  Widget SimpleMotivationalContent({required TextStyle motivationalTextStyle}) {
+  Widget MotivationalContent({required TextStyle motivationalTextStyle}) {
     return Div.column(
       [
-        // Small motivational icon
-        MotivationalIcon(),
+        BirdCompanion(),
 
         const Spacing.height(16),
 
-        // Short motivational text
         MotivationalText(textStyle: motivationalTextStyle),
       ],
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -53,77 +50,31 @@ class CCPause extends StatelessWidget {
     );
   }
 
-  Widget MotivationalIcon() {
-    final IconData motivationalIconData = getIconDataFromName();
-    final Color motivationalIconColor = RLDS.success.withValues(alpha: 0.8);
-
-    final Widget IconWidget = Icon(
-      motivationalIconData,
-      size: 32,
-      color: motivationalIconColor,
+  // Subscribes to selectedBirdNotifier so the sprite updates whenever the
+  // user switches birds in Settings. Always renders the idle tag.
+  Widget BirdCompanion() {
+    return ValueListenableBuilder<BirdOption>(
+      valueListenable: selectedBirdNotifier,
+      builder: BirdBuilder,
     );
+  }
 
-    return IconWidget;
+  Widget BirdBuilder(BuildContext context, BirdOption bird, Widget? _) {
+    return BirdAnimationSprite(
+      bird: bird,
+      previewSize: birdPreviewSize,
+      zoom: birdZoom,
+    );
   }
 
   Widget MotivationalText({required TextStyle textStyle}) {
-    return Text(text, style: textStyle, textAlign: TextAlign.center);
-  }
-
-  IconData getIconDataFromName() {
-    switch (iconName?.toLowerCase()) {
-      case 'rocket':
-        {
-          return Pixel.trendingup;
-        }
-      case 'star':
-        {
-          return Pixel.moonstars;
-        }
-      case 'fire':
-        {
-          return Pixel.zap;
-        }
-      case 'trophy':
-        {
-          return Pixel.trophy;
-        }
-      case 'heart':
-        {
-          return Pixel.heart;
-        }
-      case 'thumbs_up':
-        {
-          return Pixel.heart;
-        }
-      case 'celebration':
-        {
-          return Pixel.trophy;
-        }
-      case 'target':
-        {
-          return Pixel.reload;
-        }
-      case 'lightning':
-        {
-          return Pixel.zap;
-        }
-      case 'crown':
-        {
-          return Pixel.trophy;
-        }
-      case 'check':
-        {
-          return Pixel.check;
-        }
-      case 'progress':
-        {
-          return Pixel.trendingup;
-        }
-      default:
-        {
-          return Pixel.trendingup;
-        }
-    }
+    return ProgressiveText(
+      textSegments: [text],
+      textStyle: textStyle,
+      textAlignment: CrossAxisAlignment.center,
+      textAlign: TextAlign.center,
+      blurCompletedSentences: false,
+      enableTapToReveal: false,
+    );
   }
 }

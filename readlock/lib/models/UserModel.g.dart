@@ -15,6 +15,17 @@ UserModel _$UserModelFromJson(Map<String, dynamic> json) => UserModel(
   createdAt: timestampFromJson(json['createdAt']),
   hasCompletedOnboarding: json['hasCompletedOnboarding'] as bool? ?? false,
   hasReaderPass: json['hasReaderPass'] as bool? ?? false,
+  typingSound: json['typingSound'] as bool? ?? true,
+  haptics: json['haptics'] as bool? ?? true,
+  reveal: json['reveal'] as bool? ?? false,
+  blur: json['blur'] as bool? ?? true,
+  coloredText: json['coloredText'] as bool? ?? true,
+  textSpeed: _userModelDecodeTextSpeed(json['textSpeed']) ?? TextSpeed.classic,
+  savedCourseIds:
+      (json['savedCourseIds'] as List<dynamic>?)
+          ?.map((item) => item as String)
+          .toList() ??
+      <String>[],
 );
 
 Map<String, dynamic> _$UserModelToJson(UserModel instance) => <String, dynamic>{
@@ -25,4 +36,31 @@ Map<String, dynamic> _$UserModelToJson(UserModel instance) => <String, dynamic>{
   'createdAt': timestampToJson(instance.createdAt),
   'hasCompletedOnboarding': instance.hasCompletedOnboarding,
   'hasReaderPass': instance.hasReaderPass,
+  'typingSound': instance.typingSound,
+  'haptics': instance.haptics,
+  'reveal': instance.reveal,
+  'blur': instance.blur,
+  'coloredText': instance.coloredText,
+  'textSpeed': _textSpeedEnumMap[instance.textSpeed]!,
+  'savedCourseIds': instance.savedCourseIds,
 };
+
+const _textSpeedEnumMap = {
+  TextSpeed.careful: 'careful',
+  TextSpeed.classic: 'classic',
+  TextSpeed.speed: 'speed',
+};
+
+TextSpeed? _userModelDecodeTextSpeed(dynamic source) {
+  if (source == null) {
+    return null;
+  }
+
+  for (final MapEntry<TextSpeed, String> entry in _textSpeedEnumMap.entries) {
+    if (entry.value == source) {
+      return entry.key;
+    }
+  }
+
+  return null;
+}

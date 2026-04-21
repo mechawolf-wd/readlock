@@ -8,9 +8,11 @@ import 'package:flame/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:readlock/constants/RLUIStrings.dart';
 
-// * Sprite sheet layout — most birds use 64x64 tiles, peacock uses 128x128
-const double BIRD_DEFAULT_FRAME_SIZE = 64.0;
-const double BIRD_PEACOCK_FRAME_SIZE = 128.0;
+// * Sprite sheet layout — every bird sits in 32x32 art centered inside a
+// 64x64 cell. The widget samples the inner region per frame to drop the
+// transparent padding around each bird.
+const double BIRD_FRAME_SIZE = 64.0;
+const double BIRD_CONTENT_SIZE = 32.0;
 const double BIRD_ANIMATION_STEP_TIME = 0.15;
 const double BIRD_PREVIEW_SIZE_LARGE = 128.0;
 const double BIRD_PREVIEW_SIZE_SMALL = 96.0;
@@ -21,14 +23,12 @@ class BirdOption {
   final String assetFile;
   final int firstFrame;
   final int frameCount;
-  final double frameSize;
 
   const BirdOption({
     required this.name,
     required this.assetFile,
     required this.firstFrame,
     required this.frameCount,
-    this.frameSize = BIRD_DEFAULT_FRAME_SIZE,
   });
 }
 
@@ -61,14 +61,6 @@ const List<BirdOption> BIRD_OPTIONS = [
     firstFrame: 1,
     frameCount: 4,
   ),
-
-  BirdOption(
-    name: RLUIStrings.BIRD_PEACOCK,
-    assetFile: 'Peacock.png',
-    firstFrame: 1,
-    frameCount: 4,
-    frameSize: BIRD_PEACOCK_FRAME_SIZE,
-  ),
 ];
 
 // Shared Images cache so Flame.images doesn't need reconfiguring globally
@@ -92,12 +84,19 @@ class BirdAnimationSprite extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final SpriteAnimationData animationData = SpriteAnimationData.sequenced(
-      amount: bird.frameCount,
-      stepTime: BIRD_ANIMATION_STEP_TIME,
-      textureSize: Vector2.all(bird.frameSize),
-      texturePosition: Vector2(bird.firstFrame * bird.frameSize, 0),
-    );
+    const double innerOffset = (BIRD_FRAME_SIZE - BIRD_CONTENT_SIZE) / 2;
+
+    final List<SpriteAnimationFrameData> frames = List.generate(bird.frameCount, (frameIndex) {
+      final double cellOriginX = (bird.firstFrame + frameIndex) * BIRD_FRAME_SIZE;
+
+      return SpriteAnimationFrameData(
+        srcPosition: Vector2(cellOriginX + innerOffset, innerOffset),
+        srcSize: Vector2.all(BIRD_CONTENT_SIZE),
+        stepTime: BIRD_ANIMATION_STEP_TIME,
+      );
+    });
+
+    final SpriteAnimationData animationData = SpriteAnimationData(frames);
 
     final double renderedSize = previewSize * zoom;
 
@@ -108,15 +107,9 @@ class BirdAnimationSprite extends StatelessWidget {
     );
 
     return SizedBox(
-      width: previewSize,
-      height: previewSize,
-      child: ClipRect(
-        child: OverflowBox(
-          maxWidth: renderedSize,
-          maxHeight: renderedSize,
-          child: animationWidget,
-        ),
-      ),
+      width: renderedSize,
+      height: renderedSize,
+      child: animationWidget,
     );
   }
 }

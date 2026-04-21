@@ -12,7 +12,7 @@ import 'package:readlock/design_system/RLUtility.dart';
 import 'package:readlock/design_system/RLFeedbackSnackbar.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/screens/StreakplierRewardScreen.dart';
-import 'package:readlock/bottom_sheets/course/QuitConfirmationSheet.dart';
+import 'package:readlock/design_system/RLConfirmationDialog.dart';
 import 'package:readlock/constants/DartAliases.dart';
 import 'package:readlock/services/ScreenProtectionService.dart';
 import 'package:readlock/services/feedback/SoundService.dart';
@@ -54,9 +54,10 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
   // Loading state
   bool isLoading = true;
 
-  // Progress bar reveal state (tap progress bar to reveal; tap elsewhere to blur)
+  // Progress bar reveal state (tap chrome to reveal; tap elsewhere to blur)
   bool isProgressBarRevealed = false;
   final GlobalKey progressBarKey = GlobalKey();
+  final GlobalKey topChromeKey = GlobalKey();
 
   Color getCourseAccentColor() {
     final String? hex = courseData?['color'] as String?;
@@ -150,24 +151,28 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
     );
   }
 
-  // Re-blur the progress bar when the user taps anywhere outside of it
+  // Re-blur the top chrome when the user taps outside of it. "Outside" means
+  // outside the whole TopProgressBar row (back button, progress bar, bookmark)
+  // — not just the progress bar itself. Otherwise a tap on close/bookmark
+  // would re-blur first, then the rebuilt GestureDetector would route the tap
+  // back to reveal instead of firing the intended action.
   void handleGlobalPointerDown(PointerDownEvent event) {
     if (!isProgressBarRevealed) {
       return;
     }
 
-    final RenderBox? progressBarBox =
-        progressBarKey.currentContext?.findRenderObject() as RenderBox?;
+    final RenderBox? topChromeBox =
+        topChromeKey.currentContext?.findRenderObject() as RenderBox?;
 
-    if (progressBarBox == null) {
+    if (topChromeBox == null) {
       return;
     }
 
-    final Offset barOrigin = progressBarBox.localToGlobal(Offset.zero);
-    final Rect barRect = barOrigin & progressBarBox.size;
-    final bool isTapInsideBar = barRect.contains(event.position);
+    final Offset chromeOrigin = topChromeBox.localToGlobal(Offset.zero);
+    final Rect chromeRect = chromeOrigin & topChromeBox.size;
+    final bool isTapInsideChrome = chromeRect.contains(event.position);
 
-    if (isTapInsideBar) {
+    if (isTapInsideChrome) {
       return;
     }
 
@@ -230,23 +235,43 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
 
       // Bookmark slide icon
       BookmarkButton(),
-    ], padding: RLDS.spacing16);
+    ], key: topChromeKey, padding: RLDS.spacing16);
   }
 
-  // Back button for navigation — matches the blurred progress chrome
+  // Back button for navigation — matches the blurred progress chrome.
+  // Only fires the quit-confirmation action when the chrome is revealed; if the
+  // bar is still blurred, the first tap just reveals it (mirrors the progress
+  // bar's reveal-on-first-tap behaviour).
   Widget BackNavigationButton() {
+    final VoidCallback backTapHandler = getChromeTapHandler(showQuitConfirmationSheet);
+
     return GestureDetector(
-      onTap: showQuitConfirmationSheet,
+      onTap: backTapHandler,
       child: ChromeBlur(child: BackNavigationIcon),
     );
   }
 
-  // Bookmark button for slide favoriting — matches the blurred progress chrome
+  // Bookmark button for slide favoriting — same reveal-before-action semantics.
   Widget BookmarkButton() {
+    final VoidCallback bookmarkTapHandler = getChromeTapHandler(handleBookmarkTap);
+
     return GestureDetector(
-      onTap: handleBookmarkTap,
+      onTap: bookmarkTapHandler,
       child: ChromeBlur(child: BookmarkIcon),
     );
+  }
+
+  // Wraps a chrome action so the first tap on a blurred chrome element reveals
+  // the whole top bar; only once revealed does the tap propagate to the real
+  // action. Keeps the close and bookmark icons from firing through the blur.
+  VoidCallback getChromeTapHandler(VoidCallback action) {
+    final bool isRevealed = isProgressBarRevealed;
+
+    if (isRevealed) {
+      return action;
+    }
+
+    return handleProgressBarTap;
   }
 
   // Shared blur + dim treatment for the top chrome (close, progress, bookmark)
@@ -397,9 +422,21 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
 
   // Show quit confirmation dialog
   void showQuitConfirmationSheet() {
-    QuitConfirmationSheet.show(
-      context: context,
-      onQuitTap: navigateBackToRoadmap,
+    RLConfirmationDialog.show(
+      context,
+      title: RLUIStrings.QUIT_CONFIRMATION_TITLE,
+      message: RLUIStrings.QUIT_CONFIRMATION_MESSAGE,
+      cta: RLConfirmationAction(
+        label: RLUIStrings.QUIT_CONFIRMATION_LEARN_BUTTON,
+        variant: RLConfirmationVariant.success,
+        onTap: () {},
+      ),
+      cancel: RLConfirmationAction(
+        label: RLUIStrings.QUIT_CONFIRMATION_QUIT_BUTTON,
+        variant: RLConfirmationVariant.destructive,
+        onTap: navigateBackToRoadmap,
+      ),
+      layout: RLConfirmationLayout.horizontal,
     );
   }
 

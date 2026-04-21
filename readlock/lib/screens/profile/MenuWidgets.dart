@@ -19,16 +19,15 @@ class MenuSection extends StatelessWidget {
   final bool revealAllTrueFalse;
   final bool blurEnabled;
   final bool coloredTextEnabled;
-  final bool notificationsEnabled;
   final String textSpeed;
   final ValueChanged<bool> onSoundsToggled;
   final ValueChanged<bool> onHapticsToggled;
   final ValueChanged<bool> onRevealAllTrueFalseToggled;
   final ValueChanged<bool> onBlurToggled;
   final ValueChanged<bool> onColoredTextToggled;
-  final ValueChanged<bool> onNotificationsToggled;
   final ValueChanged<String> onTextSpeedChanged;
   final VoidCallback onSupportTap;
+  final VoidCallback onLogoutTap;
 
   const MenuSection({
     super.key,
@@ -37,16 +36,15 @@ class MenuSection extends StatelessWidget {
     required this.revealAllTrueFalse,
     required this.blurEnabled,
     required this.coloredTextEnabled,
-    required this.notificationsEnabled,
     required this.textSpeed,
     required this.onSoundsToggled,
     required this.onHapticsToggled,
     required this.onRevealAllTrueFalseToggled,
     required this.onBlurToggled,
     required this.onColoredTextToggled,
-    required this.onNotificationsToggled,
     required this.onTextSpeedChanged,
     required this.onSupportTap,
+    required this.onLogoutTap,
   });
 
   @override
@@ -128,29 +126,19 @@ class MenuSection extends StatelessWidget {
 
         const MenuDivider(),
 
-        // Notifications & Support
-        SwitchMenuItem(
-          icon: Pixel.notification,
-          title: RLUIStrings.MENU_NOTIFICATIONS,
-          value: notificationsEnabled,
-          onChanged: onNotificationsToggled,
-        ),
-
-        MenuItem(icon: Pixel.message, title: RLUIStrings.MENU_SUPPORT, onTap: onSupportTap),
-
-        const MenuDivider(),
-
-        // Legal
+        // Legal (Support listed last, after EULA)
         MenuItem(icon: Pixel.shield, title: RLUIStrings.MENU_PRIVACY_POLICY, onTap: () {}),
 
         MenuItem(icon: Pixel.article, title: RLUIStrings.MENU_TERMS_AND_CONDITIONS, onTap: () {}),
 
         MenuItem(icon: Pixel.scale, title: RLUIStrings.MENU_EULA, onTap: () {}),
 
+        MenuItem(icon: Pixel.message, title: RLUIStrings.MENU_SUPPORT, onTap: onSupportTap),
+
         const MenuDivider(),
 
         // Log out
-        MenuItem(icon: Pixel.logout, title: RLUIStrings.MENU_LOG_OUT, onTap: () {}),
+        MenuItem(icon: Pixel.logout, title: RLUIStrings.MENU_LOG_OUT, onTap: onLogoutTap),
 
         const Spacing.height(RLDS.spacing24),
 
@@ -329,7 +317,7 @@ class SegmentedMenuItem extends StatelessWidget {
     return options.map((option) {
       final bool isSelected = option == selectedOption;
 
-      Color optionColor = Colors.transparent;
+      Color optionColor = RLDS.transparent;
       Color textColor = RLDS.textPrimary.withValues(alpha: 0.6);
 
       if (isSelected) {

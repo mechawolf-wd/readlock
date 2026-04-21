@@ -1,6 +1,7 @@
 // Settings demo widgets showing live previews of reading options
 // Includes reveal, blur, colored text, and text speed demos
 
+import 'dart:async';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
@@ -79,7 +80,7 @@ class RevealDemoState extends State<RevealDemo> with SingleTickerProviderStateMi
 
   Widget AnimatedTextDisplay() {
     if (widget.isEnabled) {
-      return Text(demoText, style: RLTypography.bodyMediumStyle);
+      return Text(demoText, style: RLTypography.readingMediumStyle);
     }
 
     return AnimatedBuilder(
@@ -91,13 +92,13 @@ class RevealDemoState extends State<RevealDemo> with SingleTickerProviderStateMi
 
         return RichText(
           text: TextSpan(
-            style: RLTypography.bodyMediumStyle,
+            style: RLTypography.readingMediumStyle,
             children: [
               TextSpan(text: visibleText),
 
               TextSpan(
                 text: hiddenText,
-                style: const TextStyle(color: Colors.transparent),
+                style: const TextStyle(color: RLDS.transparent),
               ),
             ],
           ),
@@ -107,8 +108,13 @@ class RevealDemoState extends State<RevealDemo> with SingleTickerProviderStateMi
   }
 }
 
-// Demo widget for Blur setting
-// Shows how completed sentences get blurred to focus on current content
+// Demo widget for Blur setting.
+// Mirrors the swipe behavior — completed sentences use the same blur/opacity
+// values as ProgressiveText (sigma 4, opacity 0.2). When blur is off, the
+// previous sentence renders at full opacity with no blur, matching the swipe.
+const double BLUR_DEMO_BLUR_SIGMA = 4.0;
+const double BLUR_DEMO_BLUR_OPACITY = 0.2;
+
 class BlurDemo extends StatelessWidget {
   final bool isEnabled;
 
@@ -133,27 +139,29 @@ class BlurDemo extends StatelessWidget {
 
           const Spacing.height(RLDS.spacing8),
 
-          Text(RLUIStrings.DEMO_BLUR_CURRENT, style: RLTypography.bodyMediumStyle),
+          Text(RLUIStrings.DEMO_BLUR_CURRENT, style: RLTypography.readingMediumStyle),
         ],
       ),
     );
   }
 
   Widget BlurredSentence() {
-    final TextStyle blurredStyle = RLTypography.bodyMediumStyle.copyWith(
-      color: RLDS.textSecondary,
+    final Widget sentenceText = Text(
+      RLUIStrings.DEMO_BLUR_PREVIOUS,
+      style: RLTypography.readingMediumStyle,
     );
-
-    final Widget sentenceText = Text(RLUIStrings.DEMO_BLUR_PREVIOUS, style: blurredStyle);
 
     if (isEnabled) {
       return ImageFiltered(
-        imageFilter: ImageFilter.blur(sigmaX: 2, sigmaY: 2),
-        child: Opacity(opacity: 0.5, child: sentenceText),
+        imageFilter: ImageFilter.blur(
+          sigmaX: BLUR_DEMO_BLUR_SIGMA,
+          sigmaY: BLUR_DEMO_BLUR_SIGMA,
+        ),
+        child: Opacity(opacity: BLUR_DEMO_BLUR_OPACITY, child: sentenceText),
       );
     }
 
-    return Opacity(opacity: 0.5, child: sentenceText);
+    return sentenceText;
   }
 }
 
@@ -186,7 +194,7 @@ class ColoredTextDemo extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: RLDS.spacing16),
       child: RichText(
         text: TextSpan(
-          style: RLTypography.bodyMediumStyle,
+          style: RLTypography.readingMediumStyle,
           children: [
             TextSpan(
               text: RLUIStrings.DEMO_COLORED_HIGHLIGHT,
@@ -200,101 +208,108 @@ class ColoredTextDemo extends StatelessWidget {
   }
 }
 
-// Demo widget for Text speed setting
-// Shows visual representation of different reading speeds
-class TextSpeedDemo extends StatelessWidget {
+// Demo widget for Text speed setting.
+// Types out a sample sentence character-by-character at the pace that matches
+// the selected speed — replaces the old numeric words/min card so users feel
+// the rate instead of reading it.
+class TextSpeedDemo extends StatefulWidget {
   final String selectedSpeed;
 
   const TextSpeedDemo({super.key, required this.selectedSpeed});
 
   @override
-  Widget build(BuildContext context) {
-    final BoxDecoration containerDecoration = BoxDecoration(
-      color: RLDS.backgroundLight,
-      borderRadius: BorderRadius.circular(RLDS.spacing8),
-      border: Border.all(color: RLDS.primary.withValues(alpha: 0.2)),
-    );
+  State<TextSpeedDemo> createState() => TextSpeedDemoState();
+}
 
-    final int wordsPerMinute = getWordsPerMinute();
-    final String description = getSpeedDescription();
+class TextSpeedDemoState extends State<TextSpeedDemo> {
+  Timer? revealTimer;
+  int revealedCharacterCount = 0;
 
-    final Widget metricRow = MetricRow(wordsPerMinute);
-    final Widget speedDivider = SpeedDivider();
-    final Widget descriptionText = DescriptionText(description);
+  static const String sampleText = 'This is how fast the text will appear.';
+  static const Duration restartDelay = Duration(milliseconds: 900);
 
-    return Container(
-      width: double.infinity,
-      decoration: containerDecoration,
-      padding: const EdgeInsets.all(RLDS.spacing16),
-      margin: const EdgeInsets.only(bottom: RLDS.spacing16),
-      child: Div.column([
-        metricRow,
-
-        const Spacing.height(RLDS.spacing12),
-
-        speedDivider,
-
-        const Spacing.height(RLDS.spacing12),
-
-        descriptionText,
-      ], crossAxisAlignment: CrossAxisAlignment.start),
-    );
+  @override
+  void initState() {
+    super.initState();
+    startReveal();
   }
 
-  Widget MetricRow(int wordsPerMinute) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.baseline,
-      textBaseline: TextBaseline.alphabetic,
-      children: [
-        RLTypography.headingLarge('$wordsPerMinute', color: RLDS.primary),
+  @override
+  void didUpdateWidget(TextSpeedDemo oldWidget) {
+    super.didUpdateWidget(oldWidget);
 
-        const Spacing.width(RLDS.spacing8),
+    final bool hasSpeedChanged = oldWidget.selectedSpeed != widget.selectedSpeed;
 
-        Text(
-          RLUIStrings.DEMO_SPEED_UNIT,
-          style: RLTypography.bodyMediumStyle.copyWith(color: RLDS.textSecondary),
-        ),
-      ],
-    );
+    if (hasSpeedChanged) {
+      startReveal();
+    }
   }
 
-  Widget SpeedDivider() {
-    return Container(
-      height: 1,
-      color: RLDS.primary.withValues(alpha: 0.15),
-    );
+  @override
+  void dispose() {
+    revealTimer?.cancel();
+    super.dispose();
   }
 
-  Widget DescriptionText(String description) {
-    return Text(
-      description,
-      style: RLTypography.bodyMediumStyle.copyWith(color: RLDS.textPrimary),
+  void startReveal() {
+    revealTimer?.cancel();
+    revealedCharacterCount = 0;
+
+    final Duration tickDuration = Duration(
+      milliseconds: getMillisecondsPerCharacter(),
     );
+
+    revealTimer = Timer.periodic(tickDuration, handleRevealTick);
   }
 
-  int getWordsPerMinute() {
-    switch (selectedSpeed) {
+  void handleRevealTick(Timer timer) {
+    final bool isRevealComplete = revealedCharacterCount >= sampleText.length;
+
+    if (isRevealComplete) {
+      timer.cancel();
+
+      Future.delayed(restartDelay, restartIfMounted);
+      return;
+    }
+
+    setState(() {
+      revealedCharacterCount++;
+    });
+  }
+
+  void restartIfMounted() {
+    if (!mounted) {
+      return;
+    }
+
+    startReveal();
+  }
+
+  // Matches the ProgressiveText swipe widget — classic ticks at the swipe's
+  // own typewriterCharacterDelay (10ms). Careful slows it, speed doubles it.
+  int getMillisecondsPerCharacter() {
+    switch (widget.selectedSpeed) {
       case RLUIStrings.SPEED_CAREFUL:
         {
-          return 120;
+          return 20;
         }
       case RLUIStrings.SPEED_CLASSIC:
         {
-          return 180;
+          return 10;
         }
       case RLUIStrings.SPEED_SPEED:
         {
-          return 250;
+          return 5;
         }
       default:
         {
-          return 180;
+          return 10;
         }
     }
   }
 
   String getSpeedDescription() {
-    switch (selectedSpeed) {
+    switch (widget.selectedSpeed) {
       case RLUIStrings.SPEED_CAREFUL:
         {
           return RLUIStrings.DEMO_SPEED_CAREFUL;
@@ -312,5 +327,64 @@ class TextSpeedDemo extends StatelessWidget {
           return RLUIStrings.DEMO_SPEED_CLASSIC;
         }
     }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final BoxDecoration containerDecoration = BoxDecoration(
+      color: RLDS.backgroundLight,
+      borderRadius: BorderRadius.circular(RLDS.spacing8),
+    );
+
+    final Widget sampleRow = SampleRow();
+    final Widget descriptionText = DescriptionText(getSpeedDescription());
+
+    return Container(
+      width: double.infinity,
+      decoration: containerDecoration,
+      padding: const EdgeInsets.all(RLDS.spacing16),
+      margin: const EdgeInsets.only(bottom: RLDS.spacing16),
+      child: Div.column([
+        sampleRow,
+
+        const Spacing.height(RLDS.spacing12),
+
+        descriptionText,
+      ], crossAxisAlignment: CrossAxisAlignment.start),
+    );
+  }
+
+  // Keeps the layout stable by rendering the full sample with the
+  // not-yet-revealed tail in a transparent colour.
+  Widget SampleRow() {
+    final int totalCharacters = sampleText.length;
+    final int revealedClamped = revealedCharacterCount.clamp(0, totalCharacters);
+
+    final String revealedPortion = sampleText.substring(0, revealedClamped);
+    final String hiddenPortion = sampleText.substring(revealedClamped);
+
+    final TextStyle revealedStyle = RLTypography.readingMediumStyle.copyWith(
+      color: RLDS.textPrimary,
+    );
+    final TextStyle hiddenStyle = RLTypography.readingMediumStyle.copyWith(
+      color: RLDS.transparent,
+    );
+
+    return RichText(
+      text: TextSpan(
+        children: [
+          TextSpan(text: revealedPortion, style: revealedStyle),
+
+          TextSpan(text: hiddenPortion, style: hiddenStyle),
+        ],
+      ),
+    );
+  }
+
+  Widget DescriptionText(String description) {
+    return Text(
+      description,
+      style: RLTypography.bodyMediumStyle.copyWith(color: RLDS.textSecondary),
+    );
   }
 }

@@ -159,7 +159,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
       // Lessons from first segment
       SliverToBoxAdapter(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
+          padding: const EdgeInsets.symmetric(horizontal: RLDS.spacing24),
           child: PathWithNodes(
             lessons: courseLessons,
             segmentIndex: 0,
@@ -182,20 +182,21 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
             // Scrollable content with sticky headers
             CustomScrollView(controller: scrollController, slivers: slivers),
 
-            // Top-right up button — slides down into view as you scroll,
-            // retracts back up off-screen when you return to top.
+            // Bottom floating column — back-to-top sits above and to the left of
+            // the continue bar when scrolled; the continue bar is always shown.
             Positioned(
-              top: 12,
-              right: 16,
-              child: BackToTopButton(),
-            ),
+              left: RLDS.spacing24,
+              right: RLDS.spacing24,
+              bottom: RLDS.spacing24,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  RenderIf.condition(showBackToTop, BackToTopSlot()),
 
-            // Bottom continue bar
-            Positioned(
-              left: 20,
-              right: 20,
-              bottom: 16,
-              child: BottomFloatingBar(),
+                  BottomFloatingBar(),
+                ],
+              ),
             ),
           ],
         ),
@@ -206,71 +207,24 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
   static final Widget ChevronUpIcon = const Icon(
     Pixel.chevronup,
     color: RLDS.textPrimary,
-    size: 28,
+    size: 24,
   );
 
-  static const double backToTopTileSize = 44.0;
-  static const double backToTopShadowOffset = 3.0;
-  static const Duration backToTopSlideDuration = Duration(milliseconds: 220);
-
-  Widget BackToTopButton() {
-    // Slide in from above when shown, slide up out of view when hidden.
-    // Offset units are multiples of the widget's own height — (-1.4, y) places
-    // the whole button fully above its slot plus a bit of breathing room.
-    final Offset slideOffset = showBackToTop
-        ? Offset.zero
-        : const Offset(0, -1.4);
-
-    return AnimatedSlide(
-      offset: slideOffset,
-      duration: backToTopSlideDuration,
-      curve: Curves.easeOutCubic,
-      child: AnimatedOpacity(
-        opacity: showBackToTop ? 1.0 : 0.0,
-        duration: backToTopSlideDuration,
-        child: GestureDetector(
-          onTap: handleBackToTop,
-          child: BackToTopTile(),
-        ),
-      ),
-    );
-  }
-
-  Widget BackToTopTile() {
-    final BoxDecoration tileDecoration = BoxDecoration(
-      color: RLDS.surface,
-      border: Border.all(color: RLDS.onSurface, width: 3),
+  Widget BackToTopSlot() {
+    final Widget backToTopCard = RLCard.elevated(
+      padding: const EdgeInsets.all(RLDS.spacing12),
+      onTap: handleBackToTop,
+      child: ChevronUpIcon,
     );
 
-    final BoxDecoration shadowDecoration = BoxDecoration(
-      color: RLDS.black.withValues(alpha: 0.5),
-    );
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        backToTopCard,
 
-    return SizedBox(
-      width: backToTopTileSize + backToTopShadowOffset,
-      height: backToTopTileSize + backToTopShadowOffset,
-      child: Stack(
-        children: [
-          // Pixel drop shadow
-          Positioned(
-            left: backToTopShadowOffset,
-            top: backToTopShadowOffset,
-            child: Container(
-              width: backToTopTileSize,
-              height: backToTopTileSize,
-              decoration: shadowDecoration,
-            ),
-          ),
-
-          // Foreground tile
-          Container(
-            width: backToTopTileSize,
-            height: backToTopTileSize,
-            decoration: tileDecoration,
-            child: const Center(child: Icon(Pixel.chevronup, color: RLDS.textPrimary, size: 24)),
-          ),
-        ],
-      ),
+        const Spacing.height(RLDS.spacing12),
+      ],
     );
   }
 
@@ -332,7 +286,10 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
         const Spacing.height(16),
       ],
       crossAxisAlignment: CrossAxisAlignment.start,
-      padding: const [20, 12],
+      padding: const EdgeInsets.symmetric(
+        horizontal: RLDS.spacing24,
+        vertical: RLDS.spacing12,
+      ),
     );
   }
 
@@ -400,47 +357,42 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
 
   Widget HeroCard({required String courseTitle, required String courseAuthor}) {
     return RLCard.elevated(
-      padding: const EdgeInsets.all(RLDS.spacing16),
-      child: Row(
+      padding: const EdgeInsets.all(RLDS.spacing24),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // Progress ring with book
-          ProgressRing(),
+          // Book in a progress ring, centered on top
+          Center(child: ProgressRing()),
 
-          const Spacing.width(RLDS.spacing16),
+          const Spacing.height(RLDS.spacing16),
 
-          // Course info
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Percentage badge + title
-                Row(
-                  children: [
-                    PercentageChip(),
+          // Percentage chip (progress readout) centered under the book
+          Center(child: PercentageChip()),
 
-                    const Spacing.width(RLDS.spacing8),
+          const Spacing.height(RLDS.spacing16),
 
-                    Expanded(child: RLTypography.headingMedium(courseTitle)),
-                  ],
-                ),
+          // Title
+          RLTypography.headingMedium(courseTitle, textAlign: TextAlign.center),
 
-                const Spacing.height(RLDS.spacing4),
+          const Spacing.height(RLDS.spacing4),
 
-                RLTypography.bodyMedium(courseAuthor, color: RLDS.textSecondary),
-
-                const Spacing.height(RLDS.spacing12),
-
-                // Mini stats row
-                MiniStatsRow(),
-              ],
-            ),
+          // Author
+          RLTypography.bodyMedium(
+            courseAuthor,
+            color: RLDS.textSecondary,
+            textAlign: TextAlign.center,
           ),
+
+          const Spacing.height(RLDS.spacing12),
+
+          // Number of packages
+          Center(child: PackageCountRow()),
         ],
       ),
     );
   }
 
-  Widget MiniStatsRow() {
+  Widget PackageCountRow() {
     final int totalLessons = countTotalLessons();
     final String lessonsLabel = '$totalLessons packages';
     final Color accentColor = getCourseAccentColor();
@@ -691,15 +643,17 @@ class PathLessonNode extends StatelessWidget {
     final Color borderColor = getBorderColor();
     final Widget nodeContent = NodeIcon();
 
-    // Sharp-cornered pixel tile — chunky 3px border, no radius for an 8-bit feel.
+    // Circular tile with a chunky 3px border.
     final BoxDecoration tileDecoration = BoxDecoration(
       color: bgColor,
       border: Border.all(color: borderColor, width: 3),
+      shape: BoxShape.circle,
     );
 
-    // Pixel-art drop shadow — solid dark rectangle offset down+right.
+    // Circular drop shadow offset down+right.
     final BoxDecoration shadowDecoration = BoxDecoration(
       color: RLDS.black.withValues(alpha: 0.5),
+      shape: BoxShape.circle,
     );
 
     return SizedBox(

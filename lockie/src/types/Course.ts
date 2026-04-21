@@ -11,6 +11,7 @@ export interface CourseData {
 
 export interface Accelerator {
   'course-id': string
+  language: string
   title: string
   author: string
   description: string

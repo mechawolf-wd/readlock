@@ -409,6 +409,7 @@ export function parsePackageText(input: string): Swipe[] {
 
 interface ParsedCourseInfo {
   id: string;
+  language: string;
   title: string;
   author: string;
   description: string;
@@ -420,6 +421,7 @@ interface ParsedCourseInfo {
 function parseCourseInfoSection(text: string): ParsedCourseInfo {
   const info: ParsedCourseInfo = {
     id: "",
+    language: "EN",
     title: "",
     author: "",
     description: "",
@@ -433,6 +435,8 @@ function parseCourseInfoSection(text: string): ParsedCourseInfo {
 
     if (trimmed.startsWith("id:")) {
       info.id = trimmed.slice("id:".length).trim();
+    } else if (trimmed.startsWith("language:")) {
+      info.language = trimmed.slice("language:".length).trim() || "EN";
     } else if (trimmed.startsWith("title:")) {
       info.title = trimmed.slice("title:".length).trim();
     } else if (trimmed.startsWith("author:")) {
@@ -491,6 +495,7 @@ export function parseCourseText(input: string): Accelerator {
   if (hasNoSections) {
     return {
       "course-id": `course-${Date.now()}`,
+      language: "EN",
       title: "Untitled Course",
       author: "",
       description: "",
@@ -630,6 +635,7 @@ export function parseCourseText(input: string): Accelerator {
 
   return {
     "course-id": courseId,
+    language: courseInfo.language || "EN",
     title: courseInfo.title || "Untitled Course",
     author: courseInfo.author,
     description: courseInfo.description,
@@ -665,6 +671,7 @@ A man walks into a museum.`,
       example: `@course
 
 id: book:my-course-title-abcd
+language: EN
 title: My Course
 author: Author Name
 description: A short description

@@ -28,7 +28,7 @@ class ReadlockApp extends StatelessWidget {
   ThemeData getTheme() {
     return ThemeData(
       colorScheme: ColorScheme.fromSeed(
-        seedColor: Colors.tealAccent,
+        seedColor: RLDS.primary,
         brightness: Brightness.dark,
       ),
       scaffoldBackgroundColor: RLDS.backgroundDark,

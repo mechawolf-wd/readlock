@@ -13,6 +13,7 @@ class RLTextField extends StatelessWidget {
   final TextInputType keyboardType;
   final ValueChanged<String>? onChanged;
   final VoidCallback? onEditingComplete;
+  final IconData? leadingIcon;
 
   const RLTextField({
     super.key,
@@ -23,6 +24,7 @@ class RLTextField extends StatelessWidget {
     this.keyboardType = TextInputType.text,
     this.onChanged,
     this.onEditingComplete,
+    this.leadingIcon,
   });
 
   const RLTextField.email({
@@ -32,6 +34,7 @@ class RLTextField extends StatelessWidget {
     this.hintText = 'Email',
     this.onChanged,
     this.onEditingComplete,
+    this.leadingIcon,
   }) : obscureText = false,
        keyboardType = TextInputType.emailAddress;
 
@@ -42,6 +45,7 @@ class RLTextField extends StatelessWidget {
     this.hintText = 'Password',
     this.onChanged,
     this.onEditingComplete,
+    this.leadingIcon,
   }) : obscureText = true,
        keyboardType = TextInputType.visiblePassword;
 
@@ -50,15 +54,19 @@ class RLTextField extends StatelessWidget {
     final BoxDecoration fieldDecoration = BoxDecoration(
       color: RLDS.backgroundLight,
       borderRadius: RLDS.borderRadiusSmall,
+      border: Border.all(color: RLDS.textMuted.withValues(alpha: 0.3)),
     );
 
     final TextStyle hintStyle = RLTypography.bodyLargeStyle.copyWith(
       color: RLDS.textMuted,
     );
 
+    final Widget? prefixIconWidget = buildLeadingIcon();
+
     final InputDecoration inputDecoration = InputDecoration(
       hintText: hintText,
       hintStyle: hintStyle,
+      prefixIcon: prefixIconWidget,
       border: InputBorder.none,
     );
 
@@ -76,6 +84,23 @@ class RLTextField extends StatelessWidget {
         onChanged: onChanged,
         onEditingComplete: onEditingComplete,
       ),
+    );
+  }
+
+  // Wraps the optional IconData prop into an Icon widget sized + coloured to
+  // match the field's muted hint treatment.
+  Widget? buildLeadingIcon() {
+    final IconData? icon = leadingIcon;
+    final bool hasNoIcon = icon == null;
+
+    if (hasNoIcon) {
+      return null;
+    }
+
+    return Icon(
+      icon,
+      color: RLDS.textMuted,
+      size: RLDS.iconMedium,
     );
   }
 }

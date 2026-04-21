@@ -9,10 +9,39 @@ class RLDS {
 
   static const Color primary = Color(0xFFE63946); // warm vivid red
   static const Color info = Color(0xFF1E88E5); // bright blue
-  static const Color success = Color(0xFFE63946); // shares the primary red (semantic accent)
-  static const Color green = Color(0xFF2EAE6E); // fresh green (reserved for CTAs like Continue)
+  static const Color green = Color(0xFF2EAE6E); // fresh green
+  static const Color success = green; // success uses the fresh green, not the primary red
   static const Color warning = Color(0xFFF5A509); // amber
   static const Color error = Color(0xFFE63946); // shares the primary red
+
+  // * Text-markup accents
+  //
+  // Used by <c:g>…</c:g> and <c:r>…</c:r> spans inside course text (text swipes,
+  // question bodies, explanations). Distinct from the brand semantic palette
+  // above (success/error/primary all share the same warm red and would blur
+  // into the background when used for mid-sentence highlights). Values tuned
+  // for readability on the dark surface: bright enough to stand out, soft
+  // enough to avoid shouting at the reader.
+
+  static const Color markupGreen = Color(0xFF4ADE80); // bright green accent
+  static const Color markupRed = Color(0xFFF87171); // warm red accent
+
+  static Color getMarkupColor(String code) {
+    switch (code) {
+      case 'g':
+        {
+          return markupGreen;
+        }
+      case 'r':
+        {
+          return markupRed;
+        }
+      default:
+        {
+          return markupGreen;
+        }
+    }
+  }
 
   // * Neutrals
 

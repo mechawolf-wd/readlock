@@ -20,6 +20,7 @@ export async function fetchCourseById(courseId: string): Promise<Accelerator | n
     const data = snapshot.data() as Accelerator
 
     data['course-id'] ??= snapshot.id
+    data.language ??= 'EN'
 
     return data
   } catch (error) {
@@ -30,6 +31,8 @@ export async function fetchCourseById(courseId: string): Promise<Accelerator | n
 
 export async function saveCourse(course: Accelerator): Promise<void> {
   const courseId = course['course-id']
+
+  course.language ??= 'EN'
 
   // Strip internal _uid fields before saving
   const cleanCourse = JSON.parse(

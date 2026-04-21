@@ -608,7 +608,7 @@ class Div extends StatelessWidget {
         return RLDS.warning;
       }
       case 'grey': {
-        return Colors.grey;
+        return RLDS.textMuted;
       }
       case 'black': {
         return RLDS.black;
@@ -617,7 +617,7 @@ class Div extends StatelessWidget {
         return RLDS.white;
       }
       case 'transparent': {
-        return Colors.transparent;
+        return RLDS.transparent;
       }
       default: {
         return null;

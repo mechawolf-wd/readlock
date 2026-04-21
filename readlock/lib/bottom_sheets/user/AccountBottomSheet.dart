@@ -3,7 +3,8 @@
 
 import 'package:flutter/material.dart' hide Typography;
 import 'package:readlock/bottom_sheets/RLBottomSheet.dart';
-import 'package:readlock/bottom_sheets/RLDialog.dart';
+import 'package:readlock/design_system/RLButton.dart';
+import 'package:readlock/design_system/RLConfirmationDialog.dart';
 import 'package:readlock/design_system/RLUtility.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
@@ -65,25 +66,8 @@ class AccountSheet extends StatelessWidget {
     return Padding(
       padding: bodyPadding,
       child: Div.column([
-        // Account info rows
-        const InfoRow(label: 'Name', value: 'Alex Johnson'),
-
-        const Spacing.height(16),
-
-        const InfoRow(label: 'Age', value: '28'),
-
-        const Spacing.height(16),
-
-        const InfoRow(label: 'Email', value: 'alex.johnson@email.com'),
-
-        const Spacing.height(24),
-
-        // Divider
-        Container(height: 1, color: RLDS.textPrimary.withValues(alpha: 0.1)),
-
-        const Spacing.height(24),
-
-        // Account actions
+        // Account actions — destructive only. Personal data (name / age / email)
+        // isn't shown here; account identity lives elsewhere.
         DangerRow(
           label: RLUIStrings.ACCOUNT_DEACTIVATE_LABEL,
           color: RLDS.textSecondary,
@@ -102,24 +86,30 @@ class AccountSheet extends StatelessWidget {
   }
 
   void handleDeactivateAccountTap(BuildContext context) {
-    RLDialog.showConfirm(
+    RLConfirmationDialog.show(
       context,
       title: RLUIStrings.ACCOUNT_DEACTIVATE_LABEL,
       message: RLUIStrings.ACCOUNT_DEACTIVATE_MESSAGE,
-      confirmLabel: RLUIStrings.ACCOUNT_DEACTIVATE_CONFIRM,
-      confirmColor: RLDS.warning,
-      onConfirm: () {},
+      cta: RLConfirmationAction(
+        label: RLUIStrings.ACCOUNT_DEACTIVATE_CONFIRM,
+        variant: RLConfirmationVariant.warning,
+        onTap: () {},
+      ),
+      cancel: rlDismissCancelAction(),
     );
   }
 
   void handleDeleteAccountTap(BuildContext context) {
-    RLDialog.showConfirm(
+    RLConfirmationDialog.show(
       context,
       title: RLUIStrings.ACCOUNT_DELETE_LABEL,
       message: RLUIStrings.ACCOUNT_DELETE_MESSAGE,
-      confirmLabel: RLUIStrings.ACCOUNT_DELETE_CONFIRM,
-      confirmColor: RLDS.error,
-      onConfirm: () {},
+      cta: RLConfirmationAction(
+        label: RLUIStrings.ACCOUNT_DELETE_CONFIRM,
+        variant: RLConfirmationVariant.destructive,
+        onTap: () {},
+      ),
+      cancel: rlDismissCancelAction(),
     );
   }
 
@@ -128,46 +118,16 @@ class AccountSheet extends StatelessWidget {
   }
 
   Widget FooterButton() {
-    final BoxDecoration buttonDecoration = BoxDecoration(
-      color: RLDS.info,
-      borderRadius: BorderRadius.circular(12),
-    );
-
     return Builder(
       builder: (context) {
-        return GestureDetector(
+        return RLButton.primary(
+          label: RLUIStrings.ACCOUNT_DONE_LABEL,
+          color: RLDS.info,
+          margin: const EdgeInsets.all(RLDS.spacing24),
           onTap: () => handleDismissTap(context),
-          child: Container(
-            width: double.infinity,
-            margin: const EdgeInsets.all(24),
-            padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
-            decoration: buttonDecoration,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [RLTypography.bodyMedium(RLUIStrings.ACCOUNT_DONE_LABEL)],
-            ),
-          ),
         );
       },
     );
-  }
-}
-
-class InfoRow extends StatelessWidget {
-  final String label;
-  final String value;
-
-  const InfoRow({super.key, required this.label, required this.value});
-
-  @override
-  Widget build(BuildContext context) {
-    return Div.row([
-      Expanded(
-        child: RLTypography.bodyMedium(label, color: RLDS.textPrimary.withValues(alpha: 0.6)),
-      ),
-
-      RLTypography.bodyMedium(value),
-    ]);
   }
 }
 

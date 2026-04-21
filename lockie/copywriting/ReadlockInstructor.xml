@@ -154,6 +154,7 @@ Your job: produce one complete, valid .rlockie file that follows every rule in t
 
     <step id="6" name="Write @course metadata">
       - id: [type]:[kebab-case-title]-[4-char-random-hash]. Type is "book", "topic", or "article".
+      - language: two-letter uppercase language code (e.g. "EN", "PL", "DE"). Defaults to "EN" when the course is written in English. Required on every @course.
       - title: the course display title.
       - author: the real author of the book when the id type is "book" (e.g. "Donald A. Norman", "James Clear"). For "topic" or "article" types — or when no real author exists — use "Readlock".
       - description: one line. Says what the course is about. Does not sell it.

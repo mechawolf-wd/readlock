@@ -48,6 +48,8 @@ class ProgressiveText extends StatefulWidget {
   final EdgeInsets? contentPadding;
   // Cross axis alignment for text display
   final CrossAxisAlignment? textAlignment;
+  // Horizontal alignment applied inside each rendered line (RichText / Text).
+  final TextAlign textAlign;
 
   // Blur effect properties for completed sentences
   // Whether to apply blur effect to completed sentences
@@ -73,6 +75,7 @@ class ProgressiveText extends StatefulWidget {
     this.textStyle,
     this.contentPadding,
     this.textAlignment,
+    this.textAlign = TextAlign.left,
     this.blurCompletedSentences = true,
     this.completedSentenceBlurIntensity = 4,
     this.completedSentenceOpacity = 0.2,
@@ -569,7 +572,7 @@ class ProgressiveTextState extends State<ProgressiveText> with TickerProviderSta
         cursor: SystemMouseCursors.click,
         child: GestureDetector(
           onTap: () => handleRevealOrToggleTap(hasRevealableContent, shouldShowToggleButton),
-          child: Container(width: double.infinity, color: Colors.transparent),
+          child: Container(width: double.infinity, color: RLDS.transparent),
         ),
       ),
     );
@@ -590,6 +593,7 @@ class ProgressiveTextState extends State<ProgressiveText> with TickerProviderSta
           blurIntensity: widget.completedSentenceBlurIntensity,
           blurOpacity: widget.completedSentenceOpacity,
           textStyle: getConsistentTextStyle(),
+          textAlign: widget.textAlign,
           onTap: () => toggleBlurForSentence(sentenceIndex),
         ),
       );
@@ -628,57 +632,51 @@ class ProgressiveTextState extends State<ProgressiveText> with TickerProviderSta
     return TextWithColorTransition(currentSentenceText, currentCharacterPosition);
   }
 
-  // Build text with full layout, transitioning colors for revealed characters
-  // Only the last character gets partial opacity for a subtle fade-in
+  // Build text with full layout, transitioning colors for revealed characters.
+  // All revealed characters render at the base text colour — there is no
+  // fade-in on the leading edge so the final character of each sentence ends
+  // up visually identical to the rest of the revealed prefix.
   Widget TextWithColorTransition(String fullText, int revealedPosition) {
     final TextStyle baseStyle = getConsistentTextStyle();
     final Color textColor = baseStyle.color ?? RLDS.onSurface;
     final List<TextSpan> spans = [];
 
-    if (revealedPosition >= 0 && fullText.isNotEmpty) {
-      final int actualRevealedLength = (revealedPosition + 1).clamp(0, fullText.length);
+    final bool hasNothingRevealed = revealedPosition < 0 || fullText.isEmpty;
 
-      if (actualRevealedLength > 1) {
-        // All revealed characters except the last one - fully visible
+    if (hasNothingRevealed) {
+      spans.add(
+        TextSpan(
+          text: fullText,
+          style: baseStyle.copyWith(color: RLDS.transparent),
+        ),
+      );
+    } else {
+      final int actualRevealedLength = (revealedPosition + 1).clamp(0, fullText.length);
+      final bool hasRevealedCharacters = actualRevealedLength > 0;
+      final bool hasHiddenCharacters = actualRevealedLength < fullText.length;
+
+      if (hasRevealedCharacters) {
         spans.add(
           TextSpan(
-            text: fullText.substring(0, actualRevealedLength - 1),
+            text: fullText.substring(0, actualRevealedLength),
             style: baseStyle.copyWith(color: textColor),
           ),
         );
       }
 
-      // Last revealed character - partial opacity
-      if (actualRevealedLength > 0) {
-        spans.add(
-          TextSpan(
-            text: fullText[actualRevealedLength - 1],
-            style: baseStyle.copyWith(color: textColor.withValues(alpha: 0.5)),
-          ),
-        );
-      }
-
-      // Remaining characters as transparent
-      if (actualRevealedLength < fullText.length) {
+      if (hasHiddenCharacters) {
         spans.add(
           TextSpan(
             text: fullText.substring(actualRevealedLength),
-            style: baseStyle.copyWith(color: Colors.transparent),
+            style: baseStyle.copyWith(color: RLDS.transparent),
           ),
         );
       }
-    } else {
-      spans.add(
-        TextSpan(
-          text: fullText,
-          style: baseStyle.copyWith(color: Colors.transparent),
-        ),
-      );
     }
 
     return RichText(
       text: TextSpan(children: spans),
-      textAlign: TextAlign.left,
+      textAlign: widget.textAlign,
     );
   }
 
@@ -703,12 +701,12 @@ class ProgressiveTextState extends State<ProgressiveText> with TickerProviderSta
     final BorderRadius imageBorderRadius = BorderRadius.circular(cornerRadius);
 
     final BoxDecoration errorContainerDecoration = BoxDecoration(
-      color: Colors.grey.shade300,
+      color: RLDS.backgroundLight,
       borderRadius: imageBorderRadius,
     );
 
     final TextStyle errorTextStyle = getConsistentTextStyle().copyWith(
-      color: Colors.grey.shade600,
+      color: RLDS.textSecondary,
       fontSize: 12,
     );
 
@@ -808,7 +806,7 @@ class ProgressiveTextState extends State<ProgressiveText> with TickerProviderSta
       // Handle highlighted text
       final String colorCode = match.group(1)!;
       final String highlightedText = match.group(2)!;
-      final Color highlightColor = getHighlightColor(colorCode);
+      final Color highlightColor = RLDS.getMarkupColor(colorCode);
       final TextStyle highlightStyle = baseStyle.copyWith(
         color: highlightColor,
         fontWeight: FontWeight.bold,
@@ -829,12 +827,13 @@ class ProgressiveTextState extends State<ProgressiveText> with TickerProviderSta
 
     return RichText(
       text: TextSpan(children: spans),
-      textAlign: TextAlign.left,
+      textAlign: widget.textAlign,
     );
   }
 
-  // Create text span with color transition based on reveal position
-  // Only the last revealed character gets partial opacity
+  // Create text span with color transition based on reveal position.
+  // Every revealed character — including the leading edge — renders at the
+  // style's base colour. Unrevealed tail is transparent to keep layout stable.
   TextSpan createSpanWithColorTransition(
     String text,
     TextStyle style,
@@ -842,49 +841,36 @@ class ProgressiveTextState extends State<ProgressiveText> with TickerProviderSta
     int revealedLength,
   ) {
     final int endPosition = startPosition + text.length;
-    final Color baseColor = style.color ?? RLDS.onSurface;
+    final bool isFullyRevealed = endPosition <= revealedLength;
 
-    // Fully revealed - use original color
-    if (endPosition <= revealedLength) {
+    if (isFullyRevealed) {
       return TextSpan(text: text, style: style);
     }
 
-    // Fully hidden - make transparent
-    if (startPosition >= revealedLength) {
+    final bool isFullyHidden = startPosition >= revealedLength;
+
+    if (isFullyHidden) {
       return TextSpan(
         text: text,
-        style: style.copyWith(color: Colors.transparent),
+        style: style.copyWith(color: RLDS.transparent),
       );
     }
 
-    // Partially revealed
+    // Partially revealed — split into visible + transparent halves.
     final int splitIndex = revealedLength - startPosition;
     final String visiblePart = text.substring(0, splitIndex);
     final String transparentPart = text.substring(splitIndex);
 
-    final List<TextSpan> children = [];
+    return TextSpan(
+      children: [
+        TextSpan(text: visiblePart, style: style),
 
-    // All visible except last char - fully opaque
-    if (visiblePart.length > 1) {
-      children.add(TextSpan(text: visiblePart.substring(0, visiblePart.length - 1), style: style));
-    }
-
-    // Last visible char - partial opacity
-    children.add(
-      TextSpan(
-        text: visiblePart[visiblePart.length - 1],
-        style: style.copyWith(color: baseColor.withValues(alpha: 0.5)),
-      ),
+        TextSpan(
+          text: transparentPart,
+          style: style.copyWith(color: RLDS.transparent),
+        ),
+      ],
     );
-
-    children.add(
-      TextSpan(
-        text: transparentPart,
-        style: style.copyWith(color: Colors.transparent),
-      ),
-    );
-
-    return TextSpan(children: children);
   }
 
   // Helper methods
@@ -904,24 +890,6 @@ class ProgressiveTextState extends State<ProgressiveText> with TickerProviderSta
   // Remove highlight markers and return clean text for animation
   String removeHighlightMarkersFromText(String originalText) {
     return originalText.replaceAll(RegExp(r'<c:[gr]>|</c:[gr]>'), '');
-  }
-
-  // Get color based on marker code
-  Color getHighlightColor(String code) {
-    switch (code) {
-      case 'g':
-        {
-          return Colors.green.shade600;
-        }
-      case 'r':
-        {
-          return Colors.red.shade600;
-        }
-      default:
-        {
-          return Colors.green.shade600;
-        }
-    }
   }
 
   // Determines whether a specific sentence should have blur effect applied
@@ -973,6 +941,7 @@ class CompletedSentenceWidget extends StatelessWidget {
   final double blurIntensity;
   final double blurOpacity;
   final TextStyle textStyle;
+  final TextAlign textAlign;
   final VoidCallback onTap;
 
   const CompletedSentenceWidget({
@@ -983,6 +952,7 @@ class CompletedSentenceWidget extends StatelessWidget {
     required this.blurIntensity,
     required this.blurOpacity,
     required this.textStyle,
+    required this.textAlign,
     required this.onTap,
   });
 
@@ -1021,7 +991,7 @@ class CompletedSentenceWidget extends StatelessWidget {
       return HighlightedTextDisplay();
     }
 
-    return Text(sentenceText, style: textStyle, textAlign: TextAlign.left);
+    return Text(sentenceText, style: textStyle, textAlign: textAlign);
   }
 
   Widget ImageDisplay() {
@@ -1036,12 +1006,12 @@ class CompletedSentenceWidget extends StatelessWidget {
     final BorderRadius imageBorderRadius = BorderRadius.circular(cornerRadius);
 
     final BoxDecoration errorContainerDecoration = BoxDecoration(
-      color: Colors.grey.shade300,
+      color: RLDS.backgroundLight,
       borderRadius: imageBorderRadius,
     );
 
     final TextStyle errorTextStyle = textStyle.copyWith(
-      color: Colors.grey.shade600,
+      color: RLDS.textSecondary,
       fontSize: 12,
     );
 
@@ -1140,7 +1110,7 @@ class CompletedSentenceWidget extends StatelessWidget {
 
     return RichText(
       text: TextSpan(children: spans),
-      textAlign: TextAlign.left,
+      textAlign: textAlign,
     );
   }
 
@@ -1164,7 +1134,7 @@ class CompletedSentenceWidget extends StatelessWidget {
   void addHighlightedTextSpan(List<TextSpan> spans, RegExpMatch match) {
     final String colorCode = match.group(1)!;
     final String highlightedText = match.group(2)!;
-    final Color highlightColor = getHighlightColor(colorCode);
+    final Color highlightColor = RLDS.getMarkupColor(colorCode);
 
     final TextStyle highlightedTextStyle = textStyle.copyWith(
       color: highlightColor,
@@ -1172,22 +1142,5 @@ class CompletedSentenceWidget extends StatelessWidget {
     );
 
     spans.add(TextSpan(text: highlightedText, style: highlightedTextStyle));
-  }
-
-  Color getHighlightColor(String code) {
-    switch (code) {
-      case 'g':
-        {
-          return Colors.green.shade600;
-        }
-      case 'r':
-        {
-          return Colors.red.shade600;
-        }
-      default:
-        {
-          return Colors.grey;
-        }
-    }
   }
 }

@@ -3,6 +3,7 @@
 
 import 'package:flutter/material.dart' hide Typography;
 import 'package:readlock/models/CourseModel.dart';
+import 'package:readlock/design_system/RLCard.dart';
 import 'package:readlock/design_system/RLUtility.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
@@ -115,31 +116,36 @@ class CCTrueFalseQuestionState extends State<CCTrueFalseQuestion> {
 
     final Widget ButtonIcon = Icon(icon, color: colors.iconColor, size: RLDS.iconLarge);
 
-    final BoxDecoration decoration = BoxDecoration(
-      color: colors.backgroundColor,
-      border: Border.all(color: colors.borderColor, width: 2),
-      borderRadius: RLDS.borderRadiusSmall,
+    final VoidCallback? tapCallback = getAnswerTapHandler(answerIndex);
+
+    return RLCard.subtle(
+      borderColor: colors.borderColor,
+      padding: answerButtonPadding,
+      onTap: tapCallback,
+      child: Div.row(
+        [
+          ButtonIcon,
+
+          const Spacing.width(12),
+
+          Flexible(child: RLTypography.bodyLarge(label, color: colors.textColor)),
+        ],
+        mainAxisAlignment: MainAxisAlignment.center,
+      ),
     );
+  }
 
-    VoidCallback? tapCallback;
+  static const EdgeInsets answerButtonPadding = EdgeInsets.symmetric(
+    vertical: RLDS.spacing16,
+    horizontal: RLDS.spacing12,
+  );
 
-    if (!hasAnswered) {
-      tapCallback = () => handleAnswerSelection(answerIndex);
+  VoidCallback? getAnswerTapHandler(int answerIndex) {
+    if (hasAnswered) {
+      return null;
     }
 
-    return Div.row(
-      [
-        ButtonIcon,
-
-        const Spacing.width(12),
-
-        Flexible(child: RLTypography.bodyLarge(label, color: colors.textColor)),
-      ],
-      height: 60,
-      decoration: decoration,
-      mainAxisAlignment: MainAxisAlignment.center,
-      onTap: tapCallback,
-    );
+    return () => handleAnswerSelection(answerIndex);
   }
 
   Widget ExplanationSection() {
@@ -148,6 +154,8 @@ class CCTrueFalseQuestionState extends State<CCTrueFalseQuestion> {
     return RenderIf.condition(shouldShowExplanation, ExplanationContent());
   }
 
+  static const EdgeInsets explanationCardPadding = EdgeInsets.all(RLDS.spacing16);
+
   Widget ExplanationContent() {
     final Widget LightbulbIcon = Icon(
       Pixel.infobox,
@@ -155,32 +163,34 @@ class CCTrueFalseQuestionState extends State<CCTrueFalseQuestion> {
       size: RLDS.iconMedium,
     );
 
-    return Div.column(
-      [
-        // Header row
-        Div.row([
-          LightbulbIcon,
+    return RLCard.subtle(
+      padding: explanationCardPadding,
+      child: Div.column(
+        [
+          // Header row
+          Div.row([
+            LightbulbIcon,
 
-          const Spacing.width(8),
+            const Spacing.width(8),
 
-          RLTypography.bodyMedium(
-            RLUIStrings.EXPLANATION_LABEL,
-            color: RLDS.textPrimary.withValues(alpha: 0.8),
+            RLTypography.bodyMedium(
+              RLUIStrings.EXPLANATION_LABEL,
+              color: RLDS.textPrimary.withValues(alpha: 0.8),
+            ),
+          ]),
+
+          const Spacing.height(12),
+
+          // Explanation text
+          ProgressiveText(
+            textSegments: [widget.content.explanation],
+            textStyle: RLTypography.readingMediumStyle,
+            blurCompletedSentences: false,
+            enableTapToReveal: false,
           ),
-        ]),
-
-        const Spacing.height(12),
-
-        // Explanation text
-        ProgressiveText(
-          textSegments: [widget.content.explanation],
-          textStyle: RLTypography.readingMediumStyle,
-        ),
-      ],
-      crossAxisAlignment: CrossAxisAlignment.start,
-      padding: 16,
-      color: RLDS.backgroundLight,
-      radius: 12,
+        ],
+        crossAxisAlignment: CrossAxisAlignment.start,
+      ),
     );
   }
 

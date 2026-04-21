@@ -4,6 +4,7 @@
 import 'package:flutter/material.dart' hide Typography;
 import 'package:readlock/models/CourseModel.dart';
 import 'package:readlock/utility_widgets/text_animation/ProgressiveText.dart';
+import 'package:readlock/design_system/RLButton.dart';
 import 'package:readlock/design_system/RLUtility.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
@@ -61,22 +62,12 @@ class CCTextContentState extends State<CCTextContent> {
 
   // Button widget for continuing to next content
   Widget ContinueButton() {
-    final Widget buttonText = RLTypography.bodyMedium(RLUIStrings.TEXT_CONTENT_CONTINUE_LABEL);
     final Color accentColor = resolveCourseAccentColor();
 
-    final BoxDecoration buttonDecoration = BoxDecoration(
+    return RLButton.primary(
+      label: RLUIStrings.TEXT_CONTENT_CONTINUE_LABEL,
       color: accentColor,
-      borderRadius: BorderRadius.circular(12),
-    );
-
-    return GestureDetector(
       onTap: handleContinueButtonTap,
-      child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
-        decoration: buttonDecoration,
-        child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [buttonText]),
-      ),
     );
   }
 

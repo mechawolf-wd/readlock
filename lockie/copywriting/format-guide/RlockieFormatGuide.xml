@@ -70,6 +70,7 @@
 @course
 
 id: [course identifier]
+language: [two-letter uppercase language code, e.g. EN]
 title: [course display title]
 author: [author display name]
 description: [one-line description]
@@ -79,8 +80,9 @@ relevant_for: [comma-separated keys from the closed list: designers, product-man
     </template>
 
     <rules>
-      <rule>All seven fields are required.</rule>
+      <rule>All eight fields are required.</rule>
       <rule>One blank line between @course and the first field.</rule>
+      <rule>language is a two-letter uppercase code (e.g. EN, PL, DE). Defaults to EN when omitted.</rule>
       <rule>description must be a single line.</rule>
       <rule>color must be a valid hex code.</rule>
       <rule>genres must contain 3 to 5 comma-separated tags.</rule>
