@@ -9,11 +9,11 @@ import 'package:readlock/services/auth/AuthService.dart';
 // Matches UserModel.toJson so reads round-trip cleanly.
 class UserPreferenceField {
   static const String TYPING_SOUND = 'typingSound';
+  static const String SOUNDS = 'sounds';
   static const String HAPTICS = 'haptics';
   static const String REVEAL = 'reveal';
   static const String BLUR = 'blur';
   static const String COLORED_TEXT = 'coloredText';
-  static const String TEXT_SPEED = 'textSpeed';
   static const String SAVED_COURSE_IDS = 'savedCourseIds';
 }
 
@@ -115,11 +115,11 @@ class UserService {
         'createdAt': FieldValue.serverTimestamp(),
         // Preference defaults — mirror UserModel constructor defaults.
         UserPreferenceField.TYPING_SOUND: true,
+        UserPreferenceField.SOUNDS: true,
         UserPreferenceField.HAPTICS: true,
         UserPreferenceField.REVEAL: false,
         UserPreferenceField.BLUR: true,
         UserPreferenceField.COLORED_TEXT: true,
-        UserPreferenceField.TEXT_SPEED: TextSpeed.classic.storageValue,
         UserPreferenceField.SAVED_COURSE_IDS: <String>[],
       };
 
@@ -140,6 +140,10 @@ class UserService {
     return updateField(UserPreferenceField.TYPING_SOUND, enabled, 'updateTypingSound');
   }
 
+  static Future<bool> updateSounds(bool enabled) {
+    return updateField(UserPreferenceField.SOUNDS, enabled, 'updateSounds');
+  }
+
   static Future<bool> updateHaptics(bool enabled) {
     return updateField(UserPreferenceField.HAPTICS, enabled, 'updateHaptics');
   }
@@ -154,10 +158,6 @@ class UserService {
 
   static Future<bool> updateColoredText(bool enabled) {
     return updateField(UserPreferenceField.COLORED_TEXT, enabled, 'updateColoredText');
-  }
-
-  static Future<bool> updateTextSpeed(TextSpeed speed) {
-    return updateField(UserPreferenceField.TEXT_SPEED, speed.storageValue, 'updateTextSpeed');
   }
 
   // * Field updates

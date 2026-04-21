@@ -39,6 +39,9 @@ class LoginBottomSheet {
   }
 }
 
+// * Social login button sizing — matches the Apple and Google buttons.
+const double SOCIAL_LOGIN_BUTTON_HEIGHT = 48.0;
+
 class LoginSheet extends StatefulWidget {
   const LoginSheet({super.key});
 
@@ -360,7 +363,7 @@ class LoginSheetState extends State<LoginSheet> {
     return GestureDetector(
       onTap: asTapHandler(handleAppleLoginTap),
       child: Container(
-        height: 48.0,
+        height: SOCIAL_LOGIN_BUTTON_HEIGHT,
         decoration: buttonDecoration,
         child: Div.row([
           AppleIcon,
@@ -383,7 +386,7 @@ class LoginSheetState extends State<LoginSheet> {
     return GestureDetector(
       onTap: asTapHandler(handleGoogleLoginTap),
       child: Container(
-        height: 48.0,
+        height: SOCIAL_LOGIN_BUTTON_HEIGHT,
         decoration: buttonDecoration,
         child: Div.row([
           GoogleIcon(),

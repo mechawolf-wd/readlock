@@ -7,6 +7,7 @@ import 'package:readlock/course_screens/CourseRoadmapScreen.dart';
 import 'package:readlock/course_screens/data/CourseData.dart';
 import 'package:readlock/design_system/RLUtility.dart';
 import 'package:readlock/design_system/RLBookListCard.dart';
+import 'package:readlock/design_system/RLFadeSwitcher.dart';
 import 'package:readlock/design_system/RLLoadingIndicator.dart';
 import 'package:readlock/constants/DartAliases.dart';
 import 'package:readlock/constants/RLTypography.dart';
@@ -18,6 +19,7 @@ import 'package:readlock/services/auth/UserService.dart';
 import 'package:readlock/models/UserModel.dart';
 
 import 'package:pixelarticons/pixel.dart';
+
 class MyBookshelfScreen extends StatefulWidget {
   const MyBookshelfScreen({super.key});
 
@@ -69,9 +71,7 @@ class MyBookshelfScreenState extends State<MyBookshelfScreen> {
   void navigateToCourse(String courseId) {
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (context) => CourseRoadmapScreen(courseId: courseId),
-      ),
+      MaterialPageRoute(builder: (context) => CourseRoadmapScreen(courseId: courseId)),
     );
   }
 
@@ -79,10 +79,7 @@ class MyBookshelfScreenState extends State<MyBookshelfScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: RLDS.backgroundDark,
-      body: SafeArea(
-        bottom: false,
-        child: BookshelfBody(),
-      ),
+      body: SafeArea(bottom: false, child: BookshelfBody()),
     );
   }
 
@@ -90,10 +87,6 @@ class MyBookshelfScreenState extends State<MyBookshelfScreen> {
     return Padding(
       padding: const EdgeInsets.all(RLDS.spacing24),
       child: Div.column([
-        Align(alignment: Alignment.centerRight, child: BookshelfBird()),
-
-        const Spacing.height(RLDS.spacing16),
-
         BookshelfHeaderWithSettings(),
 
         const Spacing.height(RLDS.spacing40),
@@ -104,25 +97,32 @@ class MyBookshelfScreenState extends State<MyBookshelfScreen> {
   }
 
   Widget BookshelfContent() {
+    return RLFadeSwitcher(child: BookshelfContentCurrent());
+  }
+
+  Widget BookshelfContentCurrent() {
     if (isBookshelfLoading) {
-      return const RLLoadingIndicator.bird();
+      return const RLLoadingIndicator.bird(key: ValueKey('bookshelf-loading'));
     }
 
     final bool hasNoSavedCourses = savedCourses.isEmpty;
 
     if (hasNoSavedCourses) {
-      return EmptyBookshelfMessage();
+      return KeyedSubtree(
+        key: const ValueKey('bookshelf-empty'),
+        child: EmptyBookshelfMessage(),
+      );
     }
 
-    return SavedCoursesList();
+    return KeyedSubtree(
+      key: const ValueKey('bookshelf-list'),
+      child: SavedCoursesList(),
+    );
   }
 
   Widget SavedCoursesList() {
     return SingleChildScrollView(
-      child: Div.column(
-        SavedCourseCards(),
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-      ),
+      child: Div.column(SavedCourseCards(), crossAxisAlignment: CrossAxisAlignment.stretch),
     );
   }
 
@@ -148,10 +148,7 @@ class MyBookshelfScreenState extends State<MyBookshelfScreen> {
 
       const Spacer(),
 
-      GestureDetector(
-        onTap: () => SettingsBottomSheet.show(context),
-        child: SettingsIcon,
-      ),
+      GestureDetector(onTap: () => SettingsBottomSheet.show(context), child: SettingsIcon),
     ], crossAxisAlignment: CrossAxisAlignment.center);
   }
 
@@ -163,10 +160,7 @@ class MyBookshelfScreenState extends State<MyBookshelfScreen> {
   }
 
   Widget BookshelfBirdBuilder(BuildContext context, BirdOption bird, Widget? _) {
-    return BirdAnimationSprite(
-      bird: bird,
-      previewSize: BIRD_CONTENT_SIZE,
-    );
+    return BirdAnimationSprite(bird: bird, previewSize: BIRD_CONTENT_SIZE);
   }
 
   Widget EmptyBookshelfMessage() {

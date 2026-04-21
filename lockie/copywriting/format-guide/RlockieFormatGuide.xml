@@ -235,17 +235,14 @@ hint: [Hint shown before answering]
     </block>
 
     <block name="@true_false">
-      <description>A statement the learner must judge as true or false.</description>
+      <description>A statement the learner must judge as true or false. The two answer options are always literally "True" and "False" — never descriptive text.</description>
 
       <template>
 @true_false
 [Statement to evaluate]
 
-true: [Text for the true option]
-consequence: [Feedback if true is chosen]
-
-false: [Text for the false option]
-consequence: [Feedback if false is chosen]
+true: [Consequence shown if the reader picks True]
+false: [Consequence shown if the reader picks False]
 
 correct_answers: [1 for true, 2 for false]
 explanation: [Explanation text]
@@ -254,8 +251,9 @@ hint: [Hint text]
 
       <rules>
         <rule>Statement must be exactly one line.</rule>
-        <rule>Exactly one true: and one false: option, in that order.</rule>
-        <rule>true: and false: option text should be descriptive, not just "True" and "False".</rule>
+        <rule>Exactly one true: and one false: line, in that order.</rule>
+        <rule>The two answer options are always literally "True" and "False". Never descriptive text, never paraphrased, never restating the statement.</rule>
+        <rule>The text after true: and false: is the consequence shown after the reader picks that option, not the option label.</rule>
         <rule>correct_answers is 1 if the statement is true, 2 if false.</rule>
         <rule>hint is required, and follows the same rules as @question hints (one sentence, ~14 words).</rule>
         <rule>Consequences follow the same rules as @question consequences (1 to 3 sentences).</rule>

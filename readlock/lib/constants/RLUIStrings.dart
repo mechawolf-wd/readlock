@@ -6,7 +6,7 @@ class RLUIStrings {
   // * Navigation
   static const String HOME_TAB_LABEL = 'Home';
   static const String SEARCH_TAB_LABEL = 'Search';
-  static const String BOOKSHELF_TAB_LABEL = 'My Bookshelf';
+  static const String BOOKSHELF_TAB_LABEL = 'Bookshelf';
 
   // * My Bookshelf Screen
   static const String BOOKSHELF_TITLE = 'Bookshelf';
@@ -100,7 +100,7 @@ class RLUIStrings {
   static const String LOADING_MESSAGE = 'Birds are indexing the course';
 
   // * Shared loading indicator (dots are animated in the widget)
-  static const String LOADING_LABEL = 'Loading';
+  static const String LOADING_LABEL = 'Chirping';
 
   // * Course Content Viewer
   static const String NO_CONTENT_AVAILABLE_MESSAGE =
@@ -212,11 +212,11 @@ class RLUIStrings {
   static const String MENU_ACCOUNT = 'Account';
   static const String MENU_READER_PASS = 'Reader Pass';
   static const String MENU_TYPING_SOUND = 'Typing sound';
+  static const String MENU_SOUNDS = 'Sounds';
   static const String MENU_HAPTICS = 'Haptics';
   static const String MENU_REVEAL = 'Reveal';
   static const String MENU_BLUR = 'Blur';
   static const String MENU_COLORED_TEXT = 'Colored text';
-  static const String MENU_TEXT_SPEED = 'Text speed';
   static const String MENU_NOTIFICATIONS = 'Notifications';
   static const String MENU_SUPPORT = 'Support';
   static const String MENU_PRIVACY_POLICY = 'Privacy Policy';
@@ -239,12 +239,6 @@ class RLUIStrings {
   static const String DEMO_BLUR_CURRENT = 'Current sentence stays clear.';
   static const String DEMO_COLORED_HIGHLIGHT = 'Key terms';
   static const String DEMO_COLORED_SUFFIX = ' are highlighted in text.';
-  static const String DEMO_SPEED_CAREFUL = 'Slower pace for deep comprehension.';
-  static const String DEMO_SPEED_CLASSIC = 'Balanced speed for comfortable learning.';
-  static const String DEMO_SPEED_FAST = 'Faster pace for quick review.';
-  static const String SPEED_CAREFUL = 'Careful';
-  static const String SPEED_CLASSIC = 'Classic';
-  static const String SPEED_SPEED = 'Speed';
 
   // * Settings Bottom Sheet
   static const String SETTINGS_TITLE = 'Settings';

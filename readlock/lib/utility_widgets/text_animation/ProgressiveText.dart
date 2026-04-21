@@ -923,13 +923,13 @@ class ProgressiveTextState extends State<ProgressiveText> with TickerProviderSta
   TextStyle getConsistentTextStyle() {
     final bool hasCustomTextStyle = widget.textStyle != null;
 
-    TextStyle baseStyle = RLTypography.bodyMediumStyle;
+    TextStyle baseStyle = RLTypography.readingMediumStyle;
 
     if (hasCustomTextStyle) {
       baseStyle = widget.textStyle!;
     }
 
-    return baseStyle.copyWith(fontSize: 16, height: 1.5);
+    return baseStyle.copyWith(fontSize: 18, height: 1.5);
   }
 }
 

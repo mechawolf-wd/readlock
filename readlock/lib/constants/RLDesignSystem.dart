@@ -112,6 +112,10 @@ class RLDS {
   static const double iconXLarge = 32.0;
   static const double iconXXLarge = 48.0;
 
+  // * Backdrop blur — applied behind every modal surface (bottom sheets,
+  // dialogs) so they all read as one family.
+  static const double backdropBlurSigma = 10.0;
+
   // * Sheet standardized spacing
 
   static const double sheetTopPadding = spacing12;
@@ -198,5 +202,29 @@ class RLDS {
         return SlideTransition(position: slideAnimation, child: child);
       },
     );
+  }
+}
+
+// Replaces the default platform page transition (classic right-to-left swipe
+// on Android, iOS horizontal push) with a slide from the top.
+// Wired into MaterialApp via pageTransitionsTheme so every MaterialPageRoute
+// uses it automatically without touching individual Navigator.push calls.
+class TopSlidePageTransitionsBuilder extends PageTransitionsBuilder {
+  const TopSlidePageTransitionsBuilder();
+
+  @override
+  Widget buildTransitions<T>(
+    PageRoute<T> route,
+    BuildContext context,
+    Animation<double> animation,
+    Animation<double> secondaryAnimation,
+    Widget child,
+  ) {
+    final Animation<Offset> slideAnimation = Tween<Offset>(
+      begin: const Offset(0.0, -1.0),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(parent: animation, curve: RLDS.transitionCurve));
+
+    return SlideTransition(position: slideAnimation, child: child);
   }
 }

@@ -26,6 +26,13 @@ class ReadlockApp extends StatelessWidget {
   }
 
   ThemeData getTheme() {
+    final PageTransitionsTheme topSlideTransitions = PageTransitionsTheme(
+      builders: {
+        for (final TargetPlatform platform in TargetPlatform.values)
+          platform: const TopSlidePageTransitionsBuilder(),
+      },
+    );
+
     return ThemeData(
       colorScheme: ColorScheme.fromSeed(
         seedColor: RLDS.primary,
@@ -38,6 +45,7 @@ class ReadlockApp extends StatelessWidget {
         elevation: 0,
         iconTheme: IconThemeData(color: RLDS.textPrimary),
       ),
+      pageTransitionsTheme: topSlideTransitions,
       useMaterial3: true,
       textTheme: GoogleFonts.poppinsTextTheme(ThemeData.dark().textTheme),
     );

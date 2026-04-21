@@ -1,6 +1,8 @@
 // Generic dialog primitives for the Readlock application.
 // For two-action confirmations, use RLConfirmationDialog in design_system/.
 
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/constants/RLTypography.dart';
@@ -22,10 +24,7 @@ class RLDialog {
       barrierDismissible: isDismissible,
       barrierColor: RLDS.black.withValues(alpha: 0.5),
       builder: (BuildContext dialogContext) {
-        return DialogContainer(
-          backgroundColor: dialogColor,
-          child: child,
-        );
+        return DialogContainer(backgroundColor: dialogColor, child: child);
       },
     );
   }
@@ -58,11 +57,7 @@ class DialogContainer extends StatelessWidget {
   final Widget child;
   final Color? backgroundColor;
 
-  const DialogContainer({
-    super.key,
-    required this.child,
-    this.backgroundColor,
-  });
+  const DialogContainer({super.key, required this.child, this.backgroundColor});
 
   @override
   Widget build(BuildContext context) {
@@ -70,17 +65,17 @@ class DialogContainer extends StatelessWidget {
 
     final BoxDecoration dialogDecoration = BoxDecoration(
       color: dialogColor,
-      borderRadius: RLDS.borderRadiusLarge,
+      borderRadius: RLDS.borderRadiusSmall,
     );
 
-    return Center(
-      child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: RLDS.spacing24),
-        decoration: dialogDecoration,
-        clipBehavior: Clip.antiAlias,
-        child: Material(
-          color: RLDS.transparent,
-          child: child,
+    return BackdropFilter(
+      filter: ImageFilter.blur(sigmaX: RLDS.backdropBlurSigma, sigmaY: RLDS.backdropBlurSigma),
+      child: Center(
+        child: Container(
+          margin: const EdgeInsets.symmetric(horizontal: RLDS.spacing24),
+          decoration: dialogDecoration,
+          clipBehavior: Clip.antiAlias,
+          child: Material(color: RLDS.transparent, child: child),
         ),
       ),
     );
@@ -123,7 +118,7 @@ class AlertDialogContent extends StatelessWidget {
           const Spacing.height(RLDS.spacing24),
 
           // Action button
-          RLButton.primary(
+          RLButton.secondary(
             label: buttonLabel,
             color: buttonColor,
             onTap: onTap,

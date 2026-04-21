@@ -14,35 +14,35 @@ import 'package:readlock/screens/profile/SettingsDemos.dart';
 
 import 'package:pixelarticons/pixel.dart';
 class MenuSection extends StatelessWidget {
-  final bool soundsEnabled;
+  final bool typingSoundEnabled;
+  final bool generalSoundsEnabled;
   final bool hapticsEnabled;
   final bool revealAllTrueFalse;
   final bool blurEnabled;
   final bool coloredTextEnabled;
-  final String textSpeed;
-  final ValueChanged<bool> onSoundsToggled;
+  final ValueChanged<bool> onTypingSoundToggled;
+  final ValueChanged<bool> onGeneralSoundsToggled;
   final ValueChanged<bool> onHapticsToggled;
   final ValueChanged<bool> onRevealAllTrueFalseToggled;
   final ValueChanged<bool> onBlurToggled;
   final ValueChanged<bool> onColoredTextToggled;
-  final ValueChanged<String> onTextSpeedChanged;
   final VoidCallback onSupportTap;
   final VoidCallback onLogoutTap;
 
   const MenuSection({
     super.key,
-    required this.soundsEnabled,
+    required this.typingSoundEnabled,
+    required this.generalSoundsEnabled,
     required this.hapticsEnabled,
     required this.revealAllTrueFalse,
     required this.blurEnabled,
     required this.coloredTextEnabled,
-    required this.textSpeed,
-    required this.onSoundsToggled,
+    required this.onTypingSoundToggled,
+    required this.onGeneralSoundsToggled,
     required this.onHapticsToggled,
     required this.onRevealAllTrueFalseToggled,
     required this.onBlurToggled,
     required this.onColoredTextToggled,
-    required this.onTextSpeedChanged,
     required this.onSupportTap,
     required this.onLogoutTap,
   });
@@ -73,8 +73,15 @@ class MenuSection extends StatelessWidget {
         SwitchMenuItem(
           icon: Pixel.keyboard,
           title: RLUIStrings.MENU_TYPING_SOUND,
-          value: soundsEnabled,
-          onChanged: onSoundsToggled,
+          value: typingSoundEnabled,
+          onChanged: onTypingSoundToggled,
+        ),
+
+        SwitchMenuItem(
+          icon: Pixel.volume2,
+          title: RLUIStrings.MENU_SOUNDS,
+          value: generalSoundsEnabled,
+          onChanged: onGeneralSoundsToggled,
         ),
 
         SwitchMenuItem(
@@ -113,16 +120,6 @@ class MenuSection extends StatelessWidget {
         ),
 
         ColoredTextDemo(isEnabled: coloredTextEnabled),
-
-        SegmentedMenuItem(
-          icon: Pixel.chartbar,
-          title: RLUIStrings.MENU_TEXT_SPEED,
-          options: const [RLUIStrings.SPEED_CAREFUL, RLUIStrings.SPEED_CLASSIC, RLUIStrings.SPEED_SPEED],
-          selectedOption: textSpeed,
-          onChanged: onTextSpeedChanged,
-        ),
-
-        TextSpeedDemo(selectedSpeed: textSpeed),
 
         const MenuDivider(),
 
@@ -239,111 +236,6 @@ class SwitchMenuItem extends StatelessWidget {
         ],
       ),
     );
-  }
-}
-
-class SegmentedMenuItem extends StatelessWidget {
-  final IconData icon;
-  final String title;
-  final List<String> options;
-  final String selectedOption;
-  final ValueChanged<String> onChanged;
-
-  const SegmentedMenuItem({
-    super.key,
-    required this.icon,
-    required this.title,
-    required this.options,
-    required this.selectedOption,
-    required this.onChanged,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final Color iconColor = RLDS.textPrimary.withValues(alpha: 0.7);
-    final Color titleColor = RLDS.textPrimary;
-
-    final Widget MenuItemIcon = Icon(icon, color: iconColor, size: RLDS.iconMedium);
-
-    return Padding(
-      padding: const EdgeInsets.only(top: RLDS.spacing32, bottom: RLDS.spacing16),
-      child: Column(
-        children: [
-          Row(
-            children: [
-              MenuItemIcon,
-
-              const Spacing.width(RLDS.spacing16),
-
-              Expanded(child: RLTypography.bodyMedium(title, color: titleColor)),
-            ],
-          ),
-
-          const Spacing.height(RLDS.spacing16),
-
-          // Segmented options
-          SegmentedOptions(
-            options: options,
-            selectedOption: selectedOption,
-            onChanged: onChanged,
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget SegmentedOptions({
-    required List<String> options,
-    required String selectedOption,
-    required ValueChanged<String> onChanged,
-  }) {
-    final BoxDecoration containerDecoration = BoxDecoration(
-      color: RLDS.textPrimary.withValues(alpha: 0.05),
-      borderRadius: BorderRadius.circular(RLDS.spacing8),
-    );
-
-    return Container(
-      decoration: containerDecoration,
-      padding: const EdgeInsets.all(RLDS.spacing8),
-      child: Row(children: OptionButtons(options, selectedOption, onChanged)),
-    );
-  }
-
-  List<Widget> OptionButtons(
-    List<String> options,
-    String selectedOption,
-    ValueChanged<String> onChanged,
-  ) {
-    return options.map((option) {
-      final bool isSelected = option == selectedOption;
-
-      Color optionColor = RLDS.transparent;
-      Color textColor = RLDS.textPrimary.withValues(alpha: 0.6);
-
-      if (isSelected) {
-        optionColor = RLDS.primary;
-        textColor = RLDS.white;
-      }
-
-      final BoxDecoration optionDecoration = BoxDecoration(
-        color: optionColor,
-        borderRadius: BorderRadius.circular(RLDS.spacing4 + 2),
-      );
-
-      return Expanded(
-        child: GestureDetector(
-          onTap: () {
-            HapticFeedback.lightImpact();
-            onChanged(option);
-          },
-          child: Container(
-            padding: const EdgeInsets.symmetric(vertical: RLDS.spacing8),
-            decoration: optionDecoration,
-            child: Center(child: RLTypography.bodyMedium(option, color: textColor)),
-          ),
-        ),
-      );
-    }).toList();
   }
 }
 

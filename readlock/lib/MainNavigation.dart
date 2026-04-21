@@ -9,6 +9,7 @@ import 'package:flutter/services.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLUIStrings.dart';
+import 'package:readlock/design_system/RLFadeSwitcher.dart';
 import 'package:readlock/screens/CoursesScreen.dart';
 import 'package:readlock/screens/HomeScreen.dart';
 import 'package:readlock/screens/MyBookshelfScreen.dart';
@@ -16,6 +17,7 @@ import 'package:readlock/bottom_sheets/user/LoginBottomSheet.dart';
 import 'package:readlock/services/auth/AuthService.dart';
 
 import 'package:pixelarticons/pixel.dart';
+
 class MainNavigation extends StatefulWidget {
   final int initialTabIndex;
 
@@ -106,8 +108,8 @@ class MainNavigationState extends State<MainNavigation> {
   static const Icon HomeActiveIcon = Icon(Pixel.home, size: navIconSize);
   static const Icon ExploreIcon = Icon(Pixel.map, size: navIconSize);
   static const Icon ExploreActiveIcon = Icon(Pixel.map, size: navIconSize);
-  static const Icon BookshelfIcon = Icon(Pixel.bookopen, size: navIconSize);
-  static const Icon BookshelfActiveIcon = Icon(Pixel.bookopen, size: navIconSize);
+  static const Icon BookshelfIcon = Icon(Pixel.book, size: navIconSize);
+  static const Icon BookshelfActiveIcon = Icon(Pixel.book, size: navIconSize);
 
   @override
   Widget build(BuildContext context) {
@@ -128,7 +130,12 @@ class MainNavigationState extends State<MainNavigation> {
 
     return Scaffold(
       backgroundColor: RLDS.backgroundDark,
-      body: screens[currentIndex],
+      body: RLFadeSwitcher(
+        child: KeyedSubtree(
+          key: ValueKey<int>(currentIndex),
+          child: screens[currentIndex],
+        ),
+      ),
       bottomNavigationBar: Theme(
         data: noRippleTheme,
         child: BottomNavigationBar(

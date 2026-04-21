@@ -175,7 +175,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
     ];
 
     return Material(
-      color: RLDS.backgroundDark,
+      color: RLDS.surface,
       child: SafeArea(
         child: Stack(
           children: [
@@ -293,9 +293,11 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
     );
   }
 
+  static const double progressRingStrokeWidth = 6.0;
+
   static final BoxDecoration progressRingDecoration = BoxDecoration(
     shape: BoxShape.circle,
-    border: Border.all(color: RLDS.backgroundLight, width: 3),
+    border: Border.all(color: RLDS.backgroundLight, width: progressRingStrokeWidth),
   );
 
   Widget ProgressRing() {
@@ -325,7 +327,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
               painter: ProgressArcPainter(
                 progress: 0.35,
                 color: accentColor,
-                strokeWidth: 3,
+                strokeWidth: progressRingStrokeWidth,
               ),
             ),
           ),
@@ -397,7 +399,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
     final String lessonsLabel = '$totalLessons packages';
     final Color accentColor = getCourseAccentColor();
 
-    final Widget lessonIcon = Icon(Pixel.bookopen, color: accentColor, size: 14);
+    final Widget lessonIcon = Icon(Pixel.bookopen, color: accentColor, size: RLDS.iconMedium);
 
     return Row(
       mainAxisSize: MainAxisSize.min,

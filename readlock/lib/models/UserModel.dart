@@ -4,59 +4,6 @@ import 'package:readlock/constants/DartAliases.dart';
 
 part 'UserModel.g.dart';
 
-// * Reading-speed enum persisted on the user profile.
-//
-// Stored as the JSON string value (careful / classic / speed) so Firestore
-// documents stay human-readable. Use TextSpeedExtension.fromLabel to map the
-// UI label strings (RLUIStrings.SPEED_*) back to the enum.
-
-enum TextSpeed {
-  @JsonValue('careful')
-  careful,
-
-  @JsonValue('classic')
-  classic,
-
-  @JsonValue('speed')
-  speed,
-}
-
-extension TextSpeedExtension on TextSpeed {
-  String get storageValue {
-    switch (this) {
-      case TextSpeed.careful:
-        {
-          return 'careful';
-        }
-      case TextSpeed.classic:
-        {
-          return 'classic';
-        }
-      case TextSpeed.speed:
-        {
-          return 'speed';
-        }
-    }
-  }
-
-  static TextSpeed fromStorage(String? raw) {
-    switch (raw) {
-      case 'careful':
-        {
-          return TextSpeed.careful;
-        }
-      case 'speed':
-        {
-          return TextSpeed.speed;
-        }
-      default:
-        {
-          return TextSpeed.classic;
-        }
-    }
-  }
-}
-
 @JsonSerializable(explicitToJson: true)
 class UserModel {
   @JsonKey(includeToJson: false)
@@ -86,6 +33,9 @@ class UserModel {
   final bool typingSound;
 
   @JsonKey(defaultValue: true)
+  final bool sounds;
+
+  @JsonKey(defaultValue: true)
   final bool haptics;
 
   @JsonKey(defaultValue: false)
@@ -96,9 +46,6 @@ class UserModel {
 
   @JsonKey(defaultValue: true)
   final bool coloredText;
-
-  @JsonKey(defaultValue: TextSpeed.classic)
-  final TextSpeed textSpeed;
 
   // * Bookshelf — course-ids the user has saved from search or the roadmap.
   @JsonKey(defaultValue: <String>[])
@@ -114,11 +61,11 @@ class UserModel {
     this.hasCompletedOnboarding = false,
     this.hasReaderPass = false,
     this.typingSound = true,
+    this.sounds = true,
     this.haptics = true,
     this.reveal = false,
     this.blur = true,
     this.coloredText = true,
-    this.textSpeed = TextSpeed.classic,
     this.savedCourseIds = const <String>[],
   });
 
@@ -150,11 +97,11 @@ class UserModel {
     bool? hasCompletedOnboarding,
     bool? hasReaderPass,
     bool? typingSound,
+    bool? sounds,
     bool? haptics,
     bool? reveal,
     bool? blur,
     bool? coloredText,
-    TextSpeed? textSpeed,
     List<String>? savedCourseIds,
   }) {
     return UserModel(
@@ -167,11 +114,11 @@ class UserModel {
       hasCompletedOnboarding: hasCompletedOnboarding ?? this.hasCompletedOnboarding,
       hasReaderPass: hasReaderPass ?? this.hasReaderPass,
       typingSound: typingSound ?? this.typingSound,
+      sounds: sounds ?? this.sounds,
       haptics: haptics ?? this.haptics,
       reveal: reveal ?? this.reveal,
       blur: blur ?? this.blur,
       coloredText: coloredText ?? this.coloredText,
-      textSpeed: textSpeed ?? this.textSpeed,
       savedCourseIds: savedCourseIds ?? this.savedCourseIds,
     );
   }

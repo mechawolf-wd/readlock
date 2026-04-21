@@ -135,7 +135,7 @@
     <group name="Phase 5, True/False" rlockie_field="@true_false">
       <rule ref="guide: Section 5, Length reference">1 to 2 @true_false swipes. Statement on one line.</rule>
       <rule ref="guide: Section 5, Phase 5">Statement is semi-obvious after a moment of thought. Not dumb, not a trap.</rule>
-      <rule ref="RlockieFormatGuide.xml, @true_false">true: and false: texts are descriptive, not literally "True" and "False".</rule>
+      <rule ref="RlockieFormatGuide.xml, @true_false">The two answer options are always literally "True" and "False". Never descriptive, never paraphrased. The text after true: and false: is the consequence, not the option label.</rule>
       <rule ref="guide: Section 5, Writing @question consequences and hints">Consequences and hints follow the same rules as @question.</rule>
       <rule ref="guide: Section 5, Phase 5, Phase 5 is skipped if the package opens with a true/false intro">If the package opened with a true/false intro, Phase 5 is empty for that package. The package never has two @true_false swipes when one of them is the intro.</rule>
     </group>
@@ -393,8 +393,8 @@
 
     <group name="@true_false">
       <rule>Statement is exactly one line.</rule>
-      <rule>Exactly one true: and one false: option, in that order.</rule>
-      <rule>true: and false: texts are descriptive.</rule>
+      <rule>Exactly one true: and one false: line, in that order.</rule>
+      <rule>The two answer options are always literally "True" and "False". The text after true: and false: is the consequence shown after the reader picks that option, not the option label.</rule>
       <rule>correct_answers (1 or 2), explanation, hint all present.</rule>
     </group>
 

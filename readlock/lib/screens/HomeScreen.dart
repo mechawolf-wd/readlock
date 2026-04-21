@@ -10,6 +10,7 @@ import 'package:readlock/constants/RLUIStrings.dart';
 import 'package:readlock/constants/DartAliases.dart';
 import 'package:readlock/design_system/RLUtility.dart';
 import 'package:readlock/design_system/RLCard.dart';
+import 'package:readlock/design_system/RLFadeSwitcher.dart';
 import 'package:readlock/design_system/RLLoadingIndicator.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
@@ -119,11 +120,16 @@ class HomeScreenState extends State<HomeScreen> {
   }
 
   Widget HomeBody() {
+    return RLFadeSwitcher(child: HomeBodyCurrent());
+  }
+
+  Widget HomeBodyCurrent() {
     if (isCoursesLoading) {
-      return const RLLoadingIndicator.bird();
+      return const RLLoadingIndicator.bird(key: ValueKey('home-loading'));
     }
 
     return Padding(
+      key: const ValueKey('home-content'),
       padding: const EdgeInsets.all(RLDS.spacing24),
       child: Div.column(
         [

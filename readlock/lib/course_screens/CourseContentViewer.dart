@@ -15,7 +15,6 @@ import 'package:readlock/screens/StreakplierRewardScreen.dart';
 import 'package:readlock/design_system/RLConfirmationDialog.dart';
 import 'package:readlock/constants/DartAliases.dart';
 import 'package:readlock/services/ScreenProtectionService.dart';
-import 'package:readlock/services/feedback/SoundService.dart';
 
 import 'package:pixelarticons/pixel.dart';
 class CourseDetailScreen extends StatefulWidget {
@@ -96,9 +95,6 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
     // Load course data asynchronously
     fetchCourseData();
 
-    // Start atmosphere audio loop
-    SoundService.playAtmosphere();
-
     // Block screenshots while course content is visible
     ScreenProtectionService.enableProtection();
   }
@@ -107,7 +103,6 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
   @override
   void dispose() {
     ScreenProtectionService.disableProtection();
-    SoundService.stopAtmosphere();
     pageController.dispose();
     super.dispose();
   }
@@ -436,7 +431,6 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
         variant: RLConfirmationVariant.destructive,
         onTap: navigateBackToRoadmap,
       ),
-      layout: RLConfirmationLayout.horizontal,
     );
   }
 

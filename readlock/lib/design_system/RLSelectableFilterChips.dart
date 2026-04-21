@@ -79,10 +79,7 @@ class SelectableFilterChip extends StatelessWidget {
           vertical: RLDS.spacing8,
         ),
         decoration: chipDecoration,
-        child: Text(
-          label,
-          style: RLTypography.bodyMediumStyle.copyWith(color: chipTextColor),
-        ),
+        child: RLTypography.bodyMedium(label, color: chipTextColor),
       ),
     );
   }

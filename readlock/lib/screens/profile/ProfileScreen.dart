@@ -44,11 +44,11 @@ class ProfileContent extends StatefulWidget {
 
 class ProfileContentState extends State<ProfileContent> {
   bool typingSoundEnabled = true;
+  bool generalSoundsEnabled = true;
   bool hapticsEnabled = true;
   bool revealEnabled = false;
   bool blurEnabled = true;
   bool coloredTextEnabled = true;
-  TextSpeed textSpeed = TextSpeed.classic;
   bool isLoggingOut = false;
 
   @override
@@ -74,11 +74,11 @@ class ProfileContentState extends State<ProfileContent> {
 
     setState(() {
       typingSoundEnabled = user.typingSound;
+      generalSoundsEnabled = user.sounds;
       hapticsEnabled = user.haptics;
       revealEnabled = user.reveal;
       blurEnabled = user.blur;
       coloredTextEnabled = user.coloredText;
-      textSpeed = user.textSpeed;
     });
   }
 
@@ -86,9 +86,14 @@ class ProfileContentState extends State<ProfileContent> {
   // persistence to Firestore. Intentionally not awaited so the UI stays
   // snappy; UserService logs any write failures for diagnostics.
 
-  void handleSoundsToggled(bool value) {
+  void handleTypingSoundToggled(bool value) {
     setState(() => typingSoundEnabled = value);
     UserService.updateTypingSound(value);
+  }
+
+  void handleGeneralSoundsToggled(bool value) {
+    setState(() => generalSoundsEnabled = value);
+    UserService.updateSounds(value);
   }
 
   void handleHapticsToggled(bool value) {
@@ -109,47 +114,6 @@ class ProfileContentState extends State<ProfileContent> {
   void handleColoredTextToggled(bool value) {
     setState(() => coloredTextEnabled = value);
     UserService.updateColoredText(value);
-  }
-
-  void handleTextSpeedChanged(String uiLabel) {
-    final TextSpeed newSpeed = mapLabelToTextSpeed(uiLabel);
-
-    setState(() => textSpeed = newSpeed);
-    UserService.updateTextSpeed(newSpeed);
-  }
-
-  TextSpeed mapLabelToTextSpeed(String uiLabel) {
-    switch (uiLabel) {
-      case RLUIStrings.SPEED_CAREFUL:
-        {
-          return TextSpeed.careful;
-        }
-      case RLUIStrings.SPEED_SPEED:
-        {
-          return TextSpeed.speed;
-        }
-      default:
-        {
-          return TextSpeed.classic;
-        }
-    }
-  }
-
-  String mapTextSpeedToLabel(TextSpeed speed) {
-    switch (speed) {
-      case TextSpeed.careful:
-        {
-          return RLUIStrings.SPEED_CAREFUL;
-        }
-      case TextSpeed.speed:
-        {
-          return RLUIStrings.SPEED_SPEED;
-        }
-      case TextSpeed.classic:
-        {
-          return RLUIStrings.SPEED_CLASSIC;
-        }
-    }
   }
 
   void handleSupportTap() {}
@@ -199,21 +163,19 @@ class ProfileContentState extends State<ProfileContent> {
 
   @override
   Widget build(BuildContext context) {
-    final String textSpeedLabel = mapTextSpeedToLabel(textSpeed);
-
     final Widget menu = MenuSection(
-      soundsEnabled: typingSoundEnabled,
+      typingSoundEnabled: typingSoundEnabled,
+      generalSoundsEnabled: generalSoundsEnabled,
       hapticsEnabled: hapticsEnabled,
       revealAllTrueFalse: revealEnabled,
       blurEnabled: blurEnabled,
       coloredTextEnabled: coloredTextEnabled,
-      textSpeed: textSpeedLabel,
-      onSoundsToggled: handleSoundsToggled,
+      onTypingSoundToggled: handleTypingSoundToggled,
+      onGeneralSoundsToggled: handleGeneralSoundsToggled,
       onHapticsToggled: handleHapticsToggled,
       onRevealAllTrueFalseToggled: handleRevealToggled,
       onBlurToggled: handleBlurToggled,
       onColoredTextToggled: handleColoredTextToggled,
-      onTextSpeedChanged: handleTextSpeedChanged,
       onSupportTap: handleSupportTap,
       onLogoutTap: handleLogoutTap,
     );

@@ -10,6 +10,7 @@ import 'package:readlock/course_screens/CourseRoadmapScreen.dart';
 import 'package:readlock/course_screens/data/CourseData.dart';
 import 'package:readlock/design_system/RLUtility.dart';
 import 'package:readlock/design_system/RLBookListCard.dart';
+import 'package:readlock/design_system/RLFadeSwitcher.dart';
 import 'package:readlock/design_system/RLLoadingIndicator.dart';
 import 'package:readlock/design_system/RLTextField.dart';
 import 'package:readlock/constants/RLTypography.dart';
@@ -163,11 +164,16 @@ class CoursesScreenState extends State<CoursesScreen> {
   }
 
   Widget CoursesBody() {
+    return RLFadeSwitcher(child: CoursesBodyCurrent());
+  }
+
+  Widget CoursesBodyCurrent() {
     if (isCoursesLoading) {
-      return const RLLoadingIndicator.bird();
+      return const RLLoadingIndicator.bird(key: ValueKey('courses-loading'));
     }
 
     return Padding(
+      key: const ValueKey('courses-content'),
       padding: const EdgeInsets.all(RLDS.spacing24),
       child: Div.column([
         RLTypography.headingLarge(RLUIStrings.SEARCH_TAB_LABEL),

@@ -7,8 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/design_system/RLUtility.dart';
 
-const double BOTTOM_SHEET_BACKDROP_BLUR_SIGMA = 10.0;
-
 class RLBottomSheet {
   // * Standard show — wraps content with grabber, safe area, and rounded top corners.
   // Returns the sheet's dismissal future so callers can await it.
@@ -39,8 +37,8 @@ class RLBottomSheet {
         if (applyBackdropBlur) {
           return BackdropFilter(
             filter: ImageFilter.blur(
-              sigmaX: BOTTOM_SHEET_BACKDROP_BLUR_SIGMA,
-              sigmaY: BOTTOM_SHEET_BACKDROP_BLUR_SIGMA,
+              sigmaX: RLDS.backdropBlurSigma,
+              sigmaY: RLDS.backdropBlurSigma,
             ),
             child: container,
           );

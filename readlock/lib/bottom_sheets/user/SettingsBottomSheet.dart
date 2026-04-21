@@ -41,7 +41,7 @@ class SettingsContent extends StatelessWidget {
 
           const Spacing.width(RLDS.spacing12),
 
-          RLTypography.headingMedium(RLUIStrings.SETTINGS_TITLE),
+          RLTypography.headingLarge(RLUIStrings.SETTINGS_TITLE),
         ], mainAxisAlignment: MainAxisAlignment.start),
       ),
 

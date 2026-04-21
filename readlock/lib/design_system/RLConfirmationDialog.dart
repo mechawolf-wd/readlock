@@ -183,7 +183,12 @@ class ConfirmationDialogContent extends StatelessWidget {
     );
   }
 
-  // Vertical: cta on top (filled), cancel below as a tertiary text button.
+  // Vertical: the destructive action always renders as the tertiary text
+  // button, and the safer non-destructive action is the filled primary on
+  // top. This matches "Sign out?" (Cancel filled, Sign out as text) and
+  // "Quit?" (Learn filled, Quit as text) — the dialog keeps the user safely
+  // on the default action, and committing to the destructive one requires
+  // a deliberate tap on text.
   Widget VerticalButtons() {
     final RLConfirmationAction? cancelAction = cancel;
     final bool hasCancel = cancelAction != null;
@@ -192,15 +197,20 @@ class ConfirmationDialogContent extends StatelessWidget {
       return PrimaryButton(action: cta);
     }
 
+    final bool isCtaDestructive = cta.variant == RLConfirmationVariant.destructive;
+
+    final RLConfirmationAction filledAction = isCtaDestructive ? cancelAction : cta;
+    final RLConfirmationAction textAction = isCtaDestructive ? cta : cancelAction;
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        PrimaryButton(action: cta),
+        PrimaryButton(action: filledAction),
 
         const Spacing.height(RLDS.spacing12),
 
-        TertiaryButton(action: cancelAction),
+        TertiaryButton(action: textAction),
       ],
     );
   }

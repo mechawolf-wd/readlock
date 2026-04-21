@@ -41,10 +41,7 @@ class BookListCard extends StatelessWidget {
 
             const Spacing.height(RLDS.spacing4),
 
-            Text(
-              author,
-              style: RLTypography.bodyMediumStyle.copyWith(color: RLDS.textSecondary),
-            ),
+            RLTypography.bodyMedium(author, color: RLDS.textSecondary),
           ], crossAxisAlignment: CrossAxisAlignment.start),
         ),
       ]),

@@ -149,13 +149,16 @@ class CCEstimateState extends State<CCEstimate>
   }
 
   Widget SliderLabelsRow() {
-    final TextStyle labelStyle = TextStyle(
-      fontSize: 12,
-      color: RLDS.textPrimary.withValues(alpha: 0.5),
-    );
+    final Color labelColor = RLDS.textPrimary.withValues(alpha: 0.5);
 
     return Div.row(
-      [Text(RLUIStrings.ESTIMATE_MIN_LABEL, style: labelStyle), const Spacer(), Text(RLUIStrings.ESTIMATE_MAX_LABEL, style: labelStyle)],
+      [
+        RLTypography.bodySmall(RLUIStrings.ESTIMATE_MIN_LABEL, color: labelColor),
+
+        const Spacer(),
+
+        RLTypography.bodySmall(RLUIStrings.ESTIMATE_MAX_LABEL, color: labelColor),
+      ],
       padding: const [12, 0],
     );
   }

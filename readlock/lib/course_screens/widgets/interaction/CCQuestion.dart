@@ -1,5 +1,6 @@
-// Single-choice question where the reader picks exactly one answer
-// Used as a quick comprehension check — shows consequence messages for each choice
+// Single-choice question where the reader picks exactly one answer.
+// Question reveals character-by-character (ProgressiveText).
+// Each answer sits blurred until tapped — first tap unblurs, second tap commits.
 
 import 'package:flutter/material.dart' hide Typography;
 import 'package:readlock/models/CourseModel.dart';
@@ -9,8 +10,16 @@ import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/design_system/RLFeedbackSnackbar.dart';
 import 'package:readlock/services/feedback/HapticsService.dart';
 import 'package:readlock/services/feedback/SoundService.dart';
+import 'package:readlock/utility_widgets/text_animation/ProgressiveText.dart';
+import 'package:readlock/utility_widgets/visual_effects/BlurOverlay.dart';
 
 import 'package:pixelarticons/pixel.dart';
+
+// * Shared with ProgressiveText completedSentence defaults so the question's
+// answers use the same blur strength the rest of the app reads as "covered".
+const double ANSWER_BLUR_SIGMA = 4.0;
+const double ANSWER_BLUR_OPACITY = 0.2;
+
 class CCQuestion extends StatefulWidget {
   final QuestionSwipe content;
   final void Function(int selectedIndex, bool isCorrect) onAnswerSelected;
@@ -24,70 +33,41 @@ class CCQuestion extends StatefulWidget {
 class CCQuestionState extends State<CCQuestion> {
   int? selectedAnswerIndex;
   bool hasAnsweredQuestion = false;
-
-  // Style definitions
-  late final BoxDecoration normalOptionDecoration;
-  late final BoxDecoration selectedOptionDecoration;
-  late final BoxDecoration correctOptionDecoration;
-  late final BoxDecoration incorrectOptionDecoration;
-
-  @override
-  void initState() {
-    super.initState();
-    initializeStyles();
-  }
-
-  void initializeStyles() {
-    final BorderRadius optionRadius = RLDS.borderRadiusMedium;
-
-    normalOptionDecoration = BoxDecoration(
-      color: RLDS.backgroundLight,
-      borderRadius: optionRadius,
-    );
-
-    selectedOptionDecoration = BoxDecoration(
-      color: RLDS.backgroundLight,
-      borderRadius: optionRadius,
-    );
-
-    correctOptionDecoration = BoxDecoration(
-      color: RLDS.success.withValues(alpha: 0.1),
-      borderRadius: optionRadius,
-    );
-
-    incorrectOptionDecoration = BoxDecoration(
-      color: RLDS.backgroundLight,
-      borderRadius: optionRadius,
-    );
-  }
+  Set<int> revealedAnswers = {};
 
   @override
   Widget build(BuildContext context) {
     return Div.column(
       [
-        // Question text section
         QuestionTextSection(),
 
-        const Spacing.height(32),
+        const Spacing.height(RLDS.spacing32),
 
-        // Single choice options
         OptionsListSection(),
 
-        const Spacing.height(32),
+        const Spacing.height(RLDS.spacing32),
       ],
       color: RLDS.backgroundDark,
-      padding: 24,
+      padding: RLDS.contentPaddingInsets,
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.center,
     );
   }
 
+  // Typewriter-reveal matching CCTextContent so the question feels part of
+  // the same reading rhythm as regular text swipes.
   Widget QuestionTextSection() {
-    return RLTypography.readingMedium(widget.content.question);
+    return ProgressiveText(
+      textSegments: [widget.content.question],
+      textStyle: RLTypography.readingMediumStyle,
+      blurCompletedSentences: false,
+      enableTapToReveal: false,
+    );
   }
 
   Widget OptionsListSection() {
     final List<Widget> optionWidgets = OptionWidgetsList();
+
     return Div.column(optionWidgets);
   }
 
@@ -99,11 +79,10 @@ class CCQuestionState extends State<CCQuestion> {
 
       optionWidgets.add(OptionButton(optionIndex: optionIndex, option: option));
 
-      // Spacing between options
       final bool isLastOption = optionIndex == widget.content.options.length - 1;
 
       if (!isLastOption) {
-        optionWidgets.add(const Spacing.height(16));
+        optionWidgets.add(const Spacing.height(RLDS.spacing16));
       }
     }
 
@@ -111,57 +90,80 @@ class CCQuestionState extends State<CCQuestion> {
   }
 
   Widget OptionButton({required int optionIndex, required QuestionOption option}) {
+    final bool isRevealed = revealedAnswers.contains(optionIndex);
     final bool isSelected = selectedAnswerIndex == optionIndex;
     final bool isCorrectAnswer = widget.content.correctAnswerIndex == optionIndex;
     final bool shouldShowCorrect = hasAnsweredQuestion && isCorrectAnswer && isSelected;
     final bool shouldShowIncorrect = hasAnsweredQuestion && !isCorrectAnswer && isSelected;
-    final bool shouldMute = hasAnsweredQuestion && !isCorrectAnswer && !isSelected;
 
     final BoxDecoration buttonDecoration = getOptionButtonDecoration(
-      isSelected: isSelected,
       shouldShowCorrect: shouldShowCorrect,
-      shouldShowIncorrect: shouldShowIncorrect,
-      shouldMute: shouldMute,
     );
 
-    VoidCallback? buttonTapCallback;
+    final Color optionTextColor = getOptionTextColor(
+      shouldShowCorrect: shouldShowCorrect,
+      isMuted: hasAnsweredQuestion && !isCorrectAnswer && !isSelected,
+    );
 
-    if (!hasAnsweredQuestion) {
-      buttonTapCallback = () => handleOptionSelection(optionIndex);
+    final VoidCallback? tapHandler = buildOptionTapHandler(
+      optionIndex: optionIndex,
+      isRevealed: isRevealed,
+    );
+
+    final Widget optionRow = Div.row(
+      [
+        Expanded(child: RLTypography.readingLarge(option.text, color: optionTextColor)),
+
+        RenderIf.condition(shouldShowCorrect, CorrectCheckIcon(), const SizedBox.shrink()),
+
+        RenderIf.condition(shouldShowIncorrect, IncorrectIcon(), const SizedBox.shrink()),
+      ],
+      padding: RLDS.contentPaddingMediumInsets,
+      decoration: buttonDecoration,
+      onTap: tapHandler,
+    );
+
+    return BlurOverlay(
+      blurSigma: ANSWER_BLUR_SIGMA,
+      opacity: ANSWER_BLUR_OPACITY,
+      enabled: !isRevealed,
+      child: optionRow,
+    );
+  }
+
+  VoidCallback? buildOptionTapHandler({
+    required int optionIndex,
+    required bool isRevealed,
+  }) {
+    if (hasAnsweredQuestion) {
+      return null;
     }
 
-    final TextStyle optionTextStyle = getOptionButtonTextStyle(
-      isSelected: isSelected,
-      shouldShowCorrect: shouldShowCorrect,
-      shouldShowIncorrect: shouldShowIncorrect,
-      shouldMute: shouldMute,
-    );
+    if (!isRevealed) {
+      return () => handleAnswerReveal(optionIndex);
+    }
 
-    final Widget CorrectCheckIcon = const Icon(
-      Pixel.check,
-      color: RLDS.success,
-      size: RLDS.iconMedium,
-    );
+    return () => handleOptionSelection(optionIndex);
+  }
 
-    final Widget IncorrectCancelIcon = Icon(
+  Widget CorrectCheckIcon() {
+    return const Icon(Pixel.check, color: RLDS.success, size: RLDS.iconMedium);
+  }
+
+  Widget IncorrectIcon() {
+    return Icon(
       Pixel.close,
       color: RLDS.textPrimary.withValues(alpha: 0.6),
       size: RLDS.iconMedium,
     );
+  }
 
-    return Div.row(
-      [
-        Expanded(child: RLTypography.readingMedium(option.text, color: optionTextStyle.color)),
+  void handleAnswerReveal(int optionIndex) {
+    HapticsService.lightImpact();
 
-        // Visual feedback indicators
-        RenderIf.condition(shouldShowCorrect, CorrectCheckIcon, const SizedBox.shrink()),
-
-        RenderIf.condition(shouldShowIncorrect, IncorrectCancelIcon, const SizedBox.shrink()),
-      ],
-      padding: RLDS.contentPaddingMediumInsets,
-      decoration: buttonDecoration,
-      onTap: buttonTapCallback,
-    );
+    setState(() {
+      revealedAnswers.add(optionIndex);
+    });
   }
 
   void handleOptionSelection(int optionIndex) {
@@ -227,43 +229,29 @@ class CCQuestionState extends State<CCQuestion> {
     });
   }
 
-  BoxDecoration getOptionButtonDecoration({
-    required bool isSelected,
-    required bool shouldShowCorrect,
-    required bool shouldShowIncorrect,
-    required bool shouldMute,
-  }) {
+  BoxDecoration getOptionButtonDecoration({required bool shouldShowCorrect}) {
     if (shouldShowCorrect) {
-      return correctOptionDecoration;
-    }
-
-    if (shouldShowIncorrect || shouldMute) {
-      return incorrectOptionDecoration;
-    }
-
-    if (isSelected && !hasAnsweredQuestion) {
-      return selectedOptionDecoration;
-    }
-
-    return normalOptionDecoration;
-  }
-
-  TextStyle getOptionButtonTextStyle({
-    required bool isSelected,
-    required bool shouldShowCorrect,
-    required bool shouldShowIncorrect,
-    required bool shouldMute,
-  }) {
-    if (shouldShowCorrect) {
-      return RLTypography.readingMediumStyle.copyWith(color: RLDS.success);
-    }
-
-    if (shouldMute) {
-      return RLTypography.readingMediumStyle.copyWith(
-        color: RLDS.textPrimary.withValues(alpha: 0.4),
+      return BoxDecoration(
+        color: RLDS.success.withValues(alpha: 0.1),
+        borderRadius: RLDS.borderRadiusMedium,
       );
     }
 
-    return RLTypography.readingMediumStyle;
+    return BoxDecoration(
+      color: RLDS.backgroundLight,
+      borderRadius: RLDS.borderRadiusMedium,
+    );
+  }
+
+  Color getOptionTextColor({required bool shouldShowCorrect, required bool isMuted}) {
+    if (shouldShowCorrect) {
+      return RLDS.success;
+    }
+
+    if (isMuted) {
+      return RLDS.textPrimary.withValues(alpha: 0.4);
+    }
+
+    return RLDS.textPrimary;
   }
 }
