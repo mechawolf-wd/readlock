@@ -13,7 +13,6 @@ import 'package:readlock/constants/RLUIStrings.dart';
 import 'package:readlock/design_system/RLUtility.dart';
 import 'package:readlock/design_system/RLFeedbackSnackbar.dart';
 import 'package:readlock/constants/RLTypography.dart';
-import 'package:readlock/screens/StreakplierRewardScreen.dart';
 import 'package:readlock/design_system/RLConfirmationDialog.dart';
 import 'package:readlock/constants/DartAliases.dart';
 import 'package:readlock/services/ScreenProtectionService.dart';
@@ -135,12 +134,16 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
     return const CourseLoadingScreen();
   }
 
-  // Main course content screen
+  // Main course content screen — Scaffold wraps SafeArea (not the other way
+  // round) so the scaffold's backgroundDark paints the full window, including
+  // the status-bar and home-indicator insets. Without this, the safe-area
+  // strips render as the system default (black on iOS, not the surface
+  // colour) and the sheet reads as "sitting on top of a void".
   Widget MainCourseScreen() {
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: RLDS.backgroundDark,
-        body: Listener(
+    return Scaffold(
+      backgroundColor: RLDS.backgroundDark,
+      body: SafeArea(
+        child: Listener(
           behavior: HitTestBehavior.translucent,
           onPointerDown: handleGlobalPointerDown,
           child: Div.column([
@@ -441,40 +444,6 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
         onTap: navigateBackToRoadmap,
       ),
     );
-  }
-
-  // Show Streakplier reward screen after lesson completion
-  void showStreakplierRewardScreen() {
-    // Clear any lingering snackbars before showing rewards
-    FeedbackSnackBar.clearSnackbars();
-
-    final LessonReward reward = createLessonReward();
-
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) =>
-            StreakplierRewardScreen(reward: reward, onContinue: handleRewardScreenContinue),
-      ),
-    );
-  }
-
-  // Create lesson reward data based on current lesson performance
-  LessonReward createLessonReward() {
-    // Calculate lesson duration (example: 5 minutes 30 seconds)
-    final Duration lessonDuration = const Duration(minutes: 5, seconds: 30);
-
-    return LessonReward(
-      experiencePointsGained: 190,
-      streakplierMultiplier: 1.35,
-      lessonDuration: lessonDuration,
-    );
-  }
-
-  // Handle continue from reward screen
-  void handleRewardScreenContinue() {
-    // Pop reward screen and course content viewer to return to roadmap
-    Navigator.of(context).pop(); // Close reward screen
-    Navigator.of(context).pop(); // Close course content viewer
   }
 
   // Handle bookmark tap to favorite current slide

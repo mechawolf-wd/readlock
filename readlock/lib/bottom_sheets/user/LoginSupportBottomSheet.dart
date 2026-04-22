@@ -22,15 +22,13 @@ import 'package:readlock/design_system/RLToast.dart';
 import 'package:readlock/design_system/RLUtility.dart';
 import 'package:readlock/services/auth/AuthService.dart';
 
-// * Shared layout constants across all four sheets.
+// * Shared layout constants across all four sheets. The outer sheet padding
+// routes through RLBottomSheet's shared no-grabber constant, so every
+// sheet without a grabber (Support, Account, etc.) breathes the same.
 
 class LoginSupportLayout {
-  static const EdgeInsets SUPPORT_SHEET_PADDING = EdgeInsets.fromLTRB(
-    RLDS.spacing24,
-    RLDS.spacing16,
-    RLDS.spacing24,
-    RLDS.spacing24,
-  );
+  static const EdgeInsets SUPPORT_SHEET_PADDING =
+      RL_BOTTOM_SHEET_NO_GRABBER_CONTENT_PADDING;
 
   static const EdgeInsets SUPPORT_BUTTON_PADDING = EdgeInsets.symmetric(
     vertical: RLDS.spacing16,

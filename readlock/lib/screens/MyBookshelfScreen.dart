@@ -27,11 +27,6 @@ import 'package:pixelarticons/pixel.dart';
 // Tapping Load more reveals another BOOKSHELF_PAGE_SIZE courses.
 const int BOOKSHELF_PAGE_SIZE = 5;
 
-// Empty-state bird size — matches the loading-screen hero sizing so the
-// "nothing here yet" illustration reads as a peer element, not a fine-print
-// icon.
-const double BOOKSHELF_EMPTY_BIRD_SIZE = 128.0;
-
 class MyBookshelfScreen extends StatefulWidget {
   const MyBookshelfScreen({super.key});
 
@@ -115,16 +110,9 @@ class MyBookshelfScreenState extends State<MyBookshelfScreen> {
       return const RLLoadingIndicator.bird(key: ValueKey('bookshelf-loading'));
     }
 
-    // Empty state: bird + "Read something to see it here" centred in the
-    // whole screen — the header is suppressed so nothing pushes the bird
-    // off-centre. The full chrome reappears once the reader has saved
-    // courses.
-    final bool hasNoSavedCourses = savedCourses.isEmpty;
-
-    if (hasNoSavedCourses) {
-      return EmptyBookshelfMessage();
-    }
-
+    // The Bookshelf heading + settings icon always sits at the top once
+    // loading is done. The body below swaps between the saved-courses list
+    // and the empty-state bird; the header never disappears.
     return Padding(
       key: const ValueKey('bookshelf-content'),
       padding: const EdgeInsets.all(RLDS.spacing24),
@@ -133,17 +121,25 @@ class MyBookshelfScreenState extends State<MyBookshelfScreen> {
 
         const Spacing.height(RLDS.spacing40),
 
-        Expanded(child: SavedCoursesList()),
+        Expanded(child: BookshelfBodyContent()),
       ], crossAxisAlignment: CrossAxisAlignment.stretch),
     );
   }
 
-  Widget SavedCoursesList() {
-    final List<Widget> listChildren = [
-      ...SavedCourseCards(),
+  Widget BookshelfBodyContent() {
+    final bool hasNoSavedCourses = savedCourses.isEmpty;
 
-      LoadMoreSlot(),
-    ];
+    if (hasNoSavedCourses) {
+      return EmptyBookshelfMessage();
+    }
+
+    return SavedCoursesList();
+  }
+
+  Widget SavedCoursesList() {
+    final List<Widget> listChildren = List<Widget>.from(SavedCourseCards());
+
+    listChildren.add(LoadMoreSlot());
 
     return SingleChildScrollView(
       child: Div.column(listChildren, crossAxisAlignment: CrossAxisAlignment.stretch),
@@ -158,19 +154,20 @@ class MyBookshelfScreenState extends State<MyBookshelfScreen> {
     return visibleCourses.map<Widget>(CourseCard).toList();
   }
 
-  Widget CourseCard(dynamic course) {
+  Widget CourseCard(JSONMap course) {
     final String courseTitle = course['title'] as String? ?? '';
     final String courseAuthor = course['author'] as String? ?? '';
     final String? coverImagePath = course['cover-image-path'] as String?;
     final String? courseColor = course['color'] as String?;
     final String courseId = course['course-id'] as String? ?? '';
+    final VoidCallback onCardTap = () => navigateToCourse(courseId);
 
     return BookListCard(
       title: courseTitle,
       author: courseAuthor,
       courseColor: courseColor,
       coverImagePath: coverImagePath,
-      onTap: () => navigateToCourse(courseId),
+      onTap: onCardTap,
     );
   }
 
@@ -193,12 +190,14 @@ class MyBookshelfScreenState extends State<MyBookshelfScreen> {
   }
 
   Widget BookshelfHeaderWithSettings() {
+    final VoidCallback onSettingsTap = () => SettingsBottomSheet.show(context);
+
     return Div.row([
       RLTypography.headingLarge(RLUIStrings.BOOKSHELF_TITLE),
 
       const Spacer(),
 
-      GestureDetector(onTap: () => SettingsBottomSheet.show(context), child: SettingsIcon),
+      GestureDetector(onTap: onSettingsTap, child: SettingsIcon),
     ], crossAxisAlignment: CrossAxisAlignment.center);
   }
 
@@ -212,27 +211,34 @@ class MyBookshelfScreenState extends State<MyBookshelfScreen> {
     );
   }
 
-  Widget BookshelfBirdBuilder(BuildContext context, BirdOption bird, Widget? _) {
-    return BirdAnimationSprite(bird: bird, previewSize: BOOKSHELF_EMPTY_BIRD_SIZE);
+  Widget BookshelfBirdBuilder(BuildContext context, BirdOption bird, Widget? unusedChild) {
+    return BirdAnimationSprite(bird: bird);
   }
 
+  // Bird anchored to the top of the viewport (not vertically centred) so it
+  // reads as a greeting that sits above the fold, with the rest of the
+  // screen left intentionally empty until the reader starts a course.
   Widget EmptyBookshelfMessage() {
-    return Center(
+    return Padding(
       key: const ValueKey('bookshelf-empty'),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          BookshelfBird(),
+      padding: const EdgeInsets.only(top: RLDS.spacing40),
+      child: Align(
+        alignment: Alignment.topCenter,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            BookshelfBird(),
 
-          const Spacing.height(RLDS.spacing16),
+            const Spacing.height(RLDS.spacing16),
 
-          RLTypography.bodyMedium(
-            RLUIStrings.BOOKSHELF_EMPTY_MESSAGE,
-            color: RLDS.textSecondary,
-            textAlign: TextAlign.center,
-          ),
-        ],
+            RLTypography.bodyMedium(
+              RLUIStrings.BOOKSHELF_EMPTY_MESSAGE,
+              color: RLDS.textSecondary,
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -9,6 +9,7 @@ import 'package:readlock/design_system/RLUtility.dart';
 import 'package:readlock/design_system/RLButton.dart';
 import 'package:readlock/design_system/RLCard.dart';
 import 'package:readlock/design_system/RLCourseBookImage.dart';
+import 'package:readlock/design_system/RLLunarBlur.dart';
 import 'package:readlock/design_system/RLRelevantForChip.dart';
 import 'package:readlock/design_system/RLStarfieldBackground.dart';
 import 'package:readlock/constants/RLCoursePalette.dart';
@@ -20,6 +21,7 @@ import 'package:readlock/services/auth/UserService.dart';
 import 'package:readlock/constants/DartAliases.dart';
 
 import 'package:pixelarticons/pixel.dart';
+
 // * Roadmap layout constants
 const double roadmapNodeSize = 72.0;
 const double roadmapPathHorizontalOffset = 60.0;
@@ -255,11 +257,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        backToTopCard,
-
-        const Spacing.height(RLDS.spacing12),
-      ],
+      children: [backToTopCard, const Spacing.height(RLDS.spacing12)],
     );
   }
 
@@ -286,44 +284,88 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
     size: RLDS.iconLarge,
   );
 
+  // Padding applied to each non-card sibling in the header. The HeroCard
+  // deliberately does NOT get this inset — it spans the full screen width,
+  // violating the page margin, so the info panel reads as a banner strip
+  // anchored to both screen edges.
+  static const EdgeInsets roadmapHeaderSidePadding = EdgeInsets.symmetric(
+    horizontal: RLDS.spacing24,
+  );
+
   Widget RoadmapHeader() {
     final String courseTitle =
         courseData?['title'] as String? ?? RLUIStrings.ROADMAP_DEFAULT_TITLE;
     final String courseAuthor =
         courseData?['author'] as String? ?? RLUIStrings.ROADMAP_DEFAULT_AUTHOR;
 
-    return Div.column(
-      [
-        // Back button
-        Div.row(
-          [BackChevronIcon],
-          padding: RLDS.spacing8,
-          radius: RLDS.borderRadiusCircle,
-          onTap: handleBackTap,
-        ),
-
-        const Spacing.height(RLDS.spacing16),
-
-        // Hero card with book and info
-        HeroCard(courseTitle: courseTitle, courseAuthor: courseAuthor),
-
-        const Spacing.height(RLDS.spacing24),
-
-        // Subtitle below card
-        Center(
-          child: RLTypography.bodyMedium(
-            RLUIStrings.ROADMAP_SUBTITLE,
-            color: RLDS.textSecondary,
-            textAlign: TextAlign.center,
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: RLDS.spacing12),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Back button
+          Padding(
+            padding: roadmapHeaderSidePadding,
+            child: Div.row(
+              [BackChevronIcon],
+              padding: RLDS.spacing8,
+              radius: RLDS.borderRadiusCircle,
+              onTap: handleBackTap,
+            ),
           ),
-        ),
 
-        const Spacing.height(RLDS.spacing16),
-      ],
-      crossAxisAlignment: CrossAxisAlignment.start,
-      padding: const EdgeInsets.symmetric(
-        horizontal: RLDS.spacing24,
-        vertical: RLDS.spacing12,
+          const Spacing.height(RLDS.spacing16),
+
+          // Book + progress ring in its own circular LunarBlur pane, above
+          // the hero card. Centered, respects the side padding.
+          Padding(
+            padding: roadmapHeaderSidePadding,
+            child: Center(child: BookRingPane()),
+          ),
+
+          const Spacing.height(RLDS.spacing24),
+
+          // Hero card — full-bleed, no side padding, so it stretches the
+          // full width of the screen. Intentional violation of the page
+          // padding.
+          HeroCard(courseTitle: courseTitle, courseAuthor: courseAuthor),
+
+          const Spacing.height(RLDS.spacing24),
+
+          // Subtitle below card
+          Padding(
+            padding: roadmapHeaderSidePadding,
+            child: Center(
+              child: RLTypography.bodyMedium(
+                RLUIStrings.ROADMAP_SUBTITLE,
+                color: RLDS.textSecondary,
+                textAlign: TextAlign.center,
+              ),
+            ),
+          ),
+
+          const Spacing.height(RLDS.spacing16),
+        ],
+      ),
+    );
+  }
+
+  // Circular LunarBlur pane that hosts the progress ring + book. Size
+  // matches the ring exactly — the disc sits flush behind the ring stroke,
+  // no inner padding, no squircle fallback.
+  static final BorderRadius bookRingPaneRadius = BorderRadius.circular(9999);
+
+  Widget BookRingPane() {
+    return SizedBox(
+      width: progressRingSize,
+      height: progressRingSize,
+      child: RLLunarBlur(
+        borderRadius: bookRingPaneRadius,
+        borderColor: RLDS.transparent,
+        // Match RLCard.elevated's tint so the disc, the info card below,
+        // and the Continue button's box all share the same frosted alpha.
+        surfaceAlpha: RL_CARD_ELEVATED_ALPHA,
+        child: ProgressRing(),
       ),
     );
   }
@@ -334,11 +376,6 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
   // neighbour scale (handled inside RLCourseBookImage) that keeps the
   // pixel-art edges crisp without swallowing the progress ring around it.
   static const double courseBookSize = 96.0;
-
-  static final BoxDecoration progressRingDecoration = BoxDecoration(
-    shape: BoxShape.circle,
-    border: Border.all(color: RLDS.backgroundLight, width: progressRingStrokeWidth),
-  );
 
   Widget CourseBookImage() {
     return RLCourseBookImage(
@@ -357,15 +394,9 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
       child: Stack(
         alignment: Alignment.center,
         children: [
-          // Background ring
-          Div.column(
-            const [],
-            width: progressRingSize,
-            height: progressRingSize,
-            decoration: progressRingDecoration,
-          ),
-
-          // Progress arc
+          // Progress arc — the unfilled portion is left transparent so the
+          // frosted-dark disc underneath shows through instead of a ghost
+          // ring.
           SizedBox(
             width: progressRingSize,
             height: progressRingSize,
@@ -395,25 +426,25 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
 
     return Div.column(
       [RLTypography.headingMedium('35%', color: RLDS.white)],
-      padding: const EdgeInsets.symmetric(
-        horizontal: RLDS.spacing8,
-        vertical: RLDS.spacing4,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: RLDS.spacing8, vertical: RLDS.spacing4),
       decoration: chipDecoration,
     );
   }
 
+  // Hero card is a text-only info panel that sits underneath the circular
+  // book-ring pane. Renders as a full-bleed strip — no border radius, since
+  // it touches the screen edges on both sides. Uses RLLunarBlur directly
+  // (RLCard.elevated always rounds) with RL_CARD_ELEVATED_ALPHA so the
+  // frosted-dark tint still matches the BottomFloatingBar and the book disc.
   Widget HeroCard({required String courseTitle, required String courseAuthor}) {
-    return RLCard.elevated(
+    return RLLunarBlur(
+      borderRadius: BorderRadius.zero,
+      borderColor: RLDS.transparent,
+      surfaceAlpha: RL_CARD_ELEVATED_ALPHA,
       padding: const EdgeInsets.all(RLDS.spacing24),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // Book in a progress ring, centered on top
-          Center(child: ProgressRing()),
-
-          const Spacing.height(RLDS.spacing16),
-
           // Title (heading)
           RLTypography.headingMedium(courseTitle, textAlign: TextAlign.center),
 
@@ -457,9 +488,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
   }
 
   List<Widget> RelevantForChips(List<String> relevantFor) {
-    return relevantFor
-        .map((String key) => RLRelevantForChip(relevantForKey: key))
-        .toList();
+    return relevantFor.map((String key) => RLRelevantForChip(relevantForKey: key)).toList();
   }
 
   List<String> getCourseRelevantFor() {
@@ -793,20 +822,13 @@ class PathLessonNode extends StatelessWidget {
   );
 
   Widget CurrentPlayIcon() {
-    return Icon(
-      Pixel.play,
-      color: accentColor,
-      size: roadmapTileIconSize,
-    );
+    return Icon(Pixel.play, color: accentColor, size: roadmapTileIconSize);
   }
 
   Widget DefaultLessonNumber() {
     final String lessonLabel = (lessonIndex + 1).toString();
 
-    return RLTypography.pixelNumber(
-      lessonLabel,
-      color: RLDS.textSecondary,
-    );
+    return RLTypography.pixelNumber(lessonLabel, color: RLDS.textSecondary);
   }
 
   Widget NodeIcon() {
@@ -840,7 +862,7 @@ class ProgressArcPainter extends CustomPainter {
       ..color = color
       ..strokeWidth = strokeWidth
       ..style = PaintingStyle.stroke
-      ..strokeCap = StrokeCap.round;
+      ..strokeCap = StrokeCap.butt;
 
     final double radius = (size.width - strokeWidth) / 2;
     final Offset center = Offset(size.width / 2, size.height / 2);

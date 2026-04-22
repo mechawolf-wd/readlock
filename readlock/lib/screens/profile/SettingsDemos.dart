@@ -10,21 +10,42 @@
 //   - Colored text: RLDS.markupGreen + FontWeight.bold (the exact style
 //     ProgressiveText applies to <c:g>…</c:g> markup)
 
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
+import 'package:readlock/bottom_sheets/user/FontPickerBottomSheet.dart';
+import 'package:readlock/constants/RLReadingFont.dart';
 import 'package:readlock/constants/RLUIStrings.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/design_system/RLUtility.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
+import 'package:readlock/utility_widgets/text_animation/BionicText.dart';
+import 'package:readlock/utility_widgets/visual_effects/BlurOverlay.dart';
 
 // Mirrors ProgressiveText.getConsistentTextStyle — every swipe renders at
-// fontSize 18 / height 1.5 regardless of the caller's passed style. The
+// fontSize 18 / height 1.6 regardless of the caller's passed style. The
 // demos must use the same style or the preview won't match the swipe.
-final TextStyle demoReadingStyle = RLTypography.readingMediumStyle.copyWith(
-  fontSize: 18,
-  height: 1.5,
-);
+//
+// Getter (not a `final`) so it re-evaluates against the current
+// selectedReadingFontNotifier value on each call. Demos that need to
+// live-update on a font change wrap their output in demoFontListener below.
+TextStyle get demoReadingStyle {
+  return RLTypography.readingMediumStyle.copyWith(fontSize: 18, height: 1.6);
+}
+
+// Wraps a demo's body in a ValueListenableBuilder on the reading-font
+// notifier so flipping the font in the picker immediately rebuilds the
+// demo with the new typeface. Every demo that consumes demoReadingStyle
+// (RevealDemo, BlurDemo, ColoredTextDemo) needs this; the ReadingFontDemo
+// itself subscribes directly.
+Widget demoFontListener(WidgetBuilder builder) {
+  Widget fontBuilder(BuildContext context, ReadingFont font, Widget? unusedChild) {
+    return builder(context);
+  }
+
+  return ValueListenableBuilder<ReadingFont>(
+    valueListenable: selectedReadingFontNotifier,
+    builder: fontBuilder,
+  );
+}
 
 // Matches ProgressiveText's inline-highlight render for <c:g>…</c:g> markup.
 // Both colour and weight need to match or the demo understates the visual
@@ -86,6 +107,10 @@ class RevealDemoState extends State<RevealDemo> with SingleTickerProviderStateMi
 
   @override
   Widget build(BuildContext context) {
+    return demoFontListener(DemoBody);
+  }
+
+  Widget DemoBody(BuildContext context) {
     final BoxDecoration containerDecoration = BoxDecoration(
       color: RLDS.backgroundLight,
       borderRadius: BorderRadius.circular(RLDS.spacing8),
@@ -136,12 +161,9 @@ class RevealDemoState extends State<RevealDemo> with SingleTickerProviderStateMi
 }
 
 // Demo widget for Blur setting.
-// Mirrors the swipe behavior — completed sentences use the same blur/opacity
-// values as ProgressiveText (sigma 4, opacity 0.2). When blur is off, the
-// previous sentence renders at full opacity with no blur, matching the swipe.
-const double BLUR_DEMO_BLUR_SIGMA = 4.0;
-const double BLUR_DEMO_BLUR_OPACITY = 0.2;
-
+// Uses the same BlurOverlay as every covered-text surface in a real swipe,
+// so the demo is a truthful preview of the Apple-Music-style lyrics blur
+// (sigma + opacity sourced from RLDS.lyricsBlur* via BlurOverlay defaults).
 class BlurDemo extends StatelessWidget {
   final bool isEnabled;
 
@@ -149,6 +171,10 @@ class BlurDemo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return demoFontListener(DemoBody);
+  }
+
+  Widget DemoBody(BuildContext context) {
     final BoxDecoration containerDecoration = BoxDecoration(
       color: RLDS.backgroundLight,
       borderRadius: BorderRadius.circular(RLDS.spacing8),
@@ -174,22 +200,10 @@ class BlurDemo extends StatelessWidget {
   }
 
   Widget BlurredSentence() {
-    final Widget sentenceText = Text(
-      RLUIStrings.DEMO_BLUR_PREVIOUS,
-      style: demoReadingStyle,
+    return BlurOverlay(
+      enabled: isEnabled,
+      child: Text(RLUIStrings.DEMO_BLUR_PREVIOUS, style: demoReadingStyle),
     );
-
-    if (isEnabled) {
-      return ImageFiltered(
-        imageFilter: ImageFilter.blur(
-          sigmaX: BLUR_DEMO_BLUR_SIGMA,
-          sigmaY: BLUR_DEMO_BLUR_SIGMA,
-        ),
-        child: Opacity(opacity: BLUR_DEMO_BLUR_OPACITY, child: sentenceText),
-      );
-    }
-
-    return sentenceText;
   }
 }
 
@@ -202,6 +216,10 @@ class ColoredTextDemo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return demoFontListener(DemoBody);
+  }
+
+  Widget DemoBody(BuildContext context) {
     final BoxDecoration containerDecoration = BoxDecoration(
       color: RLDS.backgroundLight,
       borderRadius: BorderRadius.circular(RLDS.spacing8),
@@ -245,6 +263,101 @@ class ColoredTextDemo extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+// Demo widget for Bionic reading setting.
+// Same card geometry as the other demos; when enabled, bolds the first ~40%
+// of each word via the shared bionicSpans helper so the preview is the
+// exact transformation that would be applied to reading content.
+class BionicDemo extends StatelessWidget {
+  final bool isEnabled;
+
+  const BionicDemo({super.key, required this.isEnabled});
+
+  @override
+  Widget build(BuildContext context) {
+    return demoFontListener(DemoBody);
+  }
+
+  Widget DemoBody(BuildContext context) {
+    final BoxDecoration containerDecoration = BoxDecoration(
+      color: RLDS.backgroundLight,
+      borderRadius: BorderRadius.circular(RLDS.spacing8),
+    );
+
+    return Container(
+      width: double.infinity,
+      decoration: containerDecoration,
+      padding: const EdgeInsets.all(RLDS.spacing12),
+      margin: const EdgeInsets.only(bottom: RLDS.spacing16),
+      child: Align(alignment: Alignment.centerLeft, child: BionicSample()),
+    );
+  }
+
+  Widget BionicSample() {
+    if (!isEnabled) {
+      return Text(RLUIStrings.DEMO_BIONIC_TEXT, style: demoReadingStyle);
+    }
+
+    final List<InlineSpan> spans = bionicSpans(
+      RLUIStrings.DEMO_BIONIC_TEXT,
+      demoReadingStyle,
+    );
+
+    return RichText(text: TextSpan(children: spans));
+  }
+}
+
+// Live preview of the currently-selected reading font. Subscribes to
+// selectedReadingFontNotifier so flipping the font in the picker updates
+// this demo in place — same reactive pattern as the profile bird.
+// Tapping the box opens the FontPickerBottomSheet so the preview doubles
+// as the affordance for changing the font.
+class ReadingFontDemo extends StatelessWidget {
+  const ReadingFontDemo({super.key});
+
+  static final BoxDecoration containerDecoration = BoxDecoration(
+    color: RLDS.backgroundLight,
+    borderRadius: BorderRadius.circular(RLDS.spacing8),
+  );
+
+  static const EdgeInsets containerPadding = EdgeInsets.all(RLDS.spacing12);
+  static const EdgeInsets containerMargin = EdgeInsets.only(bottom: RLDS.spacing16);
+
+  @override
+  Widget build(BuildContext context) {
+    final VoidCallback onDemoTap = () => FontPickerBottomSheet.show(context);
+
+    return GestureDetector(
+      onTap: onDemoTap,
+      behavior: HitTestBehavior.opaque,
+      child: Container(
+        width: double.infinity,
+        decoration: containerDecoration,
+        padding: containerPadding,
+        margin: containerMargin,
+        child: ValueListenableBuilder<ReadingFont>(
+          valueListenable: selectedReadingFontNotifier,
+          builder: FontSampleBuilder,
+        ),
+      ),
+    );
+  }
+
+  Widget FontSampleBuilder(BuildContext context, ReadingFont font, Widget? unusedChild) {
+    // Matches ProgressiveText.getConsistentTextStyle — every swipe renders
+    // readingMedium promoted to fontSize 18 / height 1.6 — so the preview
+    // is a truthful render of what the reader will see in CCTextContent.
+    final TextStyle sampleStyle = RLTypography.readingMediumStyleFor(font).copyWith(
+      fontSize: 18,
+      height: 1.6,
+    );
+
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: Text(RLUIStrings.FONT_DEMO_SAMPLE_TEXT, style: sampleStyle),
     );
   }
 }

@@ -16,7 +16,11 @@ const Duration LOADING_DOT_CYCLE_DURATION = Duration(milliseconds: 1600);
 const int LOADING_DOT_COUNT = 3;
 const int LOADING_DOT_PHASE_COUNT = 4;
 const double LOADING_DOT_INACTIVE_OPACITY = 0.2;
-const double LOADING_BIRD_SIZE = 160.0;
+
+// Loading bird uses BirdAnimationSprite's BIRD_PREVIEW_SIZE_LARGE default
+// (128px) — same size as the empty-state bookshelf bird, so the "Chirping"
+// loader and the "Read something to see it here" illustration read as the
+// same creature at the same scale.
 
 class RLLoadingIndicator extends StatefulWidget {
   final bool showBird;
@@ -80,10 +84,7 @@ class RLLoadingIndicatorState extends State<RLLoadingIndicator>
     return ValueListenableBuilder<BirdOption>(
       valueListenable: selectedBirdNotifier,
       builder: (context, bird, _) {
-        final Widget birdSprite = BirdAnimationSprite(
-          bird: bird,
-          previewSize: LOADING_BIRD_SIZE,
-        );
+        final Widget birdSprite = BirdAnimationSprite(bird: bird);
 
         return Div.column(
           [

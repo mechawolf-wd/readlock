@@ -259,8 +259,9 @@ class LoginSheetState extends State<LoginSheet> {
   }
 
   Widget ModalContent() {
+    // Bottom 24 matches every other bottom sheet in the app.
     return Padding(
-      padding: const EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.only(bottom: RLDS.spacing24),
       child: Wrap(
         children: [
           Div.column([

@@ -15,10 +15,8 @@ import 'package:readlock/utility_widgets/visual_effects/BlurOverlay.dart';
 
 import 'package:pixelarticons/pixel.dart';
 
-// * Shared with ProgressiveText completedSentence defaults so the question's
-// answers use the same blur strength the rest of the app reads as "covered".
-const double ANSWER_BLUR_SIGMA = 4.0;
-const double ANSWER_BLUR_OPACITY = 0.2;
+// Covered-answer blur comes directly from BlurOverlay's defaults, which
+// consume RLDS.lyricsBlur*. No per-file constants — one token, one place.
 
 class CCQuestion extends StatefulWidget {
   final QuestionSwipe content;
@@ -104,9 +102,12 @@ class CCQuestionState extends State<CCQuestion> {
       shouldShowCorrect: shouldShowCorrect,
     );
 
+    final bool isMutedOption =
+        hasAnsweredQuestion && !isCorrectAnswer && !isSelected;
+
     final Color optionTextColor = getOptionTextColor(
       shouldShowCorrect: shouldShowCorrect,
-      isMuted: hasAnsweredQuestion && !isCorrectAnswer && !isSelected,
+      isMuted: isMutedOption,
     );
 
     final VoidCallback? tapHandler = buildOptionTapHandler(
@@ -136,19 +137,29 @@ class CCQuestionState extends State<CCQuestion> {
       onTap: tapHandler,
     );
 
+    // Non-selected options re-blur after a correct answer so the reader's
+    // eye lands on the winner only. Options the reader never revealed stay
+    // blurred as before.
+    final bool shouldBlurAfterAnswer = hasAnsweredQuestion && !isSelected;
+    final bool shouldBlur = !isRevealed || shouldBlurAfterAnswer;
+
     return BlurOverlay(
-      blurSigma: ANSWER_BLUR_SIGMA,
-      opacity: ANSWER_BLUR_OPACITY,
-      enabled: !isRevealed,
+      enabled: shouldBlur,
       child: optionRow,
     );
   }
 
-  // Before the card is tapped, the option label is rendered fully
-  // transparent — this reserves the card's final height so the layout
-  // doesn't grow when the reveal kicks off the typewriter. On reveal, we
-  // swap in a fresh ProgressiveText (keyed by optionIndex) so it mounts from
-  // char position -1 and types in from scratch.
+  // Two-state render:
+  //
+  //   1. not revealed → transparent label wrapped in a Div.column with the
+  //      same width:infinity that ProgressiveText wraps its own content
+  //      in — reserves the final card height from the first frame.
+  //   2. revealed → ProgressiveText mounted with a stable ValueKey.
+  //      Because the key persists across every later parent rebuild
+  //      (e.g. the correct-answer selection), its State is preserved and
+  //      the typewriter plays exactly once. The fully-revealed widget is
+  //      never swapped out to a different widget — which was what caused
+  //      the layout to snap at the moment of completion.
   Widget OptionText({
     required int optionIndex,
     required QuestionOption option,
@@ -156,7 +167,11 @@ class CCQuestionState extends State<CCQuestion> {
     required bool isRevealed,
   }) {
     if (!isRevealed) {
-      return RLTypography.readingLarge(option.text, color: RLDS.transparent);
+      return Div.column(
+        [RLTypography.readingLarge(option.text, color: RLDS.transparent)],
+        crossAxisAlignment: CrossAxisAlignment.start,
+        width: double.infinity,
+      );
     }
 
     return ProgressiveText(

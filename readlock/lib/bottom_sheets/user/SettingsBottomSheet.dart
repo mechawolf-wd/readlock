@@ -20,19 +20,13 @@ class SettingsContent extends StatelessWidget {
   const SettingsContent({super.key});
 
   // * Heading icon — matches the Account sheet's icon-beside-title pattern.
-  static final Widget SettingsIcon = const Icon(
-    Pixel.sliders,
-    color: RLDS.info,
-    size: 20,
-  );
+  static final Widget SettingsIcon = const Icon(Pixel.sliders, color: RLDS.info, size: 20);
 
   @override
   Widget build(BuildContext context) {
     final double bottomSafeArea = MediaQuery.of(context).padding.bottom;
 
     return Div.column([
-      const Spacing.height(RLDS.spacing16),
-
       // Heading — icon + title
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: RLDS.spacing24),

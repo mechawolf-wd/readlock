@@ -10,6 +10,7 @@ import 'package:readlock/design_system/RLSwitch.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/bottom_sheets/user/AccountBottomSheet.dart';
 import 'package:readlock/bottom_sheets/user/BirdPickerBottomSheet.dart';
+import 'package:readlock/bottom_sheets/user/FontPickerBottomSheet.dart';
 import 'package:readlock/screens/profile/SettingsDemos.dart';
 
 import 'package:pixelarticons/pixel.dart';
@@ -29,12 +30,14 @@ class MenuSection extends StatelessWidget {
   final bool revealAllTrueFalse;
   final bool blurEnabled;
   final bool coloredTextEnabled;
+  final bool bionicEnabled;
   final ValueChanged<bool> onTypingSoundToggled;
   final ValueChanged<bool> onGeneralSoundsToggled;
   final ValueChanged<bool> onHapticsToggled;
   final ValueChanged<bool> onRevealAllTrueFalseToggled;
   final ValueChanged<bool> onBlurToggled;
   final ValueChanged<bool> onColoredTextToggled;
+  final ValueChanged<bool> onBionicToggled;
   final VoidCallback onSupportTap;
   final VoidCallback onLogoutTap;
 
@@ -46,18 +49,33 @@ class MenuSection extends StatelessWidget {
     required this.revealAllTrueFalse,
     required this.blurEnabled,
     required this.coloredTextEnabled,
+    required this.bionicEnabled,
     required this.onTypingSoundToggled,
     required this.onGeneralSoundsToggled,
     required this.onHapticsToggled,
     required this.onRevealAllTrueFalseToggled,
     required this.onBlurToggled,
     required this.onColoredTextToggled,
+    required this.onBionicToggled,
     required this.onSupportTap,
     required this.onLogoutTap,
   });
 
+  // Inverts the switch value before forwarding to the stored-preference
+  // callback. "Progressive" (user-facing) = !revealAllTrueFalse (internal).
+  void handleProgressiveToggled(bool progressiveEnabled) {
+    onRevealAllTrueFalseToggled(!progressiveEnabled);
+  }
+
   @override
   Widget build(BuildContext context) {
+    // Tap handlers extracted out of the widget tree so the Column's
+    // children list stays lambda-free (rule #13).
+    final VoidCallback onAccountTap = () => AccountBottomSheet.show(context);
+    final VoidCallback onBirdPickerTap = () => BirdPickerBottomSheet.show(context);
+    final VoidCallback onFontPickerTap = () => FontPickerBottomSheet.show(context);
+    final VoidCallback onReaderPassTap = () {};
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -65,15 +83,19 @@ class MenuSection extends StatelessWidget {
         MenuItem(
           icon: Pixel.user,
           title: RLUIStrings.MENU_ACCOUNT,
-          onTap: () => AccountBottomSheet.show(context),
+          onTap: onAccountTap,
         ),
 
-        MenuItem(icon: Pixel.card, title: RLUIStrings.MENU_READER_PASS, onTap: () {}),
+        MenuItem(
+          icon: Pixel.card,
+          title: RLUIStrings.MENU_READER_PASS,
+          onTap: onReaderPassTap,
+        ),
 
         MenuItem(
           icon: Pixel.human,
           title: RLUIStrings.MENU_PROFILE_BIRD,
-          onTap: () => BirdPickerBottomSheet.show(context),
+          onTap: onBirdPickerTap,
         ),
 
         const MenuDivider(),
@@ -102,12 +124,19 @@ class MenuSection extends StatelessWidget {
 
         const MenuDivider(),
 
-        // Reading Settings
+        // Reading Settings.
+        //
+        // "Progressive" is the user-facing inverse of the internal
+        // `revealAllTrueFalse` flag: when the switch is ON the text types
+        // in progressively (revealAllTrueFalse = false); when OFF it lands
+        // all at once (revealAllTrueFalse = true). The flip happens here
+        // at the menu layer (see handleProgressiveToggled) so the stored
+        // preference stays compatible.
         SwitchMenuItem(
           icon: Pixel.visible,
           title: RLUIStrings.MENU_REVEAL,
-          value: revealAllTrueFalse,
-          onChanged: onRevealAllTrueFalseToggled,
+          value: !revealAllTrueFalse,
+          onChanged: handleProgressiveToggled,
         ),
 
         RevealDemo(isEnabled: revealAllTrueFalse),
@@ -129,6 +158,25 @@ class MenuSection extends StatelessWidget {
         ),
 
         ColoredTextDemo(isEnabled: coloredTextEnabled),
+
+        SwitchMenuItem(
+          icon: Pixel.speedfast,
+          title: RLUIStrings.MENU_BIONIC,
+          value: bionicEnabled,
+          onChanged: onBionicToggled,
+        ),
+
+        BionicDemo(isEnabled: bionicEnabled),
+
+        // Font picker + live demo — sits at the end of Reading Settings so
+        // it follows the toggles that govern what text looks like.
+        MenuItem(
+          icon: Pixel.book,
+          title: RLUIStrings.MENU_READING_FONT,
+          onTap: onFontPickerTap,
+        ),
+
+        const ReadingFontDemo(),
 
         const MenuDivider(),
 
@@ -199,7 +247,7 @@ class MenuItem extends StatelessWidget {
 
               const Spacing.width(RLDS.spacing16),
 
-              Expanded(child: RLTypography.bodyMedium(title, color: titleColor)),
+              Expanded(child: RLTypography.bodyLarge(title, color: titleColor)),
             ],
           ),
         ),
@@ -252,7 +300,7 @@ class SwitchMenuItem extends StatelessWidget {
 
               const Spacing.width(RLDS.spacing16),
 
-              Expanded(child: RLTypography.bodyMedium(title, color: titleColor)),
+              Expanded(child: RLTypography.bodyLarge(title, color: titleColor)),
 
               RLSwitch(value: value, onChanged: handleSwitchChange),
             ],

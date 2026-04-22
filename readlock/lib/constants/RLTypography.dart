@@ -1,13 +1,18 @@
 // Readlock Typography System
-// Three font families: display (8-bit), UI (clean), reading (serif)
+// Three font families: display (8-bit), UI (clean), reading (reader-picked)
 //
 // Display — Press Start 2P: headings, author names, standout elements
 // UI — JetBrains MONO: buttons, labels, menus, general interface text
-// Reading — Playfair Display: course swipe content, long-form text
+// Reading — reader picks one of three (Lora / Lexend / JetBrains Mono) in
+// Settings. See RLReadingFont for the selection plumbing — readingLargeStyle
+// and readingMediumStyle are getters that consult selectedReadingFontNotifier
+// at read time, so a Settings change flows into every rebuild of reading
+// content.
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
+import 'package:readlock/constants/RLReadingFont.dart';
 
 class RLTypography {
   // * Display font — Press Start 2P (8-bit, for headings and standout elements)
@@ -72,9 +77,13 @@ class RLTypography {
     letterSpacing: 0.2,
   );
 
-  // * Reading font — Playfair Display (for course swipe content)
+  // * Reading font — selectable (Lora / Lexend / JetBrains Mono).
+  //
+  // The size/weight/colour/height attributes are fixed on the app side; only
+  // the font family switches with the reader's preference. `readingStyleFor`
+  // applies the picked GoogleFonts family to this base style.
 
-  static final TextStyle readingLargeStyle = GoogleFonts.playfairDisplay(
+  static const TextStyle readingLargeBase = TextStyle(
     fontSize: 18,
     fontWeight: RLDS.weightMedium,
     color: RLDS.textPrimary,
@@ -82,13 +91,35 @@ class RLTypography {
     letterSpacing: 0.1,
   );
 
-  static final TextStyle readingMediumStyle = GoogleFonts.playfairDisplay(
+  static const TextStyle readingMediumBase = TextStyle(
     fontSize: 16,
     fontWeight: RLDS.weightRegular,
     color: RLDS.textPrimary,
     height: 1.6,
     letterSpacing: 0.15,
   );
+
+  // Per-font builders — useful when a caller needs to preview a specific
+  // font (e.g. the font-picker demo) without switching the global selection.
+  static TextStyle readingLargeStyleFor(ReadingFont font) {
+    return readingStyleFor(font, readingLargeBase);
+  }
+
+  static TextStyle readingMediumStyleFor(ReadingFont font) {
+    return readingStyleFor(font, readingMediumBase);
+  }
+
+  // Getters read the current selection at access time. Any widget that
+  // rebuilds after a font change will pick up the new family automatically;
+  // screens that want live updates mid-view can wrap their reading surface
+  // in a ValueListenableBuilder on selectedReadingFontNotifier.
+  static TextStyle get readingLargeStyle {
+    return readingLargeStyleFor(selectedReadingFontNotifier.value);
+  }
+
+  static TextStyle get readingMediumStyle {
+    return readingMediumStyleFor(selectedReadingFontNotifier.value);
+  }
 
   // * Display text widgets
 

@@ -116,6 +116,18 @@ class RLDS {
   // dialogs) so they all read as one family.
   static const double backdropBlurSigma = 10.0;
 
+  // * Lyrics-style completed-text blur (Apple Music cadence).
+  //
+  // Apple Music's upcoming lyrics keep moderate opacity (~0.5) paired with a
+  // soft Gaussian blur (~3 sigma) — the de-emphasis comes from the blur, not
+  // from fading. Single source of truth for every "completed / covered /
+  // not-yet-revealed reading text" surface in the app: ProgressiveText's
+  // completed sentences, CCQuestion option cards, CCTrueFalseQuestion
+  // buttons, and the Settings blur demo. Edit these two numbers and every
+  // one of those surfaces stays in lock-step.
+  static const double lyricsBlurSigma = 3.0;
+  static const double lyricsBlurOpacity = 0.5;
+
   // * Sheet standardized spacing
 
   static const double sheetTopPadding = spacing12;

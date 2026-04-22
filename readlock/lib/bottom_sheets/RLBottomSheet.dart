@@ -19,6 +19,18 @@ const EdgeInsets RL_BOTTOM_SHEET_FOOTER_BUTTON_MARGIN = EdgeInsets.fromLTRB(
   RLDS.spacing24,
 );
 
+// * Standardised content padding for bottom sheets that render without a
+// grabber (Account, Font picker, Support, etc.). These sheets own their
+// own top chrome, so this constant is the single source of truth for
+// "how much breathing room the content keeps from every edge of the sheet".
+// Change it here and every no-grabber sheet lines up.
+const EdgeInsets RL_BOTTOM_SHEET_NO_GRABBER_CONTENT_PADDING = EdgeInsets.fromLTRB(
+  RLDS.spacing24,
+  RLDS.spacing16,
+  RLDS.spacing24,
+  RLDS.spacing24,
+);
+
 class RLBottomSheet {
   // * Standard show — wraps content with grabber, safe area, and rounded top corners.
   // Returns the sheet's dismissal future so callers can await it.
@@ -149,17 +161,25 @@ class SheetContainer extends StatelessWidget {
     return Container(decoration: solidDecoration, child: sheetContent);
   }
 
+  // Grabber owns its own RLDS.spacing16 above and below — so the child
+  // content below NEVER needs to add its own top padding for the grabber.
+  // Single source of truth: change this block and every sheet lines up.
+  // (!showGrabber sheets own their top chrome, so we still add a spacing24
+  // lead-in but don't require content to re-add a top inset either.)
   List<Widget> GrabberAndContent() {
     if (!showGrabber) {
-      return [
-        // Top padding without the drag indicator — sheet owns its own chrome.
-        const Spacing.height(12),
-
-        child,
-      ];
+      return [const Spacing.height(RLDS.spacing12), child];
     }
 
-    return [const Spacing.height(12), const BottomSheetGrabber(), child];
+    return [
+      const Spacing.height(RLDS.spacing16),
+
+      const BottomSheetGrabber(),
+
+      const Spacing.height(RLDS.spacing24),
+
+      child,
+    ];
   }
 }
 

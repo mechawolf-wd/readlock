@@ -77,8 +77,12 @@ class ProgressiveText extends StatefulWidget {
     this.textAlignment,
     this.textAlign = TextAlign.left,
     this.blurCompletedSentences = true,
-    this.completedSentenceBlurIntensity = 4,
-    this.completedSentenceOpacity = 0.2,
+    // Completed-sentence blur defaults inherited from the centralised
+    // Apple-Music-style lyrics blur token — keeps every reading surface
+    // (text swipes, question answers, true/false buttons, Settings demo)
+    // aligned by default.
+    this.completedSentenceBlurIntensity = RLDS.lyricsBlurSigma,
+    this.completedSentenceOpacity = RLDS.lyricsBlurOpacity,
     this.onTapCallback,
     this.enableTapToReveal = true,
     this.onAllSegmentsRevealed,
@@ -918,8 +922,12 @@ class ProgressiveTextState extends State<ProgressiveText> with TickerProviderSta
     return sentenceBlurStates[sentenceIndex];
   }
 
-  // Get consistent text style for all text (both revealed and completed)
-  // Ensures no visual jump when toggling blur state
+  // Get consistent text style for all text (both revealed and completed).
+  // Height matches RLTypography's readingLarge/Medium (1.6) so swapping
+  // between ProgressiveText and a static RLTypography label in the same
+  // slot (CCQuestion OptionText's three-state render) doesn't shift the
+  // card height. fontSize is promoted to 18 regardless of caller so every
+  // reading surface types in at the same size.
   TextStyle getConsistentTextStyle() {
     final bool hasCustomTextStyle = widget.textStyle != null;
 
@@ -929,7 +937,7 @@ class ProgressiveTextState extends State<ProgressiveText> with TickerProviderSta
       baseStyle = widget.textStyle!;
     }
 
-    return baseStyle.copyWith(fontSize: 18, height: 1.5);
+    return baseStyle.copyWith(fontSize: 18, height: 1.6);
   }
 }
 

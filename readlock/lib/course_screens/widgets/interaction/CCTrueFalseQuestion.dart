@@ -16,10 +16,8 @@ import 'package:pixelarticons/pixel.dart';
 
 enum TrueFalseButtonState { normal, selected, correctAndAnswered, incorrectAndMuted }
 
-// * Matches CCQuestion's answer-blur defaults so true/false buttons read as
-// the same kind of "covered" as the multi-choice options.
-const double TRUE_FALSE_BUTTON_BLUR_SIGMA = 4.0;
-const double TRUE_FALSE_BUTTON_BLUR_OPACITY = 0.2;
+// Covered-button blur comes directly from BlurOverlay's defaults, which
+// consume RLDS.lyricsBlur*. No per-file constants — one token, one place.
 
 class ButtonColors {
   final Color backgroundColor;
@@ -49,6 +47,10 @@ class CCTrueFalseQuestionState extends State<CCTrueFalseQuestion> {
   int? selectedAnswerIndex;
   bool hasAnswered = false;
   bool isStatementRevealed = false;
+  // Blur stays on both buttons until the reader taps one of them. The first
+  // tap only removes the blur (for BOTH buttons together — never one at a
+  // time). A second tap on either button commits the answer.
+  bool areButtonsUnblurred = false;
 
   @override
   Widget build(BuildContext context) {
@@ -100,11 +102,12 @@ class CCTrueFalseQuestionState extends State<CCTrueFalseQuestion> {
     });
   }
 
-  // Buttons stay blurred until the statement finishes revealing — the reader
-  // commits to an answer only after they've read the claim, mirroring how
-  // CCQuestion's multi-choice options are covered until tapped.
+  // Both buttons share a single BlurOverlay so the blur removal is always
+  // synchronised — the reader never sees one button clear up before the
+  // other. The blur lifts on the first tap on either button (see
+  // getAnswerTapHandler), not when the statement finishes revealing.
   Widget ButtonRow() {
-    final bool shouldBlurButtons = !isStatementRevealed;
+    final bool shouldBlurButtons = !areButtonsUnblurred;
 
     final Widget buttonRow = Div.row([
       // True button
@@ -131,8 +134,6 @@ class CCTrueFalseQuestionState extends State<CCTrueFalseQuestion> {
     ]);
 
     return BlurOverlay(
-      blurSigma: TRUE_FALSE_BUTTON_BLUR_SIGMA,
-      opacity: TRUE_FALSE_BUTTON_BLUR_OPACITY,
       enabled: shouldBlurButtons,
       child: buttonRow,
     );
@@ -184,14 +185,29 @@ class CCTrueFalseQuestionState extends State<CCTrueFalseQuestion> {
       return null;
     }
 
-    // Buttons are blurred + non-tappable until the statement finishes
-    // revealing — forces the reader through the typewriter before they can
-    // commit.
+    // While the statement is still typing, taps are ignored — reader must
+    // read the claim before interacting.
     if (!isStatementRevealed) {
       return null;
     }
 
+    // First tap on a blurred button clears the blur on BOTH buttons at once
+    // so the reader can read "True" and "False" together and then commit.
+    if (!areButtonsUnblurred) {
+      return handleButtonsUnblur;
+    }
+
     return () => handleAnswerSelection(answerIndex);
+  }
+
+  void handleButtonsUnblur() {
+    if (!mounted) {
+      return;
+    }
+
+    setState(() {
+      areButtonsUnblurred = true;
+    });
   }
 
   Widget ExplanationSection() {

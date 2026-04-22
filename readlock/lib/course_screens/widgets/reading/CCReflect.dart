@@ -1,6 +1,12 @@
-// Reflective prompt swipe — renders thinking points as coloured cards that
-// start blurred. Tapping the empty area below reveals them one-by-one, the
-// same way ProgressiveText reveals sentences from a tap-to-continue zone.
+// Reflective prompt swipe — renders thinking points as plain coloured text,
+// centred on the screen, revealed one-by-one with the exact same blur +
+// progressive-text reveal rhythm as CCQuestion answer options.
+//
+// Each point sits blurred until tapped; the first tap kicks off the
+// typewriter reveal (same cadence / same blur token / same once-completed
+// pinning as the question options). No card chrome — just coloured text,
+// so the reflect page reads as a moment of quiet thinking instead of
+// a dashboard.
 
 import 'package:flutter/material.dart' hide Typography;
 import 'package:readlock/models/CourseModel.dart';
@@ -8,6 +14,7 @@ import 'package:readlock/design_system/RLUtility.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/services/feedback/HapticsService.dart';
+import 'package:readlock/utility_widgets/text_animation/ProgressiveText.dart';
 import 'package:readlock/utility_widgets/visual_effects/BlurOverlay.dart';
 
 // * Each thinking point rotates through one of these accent colours.
@@ -19,11 +26,6 @@ const List<Color> REFLECT_POINT_COLORS = [
 
 const int REFLECT_POINTS_LIMIT = 3;
 
-// Match the blur ProgressiveText applies to completed sentences so the reveal
-// rhythm reads as part of the same family.
-const double REFLECT_BLUR_SIGMA = 4.0;
-const double REFLECT_BLUR_OPACITY = 0.2;
-
 class CCReflect extends StatefulWidget {
   final ReflectSwipe content;
 
@@ -34,27 +36,24 @@ class CCReflect extends StatefulWidget {
 }
 
 class CCReflectState extends State<CCReflect> {
-  int revealedCount = 0;
+  // Point indices the reader has already tapped to reveal.
+  Set<int> revealedPoints = {};
 
   List<String> getLimitedPoints() {
     return widget.content.thinkingPoints.take(REFLECT_POINTS_LIMIT).toList();
   }
 
-  bool hasMoreToReveal() {
-    return revealedCount < getLimitedPoints().length;
-  }
+  void handlePointTap(int pointIndex) {
+    final bool alreadyRevealed = revealedPoints.contains(pointIndex);
 
-  void handleRevealTap() {
-    final bool canReveal = hasMoreToReveal();
-
-    if (!canReveal) {
+    if (alreadyRevealed) {
       return;
     }
 
     HapticsService.lightImpact();
 
     setState(() {
-      revealedCount++;
+      revealedPoints.add(pointIndex);
     });
   }
 
@@ -64,71 +63,87 @@ class CCReflectState extends State<CCReflect> {
       color: RLDS.backgroundDark,
       padding: RLDS.contentPaddingInsets,
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: ColumnChildren(),
+        children: PointsColumnChildren(),
       ),
     );
   }
 
-  List<Widget> ColumnChildren() {
-    final List<Widget> children = PointCards();
+  List<Widget> PointsColumnChildren() {
+    final List<String> points = getLimitedPoints();
+    final List<Widget> widgets = [];
 
-    children.add(Expanded(child: RevealArea()));
-
-    return children;
-  }
-
-  List<Widget> PointCards() {
-    final List<String> limitedPoints = getLimitedPoints();
-
-    return limitedPoints.asMap().entries.map<Widget>((entry) {
-      final int pointIndex = entry.key;
-      final String point = entry.value;
-      final Color pointColor = REFLECT_POINT_COLORS[pointIndex % REFLECT_POINT_COLORS.length];
-      final bool isRevealed = pointIndex < revealedCount;
-
-      return Padding(
-        padding: const EdgeInsets.only(bottom: RLDS.spacing12),
-        child: BlurOverlay(
-          blurSigma: REFLECT_BLUR_SIGMA,
-          opacity: REFLECT_BLUR_OPACITY,
-          enabled: !isRevealed,
-          child: PointCard(point: point, color: pointColor),
-        ),
+    for (int pointIndex = 0; pointIndex < points.length; pointIndex++) {
+      widgets.add(
+        PointEntry(pointIndex: pointIndex, point: points[pointIndex]),
       );
-    }).toList();
-  }
 
-  Widget PointCard({required String point, required Color color}) {
-    final BoxDecoration cardDecoration = BoxDecoration(
-      color: color.withValues(alpha: 0.1),
-      borderRadius: RLDS.borderRadiusSmall,
-      border: Border.all(color: color, width: 1),
-    );
+      final bool isLastPoint = pointIndex == points.length - 1;
 
-    return Container(
-      padding: const EdgeInsets.all(RLDS.spacing16),
-      decoration: cardDecoration,
-      child: RLTypography.readingMedium(point, color: color),
-    );
-  }
-
-  // Tap-to-reveal zone below the cards — mirrors ProgressiveText's
-  // RevealButtonArea pattern: transparent surface filling the remaining
-  // space, each tap pushes the next card out of blur.
-  Widget RevealArea() {
-    final bool hasMore = hasMoreToReveal();
-
-    if (!hasMore) {
-      return const SizedBox.shrink();
+      if (!isLastPoint) {
+        widgets.add(const Spacing.height(RLDS.spacing24));
+      }
     }
 
-    return MouseRegion(
-      cursor: SystemMouseCursors.click,
-      child: GestureDetector(
-        onTap: handleRevealTap,
-        child: Container(width: double.infinity, color: RLDS.transparent),
+    return widgets;
+  }
+
+  Widget PointEntry({required int pointIndex, required String point}) {
+    final Color pointColor =
+        REFLECT_POINT_COLORS[pointIndex % REFLECT_POINT_COLORS.length];
+    final bool isRevealed = revealedPoints.contains(pointIndex);
+    final VoidCallback onEntryTap = () => handlePointTap(pointIndex);
+
+    final Widget pointText = PointText(
+      pointIndex: pointIndex,
+      point: point,
+      color: pointColor,
+      isRevealed: isRevealed,
+    );
+
+    // BlurOverlay inherits the centralised lyrics-blur token from its
+    // defaults — same blur the question's covered answers use, so the two
+    // widgets read as the same family.
+    return GestureDetector(
+      onTap: onEntryTap,
+      behavior: HitTestBehavior.opaque,
+      child: BlurOverlay(
+        enabled: !isRevealed,
+        child: pointText,
       ),
+    );
+  }
+
+  // Two-state render:
+  //
+  //   1. not revealed → transparent label (reserves layout so the tap
+  //      target height doesn't shift when the reveal kicks off).
+  //   2. revealed → ProgressiveText mounted with a stable ValueKey. State
+  //      persists across later parent rebuilds, so the reveal plays
+  //      exactly once and never swaps to a different widget — the snap
+  //      at completion is what that swap was causing.
+  Widget PointText({
+    required int pointIndex,
+    required String point,
+    required Color color,
+    required bool isRevealed,
+  }) {
+    if (!isRevealed) {
+      return RLTypography.readingLarge(
+        point,
+        color: RLDS.transparent,
+        textAlign: TextAlign.center,
+      );
+    }
+
+    return ProgressiveText(
+      key: ValueKey('reflect_point_$pointIndex'),
+      textSegments: [point],
+      textStyle: RLTypography.readingLargeStyle.copyWith(color: color),
+      textAlign: TextAlign.center,
+      blurCompletedSentences: false,
+      enableTapToReveal: false,
     );
   }
 }

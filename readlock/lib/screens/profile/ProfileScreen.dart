@@ -49,6 +49,9 @@ class ProfileContentState extends State<ProfileContent> {
   bool revealEnabled = false;
   bool blurEnabled = true;
   bool coloredTextEnabled = true;
+  // Bionic reading lives in-memory only for now — no UserModel round-trip
+  // until we integrate the transform into ProgressiveText / CCTextContent.
+  bool bionicEnabled = false;
   bool isLoggingOut = false;
 
   @override
@@ -116,6 +119,10 @@ class ProfileContentState extends State<ProfileContent> {
     UserService.updateColoredText(value);
   }
 
+  void handleBionicToggled(bool value) {
+    setState(() => bionicEnabled = value);
+  }
+
   void handleSupportTap() {}
 
   // * Logout flow.
@@ -170,12 +177,14 @@ class ProfileContentState extends State<ProfileContent> {
       revealAllTrueFalse: revealEnabled,
       blurEnabled: blurEnabled,
       coloredTextEnabled: coloredTextEnabled,
+      bionicEnabled: bionicEnabled,
       onTypingSoundToggled: handleTypingSoundToggled,
       onGeneralSoundsToggled: handleGeneralSoundsToggled,
       onHapticsToggled: handleHapticsToggled,
       onRevealAllTrueFalseToggled: handleRevealToggled,
       onBlurToggled: handleBlurToggled,
       onColoredTextToggled: handleColoredTextToggled,
+      onBionicToggled: handleBionicToggled,
       onSupportTap: handleSupportTap,
       onLogoutTap: handleLogoutTap,
     );

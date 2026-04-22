@@ -38,7 +38,10 @@ class BirdPickerSheetState extends State<BirdPickerSheet> {
   late int selectedIndex;
 
   static final Widget HeaderIcon = const Icon(Pixel.human, color: RLDS.primary, size: 20);
-  static const EdgeInsets headerPadding = EdgeInsets.fromLTRB(24, 16, 24, 0);
+  // No top inset — RLBottomSheet's grabber block already reserves
+  // RLDS.spacing16 below the grabber. Duplicating it here was the anti-
+  // pattern the sheet wrapper is meant to kill.
+  static const EdgeInsets headerPadding = EdgeInsets.fromLTRB(24, 0, 24, 0);
   static const EdgeInsets bodyPadding = EdgeInsets.zero;
 
   @override
@@ -79,8 +82,9 @@ class BirdPickerSheetState extends State<BirdPickerSheet> {
 
   @override
   Widget build(BuildContext context) {
+    // Bottom padding matches every other bottom sheet in the app (24px).
     return Padding(
-      padding: const EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.only(bottom: RLDS.spacing24),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [

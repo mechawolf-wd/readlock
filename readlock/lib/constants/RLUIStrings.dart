@@ -95,7 +95,7 @@ class RLUIStrings {
   // * Feedback Bottom Sheet
   static const String FEEDBACK_DIALOG_TITLE = 'Explanation';
   static const String HINT_DIALOG_TITLE = 'Hint';
-  static const String FEEDBACK_GOT_IT_LABEL = 'Got it';
+  static const String FEEDBACK_GOT_IT_LABEL = 'Read';
 
   // * Course Loading Screen
   static const String LOADING_MESSAGE = 'Birds are indexing the course';
@@ -112,7 +112,7 @@ class RLUIStrings {
   static const String QUIT_CONFIRMATION_MESSAGE = 'If you quit you will lose your progress.';
   static const String QUIT_CONFIRMATION_LEARN_BUTTON = 'Learn';
   static const String QUIT_CONFIRMATION_QUIT_BUTTON = 'Quit';
-  static const String BOOKMARK_FEEDBACK_MESSAGE = 'Saved to your nest! Saved by: 339 birds.';
+  static const String BOOKMARK_FEEDBACK_MESSAGE = 'Swipe saved to your nest.';
 
   // * Course Content Factory
   static const String UNKNOWN_CONTENT_TYPE_MESSAGE = 'Unknown content type: ';
@@ -190,18 +190,6 @@ class RLUIStrings {
   // * Course Outro
   static const String OUTRO_BUTTON_LABEL = 'Fin';
 
-  // * Streak Bottom Sheet
-  static const String STREAK_TITLE = '3 Day Streak!';
-  static const String STREAK_MESSAGE = 'Keep learning daily to build your streak.';
-
-  // * Streakplier Reward Screen
-  static const String REWARD_CONGRATULATIONS = 'Reader time';
-  static const String REWARD_LESSON_COMPLETE = 'Lesson Complete';
-  static const String REWARD_LESSON_TIME_LABEL = 'Lesson Time';
-  static const String REWARD_STREAKPLIER_LABEL = 'Streakplier';
-  static const String REWARD_COLLECTED_LABEL = 'Collected';
-  static const String REWARD_CONTINUE_LABEL = 'Continue';
-
   // * Learning Statistics
   static const String LEARNING_STATS_TITLE = 'Reading';
   static const String LEARNING_STATS_DAYS_UNIT = 'days';
@@ -215,9 +203,15 @@ class RLUIStrings {
   static const String MENU_TYPING_SOUND = 'Typing sound';
   static const String MENU_SOUNDS = 'Sounds';
   static const String MENU_HAPTICS = 'Haptics';
-  static const String MENU_REVEAL = 'Reveal';
-  static const String MENU_BLUR = 'Blur';
-  static const String MENU_COLORED_TEXT = 'Colored text';
+  // "Progressive" is the user-facing label for what the code still refers
+  // to internally as "reveal" — same bool, inverted meaning. ON = text
+  // types in progressively; OFF = text appears all at once. The switch
+  // value is flipped at the menu layer (see SwitchMenuItem usage in
+  // MenuWidgets) so the stored preference doesn't need migration.
+  static const String MENU_REVEAL = 'Progressive';
+  static const String MENU_BLUR = 'Focus';
+  static const String MENU_COLORED_TEXT = 'Accent';
+  static const String MENU_BIONIC = 'Bionic';
   static const String MENU_NOTIFICATIONS = 'Notifications';
   static const String MENU_SUPPORT = 'Support';
   static const String MENU_PRIVACY_POLICY = 'Privacy Policy';
@@ -234,12 +228,21 @@ class RLUIStrings {
   static const String BIRD_PIGEON = 'Pigeon';
   static const String BIRD_SPARROW = 'Sparrow';
 
+  // * Reading Font Picker
+  static const String MENU_READING_FONT = 'Typography';
+  static const String FONT_PICKER_TITLE = 'Typography';
+  static const String FONT_DEMO_SAMPLE_TEXT =
+      'Good design is honest. It reveals the product and its function.';
+
   // * Settings Demos
   static const String DEMO_REVEAL_TEXT = 'Design is not just what it looks like.';
   static const String DEMO_BLUR_PREVIOUS = 'Previous sentence fades away.';
   static const String DEMO_BLUR_CURRENT = 'Current sentence stays clear.';
   static const String DEMO_COLORED_HIGHLIGHT = 'Key terms';
   static const String DEMO_COLORED_SUFFIX = ' are highlighted in text.';
+  static const String DEMO_BIONIC_TEXT =
+      'Bionic reading bolds the first few letters of each word so your eye '
+      'catches the shape before you finish reading it.';
 
   // * Settings Bottom Sheet
   static const String SETTINGS_TITLE = 'Settings';

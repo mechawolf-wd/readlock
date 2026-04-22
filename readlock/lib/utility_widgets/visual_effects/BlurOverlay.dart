@@ -4,9 +4,16 @@
 // Timing/curve are shared with RLReveal so every "thing becoming visible"
 // surface in the app (continue button, password field, true/false buttons,
 // question answers) fades at the same rate.
+//
+// Default blur strength is the centralised Apple-Music-style lyrics-blur
+// token (RLDS.lyricsBlurSigma / lyricsBlurOpacity). Every covered-text
+// surface that used to define its own sigma/opacity constants now just does
+// `BlurOverlay(enabled: bool, child: …)` and inherits the token. One edit
+// in RLDesignSystem flows to every call site.
 
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/design_system/RLReveal.dart';
 
 class BlurOverlay extends StatefulWidget {
@@ -18,8 +25,8 @@ class BlurOverlay extends StatefulWidget {
   const BlurOverlay({
     super.key,
     required this.child,
-    this.blurSigma = 1.5,
-    this.opacity = 0.3,
+    this.blurSigma = RLDS.lyricsBlurSigma,
+    this.opacity = RLDS.lyricsBlurOpacity,
     this.enabled = true,
   });
 

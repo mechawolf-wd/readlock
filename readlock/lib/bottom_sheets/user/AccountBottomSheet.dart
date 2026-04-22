@@ -1,7 +1,7 @@
-// Bottom sheet for account settings and management.
-// Uses the same layout rhythm as the Support picker: fromLTRB(24,16,24,24)
-// outer padding, icon + 12px gap + headingMedium title, spacing16 to the
-// list of rows. Rendered as a LunarBlur surface.
+// Bottom sheet for account settings and management. Rendered as a LunarBlur
+// surface without a grabber — content padding is the shared
+// RL_BOTTOM_SHEET_NO_GRABBER_CONTENT_PADDING from RLBottomSheet, so the
+// layout rhythm matches Support / Font picker / any other no-grabber sheet.
 
 import 'package:flutter/material.dart' hide Typography;
 import 'package:readlock/bottom_sheets/RLBottomSheet.dart';
@@ -12,15 +12,6 @@ import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/constants/RLUIStrings.dart';
 
 import 'package:pixelarticons/pixel.dart';
-
-// Matches LoginSupportLayout.SUPPORT_SHEET_PADDING so the Account sheet
-// reads as the same family as the Support sheets.
-const EdgeInsets ACCOUNT_SHEET_PADDING = EdgeInsets.fromLTRB(
-  RLDS.spacing24,
-  RLDS.spacing16,
-  RLDS.spacing24,
-  RLDS.spacing24,
-);
 
 class AccountBottomSheet {
   static void show(BuildContext context) {
@@ -46,7 +37,7 @@ class AccountSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: ACCOUNT_SHEET_PADDING,
+      padding: RL_BOTTOM_SHEET_NO_GRABBER_CONTENT_PADDING,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
