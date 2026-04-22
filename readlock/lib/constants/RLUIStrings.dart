@@ -10,7 +10,8 @@ class RLUIStrings {
 
   // * My Bookshelf Screen
   static const String BOOKSHELF_TITLE = 'Bookshelf';
-  static const String BOOKSHELF_EMPTY_MESSAGE = '';
+  static const String BOOKSHELF_EMPTY_MESSAGE = 'Read something to see it here';
+  static const String BOOKSHELF_LOAD_MORE_LABEL = 'Load more';
 
   // * Empty / loading states
   static const String NO_COURSES_MESSAGE = '';
@@ -29,12 +30,12 @@ class RLUIStrings {
   static const String READER_PASS_FEATURES_TITLE = 'What you get';
 
   // * Feedback Snackbar
-  static const String CORRECT_ANSWER_MESSAGE = '+5 experience';
+  static const String CORRECT_ANSWER_MESSAGE = 'Correct, you read it';
   static const String WRONG_ANSWER_TITLE = 'Pick again';
 
   // * Login Bottom Sheet
   static const String LOGIN_TITLE = 'Welcome reader!';
-  static const String LOGIN_SUBTITLE = 'Account missing? Create it';
+  static const String LOGIN_SUBTITLE = 'Sign in to hop in';
   static const String SIGNUP_TITLE = 'Create account';
   static const String SIGNUP_SUBTITLE = 'Look! They’re joining us!';
   static const String EMAIL_PLACEHOLDER = 'Email';
@@ -134,7 +135,7 @@ class RLUIStrings {
   static const String CONTINUE_BUTTON_LABEL = 'Continue';
   static const String FOR_YOUR_PERSONALITY_TITLE = 'How about these?';
   static const String FOR_YOUR_PERSONALITY_SUBTITLE = 'Read these only if you want';
-  static const String SURPRISE_ME_LABEL = 'Pick for me';
+  static const String SURPRISE_ME_LABEL = 'Try out something new';
 
   // * Courses Screen
   static const String SEARCH_PLACEHOLDER = 'Title';

@@ -8,12 +8,15 @@ import 'package:readlock/course_screens/data/CourseData.dart';
 import 'package:readlock/design_system/RLUtility.dart';
 import 'package:readlock/design_system/RLButton.dart';
 import 'package:readlock/design_system/RLCard.dart';
+import 'package:readlock/design_system/RLCourseBookImage.dart';
 import 'package:readlock/design_system/RLRelevantForChip.dart';
+import 'package:readlock/design_system/RLStarfieldBackground.dart';
 import 'package:readlock/constants/RLCoursePalette.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/constants/RLUIStrings.dart';
 import 'package:readlock/course_screens/CourseLoadingScreen.dart';
+import 'package:readlock/services/auth/UserService.dart';
 import 'package:readlock/constants/DartAliases.dart';
 
 import 'package:pixelarticons/pixel.dart';
@@ -24,10 +27,6 @@ const double roadmapNodeVerticalSpacing = 96.0;
 const double roadmapTileBorderWidth = 3.0;
 const double lessonTitleWidth = 128.0;
 const double floatingBarBottomClearance = 180.0;
-
-// Any course color outside KNOWN_COURSE_COLORS falls back to FALLBACK.png +
-// the palette's fallback accent (both defined in RLCoursePalette).
-const String COURSE_FALLBACK_ASSET = 'assets/books/FALLBACK.png';
 
 class CourseRoadmapScreen extends StatefulWidget {
   final String courseId;
@@ -203,30 +202,39 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
 
     return Material(
       color: RLDS.surface,
-      child: SafeArea(
-        child: Stack(
-          children: [
-            // Scrollable content with sticky headers
-            CustomScrollView(controller: scrollController, slivers: slivers),
+      child: Stack(
+        children: [
+          // Slow drifting pixel-star background behind everything — sits
+          // outside SafeArea so the stars paint under the status bar too.
+          const Positioned.fill(child: RLStarfieldBackground()),
 
-            // Bottom floating column — back-to-top sits above and to the left of
-            // the continue bar when scrolled; the continue bar is always shown.
-            Positioned(
-              left: RLDS.spacing24,
-              right: RLDS.spacing24,
-              bottom: RLDS.spacing24,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  RenderIf.condition(showBackToTop, BackToTopSlot()),
+          SafeArea(
+            child: Stack(
+              children: [
+                // Scrollable content with sticky headers
+                CustomScrollView(controller: scrollController, slivers: slivers),
 
-                  BottomFloatingBar(),
-                ],
-              ),
+                // Bottom floating column — back-to-top sits above and to the
+                // left of the continue bar when scrolled; the continue bar is
+                // always shown.
+                Positioned(
+                  left: RLDS.spacing24,
+                  right: RLDS.spacing24,
+                  bottom: RLDS.spacing24,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      RenderIf.condition(showBackToTop, BackToTopSlot()),
+
+                      BottomFloatingBar(),
+                    ],
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -322,40 +330,20 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
 
   static const double progressRingStrokeWidth = 6.0;
   static const double progressRingSize = 176.0;
-  // Book assets are square (64x64). Square slot so contain doesn't letterbox.
-  // 96 = 1.5x the source — a clean nearest-neighbour scale that keeps the
+  // Book assets are square (64x64). 96 = 1.5x the source — a clean nearest-
+  // neighbour scale (handled inside RLCourseBookImage) that keeps the
   // pixel-art edges crisp without swallowing the progress ring around it.
   static const double courseBookSize = 96.0;
-  static const String courseBooksAssetPrefix = 'assets/books/';
 
   static final BoxDecoration progressRingDecoration = BoxDecoration(
     shape: BoxShape.circle,
     border: Border.all(color: RLDS.backgroundLight, width: progressRingStrokeWidth),
   );
 
-  // The course color doubles as the key into assets/books/{HEX}.png. If the
-  // color is outside the palette, render FALLBACK.png instead (the accent
-  // also falls back to 9E7071 via getCourseAccentColor).
   Widget CourseBookImage() {
-    final bool isKnown = isPaletteColor();
-    final String assetPath = isKnown
-        ? '$courseBooksAssetPrefix${getNormalizedCourseColor()}.png'
-        : COURSE_FALLBACK_ASSET;
-
-    return Image.asset(
-      assetPath,
-      width: courseBookSize,
-      height: courseBookSize,
-      fit: BoxFit.contain,
-      filterQuality: FilterQuality.none,
-      errorBuilder: (context, error, stackTrace) => Image.asset(
-        COURSE_FALLBACK_ASSET,
-        width: courseBookSize,
-        height: courseBookSize,
-        fit: BoxFit.contain,
-        filterQuality: FilterQuality.none,
-        errorBuilder: (context, error, stackTrace) => const SizedBox.shrink(),
-      ),
+    return RLCourseBookImage(
+      courseColor: courseData?['color'] as String?,
+      size: courseBookSize,
     );
   }
 
@@ -508,6 +496,11 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
 
   void showLoadingScreenThenNavigate(int lessonIndex, int contentIndex) {
     Navigator.push(context, RLDS.slowFadeTransition(const CourseLoadingScreen()));
+
+    // Fire-and-forget — the course is now in the reader's bookshelf as
+    // "recently used" the moment they start a lesson. No need to await; the
+    // Firestore arrayUnion is idempotent and the UI doesn't depend on it.
+    UserService.addSavedCourseId(widget.courseId);
 
     Future.delayed(
       const Duration(milliseconds: 500),

@@ -13,7 +13,7 @@ import 'package:readlock/constants/RLUIStrings.dart';
 // transparent padding around each bird.
 const double BIRD_FRAME_SIZE = 64.0;
 const double BIRD_CONTENT_SIZE = 32.0;
-const double BIRD_ANIMATION_STEP_TIME = 0.15;
+const double BIRD_ANIMATION_STEP_TIME = 0.20;
 const double BIRD_PREVIEW_SIZE_LARGE = 128.0;
 const double BIRD_PREVIEW_SIZE_SMALL = 96.0;
 const String BIRD_ASSET_PREFIX = 'assets/birds/';
@@ -55,12 +55,7 @@ const List<BirdOption> BIRD_OPTIONS = [
     frameCount: 4,
   ),
 
-  BirdOption(
-    name: RLUIStrings.BIRD_CROW,
-    assetFile: 'Crow.png',
-    firstFrame: 1,
-    frameCount: 4,
-  ),
+  BirdOption(name: RLUIStrings.BIRD_CROW, assetFile: 'Crow.png', firstFrame: 1, frameCount: 4),
 ];
 
 // Shared Images cache so Flame.images doesn't need reconfiguring globally
@@ -106,10 +101,6 @@ class BirdAnimationSprite extends StatelessWidget {
       data: animationData,
     );
 
-    return SizedBox(
-      width: renderedSize,
-      height: renderedSize,
-      child: animationWidget,
-    );
+    return SizedBox(width: renderedSize, height: renderedSize, child: animationWidget);
   }
 }

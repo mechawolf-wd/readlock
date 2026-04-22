@@ -175,7 +175,7 @@ class RLTextFieldState extends State<RLTextField> {
         child: Icon(
           Pixel.eye,
           color: iconColor,
-          size: RLDS.iconMedium,
+          size: RLDS.iconLarge,
         ),
       ),
     );

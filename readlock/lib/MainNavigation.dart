@@ -10,6 +10,8 @@ import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLUIStrings.dart';
 import 'package:readlock/design_system/RLFadeSwitcher.dart';
+import 'package:readlock/design_system/RLLunarBlur.dart';
+import 'package:readlock/design_system/RLStarfieldBackground.dart';
 import 'package:readlock/screens/CoursesScreen.dart';
 import 'package:readlock/screens/HomeScreen.dart';
 import 'package:readlock/screens/MyBookshelfScreen.dart';
@@ -100,8 +102,8 @@ class MainNavigationState extends State<MainNavigation> {
   }
 
   // * Nav chrome sizing
-  static const double navIconSize = 28.0;
-  static const double navLabelFontSize = 10.0;
+  static const double navIconSize = 32.0;
+  static const double navLabelFontSize = 12.0;
 
   // Icon definitions for navigation items
   static const Icon HomeIcon = Icon(Pixel.home, size: navIconSize);
@@ -129,27 +131,44 @@ class MainNavigationState extends State<MainNavigation> {
     );
 
     return Scaffold(
+      // extendBody lets the starfield paint under the nav, so the frosted
+      // surface has actual stars to blur instead of flat Scaffold colour.
+      extendBody: true,
       backgroundColor: RLDS.backgroundDark,
-      body: RLFadeSwitcher(
-        child: KeyedSubtree(
-          key: ValueKey<int>(currentIndex),
-          child: screens[currentIndex],
-        ),
+      body: Stack(
+        children: [
+          const Positioned.fill(child: RLStarfieldBackground()),
+
+          RLFadeSwitcher(
+            child: KeyedSubtree(key: ValueKey<int>(currentIndex), child: screens[currentIndex]),
+          ),
+        ],
       ),
-      bottomNavigationBar: Theme(
-        data: noRippleTheme,
-        child: BottomNavigationBar(
-          currentIndex: currentIndex,
-          onTap: handleNavigationTap,
-          selectedItemColor: RLDS.success,
-          unselectedItemColor: RLDS.textSecondary,
-          type: BottomNavigationBarType.fixed,
-          iconSize: navIconSize,
-          selectedLabelStyle: pixelNavLabelStyle,
-          unselectedLabelStyle: pixelNavLabelStyle,
-          selectedFontSize: navLabelFontSize,
-          unselectedFontSize: navLabelFontSize,
-          items: NavigationItems(),
+      bottomNavigationBar: RLLunarBlur(
+        borderRadius: RLDS.borderRadiusTopLarge,
+        borderColor: RLDS.transparent,
+        padding: const EdgeInsets.symmetric(vertical: RLDS.spacing12),
+        child: Theme(
+          data: noRippleTheme,
+          child: BottomNavigationBar(
+            currentIndex: currentIndex,
+            onTap: handleNavigationTap,
+            backgroundColor: RLDS.transparent,
+            elevation: 0,
+            selectedItemColor: RLDS.primary,
+            unselectedItemColor: RLDS.textSecondary,
+            type: BottomNavigationBarType.fixed,
+            iconSize: navIconSize,
+            // Labels hidden for now — icons-only nav. Keeping the style props
+            // commented so re-enabling is a single uncomment.
+            showSelectedLabels: false,
+            showUnselectedLabels: false,
+            // selectedLabelStyle: pixelNavLabelStyle,
+            // unselectedLabelStyle: pixelNavLabelStyle,
+            // selectedFontSize: navLabelFontSize,
+            // unselectedFontSize: navLabelFontSize,
+            items: NavigationItems(),
+          ),
         ),
       ),
     );

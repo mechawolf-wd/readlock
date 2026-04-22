@@ -1,5 +1,5 @@
 // Bottom sheet that lets the user pick their profile bird.
-// Horizontal snap-slider: one bird per page, name shown once above the slider.
+// Horizontal snap-slider: one bird per page, name shown once below the slider.
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -20,7 +20,7 @@ class BirdPickerBottomSheet {
   static void show(BuildContext context) {
     RLBottomSheet.show(
       context,
-      backgroundColor: RLDS.backgroundLight,
+      useLunarBlurSurface: true,
       child: const BirdPickerSheet(),
     );
   }
@@ -38,8 +38,8 @@ class BirdPickerSheetState extends State<BirdPickerSheet> {
   late int selectedIndex;
 
   static final Widget HeaderIcon = const Icon(Pixel.human, color: RLDS.primary, size: 20);
-  static const EdgeInsets headerPadding = EdgeInsets.fromLTRB(24, 16, 24, 16);
-  static const EdgeInsets bodyPadding = EdgeInsets.fromLTRB(0, 0, 0, 24);
+  static const EdgeInsets headerPadding = EdgeInsets.fromLTRB(24, 16, 24, 0);
+  static const EdgeInsets bodyPadding = EdgeInsets.zero;
 
   @override
   void initState() {
@@ -86,11 +86,11 @@ class BirdPickerSheetState extends State<BirdPickerSheet> {
         children: [
           HeaderSection(),
 
-          SelectedBirdName(),
+          SliderBody(),
 
           const Spacing.height(RLDS.spacing16),
 
-          SliderBody(),
+          SelectedBirdName(),
         ],
       ),
     );

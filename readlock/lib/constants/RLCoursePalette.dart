@@ -54,3 +54,8 @@ const Set<String> KNOWN_COURSE_COLORS = {
 };
 
 const String COURSE_FALLBACK_COLOR_HEX = '9E7071';
+
+// Asset paths — shared so the roadmap hero and every list card that renders
+// a course book pull from the same place.
+const String COURSE_BOOKS_ASSET_PREFIX = 'assets/books/';
+const String COURSE_FALLBACK_ASSET = 'assets/books/FALLBACK.png';

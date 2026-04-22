@@ -1,5 +1,14 @@
-// Settings demo widgets showing live previews of reading options
-// Includes reveal, blur, and colored text demos
+// Settings demo widgets showing live previews of reading options.
+// Each demo mirrors exactly what CCTextContent / ProgressiveText does in a
+// real swipe:
+//   - Font: readingMedium promoted to fontSize 18 / height 1.5 (the style
+//     ProgressiveText.getConsistentTextStyle applies to every line)
+//   - Reveal animation: character-by-character typewriter via a transparent
+//     tail (no layout shift as chars fill in)
+//   - Blur: sigma 4 / opacity 0.2 on completed sentences (the ProgressiveText
+//     / BlurOverlay defaults)
+//   - Colored text: RLDS.markupGreen + FontWeight.bold (the exact style
+//     ProgressiveText applies to <c:g>…</c:g> markup)
 
 import 'dart:ui';
 
@@ -8,6 +17,20 @@ import 'package:readlock/constants/RLUIStrings.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/design_system/RLUtility.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
+
+// Mirrors ProgressiveText.getConsistentTextStyle — every swipe renders at
+// fontSize 18 / height 1.5 regardless of the caller's passed style. The
+// demos must use the same style or the preview won't match the swipe.
+final TextStyle demoReadingStyle = RLTypography.readingMediumStyle.copyWith(
+  fontSize: 18,
+  height: 1.5,
+);
+
+// Matches ProgressiveText's inline-highlight render for <c:g>…</c:g> markup.
+// Both colour and weight need to match or the demo understates the visual
+// weight of a highlighted key term in the real swipe.
+final Color demoHighlightColor = RLDS.markupGreen;
+const FontWeight demoHighlightWeight = FontWeight.bold;
 
 // Demo widget for Reveal setting
 // Shows text appearing all at once vs character by character
@@ -73,36 +96,41 @@ class RevealDemoState extends State<RevealDemo> with SingleTickerProviderStateMi
       decoration: containerDecoration,
       padding: const EdgeInsets.all(RLDS.spacing12),
       margin: const EdgeInsets.only(bottom: RLDS.spacing16),
-      child: AnimatedTextDisplay(),
+      child: Align(alignment: Alignment.centerLeft, child: AnimatedTextDisplay()),
     );
   }
 
   Widget AnimatedTextDisplay() {
     if (widget.isEnabled) {
-      return Text(demoText, style: RLTypography.readingMediumStyle);
+      return Text(demoText, style: demoReadingStyle);
     }
 
     return AnimatedBuilder(
       animation: animationController,
-      builder: (context, child) {
-        final int charCount = (animationController.value * demoText.length).toInt();
-        final String visibleText = demoText.substring(0, charCount);
-        final String hiddenText = demoText.substring(charCount);
+      builder: buildTypewriterFrame,
+    );
+  }
 
-        return RichText(
-          text: TextSpan(
-            style: RLTypography.readingMediumStyle,
-            children: [
-              TextSpan(text: visibleText),
+  // Renders the current typewriter frame — visible prefix painted in the
+  // swipe's text colour, hidden tail painted transparent so the layout stays
+  // reserved from the first frame (same technique ProgressiveText uses).
+  Widget buildTypewriterFrame(BuildContext context, Widget? child) {
+    final int charCount = (animationController.value * demoText.length).toInt();
+    final String visibleText = demoText.substring(0, charCount);
+    final String hiddenText = demoText.substring(charCount);
 
-              TextSpan(
-                text: hiddenText,
-                style: const TextStyle(color: RLDS.transparent),
-              ),
-            ],
+    return RichText(
+      text: TextSpan(
+        style: demoReadingStyle,
+        children: [
+          TextSpan(text: visibleText),
+
+          TextSpan(
+            text: hiddenText,
+            style: const TextStyle(color: RLDS.transparent),
           ),
-        );
-      },
+        ],
+      ),
     );
   }
 }
@@ -132,13 +160,14 @@ class BlurDemo extends StatelessWidget {
       padding: const EdgeInsets.all(RLDS.spacing12),
       margin: const EdgeInsets.only(bottom: RLDS.spacing16),
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           BlurredSentence(),
 
           const Spacing.height(RLDS.spacing8),
 
-          Text(RLUIStrings.DEMO_BLUR_CURRENT, style: RLTypography.readingMediumStyle),
+          Text(RLUIStrings.DEMO_BLUR_CURRENT, style: demoReadingStyle),
         ],
       ),
     );
@@ -147,7 +176,7 @@ class BlurDemo extends StatelessWidget {
   Widget BlurredSentence() {
     final Widget sentenceText = Text(
       RLUIStrings.DEMO_BLUR_PREVIOUS,
-      style: RLTypography.readingMediumStyle,
+      style: demoReadingStyle,
     );
 
     if (isEnabled) {
@@ -178,32 +207,44 @@ class ColoredTextDemo extends StatelessWidget {
       borderRadius: BorderRadius.circular(RLDS.spacing8),
     );
 
+    // When disabled, the highlight matches the surrounding text (no colour,
+    // normal weight) — same as ProgressiveText would render raw text without
+    // <c:g> markup. When enabled, matches the markupGreen + bold style
+    // ProgressiveText applies via RLDS.getMarkupColor('g').
     Color highlightColor = RLDS.textPrimary;
     FontWeight keyTermsFontWeight = FontWeight.normal;
 
     if (isEnabled) {
-      highlightColor = RLDS.primary;
-      keyTermsFontWeight = FontWeight.w600;
+      highlightColor = demoHighlightColor;
+      keyTermsFontWeight = demoHighlightWeight;
     }
+
+    final TextStyle highlightStyle = TextStyle(
+      color: highlightColor,
+      fontWeight: keyTermsFontWeight,
+    );
 
     return Container(
       width: double.infinity,
       decoration: containerDecoration,
       padding: const EdgeInsets.all(RLDS.spacing12),
       margin: const EdgeInsets.only(bottom: RLDS.spacing16),
-      child: RichText(
-        text: TextSpan(
-          style: RLTypography.readingMediumStyle,
-          children: [
-            TextSpan(
-              text: RLUIStrings.DEMO_COLORED_HIGHLIGHT,
-              style: TextStyle(color: highlightColor, fontWeight: keyTermsFontWeight),
-            ),
-            const TextSpan(text: RLUIStrings.DEMO_COLORED_SUFFIX),
-          ],
+      child: Align(
+        alignment: Alignment.centerLeft,
+        child: RichText(
+          text: TextSpan(
+            style: demoReadingStyle,
+            children: [
+              TextSpan(
+                text: RLUIStrings.DEMO_COLORED_HIGHLIGHT,
+                style: highlightStyle,
+              ),
+
+              const TextSpan(text: RLUIStrings.DEMO_COLORED_SUFFIX),
+            ],
+          ),
         ),
       ),
     );
   }
 }
-

@@ -20,9 +20,12 @@ class CCPause extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Colour matches CCTextContent's reading text (full textPrimary) so the
+    // motivational line reads as part of the same reading voice, not a muted
+    // caption.
     final TextStyle motivationalTextStyle = RLTypography.readingLargeStyle.copyWith(
       fontWeight: FontWeight.w600,
-      color: RLDS.textPrimary.withValues(alpha: 0.7),
+      color: RLDS.textPrimary,
     );
 
     return Div.column(
@@ -67,6 +70,12 @@ class CCPause extends StatelessWidget {
     );
   }
 
+  // Slower than the default 10ms/char — the pause message is short, and a
+  // default-speed reveal finishes before the swipe animation does, so the
+  // reader never sees it type in. 40ms/char keeps the reveal in progress
+  // while the user lands on the page.
+  static const Duration pauseTypewriterCharacterDelay = Duration(milliseconds: 40);
+
   Widget MotivationalText({required TextStyle textStyle}) {
     return ProgressiveText(
       textSegments: [text],
@@ -75,6 +84,7 @@ class CCPause extends StatelessWidget {
       textAlign: TextAlign.center,
       blurCompletedSentences: false,
       enableTapToReveal: false,
+      typewriterCharacterDelay: pauseTypewriterCharacterDelay,
     );
   }
 }

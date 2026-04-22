@@ -1,8 +1,13 @@
 // Animated blur overlay widget
 // Always present in the tree to avoid layout shifts - animates blur and opacity
+//
+// Timing/curve are shared with RLReveal so every "thing becoming visible"
+// surface in the app (continue button, password field, true/false buttons,
+// question answers) fades at the same rate.
 
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:readlock/design_system/RLReveal.dart';
 
 class BlurOverlay extends StatefulWidget {
   final Widget child;
@@ -31,12 +36,12 @@ class BlurOverlayState extends State<BlurOverlay> with SingleTickerProviderState
     super.initState();
 
     controller = AnimationController(
-      duration: const Duration(milliseconds: 400),
+      duration: RL_REVEAL_DURATION,
       vsync: this,
       value: 0.0,
     );
 
-    animation = CurvedAnimation(parent: controller, curve: Curves.easeOut);
+    animation = CurvedAnimation(parent: controller, curve: RL_REVEAL_CURVE);
 
     if (widget.enabled) {
       WidgetsBinding.instance.addPostFrameCallback((_) {

@@ -195,6 +195,9 @@ class AnimatedSnackbarState extends State<AnimatedSnackbar>
 
   @override
   Widget build(BuildContext context) {
+    // Padding extends through the bottom safe-area inset so the solid colour
+    // fill paints under the home-indicator — no bare strip between the
+    // snackbar and the screen edge.
     final double bottomSafeArea = MediaQuery.of(context).padding.bottom;
 
     final EdgeInsets contentPadding = EdgeInsets.fromLTRB(
@@ -212,6 +215,10 @@ class AnimatedSnackbarState extends State<AnimatedSnackbar>
         position: slideAnimation,
         child: Material(
           color: widget.backgroundColor,
+          // Match RLBottomSheet's top corner rounding so the snackbar reads
+          // as the same family of surface rising from the bottom edge.
+          borderRadius: RLDS.borderRadiusTopLarge,
+          clipBehavior: Clip.antiAlias,
           child: Padding(padding: contentPadding, child: widget.content),
         ),
       ),

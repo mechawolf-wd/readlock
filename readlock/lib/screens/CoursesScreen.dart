@@ -155,7 +155,7 @@ class CoursesScreenState extends State<CoursesScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: RLDS.backgroundDark,
+      backgroundColor: RLDS.transparent,
       body: SafeArea(
         bottom: false,
         child: CoursesBody(),
@@ -233,11 +233,13 @@ class CoursesScreenState extends State<CoursesScreen> {
       final String courseTitle = course['title'] as String? ?? '';
       final String courseAuthor = course['author'] as String? ?? '';
       final String? coverImagePath = course['cover-image-path'] as String?;
+      final String? courseColor = course['color'] as String?;
       final String courseId = course['course-id'] as String? ?? '';
 
       return BookListCard(
         title: courseTitle,
         author: courseAuthor,
+        courseColor: courseColor,
         coverImagePath: coverImagePath,
         onTap: () => navigateToCourse(courseId),
       );

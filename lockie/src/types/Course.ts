@@ -203,20 +203,4 @@ export const COURSE_COLORS: string[] = [
 
 export const DEFAULT_COURSE_COLOR: string = COURSE_COLORS[0]
 
-export const PREMADE_GENRES: string[] = [
-  'design',
-  'psychology',
-  'business',
-  'technology',
-  'self-help',
-  'science',
-  'philosophy',
-  'history',
-  'economics',
-  'leadership',
-  'creativity',
-  'productivity',
-  'communication',
-  'user-experience',
-  'product-development',
-]
+export const PREMADE_GENRES: string[] = [ca]

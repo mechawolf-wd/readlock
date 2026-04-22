@@ -54,8 +54,11 @@ class CCQuestionState extends State<CCQuestion> {
     );
   }
 
-  // Typewriter-reveal matching CCTextContent so the question feels part of
-  // the same reading rhythm as regular text swipes.
+  // Single-segment reveal — ProgressiveText lays the full text out via a
+  // transparent tail from the first frame, so the answers below never shift
+  // as characters type in. Cadence matches text swipes (ProgressiveText's
+  // default typewriterCharacterDelay) so the question reads at the same
+  // speed as the rest of the course content.
   Widget QuestionTextSection() {
     return ProgressiveText(
       textSegments: [widget.content.question],
@@ -111,11 +114,22 @@ class CCQuestionState extends State<CCQuestion> {
       isRevealed: isRevealed,
     );
 
+    final Widget optionText = OptionText(
+      optionIndex: optionIndex,
+      option: option,
+      textColor: optionTextColor,
+      isRevealed: isRevealed,
+    );
+
     final Widget optionRow = Div.row(
       [
-        Expanded(child: RLTypography.readingLarge(option.text, color: optionTextColor)),
+        Expanded(child: optionText),
 
-        RenderIf.condition(shouldShowIncorrect, IncorrectIcon(), const SizedBox.shrink()),
+        RenderIf.condition(
+          shouldShowIncorrect,
+          IncorrectIcon(),
+          const SizedBox.shrink(),
+        ),
       ],
       padding: RLDS.contentPaddingMediumInsets,
       decoration: buttonDecoration,
@@ -127,6 +141,30 @@ class CCQuestionState extends State<CCQuestion> {
       opacity: ANSWER_BLUR_OPACITY,
       enabled: !isRevealed,
       child: optionRow,
+    );
+  }
+
+  // Before the card is tapped, the option label is rendered fully
+  // transparent — this reserves the card's final height so the layout
+  // doesn't grow when the reveal kicks off the typewriter. On reveal, we
+  // swap in a fresh ProgressiveText (keyed by optionIndex) so it mounts from
+  // char position -1 and types in from scratch.
+  Widget OptionText({
+    required int optionIndex,
+    required QuestionOption option,
+    required Color textColor,
+    required bool isRevealed,
+  }) {
+    if (!isRevealed) {
+      return RLTypography.readingLarge(option.text, color: RLDS.transparent);
+    }
+
+    return ProgressiveText(
+      key: ValueKey('option_text_$optionIndex'),
+      textSegments: [option.text],
+      textStyle: RLTypography.readingLargeStyle.copyWith(color: textColor),
+      blurCompletedSentences: false,
+      enableTapToReveal: false,
     );
   }
 

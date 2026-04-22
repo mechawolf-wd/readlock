@@ -13,6 +13,15 @@ import 'package:readlock/bottom_sheets/user/BirdPickerBottomSheet.dart';
 import 'package:readlock/screens/profile/SettingsDemos.dart';
 
 import 'package:pixelarticons/pixel.dart';
+
+// Shared row geometry for every settings row. A fixed content height keeps
+// MenuItem (text-only) and SwitchMenuItem (with CupertinoSwitch) the same
+// total size, so gaps between rows match across Account / Sounds / Legal.
+// Vertical padding and the top/bottom margins of MenuDivider combine to give
+// every section the same first-element and last-element spacing.
+const double MENU_ROW_CONTENT_HEIGHT = 32.0;
+const EdgeInsets MENU_ROW_PADDING = EdgeInsets.symmetric(vertical: RLDS.spacing12);
+
 class MenuSection extends StatelessWidget {
   final bool typingSoundEnabled;
   final bool generalSoundsEnabled;
@@ -181,15 +190,18 @@ class MenuItem extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: RLDS.spacing16),
-        child: Row(
-          children: [
-            MenuItemIcon,
+        padding: MENU_ROW_PADDING,
+        child: SizedBox(
+          height: MENU_ROW_CONTENT_HEIGHT,
+          child: Row(
+            children: [
+              MenuItemIcon,
 
-            const Spacing.width(RLDS.spacing16),
+              const Spacing.width(RLDS.spacing16),
 
-            Expanded(child: RLTypography.bodyMedium(title, color: titleColor)),
-          ],
+              Expanded(child: RLTypography.bodyMedium(title, color: titleColor)),
+            ],
+          ),
         ),
       ),
     );
@@ -215,6 +227,11 @@ class SwitchMenuItem extends StatelessWidget {
     onChanged(newValue);
   }
 
+  // Tap anywhere on the row (icon, title, whitespace) toggles the switch.
+  void handleRowTap() {
+    handleSwitchChange(!value);
+  }
+
   @override
   Widget build(BuildContext context) {
     final Color iconColor = RLDS.textPrimary.withValues(alpha: 0.7);
@@ -222,18 +239,25 @@ class SwitchMenuItem extends StatelessWidget {
 
     final Widget MenuItemIcon = Icon(icon, color: iconColor, size: RLDS.iconMedium);
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: RLDS.spacing16),
-      child: Row(
-        children: [
-          MenuItemIcon,
+    return GestureDetector(
+      onTap: handleRowTap,
+      behavior: HitTestBehavior.opaque,
+      child: Padding(
+        padding: MENU_ROW_PADDING,
+        child: SizedBox(
+          height: MENU_ROW_CONTENT_HEIGHT,
+          child: Row(
+            children: [
+              MenuItemIcon,
 
-          const Spacing.width(RLDS.spacing16),
+              const Spacing.width(RLDS.spacing16),
 
-          Expanded(child: RLTypography.bodyMedium(title, color: titleColor)),
+              Expanded(child: RLTypography.bodyMedium(title, color: titleColor)),
 
-          RLSwitch(value: value, onChanged: handleSwitchChange),
-        ],
+              RLSwitch(value: value, onChanged: handleSwitchChange),
+            ],
+          ),
+        ),
       ),
     );
   }

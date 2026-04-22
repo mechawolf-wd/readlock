@@ -8,6 +8,7 @@ import 'package:flutter/material.dart' hide Typography;
 import 'package:readlock/bottom_sheets/RLBottomSheet.dart';
 import 'package:readlock/bottom_sheets/user/LoginSupportBottomSheet.dart';
 import 'package:readlock/design_system/RLButton.dart';
+import 'package:readlock/design_system/RLReveal.dart';
 import 'package:readlock/design_system/RLToast.dart';
 import 'package:readlock/design_system/RLUtility.dart';
 import 'package:readlock/design_system/RLTextField.dart';
@@ -430,13 +431,22 @@ class LoginSheetState extends State<LoginSheet> {
     // the presence of '@' is the cheapest correctness heuristic and avoids
     // showing the password slot while the user is still typing the local
     // part of their email.
+    // AnimatedSize handles the layout expand; RLReveal layers the shared
+    // app-wide opacity fade on top so the field fades in with the same
+    // timing as every other reveal (continue button, true/false buttons).
     final bool hasAtSymbol = emailController.text.contains('@');
-    final Widget passwordContent = RenderIf.condition(hasAtSymbol, PasswordField());
+    final Widget passwordContent = RenderIf.condition(
+      hasAtSymbol,
+      PasswordField(),
+    );
 
     return AnimatedSize(
       duration: const Duration(milliseconds: 300),
       curve: Curves.easeInOut,
-      child: passwordContent,
+      child: RLReveal(
+        visible: hasAtSymbol,
+        child: passwordContent,
+      ),
     );
   }
 

@@ -4,12 +4,20 @@
 import 'package:flutter/material.dart' hide Typography;
 import 'package:readlock/models/CourseModel.dart';
 import 'package:readlock/utility_widgets/text_animation/ProgressiveText.dart';
-import 'package:readlock/design_system/RLButton.dart';
+import 'package:readlock/design_system/RLLunarBlur.dart';
+import 'package:readlock/design_system/RLReveal.dart';
 import 'package:readlock/design_system/RLUtility.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/constants/RLUIStrings.dart';
 import 'package:readlock/course_screens/CourseContentViewer.dart';
+
+// LunarBlur button geometry — matches RLButton's default padding so the
+// continue pill reads the same size as the primary buttons elsewhere.
+const EdgeInsets CONTINUE_BUTTON_PADDING = EdgeInsets.symmetric(
+  vertical: 16,
+  horizontal: 24,
+);
 
 class CCTextContent extends StatefulWidget {
   // Text content data to display
@@ -53,21 +61,38 @@ class CCTextContentState extends State<CCTextContent> {
     );
   }
 
-  // Container for continue button with visibility control
+  // Container for continue button with visibility control. Routes through
+  // RLReveal so the opacity timing matches every other reveal in the app
+  // (true/false buttons, password field, etc.).
   Widget ContinueButtonContainer() {
     final bool shouldShowContinueButton = isAllTextRevealed;
 
-    return RenderIf.condition(shouldShowContinueButton, ContinueButton());
+    return RLReveal(
+      visible: shouldShowContinueButton,
+      child: ContinueButton(),
+    );
   }
 
-  // Button widget for continuing to next content
+  // Button widget for continuing to next content — LunarBlur pill so the CTA
+  // reads as frosted glass over the swipe content instead of a solid fill.
   Widget ContinueButton() {
     final Color accentColor = resolveCourseAccentColor();
 
-    return RLButton.primary(
-      label: RLUIStrings.TEXT_CONTENT_CONTINUE_LABEL,
-      color: accentColor,
+    return GestureDetector(
       onTap: handleContinueButtonTap,
+      child: SizedBox(
+        width: double.infinity,
+        child: RLLunarBlur(
+          borderRadius: RLDS.borderRadiusSmall,
+          padding: CONTINUE_BUTTON_PADDING,
+          child: Center(
+            child: RLTypography.bodyLarge(
+              RLUIStrings.TEXT_CONTENT_CONTINUE_LABEL,
+              color: accentColor,
+            ),
+          ),
+        ),
+      ),
     );
   }
 

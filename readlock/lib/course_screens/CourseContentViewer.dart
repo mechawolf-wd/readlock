@@ -4,6 +4,8 @@
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:readlock/course_screens/CourseLoadingScreen.dart';
 import 'package:readlock/course_screens/widgets/CCJSONContentFactory.dart';
 import 'package:readlock/course_screens/data/CourseData.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
@@ -17,6 +19,7 @@ import 'package:readlock/constants/DartAliases.dart';
 import 'package:readlock/services/ScreenProtectionService.dart';
 
 import 'package:pixelarticons/pixel.dart';
+
 class CourseDetailScreen extends StatefulWidget {
   // Course identifier to load
   final String courseId;
@@ -97,12 +100,20 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
 
     // Block screenshots while course content is visible
     ScreenProtectionService.enableProtection();
+
+    // Hide the status bar clock/indicators while reading so the swipe
+    // takes the full screen. Only the home-indicator bar is kept.
+    SystemChrome.setEnabledSystemUIMode(
+      SystemUiMode.manual,
+      overlays: const [SystemUiOverlay.bottom],
+    );
   }
 
   // Cleanup resources when widget is disposed
   @override
   void dispose() {
     ScreenProtectionService.disableProtection();
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
     pageController.dispose();
     super.dispose();
   }
@@ -118,12 +129,10 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
     return SelectionContainer.disabled(child: MainCourseScreen());
   }
 
-  // Loading screen widget
+  // Loading screen widget — shares CourseLoadingScreen so the picked bird
+  // (not a stale pigeon image or a raw spinner) greets the reader here too.
   Widget LoadingScreen() {
-    return const Scaffold(
-      backgroundColor: RLDS.backgroundDark,
-      body: Center(child: CircularProgressIndicator()),
-    );
+    return const CourseLoadingScreen();
   }
 
   // Main course content screen

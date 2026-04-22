@@ -111,7 +111,7 @@ class HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: RLDS.backgroundDark,
+      backgroundColor: RLDS.transparent,
       body: SafeArea(
         bottom: false,
         child: HomeBody(),

@@ -1,16 +1,23 @@
 // Centralised book list card used across home, search, trending, and library
-// Renders a subtle card with small book cover, title, and author
+// Renders a subtle card with the course's palette book, title, and author.
 
 import 'package:flutter/material.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/design_system/RLCard.dart';
+import 'package:readlock/design_system/RLCourseBookImage.dart';
 import 'package:readlock/design_system/RLUtility.dart';
 
 import 'package:pixelarticons/pixel.dart';
+
+// List-card book thumbnail size. 48 = 0.75x of the 64-px source — a
+// nearest-neighbour downscale that keeps the pixel art readable.
+const double LIST_CARD_BOOK_SIZE = 48.0;
+
 class BookListCard extends StatelessWidget {
   final String title;
   final String author;
+  final String? courseColor;
   final String? coverImagePath;
   final VoidCallback? onTap;
   final EdgeInsets margin;
@@ -19,6 +26,7 @@ class BookListCard extends StatelessWidget {
     super.key,
     required this.title,
     required this.author,
+    this.courseColor,
     this.coverImagePath,
     this.onTap,
     this.margin = const EdgeInsets.only(bottom: 12),
@@ -31,7 +39,7 @@ class BookListCard extends StatelessWidget {
       margin: margin,
       onTap: onTap,
       child: Div.row([
-        BookCoverThumbnail(coverImagePath: coverImagePath),
+        ListCardBook(),
 
         const Spacing.width(RLDS.spacing12),
 
@@ -46,6 +54,21 @@ class BookListCard extends StatelessWidget {
         ),
       ]),
     );
+  }
+
+  // Prefer the palette book (matching hex PNG) when a course color is given.
+  // Fall back to the legacy cover-image path / placeholder for unknown data.
+  Widget ListCardBook() {
+    final bool hasCourseColor = courseColor != null && courseColor!.isNotEmpty;
+
+    if (hasCourseColor) {
+      return RLCourseBookImage(
+        courseColor: courseColor,
+        size: LIST_CARD_BOOK_SIZE,
+      );
+    }
+
+    return BookCoverThumbnail(coverImagePath: coverImagePath);
   }
 }
 

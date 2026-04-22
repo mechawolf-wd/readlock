@@ -8,11 +8,18 @@ import 'package:readlock/design_system/RLUtility.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/utility_widgets/text_animation/ProgressiveText.dart';
+import 'package:readlock/utility_widgets/visual_effects/BlurOverlay.dart';
 import 'package:readlock/design_system/RLFeedbackSnackbar.dart';
 import 'package:readlock/constants/RLUIStrings.dart';
 
 import 'package:pixelarticons/pixel.dart';
+
 enum TrueFalseButtonState { normal, selected, correctAndAnswered, incorrectAndMuted }
+
+// * Matches CCQuestion's answer-blur defaults so true/false buttons read as
+// the same kind of "covered" as the multi-choice options.
+const double TRUE_FALSE_BUTTON_BLUR_SIGMA = 4.0;
+const double TRUE_FALSE_BUTTON_BLUR_OPACITY = 0.2;
 
 class ButtonColors {
   final Color backgroundColor;
@@ -41,6 +48,7 @@ class CCTrueFalseQuestion extends StatefulWidget {
 class CCTrueFalseQuestionState extends State<CCTrueFalseQuestion> {
   int? selectedAnswerIndex;
   bool hasAnswered = false;
+  bool isStatementRevealed = false;
 
   @override
   Widget build(BuildContext context) {
@@ -49,12 +57,12 @@ class CCTrueFalseQuestionState extends State<CCTrueFalseQuestion> {
         // Question text
         QuestionText(),
 
-        const Spacing.height(24),
+        const Spacing.height(RLDS.spacing16),
 
         // True/False button row
         ButtonRow(),
 
-        const Spacing.height(24),
+        const Spacing.height(RLDS.spacing16),
 
         // Explanation section
         ExplanationSection(),
@@ -66,12 +74,39 @@ class CCTrueFalseQuestionState extends State<CCTrueFalseQuestion> {
     );
   }
 
+  // Progressive reveal so the statement reads as part of the same typewriter
+  // rhythm as other swipes. Single segment reserves full layout via a
+  // transparent tail, so the buttons below never shift as chars type in.
+  // Cadence matches text swipes (ProgressiveText's default delay).
   Widget QuestionText() {
-    return RLTypography.readingLarge(widget.content.question, textAlign: TextAlign.center);
+    return ProgressiveText(
+      textSegments: [widget.content.question],
+      textStyle: RLTypography.readingLargeStyle,
+      blurCompletedSentences: false,
+      enableTapToReveal: false,
+      onAllSegmentsRevealed: handleStatementRevealed,
+    );
   }
 
+  void handleStatementRevealed() {
+    final bool canUpdateState = mounted;
+
+    if (!canUpdateState) {
+      return;
+    }
+
+    setState(() {
+      isStatementRevealed = true;
+    });
+  }
+
+  // Buttons stay blurred until the statement finishes revealing — the reader
+  // commits to an answer only after they've read the claim, mirroring how
+  // CCQuestion's multi-choice options are covered until tapped.
   Widget ButtonRow() {
-    return Div.row([
+    final bool shouldBlurButtons = !isStatementRevealed;
+
+    final Widget buttonRow = Div.row([
       // True button
       Expanded(
         child: AnswerButton(
@@ -94,6 +129,13 @@ class CCTrueFalseQuestionState extends State<CCTrueFalseQuestion> {
         ),
       ),
     ]);
+
+    return BlurOverlay(
+      blurSigma: TRUE_FALSE_BUTTON_BLUR_SIGMA,
+      opacity: TRUE_FALSE_BUTTON_BLUR_OPACITY,
+      enabled: shouldBlurButtons,
+      child: buttonRow,
+    );
   }
 
   Widget AnswerButton({
@@ -120,19 +162,15 @@ class CCTrueFalseQuestionState extends State<CCTrueFalseQuestion> {
     final VoidCallback? tapCallback = getAnswerTapHandler(answerIndex);
 
     return RLCard.subtle(
-      borderColor: colors.borderColor,
       padding: answerButtonPadding,
       onTap: tapCallback,
-      child: Div.row(
-        [
-          ButtonIcon,
+      child: Div.row([
+        ButtonIcon,
 
-          const Spacing.width(12),
+        const Spacing.width(12),
 
-          Flexible(child: RLTypography.bodyLarge(label, color: colors.textColor)),
-        ],
-        mainAxisAlignment: MainAxisAlignment.center,
-      ),
+        Flexible(child: RLTypography.bodyLarge(label, color: colors.textColor)),
+      ], mainAxisAlignment: MainAxisAlignment.center),
     );
   }
 
@@ -143,6 +181,13 @@ class CCTrueFalseQuestionState extends State<CCTrueFalseQuestion> {
 
   VoidCallback? getAnswerTapHandler(int answerIndex) {
     if (hasAnswered) {
+      return null;
+    }
+
+    // Buttons are blurred + non-tappable until the statement finishes
+    // revealing — forces the reader through the typewriter before they can
+    // commit.
+    if (!isStatementRevealed) {
       return null;
     }
 
@@ -158,41 +203,15 @@ class CCTrueFalseQuestionState extends State<CCTrueFalseQuestion> {
   static const EdgeInsets explanationCardPadding = EdgeInsets.all(RLDS.spacing16);
 
   Widget ExplanationContent() {
-    final Widget LightbulbIcon = Icon(
-      Pixel.infobox,
-      color: RLDS.textPrimary.withValues(alpha: 0.6),
-      size: RLDS.iconMedium,
-    );
-
-    return RLCard.subtle(
-      padding: explanationCardPadding,
-      child: Div.column(
-        [
-          // Header row
-          Div.row([
-            LightbulbIcon,
-
-            const Spacing.width(8),
-
-            RLTypography.bodyMedium(
-              RLUIStrings.EXPLANATION_LABEL,
-              color: RLDS.textPrimary.withValues(alpha: 0.8),
-            ),
-          ]),
-
-          const Spacing.height(12),
-
-          // Explanation text
-          ProgressiveText(
-            textSegments: [widget.content.explanation],
-            textStyle: RLTypography.readingMediumStyle,
-            blurCompletedSentences: false,
-            enableTapToReveal: false,
-          ),
-        ],
-        crossAxisAlignment: CrossAxisAlignment.start,
+    return Div.column([
+      // Explanation text
+      ProgressiveText(
+        textSegments: [widget.content.explanation],
+        textStyle: RLTypography.readingLargeStyle,
+        blurCompletedSentences: false,
+        enableTapToReveal: false,
       ),
-    );
+    ]);
   }
 
   ButtonColors getButtonColorsForState({

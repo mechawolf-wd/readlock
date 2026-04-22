@@ -4,9 +4,11 @@
 import 'package:flutter/material.dart' hide Typography;
 import 'package:readlock/bottom_sheets/RLBottomSheet.dart';
 import 'package:readlock/design_system/RLButton.dart';
+import 'package:readlock/design_system/RLUtility.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/constants/RLUIStrings.dart';
+
 class FeedbackBottomSheets {
   // Show explanation bottom sheet for correct answers
   static void showExplanation({required BuildContext context, required String explanation}) {
@@ -26,7 +28,9 @@ class FeedbackBottomSheets {
     );
   }
 
-  // Generic bottom sheet implementation
+  // Generic bottom sheet implementation — inherits the default frosted
+  // LunarBlur surface and backdrop blur from RLBottomSheet so the Why?/Hint
+  // sheets read as the same material as the snackbar that opens them.
   static void showFeedbackSheet({
     required BuildContext context,
     required String content,
@@ -34,8 +38,8 @@ class FeedbackBottomSheets {
   }) {
     RLBottomSheet.show(
       context,
-      backgroundColor: RLDS.backgroundLight,
       showGrabber: false,
+      useLunarBlurSurface: true,
       applyBackdropBlur: true,
       child: FeedbackSheet(
         content: content,
@@ -65,16 +69,15 @@ class FeedbackSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: RLDS.spacing16),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          BodySection(),
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        BodySection(),
 
-          FooterButton(),
-        ],
-      ),
+        const Spacing.height(RLDS.spacing24),
+
+        FooterButton(),
+      ],
     );
   }
 
@@ -91,7 +94,7 @@ class FeedbackSheet extends StatelessWidget {
         return RLButton.primary(
           label: RLUIStrings.FEEDBACK_GOT_IT_LABEL,
           color: buttonColor,
-          margin: const EdgeInsets.all(RLDS.spacing24),
+          margin: RL_BOTTOM_SHEET_FOOTER_BUTTON_MARGIN,
           onTap: () => Navigator.of(context).pop(),
         );
       },

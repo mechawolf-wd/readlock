@@ -5,7 +5,19 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
+import 'package:readlock/design_system/RLLunarBlur.dart';
 import 'package:readlock/design_system/RLUtility.dart';
+
+// * Standardised outer margin for footer RLButtons at the bottom of every
+// bottom sheet. Any sheet that ends with a primary CTA should apply this
+// margin (or match its bottom value) so the gap between the button and the
+// sheet's bottom edge reads the same across Feedback, Login, Support, etc.
+const EdgeInsets RL_BOTTOM_SHEET_FOOTER_BUTTON_MARGIN = EdgeInsets.fromLTRB(
+  RLDS.spacing24,
+  0,
+  RLDS.spacing24,
+  RLDS.spacing24,
+);
 
 class RLBottomSheet {
   // * Standard show — wraps content with grabber, safe area, and rounded top corners.
@@ -16,7 +28,8 @@ class RLBottomSheet {
     bool isDismissible = true,
     bool enableDrag = true,
     bool showGrabber = true,
-    bool applyBackdropBlur = false,
+    bool applyBackdropBlur = true,
+    bool useLunarBlurSurface = true,
     Color? backgroundColor,
   }) {
     final Color sheetColor = backgroundColor ?? RLDS.backgroundDark;
@@ -31,6 +44,7 @@ class RLBottomSheet {
         final Widget container = SheetContainer(
           backgroundColor: sheetColor,
           showGrabber: showGrabber,
+          useLunarBlurSurface: useLunarBlurSurface,
           child: child,
         );
 
@@ -55,6 +69,7 @@ class RLBottomSheet {
     required Widget child,
     bool isDismissible = true,
     bool enableDrag = true,
+    bool applyBackdropBlur = true,
     Color? backgroundColor,
   }) {
     final Color sheetColor = backgroundColor ?? RLDS.backgroundDark;
@@ -66,7 +81,22 @@ class RLBottomSheet {
       isDismissible: isDismissible,
       enableDrag: enableDrag,
       builder: (BuildContext sheetContext) {
-        return FullHeightSheetContainer(backgroundColor: sheetColor, child: child);
+        final Widget container = FullHeightSheetContainer(
+          backgroundColor: sheetColor,
+          child: child,
+        );
+
+        if (applyBackdropBlur) {
+          return BackdropFilter(
+            filter: ImageFilter.blur(
+              sigmaX: RLDS.backdropBlurSigma,
+              sigmaY: RLDS.backdropBlurSigma,
+            ),
+            child: container,
+          );
+        }
+
+        return container;
       },
     );
   }
@@ -79,36 +109,44 @@ class SheetContainer extends StatelessWidget {
   final Widget child;
   final Color? backgroundColor;
   final bool showGrabber;
+  final bool useLunarBlurSurface;
 
   const SheetContainer({
     super.key,
     required this.child,
     this.backgroundColor,
     this.showGrabber = true,
+    this.useLunarBlurSurface = false,
   });
 
   @override
   Widget build(BuildContext context) {
     final Color sheetColor = backgroundColor ?? RLDS.backgroundDark;
 
-    final BoxDecoration sheetDecoration = BoxDecoration(
-      color: sheetColor,
-      borderRadius: const BorderRadius.only(
-        topLeft: Radius.circular(20),
-        topRight: Radius.circular(20),
-      ),
+    // SafeArea lives inside the sheet surface so the surface (LunarBlur or
+    // solid tint) paints to the bottom edge of the screen — the home-
+    // indicator inset reads the same colour as the sheet itself instead of
+    // a bare strip underneath it.
+    final Widget sheetContent = SafeArea(
+      top: false,
+      child: Column(mainAxisSize: MainAxisSize.min, children: GrabberAndContent()),
     );
 
-    return Container(
-      color: RLDS.surface,
-      child: SafeArea(
-        top: false,
-        child: Container(
-          decoration: sheetDecoration,
-          child: Column(mainAxisSize: MainAxisSize.min, children: GrabberAndContent()),
-        ),
-      ),
+    if (useLunarBlurSurface) {
+      return RLLunarBlur(
+        borderRadius: RLDS.borderRadiusTopLarge,
+        surfaceColor: sheetColor,
+        borderColor: RLDS.transparent,
+        child: sheetContent,
+      );
+    }
+
+    final BoxDecoration solidDecoration = BoxDecoration(
+      color: sheetColor,
+      borderRadius: RLDS.borderRadiusTopLarge,
     );
+
+    return Container(decoration: solidDecoration, child: sheetContent);
   }
 
   List<Widget> GrabberAndContent() {
@@ -125,7 +163,9 @@ class SheetContainer extends StatelessWidget {
   }
 }
 
-// * Full-height sheet container (90% screen) with grabber and ClipRRect
+// * Full-height sheet container (90% screen) with grabber. Uses
+// RLLunarBlur so the sheet reads as frosted glass over whatever is
+// painted behind the modal (starfield + app content).
 class FullHeightSheetContainer extends StatelessWidget {
   final Widget child;
   final Color? backgroundColor;
@@ -134,19 +174,14 @@ class FullHeightSheetContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Color sheetColor = backgroundColor ?? RLDS.backgroundDark;
     final double sheetHeight = MediaQuery.of(context).size.height * 0.9;
 
-    final BorderRadius sheetBorderRadius = const BorderRadius.only(
-      topLeft: Radius.circular(20),
-      topRight: Radius.circular(20),
-    );
-
-    return Container(
+    return SizedBox(
       height: sheetHeight,
-      decoration: BoxDecoration(color: sheetColor, borderRadius: sheetBorderRadius),
-      child: ClipRRect(
-        borderRadius: sheetBorderRadius,
+      child: RLLunarBlur(
+        borderRadius: RLDS.borderRadiusTopLarge,
+        surfaceColor: backgroundColor,
+        borderColor: RLDS.transparent,
         child: Column(
           children: [
             // Grabber with top padding

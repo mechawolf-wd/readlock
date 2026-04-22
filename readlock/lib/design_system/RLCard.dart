@@ -1,9 +1,14 @@
-// Reusable card component with elevated and subtle variants
-// Elevated: white background with dark border for hero/featured content
-// Subtle: transparent background with light border for list items and content
+// Reusable card component with elevated and subtle variants.
+// Both variants use RLLunarBlur (blurs the starfield / whatever is
+// behind) — elevated is a touch more opaque so hero cards feel more solid,
+// subtle uses a lighter tint for list items that should stay recessive.
 
 import 'package:flutter/material.dart';
-import 'package:readlock/constants/RLDesignSystem.dart';
+import 'package:readlock/design_system/RLLunarBlur.dart';
+
+// Tint opacities for the two variants — both share the same blur sigma.
+const double RL_CARD_ELEVATED_ALPHA = 0.35;
+const double RL_CARD_SUBTLE_ALPHA = 0.18;
 
 enum RLCardVariant { elevated, subtle }
 
@@ -35,41 +40,56 @@ class RLCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final BoxDecoration cardDecoration = getCardDecoration();
-
     final EdgeInsets resolvedPadding = padding ?? const EdgeInsets.all(12);
+    final bool isElevated = variant == RLCardVariant.elevated;
 
-    final Widget cardContainer = Container(
-      decoration: cardDecoration,
+    final double resolvedAlpha = isElevated
+        ? RL_CARD_ELEVATED_ALPHA
+        : RL_CARD_SUBTLE_ALPHA;
+
+    final Widget cardBody = FrostedCardBody(
       padding: resolvedPadding,
-      margin: margin,
+      borderColor: borderColor,
+      surfaceAlpha: resolvedAlpha,
       child: child,
     );
+
+    final Widget cardWithMargin = Container(margin: margin, child: cardBody);
 
     final bool hasTapHandler = onTap != null;
 
     if (hasTapHandler) {
-      return GestureDetector(onTap: onTap, child: cardContainer);
+      return GestureDetector(onTap: onTap, child: cardWithMargin);
     }
 
-    return cardContainer;
+    return cardWithMargin;
   }
+}
 
-  BoxDecoration getCardDecoration() {
-    final bool isElevated = variant == RLCardVariant.elevated;
+// * Frosted card body — delegates the blur + tint + rounded clip to the
+// shared RLLunarBlur. The variant's alpha controls how opaque the dark
+// tint is, so elevated hero cards feel solid and subtle list rows recede.
+class FrostedCardBody extends StatelessWidget {
+  final Widget child;
+  final EdgeInsets padding;
+  final Color? borderColor;
+  final double surfaceAlpha;
 
-    if (isElevated) {
-      return BoxDecoration(
-        color: RLDS.surface,
-        borderRadius: RLDS.borderRadiusSmall,
-        border: Border.all(color: borderColor ?? RLDS.textMuted.withValues(alpha: 0.3)),
-      );
-    }
+  const FrostedCardBody({
+    super.key,
+    required this.child,
+    required this.padding,
+    required this.surfaceAlpha,
+    this.borderColor,
+  });
 
-    return BoxDecoration(
-      color: RLDS.backgroundLight.withValues(alpha: 0.08),
-      borderRadius: RLDS.borderRadiusSmall,
-      border: Border.all(color: borderColor ?? RLDS.textMuted.withValues(alpha: 0.3)),
+  @override
+  Widget build(BuildContext context) {
+    return RLLunarBlur(
+      borderColor: borderColor,
+      surfaceAlpha: surfaceAlpha,
+      padding: padding,
+      child: child,
     );
   }
 }
