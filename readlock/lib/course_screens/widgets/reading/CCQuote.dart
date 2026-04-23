@@ -64,7 +64,7 @@ class CCQuoteState extends State<CCQuote> {
     final Widget BookmarkToggleIcon = Icon(
       bookmarkIconData,
       color: RLDS.warning,
-      size: 24,
+      size: RLDS.iconLarge,
     );
 
     return Div.row([

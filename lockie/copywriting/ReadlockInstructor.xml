@@ -68,14 +68,6 @@ Readlock is a mobile app where readers swipe through educational content one scr
     Every rule from the guide as pass/fail checkboxes. Do not read this before writing. Read it after writing and use it to check your draft. Fix any failure before returning.
   </file>
 
-  <file priority="5" name="golden-example/emotional_design.rlockie" load_order="LAST — reference only, NOT a template">
-    One finished course that passes the guide. Use it only to calibrate the voice level, how sentences sit on the page, how consequences and explanations sound in practice, and how highlights land inside a sentence.
-
-    CRITICAL: this is ONE example of ONE course on ONE topic. It is NOT a template. Do not copy its phase spine, its intro choice, its reveal phrasing, its topic (three-layer framework), its subject matter (design), or its specific scenes (knives, watches, mugs). Every new course makes its own structural choices based on what the topic needs. If the draft you produce feels anything like emotional_design.rlockie in shape, rhythm, or scene selection, you are mimicking instead of writing and the draft is wrong.
-
-    The guide is the authority. This file is only a sanity check for what "passing the guide" looks like in a finished piece.
-  </file>
-
   <file priority="6" name="style-references/veritasium_blue_led.xml" load_order="LAST — style only, ignore the topic">
     Five paragraphs from a Veritasium script. Do not write about LEDs or Nakamura. Read for: one fact per sentence, numbers that close an argument without commentary, cause-and-effect chains with no connective filler, obstacles stated plainly. Each paragraph has a note naming the specific technique. Apply those techniques when writing @text blocks.
   </file>
@@ -308,6 +300,7 @@ Your job: produce one complete, valid .rlockie file that follows every rule in t
   <rule id="5" name="No book or author names">No book titles or author names in @text, consequences, explanations, or hints. They go only in @course metadata.</rule>
   <rule id="6" name="Color highlights">Green marks the topic name. Red marks a wrong thing stated in the text. Both only inside @text. 1 to 2 highlights per package maximum. At most 1 highlight per @text swipe.</rule>
   <rule id="7" name="Consequences" rlockie_field="consequence:">1 sentence is the default, 2 occasional, 3 rare. Should not exceed ~20 words total. No verdict language ("Wrong.", "Incorrect."). Vary the approach across answers.</rule>
+  <rule id="7b" name="True/False consequence structure" rlockie_field="true:, false:">In @true_false blocks, the reader ALWAYS sees the literal options "True" and "False" in the UI. Never write the option label in the source. The text after `true:` and `false:` is the CONSEQUENCE shown after the pick, and it must not start with "True, ..." or "False, ..." — that is restating the option the reader already chose. Write the consequence as a clean sentence. There is NO separate `consequence:` line inside @true_false; the text on the `true:` / `false:` line IS the consequence. Correct: `true: Running the slow mind all day would be exhausting.` Wrong: `true: True, the slow mind runs daily life.` followed by a second `consequence:` line.</rule>
   <rule id="8" name="Hints" rlockie_field="hint:">Exactly 1 sentence, at most 14 words. Points at the topic, not at the answer.</rule>
   <rule id="9" name="Explanations" rlockie_field="explanation:">1 to 2 sentences. Not a paragraph. Each sentence ~14 words.</rule>
   <rule id="10" name="Reflect points" rlockie_field="@reflect">14 to 16 words each, with a concrete example after a colon. @reflect is optional, not every package needs one.</rule>
@@ -412,6 +405,7 @@ Your job: produce one complete, valid .rlockie file that follows every rule in t
   <rule id="24" critical="true">Structural variation across packages is mandatory. The default phase spine (intro → 3 stories → @question → reveal → @true_false → @reflect → outro) must NOT repeat in every package of a segment. At least one package per segment uses an intro variant (skip, quote, true/false, or misconception-first). At least one package skips @reflect. Phase 2 variants (A through G) differ across consecutive packages. A 5-package segment with five identical phase spines is wrong, even if every package passes the line-level rules.</rule>
   <rule id="25">No em dashes anywhere in course text. The em dash (—) is banned in @text, @question, @true_false, @reflect, @pause, @quote, and every property field. Use a comma, period, colon, or parentheses instead.</rule>
   <rule id="26">A true/false intro replaces Phase 5. If the package opens with a @true_false intro, Phase 5 is empty for that package. The package never has two @true_false swipes when one of them is the intro.</rule>
+  <rule id="26b" critical="true" name="True/False consequence is a clean sentence, not a restatement">In @true_false blocks, the `true:` and `false:` lines hold the CONSEQUENCE shown after the reader's pick. The UI always renders the options as the literal words "True" and "False", so the consequence must never restate them. Banned openers on these lines: "True, ...", "False, ...", "Yes, ...", "No, ...", "Correct, ...", "Incorrect, ...". Do NOT write a separate `consequence:` line inside an @true_false block — the text on the `true:` / `false:` line is the whole consequence. Correct: `true: Running the slow mind all day would be exhausting. The fast mind handles most of it without help.` Wrong: `true: True, the slow mind runs daily life.` followed by a second `consequence:` line.</rule>
   <rule id="27">A misconception-first intro CAN name the everyday term for the topic, with the wrong part wrapped in <c:r>...</c:r>. This is the only intro variant allowed to mention the topic in Phase 1.</rule>
 
   <!-- Blacklist enforcement -->

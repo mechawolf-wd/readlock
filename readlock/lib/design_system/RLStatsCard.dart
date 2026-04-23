@@ -56,7 +56,7 @@ class RLStatsCard extends StatelessWidget {
         children.add(
           Container(
             width: 1.0,
-            height: 48.0,
+            height: RLDS.separatorWidth,
             color: RLDS.white.withValues(alpha: 0.2),
           ),
         );

@@ -1,0 +1,848 @@
+@course
+
+id: book:thinking-fast-and-slow-krqm
+language: EN
+title: Thinking, Fast and Slow
+author: Daniel Kahneman
+description: How the two minds inside every head quietly decide what we believe and choose.
+color: FAF0A2
+genres: psychology, science, economics
+relevant_for: anyone, leaders, investors, students
+
+@segment
+Two Minds at Work
+TMW
+
+@package
+The Sound in the Next Room
+Free
+# @text, @text, @text, @text, @question, @text, @true_false, @reflect, @text
+# Variant E (3 steps), default intro, teaching: system 1 and system 2
+
+@text
+A door slams somewhere in the next room.
+The head turns toward the sound before any decision happens.
+A second later, the mind catches up and asks what it was.
+Two different speeds just handled the same moment.
+
+@text
+Here is a small test many people have answered wrong.
+A baseball bat and a ball cost $1.10 together.
+The bat costs $1 more than the ball.
+How much does the ball cost?
+Most people answer 10 cents without pausing.
+The answer arrives fast, almost before the question ends.
+Nobody asked them to check it, and nobody did.
+
+@text
+Now picture someone searching for a friend in a busy train station.
+The friend is wearing a red coat.
+The eyes scan crowd after crowd, ignoring strangers, looking only for red.
+The search feels slightly tiring, and every other colour in the station fades.
+After a few minutes the red coat appears.
+That kind of looking has to be done on purpose.
+
+@text
+One way of thinking returned the 10-cent answer without being asked.
+The other was the one scanning the station for red.
+The first runs constantly, without permission, handling faces, sounds, and easy guesses.
+The second has to be switched on, handling focus, careful math, or anything the first cannot manage.
+Most of any day is handled by the first one.
+The second steps in only when it must.
+
+@question
+Why does the answer "10 cents" arrive so quickly for most people?
+
+answer: The question is too simple to think about carefully.
+consequence: The fast answer feels simple, but the correct answer is 5 cents. The question was a trap.
+
+answer: The fast intuitive mind answered before the slow careful mind was called.
+consequence: The fast mind returned the first plausible number, and the slow mind was never invited in.
+
+answer: Most adults have forgotten basic subtraction.
+consequence: The math itself is easy. The problem is that nobody reached for the math.
+
+correct_answers: 2
+explanation: The fast mind hands in an answer that feels right. The slow mind would have checked it, but the fast one got there first.
+hint: Consider which of the two kinds of thinking answered before any subtraction happened.
+
+@text
+The fast mind and the slow mind are the two minds the course keeps circling back to.
+<c:g>System 1</c:g> is the fast one, answering the bat-and-ball question before any math starts.
+System 2 is the slow one, doing the work of finding the red coat in a crowd.
+System 1 is awake during most of any ordinary day.
+System 2 is expensive to run, and the brain spares it whenever it can.
+The quiet trouble starts when System 1 answers a question that really needed System 2.
+
+@true_false
+Most everyday decisions are handled by the slow, deliberate side of thinking.
+
+true: Running the slow mind all day would be exhausting. The fast mind handles most of it without help.
+
+false: The slow mind is expensive, so the brain leaves the driving to the fast one whenever it can.
+
+correct_answers: 2
+explanation: The fast mind is the default driver. The slow mind is called in only when the situation demands careful work.
+hint: Think about how tired anyone would feel after running the slow mind for a whole day.
+
+@reflect
+A moment when the fast answer arrived before real thought: a first impression at a party.
+A task that really needed the slow mind: filling in a tax form at night.
+A small decision the fast mind made alone: picking the same lunch three days in a row.
+
+@text
+The two minds share the same head, but they are not equal partners.
+The fast one decides first, and the slow one is often too late or too tired to step in.
+That is also why a simple math question can catch an adult who has been doing math since childhood.
+
+@package
+Why the Bat Felt So Simple
+# @text, @text, @text, @question, @pause, @text, @true_false, @text
+# Variant G (thought experiment), misconception intro, teaching: the law of least effort
+
+@text
+Most people who read the bat-and-ball question answer <c:r>10 cents</c:r> and move on.
+The number feels right, the sum looks clean, and the mind signs off.
+The slow mind is right there in the head, and still nothing in it switched on.
+
+@text
+Suppose the same question is asked to a room full of trained mathematicians.
+About half of them will answer 10 cents too, on a first reading.
+The math is easy.
+The trap is that 10 cents looks so obvious that nobody bothers to test it.
+If the ball were 10 cents, the bat would be $1.10, totalling $1.20.
+The correct answer is 5 cents, but checking it takes real effort.
+
+@text
+Now suppose the same room is asked to solve the question while walking on a treadmill.
+The wrong-answer rate goes up, not down.
+The slow mind pulls energy from the same pool as the walking legs.
+When the body is busy, the slow mind is slower to show up.
+Tired people make more thinking mistakes than rested ones.
+The slow mind is expensive, and the brain runs it only when it has the budget.
+
+@question
+How does the bat-and-ball question fool so many thoughtful adults?
+
+answer: The wording of the question is misleading and unfair.
+consequence: The wording is plain English. The trap is in how cheaply the fast mind hands over an answer.
+
+answer: The fast mind supplies a clean-looking answer and the slow mind does not bother to check.
+consequence: The fast mind signs off early. The slow mind would catch the error, if it were ever asked.
+
+answer: Most people do not know how to subtract cents from dollars.
+consequence: The subtraction is easy for any adult. The missing step is deciding to subtract at all.
+
+correct_answers: 2
+explanation: The fast mind hands in a plausible answer. The slow mind would catch it, but costs effort, so it stays off.
+hint: Consider what the slow mind would have to do, and why it might decide not to.
+
+@pause
+A long walk or a hungry afternoon quietly drains the same fuel careful thinking is supposed to run on.
+
+@text
+<c:g>The law of least effort</c:g> is one of the quiet rules the two minds obey.
+The fast mind handles what it can for almost no cost.
+The slow mind handles the rest, but only when the fast one cannot fake it.
+Because running the slow mind is tiring, the brain lets the fast one sign off whenever the answer looks clean.
+That is how a $1.10 question can catch a mathematician on a tired Friday.
+
+@true_false
+People who are tired or distracted tend to make more thinking errors on simple logic tests.
+
+true: When the slow mind has no budget left, the fast mind answers alone, and its errors show.
+
+false: Tiredness drains the slow mind first, and the fast one is the one left answering.
+
+correct_answers: 1
+explanation: The slow mind shares energy with the rest of the body. A tired head lets the fast mind answer unchecked.
+hint: Think about what a long walk or a hungry afternoon does to careful thinking.
+
+@text
+The fast mind is cheap, which is why it runs the show.
+The slow mind is where most good thinking lives, but it shows up late and leaves early.
+A quieter question follows: does the fast mind only work harder when the slow one is off, or also when the head simply feels at ease?
+
+@package
+Between Easy and Awake
+# @text, @text, @text, @question, @text, @true_false, @reflect, @text
+# Variant C (2 stories), default intro, teaching: cognitive ease
+
+@text
+A menu written in a clean, clear font reads quickly.
+A menu printed on dark paper in a tight grey font slows the eye down.
+The food is the same, but the reader is already thinking differently about it.
+
+@text
+A group of students is given a short logic test.
+Half receive it printed in a clean, sharp font.
+The other half receive it in a faded, hard-to-read font.
+The second group makes fewer careless mistakes.
+When the eye has to strain, the slow mind wakes up on its own.
+The hard font tells the head that something here is not easy.
+The slow mind, once awake, catches errors the fast mind would have missed.
+
+@text
+Here is the same effect running the other way.
+Someone reads the same claim in two forms, one familiar and one new.
+The familiar version feels more believable, even with the same evidence.
+A clear font, a memorable rhyme, or a second reading all make a claim feel more true.
+The head mistakes smoothness for truth.
+Ease and confidence are easy to confuse from the inside.
+
+@question
+Why does a hard-to-read font help a reader catch careless errors?
+
+answer: The reader slows down and the slow mind steps in on its own.
+consequence: Strain is a small alarm. The slow mind wakes up to handle what the fast mind cannot read cleanly.
+
+answer: The reader gives up and guesses, which happens to be more accurate.
+consequence: Readers with the hard font catch more errors, because the strain wakes the slow mind up.
+
+answer: The harder font contains different information than the easy one.
+consequence: Both fonts contain the same words. Only the feeling of effort changes.
+
+correct_answers: 1
+explanation: When reading feels smooth, the fast mind signs off early. A bit of strain invites the slow mind to check the work.
+hint: Think about what the head does when a sentence suddenly becomes hard to parse.
+
+@text
+When the menu reads cleanly, the head is inside <c:g>cognitive ease</c:g>, one of the fast mind's favourite settings.
+It is the feeling that the menu is clear, the story makes sense, and there is nothing to check.
+The tight grey font is the opposite setting, cognitive strain, and it invites the slow mind in.
+When the head feels at ease, the fast mind takes the shortcut and the slow mind stays quiet.
+When the head feels strain, the slow mind walks in and starts asking questions.
+A smoothly-written lie can feel truer than an awkward truth, purely because it reads easier.
+
+@true_false
+Statements printed in clear, familiar fonts are more often rated as true than the same statements printed awkwardly.
+
+true: The head mistakes the ease of reading for the truth of the claim. The slow mind rarely catches this.
+
+false: The feeling of easy reading quietly lifts the believability of the claim underneath it.
+
+correct_answers: 1
+explanation: A sentence that reads smoothly feels truer than the same sentence printed awkwardly. The head reads ease as trust.
+hint: Think about how a rhyme or a clean font changes how a claim feels.
+
+@reflect
+A claim believed without checking because it sounded clean: a slogan heard twice in one week.
+A time when strain forced real thinking: a confusing foreign street sign demanding full attention.
+A message that feels truer each time: an advert played between every song on the radio.
+
+@text
+Ease is the fast mind's home setting.
+It makes thinking cheap and life quicker, and it also hides a door through which quiet nudges walk in.
+A single word on a page, read in passing, can change the next one that comes to mind.
+
+@package
+What One Word Can Do...
+# @true_false, @text, @text, @text, @question, @pause, @text, @text
+# Variant D (3 stories), true/false intro, teaching: priming
+
+@true_false
+Reading a single unrelated word can change which word a person thinks of next.
+
+true: The head keeps a quiet trail of recent words ready, and the next guess is pulled from it.
+
+false: Recent words leave a soft trail that the next guess follows, even when the person never notices.
+
+correct_answers: 1
+explanation: One recent word can bias the next one that comes to mind. The fast mind fills blanks from what is near at hand.
+hint: Consider what the head does with a word just read, without being asked to remember it.
+
+@text
+Someone is shown the letters SO_P and asked to fill in the blank.
+A moment earlier they read the word EAT, and they write SOUP.
+A different person, a moment earlier, read the word SHOWER, and they write SOAP.
+Nothing in the letters changed.
+The recent word pulled the next one out of the head without anyone noticing.
+
+@text
+In a different study, a group of adults walks into a room and solves a short puzzle.
+The puzzle is written with words that include old, Florida, wrinkle, and grey.
+After finishing, each person walks back down the hallway to leave.
+Those who read the old-words puzzle walk noticeably slower than those who did not.
+Nobody was told to slow down.
+The words did the pushing on their own, below the level of any thought about them.
+
+@text
+In another study, the room has a small picture of money on the desk.
+People working under the picture are less willing to ask for help on a difficult task.
+They are also less willing to help a stranger who drops a pencil.
+Nobody mentions money, and nobody notices the picture after a minute.
+The image alone nudges the head toward a more independent, self-contained mood.
+The decisions that follow come out of that mood, not out of careful reasoning.
+
+@question
+Where does the pull toward writing SOUP or SOAP actually come from?
+
+answer: From a conscious decision the person made but quickly forgot.
+consequence: The person had no sense of deciding anything. The pull came from the recent word left in the head.
+
+answer: From a quiet trail the recent word left behind, which the fast mind follows automatically.
+consequence: The last word read leaves the head slightly readier for nearby ideas, and the next guess is pulled from them.
+
+answer: From the shape of the letters on the page, not from the earlier word.
+consequence: The letters are the same for everyone. Only the earlier word changed between the two groups.
+
+correct_answers: 2
+explanation: A recent word leaves a soft trail, and the fast mind fills the next blank from what is readiest. No choice happens.
+hint: Ask where the difference between SOAP and SOUP could have come from, given identical letters.
+
+@pause
+A picture on a desk can colour a whole afternoon of small decisions without anyone looking at it twice.
+
+@text
+A single word left a trail strong enough to steer the next one, and that trail is called <c:g>priming</c:g>.
+It is how the word EAT walks a reader into writing SOUP a moment later.
+It is also how old-words puzzles can slow a young person's walk down a hallway.
+Priming moves the head without touching the slow mind on its way in.
+Most of daily life is steered by these quiet nudges, from posters to the people in the room.
+
+@text
+The fast mind is a surface that words, images, and moods leave their marks on.
+Two of those marks, sitting next to each other, are sometimes enough to decide a whole opinion.
+The next question is what the fast mind does when it only has a small first impression to work with.
+
+@package
+More Than the Answer Deserved
+# @text, @text, @question, @text, @true_false, @reflect, @text
+# Variant B (2 beats), skip intro, teaching: the halo effect
+
+@text
+Ben was introduced at a friend's dinner on a quiet Thursday evening.
+He laughed easily, asked good questions, and remembered the name of every person at the table.
+By the end of the night, three other guests would have said Ben was clearly intelligent.
+None of them had seen Ben solve a single problem or make a single decision.
+What they had seen was a warm voice, kind eyes, and a good memory for names.
+
+@text
+A week later, one of the guests is asked if Ben would be good for a small charity board.
+The answer comes back quickly, a confident yes.
+Another is asked if Ben would be trustworthy with money, and the answer is again a quick yes.
+A third is asked if Ben would make a steady business partner, and again the answer is yes.
+Nobody at the dinner had any evidence about boards, money, or business.
+
+@question
+What are the guests really answering when they say Ben would be good for the charity board?
+
+answer: A careful judgment, built from the small amount they know about Ben.
+consequence: The dinner showed nothing about charity work or budgets. The careful judgment was never really made.
+
+answer: A broad good feeling about Ben, stretched over every new question about him.
+consequence: One warm impression spreads over every new question, even when the question is about something unseen.
+
+answer: A guess based on the kind of person who usually sits on charity boards.
+consequence: The guests were asked about Ben, not about the average board member. Their warm feeling answered for him.
+
+correct_answers: 2
+explanation: A single warm impression can cover every later question about the person. The fast mind fills each answer from the same feeling.
+hint: Think about how little Ben was actually seen doing, and how broad the guests' answers still were.
+
+@text
+What Ben collected at the dinner has a name, <c:g>the halo effect</c:g>, the fast mind's favourite shortcut with strangers.
+It is why a warm half-hour at dinner can answer a question about charity boards a week later.
+The good feeling for Ben spreads over every new category, into rooms the evening never touched.
+The fast mind prefers one clear feeling to a messy mix of evidence.
+Once the feeling is set, every new question meets it first and comes out coloured by it.
+
+@true_false
+A single good first impression tends to colour later judgments about the same person, even in unrelated areas.
+
+true: The fast mind likes one neat feeling per person. Once set, every new question meets it first.
+
+false: Clean separate judgments would cost effort. The fast mind smooths them into one warm or cool impression.
+
+correct_answers: 1
+explanation: A first impression is hard to spend only once. The fast mind carries it into judgments it never earned.
+hint: Think about how a warm rating on one topic tends to spread to unrelated topics too.
+
+@reflect
+A new colleague trusted on thin evidence because the first week felt friendly: a coffee chat.
+A stranger judged on one awkward moment for a likely dull reason: a rushed crosswalk wave.
+A small warm detail that quietly bought someone a lot of trust: a handwritten thank-you note.
+
+@text
+The two minds have been sketched and their favourite shortcut named.
+The shortcut shows up again in questions that have nothing to do with strangers, and it is there even when the answer is a number.
+That is where the next chapter of this story starts.
+
+@segment
+The Quiet Distortions
+QD
+
+@package
+When the Easier Question Wins
+# @text, @text, @text, @question, @text, @true_false, @reflect, @text
+# Variant A (2 scenes), default intro, teaching: the substitution heuristic
+
+@text
+A hard question and an easy question often look almost the same from the outside.
+The head cannot always tell which one it is really answering.
+A lot of confident opinions come out of that small confusion.
+
+@text
+Imagine standing in a voting booth with a name on the ballot that nobody knows well.
+"Will this candidate make a good sheriff for the next four years?"
+Picture the face, the haircut, the tone of voice in the campaign video.
+Notice how quickly a yes or no starts to form.
+Almost nobody in that booth is answering the real question.
+They are answering a much easier one, "Does this person look like a sheriff?"
+
+@text
+Now picture someone looking at a new job offer at their kitchen table.
+The real question is, "Will I still feel good about this job in two years?"
+That question is heavy and uncertain and needs careful thought.
+Instead the head quietly switches it for a lighter one, "Do I feel good about this job right now?"
+The easy one gets an answer in seconds.
+The answer is then served as if it had addressed the harder question all along.
+
+@question
+Why does the sheriff question end up being answered so quickly?
+
+answer: Because the voter is an expert on sheriffs and recognises a good one.
+consequence: Most voters have no expertise in sheriffs. Something else is doing the answering.
+
+answer: Because the head quietly swaps the hard question for an easy one about appearance.
+consequence: A hard question about four years of work is replaced by an easy one about a face.
+
+answer: Because sheriffs all look roughly the same and the choice does not matter.
+consequence: Sheriffs vary widely. The shortcut has nothing to do with real similarity between candidates.
+
+correct_answers: 2
+explanation: The head replaces a hard question with an easier one it can answer fast. The answer from the easy one then stands in for the harder one.
+hint: Ask what question the voter could actually answer in one glance at a campaign photo.
+
+@text
+<c:g>The substitution heuristic</c:g> is the quiet swap in the voting booth when "good sheriff" becomes "sheriff-looking face."
+It is also the kitchen-table swap when "good in two years" becomes "good right now."
+The head answers the lighter question and hands the answer to the heavier one.
+Nobody notices the trade, and the confident answer still feels like it came from real thinking.
+The fast mind's fastest trick leaves no trace, and the slow mind almost never looks for one.
+
+@true_false
+When people answer a hard question quickly, they usually answered a related, easier question without realising it.
+
+true: The fast mind finds the closest question it can handle and substitutes it in without asking.
+
+false: Real thought takes more time than a one-second opinion. The quick answer came from a lighter question.
+
+correct_answers: 1
+explanation: A hard question gets quietly swapped for a near one that the fast mind can answer. The answer feels like real judgment.
+hint: Think about how long the hard question would really take, and how short the quick answer was.
+
+@reflect
+A strong opinion about a stranger formed in a minute: a driver from a brief ride home.
+A career choice steered by how one office day felt: a Friday afternoon with cheerful colleagues.
+A house bought for how the kitchen smelled at the viewing: fresh bread during the visit.
+
+@text
+The easy-question swap is one doorway into confident answers that rest on almost nothing.
+Another doorway swings open when the head has to guess how often something happens in the world.
+The answer, quite often, is whatever comes to mind first.
+
+@package
+Picking the Vivid Over the True
+# @text, @text, @text, @text, @pause, @text, @true_false, @text
+# Variant D (3 stories), default intro, teaching: the availability heuristic
+
+@text
+An old news report plays in the background during breakfast.
+A small plane crashed overnight, and the footage shows the broken fuselage in a field.
+For the next three days, the same footage loops on every channel at the top of every hour.
+That week, something quietly shifts in how many people book flights.
+
+@text
+A man is asked, "What is more likely to kill someone, a stroke or an accident?"
+He thinks for a moment and answers, "An accident, probably."
+The footage of accidents is everywhere, in film, in the news, and in the evening bulletin.
+Strokes happen much more often, but they happen quietly in hospitals and in homes.
+The head rates the dramatic, photographed cause as more common, even when it is not.
+What comes to mind first is mistaken for what happens most often.
+
+@text
+After a shark is spotted off a quiet beach, fewer swimmers go in that summer.
+The year's actual shark count has not changed.
+The image of the fin above the water is now easy to call to mind.
+The head treats ease-of-recall as a measure of how real the danger is.
+A cause that is hard to picture feels rarer, such as drowning in a shallow tidepool.
+The picture decides, not the statistic.
+
+@text
+A homeowner is asked how likely it is that their roof will leak this year.
+If the neighbour's roof leaked two months ago, the answer comes back high.
+If nobody nearby has had a leak, the same homeowner quietly rates the chance as low.
+The actual roof, the weather, and the tiles have not changed.
+Only the picture in the head has, and the picture is doing the math.
+
+@pause
+The evening news is a slow tide that reshapes the ordinary over months without anyone noticing.
+
+@text
+The flight bookings, the shark-free summer, and the worried homeowner all bent to <c:g>the availability heuristic</c:g>.
+It is the oldest shortcut the fast mind uses, older than any news cycle.
+The head treats how easily a picture comes up as a rough measure of how often it happens.
+The more vivid the picture, the higher the rating, even when the picture is rare.
+It is also why the neighbour's leaking roof quietly raises the homeowner's worry.
+
+@true_false
+People tend to rate deaths from dramatic causes such as plane crashes as more likely than deaths from quiet causes such as strokes.
+
+true: The head uses ease of recall as the measure. Dramatic causes come to mind faster, so they look common.
+
+false: Statistics are hard to recall. Pictures come back easily, and the fast mind uses them instead.
+
+correct_answers: 1
+explanation: The fast mind counts by pictures, not by numbers. Dramatic pictures are always near at hand, so their causes seem more common.
+hint: Think about which causes of death appear most often in films, and which almost never do.
+
+@text
+Easy-to-picture dangers quietly inflate, and dull-to-picture ones quietly shrink.
+There is a related mistake waiting, this time about the numbers behind the pictures.
+It turns up whenever a real probability is hiding in plain sight and nobody looks.
+
+@package
+Behind the Headline Number
+# @text, @text, @text, @question, @text, @true_false, @text
+# Variant G (thought experiment), skip intro, teaching: base-rate neglect
+
+@text
+Suppose a small city runs 100 taxis, all the same model.
+80 of the taxis are red, and 20 are yellow.
+The taxis are dispatched roughly at random, and none of the drivers prefer one colour.
+A taxi is called to a house, and the caller is told the next one will arrive in 10 minutes.
+
+@text
+Suppose the caller has just watched 5 red taxis pass down the street in a row.
+The caller thinks, "Surely the next one must be yellow, for a change."
+That feeling is strong, and many people in that spot would share it.
+But the company has not changed the 80-to-20 split.
+The next taxi has roughly an 80% chance of being red, like every taxi before it.
+The string of red taxis changes nothing about the pool they are being pulled from.
+
+@text
+Now suppose a taxi is reported as having been involved in a small accident at night.
+A witness says the taxi was yellow.
+Under poor lighting, witnesses get taxi colour right about 80% of the time.
+Most listeners, hearing this, conclude the taxi was probably yellow.
+They skip a quiet question, "What fraction of the taxis in the fleet are yellow?"
+Because yellow is only 20% of the fleet, the odds are actually against the witness.
+
+@question
+What are most listeners ignoring when they trust the witness and conclude the taxi was yellow?
+
+answer: The witness has a personal reason to lie about the colour.
+consequence: The witness may be honest. The problem is a number missing from the story, the share of yellow cabs.
+
+answer: The background share of yellow and red taxis in the city.
+consequence: Yellow taxis are rare across the fleet. The witness's accuracy has to be weighed against how unlikely yellow already is.
+
+answer: The lighting conditions on the night of the accident.
+consequence: The lighting is already built into the 80% accuracy figure. The missing number is something else entirely.
+
+correct_answers: 2
+explanation: The base rate, 20% yellow, is the quiet number doing most of the work. Without it, the witness's claim seems stronger than it is.
+hint: Ask which number the story is quietly leaving out, the one about the whole fleet.
+
+@text
+The trap the taxis set has a name, <c:g>base-rate neglect</c:g>, one of the fast mind's loudest blind spots.
+It is the move that drops the 80 red and 20 yellow out of the picture.
+The head latches onto the vivid detail in front of it, and forgets the field of numbers behind.
+Every story is being told against a background of base rates, and the fast mind almost never looks at it.
+The last red taxi wins the thinking, and the 80-to-20 fleet is left out.
+
+@true_false
+After seeing five red taxis in a row, the next taxi is more likely to be yellow than it was before.
+
+true: The fleet has not changed. Each taxi is pulled from the same 80-to-20 split as every taxi before.
+
+false: Each taxi is drawn from the same pool. The run of red changes nothing about the pool.
+
+correct_answers: 2
+explanation: The pool stays the same no matter what has passed. The feeling of "due a yellow" is the fast mind ignoring the base rate.
+hint: Ask whether anything has actually changed in the company's fleet between the first taxi and the sixth.
+
+@text
+Ignoring the background numbers is only one way the fast mind handles probabilities.
+Another is treating a lucky run as if it meant something, and expecting it to keep going.
+That one tends to show up whenever somebody has had a very good week.
+
+@package
+After the Hot Streak...
+# @true_false, @text, @text, @text, @question, @text, @text
+# Variant F (historical arc), true/false intro, teaching: regression to the mean
+
+@true_false
+A striker who scores far above her usual average in September will almost always keep that form for the rest of the season.
+
+true: A spike is almost always followed by a return to the usual average, not by more spikes.
+
+false: A spike well above average tends to be followed by a drop back toward the usual number.
+
+correct_answers: 2
+explanation: Any extreme score carries a large share of luck. The next month tends to land closer to the usual rate.
+hint: Think about what "average" means for any player, and where a record month sits above it.
+
+@text
+A football striker averages 5 goals a month over the last two seasons.
+In September of the new season she scores 10, more than any month before.
+Teammates celebrate, the local press calls it a breakout, and fans start raising their expectations.
+The coach watches quietly, already half-expecting what is coming.
+
+@text
+October arrives, and the striker scores 6 goals.
+November brings 4, December brings 5.
+By Christmas, the season average has quietly settled back around her usual 5.
+The local press now talks about a slump, and fans wonder what happened to the hot streak.
+The striker has done nothing wrong.
+A month of 10 was always going to be followed, most of the time, by something closer to her real rate.
+
+@text
+The same quiet pattern shows up in classrooms and in companies.
+A student who does unusually well on one quiz often does less well on the next.
+A company that posts its best quarter ever tends to post a more ordinary one after it.
+A pilot who lands one flight especially smoothly often lands the next one only averagely well.
+None of those people got worse.
+The first number was simply further from the truth than the second.
+
+@question
+Why does the striker's average month follow her exceptional one?
+
+answer: Teammates stop passing to her because they feel jealous.
+consequence: There is no evidence teammates change behaviour. The pattern appears even for players without a team.
+
+answer: The exceptional month carried a lot of luck, and the next month tends to land closer to her real rate.
+consequence: A spike is mostly the usual rate plus good luck. The next month keeps the rate and loses the luck.
+
+answer: The striker becomes overconfident after scoring so many goals.
+consequence: Overconfidence may happen, but the same pattern appears in players who never knew their own numbers.
+
+correct_answers: 2
+explanation: Any record-breaking month is partly skill and partly luck. Luck rarely repeats, so the next month drifts back toward the real skill.
+hint: Ask how much of an exceptional month is real skill, and how much is weather and luck.
+
+@text
+The quiet October after the record September has a name, <c:g>regression to the mean</c:g>.
+It is the correction the fast mind keeps forgetting to expect.
+It is what turns the striker's record month into an ordinary one without anyone changing.
+It is also what makes the top quiz score of the month into an ordinary one next week.
+The head loves to explain the drop, because the fast mind wants a reason for every change.
+Most of the time there is no reason. A hot month simply returns to where it always was.
+
+@text
+Regression is hard to hold in the head because it has no story attached.
+The fast mind wants a character or a cause.
+The same hunger for stories shows up again when the same fact is dressed in two different sets of words.
+
+@package
+Same Fact, Different Frame
+# @text, @text, @text, @question, @pause, @text, @true_false, @reflect, @text
+# Variant E (mechanism walkthrough), default intro, teaching: framing effects
+
+@text
+A doctor can describe a treatment in two equally accurate ways.
+The first, "90% of patients survive the first year."
+The second, "10% of patients die within the first year."
+The numbers are identical.
+The choice that follows usually differs.
+
+@text
+A group of psychiatric professionals is asked about releasing a patient named Mr. Jones.
+Half are told, "Patients like Mr. Jones have a 10% probability of committing an act of violence."
+The other half are told, "Of every 100 patients like Mr. Jones, 10 will commit an act of violence."
+The two sentences describe the same risk.
+Yet the group hearing about "10 out of every 100" is almost twice as likely to block the release.
+The second wording forces the head to picture 10 real people, which feels heavier than a 10% probability.
+
+@text
+The same pattern runs through everyday choices.
+A shop selling "ground beef, 85% lean" sells better than the same beef labelled "15% fat."
+A surgeon whose operation has a 90% survival rate is preferred over one with a 10% death rate.
+A warning of "1 in 10,000 children will be permanently disfigured" worries parents more than "a 0.01% chance of disfigurement."
+The information is identical.
+The picture the sentence forms in the head is what decides.
+
+@question
+How can two sentences with the same numbers lead to different decisions?
+
+answer: One sentence must contain a subtle extra piece of information.
+consequence: Both sentences contain the same numbers. The difference lives in the picture, and the picture decides.
+
+answer: The wording shapes the picture in the head, and the picture, not the numbers, does the deciding.
+consequence: The fast mind works from pictures. Two different pictures from the same numbers lead to two different decisions.
+
+answer: The listener does not understand percentages properly.
+consequence: The listeners in these studies understood the percentages. The wording still changed their decisions.
+
+correct_answers: 2
+explanation: Two sentences can share their numbers and still build very different pictures. The picture is what the fast mind reaches for.
+hint: Think about which of the two sentences makes a specific person easier to picture.
+
+@pause
+A number by itself is a short sentence the head has to finish before it can be judged.
+
+@text
+The doctor's two sentences and the Mr. Jones study both ran on <c:g>framing</c:g>, a shortcut the fast mind cannot avoid.
+It is the small shift that turns "90% survive" into a safer option than "10% die," even when the outcomes match.
+It is also the shift that turns "10 in 100" into more real people than "10%."
+The fast mind cannot see a number without picturing something, and the picture is already deciding.
+The slow mind could check the numbers, but often does not, because the picture already feels like enough.
+
+@true_false
+A treatment described as "90% survival" and one described as "10% death rate" lead most people to make the same choice.
+
+true: The outcomes match. The pictures they build differ, and the death-rate version is chosen less often.
+
+false: Wording shapes the picture, and the picture shapes the choice. The numbers rarely get the last word.
+
+correct_answers: 2
+explanation: People, including doctors, choose less often when risk is framed as death than when the same risk is framed as survival.
+hint: Think about which of the two sentences places a living patient at the centre of the picture.
+
+@reflect
+A meal seen differently after someone read its label aloud: "85% lean" versus "15% fat."
+A policy that sounded sharper after a number was restated: "10 out of 100 families."
+A risk that felt smaller as a percentage than as a count: "0.01%" versus "1 in 10,000."
+
+@text
+The same picture-first habit runs through every place where money, risk, or loss is at stake.
+A loss sketched clearly in the mind weighs more than a gain of equal size.
+Even on paper the two rarely feel equal, and that small asymmetry shapes most of the big decisions a person ever makes.
+
+@package
+Why Losing Hurts Louder
+# @text, @text, @text, @question, @text, @true_false, @reflect, @text
+# Variant B (2 beats), misconception intro, teaching: loss aversion
+
+@text
+Most people assume a $100 win and a $100 loss <c:r>cancel out evenly inside the head</c:r>.
+The math says they should, after all.
+Anyone who has lost $100 on the bus home knows the head does not run on math.
+
+@text
+A small test is offered at a cafe.
+The deal is a coin flip, heads wins $150, tails loses $100.
+On pure math, the flip is clearly good, the expected value is positive.
+Very few people take it.
+The idea of losing $100 weighs more, inside the head, than the idea of winning $150.
+The imagined pain of the loss is louder than the imagined pleasure of the win.
+
+@text
+Now picture the same person handed $1,000 up front.
+The choice is to walk away with $500, or flip a coin for $1,000 or nothing.
+Most people take the sure $500.
+Now picture the same person handed $2,000, with two new options.
+The choice is to lose $500, or flip to lose $1,000 or nothing.
+Most people flip the coin.
+Both outcomes are identical on paper.
+
+@question
+Where is the real difference between the two $1,000 choices coming from?
+
+answer: The two offers lead to different amounts of money at the end.
+consequence: The ending positions are identical in both cases. Only the story around them has changed.
+
+answer: The head sees one offer as a gain and the other as a loss, and treats them very differently.
+consequence: A gain frame and a loss frame lead to different decisions, even when the money ends up at the same place.
+
+answer: The person suddenly becomes braver in the second scenario for no reason.
+consequence: Framing the outcome as a loss, a loss the coin can undo, makes the same risk feel worth taking.
+
+correct_answers: 2
+explanation: The same final position can be a gain or a loss depending on the starting point. A loss the coin could cancel feels worth risking.
+hint: Compare how each scenario feels, beyond the numbers at the end.
+
+@text
+What turned the cafe flip into a walk-away deal is <c:g>loss aversion</c:g>, the loudest shortcut the fast mind takes.
+It is the reason the same $500 feels safe in a gain frame and unbearable in a loss frame.
+A loss of a given size weighs roughly twice as much as a gain of the same size.
+The slow mind can run the math, but the fast mind has already decided how the numbers hurt.
+By the time the calculator is reached for, the answer is already felt.
+
+@true_false
+Most people would happily take a coin flip that wins $150 on heads and loses $100 on tails.
+
+true: The math is positive, but loss aversion makes most people refuse. A possible $100 loss feels heavier than a likely $150 gain.
+
+false: The pain of the possible loss outweighs the pleasure of the larger gain, and most people walk away.
+
+correct_answers: 2
+explanation: People refuse flips that are clearly good on math because the imagined loss weighs more than the imagined win.
+hint: Think about how long the memory of losing $100 would linger, compared to winning $150.
+
+@reflect
+A small cost avoided more than a larger gain was chased: a subscription kept to skip cancelling.
+An asset held at a small loss while it kept falling: a gadget kept past its value.
+A life change delayed because the loss felt louder than the gain: a job never applied to.
+
+@text
+The whole course has been tracking the same two minds, the fast and the slow, and the quiet trades they make.
+One quiet trade is left, and it shapes what the head keeps of any experience after it ends.
+The story remembered is almost never the story that was actually lived.
+
+@package
+The Story We Keep
+# @text, @text, @text, @question, @text, @true_false, @text
+# Variant C (2 stories), default intro, teaching: the peak-end rule
+
+@text
+A good holiday and a painful dentist visit are remembered through the same quiet filter.
+Neither is recalled the way it was lived, minute by minute.
+The head keeps a compressed story, and the compression always follows a few simple rules.
+
+@text
+Two patients go through the same uncomfortable medical procedure on the same day.
+The first has a short procedure that ends at its most painful moment.
+The second has a longer procedure that starts painful, but eases off before it ends.
+The second patient spent more total time in pain.
+Asked later how bad the experience was, the second patient remembers it as noticeably less awful.
+The ending of the story, and the single worst moment, are doing most of the remembering.
+
+@text
+Two tourists return from the same 7-day trip to a coastal town.
+The first had a good week, with one magical boat ride on day 3, and a quiet flight home on day 7.
+The second had a good week, with an ordinary boat ride on day 3, and a missed flight and hotel nightmare on day 7.
+The first remembers the trip as one of the best of her life.
+The second remembers the trip as a disaster.
+The first 5 days, identical for both, have faded into the background of the story.
+
+@question
+What does the head actually use to rate how good or bad an experience was?
+
+answer: A careful average of every minute of the experience.
+consequence: The head does not keep minute-by-minute averages. Most of the middle of any experience is lost almost at once.
+
+answer: The peak moment and the ending, which together stand in for the whole experience.
+consequence: The sharpest moment and the final moment do most of the remembering. Everything between them fades quickly.
+
+answer: The first moments of the experience, because first impressions are the strongest.
+consequence: First impressions matter in meeting a person. For rating an experience, the peak and the ending win.
+
+correct_answers: 2
+explanation: The memory of any experience collapses into a single peak and a single ending. The middle, and the total length, fade almost entirely.
+hint: Compare how much weight the dentist's last minute carries compared to every other minute.
+
+@text
+The dentist's patients and the tourists share <c:g>the peak-end rule</c:g>, the quietest shortcut the fast mind leaves behind.
+It is why the longer, gentler dentist visit is remembered as kinder than the shorter, sharper one.
+It is also why the week is rated from a boat ride and a final flight.
+The head keeps the sharpest moment and the final one, and quietly throws the rest away.
+A very good decade can be remembered badly if its last week goes wrong.
+A hard project can be loved in memory if it ends well.
+
+@true_false
+A shorter unpleasant experience that ends at its worst moment is usually remembered as worse than a longer one that eases off at the end.
+
+true: The ending carries heavy weight in memory. A shorter total length carries almost none.
+
+false: Total time in pain barely shows up in memory. The ending and the peak do most of the work.
+
+correct_answers: 1
+explanation: A sharp ending colours a whole memory. A long, gently fading ending can leave a gentler memory, even with more total pain.
+hint: Think about which of the two patients walks out with a kinder memory of it.
+
+@text
+Every package in this course has turned on the same quiet idea.
+The fast mind keeps running the day from a crowd of shortcuts, and the slow mind only sometimes walks in.
+The open question is which of those shortcuts is quietly picking the next decision of the day, and whether anyone would notice if one of them stopped.

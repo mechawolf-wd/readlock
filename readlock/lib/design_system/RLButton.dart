@@ -92,7 +92,7 @@ class RLButton extends StatelessWidget {
       color: style.backgroundColor,
       borderRadius: RLDS.borderRadiusSmall,
       border: style.borderColor != null
-          ? Border.all(color: style.borderColor!, width: 2)
+          ? Border.all(color: style.borderColor!, width: RLDS.borderWidth)
           : null,
     );
 

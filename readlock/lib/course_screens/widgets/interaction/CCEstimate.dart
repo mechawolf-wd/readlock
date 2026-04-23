@@ -32,9 +32,9 @@ class CCEstimateState extends State<CCEstimate>
   late Animation<double> revealAnimation;
 
   // Icon and styling definitions
-  static final Icon CheckIcon = const Icon(Pixel.check, color: RLDS.success, size: 20);
-  static const Icon InfoIcon = Icon(Pixel.infobox, size: 20);
-  static final Icon StarIcon = const Icon(Pixel.moonstars, color: RLDS.white, size: 16);
+  static final Icon CheckIcon = const Icon(Pixel.check, color: RLDS.success, size: RLDS.iconMedium);
+  static const Icon InfoIcon = Icon(Pixel.infobox, size: RLDS.iconMedium);
+  static final Icon StarIcon = const Icon(Pixel.moonstars, color: RLDS.white, size: RLDS.iconSmall);
 
   int getCorrectPercentage() {
     return widget.content.correctPercentage;

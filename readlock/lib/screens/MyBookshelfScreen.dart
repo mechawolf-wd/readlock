@@ -38,7 +38,7 @@ class MyBookshelfScreenState extends State<MyBookshelfScreen> {
   static final Widget SettingsIcon = const Icon(
     Pixel.sliders,
     color: RLDS.textSecondary,
-    size: 24,
+    size: RLDS.iconLarge,
   );
 
   JSONList savedCourses = [];
