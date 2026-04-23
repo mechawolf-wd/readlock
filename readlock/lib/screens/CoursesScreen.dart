@@ -10,6 +10,7 @@ import 'package:readlock/course_screens/CourseRoadmapScreen.dart';
 import 'package:readlock/course_screens/data/CourseData.dart';
 import 'package:readlock/design_system/RLUtility.dart';
 import 'package:readlock/design_system/RLBookListCard.dart';
+import 'package:readlock/design_system/RLButton.dart';
 import 'package:readlock/design_system/RLFadeSwitcher.dart';
 import 'package:readlock/design_system/RLLoadingIndicator.dart';
 import 'package:readlock/design_system/RLTextField.dart';
@@ -20,6 +21,10 @@ import 'package:readlock/constants/DartAliases.dart';
 
 // * Search tuning — debounce keeps us from hitting Firestore on every keystroke.
 const Duration SEARCH_DEBOUNCE_DURATION = Duration(milliseconds: 350);
+
+// Initial page size and load-more increment for the default course listing.
+const int SEARCH_INITIAL_PAGE_SIZE = 5;
+const int SEARCH_LOAD_MORE_PAGE_SIZE = 2;
 
 class CoursesScreen extends StatefulWidget {
   const CoursesScreen({super.key});
@@ -33,6 +38,9 @@ class CoursesScreenState extends State<CoursesScreen> {
   JSONList remoteSearchResults = [];
   bool isCoursesLoading = true;
   bool isRemoteSearching = false;
+  bool isLoadingMore = false;
+  bool hasMoreCourses = true;
+  Object? coursesCursor;
 
   final TextEditingController searchController = TextEditingController();
   String searchQuery = '';
@@ -41,7 +49,7 @@ class CoursesScreenState extends State<CoursesScreen> {
   @override
   void initState() {
     super.initState();
-    fetchAvailableCourses();
+    fetchInitialCoursesPage();
   }
 
   @override
@@ -51,16 +59,20 @@ class CoursesScreenState extends State<CoursesScreen> {
     super.dispose();
   }
 
-  Future<void> fetchAvailableCourses() async {
+  Future<void> fetchInitialCoursesPage() async {
     try {
-      final JSONList courses = await CourseDataService.fetchAvailableCourses();
+      final CoursesPage page = await CourseDataService.fetchCoursesPage(
+        pageSize: SEARCH_INITIAL_PAGE_SIZE,
+      );
 
       if (!mounted) {
         return;
       }
 
       setState(() {
-        availableCourses = courses;
+        availableCourses = page.courses;
+        coursesCursor = page.cursor;
+        hasMoreCourses = page.hasMore;
         isCoursesLoading = false;
       });
     } on Exception {
@@ -70,6 +82,45 @@ class CoursesScreenState extends State<CoursesScreen> {
 
       setState(() {
         isCoursesLoading = false;
+      });
+    }
+  }
+
+  Future<void> handleLoadMoreTap() async {
+    final bool isAlreadyLoading = isLoadingMore;
+    final bool hasNoCursor = coursesCursor == null;
+
+    if (isAlreadyLoading || hasNoCursor || !hasMoreCourses) {
+      return;
+    }
+
+    setState(() {
+      isLoadingMore = true;
+    });
+
+    try {
+      final CoursesPage page = await CourseDataService.fetchCoursesPage(
+        pageSize: SEARCH_LOAD_MORE_PAGE_SIZE,
+        cursor: coursesCursor,
+      );
+
+      if (!mounted) {
+        return;
+      }
+
+      setState(() {
+        availableCourses = JSONList.from([...availableCourses, ...page.courses]);
+        coursesCursor = page.cursor;
+        hasMoreCourses = page.hasMore;
+        isLoadingMore = false;
+      });
+    } on Exception {
+      if (!mounted) {
+        return;
+      }
+
+      setState(() {
+        isLoadingMore = false;
       });
     }
   }
@@ -199,11 +250,17 @@ class CoursesScreenState extends State<CoursesScreen> {
   }
 
   Widget ResultsArea() {
+    final bool isDefaultListing = searchQuery.trim().isEmpty;
+
+    if (isDefaultListing) {
+      return CoursesScrollList(availableCourses, showLoadMore: true);
+    }
+
     final JSONList locallyFiltered = getLocallyFilteredCourses();
     final bool hasLocalMatches = locallyFiltered.isNotEmpty;
 
     if (hasLocalMatches) {
-      return CoursesScrollList(locallyFiltered);
+      return CoursesScrollList(locallyFiltered, showLoadMore: false);
     }
 
     if (isRemoteSearching) {
@@ -213,18 +270,43 @@ class CoursesScreenState extends State<CoursesScreen> {
     final bool hasRemoteMatches = remoteSearchResults.isNotEmpty;
 
     if (hasRemoteMatches) {
-      return CoursesScrollList(remoteSearchResults);
+      return CoursesScrollList(remoteSearchResults, showLoadMore: false);
     }
 
     return EmptyStateMessage();
   }
 
-  Widget CoursesScrollList(JSONList courses) {
+  Widget CoursesScrollList(JSONList courses, {required bool showLoadMore}) {
+    final List<Widget> listChildren = List<Widget>.from(CourseCards(courses));
+
+    if (showLoadMore) {
+      listChildren.add(LoadMoreSlot());
+    }
+
     return SingleChildScrollView(
-      child: Div.column(
-        CourseCards(courses),
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-      ),
+      child: Div.column(listChildren, crossAxisAlignment: CrossAxisAlignment.stretch),
+    );
+  }
+
+  Widget LoadMoreSlot() {
+    if (!hasMoreCourses) {
+      return const SizedBox.shrink();
+    }
+
+    return Padding(
+      padding: const EdgeInsets.only(top: RLDS.spacing16),
+      child: LoadMoreControl(),
+    );
+  }
+
+  Widget LoadMoreControl() {
+    if (isLoadingMore) {
+      return const Center(child: RLLoadingIndicator.text());
+    }
+
+    return RLButton.secondary(
+      label: RLUIStrings.BOOKSHELF_LOAD_MORE_LABEL,
+      onTap: handleLoadMoreTap,
     );
   }
 

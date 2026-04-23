@@ -5,6 +5,20 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:readlock/constants/DartAliases.dart';
 import 'package:readlock/constants/FirebaseConfig.dart';
 
+// Paginated page of courses. `cursor` is opaque to callers — pass it back
+// as-is to fetchCoursesPage to get the next page.
+class CoursesPage {
+  final JSONList courses;
+  final Object? cursor;
+  final bool hasMore;
+
+  const CoursesPage({
+    required this.courses,
+    required this.cursor,
+    required this.hasMore,
+  });
+}
+
 class FirebaseCourseService {
   static final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
@@ -22,6 +36,43 @@ class FirebaseCourseService {
 
       return data;
     }).toList();
+  }
+
+  // * Fetch a single page of courses.
+  //
+  // Pass `cursor` from a previous CoursesPage to fetch the next page. The
+  // cursor is an opaque Firestore QueryDocumentSnapshot under the hood;
+  // callers should treat it as unknown and only pass it back in.
+
+  static Future<CoursesPage> fetchCoursesPage({
+    required int pageSize,
+    Object? cursor,
+  }) async {
+    Query<JSONMap> query = firestore
+        .collection(FirebaseConfig.COURSES_COLLECTION)
+        .limit(pageSize);
+
+    final bool hasCursor = cursor is QueryDocumentSnapshot<JSONMap>;
+
+    if (hasCursor) {
+      query = query.startAfterDocument(cursor);
+    }
+
+    final QuerySnapshot<JSONMap> snapshot = await query.get();
+
+    final JSONList courses = snapshot.docs.map((doc) {
+      final JSONMap data = doc.data();
+
+      data['course-id'] ??= doc.id;
+
+      return data;
+    }).toList();
+
+    final bool hasNoDocs = snapshot.docs.isEmpty;
+    final QueryDocumentSnapshot<JSONMap>? nextCursor = hasNoDocs ? null : snapshot.docs.last;
+    final bool hasMore = snapshot.docs.length == pageSize;
+
+    return CoursesPage(courses: courses, cursor: nextCursor, hasMore: hasMore);
   }
 
   // * Search courses by title prefix (case-sensitive) in Firestore.

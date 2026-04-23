@@ -9,7 +9,7 @@ import 'package:readlock/design_system/RLLunarBlur.dart';
 
 // Tint opacities for the two variants — both share the same blur sigma.
 const double RL_CARD_ELEVATED_ALPHA = 0.35;
-const double RL_CARD_SUBTLE_ALPHA = 0.18;
+const double RL_CARD_SUBTLE_ALPHA = 0.35;
 
 enum RLCardVariant { elevated, subtle }
 
@@ -44,9 +44,7 @@ class RLCard extends StatelessWidget {
     final EdgeInsets resolvedPadding = padding ?? const EdgeInsets.all(RLDS.spacing12);
     final bool isElevated = variant == RLCardVariant.elevated;
 
-    final double resolvedAlpha = isElevated
-        ? RL_CARD_ELEVATED_ALPHA
-        : RL_CARD_SUBTLE_ALPHA;
+    final double resolvedAlpha = isElevated ? RL_CARD_ELEVATED_ALPHA : RL_CARD_SUBTLE_ALPHA;
 
     final Widget cardBody = FrostedCardBody(
       padding: resolvedPadding,

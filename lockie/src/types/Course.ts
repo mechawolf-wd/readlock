@@ -203,4 +203,4 @@ export const COURSE_COLORS: string[] = [
 
 export const DEFAULT_COURSE_COLOR: string = COURSE_COLORS[0]
 
-export const PREMADE_GENRES: string[] = [ca]
+export const PREMADE_GENRES: string[] = []

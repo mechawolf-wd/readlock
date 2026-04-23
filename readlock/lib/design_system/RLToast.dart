@@ -250,7 +250,7 @@ class RLToastViewState extends State<RLToastView> with SingleTickerProviderState
     final BoxDecoration cardDecoration = BoxDecoration(
       color: RLDS.surface,
       borderRadius: RLDS.borderRadiusSmall,
-      border: Border.all(color: style.color, width: 2),
+      border: Border.all(color: style.color, width: RLDS.borderWidth),
     );
 
     final Icon variantIcon = Icon(style.icon, color: style.color, size: TOAST_ICON_SIZE);

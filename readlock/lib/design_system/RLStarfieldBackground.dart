@@ -6,6 +6,7 @@
 
 import 'dart:math';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
@@ -59,7 +60,9 @@ class RLStarfieldBackgroundState extends State<RLStarfieldBackground>
     with SingleTickerProviderStateMixin {
   late Ticker ticker;
   late List<StarSpec> stars;
-  double elapsedSeconds = 0.0;
+  // Drives repaints via CustomPainter's `repaint` listenable so the widget
+  // subtree is never rebuilt each frame — only the canvas repaints.
+  final ValueNotifier<double> elapsedSeconds = ValueNotifier<double>(0.0);
 
   @override
   void initState() {
@@ -72,13 +75,12 @@ class RLStarfieldBackgroundState extends State<RLStarfieldBackground>
   @override
   void dispose() {
     ticker.dispose();
+    elapsedSeconds.dispose();
     super.dispose();
   }
 
   void handleTick(Duration elapsed) {
-    setState(() {
-      elapsedSeconds = elapsed.inMicroseconds / 1e6;
-    });
+    elapsedSeconds.value = elapsed.inMicroseconds / 1e6;
   }
 
   List<StarSpec> generateStars() {
@@ -102,13 +104,15 @@ class RLStarfieldBackgroundState extends State<RLStarfieldBackground>
   Widget build(BuildContext context) {
     return ColoredBox(
       color: STARFIELD_BACKGROUND_COLOR,
-      child: SizedBox.expand(
-        child: CustomPaint(
-          painter: StarfieldPainter(
-            stars: stars,
-            elapsedSeconds: elapsedSeconds,
-            driftSpeed: widget.driftSpeed,
-            starColor: widget.starColor,
+      child: RepaintBoundary(
+        child: SizedBox.expand(
+          child: CustomPaint(
+            painter: StarfieldPainter(
+              stars: stars,
+              elapsedListenable: elapsedSeconds,
+              driftSpeed: widget.driftSpeed,
+              starColor: widget.starColor,
+            ),
           ),
         ),
       ),
@@ -118,16 +122,16 @@ class RLStarfieldBackgroundState extends State<RLStarfieldBackground>
 
 class StarfieldPainter extends CustomPainter {
   final List<StarSpec> stars;
-  final double elapsedSeconds;
+  final ValueListenable<double> elapsedListenable;
   final double driftSpeed;
   final Color starColor;
 
-  const StarfieldPainter({
+  StarfieldPainter({
     required this.stars,
-    required this.elapsedSeconds,
+    required this.elapsedListenable,
     required this.driftSpeed,
     required this.starColor,
-  });
+  }) : super(repaint: elapsedListenable);
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -136,6 +140,8 @@ class StarfieldPainter extends CustomPainter {
     if (hasNoArea) {
       return;
     }
+
+    final double elapsedSeconds = elapsedListenable.value;
 
     final Paint paint = Paint()
       ..isAntiAlias = false
@@ -158,10 +164,10 @@ class StarfieldPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant StarfieldPainter oldDelegate) {
-    final bool timeChanged = oldDelegate.elapsedSeconds != elapsedSeconds;
+    final bool listenableChanged = oldDelegate.elapsedListenable != elapsedListenable;
     final bool colorChanged = oldDelegate.starColor != starColor;
     final bool speedChanged = oldDelegate.driftSpeed != driftSpeed;
 
-    return timeChanged || colorChanged || speedChanged;
+    return listenableChanged || colorChanged || speedChanged;
   }
 }

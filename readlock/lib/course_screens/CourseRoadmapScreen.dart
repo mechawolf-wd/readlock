@@ -6,7 +6,6 @@ import 'package:flutter/services.dart';
 import 'package:readlock/course_screens/CourseContentViewer.dart';
 import 'package:readlock/course_screens/data/CourseData.dart';
 import 'package:readlock/design_system/RLUtility.dart';
-import 'package:readlock/design_system/RLButton.dart';
 import 'package:readlock/design_system/RLCard.dart';
 import 'package:readlock/design_system/RLCourseBookImage.dart';
 import 'package:readlock/design_system/RLLunarBlur.dart';
@@ -41,7 +40,9 @@ class CourseRoadmapScreen extends StatefulWidget {
 
 class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
   JSONMap? courseData;
+  JSONList courseSegments = [];
   JSONList courseLessons = [];
+  int selectedSegmentIndex = 0;
   bool isCourseDataLoading = true;
   int lastLessonAtThreshold = -1;
   bool isProgrammaticScroll = false;
@@ -151,14 +152,8 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
       final bool hasCourseData = courseData != null;
 
       if (hasCourseData) {
-        final JSONList segments = JSONList.from(courseData!['segments'] ?? []);
-        final bool hasSegments = segments.isNotEmpty;
-
-        if (hasSegments) {
-          courseLessons = JSONList.from(segments[0]['lessons'] ?? []);
-        }
-
-        lessonKeys = List.generate(courseLessons.length, (lessonIndex) => GlobalKey());
+        courseSegments = JSONList.from(courseData!['segments'] ?? []);
+        loadSegmentLessons(0);
       }
     } on Exception {
       // Handle error silently
@@ -167,6 +162,36 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
         isCourseDataLoading = false;
       });
     }
+  }
+
+  void loadSegmentLessons(int segmentIndex) {
+    final bool isSegmentAvailable = segmentIndex >= 0 && segmentIndex < courseSegments.length;
+
+    if (!isSegmentAvailable) {
+      courseLessons = [];
+      lessonKeys = [];
+      return;
+    }
+
+    final JSONMap segment = courseSegments[segmentIndex];
+    courseLessons = JSONList.from(segment['lessons'] ?? []);
+    lessonKeys = List.generate(courseLessons.length, (lessonIndex) => GlobalKey());
+  }
+
+  void handleSegmentTabTap(int segmentIndex) {
+    final bool isSameSegment = segmentIndex == selectedSegmentIndex;
+
+    if (isSameSegment) {
+      return;
+    }
+
+    HapticFeedback.lightImpact();
+
+    setState(() {
+      selectedSegmentIndex = segmentIndex;
+      loadSegmentLessons(segmentIndex);
+      lastLessonAtThreshold = -1;
+    });
   }
 
   @override
@@ -179,28 +204,41 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
       return const Center(child: CircularProgressIndicator());
     }
 
+    final bool hasMultipleSegments = courseSegments.length > 1;
+
     // Build slivers list
     final List<Widget> slivers = [
       // Header
       SliverToBoxAdapter(child: RoadmapHeader()),
 
-      // Lessons from first segment
+      // Gap under the book info
+      const SliverToBoxAdapter(child: Spacing.height(RLDS.spacing24)),
+    ];
+
+    // Segment tabs (only when there are multiple segments)
+    if (hasMultipleSegments) {
+      slivers.add(SliverToBoxAdapter(child: SegmentTabs()));
+      slivers.add(const SliverToBoxAdapter(child: Spacing.height(RLDS.spacing40)));
+    }
+
+    // Lessons from selected segment
+    slivers.add(
       SliverToBoxAdapter(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: RLDS.spacing24),
           child: PathWithNodes(
             lessons: courseLessons,
-            segmentIndex: 0,
+            segmentIndex: selectedSegmentIndex,
             lessonKeys: lessonKeys,
             accentColor: getCourseAccentColor(),
             onLessonTap: showLoadingScreenThenNavigate,
           ),
         ),
       ),
+    );
 
-      // Bottom padding for floating buttons
-      const SliverToBoxAdapter(child: Spacing.height(floatingBarBottomClearance)),
-    ];
+    // Bottom padding for floating buttons
+    slivers.add(const SliverToBoxAdapter(child: Spacing.height(floatingBarBottomClearance)));
 
     return Material(
       color: RLDS.surface,
@@ -298,55 +336,38 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
     final String courseAuthor =
         courseData?['author'] as String? ?? RLUIStrings.ROADMAP_DEFAULT_AUTHOR;
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: RLDS.spacing12),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Back button
-          Padding(
-            padding: roadmapHeaderSidePadding,
-            child: Div.row(
-              [BackChevronIcon],
-              padding: RLDS.spacing8,
-              radius: RLDS.borderRadiusCircle,
-              onTap: handleBackTap,
-            ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Spacing.height(RLDS.spacing12),
+
+        // Back button
+        Padding(
+          padding: roadmapHeaderSidePadding,
+          child: Div.row(
+            [BackChevronIcon],
+            padding: RLDS.spacing8,
+            radius: RLDS.borderRadiusCircle,
+            onTap: handleBackTap,
           ),
+        ),
 
-          const Spacing.height(RLDS.spacing16),
+        const Spacing.height(RLDS.spacing16),
 
-          // Book + progress ring in its own circular LunarBlur pane, above
-          // the hero card. Centered, respects the side padding.
-          Padding(
-            padding: roadmapHeaderSidePadding,
-            child: Center(child: BookRingPane()),
-          ),
+        // Book + progress ring in its own circular LunarBlur pane, above
+        // the hero card. Centered, respects the side padding.
+        Padding(
+          padding: roadmapHeaderSidePadding,
+          child: Center(child: BookRingPane()),
+        ),
 
-          const Spacing.height(RLDS.spacing24),
+        const Spacing.height(RLDS.spacing24),
 
-          // Hero card — full-bleed, no side padding, so it stretches the
-          // full width of the screen. Intentional violation of the page
-          // padding.
-          HeroCard(courseTitle: courseTitle, courseAuthor: courseAuthor),
-
-          const Spacing.height(RLDS.spacing24),
-
-          // Subtitle below card
-          Padding(
-            padding: roadmapHeaderSidePadding,
-            child: Center(
-              child: RLTypography.bodyMedium(
-                RLUIStrings.ROADMAP_SUBTITLE,
-                color: RLDS.textSecondary,
-                textAlign: TextAlign.center,
-              ),
-            ),
-          ),
-
-          const Spacing.height(RLDS.spacing16),
-        ],
-      ),
+        // Hero card — full-bleed, no side padding, so it stretches the
+        // full width of the screen. Intentional violation of the page
+        // padding.
+        HeroCard(courseTitle: courseTitle, courseAuthor: courseAuthor),
+      ],
     );
   }
 
@@ -396,14 +417,15 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
         children: [
           // Progress arc — the unfilled portion is left transparent so the
           // frosted-dark disc underneath shows through instead of a ghost
-          // ring.
+          // ring. Painted at 0.5 opacity so it reads as an atmospheric
+          // halo rather than competing with the book cover at its centre.
           SizedBox(
             width: progressRingSize,
             height: progressRingSize,
             child: CustomPaint(
               painter: ProgressArcPainter(
                 progress: 0.35,
-                color: accentColor,
+                color: accentColor.withValues(alpha: 0.75),
                 strokeWidth: progressRingStrokeWidth,
               ),
             ),
@@ -413,21 +435,6 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
           bookCover,
         ],
       ),
-    );
-  }
-
-  Widget PercentageChip() {
-    final Color accentColor = getCourseAccentColor();
-
-    final BoxDecoration chipDecoration = BoxDecoration(
-      color: accentColor,
-      borderRadius: RLDS.borderRadiusSmall,
-    );
-
-    return Div.column(
-      [RLTypography.headingMedium('35%', color: RLDS.white)],
-      padding: const EdgeInsets.symmetric(horizontal: RLDS.spacing8, vertical: RLDS.spacing4),
-      decoration: chipDecoration,
     );
   }
 
@@ -456,11 +463,6 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
             color: RLDS.textSecondary,
             textAlign: TextAlign.center,
           ),
-
-          const Spacing.height(RLDS.spacing16),
-
-          // Percentage chip (progress readout) — below the heading + subheading
-          Center(child: PercentageChip()),
 
           const Spacing.height(RLDS.spacing16),
 
@@ -503,12 +505,102 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
     return raw.whereType<String>().map((String tag) => tag.trim()).toList();
   }
 
+  // Horizontal scrolling row of segment tabs. Selected tab uses the same
+  // dimmed-accent background as the Continue button so it stays legible
+  // across all course colors. Centered when the tabs fit, scrolls otherwise.
+  Widget SegmentTabs() {
+    final bool hasNoSegments = courseSegments.length <= 1;
+
+    if (hasNoSegments) {
+      return const SizedBox.shrink();
+    }
+
+    return LayoutBuilder(
+      builder: (BuildContext context, BoxConstraints constraints) {
+        return SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          padding: const EdgeInsets.symmetric(horizontal: RLDS.spacing24),
+          child: ConstrainedBox(
+            constraints: BoxConstraints(minWidth: constraints.maxWidth - RLDS.spacing24 * 2),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: SegmentTabChips(),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  List<Widget> SegmentTabChips() {
+    final List<Widget> chips = [];
+
+    for (int segmentIndex = 0; segmentIndex < courseSegments.length; segmentIndex++) {
+      final bool isFirstChip = segmentIndex == 0;
+
+      if (!isFirstChip) {
+        chips.add(const Spacing.width(RLDS.spacing8));
+      }
+
+      chips.add(SegmentTabChip(segmentIndex));
+    }
+
+    return chips;
+  }
+
+  Widget SegmentTabChip(int segmentIndex) {
+    final JSONMap segment = courseSegments[segmentIndex];
+    final String segmentTitle = segment['segment-title'] as String? ?? '';
+    final bool isSelected = segmentIndex == selectedSegmentIndex;
+
+    const EdgeInsets chipPadding = EdgeInsets.symmetric(
+      horizontal: RLDS.spacing16,
+      vertical: RLDS.spacing8,
+    );
+
+    final Color accentColor = getCourseAccentColor();
+    final Color chipTextColor = isSelected ? accentColor : RLDS.textSecondary;
+    final Widget chipLabel = RLTypography.bodyMedium(segmentTitle, color: chipTextColor);
+
+    if (isSelected) {
+      return GestureDetector(
+        onTap: () => handleSegmentTabTap(segmentIndex),
+        child: RLLunarBlur(
+          borderRadius: RLDS.borderRadiusSmall,
+          surfaceAlpha: RL_CARD_ELEVATED_ALPHA,
+          padding: chipPadding,
+          child: chipLabel,
+        ),
+      );
+    }
+
+    return Div.row(
+      [chipLabel],
+      padding: chipPadding,
+      onTap: () => handleSegmentTabTap(segmentIndex),
+    );
+  }
+
   Widget ContinueButton() {
     final Color accentColor = getCourseAccentColor();
+    final Color dimmedBackground = accentColor.withValues(alpha: 0.15);
 
-    return RLButton.primary(
-      label: RLUIStrings.ROADMAP_CONTINUE_LABEL,
-      color: accentColor,
+    final BoxDecoration buttonDecoration = BoxDecoration(
+      color: dimmedBackground,
+      borderRadius: RLDS.borderRadiusSmall,
+    );
+
+    const EdgeInsets buttonPadding = EdgeInsets.symmetric(
+      vertical: RLDS.spacing16,
+      horizontal: RLDS.spacing24,
+    );
+
+    return Div.row(
+      [RLTypography.bodyLarge(RLUIStrings.ROADMAP_CONTINUE_LABEL, color: accentColor)],
+      width: double.infinity,
+      padding: buttonPadding,
+      decoration: buttonDecoration,
+      mainAxisAlignment: MainAxisAlignment.center,
       onTap: handleContinueTap,
     );
   }
@@ -733,15 +825,10 @@ class PathLessonNode extends StatelessWidget {
 
   Widget NodeTile() {
     final Color bgColor = getBackgroundColor();
-    final Color borderColor = getBorderColor();
     final Widget nodeContent = NodeIcon();
 
-    // Circular tile with a chunky border.
-    final BoxDecoration tileDecoration = BoxDecoration(
-      color: bgColor,
-      border: Border.all(color: borderColor, width: roadmapTileBorderWidth),
-      shape: BoxShape.circle,
-    );
+    // Borderless circular tile.
+    final BoxDecoration tileDecoration = BoxDecoration(color: bgColor, shape: BoxShape.circle);
 
     // Circular drop shadow offset down+right.
     final BoxDecoration shadowDecoration = BoxDecoration(
@@ -779,7 +866,7 @@ class PathLessonNode extends StatelessWidget {
 
   Color getBackgroundColor() {
     if (isCompleted) {
-      return accentColor;
+      return accentColor.withValues(alpha: 0.15);
     }
 
     if (isCurrent) {
@@ -789,37 +876,19 @@ class PathLessonNode extends StatelessWidget {
     return RLDS.backgroundLight;
   }
 
-  Color getBorderColor() {
-    if (isCompleted) {
-      return accentColor;
-    }
-
-    if (isCurrent) {
-      return accentColor;
-    }
-
-    if (isLocked) {
-      return RLDS.textSecondary.withValues(alpha: 0.2);
-    }
-
-    return RLDS.textSecondary.withValues(alpha: 0.3);
-  }
-
   // * Tile glyphs — 32px so they land on pixelarticons' 16×16 grid (2x).
 
   static const double roadmapTileIconSize = 32.0;
-
-  static final Widget CompletedCheckIcon = const Icon(
-    Pixel.check,
-    color: RLDS.white,
-    size: roadmapTileIconSize,
-  );
 
   static final Widget LockedIcon = Icon(
     Pixel.lock,
     color: RLDS.textSecondary.withValues(alpha: 0.4),
     size: roadmapTileIconSize,
   );
+
+  Widget CompletedCheckIcon() {
+    return Icon(Pixel.check, color: accentColor, size: roadmapTileIconSize);
+  }
 
   Widget CurrentPlayIcon() {
     return Icon(Pixel.play, color: accentColor, size: roadmapTileIconSize);
@@ -833,7 +902,7 @@ class PathLessonNode extends StatelessWidget {
 
   Widget NodeIcon() {
     if (isCompleted) {
-      return CompletedCheckIcon;
+      return CompletedCheckIcon();
     }
 
     if (isCurrent) {

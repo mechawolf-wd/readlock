@@ -52,6 +52,9 @@ class ProfileContentState extends State<ProfileContent> {
   // Bionic reading lives in-memory only for now — no UserModel round-trip
   // until we integrate the transform into ProgressiveText / CCTextContent.
   bool bionicEnabled = false;
+  // RSVP (rapid reading) — also in-memory only until it's wired into the
+  // reading surfaces. The demo is self-contained in SettingsDemos.
+  bool rsvpEnabled = false;
   bool isLoggingOut = false;
 
   @override
@@ -123,6 +126,10 @@ class ProfileContentState extends State<ProfileContent> {
     setState(() => bionicEnabled = value);
   }
 
+  void handleRsvpToggled(bool value) {
+    setState(() => rsvpEnabled = value);
+  }
+
   void handleSupportTap() {}
 
   // * Logout flow.
@@ -178,6 +185,7 @@ class ProfileContentState extends State<ProfileContent> {
       blurEnabled: blurEnabled,
       coloredTextEnabled: coloredTextEnabled,
       bionicEnabled: bionicEnabled,
+      rsvpEnabled: rsvpEnabled,
       onTypingSoundToggled: handleTypingSoundToggled,
       onGeneralSoundsToggled: handleGeneralSoundsToggled,
       onHapticsToggled: handleHapticsToggled,
@@ -185,6 +193,7 @@ class ProfileContentState extends State<ProfileContent> {
       onBlurToggled: handleBlurToggled,
       onColoredTextToggled: handleColoredTextToggled,
       onBionicToggled: handleBionicToggled,
+      onRsvpToggled: handleRsvpToggled,
       onSupportTap: handleSupportTap,
       onLogoutTap: handleLogoutTap,
     );

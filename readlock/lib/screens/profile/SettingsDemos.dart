@@ -10,15 +10,55 @@
 //   - Colored text: RLDS.markupGreen + FontWeight.bold (the exact style
 //     ProgressiveText applies to <c:g>…</c:g> markup)
 
+import 'dart:async';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:readlock/bottom_sheets/user/FontPickerBottomSheet.dart';
 import 'package:readlock/constants/RLReadingFont.dart';
 import 'package:readlock/constants/RLUIStrings.dart';
 import 'package:readlock/constants/RLTypography.dart';
+import 'package:readlock/design_system/RLLunarBlur.dart';
 import 'package:readlock/design_system/RLUtility.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/utility_widgets/text_animation/BionicText.dart';
 import 'package:readlock/utility_widgets/visual_effects/BlurOverlay.dart';
+
+// Shared surface used by every reading-settings demo so Reveal, Blur,
+// Coloured text, Bionic, Reading font, and RSVP all share the same frosted
+// LunarBlur look as the rest of the app's cards. Alpha sits between the
+// subtle and elevated card presets so the demo panes read as clearly
+// tinted without competing with hero cards.
+const EdgeInsets demoSurfacePadding = EdgeInsets.all(RLDS.spacing12);
+const EdgeInsets demoSurfaceMargin = EdgeInsets.only(bottom: RLDS.spacing16);
+const double demoSurfaceAlpha = 0.28;
+
+class DemoSurface extends StatelessWidget {
+  final Widget child;
+  final VoidCallback? onTap;
+
+  const DemoSurface({super.key, required this.child, this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    final Widget surface = Container(
+      margin: demoSurfaceMargin,
+      child: RLLunarBlur(
+        surfaceAlpha: demoSurfaceAlpha,
+        padding: demoSurfacePadding,
+        child: SizedBox(width: double.infinity, child: child),
+      ),
+    );
+
+    final bool hasTapHandler = onTap != null;
+
+    if (hasTapHandler) {
+      return GestureDetector(onTap: onTap, child: surface);
+    }
+
+    return surface;
+  }
+}
 
 // Mirrors ProgressiveText.getConsistentTextStyle — every swipe renders at
 // fontSize 18 / height 1.6 regardless of the caller's passed style. The
@@ -111,16 +151,7 @@ class RevealDemoState extends State<RevealDemo> with SingleTickerProviderStateMi
   }
 
   Widget DemoBody(BuildContext context) {
-    final BoxDecoration containerDecoration = BoxDecoration(
-      color: RLDS.backgroundLight,
-      borderRadius: BorderRadius.circular(RLDS.spacing8),
-    );
-
-    return Container(
-      width: double.infinity,
-      decoration: containerDecoration,
-      padding: const EdgeInsets.all(RLDS.spacing12),
-      margin: const EdgeInsets.only(bottom: RLDS.spacing16),
+    return DemoSurface(
       child: Align(alignment: Alignment.centerLeft, child: AnimatedTextDisplay()),
     );
   }
@@ -175,16 +206,7 @@ class BlurDemo extends StatelessWidget {
   }
 
   Widget DemoBody(BuildContext context) {
-    final BoxDecoration containerDecoration = BoxDecoration(
-      color: RLDS.backgroundLight,
-      borderRadius: BorderRadius.circular(RLDS.spacing8),
-    );
-
-    return Container(
-      width: double.infinity,
-      decoration: containerDecoration,
-      padding: const EdgeInsets.all(RLDS.spacing12),
-      margin: const EdgeInsets.only(bottom: RLDS.spacing16),
+    return DemoSurface(
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -220,11 +242,6 @@ class ColoredTextDemo extends StatelessWidget {
   }
 
   Widget DemoBody(BuildContext context) {
-    final BoxDecoration containerDecoration = BoxDecoration(
-      color: RLDS.backgroundLight,
-      borderRadius: BorderRadius.circular(RLDS.spacing8),
-    );
-
     // When disabled, the highlight matches the surrounding text (no colour,
     // normal weight) — same as ProgressiveText would render raw text without
     // <c:g> markup. When enabled, matches the markupGreen + bold style
@@ -242,11 +259,7 @@ class ColoredTextDemo extends StatelessWidget {
       fontWeight: keyTermsFontWeight,
     );
 
-    return Container(
-      width: double.infinity,
-      decoration: containerDecoration,
-      padding: const EdgeInsets.all(RLDS.spacing12),
-      margin: const EdgeInsets.only(bottom: RLDS.spacing16),
+    return DemoSurface(
       child: Align(
         alignment: Alignment.centerLeft,
         child: RichText(
@@ -282,16 +295,7 @@ class BionicDemo extends StatelessWidget {
   }
 
   Widget DemoBody(BuildContext context) {
-    final BoxDecoration containerDecoration = BoxDecoration(
-      color: RLDS.backgroundLight,
-      borderRadius: BorderRadius.circular(RLDS.spacing8),
-    );
-
-    return Container(
-      width: double.infinity,
-      decoration: containerDecoration,
-      padding: const EdgeInsets.all(RLDS.spacing12),
-      margin: const EdgeInsets.only(bottom: RLDS.spacing16),
+    return DemoSurface(
       child: Align(alignment: Alignment.centerLeft, child: BionicSample()),
     );
   }
@@ -318,30 +322,15 @@ class BionicDemo extends StatelessWidget {
 class ReadingFontDemo extends StatelessWidget {
   const ReadingFontDemo({super.key});
 
-  static final BoxDecoration containerDecoration = BoxDecoration(
-    color: RLDS.backgroundLight,
-    borderRadius: BorderRadius.circular(RLDS.spacing8),
-  );
-
-  static const EdgeInsets containerPadding = EdgeInsets.all(RLDS.spacing12);
-  static const EdgeInsets containerMargin = EdgeInsets.only(bottom: RLDS.spacing16);
-
   @override
   Widget build(BuildContext context) {
     final VoidCallback onDemoTap = () => FontPickerBottomSheet.show(context);
 
-    return GestureDetector(
+    return DemoSurface(
       onTap: onDemoTap,
-      behavior: HitTestBehavior.opaque,
-      child: Container(
-        width: double.infinity,
-        decoration: containerDecoration,
-        padding: containerPadding,
-        margin: containerMargin,
-        child: ValueListenableBuilder<ReadingFont>(
-          valueListenable: selectedReadingFontNotifier,
-          builder: FontSampleBuilder,
-        ),
+      child: ValueListenableBuilder<ReadingFont>(
+        valueListenable: selectedReadingFontNotifier,
+        builder: FontSampleBuilder,
       ),
     );
   }
@@ -358,6 +347,200 @@ class ReadingFontDemo extends StatelessWidget {
     return Align(
       alignment: Alignment.centerLeft,
       child: Text(RLUIStrings.FONT_DEMO_SAMPLE_TEXT, style: sampleStyle),
+    );
+  }
+}
+
+// RSVP (Rapid Serial Visual Presentation): flashes words one at a time in a
+// fixed position so the reader's eyes stay still. The red letter is the
+// Optimal Recognition Point — pinned to the column centre so every word
+// lines up on the same X axis (the Spritz / Spreeder technique). Range
+// 150–800 wpm covers the full usable span (average silent reading sits
+// near 250; comprehension plateaus around 400–600 with practice). Default
+// 300 is the recommended starting point. When the parent switch is off,
+// the word stream pauses on a static sample so the card reads like a
+// disabled preview, matching the other demos in the section.
+class RSVPDemo extends StatefulWidget {
+  final bool isEnabled;
+
+  const RSVPDemo({super.key, required this.isEnabled});
+
+  @override
+  State<RSVPDemo> createState() => RSVPDemoState();
+}
+
+class RSVPDemoState extends State<RSVPDemo> {
+  static final List<String> demoWords = RLUIStrings.DEMO_RSVP_TEXT.split(' ');
+  static const double minWpm = 150.0;
+  static const double maxWpm = 800.0;
+  static const int defaultWpm = 300;
+
+  int currentWpm = defaultWpm;
+  int wordIndex = 0;
+  Timer? advanceTimer;
+
+  @override
+  void initState() {
+    super.initState();
+
+    if (widget.isEnabled) {
+      scheduleNextWord();
+    }
+  }
+
+  @override
+  void didUpdateWidget(covariant RSVPDemo oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    final bool didTurnOn = widget.isEnabled && !oldWidget.isEnabled;
+    final bool didTurnOff = !widget.isEnabled && oldWidget.isEnabled;
+
+    if (didTurnOn) {
+      scheduleNextWord();
+    }
+
+    if (didTurnOff) {
+      advanceTimer?.cancel();
+    }
+  }
+
+  @override
+  void dispose() {
+    advanceTimer?.cancel();
+    super.dispose();
+  }
+
+  void scheduleNextWord() {
+    advanceTimer?.cancel();
+    final int intervalMs = (60000 / currentWpm).round();
+    advanceTimer = Timer(Duration(milliseconds: intervalMs), advanceToNextWord);
+  }
+
+  void advanceToNextWord() {
+    final bool isUnmounted = !mounted;
+
+    if (isUnmounted) {
+      return;
+    }
+
+    setState(() {
+      wordIndex = (wordIndex + 1) % demoWords.length;
+    });
+
+    scheduleNextWord();
+  }
+
+  void handleWpmChanged(double newWpm) {
+    setState(() {
+      currentWpm = newWpm.round();
+    });
+
+    if (widget.isEnabled) {
+      scheduleNextWord();
+    }
+  }
+
+  // Optimal Recognition Point position — the letter the eye anchors on.
+  // Buckets lifted from the Spritz paper: longer words shift the pivot
+  // slightly right of position 1 so most readers land it without thinking.
+  int getOrpIndex(String word) {
+    final int length = word.length;
+
+    if (length <= 1) {
+      return 0;
+    }
+    if (length <= 5) {
+      return 1;
+    }
+    if (length <= 9) {
+      return 2;
+    }
+    if (length <= 13) {
+      return 3;
+    }
+
+    return 4;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return demoFontListener(DemoBody);
+  }
+
+  Widget DemoBody(BuildContext context) {
+    return DemoSurface(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          WordDisplay(),
+
+          const Spacing.height(RLDS.spacing8),
+
+          WpmControl(),
+        ],
+      ),
+    );
+  }
+
+  Widget WordDisplay() {
+    final String currentWord = demoWords[wordIndex];
+    final int orpIndex = getOrpIndex(currentWord);
+    final String preOrp = currentWord.substring(0, orpIndex);
+    final String orpLetter = currentWord.substring(orpIndex, orpIndex + 1);
+    final String postOrp = currentWord.substring(orpIndex + 1);
+
+    // Matches the 18 / 1.6 reading style the other demos use, so the
+    // word size here reads as the same family as Reveal / Blur / Bionic.
+    final TextStyle baseStyle = demoReadingStyle;
+    final TextStyle orpStyle = baseStyle.copyWith(
+      color: RLDS.primary,
+      fontWeight: FontWeight.bold,
+    );
+
+    return SizedBox(
+      height: RLDS.spacing48,
+      child: Row(
+        children: [
+          Expanded(
+            child: Align(
+              alignment: Alignment.centerRight,
+              child: Text(preOrp, style: baseStyle),
+            ),
+          ),
+
+          Text(orpLetter, style: orpStyle),
+
+          Expanded(
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Text(postOrp, style: baseStyle),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget WpmControl() {
+    final String wpmLabel = '$currentWpm${RLUIStrings.RSVP_WPM_SUFFIX}';
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        // Larger than bodyMedium so the live counter reads as the headline
+        // value of the card — you're adjusting this number, it should look
+        // like the thing you're adjusting.
+        RLTypography.headingMedium(wpmLabel, color: RLDS.textPrimary),
+
+        CupertinoSlider(
+          value: currentWpm.toDouble(),
+          min: minWpm,
+          max: maxWpm,
+          activeColor: RLDS.primary,
+          onChanged: handleWpmChanged,
+        ),
+      ],
     );
   }
 }

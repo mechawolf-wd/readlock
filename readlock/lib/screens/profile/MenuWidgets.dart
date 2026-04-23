@@ -31,6 +31,7 @@ class MenuSection extends StatelessWidget {
   final bool blurEnabled;
   final bool coloredTextEnabled;
   final bool bionicEnabled;
+  final bool rsvpEnabled;
   final ValueChanged<bool> onTypingSoundToggled;
   final ValueChanged<bool> onGeneralSoundsToggled;
   final ValueChanged<bool> onHapticsToggled;
@@ -38,6 +39,7 @@ class MenuSection extends StatelessWidget {
   final ValueChanged<bool> onBlurToggled;
   final ValueChanged<bool> onColoredTextToggled;
   final ValueChanged<bool> onBionicToggled;
+  final ValueChanged<bool> onRsvpToggled;
   final VoidCallback onSupportTap;
   final VoidCallback onLogoutTap;
 
@@ -50,6 +52,7 @@ class MenuSection extends StatelessWidget {
     required this.blurEnabled,
     required this.coloredTextEnabled,
     required this.bionicEnabled,
+    required this.rsvpEnabled,
     required this.onTypingSoundToggled,
     required this.onGeneralSoundsToggled,
     required this.onHapticsToggled,
@@ -57,6 +60,7 @@ class MenuSection extends StatelessWidget {
     required this.onBlurToggled,
     required this.onColoredTextToggled,
     required this.onBionicToggled,
+    required this.onRsvpToggled,
     required this.onSupportTap,
     required this.onLogoutTap,
   });
@@ -167,6 +171,18 @@ class MenuSection extends StatelessWidget {
         ),
 
         BionicDemo(isEnabled: bionicEnabled),
+
+        // RSVP — switch gates the demo stream, the card itself hosts the
+        // WPM slider (the tempo is the configurator). Sits after Bionic
+        // since it's the most specialised reading mode in the section.
+        SwitchMenuItem(
+          icon: Pixel.zap,
+          title: RLUIStrings.MENU_RSVP,
+          value: rsvpEnabled,
+          onChanged: onRsvpToggled,
+        ),
+
+        RSVPDemo(isEnabled: rsvpEnabled),
 
         // Font picker + live demo — sits at the end of Reading Settings so
         // it follows the toggles that govern what text looks like.

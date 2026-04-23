@@ -81,7 +81,10 @@ class RLTextFieldState extends State<RLTextField> {
     final BoxDecoration fieldDecoration = BoxDecoration(
       color: RLDS.backgroundLight,
       borderRadius: RLDS.borderRadiusSmall,
-      border: Border.all(color: RLDS.textMuted.withValues(alpha: 0.3)),
+      border: Border.all(
+        color: RLDS.textMuted.withValues(alpha: 0.3),
+        width: RLDS.borderWidth,
+      ),
     );
 
     final TextStyle hintStyle = RLTypography.bodyLargeStyle.copyWith(

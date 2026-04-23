@@ -225,6 +225,7 @@ class RLUIStrings {
   static const String MENU_BLUR = 'Focus';
   static const String MENU_COLORED_TEXT = 'Accent';
   static const String MENU_BIONIC = 'Bionic';
+  static const String MENU_RSVP = 'RSVP';
   static const String MENU_NOTIFICATIONS = 'Notifications';
   static const String MENU_SUPPORT = 'Support';
   static const String MENU_PRIVACY_POLICY = 'Privacy Policy';
@@ -256,6 +257,9 @@ class RLUIStrings {
   static const String DEMO_BIONIC_TEXT =
       'Bionic reading bolds the first few letters of each word so your eye '
       'catches the shape before you finish reading it.';
+  static const String DEMO_RSVP_TEXT =
+      'Good design is honest. It reveals the product and its function.';
+  static const String RSVP_WPM_SUFFIX = ' wpm';
 
   // * Settings Bottom Sheet
   static const String SETTINGS_TITLE = 'Settings';
@@ -275,8 +279,7 @@ class RLUIStrings {
   static const String ERROR_WEAK_PASSWORD = 'A stronger password would be better.';
   static const String ERROR_INVALID_EMAIL = 'Please enter a valid email address.';
   static const String ERROR_NETWORK = 'Something\'s off with the connection. Please try again.';
-  static const String ERROR_TOO_MANY_REQUESTS =
-      'Let\'s take a short breather, then try again.';
+  static const String ERROR_TOO_MANY_REQUESTS = 'Let\'s take a short breather, then try again.';
   static const String ERROR_REQUIRES_RECENT_LOGIN = 'Please sign in again to continue.';
   static const String ERROR_USER_DISABLED = 'This account isn\'t active anymore.';
   static const String ERROR_UNKNOWN = 'Something went wrong on our end. Please try again.';

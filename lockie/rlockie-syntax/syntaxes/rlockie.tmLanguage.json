@@ -83,7 +83,7 @@
     "properties": {
       "patterns": [
         {
-          "begin": "^(id|title|author|description|color|genres|relevant_for)(:)\\s*",
+          "begin": "^(id|title|author|description|color|genres|relevant_for|language)(:)\\s*",
           "beginCaptures": {
             "1": {
               "name": "rlockie.property.name"
@@ -165,7 +165,7 @@
     "text-values": {
       "patterns": [
         {
-          "begin": "^(?!@|id:|title:|author:|description:|color:|genres:|relevant_for:|answer:|consequence:|correct_answers:|explanation:|hint:|true:|false:|image-link:|Free$)(?=.)",
+          "begin": "^(?!@|id:|title:|author:|description:|color:|genres:|relevant_for:|language:|answer:|consequence:|correct_answers:|explanation:|hint:|true:|false:|image-link:|Free$)(?=.)",
           "end": "$",
           "name": "rlockie.text",
           "patterns": [

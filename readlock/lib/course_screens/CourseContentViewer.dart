@@ -10,6 +10,8 @@ import 'package:readlock/course_screens/widgets/CCJSONContentFactory.dart';
 import 'package:readlock/course_screens/data/CourseData.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/constants/RLUIStrings.dart';
+import 'package:readlock/design_system/RLLunarBlur.dart';
+import 'package:readlock/design_system/RLStarfieldBackground.dart';
 import 'package:readlock/design_system/RLUtility.dart';
 import 'package:readlock/design_system/RLFeedbackSnackbar.dart';
 import 'package:readlock/constants/RLTypography.dart';
@@ -134,26 +136,39 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
     return const CourseLoadingScreen();
   }
 
-  // Main course content screen — Scaffold wraps SafeArea (not the other way
-  // round) so the scaffold's backgroundDark paints the full window, including
-  // the status-bar and home-indicator insets. Without this, the safe-area
-  // strips render as the system default (black on iOS, not the surface
-  // colour) and the sheet reads as "sitting on top of a void".
+  // Main course content screen — Scaffold hosts a three-layer stack: the
+  // drifting pixel starfield at the bottom, a full-bleed LunarBlur pane that
+  // frosts the stars so they read as a calm atmospheric background rather
+  // than competing with the text, and the safe-area content (top chrome +
+  // PageView) painted on top.
   Widget MainCourseScreen() {
     return Scaffold(
-      backgroundColor: RLDS.backgroundDark,
-      body: SafeArea(
-        child: Listener(
-          behavior: HitTestBehavior.translucent,
-          onPointerDown: handleGlobalPointerDown,
-          child: Div.column([
-            // Progress bar and navigation header
-            TopProgressBar(),
+      backgroundColor: STARFIELD_BACKGROUND_COLOR,
+      body: Stack(
+        children: [
+          const Positioned.fill(child: RLStarfieldBackground()),
 
-            // Main course content area
-            Expanded(child: CourseBody()),
-          ]),
-        ),
+          const Positioned.fill(
+            child: RLLunarBlur(
+              borderRadius: BorderRadius.zero,
+              child: SizedBox.expand(),
+            ),
+          ),
+
+          SafeArea(
+            child: Listener(
+              behavior: HitTestBehavior.translucent,
+              onPointerDown: handleGlobalPointerDown,
+              child: Div.column([
+                // Progress bar and navigation header
+                TopProgressBar(),
+
+                // Main course content area
+                Expanded(child: CourseBody()),
+              ]),
+            ),
+          ),
+        ],
       ),
     );
   }

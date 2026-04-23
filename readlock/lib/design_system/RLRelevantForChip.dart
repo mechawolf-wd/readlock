@@ -54,15 +54,10 @@ class RLRelevantForChip extends StatelessWidget {
       borderRadius: RLDS.borderRadiusSmall,
     );
 
-    final TextStyle pixelTextStyle = RLTypography.pixelLabelStyle.copyWith(
-      color: RLDS.white,
-    );
+    final TextStyle pixelTextStyle = RLTypography.pixelLabelStyle.copyWith(color: RLDS.white);
 
     return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: RLDS.spacing12,
-        vertical: RLDS.spacing8,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: RLDS.spacing12, vertical: RLDS.spacing8),
       decoration: chipDecoration,
       child: Text(label, style: pixelTextStyle),
     );

@@ -3,10 +3,11 @@
 //
 //   - serif     → Lora. Screen-optimised reading serif. Replaces Playfair
 //                  Display (which is a display face and tiring for long text).
-//   - dyslexic  → Lexend. Research-backed reading-proficiency family by
-//                  Bonnie Shaver-Troup, distributed via Google Fonts.
-//                  Closest dyslexia-friendly option to OpenDyslexic that is
-//                  actually on Google Fonts.
+//   - dyslexic  → OpenDyslexic. Bundled locally (SIL OFL) under
+//                  assets/fonts/ because the face isn't on Google Fonts.
+//                  Weighted bottoms anchor each letter, and mirror-pair
+//                  shapes (b/d, p/q, n/u) are individually tuned so they
+//                  don't flip on readers with dyslexia.
 //   - monospace → JetBrains Mono. Already in use across the UI; reusing it
 //                  here keeps the "just mono everything" path trivial.
 //
@@ -77,7 +78,7 @@ TextStyle readingStyleFor(ReadingFont font, TextStyle base) {
 
     case ReadingFont.dyslexic:
       {
-        return GoogleFonts.lexend(textStyle: base);
+        return base.copyWith(fontFamily: 'OpenDyslexic');
       }
 
     case ReadingFont.monospace:

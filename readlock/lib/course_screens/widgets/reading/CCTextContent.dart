@@ -35,8 +35,7 @@ class CCTextContentState extends State<CCTextContent> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: RLDS.backgroundDark,
+    return Padding(
       padding: RLDS.contentPaddingInsets,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
