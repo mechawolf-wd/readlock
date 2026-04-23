@@ -8,6 +8,7 @@ import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLUIStrings.dart';
 import 'package:readlock/design_system/RLButton.dart';
+import 'package:readlock/design_system/RLLunarBlur.dart';
 import 'package:readlock/design_system/RLUtility.dart';
 
 class RLDialog {
@@ -18,7 +19,10 @@ class RLDialog {
     bool isDismissible = true,
     Color? backgroundColor,
   }) {
-    final Color dialogColor = backgroundColor ?? RLDS.backgroundDark;
+    // Matches the Support bottom sheet's surface — RLDS.backgroundLight
+    // tinted by RLLunarBlur — so every modal in the app sits on the same
+    // frosted pane instead of a flat dark card.
+    final Color dialogColor = backgroundColor ?? RLDS.backgroundLight;
 
     showDialog(
       context: context,
@@ -53,7 +57,10 @@ class RLDialog {
   }
 }
 
-// * Dialog container with consistent styling
+// * Dialog container with consistent styling. The card itself is an
+// RLLunarBlur pane tinted with the caller's background colour — same
+// treatment as the Support bottom sheet — so dialogs read as frosted glass
+// over whatever the app painted before the modal opened.
 class DialogContainer extends StatelessWidget {
   final Widget child;
   final Color? backgroundColor;
@@ -62,21 +69,19 @@ class DialogContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Color dialogColor = backgroundColor ?? RLDS.backgroundDark;
-
-    final BoxDecoration dialogDecoration = BoxDecoration(
-      color: dialogColor,
-      borderRadius: RLDS.borderRadiusSmall,
-    );
+    final Color dialogColor = backgroundColor ?? RLDS.backgroundLight;
 
     return BackdropFilter(
       filter: ImageFilter.blur(sigmaX: RLDS.backdropBlurSigma, sigmaY: RLDS.backdropBlurSigma),
       child: Center(
-        child: Container(
-          margin: const EdgeInsets.symmetric(horizontal: RLDS.spacing24),
-          decoration: dialogDecoration,
-          clipBehavior: Clip.antiAlias,
-          child: Material(color: RLDS.transparent, child: child),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: RLDS.spacing24),
+          child: RLLunarBlur(
+            borderRadius: RLDS.borderRadiusSmall,
+            surfaceColor: dialogColor,
+            borderColor: RLDS.transparent,
+            child: Material(color: RLDS.transparent, child: child),
+          ),
         ),
       ),
     );

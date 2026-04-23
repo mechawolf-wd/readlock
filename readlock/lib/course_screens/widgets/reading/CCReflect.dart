@@ -10,6 +10,7 @@
 
 import 'package:flutter/material.dart' hide Typography;
 import 'package:readlock/models/CourseModel.dart';
+import 'package:readlock/design_system/RLLunarBlur.dart';
 import 'package:readlock/design_system/RLUtility.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
@@ -59,8 +60,7 @@ class CCReflectState extends State<CCReflect> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: RLDS.backgroundDark,
+    return Padding(
       padding: RLDS.contentPaddingInsets,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -102,15 +102,22 @@ class CCReflectState extends State<CCReflect> {
       isRevealed: isRevealed,
     );
 
-    // BlurOverlay inherits the centralised lyrics-blur token from its
-    // defaults — same blur the question's covered answers use, so the two
-    // widgets read as the same family.
+    // Same frosted LunarBlur surface the continue button in CCTextContent
+    // uses — each thinking point reads as a card on the same pane. The
+    // BlurOverlay still gates the tap-to-reveal typewriter until the reader
+    // taps, matching the question's covered-answer rhythm.
+    final Widget pointSurface = RLLunarBlur(
+      borderRadius: RLDS.borderRadiusMedium,
+      padding: RLDS.contentPaddingMediumInsets,
+      child: pointText,
+    );
+
     return GestureDetector(
       onTap: onEntryTap,
       behavior: HitTestBehavior.opaque,
       child: BlurOverlay(
         enabled: !isRevealed,
-        child: pointText,
+        child: pointSurface,
       ),
     );
   }

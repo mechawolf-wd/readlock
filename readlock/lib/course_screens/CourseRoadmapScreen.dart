@@ -29,6 +29,12 @@ const double roadmapTileBorderWidth = 3.0;
 const double lessonTitleWidth = 128.0;
 const double floatingBarBottomClearance = 180.0;
 
+// * Progress ring intro animation — the arc sweeps from 0 to the reader's
+// current progress on screen open with an ease-out curve so the reveal
+// reads as a single confident gesture rather than a linear fill.
+const Duration progressRingIntroDuration = Duration(milliseconds: 1200);
+const double roadmapTargetProgress = 0.35;
+
 class CourseRoadmapScreen extends StatefulWidget {
   final String courseId;
 
@@ -38,7 +44,8 @@ class CourseRoadmapScreen extends StatefulWidget {
   State<CourseRoadmapScreen> createState() => CourseRoadmapScreenState();
 }
 
-class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
+class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
+    with SingleTickerProviderStateMixin {
   JSONMap? courseData;
   JSONList courseSegments = [];
   JSONList courseLessons = [];
@@ -50,6 +57,8 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
 
   List<GlobalKey> lessonKeys = [];
   late ScrollController scrollController;
+  late AnimationController progressRingController;
+  late Animation<double> progressRingAnimation;
 
   double? screenHeight;
 
@@ -84,6 +93,19 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
     super.initState();
     scrollController = ScrollController();
     scrollController.addListener(handleScrollUpdate);
+
+    progressRingController = AnimationController(
+      vsync: this,
+      duration: progressRingIntroDuration,
+    );
+
+    progressRingAnimation = Tween<double>(
+      begin: 0.0,
+      end: roadmapTargetProgress,
+    ).animate(
+      CurvedAnimation(parent: progressRingController, curve: Curves.easeOutCubic),
+    );
+
     fetchCourseData();
   }
 
@@ -142,6 +164,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
   void dispose() {
     scrollController.removeListener(handleScrollUpdate);
     scrollController.dispose();
+    progressRingController.dispose();
     super.dispose();
   }
 
@@ -161,6 +184,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
       setState(() {
         isCourseDataLoading = false;
       });
+      progressRingController.forward();
     }
   }
 
@@ -419,15 +443,15 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen> {
           // frosted-dark disc underneath shows through instead of a ghost
           // ring. Painted at 0.5 opacity so it reads as an atmospheric
           // halo rather than competing with the book cover at its centre.
+          // Driven off progressRingAnimation so the arc sweeps from 0 to
+          // its target with an ease-out curve on screen open.
           SizedBox(
             width: progressRingSize,
             height: progressRingSize,
-            child: CustomPaint(
-              painter: ProgressArcPainter(
-                progress: 0.35,
-                color: accentColor.withValues(alpha: 0.75),
-                strokeWidth: progressRingStrokeWidth,
-              ),
+            child: AnimatedProgressArc(
+              animation: progressRingAnimation,
+              color: accentColor.withValues(alpha: 0.75),
+              strokeWidth: progressRingStrokeWidth,
             ),
           ),
 
@@ -917,13 +941,44 @@ class PathLessonNode extends StatelessWidget {
   }
 }
 
-// Custom painter for progress arc
-class ProgressArcPainter extends CustomPainter {
-  final double progress;
+// Thin CustomPaint wrapper that listens to the screen's intro animation and
+// hands its eased value to ProgressArcPainter via the painter's `repaint`
+// listenable — only the canvas repaints, the widget tree stays still.
+class AnimatedProgressArc extends StatelessWidget {
+  final Animation<double> animation;
   final Color color;
   final double strokeWidth;
 
-  ProgressArcPainter({required this.progress, required this.color, required this.strokeWidth});
+  const AnimatedProgressArc({
+    super.key,
+    required this.animation,
+    required this.color,
+    required this.strokeWidth,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return CustomPaint(
+      painter: ProgressArcPainter(
+        progressListenable: animation,
+        color: color,
+        strokeWidth: strokeWidth,
+      ),
+    );
+  }
+}
+
+// Custom painter for progress arc
+class ProgressArcPainter extends CustomPainter {
+  final Animation<double> progressListenable;
+  final Color color;
+  final double strokeWidth;
+
+  ProgressArcPainter({
+    required this.progressListenable,
+    required this.color,
+    required this.strokeWidth,
+  }) : super(repaint: progressListenable);
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -938,7 +993,7 @@ class ProgressArcPainter extends CustomPainter {
 
     // Start from top (-90 degrees) and sweep based on progress
     const double startAngle = -1.5708;
-    final double sweepAngle = 2 * 3.14159 * progress;
+    final double sweepAngle = 2 * 3.14159 * progressListenable.value;
 
     canvas.drawArc(
       Rect.fromCircle(center: center, radius: radius),
@@ -951,7 +1006,7 @@ class ProgressArcPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(ProgressArcPainter oldDelegate) {
-    final bool hasProgressChanged = progress != oldDelegate.progress;
+    final bool hasProgressChanged = progressListenable != oldDelegate.progressListenable;
     final bool hasColorChanged = color != oldDelegate.color;
 
     return hasProgressChanged || hasColorChanged;

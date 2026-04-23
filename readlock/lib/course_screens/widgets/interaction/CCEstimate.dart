@@ -63,7 +63,6 @@ class CCEstimateState extends State<CCEstimate>
     return SingleChildScrollView(
       child: Div.column(
         MainContent(),
-        color: RLDS.backgroundDark,
         padding: RLDS.contentPaddingInsets,
         crossAxisAlignment: CrossAxisAlignment.stretch,
       ),

@@ -32,7 +32,6 @@ class CCPause extends StatelessWidget {
       [
         MotivationalContent(motivationalTextStyle: motivationalTextStyle),
       ],
-      color: RLDS.backgroundDark,
       padding: RLDS.contentPaddingInsets,
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.center,

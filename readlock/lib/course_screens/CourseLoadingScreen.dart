@@ -5,8 +5,9 @@
 // source of truth.
 
 import 'package:flutter/material.dart' hide Typography;
+import 'package:readlock/design_system/RLLunarBlur.dart';
+import 'package:readlock/design_system/RLStarfieldBackground.dart';
 import 'package:readlock/design_system/RLUtility.dart';
-import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/screens/profile/BirdPicker.dart';
 
 // Larger than the default preview sizes so the loader reads as the hero
@@ -39,9 +40,25 @@ class CourseLoadingScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Matches CCTextContent's background: drifting starfield with a
+    // full-bleed LunarBlur pane frosting it, so the transition from
+    // loading → reading reads as one continuous surface.
     return Scaffold(
-      backgroundColor: RLDS.backgroundDark,
-      body: LoadingContent(),
+      backgroundColor: STARFIELD_BACKGROUND_COLOR,
+      body: Stack(
+        children: [
+          const Positioned.fill(child: RLStarfieldBackground()),
+
+          const Positioned.fill(
+            child: RLLunarBlur(
+              borderRadius: BorderRadius.zero,
+              child: SizedBox.expand(),
+            ),
+          ),
+
+          LoadingContent(),
+        ],
+      ),
     );
   }
 }

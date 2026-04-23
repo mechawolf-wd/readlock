@@ -4,6 +4,7 @@
 
 import 'package:flutter/material.dart' hide Typography;
 import 'package:readlock/models/CourseModel.dart';
+import 'package:readlock/design_system/RLLunarBlur.dart';
 import 'package:readlock/design_system/RLUtility.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
@@ -46,7 +47,6 @@ class CCQuestionState extends State<CCQuestion> {
 
         const Spacing.height(RLDS.spacing32),
       ],
-      color: RLDS.backgroundDark,
       padding: RLDS.contentPaddingInsets,
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.center,
@@ -99,10 +99,6 @@ class CCQuestionState extends State<CCQuestion> {
     final bool shouldShowCorrect = hasAnsweredQuestion && isCorrectAnswer && isSelected;
     final bool shouldShowIncorrect = hasAnsweredQuestion && !isCorrectAnswer && isSelected;
 
-    final BoxDecoration buttonDecoration = getOptionButtonDecoration(
-      shouldShowCorrect: shouldShowCorrect,
-    );
-
     final bool isMutedOption =
         hasAnsweredQuestion && !isCorrectAnswer && !isSelected;
 
@@ -123,8 +119,8 @@ class CCQuestionState extends State<CCQuestion> {
       isRevealed: isRevealed,
     );
 
-    final Widget optionRow = Div.row(
-      [
+    final Widget optionRowContent = Row(
+      children: [
         Expanded(child: optionText),
 
         RenderIf.condition(
@@ -133,9 +129,19 @@ class CCQuestionState extends State<CCQuestion> {
           const SizedBox.shrink(),
         ),
       ],
-      padding: RLDS.contentPaddingMediumInsets,
-      decoration: buttonDecoration,
+    );
+
+    // LunarBlur surface — matches the continue button in CCTextContent so
+    // every interactive pane on a swipe reads as the same frosted glass.
+    // The correct-answer state only recolours the text; the surface itself
+    // stays the same frosted pane.
+    final Widget optionRow = GestureDetector(
       onTap: tapHandler,
+      child: RLLunarBlur(
+        borderRadius: RLDS.borderRadiusMedium,
+        padding: RLDS.contentPaddingMediumInsets,
+        child: optionRowContent,
+      ),
     );
 
     // Non-selected options re-blur after a correct answer so the reader's
@@ -277,20 +283,6 @@ class CCQuestionState extends State<CCQuestion> {
       selectedAnswerIndex = selectedIndex;
       hasAnsweredQuestion = true;
     });
-  }
-
-  BoxDecoration getOptionButtonDecoration({required bool shouldShowCorrect}) {
-    if (shouldShowCorrect) {
-      return BoxDecoration(
-        color: RLDS.success.withValues(alpha: 0.1),
-        borderRadius: RLDS.borderRadiusMedium,
-      );
-    }
-
-    return BoxDecoration(
-      color: RLDS.backgroundLight,
-      borderRadius: RLDS.borderRadiusMedium,
-    );
   }
 
   Color getOptionTextColor({required bool shouldShowCorrect, required bool isMuted}) {

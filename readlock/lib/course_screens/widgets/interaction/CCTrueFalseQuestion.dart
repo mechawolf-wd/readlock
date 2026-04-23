@@ -72,7 +72,6 @@ class CCTrueFalseQuestionState extends State<CCTrueFalseQuestion> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       mainAxisAlignment: MainAxisAlignment.start,
       padding: RLDS.spacing24,
-      color: RLDS.backgroundDark,
     );
   }
 

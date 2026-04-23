@@ -29,8 +29,7 @@ class CCQuoteState extends State<CCQuote> {
       border: Border.all(color: RLDS.warning.withValues(alpha: 0.2)),
     );
 
-    return Container(
-      color: RLDS.backgroundDark,
+    return Padding(
       padding: const EdgeInsets.all(RLDS.spacing24),
       child: Center(
         child: Container(
