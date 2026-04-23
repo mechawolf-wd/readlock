@@ -81,7 +81,7 @@ class ExpandableCardState extends State<ExpandableCard> {
     return BoxDecoration(
       gradient: widget.gradient,
       color: fallbackColor,
-      borderRadius: BorderRadius.circular(16.0),
+      borderRadius: RLDS.borderRadiusMedium,
       border: cardBorder,
     );
   }
@@ -124,8 +124,8 @@ class ExpandableCardState extends State<ExpandableCard> {
     final Widget arrowIcon = ArrowIcon(titleColor);
 
     return Div.row(
-      [mainIcon, const Spacing.width(12), Expanded(child: titleText), arrowIcon],
-      padding: const EdgeInsets.all(20.0),
+      [mainIcon, const Spacing.width(RLDS.spacing12), Expanded(child: titleText), arrowIcon],
+      padding: const EdgeInsets.all(RLDS.spacing20),
       onTap: handleExpansionToggle,
     );
   }
@@ -160,17 +160,17 @@ class ExpandableCardState extends State<ExpandableCard> {
     return Container(
       height: 1.0,
       color: titleColor.withValues(alpha: 0.1),
-      margin: const EdgeInsets.symmetric(horizontal: 20.0),
+      margin: const EdgeInsets.symmetric(horizontal: RLDS.spacing20),
     );
   }
 
   Widget ContentContainer() {
     return Container(
       padding: const EdgeInsets.fromLTRB(
-        20.0,
-        16.0,
-        20.0,
-        20.0,
+        RLDS.spacing20,
+        RLDS.spacing16,
+        RLDS.spacing20,
+        RLDS.spacing20,
       ),
       child: widget.expandedContent,
     );

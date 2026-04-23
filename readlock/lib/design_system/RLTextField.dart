@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:pixelarticons/pixel.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
+import 'package:readlock/constants/RLUIStrings.dart';
 
 class RLTextField extends StatefulWidget {
   final TextEditingController? controller;
@@ -33,7 +34,7 @@ class RLTextField extends StatefulWidget {
     super.key,
     this.controller,
     this.focusNode,
-    this.hintText = 'Email',
+    this.hintText = RLUIStrings.EMAIL_PLACEHOLDER,
     this.onChanged,
     this.onEditingComplete,
     this.leadingIcon,
@@ -44,7 +45,7 @@ class RLTextField extends StatefulWidget {
     super.key,
     this.controller,
     this.focusNode,
-    this.hintText = 'Password',
+    this.hintText = RLUIStrings.PASSWORD_PLACEHOLDER,
     this.onChanged,
     this.onEditingComplete,
     this.leadingIcon,

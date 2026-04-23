@@ -71,7 +71,7 @@ class CCTrueFalseQuestionState extends State<CCTrueFalseQuestion> {
       ],
       crossAxisAlignment: CrossAxisAlignment.stretch,
       mainAxisAlignment: MainAxisAlignment.start,
-      padding: 24,
+      padding: RLDS.spacing24,
       color: RLDS.backgroundDark,
     );
   }
@@ -120,7 +120,7 @@ class CCTrueFalseQuestionState extends State<CCTrueFalseQuestion> {
         ),
       ),
 
-      const Spacing.width(16),
+      const Spacing.width(RLDS.spacing16),
 
       // False button
       Expanded(
@@ -168,7 +168,7 @@ class CCTrueFalseQuestionState extends State<CCTrueFalseQuestion> {
       child: Div.row([
         ButtonIcon,
 
-        const Spacing.width(12),
+        const Spacing.width(RLDS.spacing12),
 
         Flexible(child: RLTypography.bodyLarge(label, color: colors.textColor)),
       ], mainAxisAlignment: MainAxisAlignment.center),

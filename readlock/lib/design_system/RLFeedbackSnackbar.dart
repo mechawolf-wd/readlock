@@ -201,10 +201,10 @@ class AnimatedSnackbarState extends State<AnimatedSnackbar>
     final double bottomSafeArea = MediaQuery.of(context).padding.bottom;
 
     final EdgeInsets contentPadding = EdgeInsets.fromLTRB(
-      20,
-      16,
-      20,
-      16 + bottomSafeArea + 8,
+      RLDS.spacing20,
+      RLDS.spacing16,
+      RLDS.spacing20,
+      RLDS.spacing16 + bottomSafeArea + RLDS.spacing8,
     );
 
     return Positioned(
@@ -240,7 +240,7 @@ class CorrectAnswerContent extends StatelessWidget {
     return Div.row([
       StarIcon,
 
-      const Spacing.width(12),
+      const Spacing.width(RLDS.spacing12),
 
       Expanded(child: RLTypography.bodyLarge(RLUIStrings.CORRECT_ANSWER_MESSAGE, color: RLDS.white)),
 
@@ -273,7 +273,7 @@ class WhyButton extends StatelessWidget {
     return GestureDetector(
       onTap: () => handleTap(context),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+        padding: const EdgeInsets.symmetric(horizontal: RLDS.spacing8, vertical: RLDS.spacing4),
         child: Text(RLUIStrings.WHY_BUTTON_LABEL, style: buttonStyle),
       ),
     );
@@ -298,7 +298,7 @@ class WrongAnswerContent extends StatelessWidget {
     return Div.row([
       LightbulbIcon,
 
-      const Spacing.width(12),
+      const Spacing.width(RLDS.spacing12),
 
       Expanded(child: RLTypography.bodyLarge(RLUIStrings.WRONG_ANSWER_TITLE, color: RLDS.white)),
 
@@ -331,7 +331,7 @@ class HintButton extends StatelessWidget {
     return GestureDetector(
       onTap: () => handleTap(context),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+        padding: const EdgeInsets.symmetric(horizontal: RLDS.spacing8, vertical: RLDS.spacing4),
         child: Text(RLUIStrings.HINT_BUTTON_LABEL, style: buttonStyle),
       ),
     );

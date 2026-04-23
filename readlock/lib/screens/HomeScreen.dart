@@ -172,7 +172,7 @@ class HomeScreenState extends State<HomeScreen> {
       child: Div.row([
         ShuffleIcon,
 
-        const Spacing.width(12.0),
+        const Spacing.width(RLDS.spacing12),
 
         Expanded(child: RLTypography.bodyLarge(RLUIStrings.SURPRISE_ME_LABEL)),
 

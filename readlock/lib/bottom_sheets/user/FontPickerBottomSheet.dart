@@ -119,7 +119,7 @@ class FontPickerSheetState extends State<FontPickerSheet> {
   // ReadingFontDemo / ColoredTextDemo) so the picker reads as the same
   // family of card: 12px padding all-round, 8px border radius.
   static const EdgeInsets optionCardPadding = EdgeInsets.all(RLDS.spacing12);
-  static final BorderRadius optionCardRadius = BorderRadius.circular(RLDS.spacing8);
+  static final BorderRadius optionCardRadius = RLDS.borderRadiusXSmall;
 
   // Sample-line style mirrors exactly what CCTextContent renders via
   // ProgressiveText.getConsistentTextStyle: readingMedium promoted to

@@ -34,7 +34,7 @@ class RLStatsCard extends StatelessWidget {
           RLTypography.headingMedium(title, color: RLDS.white),
         ]),
 
-        const Spacing.height(20),
+        const Spacing.height(RLDS.spacing20),
 
         // Stats row
         StatsRow(),
@@ -90,7 +90,7 @@ class StatItemWidget extends StatelessWidget {
       Div.row([
         RLTypography.headingLarge(item.value, color: RLDS.white),
 
-        const Spacing.width(4),
+        const Spacing.width(RLDS.spacing4),
 
         RLTypography.bodyMedium(
           item.unit,
@@ -98,7 +98,7 @@ class StatItemWidget extends StatelessWidget {
         ),
       ], mainAxisAlignment: MainAxisAlignment.center),
 
-      const Spacing.height(4),
+      const Spacing.height(RLDS.spacing4),
 
       RLTypography.bodyMedium(
         item.label,

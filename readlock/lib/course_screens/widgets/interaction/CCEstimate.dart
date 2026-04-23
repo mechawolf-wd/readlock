@@ -76,15 +76,15 @@ class CCEstimateState extends State<CCEstimate>
     return [
       QuestionText(),
 
-      const Spacing.height(20),
+      const Spacing.height(RLDS.spacing20),
 
       CurrentEstimateDisplay(),
 
-      const Spacing.height(16),
+      const Spacing.height(RLDS.spacing16),
 
       EstimationSlider(),
 
-      const Spacing.height(20),
+      const Spacing.height(RLDS.spacing20),
 
       SubmitButton(),
 
@@ -94,11 +94,11 @@ class CCEstimateState extends State<CCEstimate>
 
   Widget ResultsContent() {
     return Div.column([
-      const Spacing.height(16),
+      const Spacing.height(RLDS.spacing16),
 
       ResultSection(),
 
-      const Spacing.height(16),
+      const Spacing.height(RLDS.spacing16),
 
       ExplanationSection(),
     ]);
@@ -115,7 +115,7 @@ class CCEstimateState extends State<CCEstimate>
         color: RLDS.textPrimary.withValues(alpha: 0.7),
       ),
 
-      const Spacing.width(12),
+      const Spacing.width(RLDS.spacing12),
 
       RLTypography.headingLarge('${currentEstimate.round()}', color: RLDS.info),
 
@@ -144,7 +144,7 @@ class CCEstimateState extends State<CCEstimate>
         // Min/Max labels
         SliderLabelsRow(),
       ],
-      padding: const [16, 0],
+      padding: const [RLDS.spacing16, RLDS.spacing0],
     );
   }
 
@@ -159,7 +159,7 @@ class CCEstimateState extends State<CCEstimate>
 
         RLTypography.bodySmall(RLUIStrings.ESTIMATE_MAX_LABEL, color: labelColor),
       ],
-      padding: const [12, 0],
+      padding: const [RLDS.spacing12, RLDS.spacing0],
     );
   }
 
@@ -190,7 +190,7 @@ class CCEstimateState extends State<CCEstimate>
         [
           TouchAppIcon,
 
-          const Spacing.width(8),
+          const Spacing.width(RLDS.spacing8),
 
           RLTypography.bodyMedium(RLUIStrings.ESTIMATE_SUBMIT_LABEL, color: RLDS.white),
         ],
@@ -211,13 +211,13 @@ class CCEstimateState extends State<CCEstimate>
       child: Div.column([
         // Result feedback card
         Container(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(RLDS.spacing16),
           decoration: getResultCardDecoration(isClose),
           child: Div.column([
             // Result header
             getResultHeader(isClose, difference),
 
-            const Spacing.height(12),
+            const Spacing.height(RLDS.spacing12),
 
             // Comparison display
             getComparisonDisplay(difference),
@@ -231,7 +231,7 @@ class CCEstimateState extends State<CCEstimate>
     if (isClose) {
       return Div.row([
         CheckIcon,
-        const Spacing.width(12),
+        const Spacing.width(RLDS.spacing12),
         RLTypography.headingMedium(RLUIStrings.ESTIMATE_EXCELLENT_LABEL, color: RLDS.success),
       ]);
     }
@@ -243,7 +243,7 @@ class CCEstimateState extends State<CCEstimate>
     );
 
     final bool isLargeDifference = difference > 30;
-    String headerText = 'Getting closer!';
+    String headerText = RLUIStrings.ESTIMATE_GETTING_CLOSER_LABEL;
 
     if (isLargeDifference) {
       headerText = RLUIStrings.ESTIMATE_KEEP_LEARNING_LABEL;
@@ -252,11 +252,11 @@ class CCEstimateState extends State<CCEstimate>
     return Div.column([
       Div.row([
         LightbulbIcon,
-        const Spacing.width(12),
+        const Spacing.width(RLDS.spacing12),
         RLTypography.headingMedium(headerText, color: RLDS.warning),
       ]),
 
-      const Spacing.height(8),
+      const Spacing.height(RLDS.spacing8),
 
       RLTypography.bodyMedium(
         getHintMessage(difference),
@@ -284,7 +284,7 @@ class CCEstimateState extends State<CCEstimate>
       Expanded(
         child: Div.column([
           Text(RLUIStrings.ESTIMATE_COMPARISON_YOUR_LABEL, style: comparisonLabelStyle, textAlign: TextAlign.center),
-          const Spacing.height(4),
+          const Spacing.height(RLDS.spacing4),
           RLTypography.headingMedium(
             '${currentEstimate.round()}%',
             color: RLDS.textPrimary,
@@ -300,7 +300,7 @@ class CCEstimateState extends State<CCEstimate>
       Expanded(
         child: Div.column([
           Text(RLUIStrings.ESTIMATE_COMPARISON_ACTUAL_LABEL, style: comparisonLabelStyle, textAlign: TextAlign.center),
-          const Spacing.height(4),
+          const Spacing.height(RLDS.spacing4),
           RLTypography.headingMedium(
             '${getCorrectPercentage()}%',
             color: RLDS.success,
@@ -336,7 +336,7 @@ class CCEstimateState extends State<CCEstimate>
 
     return BoxDecoration(
       color: backgroundColor,
-      borderRadius: BorderRadius.circular(16),
+      borderRadius: RLDS.borderRadiusMedium,
       border: Border.all(color: borderColor, width: 1.5),
     );
   }
@@ -345,10 +345,10 @@ class CCEstimateState extends State<CCEstimate>
     final bool isLargeDifference = difference > 30;
 
     if (isLargeDifference) {
-      return 'Tip: Consider the context and real-world factors that might influence this statistic.';
+      return RLUIStrings.ESTIMATE_LARGE_DIFF_HINT;
     }
 
-    return 'Close! Think about the specific details mentioned in the text.';
+    return RLUIStrings.ESTIMATE_CLOSE_HINT;
   }
 
   // Action methods
@@ -379,16 +379,16 @@ class CCEstimateState extends State<CCEstimate>
             children: [
               StarIcon,
 
-              const Spacing.width(8),
+              const Spacing.width(RLDS.spacing8),
 
-              RLTypography.bodyLarge('+8 experience', color: RLDS.white),
+              RLTypography.bodyLarge(RLUIStrings.ESTIMATE_EXPERIENCE_REWARD, color: RLDS.white),
             ],
           ),
           backgroundColor: RLDS.success,
           duration: const Duration(seconds: 2),
           behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-          margin: const EdgeInsets.all(16),
+          shape: RoundedRectangleBorder(borderRadius: RLDS.borderRadiusXSmall),
+          margin: const EdgeInsets.all(RLDS.spacing16),
         ),
       );
     }
@@ -396,7 +396,7 @@ class CCEstimateState extends State<CCEstimate>
 }
 
 class Style {
-  static const EdgeInsets sliderPadding = EdgeInsets.symmetric(horizontal: 16);
+  static const EdgeInsets sliderPadding = EdgeInsets.symmetric(horizontal: RLDS.spacing16);
 
   static SliderThemeData getSliderTheme() {
     return SliderThemeData(
@@ -414,6 +414,6 @@ class Style {
 
   static final BoxDecoration submitButtonDecoration = BoxDecoration(
     color: RLDS.info,
-    borderRadius: BorderRadius.circular(16),
+    borderRadius: RLDS.borderRadiusMedium,
   );
 }

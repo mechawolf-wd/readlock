@@ -40,32 +40,32 @@ class ReaderPassScreenState extends State<ReaderPassScreen> {
 
             // Main content with padding
             Padding(
-              padding: const EdgeInsets.all(24),
+              padding: const EdgeInsets.all(RLDS.spacing24),
               child: Div.column([
                 // Title and subtitle
                 TitleSection(),
 
-                const Spacing.height(32),
+                const Spacing.height(RLDS.spacing32),
 
                 // Discount badge
                 DiscountBadge(),
 
-                const Spacing.height(24),
+                const Spacing.height(RLDS.spacing24),
 
                 // Pricing section
                 PricingSection(),
 
-                const Spacing.height(32),
+                const Spacing.height(RLDS.spacing32),
 
                 // Benefits list
                 BenefitsSection(),
 
-                const Spacing.height(32),
+                const Spacing.height(RLDS.spacing32),
 
                 // Subscribe button
                 SubscribeButton(),
 
-                const Spacing.height(24),
+                const Spacing.height(RLDS.spacing24),
               ], crossAxisAlignment: CrossAxisAlignment.stretch),
             ),
           ], crossAxisAlignment: CrossAxisAlignment.stretch),
@@ -79,9 +79,9 @@ class ReaderPassScreenState extends State<ReaderPassScreen> {
 
     return Div.row(
       [
-        Div.row([BackArrowIcon], padding: 8, radius: backButtonRadius, onTap: handleBackButton),
+        Div.row([BackArrowIcon], padding: RLDS.spacing8, radius: backButtonRadius, onTap: handleBackButton),
       ],
-      padding: 20,
+      padding: RLDS.spacing20,
     );
   }
 
@@ -89,7 +89,7 @@ class ReaderPassScreenState extends State<ReaderPassScreen> {
     return Div.column([
       RLTypography.headingLarge(RLUIStrings.READER_PASS_TITLE, textAlign: TextAlign.center),
 
-      const Spacing.height(8),
+      const Spacing.height(RLDS.spacing8),
 
       RLTypography.bodyLarge(
         RLUIStrings.READER_PASS_SUBTITLE,
@@ -102,13 +102,13 @@ class ReaderPassScreenState extends State<ReaderPassScreen> {
   Widget DiscountBadge() {
     final BoxDecoration badgeDecoration = BoxDecoration(
       color: RLDS.success,
-      borderRadius: BorderRadius.circular(8),
+      borderRadius: RLDS.borderRadiusXSmall,
     );
 
     return Center(
       child: Div.column(
         [RLTypography.headingMedium(RLUIStrings.DISCOUNT_TEXT, color: RLDS.white)],
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        padding: const EdgeInsets.symmetric(horizontal: RLDS.spacing16, vertical: RLDS.spacing8),
         decoration: badgeDecoration,
       ),
     );
@@ -117,7 +117,7 @@ class ReaderPassScreenState extends State<ReaderPassScreen> {
   Widget PricingSection() {
     final BoxDecoration pricingCardDecoration = BoxDecoration(
       color: RLDS.backgroundLight.withValues(alpha: 0.08),
-      borderRadius: BorderRadius.circular(16),
+      borderRadius: RLDS.borderRadiusMedium,
       border: Border.all(color: RLDS.success.withValues(alpha: 0.3)),
     );
 
@@ -130,7 +130,7 @@ class ReaderPassScreenState extends State<ReaderPassScreen> {
           textAlign: TextAlign.center,
         ),
 
-        const Spacing.height(8),
+        const Spacing.height(RLDS.spacing8),
 
         // Discounted price
         Div.row([
@@ -140,7 +140,7 @@ class ReaderPassScreenState extends State<ReaderPassScreen> {
         ], mainAxisAlignment: MainAxisAlignment.center),
       ],
       crossAxisAlignment: CrossAxisAlignment.center,
-      padding: 24,
+      padding: RLDS.spacing24,
       decoration: pricingCardDecoration,
     );
   }
@@ -172,7 +172,7 @@ class ReaderPassScreenState extends State<ReaderPassScreen> {
     return Div.column([
       RLTypography.headingMedium(RLUIStrings.READER_PASS_FEATURES_TITLE),
 
-      const Spacing.height(16),
+      const Spacing.height(RLDS.spacing16),
 
       Div.column(BenefitCards(benefits), crossAxisAlignment: CrossAxisAlignment.start),
     ], crossAxisAlignment: CrossAxisAlignment.start);
@@ -187,27 +187,27 @@ class ReaderPassScreenState extends State<ReaderPassScreen> {
 
     final BoxDecoration iconDecoration = BoxDecoration(
       color: RLDS.success.withValues(alpha: 0.1),
-      borderRadius: BorderRadius.circular(8),
+      borderRadius: RLDS.borderRadiusXSmall,
     );
 
     return RLCard.subtle(
       borderColor: RLDS.success.withValues(alpha: 0.2),
-      padding: const EdgeInsets.all(16),
-      margin: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.all(RLDS.spacing16),
+      margin: const EdgeInsets.only(bottom: RLDS.spacing12),
       child: Div.row([
         Div.column(
           [BenefitIcon],
-          padding: 8,
+          padding: RLDS.spacing8,
           decoration: iconDecoration,
         ),
 
-        const Spacing.width(16),
+        const Spacing.width(RLDS.spacing16),
 
         Expanded(
           child: Div.column([
             RLTypography.bodyLarge(benefitTitle),
 
-            const Spacing.height(4),
+            const Spacing.height(RLDS.spacing4),
 
             RLTypography.bodyMedium(benefitDescription, color: RLDS.textSecondary),
           ], crossAxisAlignment: CrossAxisAlignment.start),
@@ -229,7 +229,7 @@ class ReaderPassScreenState extends State<ReaderPassScreen> {
   Widget SubscribeButton() {
     final BoxDecoration buttonDecoration = BoxDecoration(
       color: RLDS.success,
-      borderRadius: BorderRadius.circular(12),
+      borderRadius: RLDS.borderRadiusSmall,
     );
 
     return Div.column(
@@ -241,7 +241,7 @@ class ReaderPassScreenState extends State<ReaderPassScreen> {
         ),
       ],
       width: 'full',
-      padding: const EdgeInsets.symmetric(vertical: 16),
+      padding: const EdgeInsets.symmetric(vertical: RLDS.spacing16),
       decoration: buttonDecoration,
       onTap: handleSubscribe,
     );

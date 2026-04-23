@@ -15,8 +15,8 @@ import 'package:readlock/course_screens/CourseContentViewer.dart';
 // LunarBlur button geometry — matches RLButton's default padding so the
 // continue pill reads the same size as the primary buttons elsewhere.
 const EdgeInsets CONTINUE_BUTTON_PADDING = EdgeInsets.symmetric(
-  vertical: 16,
-  horizontal: 24,
+  vertical: RLDS.spacing16,
+  horizontal: RLDS.spacing24,
 );
 
 class CCTextContent extends StatefulWidget {

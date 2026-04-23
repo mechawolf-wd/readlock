@@ -18,6 +18,7 @@ class RLUIStrings {
 
   // * Confirmation dialog — shared
   static const String CANCEL_LABEL = 'Cancel';
+  static const String DIALOG_DEFAULT_ACTION_LABEL = 'OK';
 
   // * Reader Pass Screen
   static const String READER_PASS_TITLE = 'Reader Pass';
@@ -117,6 +118,9 @@ class RLUIStrings {
   // * Course Content Factory
   static const String UNKNOWN_CONTENT_TYPE_MESSAGE = 'Unknown content type: ';
 
+  // * Progressive Text image fallback
+  static const String IMAGE_NOT_FOUND_PREFIX = 'Image not found: ';
+
   // * Reflection Question
   static const String REFLECTION_ASPECTS_LABEL = 'Consider these aspects:';
   static const String REFLECTION_SWIPE_HINT = 'Swipe right to confirm';
@@ -156,6 +160,7 @@ class RLUIStrings {
   static const String ROADMAP_DEFAULT_AUTHOR = 'Unknown Author';
   static const String ROADMAP_SUBTITLE = 'Master design psychology fundamentals';
   static const String ROADMAP_CONTINUE_LABEL = 'Continue';
+  static const String ROADMAP_DEFAULT_LESSON_LABEL = 'Lesson';
 
   // * Feedback Snackbar Buttons
   static const String WHY_BUTTON_LABEL = 'Why?';
@@ -166,6 +171,8 @@ class RLUIStrings {
   static const String FALSE_LABEL = 'False';
   static const String DEFAULT_WRONG_ANSWER_HINT =
       'Think about the design principle and try again.';
+  static const String QUESTION_DEFAULT_WRONG_ANSWER_HINT =
+      'Try again and think about the design principle.';
 
   // * Explanation
   static const String EXPLANATION_LABEL = 'Explanation';
@@ -175,6 +182,12 @@ class RLUIStrings {
   static const String ESTIMATE_SUBMIT_LABEL = 'Submit Estimate';
   static const String ESTIMATE_EXCELLENT_LABEL = 'Excellent estimate!';
   static const String ESTIMATE_KEEP_LEARNING_LABEL = 'Keep learning!';
+  static const String ESTIMATE_GETTING_CLOSER_LABEL = 'Getting closer!';
+  static const String ESTIMATE_LARGE_DIFF_HINT =
+      'Tip: Consider the context and real-world factors that might influence this statistic.';
+  static const String ESTIMATE_CLOSE_HINT =
+      'Close! Think about the specific details mentioned in the text.';
+  static const String ESTIMATE_EXPERIENCE_REWARD = '+8 experience';
   static const String ESTIMATE_MIN_LABEL = '0%';
   static const String ESTIMATE_MAX_LABEL = '100%';
   static const String ESTIMATE_COMPARISON_YOUR_LABEL = 'YOUR ESTIMATE';
@@ -257,15 +270,15 @@ class RLUIStrings {
 
   // * Auth Error Messages
   static const String ERROR_INVALID_CREDENTIALS =
-      'That email and password don\'t match. Give it another try.';
+      'The email and password don\'t match up. Give it another try.';
   static const String ERROR_EMAIL_IN_USE = 'An account with this email already exists.';
-  static const String ERROR_WEAK_PASSWORD = 'That password needs a little more strength.';
+  static const String ERROR_WEAK_PASSWORD = 'A stronger password would be better.';
   static const String ERROR_INVALID_EMAIL = 'Please enter a valid email address.';
   static const String ERROR_NETWORK = 'Something\'s off with the connection. Please try again.';
   static const String ERROR_TOO_MANY_REQUESTS =
-      'A few too many tries. Give it a moment, then try again.';
+      'Let\'s take a short breather, then try again.';
   static const String ERROR_REQUIRES_RECENT_LOGIN = 'Please sign in again to continue.';
-  static const String ERROR_USER_DISABLED = 'This account is no longer active.';
+  static const String ERROR_USER_DISABLED = 'This account isn\'t active anymore.';
   static const String ERROR_UNKNOWN = 'Something went wrong on our end. Please try again.';
   static const String ERROR_NO_USER_LOGGED_IN = 'No one is signed in yet.';
   static const String ERROR_ACCOUNT_DELETION_FAILED =

@@ -41,7 +41,7 @@ class BirdPickerSheetState extends State<BirdPickerSheet> {
   // No top inset — RLBottomSheet's grabber block already reserves
   // RLDS.spacing16 below the grabber. Duplicating it here was the anti-
   // pattern the sheet wrapper is meant to kill.
-  static const EdgeInsets headerPadding = EdgeInsets.fromLTRB(24, 0, 24, 0);
+  static const EdgeInsets headerPadding = EdgeInsets.fromLTRB(RLDS.spacing24, RLDS.spacing0, RLDS.spacing24, RLDS.spacing0);
   static const EdgeInsets bodyPadding = EdgeInsets.zero;
 
   @override
@@ -104,7 +104,7 @@ class BirdPickerSheetState extends State<BirdPickerSheet> {
     return Div.row([
       HeaderIcon,
 
-      const Spacing.width(12),
+      const Spacing.width(RLDS.spacing12),
 
       RLTypography.headingMedium(RLUIStrings.BIRD_PICKER_TITLE),
     ], padding: headerPadding);

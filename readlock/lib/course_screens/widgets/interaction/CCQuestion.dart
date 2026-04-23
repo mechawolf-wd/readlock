@@ -7,6 +7,7 @@ import 'package:readlock/models/CourseModel.dart';
 import 'package:readlock/design_system/RLUtility.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
+import 'package:readlock/constants/RLUIStrings.dart';
 import 'package:readlock/design_system/RLFeedbackSnackbar.dart';
 import 'package:readlock/services/feedback/HapticsService.dart';
 import 'package:readlock/services/feedback/SoundService.dart';
@@ -253,7 +254,7 @@ class CCQuestionState extends State<CCQuestion> {
       return widget.content.hint!;
     }
 
-    return 'Try again and think about the design principle.';
+    return RLUIStrings.QUESTION_DEFAULT_WRONG_ANSWER_HINT;
   }
 
   void showCorrectAnswerFeedback(int optionIndex) {

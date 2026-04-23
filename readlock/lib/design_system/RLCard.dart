@@ -4,6 +4,7 @@
 // subtle uses a lighter tint for list items that should stay recessive.
 
 import 'package:flutter/material.dart';
+import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/design_system/RLLunarBlur.dart';
 
 // Tint opacities for the two variants — both share the same blur sigma.
@@ -40,7 +41,7 @@ class RLCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final EdgeInsets resolvedPadding = padding ?? const EdgeInsets.all(12);
+    final EdgeInsets resolvedPadding = padding ?? const EdgeInsets.all(RLDS.spacing12);
     final bool isElevated = variant == RLCardVariant.elevated;
 
     final double resolvedAlpha = isElevated

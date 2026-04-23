@@ -296,7 +296,7 @@ class LoginSheetState extends State<LoginSheet> {
         ),
       ],
       mainAxisAlignment: MainAxisAlignment.center,
-      padding: const EdgeInsets.only(top: 20, bottom: 4),
+      padding: const EdgeInsets.only(top: RLDS.spacing20, bottom: RLDS.spacing4),
     );
   }
 
@@ -340,7 +340,7 @@ class LoginSheetState extends State<LoginSheet> {
       ),
     ],
       crossAxisAlignment: CrossAxisAlignment.center,
-      padding: const EdgeInsets.fromLTRB(24, 24, 24, 16),
+      padding: const EdgeInsets.fromLTRB(RLDS.spacing24, RLDS.spacing24, RLDS.spacing24, RLDS.spacing16),
     );
   }
 
@@ -348,10 +348,10 @@ class LoginSheetState extends State<LoginSheet> {
     return Div.row([
       Expanded(child: AppleLoginButton()),
 
-      const Spacing.width(12),
+      const Spacing.width(RLDS.spacing12),
 
       Expanded(child: GoogleLoginButton()),
-    ], padding: const EdgeInsets.symmetric(horizontal: 24));
+    ], padding: const EdgeInsets.symmetric(horizontal: RLDS.spacing24));
   }
 
   Widget AppleLoginButton() {
@@ -359,7 +359,7 @@ class LoginSheetState extends State<LoginSheet> {
 
     final BoxDecoration buttonDecoration = BoxDecoration(
       color: RLDS.black,
-      borderRadius: BorderRadius.circular(12),
+      borderRadius: RLDS.borderRadiusSmall,
     );
 
     return GestureDetector(
@@ -370,7 +370,7 @@ class LoginSheetState extends State<LoginSheet> {
         child: Div.row([
           AppleIcon,
 
-          const Spacing.width(8),
+          const Spacing.width(RLDS.spacing8),
 
           RLTypography.bodyMedium(RLUIStrings.APPLE_LOGIN_LABEL, color: RLDS.white),
         ], mainAxisAlignment: MainAxisAlignment.center),
@@ -381,7 +381,7 @@ class LoginSheetState extends State<LoginSheet> {
   Widget GoogleLoginButton() {
     final BoxDecoration buttonDecoration = BoxDecoration(
       color: RLDS.backgroundDark,
-      borderRadius: BorderRadius.circular(12),
+      borderRadius: RLDS.borderRadiusSmall,
       border: Border.all(color: RLDS.textPrimary.withValues(alpha: 0.1)),
     );
 
@@ -393,7 +393,7 @@ class LoginSheetState extends State<LoginSheet> {
         child: Div.row([
           GoogleIcon(),
 
-          const Spacing.width(8),
+          const Spacing.width(RLDS.spacing8),
 
           RLTypography.bodyMedium(RLUIStrings.GOOGLE_LOGIN_LABEL),
         ], mainAxisAlignment: MainAxisAlignment.center),
@@ -413,10 +413,10 @@ class LoginSheetState extends State<LoginSheet> {
 
       Div.row([
         RLTypography.bodyMedium(RLUIStrings.OR_DIVIDER_LABEL, color: RLDS.textSecondary),
-      ], padding: const EdgeInsets.symmetric(horizontal: 16)),
+      ], padding: const EdgeInsets.symmetric(horizontal: RLDS.spacing16)),
 
       Expanded(child: Container(height: 1, color: dividerColor)),
-    ], padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20));
+    ], padding: const EdgeInsets.symmetric(horizontal: RLDS.spacing24, vertical: RLDS.spacing20));
   }
 
   Widget FormSection() {
@@ -424,7 +424,7 @@ class LoginSheetState extends State<LoginSheet> {
       RLTextField.email(controller: emailController, focusNode: emailFocusNode),
 
       PasswordFieldAnimated(),
-    ], padding: const EdgeInsets.symmetric(horizontal: 24));
+    ], padding: const EdgeInsets.symmetric(horizontal: RLDS.spacing24));
   }
 
   Widget PasswordFieldAnimated() {
@@ -453,7 +453,7 @@ class LoginSheetState extends State<LoginSheet> {
 
   Widget PasswordField() {
     return Div.column([
-      const Spacing.height(12),
+      const Spacing.height(RLDS.spacing12),
 
       RLTextField.password(controller: passwordController, focusNode: passwordFocusNode),
     ]);
@@ -468,7 +468,7 @@ class LoginSheetState extends State<LoginSheet> {
     return RLButton.primary(
       label: label,
       color: actionColor,
-      margin: const EdgeInsets.fromLTRB(24, 20, 24, 8),
+      margin: const EdgeInsets.fromLTRB(RLDS.spacing24, RLDS.spacing20, RLDS.spacing24, RLDS.spacing8),
       onTap: asTapHandler(handleEmailPasswordSubmit),
     );
   }
@@ -521,7 +521,7 @@ class LoginSheetState extends State<LoginSheet> {
         ),
       ],
       mainAxisAlignment: MainAxisAlignment.center,
-      padding: const EdgeInsets.symmetric(vertical: 12),
+      padding: const EdgeInsets.symmetric(vertical: RLDS.spacing12),
     );
   }
 

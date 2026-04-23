@@ -6,6 +6,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/constants/RLTypography.dart';
+import 'package:readlock/constants/RLUIStrings.dart';
 import 'package:readlock/design_system/RLButton.dart';
 import 'package:readlock/design_system/RLUtility.dart';
 
@@ -34,7 +35,7 @@ class RLDialog {
     BuildContext context, {
     required String title,
     required String message,
-    String buttonLabel = 'OK',
+    String buttonLabel = RLUIStrings.DIALOG_DEFAULT_ACTION_LABEL,
     Color? buttonColor,
   }) {
     final Color actionColor = buttonColor ?? RLDS.info;

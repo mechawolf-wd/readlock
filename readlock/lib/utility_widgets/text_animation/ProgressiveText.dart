@@ -4,12 +4,13 @@
 import 'package:flutter/material.dart' hide Typography;
 import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/constants/RLTypography.dart';
+import 'package:readlock/constants/RLUIStrings.dart';
 import 'package:readlock/design_system/RLUtility.dart';
 import 'package:readlock/utility_widgets/visual_effects/BlurOverlay.dart';
 import 'package:readlock/services/feedback/HapticsService.dart';
 import 'package:readlock/services/feedback/SoundService.dart';
 
-const double progressiveTextDefaultBottomSpacing = 8.0;
+const double progressiveTextDefaultBottomSpacing = RLDS.spacing8;
 const Duration progressiveTextAutoRevealDelay = Duration(milliseconds: 7);
 const Duration progressiveTextDoubleTapTimeout = Duration(milliseconds: 500);
 
@@ -554,7 +555,7 @@ class ProgressiveTextState extends State<ProgressiveText> with TickerProviderSta
     }
 
     // Extract style constants above widget (rule #16)
-    const double buttonMarginTop = 16.0;
+    const double buttonMarginTop = RLDS.spacing16;
     const double minButtonHeight = 120.0;
 
     // Extract margin for clarity
@@ -699,10 +700,9 @@ class ProgressiveTextState extends State<ProgressiveText> with TickerProviderSta
     // Extract styling above method
     const double maxImageHeight = 200.0;
     const double errorImageHeight = 100.0;
-    const double imageSpacing = 16.0;
-    const double cornerRadius = 8.0;
+    const double imageSpacing = RLDS.spacing16;
 
-    final BorderRadius imageBorderRadius = BorderRadius.circular(cornerRadius);
+    final BorderRadius imageBorderRadius = RLDS.borderRadiusXSmall;
 
     final BoxDecoration errorContainerDecoration = BoxDecoration(
       color: RLDS.backgroundLight,
@@ -744,7 +744,7 @@ class ProgressiveTextState extends State<ProgressiveText> with TickerProviderSta
                       decoration: errorContainerDecoration,
                       child: Center(
                         child: Text(
-                          'Image not found: $imageAssetPath',
+                          '${RLUIStrings.IMAGE_NOT_FOUND_PREFIX}$imageAssetPath',
                           style: errorTextStyle,
                           textAlign: TextAlign.center,
                         ),
@@ -1008,10 +1008,9 @@ class CompletedSentenceWidget extends StatelessWidget {
     // Extract styling above method
     const double maxImageHeight = 200.0;
     const double errorImageHeight = 100.0;
-    const double imageSpacing = 16.0;
-    const double cornerRadius = 8.0;
+    const double imageSpacing = RLDS.spacing16;
 
-    final BorderRadius imageBorderRadius = BorderRadius.circular(cornerRadius);
+    final BorderRadius imageBorderRadius = RLDS.borderRadiusXSmall;
 
     final BoxDecoration errorContainerDecoration = BoxDecoration(
       color: RLDS.backgroundLight,
@@ -1086,7 +1085,7 @@ class CompletedSentenceWidget extends StatelessWidget {
       decoration: errorContainerDecoration,
       child: Center(
         child: Text(
-          'Image not found: $imageAssetPath',
+          '${RLUIStrings.IMAGE_NOT_FOUND_PREFIX}$imageAssetPath',
           style: errorTextStyle,
           textAlign: TextAlign.center,
         ),

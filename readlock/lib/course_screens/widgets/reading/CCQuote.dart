@@ -25,25 +25,25 @@ class CCQuoteState extends State<CCQuote> {
   Widget build(BuildContext context) {
     final BoxDecoration quoteContainerDecoration = BoxDecoration(
       color: RLDS.backgroundLight,
-      borderRadius: BorderRadius.circular(16),
+      borderRadius: RLDS.borderRadiusMedium,
       border: Border.all(color: RLDS.warning.withValues(alpha: 0.2)),
     );
 
     return Container(
       color: RLDS.backgroundDark,
-      padding: const EdgeInsets.all(24),
+      padding: const EdgeInsets.all(RLDS.spacing24),
       child: Center(
         child: Container(
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.all(RLDS.spacing20),
           decoration: quoteContainerDecoration,
           child: Div.column([
             QuoteHeader(),
 
-            const Spacing.height(16),
+            const Spacing.height(RLDS.spacing16),
 
             QuoteText(),
 
-            const Spacing.height(12),
+            const Spacing.height(RLDS.spacing12),
 
             QuoteFooter(),
           ]),
@@ -70,7 +70,7 @@ class CCQuoteState extends State<CCQuote> {
     return Div.row([
       QuoteIcon,
 
-      const Spacing.width(12),
+      const Spacing.width(RLDS.spacing12),
 
       Expanded(child: RLTypography.bodyLarge(RLUIStrings.NOTABLE_QUOTE_TITLE)),
 
@@ -87,12 +87,12 @@ class CCQuoteState extends State<CCQuote> {
   Widget QuoteText() {
     final BoxDecoration quoteTextDecoration = BoxDecoration(
       color: RLDS.warning.withValues(alpha: 0.05),
-      borderRadius: BorderRadius.circular(12),
+      borderRadius: RLDS.borderRadiusSmall,
       border: Border.all(color: RLDS.warning.withValues(alpha: 0.2), width: 2),
     );
 
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(RLDS.spacing16),
       decoration: quoteTextDecoration,
       child: RLTypography.readingLarge('"${widget.content.quote}"'),
     );

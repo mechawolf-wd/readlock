@@ -17,8 +17,8 @@ class SelectableFilterChips extends StatelessWidget {
     required this.options,
     required this.selectedOption,
     required this.onChanged,
-    this.chipSpacing = 8,
-    this.runSpacing = 8,
+    this.chipSpacing = RLDS.spacing8,
+    this.runSpacing = RLDS.spacing8,
   });
 
   @override

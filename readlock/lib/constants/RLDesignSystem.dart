@@ -77,11 +77,13 @@ class RLDS {
 
   // * Border radius
 
+  static const double radiusXSmall = 8.0;
   static const double radiusSmall = 12.0;
   static const double radiusMedium = 16.0;
   static const double radiusLarge = 24.0;
   static const double radiusCircle = 100.0;
 
+  static final BorderRadius borderRadiusXSmall = BorderRadius.circular(radiusXSmall);
   static final BorderRadius borderRadiusSmall = BorderRadius.circular(radiusSmall);
   static final BorderRadius borderRadiusMedium = BorderRadius.circular(radiusMedium);
   static final BorderRadius borderRadiusLarge = BorderRadius.circular(radiusLarge);

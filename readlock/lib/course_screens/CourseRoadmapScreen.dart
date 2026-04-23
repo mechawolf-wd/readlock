@@ -670,7 +670,7 @@ class PathLessonNode extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final String title = lesson['title'] ?? 'Lesson';
+    final String title = lesson['title'] ?? RLUIStrings.ROADMAP_DEFAULT_LESSON_LABEL;
     final double offsetX = getOffsetForAlignment();
     final Color titleColor = getTitleColor();
     final bool canTap = !isLocked;

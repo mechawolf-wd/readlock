@@ -29,7 +29,7 @@ class BookListCard extends StatelessWidget {
     this.courseColor,
     this.coverImagePath,
     this.onTap,
-    this.margin = const EdgeInsets.only(bottom: 12),
+    this.margin = const EdgeInsets.only(bottom: RLDS.spacing12),
   });
 
   @override

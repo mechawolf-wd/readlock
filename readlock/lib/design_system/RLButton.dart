@@ -58,7 +58,7 @@ class RLButton extends StatelessWidget {
     final RLButtonColors style = getStyleForVariant(resolvedColor);
 
     final EdgeInsets resolvedPadding =
-        padding ?? const EdgeInsets.symmetric(vertical: 16, horizontal: 24);
+        padding ?? const EdgeInsets.symmetric(vertical: RLDS.spacing16, horizontal: RLDS.spacing24);
 
     final bool isTertiary = variant == RLButtonVariant.tertiary;
 

@@ -44,7 +44,7 @@ class CCPause extends StatelessWidget {
       [
         BirdCompanion(),
 
-        const Spacing.height(16),
+        const Spacing.height(RLDS.spacing16),
 
         MotivationalText(textStyle: motivationalTextStyle),
       ],

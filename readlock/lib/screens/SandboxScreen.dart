@@ -16,75 +16,75 @@ class SandboxScreen extends StatelessWidget {
       child: const SafeArea(
         bottom: false,
         child: SingleChildScrollView(
-          padding: EdgeInsets.all(20),
+          padding: EdgeInsets.all(RLDS.spacing20),
           child: Div.column([
             SandboxHeader(),
 
-            Spacing.height(32),
+            Spacing.height(RLDS.spacing32),
 
             ThoughtPrompWidget(),
 
-            Spacing.height(24),
+            Spacing.height(RLDS.spacing24),
 
             BookmarkHighlightWidget(),
 
-            Spacing.height(24),
+            Spacing.height(RLDS.spacing24),
 
             SwipeToRevealWidget(),
 
-            Spacing.height(24),
+            Spacing.height(RLDS.spacing24),
 
             ConceptConnectionWidget(),
 
-            Spacing.height(24),
+            Spacing.height(RLDS.spacing24),
 
             MicroQuizWidget(),
 
-            Spacing.height(24),
+            Spacing.height(RLDS.spacing24),
 
             ProgressCelebrationWidget(),
 
-            Spacing.height(24),
+            Spacing.height(RLDS.spacing24),
 
             SliderRevealWidget(),
 
-            Spacing.height(24),
+            Spacing.height(RLDS.spacing24),
 
             MemoryCardMatchWidget(),
 
-            Spacing.height(24),
+            Spacing.height(RLDS.spacing24),
 
             PriorityRankingWidget(),
 
-            Spacing.height(24),
+            Spacing.height(RLDS.spacing24),
 
             BeforeAfterComparisonWidget(),
 
-            Spacing.height(24),
+            Spacing.height(RLDS.spacing24),
 
             ReactionPickerWidget(),
 
-            Spacing.height(24),
+            Spacing.height(RLDS.spacing24),
 
             KnowledgeBuilderWidget(),
 
-            Spacing.height(24),
+            Spacing.height(RLDS.spacing24),
 
             TimelineBuilderWidget(),
 
-            Spacing.height(24),
+            Spacing.height(RLDS.spacing24),
 
             WordAssociationWidget(),
 
-            Spacing.height(24),
+            Spacing.height(RLDS.spacing24),
 
             DialAdjustmentWidget(),
 
-            Spacing.height(24),
+            Spacing.height(RLDS.spacing24),
 
             StoryBranchingWidget(),
 
-            Spacing.height(24),
+            Spacing.height(RLDS.spacing24),
 
             PatternRecognitionWidget(),
           ], crossAxisAlignment: CrossAxisAlignment.stretch),
@@ -105,7 +105,7 @@ class SandboxHeader extends StatelessWidget {
           width: 48,
           height: 48,
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(24),
+            borderRadius: RLDS.borderRadiusLarge,
             gradient: const LinearGradient(
               colors: [RLDS.primary, RLDS.primary],
               begin: Alignment.topLeft,
@@ -115,7 +115,7 @@ class SandboxHeader extends StatelessWidget {
           child: const Icon(Icons.science, color: RLDS.white, size: 24),
         ),
 
-        const Spacing.width(16),
+        const Spacing.width(RLDS.spacing16),
 
         Expanded(
           child: Text(
@@ -128,10 +128,10 @@ class SandboxHeader extends StatelessWidget {
         ),
 
         Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+          padding: const EdgeInsets.symmetric(horizontal: RLDS.spacing12, vertical: 6),
           decoration: BoxDecoration(
             color: RLDS.primary.withValues(alpha: 0.1),
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: RLDS.borderRadiusMedium,
             border: Border.all(color: RLDS.primary.withValues(alpha: 0.3)),
           ),
           child: Text(
@@ -146,7 +146,7 @@ class SandboxHeader extends StatelessWidget {
         ),
       ], crossAxisAlignment: CrossAxisAlignment.center),
 
-      const Spacing.height(8),
+      const Spacing.height(RLDS.spacing8),
 
       RLTypography.bodyMedium(
         'Essential widgets for engaging course content',
@@ -187,17 +187,17 @@ class ThoughtPrompWidgetState extends State<ThoughtPrompWidget> {
     );
 
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(RLDS.spacing20),
       decoration: BoxDecoration(
         color: RLDS.backgroundLight,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: RLDS.borderRadiusMedium,
         border: Border.all(color: RLDS.info.withValues(alpha: 0.2)),
       ),
       child: Div.column([
         Div.row([
           const Icon(Icons.psychology, color: RLDS.info, size: 24),
 
-          const Spacing.width(12),
+          const Spacing.width(RLDS.spacing12),
 
           Expanded(
             child: Text(
@@ -215,13 +215,13 @@ class ThoughtPrompWidgetState extends State<ThoughtPrompWidget> {
         RenderIf.condition(
           isExpanded,
           Div.column([
-            const Spacing.height(16),
+            const Spacing.height(RLDS.spacing16),
 
             Container(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(RLDS.spacing16),
               decoration: BoxDecoration(
                 color: RLDS.info.withValues(alpha: 0.05),
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: RLDS.borderRadiusSmall,
               ),
               child: Text(
                 'Think about a time when you encountered bad design. What made it frustrating? How could it have been improved using the principles from this chapter?',
@@ -233,7 +233,7 @@ class ThoughtPrompWidgetState extends State<ThoughtPrompWidget> {
               ),
             ),
 
-            const Spacing.height(12),
+            const Spacing.height(RLDS.spacing12),
 
             Text(
               'Take a moment to reflect on this before continuing...',
@@ -276,17 +276,17 @@ class BookmarkHighlightWidgetState extends State<BookmarkHighlightWidget> {
     final Widget BookmarkIcon = Icon(bookmarkIconData, color: RLDS.warning, size: 24);
 
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(RLDS.spacing20),
       decoration: BoxDecoration(
         color: RLDS.backgroundLight,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: RLDS.borderRadiusMedium,
         border: Border.all(color: RLDS.warning.withValues(alpha: 0.2)),
       ),
       child: Div.column([
         Div.row([
           const Icon(Icons.format_quote, color: RLDS.warning, size: 24),
 
-          const Spacing.width(12),
+          const Spacing.width(RLDS.spacing12),
 
           Expanded(
             child: Text(
@@ -301,13 +301,13 @@ class BookmarkHighlightWidgetState extends State<BookmarkHighlightWidget> {
           Div.row([BookmarkIcon], onTap: handleBookmarkToggle),
         ]),
 
-        const Spacing.height(16),
+        const Spacing.height(RLDS.spacing16),
 
         Container(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(RLDS.spacing16),
           decoration: BoxDecoration(
             color: RLDS.warning.withValues(alpha: 0.05),
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: RLDS.borderRadiusSmall,
             border: Border.all(color: RLDS.warning.withValues(alpha: 0.2), width: 2),
           ),
           child: Text(
@@ -321,7 +321,7 @@ class BookmarkHighlightWidgetState extends State<BookmarkHighlightWidget> {
           ),
         ),
 
-        const Spacing.height(12),
+        const Spacing.height(RLDS.spacing12),
 
         Div.row([
           Text(
@@ -383,17 +383,17 @@ class SwipeToRevealWidgetState extends State<SwipeToRevealWidget>
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(RLDS.spacing20),
       decoration: BoxDecoration(
         color: RLDS.backgroundLight,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: RLDS.borderRadiusMedium,
         border: Border.all(color: RLDS.primary.withValues(alpha: 0.2)),
       ),
       child: Div.column([
         Div.row([
           const Icon(Icons.visibility, color: RLDS.primary, size: 24),
 
-          const Spacing.width(12),
+          const Spacing.width(RLDS.spacing12),
 
           Expanded(
             child: Text(
@@ -406,19 +406,19 @@ class SwipeToRevealWidgetState extends State<SwipeToRevealWidget>
           ),
         ]),
 
-        const Spacing.height(16),
+        const Spacing.height(RLDS.spacing16),
 
         Container(
           height: 80,
           decoration: BoxDecoration(
             color: RLDS.primary.withValues(alpha: 0.05),
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: RLDS.borderRadiusSmall,
             border: Border.all(color: RLDS.primary.withValues(alpha: 0.2)),
           ),
           child: Stack(
             children: [
               Container(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.all(RLDS.spacing16),
                 width: double.infinity,
                 child: Center(
                   child: Text(
@@ -440,11 +440,11 @@ class SwipeToRevealWidgetState extends State<SwipeToRevealWidget>
                       alignment: Alignment.centerLeft,
                       widthFactor: revealAnimation.value,
                       child: Container(
-                        padding: const EdgeInsets.all(16),
+                        padding: const EdgeInsets.all(RLDS.spacing16),
                         width: double.infinity,
                         decoration: BoxDecoration(
                           color: RLDS.primary.withValues(alpha: 0.1),
-                          borderRadius: BorderRadius.circular(12),
+                          borderRadius: RLDS.borderRadiusSmall,
                         ),
                         child: Center(
                           child: Text(
@@ -484,7 +484,7 @@ class SwipeToRevealWidgetState extends State<SwipeToRevealWidget>
                     }
                   },
                   child: Container(
-                    decoration: BoxDecoration(borderRadius: BorderRadius.circular(12)),
+                    decoration: BoxDecoration(borderRadius: RLDS.borderRadiusSmall),
                     child: Center(
                       child: RenderIf.condition(
                         !isRevealed,
@@ -494,7 +494,7 @@ class SwipeToRevealWidgetState extends State<SwipeToRevealWidget>
                             color: RLDS.primary,
                             size: 16,
                           ),
-                          const Spacing.width(8),
+                          const Spacing.width(RLDS.spacing8),
                           Text(
                             'Swipe right → or tap',
                             style: RLTypography.bodyMediumStyle.copyWith(
@@ -513,7 +513,7 @@ class SwipeToRevealWidgetState extends State<SwipeToRevealWidget>
           ),
         ),
 
-        const Spacing.height(12),
+        const Spacing.height(RLDS.spacing12),
 
         RenderIf.condition(
           isRevealed,
@@ -555,17 +555,17 @@ class ConceptConnectionWidgetState extends State<ConceptConnectionWidget> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(RLDS.spacing20),
       decoration: BoxDecoration(
         color: RLDS.backgroundLight,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: RLDS.borderRadiusMedium,
         border: Border.all(color: RLDS.info.withValues(alpha: 0.2)),
       ),
       child: Div.column([
         Div.row([
           const Icon(Icons.account_tree, color: RLDS.info, size: 24),
 
-          const Spacing.width(12),
+          const Spacing.width(RLDS.spacing12),
 
           Expanded(
             child: Text(
@@ -578,7 +578,7 @@ class ConceptConnectionWidgetState extends State<ConceptConnectionWidget> {
           ),
         ]),
 
-        const Spacing.height(8),
+        const Spacing.height(RLDS.spacing8),
 
         Text(
           'Match design principles to real-world examples',
@@ -588,7 +588,7 @@ class ConceptConnectionWidgetState extends State<ConceptConnectionWidget> {
           ),
         ),
 
-        const Spacing.height(16),
+        const Spacing.height(RLDS.spacing16),
 
         Div.row([
           Expanded(
@@ -601,12 +601,12 @@ class ConceptConnectionWidgetState extends State<ConceptConnectionWidget> {
                   color: RLDS.info,
                 ),
               ),
-              const Spacing.height(8),
+              const Spacing.height(RLDS.spacing8),
               Div.column(ConceptItemsList()),
             ]),
           ),
 
-          const Spacing.width(16),
+          const Spacing.width(RLDS.spacing16),
 
           Expanded(
             child: Div.column([
@@ -618,7 +618,7 @@ class ConceptConnectionWidgetState extends State<ConceptConnectionWidget> {
                   color: RLDS.info,
                 ),
               ),
-              const Spacing.height(8),
+              const Spacing.height(RLDS.spacing8),
               Div.column(ApplicationItemsList()),
             ]),
           ),
@@ -627,8 +627,8 @@ class ConceptConnectionWidgetState extends State<ConceptConnectionWidget> {
         RenderIf.condition(
           hasMatched,
           Container(
-            margin: const EdgeInsets.only(top: 16),
-            padding: const EdgeInsets.all(12),
+            margin: const EdgeInsets.only(top: RLDS.spacing16),
+            padding: const EdgeInsets.all(RLDS.spacing12),
             decoration: BoxDecoration(
               color: RLDS.success.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(8),
@@ -636,7 +636,7 @@ class ConceptConnectionWidgetState extends State<ConceptConnectionWidget> {
             ),
             child: Div.row([
               const Icon(Icons.check_circle, color: RLDS.success, size: 16),
-              const Spacing.width(8),
+              const Spacing.width(RLDS.spacing8),
               Text(
                 'Perfect match! +10 Connection points',
                 style: RLTypography.bodyMediumStyle.copyWith(
@@ -659,7 +659,7 @@ class ConceptConnectionWidgetState extends State<ConceptConnectionWidget> {
       final bool isSelected = selectedConcept == index;
 
       return Padding(
-        padding: const EdgeInsets.only(bottom: 8),
+        padding: const EdgeInsets.only(bottom: RLDS.spacing8),
         child: GestureDetector(
           onTap: () {
             setState(() {
@@ -674,7 +674,7 @@ class ConceptConnectionWidgetState extends State<ConceptConnectionWidget> {
             });
           },
           child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+            padding: const EdgeInsets.symmetric(horizontal: RLDS.spacing12, vertical: 10),
             decoration: BoxDecoration(
               color: isSelected
                   ? RLDS.info.withValues(alpha: 0.1)
@@ -707,7 +707,7 @@ class ConceptConnectionWidgetState extends State<ConceptConnectionWidget> {
       final bool isSelected = selectedApplication == index;
 
       return Padding(
-        padding: const EdgeInsets.only(bottom: 8),
+        padding: const EdgeInsets.only(bottom: RLDS.spacing8),
         child: GestureDetector(
           onTap: () {
             setState(() {
@@ -722,7 +722,7 @@ class ConceptConnectionWidgetState extends State<ConceptConnectionWidget> {
             });
           },
           child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+            padding: const EdgeInsets.symmetric(horizontal: RLDS.spacing12, vertical: 10),
             decoration: BoxDecoration(
               color: isSelected
                   ? RLDS.info.withValues(alpha: 0.1)
@@ -814,17 +814,17 @@ class MicroQuizWidgetState extends State<MicroQuizWidget> with SingleTickerProvi
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(RLDS.spacing20),
       decoration: BoxDecoration(
         color: RLDS.backgroundLight,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: RLDS.borderRadiusMedium,
         border: Border.all(color: RLDS.primary.withValues(alpha: 0.2)),
       ),
       child: Div.column([
         Div.row([
           const Icon(Icons.quiz, color: RLDS.primary, size: 24),
 
-          const Spacing.width(12),
+          const Spacing.width(RLDS.spacing12),
 
           Expanded(
             child: Text(
@@ -837,7 +837,7 @@ class MicroQuizWidgetState extends State<MicroQuizWidget> with SingleTickerProvi
           ),
         ]),
 
-        const Spacing.height(16),
+        const Spacing.height(RLDS.spacing16),
 
         Text(
           question,
@@ -848,15 +848,15 @@ class MicroQuizWidgetState extends State<MicroQuizWidget> with SingleTickerProvi
           ),
         ),
 
-        const Spacing.height(16),
+        const Spacing.height(RLDS.spacing16),
 
         Div.column(QuizOptionsList()),
 
         RenderIf.condition(
           hasAnswered,
           Container(
-            margin: const EdgeInsets.only(top: 16),
-            padding: const EdgeInsets.all(12),
+            margin: const EdgeInsets.only(top: RLDS.spacing16),
+            padding: const EdgeInsets.all(RLDS.spacing12),
             decoration: BoxDecoration(
               color: RLDS.success.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(8),
@@ -940,7 +940,7 @@ class MicroQuizWidgetState extends State<MicroQuizWidget> with SingleTickerProvi
           : FontWeight.normal;
 
       return Padding(
-        padding: const EdgeInsets.only(bottom: 8),
+        padding: const EdgeInsets.only(bottom: RLDS.spacing8),
         child: AnimatedBuilder(
           animation: bounceAnimation,
           builder: (context, child) {
@@ -952,10 +952,10 @@ class MicroQuizWidgetState extends State<MicroQuizWidget> with SingleTickerProvi
           child: GestureDetector(
             onTap: tapCallback,
             child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              padding: const EdgeInsets.symmetric(horizontal: RLDS.spacing16, vertical: RLDS.spacing12),
               decoration: BoxDecoration(
                 color: backgroundColor,
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: RLDS.borderRadiusSmall,
                 border: Border.all(color: borderColor, width: 1.5),
               ),
               child: Div.row([
@@ -970,7 +970,7 @@ class MicroQuizWidgetState extends State<MicroQuizWidget> with SingleTickerProvi
                   child: circleChild,
                 ),
 
-                const Spacing.width(12),
+                const Spacing.width(RLDS.spacing12),
 
                 Expanded(
                   child: Text(
@@ -1049,10 +1049,10 @@ class ProgressCelebrationWidgetState extends State<ProgressCelebrationWidget>
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(RLDS.spacing20),
       decoration: BoxDecoration(
         color: RLDS.backgroundLight,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: RLDS.borderRadiusMedium,
         border: Border.all(color: Colors.amber.withValues(alpha: 0.2)),
       ),
       child: Div.column([
@@ -1071,7 +1071,7 @@ class ProgressCelebrationWidgetState extends State<ProgressCelebrationWidget>
             },
           ),
 
-          const Spacing.width(12),
+          const Spacing.width(RLDS.spacing12),
 
           Expanded(
             child: Text(
@@ -1084,7 +1084,7 @@ class ProgressCelebrationWidgetState extends State<ProgressCelebrationWidget>
           ),
         ]),
 
-        const Spacing.height(16),
+        const Spacing.height(RLDS.spacing16),
 
         Div.column([
           Div.row([
@@ -1112,7 +1112,7 @@ class ProgressCelebrationWidgetState extends State<ProgressCelebrationWidget>
             ),
           ]),
 
-          const Spacing.height(8),
+          const Spacing.height(RLDS.spacing8),
 
           Container(
             height: 8,
@@ -1140,7 +1140,7 @@ class ProgressCelebrationWidgetState extends State<ProgressCelebrationWidget>
           ),
         ]),
 
-        const Spacing.height(16),
+        const Spacing.height(RLDS.spacing16),
 
         RenderIf.condition(
           !hasCompleted,
@@ -1169,7 +1169,7 @@ class ProgressCelebrationWidgetState extends State<ProgressCelebrationWidget>
         RenderIf.condition(
           hasCompleted,
           Container(
-            padding: const EdgeInsets.all(12),
+            padding: const EdgeInsets.all(RLDS.spacing12),
             decoration: BoxDecoration(
               color: Colors.amber.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(8),
@@ -1178,7 +1178,7 @@ class ProgressCelebrationWidgetState extends State<ProgressCelebrationWidget>
             child: Div.column([
               Div.row([
                 const Icon(Icons.star, color: Colors.amber, size: 20),
-                const Spacing.width(8),
+                const Spacing.width(RLDS.spacing8),
                 Text(
                   'Excellent work! +50 XP earned',
                   style: RLTypography.bodyLargeStyle.copyWith(
@@ -1188,7 +1188,7 @@ class ProgressCelebrationWidgetState extends State<ProgressCelebrationWidget>
                   ),
                 ),
               ]),
-              const Spacing.height(4),
+              const Spacing.height(RLDS.spacing4),
               Text(
                 'You\'ve mastered the fundamentals of good design.',
                 style: RLTypography.bodyMediumStyle.copyWith(
@@ -1230,17 +1230,17 @@ class SliderRevealWidgetState extends State<SliderRevealWidget> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(RLDS.spacing20),
       decoration: BoxDecoration(
         color: RLDS.backgroundLight,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: RLDS.borderRadiusMedium,
         border: Border.all(color: Colors.cyan.withValues(alpha: 0.2)),
       ),
       child: Div.column([
         Div.row([
           const Icon(Icons.tune, color: Colors.cyan, size: 24),
 
-          const Spacing.width(12),
+          const Spacing.width(RLDS.spacing12),
 
           Expanded(
             child: Text(
@@ -1253,7 +1253,7 @@ class SliderRevealWidgetState extends State<SliderRevealWidget> {
           ),
         ]),
 
-        const Spacing.height(8),
+        const Spacing.height(RLDS.spacing8),
 
         Text(
           'Adjust the design principle importance',
@@ -1263,13 +1263,13 @@ class SliderRevealWidgetState extends State<SliderRevealWidget> {
           ),
         ),
 
-        const Spacing.height(16),
+        const Spacing.height(RLDS.spacing16),
 
         Container(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(RLDS.spacing16),
           decoration: BoxDecoration(
             color: Colors.cyan.withValues(alpha: 0.05),
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: RLDS.borderRadiusSmall,
           ),
           child: Div.column([
             Text(
@@ -1282,7 +1282,7 @@ class SliderRevealWidgetState extends State<SliderRevealWidget> {
               textAlign: TextAlign.center,
             ),
 
-            const Spacing.height(12),
+            const Spacing.height(RLDS.spacing12),
 
             SliderTheme(
               data: SliderThemeData(
@@ -1306,7 +1306,7 @@ class SliderRevealWidgetState extends State<SliderRevealWidget> {
               ),
             ),
 
-            const Spacing.height(8),
+            const Spacing.height(RLDS.spacing8),
 
             Div.row([
               Text(
@@ -1328,13 +1328,13 @@ class SliderRevealWidgetState extends State<SliderRevealWidget> {
           ]),
         ),
 
-        const Spacing.height(16),
+        const Spacing.height(RLDS.spacing16),
 
         AnimatedOpacity(
           opacity: hasRevealed ? 1.0 : 0.0,
           duration: const Duration(milliseconds: 300),
           child: Container(
-            padding: const EdgeInsets.all(12),
+            padding: const EdgeInsets.all(RLDS.spacing12),
             decoration: BoxDecoration(
               color: Colors.cyan.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(8),
@@ -1342,7 +1342,7 @@ class SliderRevealWidgetState extends State<SliderRevealWidget> {
             ),
             child: Div.row([
               const Icon(Icons.lightbulb, color: Colors.cyan, size: 16),
-              const Spacing.width(8),
+              const Spacing.width(RLDS.spacing8),
               Expanded(
                 child: Text(
                   'Exactly! Simplicity eliminates cognitive load and lets users focus on their goals.',
@@ -1387,17 +1387,17 @@ class MemoryCardMatchWidgetState extends State<MemoryCardMatchWidget>
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(RLDS.spacing20),
       decoration: BoxDecoration(
         color: RLDS.backgroundLight,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: RLDS.borderRadiusMedium,
         border: Border.all(color: Colors.deepPurple.withValues(alpha: 0.2)),
       ),
       child: Div.column([
         Div.row([
           const Icon(Icons.memory, color: Colors.deepPurple, size: 24),
 
-          const Spacing.width(12),
+          const Spacing.width(RLDS.spacing12),
 
           Expanded(
             child: Text(
@@ -1419,7 +1419,7 @@ class MemoryCardMatchWidgetState extends State<MemoryCardMatchWidget>
           ),
         ]),
 
-        const Spacing.height(8),
+        const Spacing.height(RLDS.spacing8),
 
         Text(
           'Match design principles with their descriptions',
@@ -1429,7 +1429,7 @@ class MemoryCardMatchWidgetState extends State<MemoryCardMatchWidget>
           ),
         ),
 
-        const Spacing.height(16),
+        const Spacing.height(RLDS.spacing16),
 
         GridView.builder(
           shrinkWrap: true,
@@ -1464,7 +1464,7 @@ class MemoryCardMatchWidgetState extends State<MemoryCardMatchWidget>
                 ),
                 child: Center(
                   child: Padding(
-                    padding: const EdgeInsets.all(8),
+                    padding: const EdgeInsets.all(RLDS.spacing8),
                     child: Text(
                       flippedCards[index] || matchedCards[index] ? cardPairs[index] : '?',
                       style: RLTypography.bodyMediumStyle.copyWith(
@@ -1489,8 +1489,8 @@ class MemoryCardMatchWidgetState extends State<MemoryCardMatchWidget>
         RenderIf.condition(
           matches == 3,
           Container(
-            margin: const EdgeInsets.only(top: 16),
-            padding: const EdgeInsets.all(12),
+            margin: const EdgeInsets.only(top: RLDS.spacing16),
+            padding: const EdgeInsets.all(RLDS.spacing12),
             decoration: BoxDecoration(
               color: RLDS.success.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(8),
@@ -1498,7 +1498,7 @@ class MemoryCardMatchWidgetState extends State<MemoryCardMatchWidget>
             ),
             child: Div.row([
               const Icon(Icons.celebration, color: RLDS.success, size: 16),
-              const Spacing.width(8),
+              const Spacing.width(RLDS.spacing8),
               Text(
                 'Perfect! All design principles matched! +15 Memory points',
                 style: RLTypography.bodyMediumStyle.copyWith(
@@ -1574,17 +1574,17 @@ class PriorityRankingWidgetState extends State<PriorityRankingWidget> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(RLDS.spacing20),
       decoration: BoxDecoration(
         color: RLDS.backgroundLight,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: RLDS.borderRadiusMedium,
         border: Border.all(color: RLDS.warning.withValues(alpha: 0.2)),
       ),
       child: Div.column([
         Div.row([
           const Icon(Icons.sort, color: RLDS.warning, size: 24),
 
-          const Spacing.width(12),
+          const Spacing.width(RLDS.spacing12),
 
           Expanded(
             child: Text(
@@ -1597,7 +1597,7 @@ class PriorityRankingWidgetState extends State<PriorityRankingWidget> {
           ),
         ]),
 
-        const Spacing.height(8),
+        const Spacing.height(RLDS.spacing8),
 
         Text(
           'Drag to rank design priorities from most to least important',
@@ -1607,7 +1607,7 @@ class PriorityRankingWidgetState extends State<PriorityRankingWidget> {
           ),
         ),
 
-        const Spacing.height(16),
+        const Spacing.height(RLDS.spacing16),
 
         ReorderableListView.builder(
           shrinkWrap: true,
@@ -1630,8 +1630,8 @@ class PriorityRankingWidgetState extends State<PriorityRankingWidget> {
 
             return Container(
               key: ValueKey(principle),
-              margin: const EdgeInsets.only(bottom: 8),
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              margin: const EdgeInsets.only(bottom: RLDS.spacing8),
+              padding: const EdgeInsets.symmetric(horizontal: RLDS.spacing16, vertical: RLDS.spacing12),
               decoration: BoxDecoration(
                 color: hasSubmitted
                     ? (isCorrect
@@ -1657,7 +1657,7 @@ class PriorityRankingWidgetState extends State<PriorityRankingWidget> {
                   ),
                 ),
 
-                const Spacing.width(12),
+                const Spacing.width(RLDS.spacing12),
 
                 Expanded(
                   child: Text(
@@ -1690,7 +1690,7 @@ class PriorityRankingWidgetState extends State<PriorityRankingWidget> {
           },
         ),
 
-        const Spacing.height(16),
+        const Spacing.height(RLDS.spacing16),
 
         RenderIf.condition(
           !hasSubmitted,
@@ -1719,7 +1719,7 @@ class PriorityRankingWidgetState extends State<PriorityRankingWidget> {
         RenderIf.condition(
           hasSubmitted,
           Container(
-            padding: const EdgeInsets.all(12),
+            padding: const EdgeInsets.all(RLDS.spacing12),
             decoration: BoxDecoration(
               color: RLDS.success.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(8),
@@ -1759,17 +1759,17 @@ class BeforeAfterComparisonWidgetState extends State<BeforeAfterComparisonWidget
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(RLDS.spacing20),
       decoration: BoxDecoration(
         color: RLDS.backgroundLight,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: RLDS.borderRadiusMedium,
         border: Border.all(color: Colors.pink.withValues(alpha: 0.2)),
       ),
       child: Div.column([
         Div.row([
           const Icon(Icons.compare, color: Colors.pink, size: 24),
 
-          const Spacing.width(12),
+          const Spacing.width(RLDS.spacing12),
 
           Expanded(
             child: Text(
@@ -1788,10 +1788,10 @@ class BeforeAfterComparisonWidgetState extends State<BeforeAfterComparisonWidget
               });
             },
             child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              padding: const EdgeInsets.symmetric(horizontal: RLDS.spacing12, vertical: 6),
               decoration: BoxDecoration(
                 color: Colors.pink.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(16),
+                borderRadius: RLDS.borderRadiusMedium,
                 border: Border.all(color: Colors.pink.withValues(alpha: 0.3)),
               ),
               child: Text(
@@ -1807,7 +1807,7 @@ class BeforeAfterComparisonWidgetState extends State<BeforeAfterComparisonWidget
           ),
         ]),
 
-        const Spacing.height(8),
+        const Spacing.height(RLDS.spacing8),
 
         Text(
           'Tap to compare good vs bad button design',
@@ -1817,18 +1817,18 @@ class BeforeAfterComparisonWidgetState extends State<BeforeAfterComparisonWidget
           ),
         ),
 
-        const Spacing.height(16),
+        const Spacing.height(RLDS.spacing16),
 
         AnimatedSwitcher(
           duration: const Duration(milliseconds: 400),
           child: Container(
             key: ValueKey(showAfter),
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(RLDS.spacing16),
             decoration: BoxDecoration(
               color: showAfter
                   ? RLDS.success.withValues(alpha: 0.05)
                   : RLDS.error.withValues(alpha: 0.05),
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: RLDS.borderRadiusSmall,
               border: Border.all(
                 color: showAfter
                     ? RLDS.success.withValues(alpha: 0.3)
@@ -1846,7 +1846,7 @@ class BeforeAfterComparisonWidgetState extends State<BeforeAfterComparisonWidget
                 textAlign: TextAlign.center,
               ),
 
-              const Spacing.height(16),
+              const Spacing.height(RLDS.spacing16),
 
               Center(
                 child: Container(
@@ -1869,7 +1869,7 @@ class BeforeAfterComparisonWidgetState extends State<BeforeAfterComparisonWidget
                 ),
               ),
 
-              const Spacing.height(16),
+              const Spacing.height(RLDS.spacing16),
 
               Text(
                 showAfter
@@ -1886,7 +1886,7 @@ class BeforeAfterComparisonWidgetState extends State<BeforeAfterComparisonWidget
           ),
         ),
 
-        const Spacing.height(16),
+        const Spacing.height(RLDS.spacing16),
 
         Text(
           'Tap the badge above to toggle between examples',
@@ -1924,17 +1924,17 @@ class ReactionPickerWidgetState extends State<ReactionPickerWidget> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(RLDS.spacing20),
       decoration: BoxDecoration(
         color: RLDS.backgroundLight,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: RLDS.borderRadiusMedium,
         border: Border.all(color: Colors.green.withValues(alpha: 0.2)),
       ),
       child: Div.column([
         Div.row([
           const Icon(Icons.sentiment_satisfied_alt, color: Colors.green, size: 24),
 
-          const Spacing.width(12),
+          const Spacing.width(RLDS.spacing12),
 
           Expanded(
             child: Text(
@@ -1947,7 +1947,7 @@ class ReactionPickerWidgetState extends State<ReactionPickerWidget> {
           ),
         ]),
 
-        const Spacing.height(8),
+        const Spacing.height(RLDS.spacing8),
 
         Text(
           'How do you feel about this design principle?',
@@ -1957,13 +1957,13 @@ class ReactionPickerWidgetState extends State<ReactionPickerWidget> {
           ),
         ),
 
-        const Spacing.height(16),
+        const Spacing.height(RLDS.spacing16),
 
         Container(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(RLDS.spacing16),
           decoration: BoxDecoration(
             color: Colors.green.withValues(alpha: 0.05),
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: RLDS.borderRadiusSmall,
           ),
           child: Text(
             '"The best interface is no interface at all"',
@@ -1977,7 +1977,7 @@ class ReactionPickerWidgetState extends State<ReactionPickerWidget> {
           ),
         ),
 
-        const Spacing.height(16),
+        const Spacing.height(RLDS.spacing16),
 
         Wrap(
           spacing: 12,
@@ -1992,7 +1992,7 @@ class ReactionPickerWidgetState extends State<ReactionPickerWidget> {
               onTap: hasSubmitted ? null : () => selectReaction(emoji),
               child: AnimatedContainer(
                 duration: const Duration(milliseconds: 200),
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                padding: const EdgeInsets.symmetric(horizontal: RLDS.spacing16, vertical: RLDS.spacing12),
                 decoration: BoxDecoration(
                   color: isSelected
                       ? Colors.green.withValues(alpha: 0.1)
@@ -2008,7 +2008,7 @@ class ReactionPickerWidgetState extends State<ReactionPickerWidget> {
                 child: Div.row([
                   Text(emoji, style: const TextStyle(fontSize: 20)),
 
-                  const Spacing.width(8),
+                  const Spacing.width(RLDS.spacing8),
 
                   Text(
                     label,
@@ -2027,8 +2027,8 @@ class ReactionPickerWidgetState extends State<ReactionPickerWidget> {
         RenderIf.condition(
           hasSubmitted && selectedReaction != null,
           Container(
-            margin: const EdgeInsets.only(top: 16),
-            padding: const EdgeInsets.all(12),
+            margin: const EdgeInsets.only(top: RLDS.spacing16),
+            padding: const EdgeInsets.all(RLDS.spacing12),
             decoration: BoxDecoration(
               color: Colors.green.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(8),
@@ -2037,7 +2037,7 @@ class ReactionPickerWidgetState extends State<ReactionPickerWidget> {
             child: Div.column([
               Div.row([
                 Text(selectedReaction ?? '', style: const TextStyle(fontSize: 16)),
-                const Spacing.width(8),
+                const Spacing.width(RLDS.spacing8),
                 Text(
                   'Thanks for sharing! +3 Engagement points',
                   style: RLTypography.bodyMediumStyle.copyWith(
@@ -2047,7 +2047,7 @@ class ReactionPickerWidgetState extends State<ReactionPickerWidget> {
                   ),
                 ),
               ]),
-              const Spacing.height(4),
+              const Spacing.height(RLDS.spacing4),
               Text(
                 'Your reaction helps us understand what resonates with learners.',
                 style: RLTypography.bodyMediumStyle.copyWith(
@@ -2115,17 +2115,17 @@ class KnowledgeBuilderWidgetState extends State<KnowledgeBuilderWidget>
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(RLDS.spacing20),
       decoration: BoxDecoration(
         color: RLDS.backgroundLight,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: RLDS.borderRadiusMedium,
         border: Border.all(color: RLDS.primary.withValues(alpha: 0.2)),
       ),
       child: Div.column([
         Div.row([
           const Icon(Icons.school, color: RLDS.primary, size: 24),
 
-          const Spacing.width(12),
+          const Spacing.width(RLDS.spacing12),
 
           Expanded(
             child: Text(
@@ -2147,7 +2147,7 @@ class KnowledgeBuilderWidgetState extends State<KnowledgeBuilderWidget>
           ),
         ]),
 
-        const Spacing.height(8),
+        const Spacing.height(RLDS.spacing8),
 
         Text(
           'Unlock design mastery step by step',
@@ -2157,11 +2157,11 @@ class KnowledgeBuilderWidgetState extends State<KnowledgeBuilderWidget>
           ),
         ),
 
-        const Spacing.height(16),
+        const Spacing.height(RLDS.spacing16),
 
         Div.column(LevelItemsList()),
 
-        const Spacing.height(8),
+        const Spacing.height(RLDS.spacing8),
 
         LinearProgressIndicator(
           value: (currentLevel + 1) / levels.length,
@@ -2170,7 +2170,7 @@ class KnowledgeBuilderWidgetState extends State<KnowledgeBuilderWidget>
           minHeight: 6,
         ),
 
-        const Spacing.height(8),
+        const Spacing.height(RLDS.spacing8),
 
         Text(
           'Progress: ${((currentLevel + 1) / levels.length * 100).toInt()}% complete',
@@ -2252,7 +2252,7 @@ class KnowledgeBuilderWidgetState extends State<KnowledgeBuilderWidget>
           : RLDS.textPrimary.withValues(alpha: 0.3);
 
       return Padding(
-        padding: const EdgeInsets.only(bottom: 12),
+        padding: const EdgeInsets.only(bottom: RLDS.spacing12),
         child: GestureDetector(
           onTap: tapCallback,
           child: AnimatedBuilder(
@@ -2264,10 +2264,10 @@ class KnowledgeBuilderWidgetState extends State<KnowledgeBuilderWidget>
               );
             },
             child: Container(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(RLDS.spacing16),
               decoration: BoxDecoration(
                 color: containerColor,
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: RLDS.borderRadiusSmall,
                 border: Border.all(color: containerBorderColor, width: borderWidth),
               ),
               child: Div.row([
@@ -2278,7 +2278,7 @@ class KnowledgeBuilderWidgetState extends State<KnowledgeBuilderWidget>
                   child: Center(child: circleChild),
                 ),
 
-                const Spacing.width(12),
+                const Spacing.width(RLDS.spacing12),
 
                 Expanded(
                   child: Div.column([
@@ -2354,17 +2354,17 @@ class TimelineBuilderWidgetState extends State<TimelineBuilderWidget> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(RLDS.spacing20),
       decoration: BoxDecoration(
         color: RLDS.backgroundLight,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: RLDS.borderRadiusMedium,
         border: Border.all(color: Colors.brown.withValues(alpha: 0.2)),
       ),
       child: Div.column([
         Div.row([
           const Icon(Icons.timeline, color: Colors.brown, size: 24),
 
-          const Spacing.width(12),
+          const Spacing.width(RLDS.spacing12),
 
           Expanded(
             child: Text(
@@ -2377,7 +2377,7 @@ class TimelineBuilderWidgetState extends State<TimelineBuilderWidget> {
           ),
         ]),
 
-        const Spacing.height(8),
+        const Spacing.height(RLDS.spacing8),
 
         Text(
           'Drag to arrange the design process in correct order',
@@ -2387,14 +2387,14 @@ class TimelineBuilderWidgetState extends State<TimelineBuilderWidget> {
           ),
         ),
 
-        const Spacing.height(16),
+        const Spacing.height(RLDS.spacing16),
 
         // Timeline area
         Container(
           height: 60,
           decoration: BoxDecoration(
             color: Colors.brown.withValues(alpha: 0.05),
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: RLDS.borderRadiusSmall,
             border: Border.all(color: Colors.brown.withValues(alpha: 0.2)),
           ),
           child: timelineEvents.isEmpty
@@ -2409,7 +2409,7 @@ class TimelineBuilderWidgetState extends State<TimelineBuilderWidget> {
                   ),
                 )
               : Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  padding: const EdgeInsets.symmetric(horizontal: RLDS.spacing8),
                   child: Row(
                     children: timelineEvents.asMap().entries.map((entry) {
                       final int index = entry.key;
@@ -2424,7 +2424,7 @@ class TimelineBuilderWidgetState extends State<TimelineBuilderWidget> {
                           child: GestureDetector(
                             onTap: () => removeFromTimeline(index),
                             child: Container(
-                              padding: const EdgeInsets.all(8),
+                              padding: const EdgeInsets.all(RLDS.spacing8),
                               decoration: BoxDecoration(
                                 color: Colors.brown.withValues(alpha: 0.1),
                                 borderRadius: BorderRadius.circular(6),
@@ -2449,7 +2449,7 @@ class TimelineBuilderWidgetState extends State<TimelineBuilderWidget> {
                 ),
         ),
 
-        const Spacing.height(16),
+        const Spacing.height(RLDS.spacing16),
 
         Text(
           'Available Events:',
@@ -2460,7 +2460,7 @@ class TimelineBuilderWidgetState extends State<TimelineBuilderWidget> {
           ),
         ),
 
-        const Spacing.height(8),
+        const Spacing.height(RLDS.spacing8),
 
         Wrap(
           spacing: 8,
@@ -2474,12 +2474,12 @@ class TimelineBuilderWidgetState extends State<TimelineBuilderWidget> {
                 duration: const Duration(milliseconds: 200),
                 opacity: isUsed ? 0.3 : 1.0,
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  padding: const EdgeInsets.symmetric(horizontal: RLDS.spacing12, vertical: RLDS.spacing8),
                   decoration: BoxDecoration(
                     color: isUsed
                         ? Colors.grey.withValues(alpha: 0.1)
                         : RLDS.backgroundDark.withValues(alpha: 0.5),
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: RLDS.borderRadiusSmall,
                     border: Border.all(
                       color: isUsed
                           ? Colors.grey.withValues(alpha: 0.3)
@@ -2504,8 +2504,8 @@ class TimelineBuilderWidgetState extends State<TimelineBuilderWidget> {
         RenderIf.condition(
           isComplete,
           Container(
-            margin: const EdgeInsets.only(top: 16),
-            padding: const EdgeInsets.all(12),
+            margin: const EdgeInsets.only(top: RLDS.spacing16),
+            padding: const EdgeInsets.all(RLDS.spacing12),
             decoration: BoxDecoration(
               color: RLDS.success.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(8),
@@ -2513,7 +2513,7 @@ class TimelineBuilderWidgetState extends State<TimelineBuilderWidget> {
             ),
             child: Div.row([
               const Icon(Icons.check_circle, color: RLDS.success, size: 16),
-              const Spacing.width(8),
+              const Spacing.width(RLDS.spacing8),
               Text(
                 'Perfect timeline! You understand the design process. +12 Process points',
                 style: RLTypography.bodyMediumStyle.copyWith(
@@ -2596,17 +2596,17 @@ class WordAssociationWidgetState extends State<WordAssociationWidget> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(RLDS.spacing20),
       decoration: BoxDecoration(
         color: RLDS.backgroundLight,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: RLDS.borderRadiusMedium,
         border: Border.all(color: Colors.blue.withValues(alpha: 0.2)),
       ),
       child: Div.column([
         Div.row([
           const Icon(Icons.hub, color: Colors.blue, size: 24),
 
-          const Spacing.width(12),
+          const Spacing.width(RLDS.spacing12),
 
           Expanded(
             child: Text(
@@ -2619,7 +2619,7 @@ class WordAssociationWidgetState extends State<WordAssociationWidget> {
           ),
         ]),
 
-        const Spacing.height(8),
+        const Spacing.height(RLDS.spacing8),
 
         Text(
           'Connect words that relate to the central concept',
@@ -2629,15 +2629,15 @@ class WordAssociationWidgetState extends State<WordAssociationWidget> {
           ),
         ),
 
-        const Spacing.height(16),
+        const Spacing.height(RLDS.spacing16),
 
         // Central word
         Center(
           child: Container(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(RLDS.spacing16),
             decoration: BoxDecoration(
               color: Colors.blue.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: RLDS.borderRadiusMedium,
               border: Border.all(color: Colors.blue, width: 2),
             ),
             child: Text(
@@ -2651,15 +2651,15 @@ class WordAssociationWidgetState extends State<WordAssociationWidget> {
           ),
         ),
 
-        const Spacing.height(16),
+        const Spacing.height(RLDS.spacing16),
 
         // Associated words area
         Container(
           constraints: const BoxConstraints(minHeight: 80),
-          padding: const EdgeInsets.all(12),
+          padding: const EdgeInsets.all(RLDS.spacing12),
           decoration: BoxDecoration(
             color: Colors.blue.withValues(alpha: 0.05),
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: RLDS.borderRadiusSmall,
             border: Border.all(color: Colors.blue.withValues(alpha: 0.2)),
           ),
           child: associatedWords.isEmpty
@@ -2682,12 +2682,12 @@ class WordAssociationWidgetState extends State<WordAssociationWidget> {
                     return GestureDetector(
                       onTap: () => removeAssociation(word),
                       child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                        padding: const EdgeInsets.symmetric(horizontal: RLDS.spacing12, vertical: 6),
                         decoration: BoxDecoration(
                           color: isCorrect
                               ? RLDS.success.withValues(alpha: 0.1)
                               : RLDS.error.withValues(alpha: 0.1),
-                          borderRadius: BorderRadius.circular(12),
+                          borderRadius: RLDS.borderRadiusSmall,
                           border: Border.all(
                             color: isCorrect ? RLDS.success : RLDS.error,
                           ),
@@ -2701,7 +2701,7 @@ class WordAssociationWidgetState extends State<WordAssociationWidget> {
                               fontWeight: FontWeight.w500,
                             ),
                           ),
-                          const Spacing.width(4),
+                          const Spacing.width(RLDS.spacing4),
                           Icon(
                             isCorrect ? Icons.check : Icons.close,
                             size: 14,
@@ -2714,7 +2714,7 @@ class WordAssociationWidgetState extends State<WordAssociationWidget> {
                 ),
         ),
 
-        const Spacing.height(16),
+        const Spacing.height(RLDS.spacing16),
 
         Text(
           'Available Words:',
@@ -2725,7 +2725,7 @@ class WordAssociationWidgetState extends State<WordAssociationWidget> {
           ),
         ),
 
-        const Spacing.height(8),
+        const Spacing.height(RLDS.spacing8),
 
         Wrap(
           spacing: 8,
@@ -2739,12 +2739,12 @@ class WordAssociationWidgetState extends State<WordAssociationWidget> {
                 duration: const Duration(milliseconds: 200),
                 opacity: isUsed ? 0.3 : 1.0,
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  padding: const EdgeInsets.symmetric(horizontal: RLDS.spacing12, vertical: RLDS.spacing8),
                   decoration: BoxDecoration(
                     color: isUsed
                         ? Colors.grey.withValues(alpha: 0.1)
                         : RLDS.backgroundDark.withValues(alpha: 0.5),
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: RLDS.borderRadiusSmall,
                     border: Border.all(
                       color: isUsed
                           ? Colors.grey.withValues(alpha: 0.3)
@@ -2770,8 +2770,8 @@ class WordAssociationWidgetState extends State<WordAssociationWidget> {
           associatedWords.length == 5 &&
               associatedWords.every((word) => correctWords.contains(word)),
           Container(
-            margin: const EdgeInsets.only(top: 16),
-            padding: const EdgeInsets.all(12),
+            margin: const EdgeInsets.only(top: RLDS.spacing16),
+            padding: const EdgeInsets.all(RLDS.spacing12),
             decoration: BoxDecoration(
               color: RLDS.success.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(8),
@@ -2779,7 +2779,7 @@ class WordAssociationWidgetState extends State<WordAssociationWidget> {
             ),
             child: Div.row([
               const Icon(Icons.psychology, color: RLDS.success, size: 16),
-              const Spacing.width(8),
+              const Spacing.width(RLDS.spacing8),
               Text(
                 'Excellent associations! You understand usability principles. +8 Concept points',
                 style: RLTypography.bodyMediumStyle.copyWith(
@@ -2827,17 +2827,17 @@ class DialAdjustmentWidgetState extends State<DialAdjustmentWidget> {
     final bool isOptimal = (complexityLevel < 30 && usabilityLevel > 70);
 
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(RLDS.spacing20),
       decoration: BoxDecoration(
         color: RLDS.backgroundLight,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: RLDS.borderRadiusMedium,
         border: Border.all(color: RLDS.primary.withValues(alpha: 0.2)),
       ),
       child: Div.column([
         Div.row([
           const Icon(Icons.tune, color: RLDS.primary, size: 24),
 
-          const Spacing.width(12),
+          const Spacing.width(RLDS.spacing12),
 
           Expanded(
             child: Text(
@@ -2850,7 +2850,7 @@ class DialAdjustmentWidgetState extends State<DialAdjustmentWidget> {
           ),
         ]),
 
-        const Spacing.height(8),
+        const Spacing.height(RLDS.spacing8),
 
         Text(
           'Adjust both dials to find the optimal design balance',
@@ -2860,7 +2860,7 @@ class DialAdjustmentWidgetState extends State<DialAdjustmentWidget> {
           ),
         ),
 
-        const Spacing.height(16),
+        const Spacing.height(RLDS.spacing16),
 
         // Complexity dial
         Div.column([
@@ -2884,7 +2884,7 @@ class DialAdjustmentWidgetState extends State<DialAdjustmentWidget> {
             ),
           ]),
 
-          const Spacing.height(8),
+          const Spacing.height(RLDS.spacing8),
 
           SliderTheme(
             data: SliderThemeData(
@@ -2926,7 +2926,7 @@ class DialAdjustmentWidgetState extends State<DialAdjustmentWidget> {
           ]),
         ]),
 
-        const Spacing.height(16),
+        const Spacing.height(RLDS.spacing16),
 
         // Usability dial
         Div.column([
@@ -2950,7 +2950,7 @@ class DialAdjustmentWidgetState extends State<DialAdjustmentWidget> {
             ),
           ]),
 
-          const Spacing.height(8),
+          const Spacing.height(RLDS.spacing8),
 
           SliderTheme(
             data: SliderThemeData(
@@ -2992,11 +2992,11 @@ class DialAdjustmentWidgetState extends State<DialAdjustmentWidget> {
           ]),
         ]),
 
-        const Spacing.height(16),
+        const Spacing.height(RLDS.spacing16),
 
         // Balance indicator
         Container(
-          padding: const EdgeInsets.all(12),
+          padding: const EdgeInsets.all(RLDS.spacing12),
           decoration: BoxDecoration(
             color: isOptimal
                 ? RLDS.success.withValues(alpha: 0.1)
@@ -3010,7 +3010,7 @@ class DialAdjustmentWidgetState extends State<DialAdjustmentWidget> {
               color: isOptimal ? RLDS.success : RLDS.warning,
               size: 16,
             ),
-            const Spacing.width(8),
+            const Spacing.width(RLDS.spacing8),
             Expanded(
               child: Text(
                 isOptimal
@@ -3030,8 +3030,8 @@ class DialAdjustmentWidgetState extends State<DialAdjustmentWidget> {
         RenderIf.condition(
           showOptimal,
           Container(
-            margin: const EdgeInsets.only(top: 8),
-            padding: const EdgeInsets.all(12),
+            margin: const EdgeInsets.only(top: RLDS.spacing8),
+            padding: const EdgeInsets.all(RLDS.spacing12),
             decoration: BoxDecoration(
               color: RLDS.success.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(8),
@@ -3130,17 +3130,17 @@ class StoryBranchingWidgetState extends State<StoryBranchingWidget> {
     final bool isEnding = choices.isEmpty;
 
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(RLDS.spacing20),
       decoration: BoxDecoration(
         color: RLDS.backgroundLight,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: RLDS.borderRadiusMedium,
         border: Border.all(color: RLDS.info.withValues(alpha: 0.2)),
       ),
       child: Div.column([
         Div.row([
           const Icon(Icons.auto_stories, color: RLDS.info, size: 24),
 
-          const Spacing.width(12),
+          const Spacing.width(RLDS.spacing12),
 
           Expanded(
             child: Text(
@@ -3162,7 +3162,7 @@ class StoryBranchingWidgetState extends State<StoryBranchingWidget> {
           ),
         ]),
 
-        const Spacing.height(8),
+        const Spacing.height(RLDS.spacing8),
 
         Text(
           'Choose how the design story unfolds',
@@ -3172,14 +3172,14 @@ class StoryBranchingWidgetState extends State<StoryBranchingWidget> {
           ),
         ),
 
-        const Spacing.height(16),
+        const Spacing.height(RLDS.spacing16),
 
         // Story text
         Container(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(RLDS.spacing16),
           decoration: BoxDecoration(
             color: RLDS.info.withValues(alpha: 0.05),
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: RLDS.borderRadiusSmall,
           ),
           child: Text(
             currentNode['text'],
@@ -3191,7 +3191,7 @@ class StoryBranchingWidgetState extends State<StoryBranchingWidget> {
           ),
         ),
 
-        const Spacing.height(16),
+        const Spacing.height(RLDS.spacing16),
 
         // Choices or ending
         RenderIf.condition(
@@ -3209,17 +3209,17 @@ class StoryBranchingWidgetState extends State<StoryBranchingWidget> {
 
     return Div.column([
       Container(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(RLDS.spacing16),
         decoration: BoxDecoration(
           color: endingColor.withValues(alpha: 0.1),
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: RLDS.borderRadiusSmall,
           border: Border.all(color: endingColor),
         ),
         child: Div.column([
           Div.row([
             Icon(getEndingIcon(ending), color: endingColor, size: 20),
 
-            const Spacing.width(8),
+            const Spacing.width(RLDS.spacing8),
 
             Text(
               getEndingTitle(ending),
@@ -3231,7 +3231,7 @@ class StoryBranchingWidgetState extends State<StoryBranchingWidget> {
             ),
           ]),
 
-          const Spacing.height(8),
+          const Spacing.height(RLDS.spacing8),
 
           Text(
             getEndingMessage(ending),
@@ -3244,7 +3244,7 @@ class StoryBranchingWidgetState extends State<StoryBranchingWidget> {
         ]),
       ),
 
-      const Spacing.height(12),
+      const Spacing.height(RLDS.spacing12),
 
       GestureDetector(
         onTap: resetStory,
@@ -3274,11 +3274,11 @@ class StoryBranchingWidgetState extends State<StoryBranchingWidget> {
       final Map<String, dynamic> choiceMap = choice as Map<String, dynamic>;
 
       return Padding(
-        padding: const EdgeInsets.only(bottom: 8),
+        padding: const EdgeInsets.only(bottom: RLDS.spacing8),
         child: GestureDetector(
           onTap: () => makeChoice(choiceMap),
           child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            padding: const EdgeInsets.symmetric(horizontal: RLDS.spacing16, vertical: RLDS.spacing12),
             decoration: BoxDecoration(
               color: RLDS.backgroundDark.withValues(alpha: 0.5),
               borderRadius: BorderRadius.circular(8),
@@ -3426,17 +3426,17 @@ class PatternRecognitionWidgetState extends State<PatternRecognitionWidget> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(RLDS.spacing20),
       decoration: BoxDecoration(
         color: RLDS.backgroundLight,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: RLDS.borderRadiusMedium,
         border: Border.all(color: RLDS.error.withValues(alpha: 0.2)),
       ),
       child: Div.column([
         Div.row([
           const Icon(Icons.pattern, color: RLDS.error, size: 24),
 
-          const Spacing.width(12),
+          const Spacing.width(RLDS.spacing12),
 
           Expanded(
             child: Text(
@@ -3449,7 +3449,7 @@ class PatternRecognitionWidgetState extends State<PatternRecognitionWidget> {
           ),
         ]),
 
-        const Spacing.height(8),
+        const Spacing.height(RLDS.spacing8),
 
         Text(
           'Identify repeated design patterns in the sequence',
@@ -3459,14 +3459,14 @@ class PatternRecognitionWidgetState extends State<PatternRecognitionWidget> {
           ),
         ),
 
-        const Spacing.height(16),
+        const Spacing.height(RLDS.spacing16),
 
         // Pattern sequence
         Container(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(RLDS.spacing16),
           decoration: BoxDecoration(
             color: RLDS.error.withValues(alpha: 0.05),
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: RLDS.borderRadiusSmall,
           ),
           child: Div.column([
             Text(
@@ -3478,7 +3478,7 @@ class PatternRecognitionWidgetState extends State<PatternRecognitionWidget> {
               ),
             ),
 
-            const Spacing.height(12),
+            const Spacing.height(RLDS.spacing12),
 
             Wrap(
               spacing: 8,
@@ -3492,7 +3492,7 @@ class PatternRecognitionWidgetState extends State<PatternRecognitionWidget> {
                 return GestureDetector(
                   onTap: hasSubmitted ? null : () => toggleSelection(index),
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    padding: const EdgeInsets.symmetric(horizontal: RLDS.spacing12, vertical: RLDS.spacing8),
                     decoration: BoxDecoration(
                       color: hasSubmitted
                           ? (isRepeated
@@ -3536,7 +3536,7 @@ class PatternRecognitionWidgetState extends State<PatternRecognitionWidget> {
                       RenderIf.condition(
                         hasSubmitted,
                         Padding(
-                          padding: const EdgeInsets.only(left: 8),
+                          padding: const EdgeInsets.only(left: RLDS.spacing8),
                           child: Icon(
                             isRepeated
                                 ? Icons.check_circle
@@ -3560,7 +3560,7 @@ class PatternRecognitionWidgetState extends State<PatternRecognitionWidget> {
           ]),
         ),
 
-        const Spacing.height(16),
+        const Spacing.height(RLDS.spacing16),
 
         RenderIf.condition(
           !hasSubmitted,
@@ -3589,7 +3589,7 @@ class PatternRecognitionWidgetState extends State<PatternRecognitionWidget> {
         RenderIf.condition(
           hasSubmitted,
           Container(
-            padding: const EdgeInsets.all(12),
+            padding: const EdgeInsets.all(RLDS.spacing12),
             decoration: BoxDecoration(
               color: score >= 2
                   ? RLDS.success.withValues(alpha: 0.1)
@@ -3606,7 +3606,7 @@ class PatternRecognitionWidgetState extends State<PatternRecognitionWidget> {
                   color: score >= 2 ? RLDS.success : RLDS.warning,
                   size: 16,
                 ),
-                const Spacing.width(8),
+                const Spacing.width(RLDS.spacing8),
                 Text(
                   score >= 2
                       ? 'Great pattern recognition!'
@@ -3619,7 +3619,7 @@ class PatternRecognitionWidgetState extends State<PatternRecognitionWidget> {
                 ),
               ]),
 
-              const Spacing.height(4),
+              const Spacing.height(RLDS.spacing4),
 
               Text(
                 'You identified $score/2 repeated patterns. ${score >= 2 ? "+12 Recognition points" : "+6 Recognition points for trying"}',

@@ -306,7 +306,7 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
       key: progressBarKey,
       height: 12.0,
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(8.0),
+        borderRadius: RLDS.borderRadiusXSmall,
         child: LinearProgressIndicator(
           value: progressValue,
           backgroundColor: RLDS.backgroundLight,
