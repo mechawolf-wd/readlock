@@ -19,7 +19,6 @@ class AccountBottomSheet {
       context,
       backgroundColor: RLDS.backgroundDark,
       showGrabber: false,
-      useLunarBlurSurface: true,
       child: const AccountSheet(),
     );
   }

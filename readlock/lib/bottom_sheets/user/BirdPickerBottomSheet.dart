@@ -20,7 +20,6 @@ class BirdPickerBottomSheet {
   static void show(BuildContext context) {
     RLBottomSheet.show(
       context,
-      useLunarBlurSurface: true,
       child: const BirdPickerSheet(),
     );
   }

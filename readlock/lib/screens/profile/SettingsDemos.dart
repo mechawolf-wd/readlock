@@ -13,11 +13,12 @@
 import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:readlock/bottom_sheets/user/FontPickerBottomSheet.dart';
+import 'package:readlock/constants/RLReadingColumn.dart';
 import 'package:readlock/constants/RLReadingFont.dart';
 import 'package:readlock/constants/RLUIStrings.dart';
 import 'package:readlock/constants/RLTypography.dart';
+import 'package:readlock/design_system/RLCard.dart';
 import 'package:readlock/design_system/RLLunarBlur.dart';
 import 'package:readlock/design_system/RLUtility.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
@@ -315,7 +316,7 @@ class ReadingFontDemo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final VoidCallback onDemoTap = () => FontPickerBottomSheet.show(context);
+    void onDemoTap() => FontPickerBottomSheet.show(context);
 
     return DemoSurface(
       onTap: onDemoTap,
@@ -338,6 +339,150 @@ class ReadingFontDemo extends StatelessWidget {
       alignment: Alignment.centerLeft,
       child: Text(RLUIStrings.FONT_DEMO_SAMPLE_TEXT, style: sampleStyle),
     );
+  }
+}
+
+// Live preview + picker for the reading column width. Shows a sample
+// paragraph at the selected maxWidth so the reader can see line-length
+// change as they tap between Narrow / Comfortable / Wide. Picker sits inside
+// the demo card (same self-contained pattern as RSVPDemo's WPM slider).
+// Subscribes to selectedReadingColumnNotifier so the sample rewraps live.
+class ReadingColumnDemo extends StatelessWidget {
+  const ReadingColumnDemo({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return demoFontListener(DemoBody);
+  }
+
+  Widget DemoBody(BuildContext context) {
+    return DemoSurface(
+      child: ValueListenableBuilder<ReadingColumn>(
+        valueListenable: selectedReadingColumnNotifier,
+        builder: ColumnContentBuilder,
+      ),
+    );
+  }
+
+  Widget ColumnContentBuilder(
+    BuildContext context,
+    ReadingColumn column,
+    Widget? unusedChild,
+  ) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        ColumnOptionTabs(column: column),
+
+        const Spacing.height(RLDS.spacing12),
+
+        SampleParagraph(column: column),
+      ],
+    );
+  }
+}
+
+// Renders the sample paragraph inside a centered ConstrainedBox that
+// matches the content viewer's column frame exactly — Wide is
+// unconstrained (full width), the others cap at the option's maxWidth.
+class SampleParagraph extends StatelessWidget {
+  final ReadingColumn column;
+
+  const SampleParagraph({super.key, required this.column});
+
+  @override
+  Widget build(BuildContext context) {
+    final double? maxWidth = maxWidthFor(column);
+    final Widget sampleText = Text(
+      RLUIStrings.DEMO_READING_COLUMN_TEXT,
+      style: demoReadingStyle,
+    );
+
+    final bool isUnconstrained = maxWidth == null;
+
+    if (isUnconstrained) {
+      return sampleText;
+    }
+
+    final BoxConstraints sampleConstraints = BoxConstraints(maxWidth: maxWidth);
+
+    return Center(child: ConstrainedBox(constraints: sampleConstraints, child: sampleText));
+  }
+}
+
+// Three-tab row for the reader to pick a column width. Mirrors the segment
+// tab style used on CourseRoadmapScreen so the picker reads as the same
+// family of tab group: frosted RLLunarBlur pill behind the selected label,
+// transparent row for the rest.
+class ColumnOptionTabs extends StatelessWidget {
+  final ReadingColumn column;
+
+  const ColumnOptionTabs({super.key, required this.column});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: TabWidgets(),
+    );
+  }
+
+  List<Widget> TabWidgets() {
+    final List<Widget> tabs = [];
+
+    for (int optionIndex = 0; optionIndex < READING_COLUMN_OPTIONS.length; optionIndex++) {
+      final bool isFirstTab = optionIndex == 0;
+
+      if (!isFirstTab) {
+        tabs.add(const Spacing.width(RLDS.spacing8));
+      }
+
+      final ReadingColumnOption option = READING_COLUMN_OPTIONS[optionIndex];
+      final bool isSelected = option.column == column;
+
+      tabs.add(ColumnOptionTab(option: option, isSelected: isSelected));
+    }
+
+    return tabs;
+  }
+}
+
+class ColumnOptionTab extends StatelessWidget {
+  final ReadingColumnOption option;
+  final bool isSelected;
+
+  const ColumnOptionTab({super.key, required this.option, required this.isSelected});
+
+  // Padding matches CourseRoadmapScreen.SegmentTabChip so both tab groups
+  // share the same chip dimensions across the app.
+  static const EdgeInsets tabPadding = EdgeInsets.symmetric(
+    horizontal: RLDS.spacing16,
+    vertical: RLDS.spacing8,
+  );
+
+  @override
+  Widget build(BuildContext context) {
+    final Color labelColor = isSelected ? RLDS.info : RLDS.textSecondary;
+    final Widget tabLabel = RLTypography.bodyMedium(option.displayName, color: labelColor);
+
+    void onTabTap() {
+      selectedReadingColumnNotifier.value = option.column;
+    }
+
+    if (isSelected) {
+      return GestureDetector(
+        onTap: onTabTap,
+        child: RLLunarBlur(
+          borderRadius: RLDS.borderRadiusSmall,
+          surfaceAlpha: RL_CARD_ALPHA,
+          padding: tabPadding,
+          child: tabLabel,
+        ),
+      );
+    }
+
+    return Div.row([tabLabel], padding: tabPadding, onTap: onTabTap);
   }
 }
 

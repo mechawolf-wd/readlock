@@ -98,10 +98,7 @@ class RLTextFieldState extends State<RLTextField> {
     // Shrink Flutter's default 48x48 prefix/suffix icon box so the icon sits
     // flush with the field's own padding instead of floating inside its own
     // huge hit area (which was pushing the hint text off-centre).
-    const BoxConstraints tightIconConstraints = BoxConstraints(
-      minWidth: 0,
-      minHeight: 0,
-    );
+    const BoxConstraints tightIconConstraints = BoxConstraints();
 
     final InputDecoration inputDecoration = InputDecoration(
       hintText: widget.hintText,

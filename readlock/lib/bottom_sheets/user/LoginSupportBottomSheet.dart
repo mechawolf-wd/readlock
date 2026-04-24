@@ -240,9 +240,8 @@ class ResetPasswordSupportContentState extends State<ResetPasswordSupportContent
     });
 
     final String? error = await AuthService.sendPasswordResetEmail(email: email);
-    final bool isUnmounted = !mounted;
 
-    if (isUnmounted) {
+    if (!context.mounted) {
       return;
     }
 
@@ -386,9 +385,8 @@ class ResendVerificationSupportContentState
 
     if (isSignedIn) {
       final bool isAlreadyVerified = await AuthService.isEmailVerified();
-      final bool isUnmountedAfterCheck = !mounted;
 
-      if (isUnmountedAfterCheck) {
+      if (!context.mounted) {
         return;
       }
 
@@ -403,9 +401,8 @@ class ResendVerificationSupportContentState
     }
 
     final bool wasSent = await AuthService.sendEmailVerification();
-    final bool isUnmountedAfterSend = !mounted;
 
-    if (isUnmountedAfterSend) {
+    if (!context.mounted) {
       return;
     }
 
@@ -503,9 +500,7 @@ class EmailSupportContentState extends State<EmailSupportContent> {
       const ClipboardData(text: RLUIStrings.SUPPORT_EMAIL_ADDRESS),
     );
 
-    final bool isUnmounted = !mounted;
-
-    if (isUnmounted) {
+    if (!context.mounted) {
       return;
     }
 
@@ -593,7 +588,6 @@ class SheetHeader extends StatelessWidget {
     }
 
     return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
         iconWidget,

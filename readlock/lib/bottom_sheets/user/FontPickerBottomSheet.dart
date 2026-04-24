@@ -148,7 +148,8 @@ class FontPickerSheetState extends State<FontPickerSheet> {
     final bool isSelected = selectedFont == option.font;
     final BoxDecoration rowDecoration = getRowDecoration(isSelected);
     final TextStyle sampleStyle = getSampleStyle(option.font);
-    final VoidCallback onRowTap = () => handleFontSelected(option.font);
+
+    void onRowTap() => handleFontSelected(option.font);
 
     return Div.column(
       [Text(option.description, style: sampleStyle)],

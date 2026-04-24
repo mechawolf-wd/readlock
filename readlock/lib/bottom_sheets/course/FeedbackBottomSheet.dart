@@ -39,8 +39,6 @@ class FeedbackBottomSheets {
     RLBottomSheet.show(
       context,
       showGrabber: false,
-      useLunarBlurSurface: true,
-      applyBackdropBlur: true,
       child: FeedbackSheet(
         content: content,
         buttonColor: buttonColor,

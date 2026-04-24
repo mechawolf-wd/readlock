@@ -9,6 +9,7 @@ import 'package:readlock/course_screens/CourseLoadingScreen.dart';
 import 'package:readlock/course_screens/widgets/CCJSONContentFactory.dart';
 import 'package:readlock/course_screens/data/CourseData.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
+import 'package:readlock/constants/RLReadingColumn.dart';
 import 'package:readlock/constants/RLUIStrings.dart';
 import 'package:readlock/design_system/RLLunarBlur.dart';
 import 'package:readlock/design_system/RLStarfieldBackground.dart';
@@ -336,11 +337,36 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
     );
   }
 
-  // Build content item widget for specific index
+  // Build content item widget for specific index. Every CC widget is wrapped
+  // in a centered column whose max width is driven by the reader's choice in
+  // Settings (selectedReadingColumnNotifier) — narrow / comfortable / wide.
+  // Wide means no constraint; the other two cap line-length so the reading
+  // surface doesn't flatten past the comfortable 45–75 character target on
+  // wider phones.
   Widget getContentItem(BuildContext context, int contentItemIndex) {
     final JSONMap content = allContent[contentItemIndex];
+    final Widget contentWidget = CCJSONContentFactory.createContentWidget(content);
 
-    return CCJSONContentFactory.createContentWidget(content);
+    return ValueListenableBuilder<ReadingColumn>(
+      valueListenable: selectedReadingColumnNotifier,
+      builder: buildColumnFrame,
+      child: contentWidget,
+    );
+  }
+
+  // Applies the selected column width as a max constraint. Wide returns the
+  // child as-is; narrow/comfortable centre it inside a ConstrainedBox.
+  Widget buildColumnFrame(BuildContext context, ReadingColumn column, Widget? child) {
+    final double? maxWidth = maxWidthFor(column);
+    final bool isUnconstrained = maxWidth == null;
+
+    if (isUnconstrained) {
+      return child!;
+    }
+
+    final BoxConstraints columnConstraints = BoxConstraints(maxWidth: maxWidth);
+
+    return Center(child: ConstrainedBox(constraints: columnConstraints, child: child));
   }
 
   // Load course data from service

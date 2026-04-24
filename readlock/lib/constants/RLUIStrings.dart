@@ -256,6 +256,12 @@ class RLUIStrings {
   static const String FONT_DEMO_SAMPLE_TEXT =
       'Good design is honest. It reveals the product and its function.';
 
+  // * Reading Column Width
+  static const String MENU_READING_COLUMN = 'Column width';
+  static const String DEMO_READING_COLUMN_TEXT =
+      'The width of the reading column sets the line-length of every swipe. '
+      'Tighter columns read like a newspaper; wider ones fill the screen.';
+
   // * Settings Demos
   static const String DEMO_REVEAL_TEXT = 'Design is not just what it looks like.';
   static const String DEMO_BLUR_PREVIOUS = 'Previous sentence fades away.';

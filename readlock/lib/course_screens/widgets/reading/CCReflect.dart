@@ -93,7 +93,8 @@ class CCReflectState extends State<CCReflect> {
     final Color pointColor =
         REFLECT_POINT_COLORS[pointIndex % REFLECT_POINT_COLORS.length];
     final bool isRevealed = revealedPoints.contains(pointIndex);
-    final VoidCallback onEntryTap = () => handlePointTap(pointIndex);
+
+    void onEntryTap() => handlePointTap(pointIndex);
 
     final Widget pointText = PointText(
       pointIndex: pointIndex,

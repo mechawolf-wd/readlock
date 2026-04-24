@@ -126,10 +126,6 @@ class MainNavigationState extends State<MainNavigation> {
       splashFactory: NoSplash.splashFactory,
     );
 
-    final TextStyle pixelNavLabelStyle = RLTypography.pixelLabelStyle.copyWith(
-      fontSize: navLabelFontSize,
-    );
-
     return Scaffold(
       // extendBody lets the starfield paint under the nav, so the frosted
       // surface has actual stars to blur instead of flat Scaffold colour.

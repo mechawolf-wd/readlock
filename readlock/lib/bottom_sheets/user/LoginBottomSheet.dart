@@ -34,7 +34,6 @@ class LoginBottomSheet {
       isDismissible: false,
       enableDrag: false,
       showGrabber: false,
-      applyBackdropBlur: true,
       backgroundColor: RLDS.backgroundLight,
     );
   }
@@ -207,9 +206,8 @@ class LoginSheetState extends State<LoginSheet> {
     });
 
     final String? error = await AuthService.sendPasswordResetEmail(email: email);
-    final bool isUnmountedAfterReset = !mounted;
 
-    if (isUnmountedAfterReset) {
+    if (!context.mounted) {
       return;
     }
 

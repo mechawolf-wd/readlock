@@ -2,7 +2,6 @@
 // Uses design system colors for active/inactive states.
 
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 
 class RLSwitch extends StatelessWidget {

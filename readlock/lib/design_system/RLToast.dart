@@ -262,7 +262,6 @@ class RLToastViewState extends State<RLToastView> with SingleTickerProviderState
         vertical: RLDS.spacing12,
       ),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           variantIcon,
 

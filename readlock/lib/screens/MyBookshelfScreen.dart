@@ -160,7 +160,8 @@ class MyBookshelfScreenState extends State<MyBookshelfScreen> {
     final String? coverImagePath = course['cover-image-path'] as String?;
     final String? courseColor = course['color'] as String?;
     final String courseId = course['course-id'] as String? ?? '';
-    final VoidCallback onCardTap = () => navigateToCourse(courseId);
+
+    void onCardTap() => navigateToCourse(courseId);
 
     return BookListCard(
       title: courseTitle,
@@ -190,7 +191,7 @@ class MyBookshelfScreenState extends State<MyBookshelfScreen> {
   }
 
   Widget BookshelfHeaderWithSettings() {
-    final VoidCallback onSettingsTap = () => SettingsBottomSheet.show(context);
+    void onSettingsTap() => SettingsBottomSheet.show(context);
 
     return Div.row([
       RLTypography.headingLarge(RLUIStrings.BOOKSHELF_TITLE),
@@ -226,7 +227,6 @@ class MyBookshelfScreenState extends State<MyBookshelfScreen> {
         alignment: Alignment.topCenter,
         child: Column(
           mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             BookshelfBird(),
 

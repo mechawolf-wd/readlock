@@ -76,10 +76,13 @@ class MenuSection extends StatelessWidget {
   Widget build(BuildContext context) {
     // Tap handlers extracted out of the widget tree so the Column's
     // children list stays lambda-free (rule #13).
-    final VoidCallback onAccountTap = () => AccountBottomSheet.show(context);
-    final VoidCallback onBirdPickerTap = () => BirdPickerBottomSheet.show(context);
-    final VoidCallback onFontPickerTap = () => FontPickerBottomSheet.show(context);
-    final VoidCallback onStoryPassTap = () => StoryPassBottomSheet.show(context);
+    void onAccountTap() => AccountBottomSheet.show(context);
+    void onBirdPickerTap() => BirdPickerBottomSheet.show(context);
+    void onFontPickerTap() => FontPickerBottomSheet.show(context);
+    void onStoryPassTap() => StoryPassBottomSheet.show(context);
+    // Column width row has its control (chips) inside the demo card below,
+    // so the row itself is a label — tap is a no-op.
+    void onColumnWidthRowTap() {}
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -194,6 +197,17 @@ class MenuSection extends StatelessWidget {
         ),
 
         const ReadingFontDemo(),
+
+        // Column width — label row above (chevron-less, no-op tap) matches
+        // the other reading-setting rows; the chips inside the demo card
+        // below are the actual control.
+        MenuItem(
+          icon: Pixel.textcolums,
+          title: RLUIStrings.MENU_READING_COLUMN,
+          onTap: onColumnWidthRowTap,
+        ),
+
+        const ReadingColumnDemo(),
 
         const MenuDivider(),
 

@@ -16,7 +16,6 @@ class CCPause extends StatelessWidget {
   const CCPause({super.key, required this.text, this.iconName});
 
   static const double birdPreviewSize = BIRD_PREVIEW_SIZE_SMALL;
-  static const double birdZoom = 1.0;
 
   @override
   Widget build(BuildContext context) {
@@ -62,11 +61,7 @@ class CCPause extends StatelessWidget {
   }
 
   Widget BirdBuilder(BuildContext context, BirdOption bird, Widget? _) {
-    return BirdAnimationSprite(
-      bird: bird,
-      previewSize: birdPreviewSize,
-      zoom: birdZoom,
-    );
+    return BirdAnimationSprite(bird: bird, previewSize: birdPreviewSize);
   }
 
   // Slower than the default 10ms/char — the pause message is short, and a
