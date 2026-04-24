@@ -18,8 +18,8 @@ import 'package:readlock/constants/RLReadingColumn.dart';
 import 'package:readlock/constants/RLReadingFont.dart';
 import 'package:readlock/constants/RLUIStrings.dart';
 import 'package:readlock/constants/RLTypography.dart';
-import 'package:readlock/design_system/RLCard.dart';
 import 'package:readlock/design_system/RLLunarBlur.dart';
+import 'package:readlock/design_system/RLSegmentTabs.dart';
 import 'package:readlock/design_system/RLUtility.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/utility_widgets/text_animation/BionicText.dart';
@@ -342,10 +342,9 @@ class ReadingFontDemo extends StatelessWidget {
   }
 }
 
-// Live preview + picker for the reading column width. Shows a sample
-// paragraph at the selected maxWidth so the reader can see line-length
-// change as they tap between Narrow / Comfortable / Wide. Picker sits inside
-// the demo card (same self-contained pattern as RSVPDemo's WPM slider).
+// Live preview + picker for the reading column width. The tab row sits
+// above the sample card at full width so the picker reads as a header for
+// the preview below — change the tab, the paragraph below rewraps to match.
 // Subscribes to selectedReadingColumnNotifier so the sample rewraps live.
 class ReadingColumnDemo extends StatelessWidget {
   const ReadingColumnDemo({super.key});
@@ -356,11 +355,9 @@ class ReadingColumnDemo extends StatelessWidget {
   }
 
   Widget DemoBody(BuildContext context) {
-    return DemoSurface(
-      child: ValueListenableBuilder<ReadingColumn>(
-        valueListenable: selectedReadingColumnNotifier,
-        builder: ColumnContentBuilder,
-      ),
+    return ValueListenableBuilder<ReadingColumn>(
+      valueListenable: selectedReadingColumnNotifier,
+      builder: ColumnContentBuilder,
     );
   }
 
@@ -369,16 +366,36 @@ class ReadingColumnDemo extends StatelessWidget {
     ReadingColumn column,
     Widget? unusedChild,
   ) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        ColumnOptionTabs(column: column),
+    return Container(
+      margin: demoSurfaceMargin,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          ColumnOptionTabs(column: column),
 
-        const Spacing.height(RLDS.spacing12),
+          const Spacing.height(RLDS.spacing12),
 
-        SampleParagraph(column: column),
-      ],
+          SampleSurface(column: column),
+        ],
+      ),
+    );
+  }
+}
+
+// Wraps the sample paragraph in the shared frosted demo surface so it reads
+// as the "text box" under the tabs above.
+class SampleSurface extends StatelessWidget {
+  final ReadingColumn column;
+
+  const SampleSurface({super.key, required this.column});
+
+  @override
+  Widget build(BuildContext context) {
+    return RLLunarBlur(
+      surfaceAlpha: demoSurfaceAlpha,
+      padding: demoSurfacePadding,
+      child: SizedBox(width: double.infinity, child: SampleParagraph(column: column)),
     );
   }
 }
@@ -411,10 +428,8 @@ class SampleParagraph extends StatelessWidget {
   }
 }
 
-// Three-tab row for the reader to pick a column width. Mirrors the segment
-// tab style used on CourseRoadmapScreen so the picker reads as the same
-// family of tab group: frosted RLLunarBlur pill behind the selected label,
-// transparent row for the rest.
+// Adapter — maps the reading-column options to the shared RLSegmentTabs
+// component and routes selection to the notifier.
 class ColumnOptionTabs extends StatelessWidget {
   final ReadingColumn column;
 
@@ -422,67 +437,24 @@ class ColumnOptionTabs extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: TabWidgets(),
+    final List<RLSegmentTabOption<ReadingColumn>> tabOptions = READING_COLUMN_OPTIONS
+        .map(
+          (ReadingColumnOption option) => RLSegmentTabOption<ReadingColumn>(
+            value: option.column,
+            label: option.displayName,
+          ),
+        )
+        .toList();
+
+    return RLSegmentTabs<ReadingColumn>(
+      options: tabOptions,
+      selectedValue: column,
+      onChanged: handleColumnChanged,
     );
   }
 
-  List<Widget> TabWidgets() {
-    final List<Widget> tabs = [];
-
-    for (int optionIndex = 0; optionIndex < READING_COLUMN_OPTIONS.length; optionIndex++) {
-      final bool isFirstTab = optionIndex == 0;
-
-      if (!isFirstTab) {
-        tabs.add(const Spacing.width(RLDS.spacing8));
-      }
-
-      final ReadingColumnOption option = READING_COLUMN_OPTIONS[optionIndex];
-      final bool isSelected = option.column == column;
-
-      tabs.add(ColumnOptionTab(option: option, isSelected: isSelected));
-    }
-
-    return tabs;
-  }
-}
-
-class ColumnOptionTab extends StatelessWidget {
-  final ReadingColumnOption option;
-  final bool isSelected;
-
-  const ColumnOptionTab({super.key, required this.option, required this.isSelected});
-
-  // Padding matches CourseRoadmapScreen.SegmentTabChip so both tab groups
-  // share the same chip dimensions across the app.
-  static const EdgeInsets tabPadding = EdgeInsets.symmetric(
-    horizontal: RLDS.spacing16,
-    vertical: RLDS.spacing8,
-  );
-
-  @override
-  Widget build(BuildContext context) {
-    final Color labelColor = isSelected ? RLDS.info : RLDS.textSecondary;
-    final Widget tabLabel = RLTypography.bodyMedium(option.displayName, color: labelColor);
-
-    void onTabTap() {
-      selectedReadingColumnNotifier.value = option.column;
-    }
-
-    if (isSelected) {
-      return GestureDetector(
-        onTap: onTabTap,
-        child: RLLunarBlur(
-          borderRadius: RLDS.borderRadiusSmall,
-          surfaceAlpha: RL_CARD_ALPHA,
-          padding: tabPadding,
-          child: tabLabel,
-        ),
-      );
-    }
-
-    return Div.row([tabLabel], padding: tabPadding, onTap: onTabTap);
+  void handleColumnChanged(ReadingColumn newColumn) {
+    selectedReadingColumnNotifier.value = newColumn;
   }
 }
 

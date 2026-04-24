@@ -150,10 +150,7 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
           const Positioned.fill(child: RLStarfieldBackground()),
 
           const Positioned.fill(
-            child: RLLunarBlur(
-              borderRadius: BorderRadius.zero,
-              child: SizedBox.expand(),
-            ),
+            child: RLLunarBlur(borderRadius: BorderRadius.zero, child: SizedBox.expand()),
           ),
 
           SafeArea(
@@ -211,6 +208,8 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
       return;
     }
 
+    HapticFeedback.lightImpact();
+
     setState(() {
       isProgressBarRevealed = true;
     });
@@ -245,20 +244,24 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
 
   // Top navigation bar with progress indicator
   Widget TopProgressBar() {
-    return Div.row([
-      // Back navigation button
-      BackNavigationButton(),
+    return Div.row(
+      [
+        // Back navigation button
+        BackNavigationButton(),
 
-      const Spacing.width(RLDS.spacing12),
+        const Spacing.width(RLDS.spacing12),
 
-      // Course progress indicator
-      Expanded(child: ProgressIndicator()),
+        // Course progress indicator
+        Expanded(child: ProgressIndicator()),
 
-      const Spacing.width(RLDS.spacing12),
+        const Spacing.width(RLDS.spacing12),
 
-      // Bookmark slide icon
-      BookmarkButton(),
-    ], key: topChromeKey, padding: RLDS.spacing16);
+        // Bookmark slide icon
+        BookmarkButton(),
+      ],
+      key: topChromeKey,
+      padding: RLDS.spacing16,
+    );
   }
 
   // Back button for navigation — matches the blurred progress chrome.
@@ -366,7 +369,9 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
 
     final BoxConstraints columnConstraints = BoxConstraints(maxWidth: maxWidth);
 
-    return Center(child: ConstrainedBox(constraints: columnConstraints, child: child));
+    return Center(
+      child: ConstrainedBox(constraints: columnConstraints, child: child),
+    );
   }
 
   // Load course data from service
@@ -468,20 +473,26 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
     Navigator.of(context).pop();
   }
 
-  // Show quit confirmation dialog
+  // Show quit confirmation dialog — frosted LunarBlur surface (matches the
+  // Support bottom sheet), icon-cancel layout so Pause reads as a compact
+  // red glyph on the left and Read fills the rest as the primary action.
   void showQuitConfirmationSheet() {
+    HapticFeedback.lightImpact();
+
     RLConfirmationDialog.show(
       context,
       title: RLUIStrings.QUIT_CONFIRMATION_TITLE,
       message: RLUIStrings.QUIT_CONFIRMATION_MESSAGE,
-      cta: RLConfirmationAction(
-        label: RLUIStrings.QUIT_CONFIRMATION_LEARN_BUTTON,
+      layout: RLConfirmationLayout.iconCancel,
+      cta: const RLConfirmationAction(
+        label: '',
         variant: RLConfirmationVariant.success,
-        onTap: () {},
+        icon: Pixel.play,
       ),
       cancel: RLConfirmationAction(
-        label: RLUIStrings.QUIT_CONFIRMATION_QUIT_BUTTON,
+        label: RLUIStrings.QUIT_CONFIRMATION_PAUSE_BUTTON,
         variant: RLConfirmationVariant.destructive,
+        icon: Pixel.pause,
         onTap: navigateBackToRoadmap,
       ),
     );
@@ -502,14 +513,11 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
       return;
     }
 
-    // Show bookmark feedback using custom snackbar
-    FeedbackSnackBar.showCustomFeedback(
-      context,
-      RLUIStrings.BOOKMARK_FEEDBACK_MESSAGE,
-      true,
-    );
-  }
+    HapticFeedback.lightImpact();
 
+    // Show bookmark feedback using custom snackbar
+    FeedbackSnackBar.showCustomFeedback(context, RLUIStrings.BOOKMARK_FEEDBACK_MESSAGE, true);
+  }
 }
 
 // Bottom sheet for quit confirmation

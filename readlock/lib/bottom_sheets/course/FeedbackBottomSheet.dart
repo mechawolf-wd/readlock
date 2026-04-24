@@ -28,9 +28,10 @@ class FeedbackBottomSheets {
     );
   }
 
-  // Generic bottom sheet implementation — inherits the default frosted
-  // LunarBlur surface and backdrop blur from RLBottomSheet so the Why?/Hint
-  // sheets read as the same material as the snackbar that opens them.
+  // Generic bottom sheet implementation — LunarBlur over `backgroundLight` to
+  // match the LoginSupport / Account sheets, so the Why?/Hint/Consequence
+  // sheets read as the same frosted pane family as the snackbar that opens
+  // them.
   static void showFeedbackSheet({
     required BuildContext context,
     required String content,
@@ -38,6 +39,7 @@ class FeedbackBottomSheets {
   }) {
     RLBottomSheet.show(
       context,
+      backgroundColor: RLDS.backgroundLight,
       showGrabber: false,
       child: FeedbackSheet(
         content: content,

@@ -3,7 +3,6 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:readlock/course_screens/CourseRoadmapScreen.dart';
 import 'package:readlock/course_screens/data/CourseData.dart';
 import 'package:readlock/constants/RLUIStrings.dart';
@@ -87,8 +86,7 @@ class HomeScreenState extends State<HomeScreen> {
       return;
     }
 
-    HapticFeedback.lightImpact();
-
+    // RLCard fires its own haptic on tap — no need for a second one here.
     final int randomIndex = Random().nextInt(availableCourses.length);
     final JSONMap randomCourse = availableCourses[randomIndex];
     final String randomCourseId = randomCourse['course-id'] as String;

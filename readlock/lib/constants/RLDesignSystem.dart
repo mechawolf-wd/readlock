@@ -152,6 +152,19 @@ class RLDS {
   static const EdgeInsets contentPaddingInsets = EdgeInsets.all(spacing24);
   static const EdgeInsets contentPaddingMediumInsets = EdgeInsets.all(spacing12);
 
+  // * Dialog padding — shared across every dialog surface (alert dialogs,
+  // confirmation dialogs, quit dialog, etc.) so they all sit at the same
+  // screen margin and frame their content with the same inset. Change
+  // these in one place and every dialog in the app follows.
+  //
+  //   dialogOuterHorizontalInset — side gap between the screen edge and
+  //       the dialog card (applied by DialogContainer).
+  //   dialogContentInsets        — padding between the dialog card edge
+  //       and its inner content (title / message / action row).
+
+  static const double dialogOuterHorizontalInset = spacing24;
+  static const EdgeInsets dialogContentInsets = EdgeInsets.all(spacing24);
+
   // * Hex color parsing
 
   static Color? parseHexColor(String? hex) {

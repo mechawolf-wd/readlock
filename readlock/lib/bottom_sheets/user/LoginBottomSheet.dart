@@ -207,7 +207,7 @@ class LoginSheetState extends State<LoginSheet> {
 
     final String? error = await AuthService.sendPasswordResetEmail(email: email);
 
-    if (!context.mounted) {
+    if (!mounted) {
       return;
     }
 

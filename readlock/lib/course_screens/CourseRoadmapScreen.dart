@@ -11,6 +11,7 @@ import 'package:readlock/design_system/RLCard.dart';
 import 'package:readlock/design_system/RLCourseBookImage.dart';
 import 'package:readlock/design_system/RLLunarBlur.dart';
 import 'package:readlock/design_system/RLRelevantForChip.dart';
+import 'package:readlock/design_system/RLSegmentTabs.dart';
 import 'package:readlock/design_system/RLStarfieldBackground.dart';
 import 'package:readlock/constants/RLCoursePalette.dart';
 import 'package:readlock/constants/RLTypography.dart';
@@ -210,7 +211,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
       return;
     }
 
-    HapticFeedback.lightImpact();
+    // Haptic is fired by RLSegmentTab's tap — no need for a second one here.
 
     setState(() {
       selectedSegmentIndex = segmentIndex;
@@ -324,8 +325,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
   }
 
   void handleBackToTop() {
-    HapticFeedback.lightImpact();
-
+    // RLCard fires its own haptic on tap — no need for a second one here.
     scrollController.animateTo(
       0,
       duration: const Duration(milliseconds: 400),
@@ -407,9 +407,6 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
       child: RLLunarBlur(
         borderRadius: bookRingPaneRadius,
         borderColor: RLDS.transparent,
-        // Match RLCard.elevated's tint so the disc, the info card below,
-        // and the Continue button's box all share the same frosted alpha.
-        surfaceAlpha: RL_CARD_ALPHA,
         child: ProgressRing(),
       ),
     );
@@ -471,7 +468,6 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
     return RLLunarBlur(
       borderRadius: BorderRadius.zero,
       borderColor: RLDS.transparent,
-      surfaceAlpha: RL_CARD_ALPHA,
       padding: const EdgeInsets.all(RLDS.spacing24),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -529,9 +525,10 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
     return raw.whereType<String>().map((String tag) => tag.trim()).toList();
   }
 
-  // Horizontal scrolling row of segment tabs. Selected tab uses the same
-  // dimmed-accent background as the Continue button so it stays legible
-  // across all course colors. Centered when the tabs fit, scrolls otherwise.
+  // Full-width segment tab row — routes through the shared RLSegmentTabs
+  // component so the selected tab gets the same frosted LunarBlur pill
+  // treatment as the column-width picker in Settings. Accent colour is the
+  // course's own accent so the selected label adopts its palette.
   Widget SegmentTabs() {
     final bool hasNoSegments = courseSegments.length <= 1;
 
@@ -539,70 +536,25 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
       return const SizedBox.shrink();
     }
 
-    return LayoutBuilder(
-      builder: (BuildContext context, BoxConstraints constraints) {
-        return SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          padding: const EdgeInsets.symmetric(horizontal: RLDS.spacing24),
-          child: ConstrainedBox(
-            constraints: BoxConstraints(minWidth: constraints.maxWidth - RLDS.spacing24 * 2),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: SegmentTabChips(),
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  List<Widget> SegmentTabChips() {
-    final List<Widget> chips = [];
+    final List<RLSegmentTabOption<int>> tabOptions = [];
 
     for (int segmentIndex = 0; segmentIndex < courseSegments.length; segmentIndex++) {
-      final bool isFirstChip = segmentIndex == 0;
-      final bool needsLeadingGap = !isFirstChip;
+      final JSONMap segment = courseSegments[segmentIndex];
+      final String segmentTitle = segment['segment-title'] as String? ?? '';
 
-      if (needsLeadingGap) {
-        chips.add(const Spacing.width(RLDS.spacing8));
-      }
-
-      chips.add(SegmentTabChip(segmentIndex));
-    }
-
-    return chips;
-  }
-
-  Widget SegmentTabChip(int segmentIndex) {
-    final JSONMap segment = courseSegments[segmentIndex];
-    final String segmentTitle = segment['segment-title'] as String? ?? '';
-    final bool isSelected = segmentIndex == selectedSegmentIndex;
-
-    const EdgeInsets chipPadding = EdgeInsets.symmetric(
-      horizontal: RLDS.spacing16,
-      vertical: RLDS.spacing8,
-    );
-
-    final Color accentColor = getCourseAccentColor();
-    final Color chipTextColor = isSelected ? accentColor : RLDS.textSecondary;
-    final Widget chipLabel = RLTypography.bodyMedium(segmentTitle, color: chipTextColor);
-
-    if (isSelected) {
-      return GestureDetector(
-        onTap: () => handleSegmentTabTap(segmentIndex),
-        child: RLLunarBlur(
-          borderRadius: RLDS.borderRadiusSmall,
-          surfaceAlpha: RL_CARD_ALPHA,
-          padding: chipPadding,
-          child: chipLabel,
-        ),
+      tabOptions.add(
+        RLSegmentTabOption<int>(value: segmentIndex, label: segmentTitle),
       );
     }
 
-    return Div.row(
-      [chipLabel],
-      padding: chipPadding,
-      onTap: () => handleSegmentTabTap(segmentIndex),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: RLDS.spacing24),
+      child: RLSegmentTabs<int>(
+        options: tabOptions,
+        selectedValue: selectedSegmentIndex,
+        onChanged: handleSegmentTabTap,
+        selectedLabelColor: getCourseAccentColor(),
+      ),
     );
   }
 

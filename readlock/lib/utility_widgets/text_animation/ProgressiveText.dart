@@ -2,6 +2,7 @@
 // Provides ProgressiveText widget for character-by-character text reveal with sentence navigation
 
 import 'package:flutter/material.dart' hide Typography;
+import 'package:flutter/scheduler.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLUIStrings.dart';
@@ -13,6 +14,13 @@ import 'package:readlock/services/feedback/SoundService.dart';
 const double progressiveTextDefaultBottomSpacing = RLDS.spacing8;
 const Duration progressiveTextAutoRevealDelay = Duration(milliseconds: 7);
 const Duration progressiveTextDoubleTapTimeout = Duration(milliseconds: 500);
+
+// Each character fades in from alpha 0 → 1 over this window from the moment
+// it is revealed. Kept short so the effect reads as a soft settle, not a
+// visible animation. Multiple characters can be in flight at once when the
+// typewriter is faster than this window — each gets its own timeline, so
+// adjacent characters crossfade smoothly without popping.
+const Duration progressiveTextLeadingCharacterFadeDuration = Duration(milliseconds: 60);
 
 // Class to represent a segment of text with optional highlighting
 class TextSegmentWithHighlighting {
@@ -118,6 +126,15 @@ class ProgressiveTextState extends State<ProgressiveText> with TickerProviderSta
   AnimationController? imageRevealController;
   Animation<double>? imageRevealAnimation;
 
+  // Per-character fade-in timeline for the current sentence. Index i stores
+  // the stopwatch elapsed at which character i was revealed; the span
+  // builder turns that into an alpha based on elapsed-since-reveal / fade
+  // duration. The ticker drives repaints while any character is still
+  // mid-fade.
+  final Stopwatch currentSentenceStopwatch = Stopwatch();
+  List<Duration> currentSentenceCharRevealTimes = [];
+  Ticker? leadingCharacterFadeTicker;
+
   // Double tap tracking for unblur all functionality
   DateTime? lastTapTime;
   int tapCount = 0;
@@ -130,6 +147,12 @@ class ProgressiveTextState extends State<ProgressiveText> with TickerProviderSta
 
     // Set up the sentences array and blur states from widget properties
     initializeTextState();
+
+    // Ticker drives vsync-paced repaints while any character is still fading
+    // in. It's the cheapest way to animate wall-clock-based alphas without
+    // also pulsing setState every frame when nothing is in flight.
+    leadingCharacterFadeTicker = createTicker(onLeadingCharacterFadeTick);
+    leadingCharacterFadeTicker!.start();
 
     // Check if there's any content to display
     final bool hasSentencesToReveal = textSentences.isNotEmpty;
@@ -154,6 +177,13 @@ class ProgressiveTextState extends State<ProgressiveText> with TickerProviderSta
         textSentences[currentSentenceNumber],
       );
       currentCharacterPosition = -1; // Start with no characters revealed
+
+      // Reset per-character fade timeline: the new sentence's chars will
+      // each record their own reveal time as the typewriter loop advances.
+      currentSentenceCharRevealTimes = [];
+      currentSentenceStopwatch
+        ..reset()
+        ..start();
     }
   }
 
@@ -198,8 +228,11 @@ class ProgressiveTextState extends State<ProgressiveText> with TickerProviderSta
       }
 
       if (mounted) {
+        final Duration revealTime = currentSentenceStopwatch.elapsed;
+
         setState(() {
           currentCharacterPosition = charIndex;
+          currentSentenceCharRevealTimes.add(revealTime);
         });
       }
 
@@ -412,6 +445,16 @@ class ProgressiveTextState extends State<ProgressiveText> with TickerProviderSta
     setState(() {
       isRevealingCurrentSentence = false;
       currentCharacterPosition = currentSentenceText.length - 1;
+
+      // Fill in any pending char reveal times with a past timestamp so every
+      // character lands at full opacity immediately — instant-complete
+      // shouldn't leave trailing characters stuck at alpha 0.
+      final Duration fullyFadedTime =
+          currentSentenceStopwatch.elapsed - progressiveTextLeadingCharacterFadeDuration;
+
+      while (currentSentenceCharRevealTimes.length < currentSentenceText.length) {
+        currentSentenceCharRevealTimes.add(fullyFadedTime);
+      }
     });
 
     // Stop typewriter sound immediately
@@ -483,6 +526,8 @@ class ProgressiveTextState extends State<ProgressiveText> with TickerProviderSta
     // Stop typewriter sound on disposal
     SoundService.stopTypewriter();
 
+    leadingCharacterFadeTicker?.dispose();
+    currentSentenceStopwatch.stop();
     imageRevealController?.dispose();
     super.dispose();
   }
@@ -638,46 +683,21 @@ class ProgressiveTextState extends State<ProgressiveText> with TickerProviderSta
   }
 
   // Build text with full layout, transitioning colors for revealed characters.
-  // All revealed characters render at the base text colour — there is no
-  // fade-in on the leading edge so the final character of each sentence ends
-  // up visually identical to the rest of the revealed prefix.
+  // Each newly revealed character fades in from alpha 0 → 1 over
+  // progressiveTextLeadingCharacterFadeDuration; settled characters render at
+  // full opacity and unrevealed characters stay transparent so the layout
+  // never reflows.
   Widget TextWithColorTransition(String fullText, int revealedPosition) {
     final TextStyle baseStyle = getConsistentTextStyle();
-    final Color textColor = baseStyle.color ?? RLDS.onSurface;
-    final List<TextSpan> spans = [];
+    final int actualRevealedLength =
+        (revealedPosition + 1).clamp(0, fullText.length);
 
-    final bool hasNothingRevealed = revealedPosition < 0 || fullText.isEmpty;
-
-    if (hasNothingRevealed) {
-      spans.add(
-        TextSpan(
-          text: fullText,
-          style: baseStyle.copyWith(color: RLDS.transparent),
-        ),
-      );
-    } else {
-      final int actualRevealedLength = (revealedPosition + 1).clamp(0, fullText.length);
-      final bool hasRevealedCharacters = actualRevealedLength > 0;
-      final bool hasHiddenCharacters = actualRevealedLength < fullText.length;
-
-      if (hasRevealedCharacters) {
-        spans.add(
-          TextSpan(
-            text: fullText.substring(0, actualRevealedLength),
-            style: baseStyle.copyWith(color: textColor),
-          ),
-        );
-      }
-
-      if (hasHiddenCharacters) {
-        spans.add(
-          TextSpan(
-            text: fullText.substring(actualRevealedLength),
-            style: baseStyle.copyWith(color: RLDS.transparent),
-          ),
-        );
-      }
-    }
+    final List<TextSpan> spans = createRevealSpans(
+      fullText,
+      0,
+      baseStyle,
+      actualRevealedLength,
+    );
 
     return RichText(
       text: TextSpan(children: spans),
@@ -835,46 +855,138 @@ class ProgressiveTextState extends State<ProgressiveText> with TickerProviderSta
     );
   }
 
-  // Create text span with color transition based on reveal position.
-  // Every revealed character — including the leading edge — renders at the
-  // style's base colour. Unrevealed tail is transparent to keep layout stable.
+  // Create text span with color transition based on reveal position. Thin
+  // wrapper over createRevealSpans — highlighted text (bold + colour) routes
+  // through the same per-character fade-in as plain text.
   TextSpan createSpanWithColorTransition(
     String text,
     TextStyle style,
     int startPosition,
     int revealedLength,
   ) {
-    final int endPosition = startPosition + text.length;
-    final bool isFullyRevealed = endPosition <= revealedLength;
-
-    if (isFullyRevealed) {
-      return TextSpan(text: text, style: style);
-    }
-
-    final bool isFullyHidden = startPosition >= revealedLength;
-
-    if (isFullyHidden) {
-      return TextSpan(
-        text: text,
-        style: style.copyWith(color: RLDS.transparent),
-      );
-    }
-
-    // Partially revealed — split into visible + transparent halves.
-    final int splitIndex = revealedLength - startPosition;
-    final String visiblePart = text.substring(0, splitIndex);
-    final String transparentPart = text.substring(splitIndex);
-
-    return TextSpan(
-      children: [
-        TextSpan(text: visiblePart, style: style),
-
-        TextSpan(
-          text: transparentPart,
-          style: style.copyWith(color: RLDS.transparent),
-        ),
-      ],
+    final List<TextSpan> spans = createRevealSpans(
+      text,
+      startPosition,
+      style,
+      revealedLength,
     );
+
+    return TextSpan(children: spans);
+  }
+
+  // Build the TextSpan slices for a substring of the current sentence.
+  // `startPosition` is where this substring begins in the clean (markup-
+  // stripped) sentence; `revealedLength` is how many characters of the full
+  // sentence have been revealed so far. The result groups contiguous
+  // fully-opaque runs into a single span and gives each still-fading
+  // character its own span with computed alpha — so the number of spans per
+  // render stays bounded by the fade window size, not the sentence length.
+  List<TextSpan> createRevealSpans(
+    String text,
+    int startPosition,
+    TextStyle style,
+    int revealedLength,
+  ) {
+    if (text.isEmpty) {
+      return const [];
+    }
+
+    final Color baseColor = style.color ?? RLDS.onSurface;
+    final TextStyle transparentStyle = style.copyWith(color: RLDS.transparent);
+    final List<TextSpan> spans = [];
+    int cursor = 0;
+
+    while (cursor < text.length) {
+      final int globalIndex = startPosition + cursor;
+      final bool isRevealed = globalIndex < revealedLength;
+
+      if (!isRevealed) {
+        // Everything from here to the end of this chunk is unrevealed — one
+        // transparent span covers it.
+        spans.add(TextSpan(text: text.substring(cursor), style: transparentStyle));
+        break;
+      }
+
+      final double alpha = getCharacterFadeAlpha(globalIndex);
+
+      if (alpha >= 1.0) {
+        // Walk forward grouping consecutive settled characters into one span.
+        int runEnd = cursor + 1;
+
+        while (runEnd < text.length) {
+          final int runGlobalIndex = startPosition + runEnd;
+          final bool runRevealed = runGlobalIndex < revealedLength;
+          final bool runSettled = runRevealed && getCharacterFadeAlpha(runGlobalIndex) >= 1.0;
+
+          if (!runSettled) {
+            break;
+          }
+
+          runEnd++;
+        }
+
+        spans.add(TextSpan(text: text.substring(cursor, runEnd), style: style));
+        cursor = runEnd;
+        continue;
+      }
+
+      // Character still fading in — its own span with reduced alpha.
+      spans.add(
+        TextSpan(
+          text: text[cursor],
+          style: style.copyWith(color: baseColor.withValues(alpha: alpha)),
+        ),
+      );
+      cursor++;
+    }
+
+    return spans;
+  }
+
+  // Current fade alpha (0..1) for the character at `globalCharIndex` in the
+  // clean sentence. Returns 0 if the character hasn't been revealed yet,
+  // 1 once elapsed-since-reveal passes the fade window.
+  double getCharacterFadeAlpha(int globalCharIndex) {
+    final bool hasRevealTime = globalCharIndex < currentSentenceCharRevealTimes.length;
+
+    if (!hasRevealTime) {
+      return 0.0;
+    }
+
+    final Duration elapsedSinceReveal =
+        currentSentenceStopwatch.elapsed - currentSentenceCharRevealTimes[globalCharIndex];
+    final double progress = elapsedSinceReveal.inMicroseconds /
+        progressiveTextLeadingCharacterFadeDuration.inMicroseconds;
+
+    return progress.clamp(0.0, 1.0);
+  }
+
+  // Ticker callback — only triggers a rebuild while at least one character
+  // is still mid-fade, so we don't pulse setState every frame for nothing.
+  void onLeadingCharacterFadeTick(Duration _) {
+    final bool shouldIgnoreTick = !mounted || !hasAnyAnimatingCharacter();
+
+    if (shouldIgnoreTick) {
+      return;
+    }
+
+    setState(() {});
+  }
+
+  // True if the most recently revealed character is still inside its fade
+  // window. Equivalent to "any character currently has alpha < 1" because
+  // reveal times are monotonically non-decreasing.
+  bool hasAnyAnimatingCharacter() {
+    final bool hasNoRevealedCharacters = currentSentenceCharRevealTimes.isEmpty;
+
+    if (hasNoRevealedCharacters) {
+      return false;
+    }
+
+    final Duration lastRevealTime = currentSentenceCharRevealTimes.last;
+    final Duration elapsedSinceLastReveal = currentSentenceStopwatch.elapsed - lastRevealTime;
+
+    return elapsedSinceLastReveal < progressiveTextLeadingCharacterFadeDuration;
   }
 
   // Helper methods

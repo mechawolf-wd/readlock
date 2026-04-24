@@ -29,29 +29,22 @@ class ReadingColumnOption {
 }
 
 const List<ReadingColumnOption> READING_COLUMN_OPTIONS = [
-  ReadingColumnOption(
-    column: ReadingColumn.narrow,
-    displayName: 'Narrow',
-    maxWidth: 320.0,
-  ),
+  ReadingColumnOption(column: ReadingColumn.narrow, displayName: 'Newspaper', maxWidth: 320.0),
 
   ReadingColumnOption(
     column: ReadingColumn.comfortable,
-    displayName: 'Comfortable',
+    displayName: 'Classic',
     maxWidth: 360.0,
   ),
 
-  ReadingColumnOption(
-    column: ReadingColumn.wide,
-    displayName: 'Wide',
-    maxWidth: null,
-  ),
+  ReadingColumnOption(column: ReadingColumn.wide, displayName: 'Expanded', maxWidth: null),
 ];
 
 const ReadingColumn DEFAULT_READING_COLUMN = ReadingColumn.comfortable;
 
-final ValueNotifier<ReadingColumn> selectedReadingColumnNotifier =
-    ValueNotifier<ReadingColumn>(DEFAULT_READING_COLUMN);
+final ValueNotifier<ReadingColumn> selectedReadingColumnNotifier = ValueNotifier<ReadingColumn>(
+  DEFAULT_READING_COLUMN,
+);
 
 // Resolves the column enum to its max width. Returns null for unconstrained.
 double? maxWidthFor(ReadingColumn column) {

@@ -7,7 +7,6 @@
 // picks up the change on its next rebuild.
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:readlock/bottom_sheets/RLBottomSheet.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/constants/RLReadingFont.dart';
@@ -56,8 +55,7 @@ class FontPickerSheetState extends State<FontPickerSheet> {
   }
 
   void handleFontSelected(ReadingFont font) {
-    HapticFeedback.selectionClick();
-
+    // Div already fires a tap haptic — no need for a second one here.
     selectedReadingFontNotifier.value = font;
 
     setState(() {

@@ -119,9 +119,8 @@ class RLUIStrings {
       'Couldn\'t load the course. Please try again.';
   static const String QUIT_CONFIRMATION_TITLE = 'Wait';
   static const String QUIT_CONFIRMATION_MESSAGE = 'If you quit you will lose your progress.';
-  static const String QUIT_CONFIRMATION_LEARN_BUTTON = 'Learn';
-  static const String QUIT_CONFIRMATION_QUIT_BUTTON = 'Quit';
-  static const String BOOKMARK_FEEDBACK_MESSAGE = 'Swipe saved to your nest.';
+  static const String QUIT_CONFIRMATION_PAUSE_BUTTON = 'Pause';
+  static const String BOOKMARK_FEEDBACK_MESSAGE = 'Knowledge swipe saved to your nest.';
 
   // * Course Content Factory
   static const String UNKNOWN_CONTENT_TYPE_MESSAGE = 'Unknown content type: ';

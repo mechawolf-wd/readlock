@@ -2,6 +2,7 @@
 // Provides Div widget for layout and Spacing widget for consistent spacing
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 
 // * Div layout direction and alignment identifiers
@@ -642,10 +643,16 @@ class Div extends StatelessWidget {
       child: ChildLayout(),
     );
 
-    final bool isOnTapDefined = onTap != null;
+    final VoidCallback? rawTapHandler = onTap;
+    final bool isOnTapDefined = rawTapHandler != null;
 
     if (isOnTapDefined) {
-      return GestureDetector(onTap: onTap, child: containerWidget);
+      void handleTapWithHaptic() {
+        HapticFeedback.lightImpact();
+        rawTapHandler();
+      }
+
+      return GestureDetector(onTap: handleTapWithHaptic, child: containerWidget);
     }
 
     return containerWidget;

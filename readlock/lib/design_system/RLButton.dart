@@ -2,6 +2,7 @@
 // Full-width by default, uses design system colors and border radius
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 
@@ -97,7 +98,7 @@ class RLButton extends StatelessWidget {
     );
 
     return GestureDetector(
-      onTap: onTap,
+      onTap: wrapWithHaptic(onTap),
       child: Container(
         width: double.infinity,
         margin: margin,
@@ -119,7 +120,7 @@ class RLButton extends StatelessWidget {
     required VoidCallback? onTap,
   }) {
     return GestureDetector(
-      onTap: onTap,
+      onTap: wrapWithHaptic(onTap),
       child: Container(
         width: double.infinity,
         margin: margin,
@@ -127,6 +128,20 @@ class RLButton extends StatelessWidget {
         child: Center(child: RLTypography.bodyMedium(label, color: textColor)),
       ),
     );
+  }
+
+  // Wraps an optional tap handler so every button press fires a single
+  // light haptic before the underlying action runs. Returns null when
+  // no handler is supplied so the GestureDetector stays inert.
+  VoidCallback? wrapWithHaptic(VoidCallback? rawHandler) {
+    if (rawHandler == null) {
+      return null;
+    }
+
+    return () {
+      HapticFeedback.lightImpact();
+      rawHandler();
+    };
   }
 
   RLButtonColors getStyleForVariant(Color resolvedColor) {

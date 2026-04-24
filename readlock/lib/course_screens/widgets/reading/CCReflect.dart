@@ -19,11 +19,7 @@ import 'package:readlock/utility_widgets/text_animation/ProgressiveText.dart';
 import 'package:readlock/utility_widgets/visual_effects/BlurOverlay.dart';
 
 // * Each thinking point rotates through one of these accent colours.
-const List<Color> REFLECT_POINT_COLORS = [
-  RLDS.info,
-  RLDS.success,
-  RLDS.warning,
-];
+const List<Color> REFLECT_POINT_COLORS = [RLDS.markupRed, RLDS.markupGreen, RLDS.onSurface];
 
 const int REFLECT_POINTS_LIMIT = 3;
 
@@ -75,9 +71,7 @@ class CCReflectState extends State<CCReflect> {
     final List<Widget> widgets = [];
 
     for (int pointIndex = 0; pointIndex < points.length; pointIndex++) {
-      widgets.add(
-        PointEntry(pointIndex: pointIndex, point: points[pointIndex]),
-      );
+      widgets.add(PointEntry(pointIndex: pointIndex, point: points[pointIndex]));
 
       final bool isLastPoint = pointIndex == points.length - 1;
 
@@ -90,8 +84,7 @@ class CCReflectState extends State<CCReflect> {
   }
 
   Widget PointEntry({required int pointIndex, required String point}) {
-    final Color pointColor =
-        REFLECT_POINT_COLORS[pointIndex % REFLECT_POINT_COLORS.length];
+    final Color pointColor = REFLECT_POINT_COLORS[pointIndex % REFLECT_POINT_COLORS.length];
     final bool isRevealed = revealedPoints.contains(pointIndex);
 
     void onEntryTap() => handlePointTap(pointIndex);
@@ -116,10 +109,7 @@ class CCReflectState extends State<CCReflect> {
     return GestureDetector(
       onTap: onEntryTap,
       behavior: HitTestBehavior.opaque,
-      child: BlurOverlay(
-        enabled: !isRevealed,
-        child: pointSurface,
-      ),
+      child: BlurOverlay(enabled: !isRevealed, child: pointSurface),
     );
   }
 

@@ -6,6 +6,7 @@ import 'package:readlock/constants/RLUIStrings.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/bottom_sheets/course/FeedbackBottomSheet.dart';
+import 'package:readlock/design_system/RLLunarBlur.dart';
 import 'package:readlock/design_system/RLUtility.dart';
 
 import 'package:pixelarticons/pixel.dart';
@@ -17,7 +18,6 @@ class SnackbarController {
   void show({
     required BuildContext context,
     required Widget content,
-    required Color backgroundColor,
     Duration? duration,
   }) {
     // Dismiss any existing snackbar instantly
@@ -25,7 +25,6 @@ class SnackbarController {
 
     final snackbar = AnimatedSnackbar(
       content: content,
-      backgroundColor: backgroundColor,
       duration: duration,
       onDismiss: dismiss,
       onStateCreated: (state) {
@@ -74,11 +73,7 @@ class FeedbackSnackBar {
       explanation: explanation,
     );
 
-    snackbarController.show(
-      context: context,
-      content: content,
-      backgroundColor: RLDS.success,
-    );
+    snackbarController.show(context: context, content: content);
   }
 
   static void showWrongAnswer(BuildContext context, {String? hint}) {
@@ -92,28 +87,19 @@ class FeedbackSnackBar {
 
     final Widget content = WrongAnswerContent(hasHint: hasHint, hint: hint);
 
-    snackbarController.show(
-      context: context,
-      content: content,
-      backgroundColor: RLDS.info,
-      duration: duration,
-    );
+    snackbarController.show(context: context, content: content, duration: duration);
   }
 
   static void showCustomFeedback(BuildContext context, String message, bool isCorrect) {
-    Color backgroundColor = RLDS.info;
+    Color accentColor = RLDS.info;
 
     if (isCorrect) {
-      backgroundColor = RLDS.success;
+      accentColor = RLDS.success;
     }
 
-    final Widget content = RLTypography.bodyLarge(message, color: RLDS.white);
+    final Widget content = RLTypography.bodyLarge(message, color: accentColor);
 
-    snackbarController.show(
-      context: context,
-      content: content,
-      backgroundColor: backgroundColor,
-    );
+    snackbarController.show(context: context, content: content);
   }
 
   static void clearSnackbars() {
@@ -128,14 +114,12 @@ class FeedbackSnackBar {
 // Animated snackbar widget
 class AnimatedSnackbar extends StatefulWidget {
   final Widget content;
-  final Color backgroundColor;
   final Duration? duration;
   final VoidCallback onDismiss;
   final void Function(AnimatedSnackbarState) onStateCreated;
 
-  const AnimatedSnackbar({super.key, 
+  const AnimatedSnackbar({super.key,
     required this.content,
-    required this.backgroundColor,
     required this.duration,
     required this.onDismiss,
     required this.onStateCreated,
@@ -213,13 +197,19 @@ class AnimatedSnackbarState extends State<AnimatedSnackbar>
       right: 0,
       child: SlideTransition(
         position: slideAnimation,
-        child: Material(
-          color: widget.backgroundColor,
-          // Match RLBottomSheet's top corner rounding so the snackbar reads
-          // as the same family of surface rising from the bottom edge.
+        // Match the LoginSupport / Account bottom sheets — LunarBlur over the
+        // shared `backgroundLight` surface so the snackbar reads as the same
+        // family of frosted pane rising from the bottom edge. The semantic
+        // colour (success / info) moves onto the label + icon instead of the
+        // background. Transparent Material wraps the content so Text widgets
+        // inherit a sane DefaultTextStyle (no debug yellow underlines).
+        child: RLLunarBlur(
           borderRadius: RLDS.borderRadiusTopLarge,
-          clipBehavior: Clip.antiAlias,
-          child: Padding(padding: contentPadding, child: widget.content),
+          surfaceColor: RLDS.backgroundLight,
+          child: Material(
+            type: MaterialType.transparency,
+            child: Padding(padding: contentPadding, child: widget.content),
+          ),
         ),
       ),
     );
@@ -233,7 +223,7 @@ class CorrectAnswerContent extends StatelessWidget {
 
   const CorrectAnswerContent({super.key, required this.hasExplanation, this.explanation});
 
-  static final Icon StarIcon = const Icon(Pixel.moonstars, color: RLDS.white, size: 20);
+  static final Icon StarIcon = const Icon(Pixel.moonstars, color: RLDS.success, size: 20);
 
   @override
   Widget build(BuildContext context) {
@@ -242,7 +232,9 @@ class CorrectAnswerContent extends StatelessWidget {
 
       const Spacing.width(RLDS.spacing12),
 
-      Expanded(child: RLTypography.bodyLarge(RLUIStrings.CORRECT_ANSWER_MESSAGE, color: RLDS.white)),
+      Expanded(
+        child: RLTypography.bodyLarge(RLUIStrings.CORRECT_ANSWER_MESSAGE, color: RLDS.success),
+      ),
 
       RenderIf.condition(hasExplanation, WhyButton(explanation: explanation)),
     ], crossAxisAlignment: CrossAxisAlignment.center);
@@ -266,7 +258,7 @@ class WhyButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final TextStyle buttonStyle = RLTypography.bodyMediumStyle.copyWith(
-      color: RLDS.white,
+      color: RLDS.success,
       fontWeight: FontWeight.w600,
     );
 
@@ -289,7 +281,7 @@ class WrongAnswerContent extends StatelessWidget {
 
   static final Icon LightbulbIcon = const Icon(
     Pixel.infobox,
-    color: RLDS.white,
+    color: RLDS.info,
     size: 20,
   );
 
@@ -300,7 +292,7 @@ class WrongAnswerContent extends StatelessWidget {
 
       const Spacing.width(RLDS.spacing12),
 
-      Expanded(child: RLTypography.bodyLarge(RLUIStrings.WRONG_ANSWER_TITLE, color: RLDS.white)),
+      Expanded(child: RLTypography.bodyLarge(RLUIStrings.WRONG_ANSWER_TITLE, color: RLDS.info)),
 
       RenderIf.condition(hasHint, HintButton(hint: hint)),
     ], crossAxisAlignment: CrossAxisAlignment.center);
@@ -324,7 +316,7 @@ class HintButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final TextStyle buttonStyle = RLTypography.bodyMediumStyle.copyWith(
-      color: RLDS.white,
+      color: RLDS.info,
       fontWeight: FontWeight.w600,
     );
 

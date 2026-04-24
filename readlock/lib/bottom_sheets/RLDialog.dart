@@ -71,11 +71,15 @@ class DialogContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     final Color dialogColor = backgroundColor ?? RLDS.backgroundLight;
 
+    const EdgeInsets outerPadding = EdgeInsets.symmetric(
+      horizontal: RLDS.dialogOuterHorizontalInset,
+    );
+
     return BackdropFilter(
       filter: ImageFilter.blur(sigmaX: RLDS.backdropBlurSigma, sigmaY: RLDS.backdropBlurSigma),
       child: Center(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: RLDS.spacing24),
+          padding: outerPadding,
           child: RLLunarBlur(
             borderRadius: RLDS.borderRadiusSmall,
             surfaceColor: dialogColor,
@@ -108,7 +112,7 @@ class AlertDialogContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(RLDS.spacing24),
+      padding: RLDS.dialogContentInsets,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,

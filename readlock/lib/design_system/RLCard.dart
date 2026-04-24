@@ -3,6 +3,7 @@
 // opacity so the app's cards all read as the same surface.
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/design_system/RLLunarBlur.dart';
 
@@ -50,10 +51,16 @@ class RLCard extends StatelessWidget {
 
     final Widget cardWithMargin = Container(margin: margin, child: cardBody);
 
-    final bool hasTapHandler = onTap != null;
+    final VoidCallback? rawTapHandler = onTap;
+    final bool hasTapHandler = rawTapHandler != null;
 
     if (hasTapHandler) {
-      return GestureDetector(onTap: onTap, child: cardWithMargin);
+      void handleTapWithHaptic() {
+        HapticFeedback.lightImpact();
+        rawTapHandler();
+      }
+
+      return GestureDetector(onTap: handleTapWithHaptic, child: cardWithMargin);
     }
 
     return cardWithMargin;

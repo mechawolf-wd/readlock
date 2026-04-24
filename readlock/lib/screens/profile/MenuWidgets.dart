@@ -266,8 +266,13 @@ class MenuItem extends StatelessWidget {
 
     final Widget MenuItemIcon = Icon(icon, color: iconColor, size: RLDS.iconMedium);
 
+    void handleMenuItemTap() {
+      HapticFeedback.lightImpact();
+      onTap();
+    }
+
     return GestureDetector(
-      onTap: onTap,
+      onTap: handleMenuItemTap,
       child: Padding(
         padding: MENU_ROW_PADDING,
         child: SizedBox(

@@ -241,7 +241,7 @@ class ResetPasswordSupportContentState extends State<ResetPasswordSupportContent
 
     final String? error = await AuthService.sendPasswordResetEmail(email: email);
 
-    if (!context.mounted) {
+    if (!mounted) {
       return;
     }
 
@@ -386,7 +386,7 @@ class ResendVerificationSupportContentState
     if (isSignedIn) {
       final bool isAlreadyVerified = await AuthService.isEmailVerified();
 
-      if (!context.mounted) {
+      if (!mounted) {
         return;
       }
 
@@ -402,7 +402,7 @@ class ResendVerificationSupportContentState
 
     final bool wasSent = await AuthService.sendEmailVerification();
 
-    if (!context.mounted) {
+    if (!mounted) {
       return;
     }
 
@@ -500,7 +500,7 @@ class EmailSupportContentState extends State<EmailSupportContent> {
       const ClipboardData(text: RLUIStrings.SUPPORT_EMAIL_ADDRESS),
     );
 
-    if (!context.mounted) {
+    if (!mounted) {
       return;
     }
 

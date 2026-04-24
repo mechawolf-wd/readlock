@@ -12,7 +12,7 @@ import 'package:readlock/constants/RLDesignSystem.dart';
 // Default tuning — gentler than the modal backdrop blur so surfaces don't
 // completely hide the stars behind them.
 const double RL_LUNAR_BLUR_DEFAULT_SIGMA = 4.0;
-const double RL_LUNAR_BLUR_DEFAULT_SURFACE_ALPHA = 0.55;
+const double RL_LUNAR_BLUR_DEFAULT_SURFACE_ALPHA = 0.35;
 // Matches RLToast's border so cards and toast notifications share the same
 // visual weight on the edge.
 const double RL_LUNAR_BLUR_BORDER_WIDTH = 2.0;
