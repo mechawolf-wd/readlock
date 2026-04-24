@@ -7,6 +7,7 @@ import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLUIStrings.dart';
 import 'package:readlock/design_system/RLUtility.dart';
+import 'package:readlock/utility_widgets/text_animation/BionicText.dart';
 import 'package:readlock/utility_widgets/visual_effects/BlurOverlay.dart';
 import 'package:readlock/services/feedback/HapticsService.dart';
 import 'package:readlock/services/feedback/SoundService.dart';
@@ -135,6 +136,12 @@ class ProgressiveTextState extends State<ProgressiveText> with TickerProviderSta
   List<Duration> currentSentenceCharRevealTimes = [];
   Ticker? leadingCharacterFadeTicker;
 
+  // Per-character bionic-bold mask for the current sentence. Computed once
+  // in initializeCurrentSentence and gated at render time by
+  // bionicEnabledNotifier so the toggle flips live without touching this
+  // cache.
+  List<bool> currentSentenceBoldMask = const [];
+
   // Double tap tracking for unblur all functionality
   DateTime? lastTapTime;
   int tapCount = 0;
@@ -153,6 +160,10 @@ class ProgressiveTextState extends State<ProgressiveText> with TickerProviderSta
     // also pulsing setState every frame when nothing is in flight.
     leadingCharacterFadeTicker = createTicker(onLeadingCharacterFadeTick);
     leadingCharacterFadeTicker!.start();
+
+    // Live bionic-toggle listener — flipping the switch in Settings re-paints
+    // every visible sentence without remounting.
+    bionicEnabledNotifier.addListener(onBionicEnabledChanged);
 
     // Check if there's any content to display
     final bool hasSentencesToReveal = textSentences.isNotEmpty;
@@ -184,6 +195,10 @@ class ProgressiveTextState extends State<ProgressiveText> with TickerProviderSta
       currentSentenceStopwatch
         ..reset()
         ..start();
+
+      // Pre-compute bionic fixation positions for this sentence. Cheap
+      // single pass; saved so the render path stays a lookup.
+      currentSentenceBoldMask = bionicBoldMask(currentSentenceText);
     }
   }
 
@@ -526,10 +541,20 @@ class ProgressiveTextState extends State<ProgressiveText> with TickerProviderSta
     // Stop typewriter sound on disposal
     SoundService.stopTypewriter();
 
+    bionicEnabledNotifier.removeListener(onBionicEnabledChanged);
     leadingCharacterFadeTicker?.dispose();
     currentSentenceStopwatch.stop();
     imageRevealController?.dispose();
     super.dispose();
+  }
+
+  // Live bionic toggle — repaint with the updated weight distribution.
+  void onBionicEnabledChanged() {
+    if (!mounted) {
+      return;
+    }
+
+    setState(() {});
   }
 
   @override
@@ -893,6 +918,7 @@ class ProgressiveTextState extends State<ProgressiveText> with TickerProviderSta
 
     final Color baseColor = style.color ?? RLDS.onSurface;
     final TextStyle transparentStyle = style.copyWith(color: RLDS.transparent);
+    final bool shouldApplyBionic = bionicEnabledNotifier.value;
     final List<TextSpan> spans = [];
     int cursor = 0;
 
@@ -908,39 +934,59 @@ class ProgressiveTextState extends State<ProgressiveText> with TickerProviderSta
       }
 
       final double alpha = getCharacterFadeAlpha(globalIndex);
+      final bool shouldBoldChar = shouldApplyBionic && isBionicBoldAt(globalIndex);
+      final TextStyle settledStyle = shouldBoldChar
+          ? style.copyWith(fontWeight: FontWeight.w700)
+          : style;
 
       if (alpha >= 1.0) {
-        // Walk forward grouping consecutive settled characters into one span.
+        // Walk forward grouping consecutive settled characters with the
+        // same bionic-bold state into one span.
         int runEnd = cursor + 1;
 
         while (runEnd < text.length) {
           final int runGlobalIndex = startPosition + runEnd;
           final bool runRevealed = runGlobalIndex < revealedLength;
           final bool runSettled = runRevealed && getCharacterFadeAlpha(runGlobalIndex) >= 1.0;
+          final bool runMatchesBold =
+              (shouldApplyBionic && isBionicBoldAt(runGlobalIndex)) == shouldBoldChar;
 
-          if (!runSettled) {
+          if (!runSettled || !runMatchesBold) {
             break;
           }
 
           runEnd++;
         }
 
-        spans.add(TextSpan(text: text.substring(cursor, runEnd), style: style));
+        spans.add(TextSpan(text: text.substring(cursor, runEnd), style: settledStyle));
         cursor = runEnd;
         continue;
       }
 
-      // Character still fading in — its own span with reduced alpha.
-      spans.add(
-        TextSpan(
-          text: text[cursor],
-          style: style.copyWith(color: baseColor.withValues(alpha: alpha)),
-        ),
+      // Character still fading in — its own span with reduced alpha, bold
+      // weight applied if the fixation mask says so.
+      final TextStyle fadingStyle = settledStyle.copyWith(
+        color: baseColor.withValues(alpha: alpha),
       );
+
+      spans.add(TextSpan(text: text[cursor], style: fadingStyle));
       cursor++;
     }
 
     return spans;
+  }
+
+  // Per-character bionic-bold lookup guarded against out-of-range indices
+  // (the mask only covers the current sentence's clean text).
+  bool isBionicBoldAt(int globalCharIndex) {
+    final bool isOutOfRange =
+        globalCharIndex < 0 || globalCharIndex >= currentSentenceBoldMask.length;
+
+    if (isOutOfRange) {
+      return false;
+    }
+
+    return currentSentenceBoldMask[globalCharIndex];
   }
 
   // Current fade alpha (0..1) for the character at `globalCharIndex` in the

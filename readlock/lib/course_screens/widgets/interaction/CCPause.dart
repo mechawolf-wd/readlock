@@ -19,11 +19,11 @@ class CCPause extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Colour matches CCTextContent's reading text (full textPrimary) so the
-    // motivational line reads as part of the same reading voice, not a muted
-    // caption.
+    // Reads as part of the same reading voice as CCTextContent — shared
+    // reading weight, full textPrimary colour. Bold is reserved for bionic
+    // fixation prefixes and colour-markup spans (see RLTypography note),
+    // so no weight override here.
     final TextStyle motivationalTextStyle = RLTypography.readingLargeStyle.copyWith(
-      fontWeight: FontWeight.w600,
       color: RLDS.textPrimary,
     );
 

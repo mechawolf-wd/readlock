@@ -13,6 +13,7 @@ import 'package:readlock/models/UserModel.dart';
 import 'package:readlock/screens/profile/MenuWidgets.dart';
 import 'package:readlock/services/auth/AuthService.dart';
 import 'package:readlock/services/auth/UserService.dart';
+import 'package:readlock/utility_widgets/text_animation/BionicText.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -125,6 +126,7 @@ class ProfileContentState extends State<ProfileContent> {
 
   void handleBionicToggled(bool value) {
     setState(() => bionicEnabled = value);
+    bionicEnabledNotifier.value = value;
   }
 
   void handleRsvpToggled(bool value) {

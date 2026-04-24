@@ -83,9 +83,15 @@ class RLTypography {
   // the font family switches with the reader's preference. `readingStyleFor`
   // applies the picked GoogleFonts family to this base style.
 
+  // Reading weight is shared across readingLarge / readingMedium so every CC
+  // reading surface (text content, reflect points, question answers, quote
+  // body, feedback sheets) renders at the same density — only size differs.
+  // Markup-highlighted spans (<c:g>…</c:g>) and the bionic-fixation prefix
+  // are the two sanctioned bold exceptions; both are applied locally at
+  // render time, not on the base style.
   static const TextStyle readingLargeBase = TextStyle(
     fontSize: 18,
-    fontWeight: RLDS.weightMedium,
+    fontWeight: RLDS.weightRegular,
     color: RLDS.textPrimary,
     height: 1.6,
     letterSpacing: 0.1,

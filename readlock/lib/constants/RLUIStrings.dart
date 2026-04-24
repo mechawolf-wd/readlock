@@ -250,7 +250,7 @@ class RLUIStrings {
   static const String BIRD_SPARROW = 'Sparrow';
 
   // * Reading Font Picker
-  static const String MENU_READING_FONT = 'Typography';
+  static const String MENU_READING_FONT = 'Typeface';
   static const String FONT_PICKER_TITLE = 'Typography';
   static const String FONT_DEMO_SAMPLE_TEXT =
       'Good design is honest. It reveals the product and its function.';
