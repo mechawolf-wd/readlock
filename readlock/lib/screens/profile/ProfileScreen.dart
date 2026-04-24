@@ -2,6 +2,7 @@
 // Loads preferences from /users/{id} on mount, persists every toggle/segment
 // change back to Firestore so state survives across devices and sessions.
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/constants/RLTypography.dart';
@@ -220,11 +221,7 @@ class ProfileContentState extends State<ProfileContent> {
       borderRadius: RLDS.borderRadiusSmall,
     );
 
-    final Widget spinner = const SizedBox(
-      width: 16,
-      height: 16,
-      child: CircularProgressIndicator(strokeWidth: 2),
-    );
+    final Widget spinner = const CupertinoActivityIndicator(radius: 8);
 
     return Div.row(
       [

@@ -7,8 +7,8 @@ import 'package:pixelarticons/pixel.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/constants/RLTypography.dart';
 
-// * Tuning
-const Duration TOAST_FADE_DURATION = Duration(milliseconds: 200);
+// * Tuning — fade timing pulled from RLDS so every opacity transition in
+// the app (reveal, fade switcher, toast) shares one token.
 const Duration TOAST_VISIBLE_DURATION = Duration(seconds: 3);
 const double TOAST_ICON_SIZE = 20.0;
 
@@ -164,7 +164,7 @@ class RLToastViewState extends State<RLToastView> with SingleTickerProviderState
 
     fadeController = AnimationController(
       vsync: this,
-      duration: TOAST_FADE_DURATION,
+      duration: RLDS.opacityFadeDurationFast,
     );
 
     fadeAnimation = CurvedAnimation(

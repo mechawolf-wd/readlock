@@ -3,6 +3,12 @@
 //
 // Sharp rectangular dots, no anti-aliasing, no twinkling — just a calm
 // slow scroll to give the screen a tiny bit of life.
+//
+// The drift clock is shared across every mounted RLStarfieldBackground via
+// StarfieldClock so navigating between screens (roadmap → bird loader →
+// course viewer) never snaps the drift back to 0. Instances subscribe on
+// mount, unsubscribe on dispose; the stopwatch pauses only while zero
+// starfields are on screen and resumes from where it left off otherwise.
 
 import 'dart:math';
 
@@ -19,6 +25,55 @@ const int STARFIELD_RANDOM_SEED = 42;
 // Pitch-black background — RLDS.black is a near-black grey, we want the
 // actual void behind the pixel stars.
 const Color STARFIELD_BACKGROUND_COLOR = Color(0xFF000000);
+
+// * Shared app-wide drift clock. A Stopwatch is the source of truth so
+// stop/start cycles preserve the elapsed value, and a Ticker is used only
+// to pump a `ValueNotifier` at display refresh rate while at least one
+// starfield is subscribed.
+class StarfieldClock {
+  static final ValueNotifier<double> elapsed = ValueNotifier<double>(0.0);
+  static final Stopwatch stopwatch = Stopwatch();
+  static Ticker? ticker;
+  static int subscriberCount = 0;
+
+  static void subscribe() {
+    subscriberCount++;
+
+    final bool isFirstSubscriber = subscriberCount == 1;
+
+    if (!isFirstSubscriber) {
+      return;
+    }
+
+    stopwatch.start();
+    ticker ??= Ticker(handleTick);
+
+    final Ticker activeTicker = ticker!;
+    final bool tickerIsStopped = !activeTicker.isActive;
+
+    if (tickerIsStopped) {
+      activeTicker.start();
+    }
+  }
+
+  static void unsubscribe() {
+    subscriberCount--;
+
+    final bool hasSubscribers = subscriberCount > 0;
+
+    if (hasSubscribers) {
+      return;
+    }
+
+    subscriberCount = 0;
+    ticker?.stop();
+    stopwatch.stop();
+  }
+
+  static void handleTick(Duration unused) {
+    elapsed.value = stopwatch.elapsedMicroseconds / 1e6;
+  }
+}
 
 // * One star's immutable spec — position is a 0..1 normalised coordinate so
 // the painter can map it to whatever size the widget resolves to.
@@ -56,31 +111,20 @@ class RLStarfieldBackground extends StatefulWidget {
   State<RLStarfieldBackground> createState() => RLStarfieldBackgroundState();
 }
 
-class RLStarfieldBackgroundState extends State<RLStarfieldBackground>
-    with SingleTickerProviderStateMixin {
-  late Ticker ticker;
+class RLStarfieldBackgroundState extends State<RLStarfieldBackground> {
   late List<StarSpec> stars;
-  // Drives repaints via CustomPainter's `repaint` listenable so the widget
-  // subtree is never rebuilt each frame — only the canvas repaints.
-  final ValueNotifier<double> elapsedSeconds = ValueNotifier<double>(0.0);
 
   @override
   void initState() {
     super.initState();
     stars = generateStars();
-    ticker = createTicker(handleTick);
-    ticker.start();
+    StarfieldClock.subscribe();
   }
 
   @override
   void dispose() {
-    ticker.dispose();
-    elapsedSeconds.dispose();
+    StarfieldClock.unsubscribe();
     super.dispose();
-  }
-
-  void handleTick(Duration elapsed) {
-    elapsedSeconds.value = elapsed.inMicroseconds / 1e6;
   }
 
   List<StarSpec> generateStars() {
@@ -109,7 +153,7 @@ class RLStarfieldBackgroundState extends State<RLStarfieldBackground>
           child: CustomPaint(
             painter: StarfieldPainter(
               stars: stars,
-              elapsedListenable: elapsedSeconds,
+              elapsedListenable: StarfieldClock.elapsed,
               driftSpeed: widget.driftSpeed,
               starColor: widget.starColor,
             ),

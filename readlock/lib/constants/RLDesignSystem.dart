@@ -118,6 +118,16 @@ class RLDS {
   // dialogs) so they all read as one family.
   static const double backdropBlurSigma = 10.0;
 
+  // * Opacity animation durations — single source of truth for every fade
+  // / reveal in the app. Callers should pick the closest bucket rather than
+  // author their own Duration literals.
+  //   fast:     quick on/off reveals (RLReveal, RLFadeSwitcher, RLToast)
+  //   standard: feedback toasts, sheet content swaps
+  //   intro:    hero intros (roadmap progress ring, onboarding)
+  static const Duration opacityFadeDurationFast = Duration(milliseconds: 200);
+  static const Duration opacityFadeDurationStandard = Duration(milliseconds: 300);
+  static const Duration opacityFadeDurationIntro = Duration(milliseconds: 1200);
+
   // * Lyrics-style completed-text blur (Apple Music cadence).
   //
   // Apple Music's upcoming lyrics keep moderate opacity (~0.5) paired with a

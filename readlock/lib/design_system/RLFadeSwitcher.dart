@@ -7,8 +7,7 @@
 // AnimatedSwitcher won't detect the swap.
 
 import 'package:flutter/material.dart';
-
-const Duration RL_FADE_SWITCHER_DURATION = Duration(milliseconds: 200);
+import 'package:readlock/constants/RLDesignSystem.dart';
 
 class RLFadeSwitcher extends StatelessWidget {
   final Widget child;
@@ -17,7 +16,7 @@ class RLFadeSwitcher extends StatelessWidget {
   const RLFadeSwitcher({
     super.key,
     required this.child,
-    this.duration = RL_FADE_SWITCHER_DURATION,
+    this.duration = RLDS.opacityFadeDurationFast,
   });
 
   @override

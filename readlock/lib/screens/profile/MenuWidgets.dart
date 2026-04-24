@@ -11,6 +11,7 @@ import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/bottom_sheets/user/AccountBottomSheet.dart';
 import 'package:readlock/bottom_sheets/user/BirdPickerBottomSheet.dart';
 import 'package:readlock/bottom_sheets/user/FontPickerBottomSheet.dart';
+import 'package:readlock/bottom_sheets/user/StoryPassBottomSheet.dart';
 import 'package:readlock/screens/profile/SettingsDemos.dart';
 
 import 'package:pixelarticons/pixel.dart';
@@ -78,7 +79,7 @@ class MenuSection extends StatelessWidget {
     final VoidCallback onAccountTap = () => AccountBottomSheet.show(context);
     final VoidCallback onBirdPickerTap = () => BirdPickerBottomSheet.show(context);
     final VoidCallback onFontPickerTap = () => FontPickerBottomSheet.show(context);
-    final VoidCallback onReaderPassTap = () {};
+    final VoidCallback onStoryPassTap = () => StoryPassBottomSheet.show(context);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -92,8 +93,8 @@ class MenuSection extends StatelessWidget {
 
         MenuItem(
           icon: Pixel.card,
-          title: RLUIStrings.MENU_READER_PASS,
-          onTap: onReaderPassTap,
+          title: RLUIStrings.MENU_STORY_PASS,
+          onTap: onStoryPassTap,
         ),
 
         MenuItem(

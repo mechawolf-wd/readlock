@@ -20,15 +20,23 @@ class RLUIStrings {
   static const String CANCEL_LABEL = 'Cancel';
   static const String DIALOG_DEFAULT_ACTION_LABEL = 'OK';
 
-  // * Reader Pass Screen
-  static const String READER_PASS_TITLE = 'Reader Pass';
-  static const String READER_PASS_SUBTITLE = 'Unlock unlimited learning';
+  // * Story Pass bottom sheet
+  static const String STORY_PASS_TITLE = 'Story Pass';
+  static const String STORY_PASS_SUBTITLE = 'Unlock unlimited learning';
   static const String DISCOUNT_TEXT = '25% OFF';
   static const String ORIGINAL_PRICE = '\$39.99';
   static const String DISCOUNTED_PRICE = '\$29.99';
   static const String PRICE_PERIOD = '/month';
-  static const String SUBSCRIBE_BUTTON_TEXT = 'Get Reader Pass';
-  static const String READER_PASS_FEATURES_TITLE = 'What you get';
+  static const String SUBSCRIBE_BUTTON_TEXT = 'Get Story Pass';
+  static const String STORY_PASS_FEATURES_TITLE = 'What you get';
+  static const String STORY_PASS_BENEFIT_BOOKS_TITLE = 'Unlimited Books';
+  static const String STORY_PASS_BENEFIT_BOOKS_DESCRIPTION = 'Access to our entire library';
+  static const String STORY_PASS_BENEFIT_OFFLINE_TITLE = 'Offline Reading';
+  static const String STORY_PASS_BENEFIT_OFFLINE_DESCRIPTION = 'Download and read anywhere';
+  static const String STORY_PASS_BENEFIT_LESSONS_TITLE = 'Interactive Lessons';
+  static const String STORY_PASS_BENEFIT_LESSONS_DESCRIPTION = 'Quizzes and reflections';
+  static const String STORY_PASS_BENEFIT_PREMIUM_TITLE = 'Premium Features';
+  static const String STORY_PASS_BENEFIT_PREMIUM_DESCRIPTION = 'All features unlocked';
 
   // * Feedback Snackbar
   static const String CORRECT_ANSWER_MESSAGE = 'Correct, you read it';
@@ -212,7 +220,7 @@ class RLUIStrings {
 
   // * Profile / Settings Menu
   static const String MENU_ACCOUNT = 'Account';
-  static const String MENU_READER_PASS = 'Reader Pass';
+  static const String MENU_STORY_PASS = 'Story Pass';
   static const String MENU_TYPING_SOUND = 'Typing sound';
   static const String MENU_SOUNDS = 'Sounds';
   static const String MENU_HAPTICS = 'Haptics';

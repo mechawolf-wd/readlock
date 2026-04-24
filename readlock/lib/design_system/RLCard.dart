@@ -1,15 +1,13 @@
-// Reusable card component with elevated and subtle variants.
-// Both variants use RLLunarBlur (blurs the starfield / whatever is
-// behind) — elevated is a touch more opaque so hero cards feel more solid,
-// subtle uses a lighter tint for list items that should stay recessive.
+// Reusable card component — a frosted LunarBlur pane. The elevated/subtle
+// factories are kept as call-site affordances but share a single tint
+// opacity so the app's cards all read as the same surface.
 
 import 'package:flutter/material.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/design_system/RLLunarBlur.dart';
 
-// Tint opacities for the two variants — both share the same blur sigma.
-const double RL_CARD_ELEVATED_ALPHA = 0.35;
-const double RL_CARD_SUBTLE_ALPHA = 0.35;
+// Single source of truth for the frosted card tint.
+const double RL_CARD_ALPHA = 0.35;
 
 enum RLCardVariant { elevated, subtle }
 
@@ -42,14 +40,11 @@ class RLCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final EdgeInsets resolvedPadding = padding ?? const EdgeInsets.all(RLDS.spacing12);
-    final bool isElevated = variant == RLCardVariant.elevated;
-
-    final double resolvedAlpha = isElevated ? RL_CARD_ELEVATED_ALPHA : RL_CARD_SUBTLE_ALPHA;
 
     final Widget cardBody = FrostedCardBody(
       padding: resolvedPadding,
       borderColor: borderColor,
-      surfaceAlpha: resolvedAlpha,
+      surfaceAlpha: RL_CARD_ALPHA,
       child: child,
     );
 

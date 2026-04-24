@@ -93,7 +93,7 @@ class BookCoverThumbnail extends StatelessWidget {
 
     if (isNetworkCover) {
       return ClipRRect(
-        borderRadius: BorderRadius.circular(6),
+        borderRadius: RLDS.borderRadiusXSmall,
         child: Image.network(
           resolvedPath,
           width: width,
@@ -106,7 +106,7 @@ class BookCoverThumbnail extends StatelessWidget {
 
     if (isAssetCover) {
       return ClipRRect(
-        borderRadius: BorderRadius.circular(6),
+        borderRadius: RLDS.borderRadiusXSmall,
         child: Image.asset(resolvedPath, width: width, height: height, fit: BoxFit.cover),
       );
     }
@@ -121,7 +121,7 @@ class BookCoverThumbnail extends StatelessWidget {
   Widget CoverPlaceholder() {
     final BoxDecoration placeholderDecoration = BoxDecoration(
       color: RLDS.info.withValues(alpha: 0.1),
-      borderRadius: BorderRadius.circular(6),
+      borderRadius: RLDS.borderRadiusXSmall,
       border: Border.all(color: RLDS.info.withValues(alpha: 0.2)),
     );
 

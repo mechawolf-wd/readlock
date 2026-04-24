@@ -43,7 +43,7 @@ class BlurOverlayState extends State<BlurOverlay> with SingleTickerProviderState
     super.initState();
 
     controller = AnimationController(
-      duration: RL_REVEAL_DURATION,
+      duration: RLDS.opacityFadeDurationFast,
       vsync: this,
       value: 0.0,
     );

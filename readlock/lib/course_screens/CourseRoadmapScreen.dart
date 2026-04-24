@@ -1,6 +1,7 @@
 // Course roadmap screen with winding path
 // One long scrollable list with sticky segment tiles
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:readlock/course_screens/CourseContentViewer.dart';
@@ -31,8 +32,8 @@ const double floatingBarBottomClearance = 180.0;
 
 // * Progress ring intro animation — the arc sweeps from 0 to the reader's
 // current progress on screen open with an ease-out curve so the reveal
-// reads as a single confident gesture rather than a linear fill.
-const Duration progressRingIntroDuration = Duration(milliseconds: 1200);
+// reads as a single confident gesture rather than a linear fill. Duration
+// pulled from the shared opacity-intro token in RLDS.
 const double roadmapTargetProgress = 0.35;
 
 class CourseRoadmapScreen extends StatefulWidget {
@@ -96,7 +97,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
 
     progressRingController = AnimationController(
       vsync: this,
-      duration: progressRingIntroDuration,
+      duration: RLDS.opacityFadeDurationIntro,
     );
 
     progressRingAnimation = Tween<double>(
@@ -225,7 +226,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
     final bool shouldShowLoadingIndicator = isCourseDataLoading;
 
     if (shouldShowLoadingIndicator) {
-      return const Center(child: CircularProgressIndicator());
+      return const Center(child: CupertinoActivityIndicator());
     }
 
     final bool hasMultipleSegments = courseSegments.length > 1;
@@ -252,7 +253,6 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
           padding: const EdgeInsets.symmetric(horizontal: RLDS.spacing24),
           child: PathWithNodes(
             lessons: courseLessons,
-            segmentIndex: selectedSegmentIndex,
             lessonKeys: lessonKeys,
             accentColor: getCourseAccentColor(),
             onLessonTap: showLoadingScreenThenNavigate,
@@ -398,7 +398,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
   // Circular LunarBlur pane that hosts the progress ring + book. Size
   // matches the ring exactly — the disc sits flush behind the ring stroke,
   // no inner padding, no squircle fallback.
-  static final BorderRadius bookRingPaneRadius = BorderRadius.circular(9999);
+  static final BorderRadius bookRingPaneRadius = RLDS.borderRadiusCircle;
 
   Widget BookRingPane() {
     return SizedBox(
@@ -409,7 +409,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
         borderColor: RLDS.transparent,
         // Match RLCard.elevated's tint so the disc, the info card below,
         // and the Continue button's box all share the same frosted alpha.
-        surfaceAlpha: RL_CARD_ELEVATED_ALPHA,
+        surfaceAlpha: RL_CARD_ALPHA,
         child: ProgressRing(),
       ),
     );
@@ -465,13 +465,13 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
   // Hero card is a text-only info panel that sits underneath the circular
   // book-ring pane. Renders as a full-bleed strip — no border radius, since
   // it touches the screen edges on both sides. Uses RLLunarBlur directly
-  // (RLCard.elevated always rounds) with RL_CARD_ELEVATED_ALPHA so the
+  // (RLCard.elevated always rounds) with RL_CARD_ALPHA so the
   // frosted-dark tint still matches the BottomFloatingBar and the book disc.
   Widget HeroCard({required String courseTitle, required String courseAuthor}) {
     return RLLunarBlur(
       borderRadius: BorderRadius.zero,
       borderColor: RLDS.transparent,
-      surfaceAlpha: RL_CARD_ELEVATED_ALPHA,
+      surfaceAlpha: RL_CARD_ALPHA,
       padding: const EdgeInsets.all(RLDS.spacing24),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -561,8 +561,9 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
 
     for (int segmentIndex = 0; segmentIndex < courseSegments.length; segmentIndex++) {
       final bool isFirstChip = segmentIndex == 0;
+      final bool needsLeadingGap = !isFirstChip;
 
-      if (!isFirstChip) {
+      if (needsLeadingGap) {
         chips.add(const Spacing.width(RLDS.spacing8));
       }
 
@@ -591,7 +592,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
         onTap: () => handleSegmentTabTap(segmentIndex),
         child: RLLunarBlur(
           borderRadius: RLDS.borderRadiusSmall,
-          surfaceAlpha: RL_CARD_ELEVATED_ALPHA,
+          surfaceAlpha: RL_CARD_ALPHA,
           padding: chipPadding,
           child: chipLabel,
         ),
@@ -674,7 +675,6 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
 // Path with connected lesson nodes
 class PathWithNodes extends StatelessWidget {
   final List<dynamic> lessons;
-  final int segmentIndex;
   final List<GlobalKey> lessonKeys;
   final Color accentColor;
   final Function(int, int) onLessonTap;
@@ -682,7 +682,6 @@ class PathWithNodes extends StatelessWidget {
   const PathWithNodes({
     super.key,
     required this.lessons,
-    required this.segmentIndex,
     required this.lessonKeys,
     required this.accentColor,
     required this.onLessonTap,
@@ -698,9 +697,8 @@ class PathWithNodes extends StatelessWidget {
 
     for (int lessonIndex = 0; lessonIndex < lessons.length; lessonIndex++) {
       final JSONMap lesson = lessons[lessonIndex] as JSONMap;
-      final bool isCompleted = segmentIndex == 0 && lessonIndex < 3;
-      final bool isCurrent = segmentIndex == 0 && lessonIndex == 3;
-      final bool isLocked = segmentIndex > 0;
+      final bool isFreeLesson = lesson['isFree'] == true;
+      final bool isLocked = !isFreeLesson;
 
       // Determine horizontal alignment (zigzag pattern)
       final PathNodeAlignment alignment = getAlignmentForIndex(lessonIndex);
@@ -717,11 +715,8 @@ class PathWithNodes extends StatelessWidget {
         PathLessonNode(
           key: lessonKeys[lessonIndex],
           lesson: lesson,
-          lessonIndex: lessonIndex,
           alignment: alignment,
           accentColor: accentColor,
-          isCompleted: isCompleted,
-          isCurrent: isCurrent,
           isLocked: isLocked,
           onTap: () => onLessonTap(lessonIndex, 0),
         ),
@@ -764,22 +759,16 @@ enum PathNodeAlignment { left, center, right }
 // Individual lesson node on the path
 class PathLessonNode extends StatelessWidget {
   final JSONMap lesson;
-  final int lessonIndex;
   final PathNodeAlignment alignment;
   final Color accentColor;
-  final bool isCompleted;
-  final bool isCurrent;
   final bool isLocked;
   final VoidCallback onTap;
 
   const PathLessonNode({
     super.key,
     required this.lesson,
-    required this.lessonIndex,
     required this.alignment,
     required this.accentColor,
-    required this.isCompleted,
-    required this.isCurrent,
     required this.isLocked,
     required this.onTap,
   });
@@ -889,15 +878,11 @@ class PathLessonNode extends StatelessWidget {
   }
 
   Color getBackgroundColor() {
-    if (isCompleted) {
-      return accentColor.withValues(alpha: 0.15);
+    if (isLocked) {
+      return RLDS.backgroundLight;
     }
 
-    if (isCurrent) {
-      return accentColor.withValues(alpha: 0.15);
-    }
-
-    return RLDS.backgroundLight;
+    return accentColor.withValues(alpha: 0.15);
   }
 
   // * Tile glyphs — 32px so they land on pixelarticons' 16×16 grid (2x).
@@ -910,34 +895,16 @@ class PathLessonNode extends StatelessWidget {
     size: roadmapTileIconSize,
   );
 
-  Widget CompletedCheckIcon() {
-    return Icon(Pixel.check, color: accentColor, size: roadmapTileIconSize);
-  }
-
-  Widget CurrentPlayIcon() {
+  Widget PlayIcon() {
     return Icon(Pixel.play, color: accentColor, size: roadmapTileIconSize);
   }
 
-  Widget DefaultLessonNumber() {
-    final String lessonLabel = (lessonIndex + 1).toString();
-
-    return RLTypography.pixelNumber(lessonLabel, color: RLDS.textSecondary);
-  }
-
   Widget NodeIcon() {
-    if (isCompleted) {
-      return CompletedCheckIcon();
-    }
-
-    if (isCurrent) {
-      return CurrentPlayIcon();
-    }
-
     if (isLocked) {
       return LockedIcon;
     }
 
-    return DefaultLessonNumber();
+    return PlayIcon();
   }
 }
 

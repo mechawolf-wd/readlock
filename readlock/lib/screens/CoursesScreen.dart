@@ -289,7 +289,9 @@ class CoursesScreenState extends State<CoursesScreen> {
   }
 
   Widget LoadMoreSlot() {
-    if (!hasMoreCourses) {
+    final bool hasNoMoreCourses = !hasMoreCourses;
+
+    if (hasNoMoreCourses) {
       return const SizedBox.shrink();
     }
 

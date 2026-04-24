@@ -161,10 +161,7 @@ class RevealDemoState extends State<RevealDemo> with SingleTickerProviderStateMi
       return Text(demoText, style: demoReadingStyle);
     }
 
-    return AnimatedBuilder(
-      animation: animationController,
-      builder: buildTypewriterFrame,
-    );
+    return AnimatedBuilder(animation: animationController, builder: buildTypewriterFrame);
   }
 
   // Renders the current typewriter frame — visible prefix painted in the
@@ -266,10 +263,7 @@ class ColoredTextDemo extends StatelessWidget {
           text: TextSpan(
             style: demoReadingStyle,
             children: [
-              TextSpan(
-                text: RLUIStrings.DEMO_COLORED_HIGHLIGHT,
-                style: highlightStyle,
-              ),
+              TextSpan(text: RLUIStrings.DEMO_COLORED_HIGHLIGHT, style: highlightStyle),
 
               const TextSpan(text: RLUIStrings.DEMO_COLORED_SUFFIX),
             ],
@@ -305,10 +299,7 @@ class BionicDemo extends StatelessWidget {
       return Text(RLUIStrings.DEMO_BIONIC_TEXT, style: demoReadingStyle);
     }
 
-    final List<InlineSpan> spans = bionicSpans(
-      RLUIStrings.DEMO_BIONIC_TEXT,
-      demoReadingStyle,
-    );
+    final List<InlineSpan> spans = bionicSpans(RLUIStrings.DEMO_BIONIC_TEXT, demoReadingStyle);
 
     return RichText(text: TextSpan(children: spans));
   }
@@ -339,10 +330,9 @@ class ReadingFontDemo extends StatelessWidget {
     // Matches ProgressiveText.getConsistentTextStyle — every swipe renders
     // readingMedium promoted to fontSize 18 / height 1.6 — so the preview
     // is a truthful render of what the reader will see in CCTextContent.
-    final TextStyle sampleStyle = RLTypography.readingMediumStyleFor(font).copyWith(
-      fontSize: 18,
-      height: 1.6,
-    );
+    final TextStyle sampleStyle = RLTypography.readingMediumStyleFor(
+      font,
+    ).copyWith(fontSize: 18, height: 1.6);
 
     return Align(
       alignment: Alignment.centerLeft,
@@ -472,13 +462,7 @@ class RSVPDemoState extends State<RSVPDemo> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          WordDisplay(),
-
-          const Spacing.height(RLDS.spacing8),
-
-          WpmControl(),
-        ],
+        children: [WordDisplay(), const Spacing.height(RLDS.spacing8), WpmControl()],
       ),
     );
   }
@@ -524,6 +508,11 @@ class RSVPDemoState extends State<RSVPDemo> {
 
   Widget WpmControl() {
     final String wpmLabel = '$currentWpm${RLUIStrings.RSVP_WPM_SUFFIX}';
+    final TextStyle wpmLabelStyle = RLTypography.bodyLargeStyle.copyWith(
+      fontSize: 20,
+      fontWeight: RLDS.weightBold,
+      color: RLDS.textPrimary,
+    );
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -531,7 +520,9 @@ class RSVPDemoState extends State<RSVPDemo> {
         // Larger than bodyMedium so the live counter reads as the headline
         // value of the card — you're adjusting this number, it should look
         // like the thing you're adjusting.
-        RLTypography.headingMedium(wpmLabel, color: RLDS.textPrimary),
+        Text(wpmLabel, style: wpmLabelStyle),
+
+        const Spacing.height(RLDS.spacing12),
 
         CupertinoSlider(
           value: currentWpm.toDouble(),

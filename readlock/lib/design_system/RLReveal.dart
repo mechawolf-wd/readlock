@@ -8,8 +8,8 @@
 // needs to change layout size.
 
 import 'package:flutter/material.dart';
+import 'package:readlock/constants/RLDesignSystem.dart';
 
-const Duration RL_REVEAL_DURATION = Duration(milliseconds: 200);
 const Curve RL_REVEAL_CURVE = Curves.easeOut;
 
 class RLReveal extends StatelessWidget {
@@ -25,7 +25,7 @@ class RLReveal extends StatelessWidget {
     return IgnorePointer(
       ignoring: !visible,
       child: AnimatedOpacity(
-        duration: RL_REVEAL_DURATION,
+        duration: RLDS.opacityFadeDurationFast,
         curve: RL_REVEAL_CURVE,
         opacity: targetOpacity,
         child: child,
