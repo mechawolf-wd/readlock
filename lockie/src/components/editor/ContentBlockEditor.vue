@@ -609,6 +609,148 @@ const currentGuideline = computed(() => {
 
   return GUIDELINES[entityType] ?? ''
 })
+
+// * Template helpers — keep template free of complex expressions
+
+const rawTextToggleLabel = computed(() => {
+  if (showRawTextEditor.value) {
+    return 'Segments'
+  }
+
+  return 'Edit'
+})
+
+function handleRawTextToggle() {
+  if (showRawTextEditor.value) {
+    showRawTextEditor.value = false
+    return
+  }
+
+  enterRawTextMode()
+}
+
+const aiTriggerStyle = computed(() => {
+  return {
+    color: entityColor,
+    backgroundColor: `color-mix(in srgb, ${entityColor} 6%, transparent)`,
+  }
+})
+
+function getOptionPlaceholder(optionIndex: number): string {
+  if (optionIndex === 0) {
+    return 'True'
+  }
+
+  return 'False'
+}
+
+function isImageSegmentAt(segmentIndex: number): boolean {
+  const segment = (props.block as any)['text-segments'][segmentIndex]
+
+  return isImageSegment(segment)
+}
+
+function getSegmentRichTextValue(segmentIndex: number): string {
+  const segment = (props.block as any)['text-segments'][segmentIndex]
+
+  if (isImageSegment(segment)) {
+    return getImageUrl(segment)
+  }
+
+  return segment
+}
+
+function handleSegmentRichTextUpdate(segmentIndex: number, value: string) {
+  const segment = (props.block as any)['text-segments'][segmentIndex]
+
+  if (isImageSegment(segment)) {
+    setImageUrl(segmentIndex, value)
+    return
+  }
+
+  handleSegmentUpdate(segmentIndex, value)
+}
+
+function getSegmentImageUrlAt(segmentIndex: number): string {
+  const segment = (props.block as any)['text-segments'][segmentIndex]
+
+  return getImageUrl(segment)
+}
+
+function getRichTextOpacityClass(segmentIndex: number): string {
+  const isHovered = hoveredSegmentIndex.value === segmentIndex
+  const shouldDim = shiftHeld.value && isHovered
+
+  if (shouldDim) {
+    return 'opacity-50'
+  }
+
+  return ''
+}
+
+function isShiftHovered(segmentIndex: number): boolean {
+  return shiftHeld.value && hoveredSegmentIndex.value === segmentIndex
+}
+
+function hasImagePreview(segmentIndex: number): boolean {
+  const isImage = isImageSegmentAt(segmentIndex)
+
+  if (!isImage) {
+    return false
+  }
+
+  return getSegmentImageUrlAt(segmentIndex).length > 0
+}
+
+function getOptionKey(option: any, optionIndex: number): string | number {
+  return option._uid ?? optionIndex
+}
+
+function isEmptyCorrectAnswerIndices(): boolean {
+  const hasIndices = 'correct-answer-indices' in props.block
+
+  if (!hasIndices) {
+    return false
+  }
+
+  return (props.block as any)['correct-answer-indices'].length === 0
+}
+
+function getEstimateAnswer(): number {
+  const value = (props.block as any)['correct-answer-indices']?.[0]
+
+  if (value === undefined || value === null) {
+    return 50
+  }
+
+  return value
+}
+
+function getEstimateThreshold(): number {
+  const value = (props.block as any)['close-threshold']
+
+  if (value === undefined || value === null) {
+    return 10
+  }
+
+  return value
+}
+
+function setEstimateAnswer(value: number) {
+  (props.block as any)['correct-answer-indices'] = [value]
+}
+
+function setEstimateThreshold(value: number) {
+  (props.block as any)['close-threshold'] = value
+}
+
+function getOptionsListPlaceholder(optionIndex: number): string {
+  return `Option ${optionIndex + 1}`
+}
+
+function getThinkingPointPlaceholder(pointIndex: number): string {
+  return `Point ${pointIndex + 1}`
+}
 </script>
 
 <template>
@@ -625,15 +767,15 @@ const currentGuideline = computed(() => {
         variant="outline"
         size="sm"
         class="h-7 text-xs"
-        @click="showRawTextEditor ? (showRawTextEditor = false) : enterRawTextMode()"
+        @click="handleRawTextToggle"
       >
-        {{ showRawTextEditor ? 'Segments' : 'Edit' }}
+        {{ rawTextToggleLabel }}
       </Button>
 
       <!-- AI actions -->
       <Popover v-model:open="showAIMenu">
         <PopoverTrigger as-child>
-          <Button variant="outline" size="icon" class="h-7 w-7 border-current" :style="{ color: entityColor, backgroundColor: `color-mix(in srgb, ${entityColor} 6%, transparent)` }">
+          <Button variant="outline" size="icon" class="h-7 w-7 border-current" :style="aiTriggerStyle">
             <Sparkles class="h-3.5 w-3.5" />
           </Button>
         </PopoverTrigger>

@@ -5,7 +5,7 @@ import 'package:flutter/material.dart' hide Typography;
 import 'package:flutter/services.dart';
 import 'package:readlock/models/CourseModel.dart';
 import 'package:readlock/utility_widgets/text_animation/ProgressiveText.dart';
-import 'package:readlock/design_system/RLLunarBlur.dart';
+import 'package:readlock/utility_widgets/text_animation/RSVPText.dart';
 import 'package:readlock/design_system/RLReveal.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
@@ -50,12 +50,36 @@ class CCTextContentState extends State<CCTextContent> {
     );
   }
 
-  // Main text display with progressive reveal animation
+  // Main text display — picks between typewriter reveal (default) and the
+  // RSVP word-flash reader based on the global rsvpEnabledNotifier. The
+  // ValueListenableBuilder means flipping the switch in Settings swaps
+  // the reading surface live without leaving the swipe.
   Widget ProgressiveTextSection() {
+    return ValueListenableBuilder<bool>(
+      valueListenable: rsvpEnabledNotifier,
+      builder: (context, isRsvpEnabled, _) {
+        if (isRsvpEnabled) {
+          return RSVPReadingSurface();
+        }
+
+        return ProgressiveReadingSurface();
+      },
+    );
+  }
+
+  Widget ProgressiveReadingSurface() {
     return ProgressiveText(
       textSegments: widget.content.textSegments,
       textStyle: RLTypography.readingMediumStyle,
       textAlignment: CrossAxisAlignment.start,
+      onAllSegmentsRevealed: handleAllSegmentsRevealed,
+    );
+  }
+
+  Widget RSVPReadingSurface() {
+    return RSVPText(
+      textSegments: widget.content.textSegments,
+      textStyle: RLTypography.readingMediumStyle,
       onAllSegmentsRevealed: handleAllSegmentsRevealed,
     );
   }
@@ -72,17 +96,18 @@ class CCTextContentState extends State<CCTextContent> {
     );
   }
 
-  // Button widget for continuing to next content — LunarBlur pill so the CTA
-  // reads as frosted glass over the swipe content instead of a solid fill.
+  // Continue CTA — no background, just the accent-coloured label centred in
+  // a full-width tap area. Lets the swipe's reading content carry the
+  // visual weight; the button is a calm verb, not a frosted pill.
   Widget ContinueButton() {
     final Color accentColor = resolveCourseAccentColor();
 
     return GestureDetector(
+      behavior: HitTestBehavior.opaque,
       onTap: handleContinueButtonTap,
       child: SizedBox(
         width: double.infinity,
-        child: RLLunarBlur(
-          borderRadius: RLDS.borderRadiusSmall,
+        child: Padding(
           padding: CONTINUE_BUTTON_PADDING,
           child: Center(
             child: RLTypography.bodyLarge(

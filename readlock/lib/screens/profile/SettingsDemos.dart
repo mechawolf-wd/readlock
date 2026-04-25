@@ -23,6 +23,7 @@ import 'package:readlock/design_system/RLSegmentTabs.dart';
 import 'package:readlock/design_system/RLUtility.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/utility_widgets/text_animation/BionicText.dart';
+import 'package:readlock/utility_widgets/text_animation/RSVPText.dart';
 import 'package:readlock/utility_widgets/visual_effects/BlurOverlay.dart';
 
 // Shared surface used by every reading-settings demo so Reveal, Blur,
@@ -464,13 +465,14 @@ class ColumnOptionTabs extends StatelessWidget {
 // lines up on the same X axis (the Spritz / Spreeder technique). Range
 // 150–800 wpm covers the full usable span (average silent reading sits
 // near 250; comprehension plateaus around 400–600 with practice). Default
-// 300 is the recommended starting point. When the parent switch is off,
-// the word stream pauses on a static sample so the card reads like a
-// disabled preview, matching the other demos in the section.
+// 300 is the recommended starting point. The demo always animates so the
+// reader can judge the pace before flipping the toggle — the parent
+// switch only gates the feature in CCTextContent, not this preview.
 class RSVPDemo extends StatefulWidget {
-  final bool isEnabled;
-
-  const RSVPDemo({super.key, required this.isEnabled});
+  // No isEnabled prop — the demo deliberately ignores the parent toggle so
+  // the preview always animates. The toggle only gates the feature in
+  // CCTextContent.
+  const RSVPDemo({super.key});
 
   @override
   State<RSVPDemo> createState() => RSVPDemoState();
@@ -482,7 +484,9 @@ class RSVPDemoState extends State<RSVPDemo> {
   static const double maxWpm = 800.0;
   static const int defaultWpm = 300;
 
-  int currentWpm = defaultWpm;
+  // Initial value is read from the notifier so the slider remembers the
+  // last setting between Profile screen re-mounts.
+  int currentWpm = rsvpWordsPerMinuteNotifier.value;
   int wordIndex = 0;
   Timer? advanceTimer;
 
@@ -490,25 +494,11 @@ class RSVPDemoState extends State<RSVPDemo> {
   void initState() {
     super.initState();
 
-    if (widget.isEnabled) {
-      scheduleNextWord();
-    }
-  }
-
-  @override
-  void didUpdateWidget(covariant RSVPDemo oldWidget) {
-    super.didUpdateWidget(oldWidget);
-
-    final bool didTurnOn = widget.isEnabled && !oldWidget.isEnabled;
-    final bool didTurnOff = !widget.isEnabled && oldWidget.isEnabled;
-
-    if (didTurnOn) {
-      scheduleNextWord();
-    }
-
-    if (didTurnOff) {
-      advanceTimer?.cancel();
-    }
+    // Demo always animates regardless of the parent toggle — the toggle
+    // gates the FEATURE in CCTextContent, not this preview. Keeps the card
+    // showing what RSVP looks like even when it's off so the reader can
+    // judge before flipping it on.
+    scheduleNextWord();
   }
 
   @override
@@ -538,13 +528,18 @@ class RSVPDemoState extends State<RSVPDemo> {
   }
 
   void handleWpmChanged(double newWpm) {
+    final int roundedWpm = newWpm.round();
+
     setState(() {
-      currentWpm = newWpm.round();
+      currentWpm = roundedWpm;
     });
 
-    if (widget.isEnabled) {
-      scheduleNextWord();
-    }
+    // Mirror to the global notifier so a course read with RSVP enabled
+    // picks up the same pace next time CCTextContent mounts an RSVPText.
+    rsvpWordsPerMinuteNotifier.value = roundedWpm;
+
+    // Reschedule with the new interval — the demo always animates.
+    scheduleNextWord();
   }
 
   // Optimal Recognition Point position — the letter the eye anchors on.

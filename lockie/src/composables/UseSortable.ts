@@ -6,7 +6,7 @@ import Sortable from 'sortablejs'
 
 export function useSortable(
   containerRef: Ref<HTMLElement | null>,
-  list: Ref<any[]>,
+  list: Ref<unknown[]>,
   onReorder?: () => void,
 ) {
   let sortableInstance: Sortable | null = null

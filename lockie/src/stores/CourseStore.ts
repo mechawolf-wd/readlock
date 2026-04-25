@@ -97,7 +97,15 @@ export const useCourseStore = defineStore('course', () => {
 
   // * Undo state for swipe deletion (2 levels)
   const deletedSwipeStack = ref<{ swipe: Swipe; index: number }[]>([])
-  const lastDeletedSwipe = computed(() => deletedSwipeStack.value.length > 0 ? deletedSwipeStack.value[0] : null)
+  const lastDeletedSwipe = computed(() => {
+    const hasDeleted = deletedSwipeStack.value.length > 0
+
+    if (!hasDeleted) {
+      return null
+    }
+
+    return deletedSwipeStack.value[0]
+  })
 
   // * Getters
 
@@ -216,10 +224,30 @@ export const useCourseStore = defineStore('course', () => {
   watch(trashedCourses, saveTrashToStorage, { deep: true })
 
   // Keep segment-id and lesson-id canonical whenever the course-id is edited in settings.
+  function getActiveCourseId(): string | undefined {
+    const hasNoActiveCourse = activeCourseIndex.value === null
+
+    if (hasNoActiveCourse) {
+      return undefined
+    }
+
+    return courseData.value.courses[activeCourseIndex.value!]?.['course-id']
+  }
+
+  function getActiveCourseRef(): Accelerator | null {
+    const hasNoActiveCourse = activeCourseIndex.value === null
+
+    if (hasNoActiveCourse) {
+      return null
+    }
+
+    return courseData.value.courses[activeCourseIndex.value!] ?? null
+  }
+
   watch(
-    () => activeCourseIndex.value !== null ? courseData.value.courses[activeCourseIndex.value]?.['course-id'] : undefined,
+    getActiveCourseId,
     () => {
-      const course = activeCourseIndex.value !== null ? courseData.value.courses[activeCourseIndex.value] : null
+      const course = getActiveCourseRef()
 
       if (course) {
         rebuildCourseIds(course)

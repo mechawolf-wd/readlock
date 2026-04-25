@@ -1,7 +1,7 @@
 <script setup lang="ts">
 // Login screen for Lockie — single card, themed with app primary.
 
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/AuthStore'
 import { Button } from '@/components/ui/button'
@@ -26,6 +26,8 @@ const router = useRouter()
 const username = ref('')
 const password = ref('')
 const isSubmitting = ref(false)
+
+const submitButtonLabel = computed(() => isSubmitting.value ? 'Signing in...' : 'Sign in')
 
 // * Methods
 
@@ -103,7 +105,7 @@ async function handleLogin() {
 
           <Button type="submit" class="w-full h-10 font-medium mt-1" :disabled="isSubmitting">
             <Loader2 v-if="isSubmitting" class="size-4 animate-spin" />
-            {{ isSubmitting ? 'Signing in...' : 'Sign in' }}
+            {{ submitButtonLabel }}
           </Button>
         </form>
       </CardContent>

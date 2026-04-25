@@ -344,6 +344,170 @@ function getLabel(entityType: string): string {
   return ENTITY_TYPE_LABELS[entityType as EntityType] ?? entityType
 }
 
+// * Template helpers — keep template free of complex expressions
+
+const currentEntityType = computed<string>(() => {
+  const swipe = currentSwipe.value
+
+  if (!swipe) {
+    return ''
+  }
+
+  return (swipe as any)['entity-type']
+})
+
+const isQuestionSwipe = computed(() => {
+  const swipe = currentSwipe.value
+  const hasQuestionShape = swipe !== null && 'question' in swipe && 'options' in swipe
+
+  return hasQuestionShape
+})
+
+const isEstimateSwipe = computed(() => currentEntityType.value === 'estimate')
+const isPauseSwipe = computed(() => currentEntityType.value === 'pause')
+const isReflectSwipe = computed(() => currentEntityType.value === 'reflect')
+const isQuoteSwipe = computed(() => currentEntityType.value === 'quote')
+const isTrueFalseSwipe = computed(() => currentEntityType.value === 'true-false-question')
+
+const questionOptionsLayoutClass = computed(() => {
+  if (isTrueFalseSwipe.value) {
+    return 'flex'
+  }
+
+  return 'flex flex-col'
+})
+
+const trueFalseOptionClass = computed(() => {
+  if (isTrueFalseSwipe.value) {
+    return 'flex-1 text-center'
+  }
+
+  return ''
+})
+
+const estimateValue = computed<number>(() => {
+  const swipe = currentSwipe.value
+
+  if (!swipe) {
+    return 50
+  }
+
+  const indices = (swipe as any)['correct-answer-indices']
+  const firstValue = indices?.[0]
+
+  if (firstValue === undefined || firstValue === null) {
+    return 50
+  }
+
+  return firstValue
+})
+
+const progressBarStyle = computed(() => {
+  return {
+    width: `${progressRatio.value * 100}%`,
+    backgroundColor: courseColor.value,
+  }
+})
+
+const estimateBarStyle = computed(() => {
+  return {
+    width: `${estimateValue.value}%`,
+    backgroundColor: courseColor.value,
+  }
+})
+
+const questionText = computed<string>(() => {
+  const swipe = currentSwipe.value
+
+  if (!swipe || !('question' in swipe)) {
+    return ''
+  }
+
+  return (swipe as any).question
+})
+
+const questionOptions = computed(() => {
+  const swipe = currentSwipe.value
+
+  if (!swipe || !('options' in swipe)) {
+    return []
+  }
+
+  return (swipe as any).options
+})
+
+const correctAnswerIndices = computed<number[]>(() => {
+  const swipe = currentSwipe.value
+
+  if (!swipe) {
+    return []
+  }
+
+  return (swipe as any)['correct-answer-indices'] ?? []
+})
+
+function getOptionBorderColor(optionIndex: number): string {
+  const isCorrect = correctAnswerIndices.value.includes(optionIndex)
+
+  if (isCorrect) {
+    return courseColor.value
+  }
+
+  return 'var(--border)'
+}
+
+const pauseText = computed<string>(() => {
+  const swipe = currentSwipe.value
+
+  if (!swipe) {
+    return ''
+  }
+
+  return (swipe as any).text ?? ''
+})
+
+const reflectPrompt = computed<string>(() => {
+  const swipe = currentSwipe.value
+
+  if (!swipe) {
+    return ''
+  }
+
+  return (swipe as any).prompt ?? ''
+})
+
+const reflectThinkingPoints = computed<string[]>(() => {
+  const swipe = currentSwipe.value
+
+  if (!swipe) {
+    return []
+  }
+
+  return (swipe as any)['thinking-points'] ?? []
+})
+
+const quoteText = computed<string>(() => {
+  const swipe = currentSwipe.value
+
+  if (!swipe) {
+    return ''
+  }
+
+  return (swipe as any).quote ?? ''
+})
+
+const quoteAuthor = computed<string>(() => {
+  const swipe = currentSwipe.value
+
+  if (!swipe) {
+    return ''
+  }
+
+  return (swipe as any).author ?? ''
+})
+
+const fallbackLabel = computed(() => getLabel(currentEntityType.value))
+
 defineExpose({ handleContentTap })
 </script>
 
@@ -355,7 +519,7 @@ defineExpose({ handleContentTap })
       <div class="h-1.5 bg-muted mx-4 mt-6 rounded-full overflow-hidden">
         <div
           class="h-full rounded-full transition-all duration-300"
-          :style="{ width: `${progressRatio * 100}%`, backgroundColor: courseColor }"
+          :style="progressBarStyle"
         />
       </div>
 
@@ -392,16 +556,16 @@ defineExpose({ handleContentTap })
             </template>
 
             <!-- * Estimate Percentage -->
-            <template v-else-if="(currentSwipe as any)['entity-type'] === 'estimate'">
-              <p class="text-sm font-medium text-card-foreground leading-relaxed" v-html="renderColorMarkup((currentSwipe as any).question)" />
+            <template v-else-if="isEstimateSwipe">
+              <p class="text-sm font-medium text-card-foreground leading-relaxed" v-html="renderColorMarkup(questionText)" />
 
               <div class="mt-4 flex flex-col items-center gap-3">
-                <span class="text-3xl font-bold" :style="{ color: courseColor }">{{ (currentSwipe as any)['correct-answer-indices']?.[0] ?? 50 }}%</span>
+                <span class="text-3xl font-bold" :style="{ color: courseColor }">{{ estimateValue }}%</span>
 
                 <div class="w-full h-2 bg-muted rounded-full overflow-hidden">
                   <div
                     class="h-full rounded-full"
-                    :style="{ width: `${(currentSwipe as any)['correct-answer-indices']?.[0] ?? 50}%`, backgroundColor: courseColor }"
+                    :style="estimateBarStyle"
                   />
                 </div>
 
@@ -413,19 +577,19 @@ defineExpose({ handleContentTap })
             </template>
 
             <!-- * Questions -->
-            <template v-else-if="'question' in currentSwipe && 'options' in currentSwipe">
-              <p class="text-sm font-medium text-card-foreground leading-relaxed" v-html="renderColorMarkup((currentSwipe as any).question)" />
+            <template v-else-if="isQuestionSwipe">
+              <p class="text-sm font-medium text-card-foreground leading-relaxed" v-html="renderColorMarkup(questionText)" />
 
               <div
                 class="mt-2 gap-2"
-                :class="(currentSwipe as any)['entity-type'] === 'true-false-question' ? 'flex' : 'flex flex-col'"
+                :class="questionOptionsLayoutClass"
               >
                 <div
-                  v-for="(option, optionIndex) in (currentSwipe as any).options"
+                  v-for="(option, optionIndex) in questionOptions"
                   :key="optionIndex"
                   class="px-4 py-3 rounded-xl border text-sm text-card-foreground"
-                  :class="(currentSwipe as any)['entity-type'] === 'true-false-question' ? 'flex-1 text-center' : ''"
-                  :style="{ borderColor: (currentSwipe as any)['correct-answer-indices']?.includes(optionIndex) ? courseColor : 'var(--border)' }"
+                  :class="trueFalseOptionClass"
+                  :style="{ borderColor: getOptionBorderColor(Number(optionIndex)) }"
                 >
                   {{ option.text }}
                 </div>
@@ -433,33 +597,33 @@ defineExpose({ handleContentTap })
             </template>
 
             <!-- * Emotional Slide -->
-            <template v-else-if="(currentSwipe as any)['entity-type'] === 'pause'">
+            <template v-else-if="isPauseSwipe">
               <div class="flex-1 flex flex-col items-center justify-center gap-4 py-12">
                 <div class="text-3xl" :style="{ color: courseColor }">✦</div>
-                <p class="text-sm text-center text-card-foreground/80 font-medium">{{ (currentSwipe as any).text }}</p>
+                <p class="text-sm text-center text-card-foreground/80 font-medium">{{ pauseText }}</p>
               </div>
             </template>
 
             <!-- * Reflection -->
-            <template v-else-if="(currentSwipe as any)['entity-type'] === 'reflect'">
-              <p class="text-sm font-medium text-card-foreground leading-relaxed">{{ (currentSwipe as any).prompt }}</p>
+            <template v-else-if="isReflectSwipe">
+              <p class="text-sm font-medium text-card-foreground leading-relaxed">{{ reflectPrompt }}</p>
               <div class="flex flex-col gap-2 mt-2">
-                <div v-for="(point, pointIndex) in (currentSwipe as any)['thinking-points']" :key="pointIndex" class="px-4 py-3 rounded-xl bg-muted text-sm text-card-foreground/80">{{ point }}</div>
+                <div v-for="(point, pointIndex) in reflectThinkingPoints" :key="pointIndex" class="px-4 py-3 rounded-xl bg-muted text-sm text-card-foreground/80">{{ point }}</div>
               </div>
             </template>
 
             <!-- * Quote -->
-            <template v-else-if="(currentSwipe as any)['entity-type'] === 'quote'">
+            <template v-else-if="isQuoteSwipe">
               <div class="flex-1 flex flex-col items-center justify-center gap-4 py-8">
                 <div class="text-3xl" :style="{ color: courseColor }">"</div>
-                <p class="text-sm text-center italic text-card-foreground leading-relaxed px-2">{{ (currentSwipe as any).quote }}</p>
-                <p class="text-xs text-muted-foreground">— {{ (currentSwipe as any).author }}</p>
+                <p class="text-sm text-center italic text-card-foreground leading-relaxed px-2">{{ quoteText }}</p>
+                <p class="text-xs text-muted-foreground">— {{ quoteAuthor }}</p>
               </div>
             </template>
 
             <!-- * Fallback -->
             <template v-else>
-              <p class="text-xs text-muted-foreground text-center py-8">{{ getLabel((currentSwipe as any)['entity-type']) }}</p>
+              <p class="text-xs text-muted-foreground text-center py-8">{{ fallbackLabel }}</p>
             </template>
           </div>
         </template>

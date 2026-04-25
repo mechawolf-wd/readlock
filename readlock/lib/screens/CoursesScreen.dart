@@ -223,19 +223,37 @@ class CoursesScreenState extends State<CoursesScreen> {
       return const RLLoadingIndicator.bird(key: ValueKey('courses-loading'));
     }
 
+    // SafeArea(bottom: false) on the screen lets the starfield paint under
+    // the nav, but the bottom-pinned search bar would sit under it too.
+    // MainNavigation's Scaffold uses extendBody: true, so MediaQuery's
+    // bottom padding here = device safe area + nav-bar height — adding it
+    // as the parent's bottom inset puts the search bar exactly above the
+    // nav with no overlap.
+    final double bottomInset = MediaQuery.of(context).padding.bottom;
+
+    final EdgeInsets contentPadding = EdgeInsets.fromLTRB(
+      RLDS.spacing24,
+      RLDS.spacing24,
+      RLDS.spacing24,
+      RLDS.spacing16 + bottomInset,
+    );
+
     return Padding(
       key: const ValueKey('courses-content'),
-      padding: const EdgeInsets.all(RLDS.spacing24),
+      padding: contentPadding,
       child: Div.column([
         RLTypography.headingLarge(RLUIStrings.SEARCH_TAB_LABEL),
 
-        const Spacing.height(RLDS.spacing40),
+        const Spacing.height(RLDS.spacing24),
 
-        SearchBar(),
+        // Results take the bulk of the screen; search bar pinned at the
+        // bottom under the list so the input sits in thumb reach and the
+        // books read top-down without a header bar between them.
+        Expanded(child: ResultsArea()),
 
         const Spacing.height(RLDS.spacing16),
 
-        Expanded(child: ResultsArea()),
+        SearchBar(),
       ], crossAxisAlignment: CrossAxisAlignment.stretch),
     );
   }

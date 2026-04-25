@@ -6,6 +6,7 @@ import 'package:flutter/material.dart' hide Typography;
 import 'package:pixelarticons/pixel.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/constants/RLTypography.dart';
+import 'package:readlock/design_system/RLLunarBlur.dart';
 
 // * Tuning — fade timing pulled from RLDS so every opacity transition in
 // the app (reveal, fade switcher, toast) shares one token.
@@ -246,17 +247,17 @@ class RLToastViewState extends State<RLToastView> with SingleTickerProviderState
     );
   }
 
+  // Frosted LunarBlur surface tinted with `backgroundLight` — same treatment
+  // the login bottom sheet uses, so the toast reads as the same family of
+  // transparent floating pane. Variant colour is carried entirely by the
+  // leading icon; no coloured border on the card.
   Widget ToastCard({required RLToastVariantStyle style}) {
-    final BoxDecoration cardDecoration = BoxDecoration(
-      color: RLDS.surface,
-      borderRadius: RLDS.borderRadiusSmall,
-      border: Border.all(color: style.color, width: RLDS.borderWidth),
-    );
-
     final Icon variantIcon = Icon(style.icon, color: style.color, size: TOAST_ICON_SIZE);
 
-    return Container(
-      decoration: cardDecoration,
+    return RLLunarBlur(
+      borderRadius: RLDS.borderRadiusSmall,
+      surfaceColor: RLDS.backgroundLight,
+      borderColor: RLDS.transparent,
       padding: const EdgeInsets.symmetric(
         horizontal: RLDS.spacing16,
         vertical: RLDS.spacing12,

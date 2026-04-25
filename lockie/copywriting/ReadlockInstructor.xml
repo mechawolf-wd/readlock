@@ -72,10 +72,6 @@ Readlock is a mobile app where readers swipe through educational content one scr
     Five paragraphs from a Veritasium script. Do not write about LEDs or Nakamura. Read for: one fact per sentence, numbers that close an argument without commentary, cause-and-effect chains with no connective filler, obstacles stated plainly. Each paragraph has a note naming the specific technique. Apply those techniques when writing @text blocks.
   </file>
 
-  <file priority="7" name="style-references/kurzgesagt_coronavirus.xml" load_order="LAST — style only, ignore the topic">
-    Five paragraphs from a Kurzgesagt script. Do not write about viruses or pandemics. Read for: one sentence per step in a sequence, parallel structure that escalates without raising the voice, a concrete analogy placed before the abstract explanation, consequences stated directly with no hedging. Each paragraph has a note naming the specific technique. Apply those techniques when writing @text blocks.
-  </file>
-
 </reference_files>
 
 <task>

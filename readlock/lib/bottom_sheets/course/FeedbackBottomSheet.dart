@@ -88,10 +88,13 @@ class FeedbackSheet extends StatelessWidget {
     );
   }
 
+  // Tertiary footer — transparent background, just the coloured label.
+  // The reader doesn't need a filled CTA to know what to tap; the body
+  // text is the focus, the dismiss action sits quietly underneath.
   Widget FooterButton() {
     return Builder(
       builder: (context) {
-        return RLButton.primary(
+        return RLButton.tertiary(
           label: RLUIStrings.FEEDBACK_GOT_IT_LABEL,
           color: buttonColor,
           margin: RL_BOTTOM_SHEET_FOOTER_BUTTON_MARGIN,

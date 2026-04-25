@@ -1,8 +1,6 @@
 // Generic dialog primitives for the Readlock application.
 // For two-action confirmations, use RLConfirmationDialog in design_system/.
 
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/constants/RLTypography.dart';
@@ -57,10 +55,12 @@ class RLDialog {
   }
 }
 
-// * Dialog container with consistent styling. The card itself is an
-// RLLunarBlur pane tinted with the caller's background colour — same
-// treatment as the Support bottom sheet — so dialogs read as frosted glass
-// over whatever the app painted before the modal opened.
+// * Dialog container with consistent styling. The card is the exact same
+// surface as RLToast — RLLunarBlur over `backgroundLight` with a transparent
+// border — so dialogs read as the same frosted floating pane as every
+// other top-level surface (toast, login bottom sheet). One LunarBlur pass
+// is enough; no extra outer BackdropFilter so the card's translucency
+// stays honest instead of compounding into a second frosted layer.
 class DialogContainer extends StatelessWidget {
   final Widget child;
   final Color? backgroundColor;
@@ -75,17 +75,14 @@ class DialogContainer extends StatelessWidget {
       horizontal: RLDS.dialogOuterHorizontalInset,
     );
 
-    return BackdropFilter(
-      filter: ImageFilter.blur(sigmaX: RLDS.backdropBlurSigma, sigmaY: RLDS.backdropBlurSigma),
-      child: Center(
-        child: Padding(
-          padding: outerPadding,
-          child: RLLunarBlur(
-            borderRadius: RLDS.borderRadiusSmall,
-            surfaceColor: dialogColor,
-            borderColor: RLDS.transparent,
-            child: Material(color: RLDS.transparent, child: child),
-          ),
+    return Center(
+      child: Padding(
+        padding: outerPadding,
+        child: RLLunarBlur(
+          borderRadius: RLDS.borderRadiusSmall,
+          surfaceColor: dialogColor,
+          borderColor: RLDS.transparent,
+          child: Material(color: RLDS.transparent, child: child),
         ),
       ),
     );

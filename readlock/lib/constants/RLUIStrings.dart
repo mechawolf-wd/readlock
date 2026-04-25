@@ -10,7 +10,7 @@ class RLUIStrings {
 
   // * My Bookshelf Screen
   static const String BOOKSHELF_TITLE = 'Bookshelf';
-  static const String BOOKSHELF_EMPTY_MESSAGE = 'Read something to see it here';
+  static const String BOOKSHELF_EMPTY_MESSAGE = '*chirp* - read something to see it here';
   static const String BOOKSHELF_LOAD_MORE_LABEL = 'Load more';
 
   // * Empty / loading states
@@ -20,23 +20,31 @@ class RLUIStrings {
   static const String CANCEL_LABEL = 'Cancel';
   static const String DIALOG_DEFAULT_ACTION_LABEL = 'OK';
 
-  // * Story Pass bottom sheet
+  // * Story Pass bottom sheet — feather-based monthly subscription. Three
+  // plans (Enough / Reader / Knowledge) shown in a horizontal slider, each
+  // giving a fixed monthly feather budget the reader spends on books.
+  // Every book costs 10 feathers.
   static const String STORY_PASS_TITLE = 'Story Pass';
-  static const String STORY_PASS_SUBTITLE = 'Unlock unlimited learning';
-  static const String DISCOUNT_TEXT = '25% OFF';
-  static const String ORIGINAL_PRICE = '\$39.99';
-  static const String DISCOUNTED_PRICE = '\$29.99';
+  static const String STORY_PASS_SUBTITLE = 'Feathers for the books you want';
   static const String PRICE_PERIOD = '/month';
-  static const String SUBSCRIBE_BUTTON_TEXT = 'Get Story Pass';
-  static const String STORY_PASS_FEATURES_TITLE = 'What you get';
-  static const String STORY_PASS_BENEFIT_BOOKS_TITLE = 'Unlimited Books';
-  static const String STORY_PASS_BENEFIT_BOOKS_DESCRIPTION = 'Access to our entire library';
-  static const String STORY_PASS_BENEFIT_OFFLINE_TITLE = 'Offline Reading';
-  static const String STORY_PASS_BENEFIT_OFFLINE_DESCRIPTION = 'Download and read anywhere';
-  static const String STORY_PASS_BENEFIT_LESSONS_TITLE = 'Interactive Lessons';
-  static const String STORY_PASS_BENEFIT_LESSONS_DESCRIPTION = 'Quizzes and reflections';
-  static const String STORY_PASS_BENEFIT_PREMIUM_TITLE = 'Premium Features';
-  static const String STORY_PASS_BENEFIT_PREMIUM_DESCRIPTION = 'All features unlocked';
+  static const String SUBSCRIBE_BUTTON_TEXT = 'Subscribe';
+  static const String STORY_PASS_BOOK_PRICING_NOTE = 'Each book costs 10 feathers';
+
+  // Per-plan copy.
+  static const String PLAN_ENOUGH_NAME = 'Enough';
+  static const String PLAN_ENOUGH_PRICE = '\$4.99';
+  static const String PLAN_ENOUGH_FEATHERS = '70 feathers';
+  static const String PLAN_ENOUGH_BOOKS = 'About 7 books a month';
+
+  static const String PLAN_READER_NAME = 'Reader';
+  static const String PLAN_READER_PRICE = '\$6.99';
+  static const String PLAN_READER_FEATHERS = '110 feathers';
+  static const String PLAN_READER_BOOKS = 'About 11 books a month';
+
+  static const String PLAN_KNOWLEDGE_NAME = 'Knowledge';
+  static const String PLAN_KNOWLEDGE_PRICE = '\$10.99';
+  static const String PLAN_KNOWLEDGE_FEATHERS = '210 feathers';
+  static const String PLAN_KNOWLEDGE_BOOKS = 'About 21 books a month';
 
   // * Feedback Snackbar
   static const String CORRECT_ANSWER_MESSAGE = 'Correct, you read it';
@@ -285,18 +293,20 @@ class RLUIStrings {
       'This action is permanent. All your data will be lost.';
   static const String ACCOUNT_DELETE_CONFIRM = 'Delete';
 
-  // * Auth Error Messages
+  // * Auth Error Messages — gentle, non-accusatory copy. Errors describe
+  // the situation or own the fault on our end; they never imply the
+  // reader did something wrong.
   static const String ERROR_INVALID_CREDENTIALS =
-      'The email and password don\'t match up. Give it another try.';
+      'Couldn\'t match that email and password. Give it another try.';
   static const String ERROR_EMAIL_IN_USE = 'An account with this email already exists.';
-  static const String ERROR_WEAK_PASSWORD = 'A stronger password would be better.';
-  static const String ERROR_INVALID_EMAIL = 'Please enter a valid email address.';
-  static const String ERROR_NETWORK = 'Something\'s off with the connection. Please try again.';
+  static const String ERROR_WEAK_PASSWORD = 'That password is a little short. A longer one will do.';
+  static const String ERROR_INVALID_EMAIL = 'That email doesn\'t look quite right.';
+  static const String ERROR_NETWORK = 'The connection is a little shaky. Give it another try.';
   static const String ERROR_TOO_MANY_REQUESTS = 'Let\'s take a short breather, then try again.';
-  static const String ERROR_REQUIRES_RECENT_LOGIN = 'Please sign in again to continue.';
+  static const String ERROR_REQUIRES_RECENT_LOGIN = 'Sign in again to continue.';
   static const String ERROR_USER_DISABLED = 'This account isn\'t active anymore.';
-  static const String ERROR_UNKNOWN = 'Something went wrong on our end. Please try again.';
+  static const String ERROR_UNKNOWN = 'Something went wrong on our end. Give it another try.';
   static const String ERROR_NO_USER_LOGGED_IN = 'No one is signed in yet.';
   static const String ERROR_ACCOUNT_DELETION_FAILED =
-      'Couldn\'t delete the account just now. Please try again.';
+      'Couldn\'t delete the account just now. Give it another try.';
 }

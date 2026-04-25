@@ -60,7 +60,7 @@ export async function saveCourse(course: Accelerator): Promise<void> {
 
   // Strip internal _uid fields before saving
   const cleanCourse = JSON.parse(
-    JSON.stringify(course, (key, value) => {
+    JSON.stringify(course, (key: string, value: unknown) => {
       const isInternalUid = key === '_uid'
 
       if (isInternalUid) {

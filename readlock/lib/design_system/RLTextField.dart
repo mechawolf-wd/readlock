@@ -7,6 +7,7 @@ import 'package:pixelarticons/pixel.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/constants/RLUIStrings.dart';
+import 'package:readlock/design_system/RLLunarBlur.dart';
 
 class RLTextField extends StatefulWidget {
   final TextEditingController? controller;
@@ -78,18 +79,7 @@ class RLTextFieldState extends State<RLTextField> {
 
   @override
   Widget build(BuildContext context) {
-    final BoxDecoration fieldDecoration = BoxDecoration(
-      color: RLDS.backgroundLight,
-      borderRadius: RLDS.borderRadiusSmall,
-      border: Border.all(
-        color: RLDS.textMuted.withValues(alpha: 0.3),
-        width: RLDS.borderWidth,
-      ),
-    );
-
-    final TextStyle hintStyle = RLTypography.bodyLargeStyle.copyWith(
-      color: RLDS.textMuted,
-    );
+    final TextStyle hintStyle = RLTypography.bodyLargeStyle.copyWith(color: RLDS.textMuted);
 
     final Widget? prefixIconWidget = buildLeadingIcon();
     final Widget? suffixIconWidget = buildRevealIcon();
@@ -109,11 +99,17 @@ class RLTextFieldState extends State<RLTextField> {
       suffixIconConstraints: tightIconConstraints,
       border: InputBorder.none,
       isDense: true,
-      contentPadding: const EdgeInsets.symmetric(vertical: RLDS.spacing16),
+      contentPadding: const EdgeInsets.symmetric(vertical: RLDS.spacing20),
     );
 
-    return Container(
-      decoration: fieldDecoration,
+    // Frosted surface — same configuration as the login bottom sheet's
+    // container (LunarBlur over `backgroundLight` with a transparent
+    // border). Default sigma + alpha mean the field reads as the same
+    // family of surface as every other LunarBlur pane in the app.
+    return RLLunarBlur(
+      borderRadius: RLDS.borderRadiusSmall,
+      surfaceColor: RLDS.backgroundLight,
+      borderColor: RLDS.transparent,
       padding: const EdgeInsets.symmetric(horizontal: RLDS.spacing16),
       child: TextField(
         controller: widget.controller,
@@ -142,11 +138,7 @@ class RLTextFieldState extends State<RLTextField> {
 
     return Padding(
       padding: const EdgeInsets.only(right: RLDS.spacing12),
-      child: Icon(
-        icon,
-        color: RLDS.textMuted,
-        size: RLDS.iconMedium,
-      ),
+      child: Icon(icon, color: RLDS.textMuted, size: RLDS.iconMedium),
     );
   }
 
@@ -159,9 +151,7 @@ class RLTextFieldState extends State<RLTextField> {
       return null;
     }
 
-    final Color iconColor = isRevealing
-        ? RLDS.textPrimary
-        : RLDS.textMuted;
+    final Color iconColor = isRevealing ? RLDS.textPrimary : RLDS.textMuted;
 
     return GestureDetector(
       onTapDown: (_) => handleRevealStart(),
@@ -173,11 +163,7 @@ class RLTextFieldState extends State<RLTextField> {
       behavior: HitTestBehavior.opaque,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: RLDS.spacing8),
-        child: Icon(
-          Pixel.eye,
-          color: iconColor,
-          size: RLDS.iconLarge,
-        ),
+        child: Icon(Pixel.eye, color: iconColor, size: RLDS.iconLarge),
       ),
     );
   }

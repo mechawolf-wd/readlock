@@ -14,6 +14,7 @@ import 'package:readlock/screens/profile/MenuWidgets.dart';
 import 'package:readlock/services/auth/AuthService.dart';
 import 'package:readlock/services/auth/UserService.dart';
 import 'package:readlock/utility_widgets/text_animation/BionicText.dart';
+import 'package:readlock/utility_widgets/text_animation/RSVPText.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -131,6 +132,7 @@ class ProfileContentState extends State<ProfileContent> {
 
   void handleRsvpToggled(bool value) {
     setState(() => rsvpEnabled = value);
+    rsvpEnabledNotifier.value = value;
   }
 
   void handleSupportTap() {}

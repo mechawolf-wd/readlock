@@ -186,7 +186,7 @@ class MenuSection extends StatelessWidget {
           onChanged: onRsvpToggled,
         ),
 
-        RSVPDemo(isEnabled: rsvpEnabled),
+        const RSVPDemo(),
 
         // Font picker + live demo — sits at the end of Reading Settings so
         // it follows the toggles that govern what text looks like.
