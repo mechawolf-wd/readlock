@@ -15,6 +15,7 @@
 import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
 import 'package:readlock/bottom_sheets/user/FontPickerBottomSheet.dart';
 import 'package:readlock/constants/RLReadingColumn.dart';
 import 'package:readlock/constants/RLReadingFont.dart';
@@ -214,79 +215,6 @@ class RevealDemoState extends State<RevealDemo> with SingleTickerProviderStateMi
   }
 }
 
-// Demo for the "Reveal all at once" preview — sits under the Progressive
-// section in Settings as a sibling preview to RevealDemo. Loops between an
-// empty frame and the full sentence so the reader can judge the all-at-once
-// cadence without flipping the Progressive switch off. Demo-only — does not
-// drive any persisted preference.
-class RevealAllAtOnceDemo extends StatefulWidget {
-  const RevealAllAtOnceDemo({super.key});
-
-  @override
-  State<RevealAllAtOnceDemo> createState() => RevealAllAtOnceDemoState();
-}
-
-class RevealAllAtOnceDemoState extends State<RevealAllAtOnceDemo> {
-  static const String demoText = RLUIStrings.DEMO_REVEAL_ALL_AT_ONCE_TEXT;
-  static const Duration emptyFrameDuration = Duration(milliseconds: 600);
-  static const Duration filledFrameDuration = Duration(milliseconds: 1400);
-
-  bool isTextVisible = false;
-  Timer? loopTimer;
-
-  @override
-  void initState() {
-    super.initState();
-    scheduleNextFrame();
-  }
-
-  @override
-  void dispose() {
-    loopTimer?.cancel();
-    super.dispose();
-  }
-
-  void scheduleNextFrame() {
-    loopTimer?.cancel();
-
-    final Duration nextDelay = isTextVisible ? filledFrameDuration : emptyFrameDuration;
-
-    loopTimer = Timer(nextDelay, toggleVisibility);
-  }
-
-  void toggleVisibility() {
-    final bool isUnmounted = !mounted;
-
-    if (isUnmounted) {
-      return;
-    }
-
-    setState(() {
-      isTextVisible = !isTextVisible;
-    });
-
-    scheduleNextFrame();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return demoFontListener(DemoBody);
-  }
-
-  Widget DemoBody(BuildContext context) {
-    return DemoSurface(child: Align(alignment: Alignment.centerLeft, child: SampleText()));
-  }
-
-  // Renders the sentence with the visible/hidden colour swap so the card
-  // height is reserved from the first frame — no jump when the text appears.
-  Widget SampleText() {
-    final Color visibleColor = isTextVisible ? RLDS.textPrimary : RLDS.transparent;
-    final TextStyle frameStyle = demoReadingStyle.copyWith(color: visibleColor);
-
-    return Text(demoText, style: frameStyle);
-  }
-}
-
 // Demo widget for Blur setting.
 // Uses the same BlurOverlay as every covered-text surface in a real swipe,
 // so the demo is a truthful preview of the Apple-Music-style lyrics blur
@@ -414,7 +342,10 @@ class ReadingFontDemo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    void onDemoTap() => FontPickerBottomSheet.show(context);
+    void onDemoTap() {
+      HapticFeedback.selectionClick();
+      FontPickerBottomSheet.show(context);
+    }
 
     return DemoSurface(
       onTap: onDemoTap,
@@ -481,8 +412,13 @@ class ReadingColumnDemo extends StatelessWidget {
   }
 }
 
-// Wraps the sample paragraph in the shared frosted demo surface so it reads
-// as the "text box" under the tabs above.
+// Wraps the sample paragraph in the shared frosted demo surface. The
+// surface itself spans the full available width — same outer footprint
+// regardless of the picked column — and the column choice only changes
+// the horizontal padding inside, so the text wraps shorter for Newspaper
+// and longer for Classic without the box itself resizing. LayoutBuilder
+// gives us the slot width so we can compute "how much extra inset do we
+// need to squeeze the line down to the column's maxWidth".
 class SampleSurface extends StatelessWidget {
   final ReadingColumn column;
 
@@ -490,39 +426,53 @@ class SampleSurface extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return LayoutBuilder(builder: buildAtSlot);
+  }
+
+  Widget buildAtSlot(BuildContext context, BoxConstraints constraints) {
+    final double slotWidth = constraints.maxWidth;
+    final double columnMaxWidth = maxWidthFor(column);
+    final EdgeInsets innerPadding = computeInnerPadding(slotWidth, columnMaxWidth);
+
     return RLLunarBlur(
       surfaceAlpha: demoSurfaceAlpha,
-      padding: demoSurfacePadding,
-      child: SizedBox(width: double.infinity, child: SampleParagraph(column: column)),
+      padding: innerPadding,
+      child: const SizedBox(width: double.infinity, child: SampleParagraph()),
+    );
+  }
+
+  // Holds the base demo padding (top/bottom + a minimum horizontal inset)
+  // and adds whatever extra horizontal inset is needed to bring the text
+  // run down to the column's target maxWidth. If the slot is already
+  // narrower than maxWidth (small phones), no extra inset is added — the
+  // text just fills the slot.
+  EdgeInsets computeInnerPadding(double slotWidth, double columnMaxWidth) {
+    final double basePadding = demoSurfacePadding.left;
+    final double textBudget = slotWidth - basePadding * 2;
+    final double overflowToShave = (textBudget - columnMaxWidth).clamp(0.0, textBudget);
+    final double extraInsetPerSide = overflowToShave / 2;
+
+    return EdgeInsets.fromLTRB(
+      basePadding + extraInsetPerSide,
+      demoSurfacePadding.top,
+      basePadding + extraInsetPerSide,
+      demoSurfacePadding.bottom,
     );
   }
 }
 
-// Renders the sample paragraph inside a centered ConstrainedBox that
-// matches the content viewer's column frame exactly — Wide is
-// unconstrained (full width), the others cap at the option's maxWidth.
+// Renders the sample paragraph inside the surface. Width is governed by
+// the parent SampleSurface's padding, so this widget just paints the
+// text and lets the padded box do the column work.
 class SampleParagraph extends StatelessWidget {
-  final ReadingColumn column;
-
-  const SampleParagraph({super.key, required this.column});
+  const SampleParagraph({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final double? maxWidth = maxWidthFor(column);
-    final Widget sampleText = Text(
+    return Text(
       RLUIStrings.DEMO_READING_COLUMN_TEXT,
       style: demoReadingStyle,
     );
-
-    final bool isUnconstrained = maxWidth == null;
-
-    if (isUnconstrained) {
-      return sampleText;
-    }
-
-    final BoxConstraints sampleConstraints = BoxConstraints(maxWidth: maxWidth);
-
-    return Center(child: ConstrainedBox(constraints: sampleConstraints, child: sampleText));
   }
 }
 
@@ -626,10 +576,18 @@ class RSVPDemoState extends State<RSVPDemo> {
 
   void handleWpmChanged(double newWpm) {
     final int roundedWpm = newWpm.round();
+    final bool hasWpmChanged = roundedWpm != currentWpm;
 
     setState(() {
       currentWpm = roundedWpm;
     });
+
+    // Tick haptic on every notch change — same selectionClick the bird
+    // carousel uses, so dragging the slider feels physically detented
+    // instead of silent.
+    if (hasWpmChanged) {
+      HapticFeedback.selectionClick();
+    }
 
     // Mirror to the global notifier so a course read with RSVP enabled
     // picks up the same pace next time CCTextContent mounts an RSVPText.

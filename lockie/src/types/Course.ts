@@ -203,4 +203,23 @@ export const COURSE_COLORS: string[] = [
 
 export const DEFAULT_COURSE_COLOR: string = COURSE_COLORS[0]
 
-export const PREMADE_GENRES: string[] = []
+// Canonical closed list mirrored in copywriting/ReadlockInstructor.xml and
+// readlock/lib/constants/RLCourseGenres.dart. Authors pick 3 to 5 from
+// this set when filling a course's `genres:` field — no invented tags.
+export const PREMADE_GENRES: string[] = [
+  'design',
+  'psychology',
+  'business',
+  'technology',
+  'self-help',
+  'science',
+  'philosophy',
+  'history',
+  'economics',
+  'leadership',
+  'creativity',
+  'productivity',
+  'communication',
+  'user-experience',
+  'product-development',
+]

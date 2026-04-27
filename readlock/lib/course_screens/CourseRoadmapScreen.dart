@@ -16,7 +16,6 @@ import 'package:readlock/constants/RLCoursePalette.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/constants/RLUIStrings.dart';
-import 'package:readlock/course_screens/CourseLoadingScreen.dart';
 import 'package:readlock/services/auth/UserService.dart';
 import 'package:readlock/constants/DartAliases.dart';
 
@@ -54,7 +53,6 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
   bool isCourseDataLoading = true;
   int lastLessonAtThreshold = -1;
   bool isProgrammaticScroll = false;
-  bool showBackToTop = false;
 
   List<GlobalKey> lessonKeys = [];
   late ScrollController scrollController;
@@ -83,6 +81,35 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
 
   bool isPaletteColor() {
     return KNOWN_COURSE_COLORS.contains(getNormalizedCourseColor());
+  }
+
+  // Fallback for when a segment doesn't ship a `segment-symbol`. Builds a
+  // compact tab label from the segment title — first letter of every word
+  // that starts with an uppercase character, joined and uppercased. So
+  // "Mastery and Innovation" reads as "MI", "Design Fundamentals" as
+  // "DF". Lowercase function words drop out so the compact label stays at
+  // the recognised acronym length.
+  String getSegmentAcronym(String segmentTitle) {
+    final List<String> words = segmentTitle.trim().split(RegExp(r'\s+'));
+    final StringBuffer acronymBuffer = StringBuffer();
+
+    for (final String word in words) {
+      final bool isEmptyWord = word.isEmpty;
+
+      if (isEmptyWord) {
+        continue;
+      }
+
+      final String firstChar = word[0];
+      final bool isUppercaseLetter = firstChar == firstChar.toUpperCase()
+          && firstChar.toUpperCase() != firstChar.toLowerCase();
+
+      if (isUppercaseLetter) {
+        acronymBuffer.write(firstChar.toUpperCase());
+      }
+    }
+
+    return acronymBuffer.toString();
   }
 
   Color getCourseAccentColor() {
@@ -127,18 +154,6 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
 
   void handleScrollUpdate() {
     checkLessonHaptic();
-    updateBackToTopVisibility();
-  }
-
-  void updateBackToTopVisibility() {
-    const double scrollThreshold = 100.0;
-    final bool shouldShow = scrollController.offset > scrollThreshold;
-
-    if (shouldShow != showBackToTop) {
-      setState(() {
-        showBackToTop = shouldShow;
-      });
-    }
   }
 
   void checkLessonHaptic() {
@@ -271,7 +286,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
             lessons: courseLessons,
             lessonKeys: lessonKeys,
             accentColor: getCourseAccentColor(),
-            onLessonTap: showLoadingScreenThenNavigate,
+            onLessonTap: navigateToLesson,
           ),
         ),
       ),
@@ -294,22 +309,12 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
                 // Scrollable content with sticky headers
                 CustomScrollView(controller: scrollController, slivers: slivers),
 
-                // Bottom floating column — back-to-top sits above and to the
-                // left of the continue bar when scrolled; the continue bar is
-                // always shown.
+                // Continue bar pinned to the bottom — always visible.
                 Positioned(
                   left: RLDS.spacing24,
                   right: RLDS.spacing24,
                   bottom: RLDS.spacing24,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      RenderIf.condition(showBackToTop, BackToTopSlot()),
-
-                      BottomFloatingBar(),
-                    ],
-                  ),
+                  child: BottomFloatingBar(),
                 ),
               ],
             ),
@@ -319,38 +324,9 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
     );
   }
 
-  static final Widget ChevronUpIcon = const Icon(
-    Pixel.chevronup,
-    color: RLDS.textPrimary,
-    size: RLDS.iconLarge,
-  );
-
-  Widget BackToTopSlot() {
-    final Widget backToTopCard = RLCard.elevated(
-      padding: const EdgeInsets.all(RLDS.spacing12),
-      onTap: handleBackToTop,
-      child: ChevronUpIcon,
-    );
-
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [backToTopCard, const Spacing.height(RLDS.spacing12)],
-    );
-  }
-
-  void handleBackToTop() {
-    // RLCard fires its own haptic on tap — no need for a second one here.
-    scrollController.animateTo(
-      0,
-      duration: const Duration(milliseconds: 400),
-      curve: Curves.easeOutCubic,
-    );
-  }
-
   Widget BottomFloatingBar() {
     return RLCard.elevated(
-      padding: const EdgeInsets.all(RLDS.spacing16),
+      padding: const EdgeInsets.all(RLDS.spacing12),
       child: ContinueButton(),
     );
   }
@@ -381,7 +357,8 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
       children: [
         const Spacing.height(RLDS.spacing12),
 
-        // Back button
+        // Back button — its own row above the book, anchored to the
+        // screen-edge inset.
         Padding(
           padding: roadmapHeaderSidePadding,
           child: Div.row(
@@ -394,8 +371,8 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
 
         const Spacing.height(RLDS.spacing16),
 
-        // Book + progress ring in its own circular LunarBlur pane, above
-        // the hero card. Centered, respects the side padding.
+        // Book + progress ring in its own circular LunarBlur pane,
+        // centered, respecting the side padding.
         Padding(
           padding: roadmapHeaderSidePadding,
           child: Center(child: BookRingPane()),
@@ -415,15 +392,15 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
     );
   }
 
-  // Circular solid-colour disc that hosts the progress ring + book. Size
-  // matches the ring exactly — the disc sits flush behind the ring stroke,
-  // no inner padding. Wrapped in a ScaleTransition driven by
-  // breathingAnimation so the whole assembly subtly breathes (0.97 ↔ 1.03)
-  // — gives the otherwise static token a heartbeat without competing with
-  // the page content for attention.
-  static const BoxDecoration bookRingPaneDecoration = BoxDecoration(
-    color: RLDS.backgroundLight,
-    shape: BoxShape.circle,
+  // Circular frosted disc that hosts the progress ring + book. Uses the
+  // same RLLunarBlur surface as the HeroCard underneath — surface defaults
+  // to RLDS.surface at the standard alpha — so the book pane and the info
+  // card read as the same frosted family. Wrapped in a ScaleTransition
+  // driven by breathingAnimation so the whole assembly subtly breathes
+  // (0.97 ↔ 1.03) — gives the otherwise static token a heartbeat without
+  // competing with page content for attention.
+  static final BorderRadius bookRingPaneRadius = BorderRadius.circular(
+    progressRingSize / 2,
   );
 
   Widget BookRingPane() {
@@ -432,8 +409,8 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
       height: progressRingSize,
       child: ScaleTransition(
         scale: breathingAnimation,
-        child: Container(
-          decoration: bookRingPaneDecoration,
+        child: RLLunarBlur(
+          borderRadius: bookRingPaneRadius,
           child: ProgressRing(),
         ),
       ),
@@ -557,9 +534,16 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
     for (int segmentIndex = 0; segmentIndex < courseSegments.length; segmentIndex++) {
       final JSONMap segment = courseSegments[segmentIndex];
       final String segmentTitle = segment['segment-title'] as String? ?? '';
+      final String segmentSymbol = (segment['segment-symbol'] as String? ?? '').trim();
+      final bool hasSymbol = segmentSymbol.isNotEmpty;
+      final String compactLabel = hasSymbol ? segmentSymbol : getSegmentAcronym(segmentTitle);
 
       tabOptions.add(
-        RLSegmentTabOption<int>(value: segmentIndex, label: segmentTitle),
+        RLSegmentTabOption<int>(
+          value: segmentIndex,
+          label: segmentTitle,
+          compactLabel: compactLabel,
+        ),
       );
     }
 
@@ -601,42 +585,34 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
   void handleContinueTap() {
     const int currentLessonIndex = 0;
     const int currentContentIndex = 0;
-    showLoadingScreenThenNavigate(currentLessonIndex, currentContentIndex);
+    navigateToLesson(currentLessonIndex, currentContentIndex);
   }
 
   void handleBackTap() {
     Navigator.of(context).pop();
   }
 
-  void showLoadingScreenThenNavigate(int lessonIndex, int contentIndex) {
-    Navigator.push(context, RLDS.slowFadeTransition(const CourseLoadingScreen()));
-
+  // Navigates straight into the lesson. The destination's own loading
+  // gate (CourseContentViewer paints CourseLoadingScreen while
+  // `isLoading` is true) handles the slow path, so this surface no longer
+  // forces an intermediate "Chirping" screen for 500ms when there's
+  // nothing to wait for.
+  void navigateToLesson(int lessonIndex, int contentIndex) {
     // Fire-and-forget — the course is now in the reader's bookshelf as
     // "recently used" the moment they start a lesson. No need to await; the
     // Firestore arrayUnion is idempotent and the UI doesn't depend on it.
     UserService.addSavedCourseId(widget.courseId);
 
-    Future.delayed(
-      const Duration(milliseconds: 500),
-      () => performCourseNavigation(lessonIndex, contentIndex),
-    );
-  }
-
-  void performCourseNavigation(int lessonIndex, int contentIndex) {
-    final bool isWidgetMounted = mounted;
-
-    if (isWidgetMounted) {
-      Navigator.pushReplacement(
-        context,
-        RLDS.slowFadeTransition(
-          CourseDetailScreen(
-            courseId: widget.courseId,
-            initialLessonIndex: lessonIndex,
-            initialContentIndex: contentIndex,
-          ),
+    Navigator.push(
+      context,
+      RLDS.slowFadeTransition(
+        CourseDetailScreen(
+          courseId: widget.courseId,
+          initialLessonIndex: lessonIndex,
+          initialContentIndex: contentIndex,
         ),
-      );
-    }
+      ),
+    );
   }
 }
 
@@ -724,8 +700,12 @@ class PathWithNodes extends StatelessWidget {
 
 enum PathNodeAlignment { left, center, right }
 
-// Individual lesson node on the path
-class PathLessonNode extends StatelessWidget {
+// Individual lesson node on the path. Stateful so it can track the
+// press-and-release window — when held, the foreground tile shifts to
+// where the shadow sits (right + down by roadmapTileShadowOffset) so the
+// node visibly "settles" into the shadow on press, then springs back on
+// release. Haptic fires once on tap-down.
+class PathLessonNode extends StatefulWidget {
   final JSONMap lesson;
   final PathNodeAlignment alignment;
   final Color accentColor;
@@ -742,24 +722,76 @@ class PathLessonNode extends StatelessWidget {
   });
 
   @override
+  State<PathLessonNode> createState() => PathLessonNodeState();
+}
+
+class PathLessonNodeState extends State<PathLessonNode> {
+  static const double roadmapTileShadowOffset = 4.0;
+  static const double roadmapTileIconSize = 32.0;
+
+  bool isPressed = false;
+
+  void handleTapDown(TapDownDetails details) {
+    if (widget.isLocked) {
+      return;
+    }
+
+    HapticFeedback.lightImpact();
+
+    setState(() {
+      isPressed = true;
+    });
+  }
+
+  void handleTapUp(TapUpDetails details) {
+    if (!isPressed) {
+      return;
+    }
+
+    setState(() {
+      isPressed = false;
+    });
+  }
+
+  void handleTapCancel() {
+    if (!isPressed) {
+      return;
+    }
+
+    setState(() {
+      isPressed = false;
+    });
+  }
+
+  void handleTap() {
+    if (widget.isLocked) {
+      return;
+    }
+
+    widget.onTap();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final String title = lesson['title'] ?? RLUIStrings.ROADMAP_DEFAULT_LESSON_LABEL;
+    final String title =
+        widget.lesson['title'] ?? RLUIStrings.ROADMAP_DEFAULT_LESSON_LABEL;
     final double offsetX = getOffsetForAlignment();
     final Color titleColor = getTitleColor();
-    final bool canTap = !isLocked;
-
-    VoidCallback? tapHandler;
-
-    if (canTap) {
-      tapHandler = onTap;
-    }
 
     return Transform.translate(
       offset: Offset(offsetX, 0),
       child: Column(
         children: [
-          // Pixel-style square tile
-          GestureDetector(onTap: tapHandler, child: NodeTile()),
+          // Pixel-style square tile — opaque hit-test so the entire box
+          // (including the shadow inset) registers presses.
+          GestureDetector(
+            onTapDown: handleTapDown,
+            onTapUp: handleTapUp,
+            onTapCancel: handleTapCancel,
+            onTap: handleTap,
+            behavior: HitTestBehavior.opaque,
+            child: NodeTile(),
+          ),
 
           const Spacing.height(RLDS.spacing8),
 
@@ -778,7 +810,7 @@ class PathLessonNode extends StatelessWidget {
   }
 
   double getOffsetForAlignment() {
-    switch (alignment) {
+    switch (widget.alignment) {
       case PathNodeAlignment.left:
         {
           return -roadmapPathHorizontalOffset;
@@ -795,21 +827,22 @@ class PathLessonNode extends StatelessWidget {
   }
 
   Color getTitleColor() {
-    if (isLocked) {
+    if (widget.isLocked) {
       return RLDS.textSecondary.withValues(alpha: 0.5);
     }
 
     return RLDS.textPrimary;
   }
 
-  static const double roadmapTileShadowOffset = 4.0;
-
   Widget NodeTile() {
     final Color bgColor = getBackgroundColor();
     final Widget nodeContent = NodeIcon();
 
     // Borderless circular tile.
-    final BoxDecoration tileDecoration = BoxDecoration(color: bgColor, shape: BoxShape.circle);
+    final BoxDecoration tileDecoration = BoxDecoration(
+      color: bgColor,
+      shape: BoxShape.circle,
+    );
 
     // Circular drop shadow offset down+right.
     final BoxDecoration shadowDecoration = BoxDecoration(
@@ -817,28 +850,47 @@ class PathLessonNode extends StatelessWidget {
       shape: BoxShape.circle,
     );
 
+    // When pressed, the foreground tile slides into the shadow's slot and
+    // the shadow itself fades out — the result reads as the tile being
+    // physically pushed down and to the right by the shadow distance.
+    final double tileLeftOffset = isPressed ? roadmapTileShadowOffset : 0.0;
+    final double tileTopOffset = isPressed ? roadmapTileShadowOffset : 0.0;
+    final double shadowOpacity = isPressed ? 0.0 : 1.0;
+
     return SizedBox(
       width: roadmapNodeSize + roadmapTileShadowOffset,
       height: roadmapNodeSize + roadmapTileShadowOffset,
       child: Stack(
         children: [
-          // Offset drop shadow
+          // Offset drop shadow — hidden while pressed so the foreground
+          // tile reads as having "landed" on top of it.
           Positioned(
             left: roadmapTileShadowOffset,
             top: roadmapTileShadowOffset,
-            child: Container(
-              width: roadmapNodeSize,
-              height: roadmapNodeSize,
-              decoration: shadowDecoration,
+            child: Opacity(
+              opacity: shadowOpacity,
+              child: Container(
+                width: roadmapNodeSize,
+                height: roadmapNodeSize,
+                decoration: shadowDecoration,
+              ),
             ),
           ),
 
-          // Foreground tile
-          Container(
-            width: roadmapNodeSize,
-            height: roadmapNodeSize,
-            decoration: tileDecoration,
-            child: Center(child: nodeContent),
+          // Foreground tile — animates between resting (top-left) and
+          // pressed (shadow slot) over a single short window so the
+          // press feels tactile rather than instantaneous.
+          AnimatedPositioned(
+            duration: const Duration(milliseconds: 80),
+            curve: Curves.easeOut,
+            left: tileLeftOffset,
+            top: tileTopOffset,
+            child: Container(
+              width: roadmapNodeSize,
+              height: roadmapNodeSize,
+              decoration: tileDecoration,
+              child: Center(child: nodeContent),
+            ),
           ),
         ],
       ),
@@ -846,16 +898,14 @@ class PathLessonNode extends StatelessWidget {
   }
 
   Color getBackgroundColor() {
-    if (isLocked) {
+    if (widget.isLocked) {
       return RLDS.backgroundLight;
     }
 
-    return accentColor.withValues(alpha: 0.15);
+    return widget.accentColor.withValues(alpha: 0.15);
   }
 
   // * Tile glyphs — 32px so they land on pixelarticons' 16×16 grid (2x).
-
-  static const double roadmapTileIconSize = 32.0;
 
   static final Widget LockedIcon = Icon(
     Pixel.lock,
@@ -864,11 +914,11 @@ class PathLessonNode extends StatelessWidget {
   );
 
   Widget PlayIcon() {
-    return Icon(Pixel.play, color: accentColor, size: roadmapTileIconSize);
+    return Icon(Pixel.play, color: widget.accentColor, size: roadmapTileIconSize);
   }
 
   Widget NodeIcon() {
-    if (isLocked) {
+    if (widget.isLocked) {
       return LockedIcon;
     }
 

@@ -2,9 +2,8 @@
 
 **Related files:**
 
-- `RlockieFormatGuide.xml` — defines how `.rlockie` files are structured: what blocks exist (`@course`, `@segment`, `@package`, `@text`, `@question`, `@true_false`, `@estimate`, `@quote`, `@pause`, `@reflect`), what fields each block needs, and how to format them. This guide tells you what to write. The format guide tells you how to structure the file.
-- `ReadlockFinalTest.xml` — a checklist of every rule in this guide, written as pass/fail checkboxes. Run the finished draft through it before shipping.
-- `ReadlockBlacklist.xml` — a flat list of banned AI words, phrases, and sentence patterns. It covers the same ground as Sections 2 and 4 of this guide but in a searchable format.
+- `RlockieFormatGuide.xml`, defines how `.rlockie` files are structured: what blocks exist (`@course`, `@segment`, `@package`, `@text`, `@question`, `@true_false`, `@estimate`, `@quote`, `@pause`, `@reflect`), what fields each block needs, and how to format them. This guide tells you what to write. The format guide tells you how to structure the file.
+- `ReadlockBlacklist.xml`, a flat list of banned AI words, phrases, and sentence patterns. It covers the same ground as Sections 2 and 4 of this guide but in a searchable format.
 
 ---
 
@@ -139,7 +138,7 @@ When in doubt, split.
 2. The plain version would be noticeably longer or clunkier.
 3. Only one idiom per sentence, and no more than one per swipe.
 
-Obscure idioms are never allowed. _"Kick the can down the road," "bite the bullet," "move the goalposts," "run the tape back," "cast a vote for"_ (metaphorical), _"it clicks"_ — cut all of these.
+Obscure idioms are never allowed. _"Kick the can down the road," "bite the bullet," "move the goalposts," "run the tape back," "cast a vote for"_ (metaphorical), _"it clicks"_, cut all of these.
 
 > **Wrong:** _"Run the tape back far enough and everything was packed into a room."_
 > **Correct:** _"If you follow the expansion backward in time far enough, everything was packed into a room."_
@@ -198,7 +197,7 @@ The raw number can appear as long as the picture is doing the real work. _"70,00
 
 **Keep picture references universal.** The reader could be from any country. Do not overthink this, but avoid obviously local things. _"When dinosaurs ruled the Earth"_ works everywhere. _"Before humans had writing"_ works everywhere. _"When your grandparents were in school"_ does not, because some readers' grandparents were not in school. _"Around the time of the Super Bowl"_ does not, because most of the world does not watch it. When unsure, pick a different picture.
 
-**Write numbers as digits, not words.** Any number 10 or above is in digits, always. _"10 years," "12 seconds," "70,000 years ago"_ — never _"ten years," "twelve seconds," "seventy thousand years ago."_ Digits are language-independent and faster to read. The boundary is inclusive: 10 itself is digits, not _"ten."_
+**Write numbers as digits, not words.** Any number 10 or above is in digits, always. _"10 years," "12 seconds," "70,000 years ago"_, never _"ten years," "twelve seconds," "seventy thousand years ago."_ Digits are language-independent and faster to read. The boundary is inclusive: 10 itself is digits, not _"ten."_
 
 > **Correct:** _"Roughly 70,000 years ago, long before any city existed, something changed."_
 > **Wrong:** _"Roughly seventy thousand years ago, something changed."_
@@ -274,7 +273,7 @@ Metaphor rules:
 
 **Read it aloud.** If you stumble, rewrite. No fragments for emphasis, no punctuation tricks.
 
-**No em dashes.** The em dash (—) is banned everywhere in a swipe. Use a period, a comma, a colon, or parentheses instead. If a sentence feels like it needs an em dash, it is two sentences. Split it.
+**No em dashes.** The em dash is banned everywhere in a swipe. Use a period, a comma, a colon, or parentheses instead. If a sentence feels like it needs an em dash, it is two sentences. Split it.
 
 **No public-speaking tricks.** Ascending lists of three, dramatic pauses, rhetorical questions you answer yourself, callback lines, and "let that sink in" closers work on stage. On a screen, the reader controls the pace. These tricks read as manipulation. Write prose, not a speech.
 
@@ -310,7 +309,7 @@ These make text sound like a blog post, a podcast, or a LinkedIn influencer:
 
 **Use "we" for humanity-wide observations. Never use "you" to address the reader.** When stating something true of people in general, say "we": _"We figure out most objects without reading the manual."_ _"We have always trusted what we can see."_ This kind of "we" means "we as humans," not "you and me right now." Saying "you" sounds like the narrator is telling the reader about themselves personally, which is presumptuous. Both pronouns have a job, both can be misused.
 
-**"We" is not for placing narrator and reader together in a hypothetical scene.** Do not write _"We are standing in a supermarket aisle"_ or _"We walk into the room"_ — that "we" is fake intimacy, not shared humanity. For reader-immersion scenes (Variant A in Phase 2), use a gerund or imperative instead: _"Imagine standing in a supermarket aisle..."_ or _"Picture a supermarket aisle, two boxes of cereal in hand..."_ No pronoun.
+**"We" is not for placing narrator and reader together in a hypothetical scene.** Do not write _"We are standing in a supermarket aisle"_ or _"We walk into the room"_, that "we" is fake intimacy, not shared humanity. For reader-immersion scenes (Variant A in Phase 2), use a gerund or imperative instead: _"Imagine standing in a supermarket aisle..."_ or _"Picture a supermarket aisle, two boxes of cereal in hand..."_ No pronoun.
 
 (This rule applies to course writing, not to this guide. The guide can use "you" because it is talking to the writer, not to a course reader.)
 
@@ -396,7 +395,7 @@ _"Vision is the default. Reading is the workaround."_ / _"It's not a mistake. It
 The speaker states something, then pretends to retract it to land the second clause harder. A classical rhetorical device (Latin: _correctio_; Greek: _epanorthosis_). Overused in AI writing because it performs insight without earning it. Banned altogether, in all forms:
 
 - As one sentence: _"It's not X, it's Y."_
-- As two sentences: _"It is not X. It is Y."_ (split correctio — same pattern with a period)
+- As two sentences: _"It is not X. It is Y."_ (split correctio, same pattern with a period)
 - With a softener: _"It's not just X, it's Y."_ / _"Not so much X as Y."_
 
 Just state what is true. If Y is the real claim, write only Y. The reader does not need to see X denied first.
@@ -487,10 +486,10 @@ Each package follows a narrative arc. Not every package uses every phase, but th
 
 **Quick reference for terms used below** (full definitions in `RlockieFormatGuide.xml`):
 
-- **Swipe** — one screen the reader sees before swiping forward. Every `@text`, `@question`, `@true_false`, `@quote`, `@pause`, `@reflect`, and `@estimate` block is exactly one swipe. When this guide says **"@text swipe"** it means a swipe whose block type is `@text`.
-- **Package** (`@package`) — one full lesson on one concept. It contains the phases below in order.
-- **Segment** (`@segment`) — a group of 3 to 5 packages.
-- **Course** (`@course`) — the whole book. Made of 2 to 3 segments.
+- **Swipe**, one screen the reader sees before swiping forward. Every `@text`, `@question`, `@true_false`, `@quote`, `@pause`, `@reflect`, and `@estimate` block is exactly one swipe. When this guide says **"@text swipe"** it means a swipe whose block type is `@text`.
+- **Package** (`@package`), one full lesson on one concept. It contains the phases below in order.
+- **Segment** (`@segment`), a group of 3 to 5 packages.
+- **Course** (`@course`), the whole book. Made of 2 to 3 segments.
 
 > **The flow must read as one unbroken line of thought.** Do not reveal the answer and then keep questioning. Do not skip context and land on a test. Do not circle back to something already resolved. The arc moves forward: curiosity, then evidence, then understanding. Once the reader arrives at the insight, you do not rewind.
 >
@@ -524,7 +523,7 @@ Rules:
 8. **Numbers in titles use digits, not words.** This applies to segment titles AND package titles, and it overrides the "small numbers can stay as words" rule from the number-format section. In titles, digits pop in the menu UI, read faster, and give the eye something to anchor on. _"3 Layers of Feeling"_ not _"Three Layers of Feeling."_ _"2 Minutes Before Thought"_ not _"Two Minutes Before Thought."_ The only exception is when the number is part of a fixed idiom where the word form is the idiom (_"On Second Thought"_ stays as a word because "2nd Thought" is not the idiom).
 
 > **Wrong (segment with five "The X That Y" titles):**
-> _"The Pretty Machine That Worked Better,"_ _"The Half-Second Before Thought,"_ _"The Knife That Knew Her Hand,"_ _"The Watch That Was More Than a Watch,"_ _"The Shoes That Refused to Leave."_ (four out of five share the same shape — this is a pattern, not a set of titles)
+> _"The Pretty Machine That Worked Better,"_ _"The Half-Second Before Thought,"_ _"The Knife That Knew Her Hand,"_ _"The Watch That Was More Than a Watch,"_ _"The Shoes That Refused to Leave."_ (four out of five share the same shape, this is a pattern, not a set of titles)
 >
 > **Correct (same five packages, varied shapes):**
 > _"Why Beauty Helps the Hand,"_ _"The Half-Second Before Thought,"_ _"What the Hand Already Knew...,"_ _"More Than a Watch,"_ _"Why Couldn't She Throw Them Away?"_ (five different shapes: why-statement, noun phrase, open-ended dots, short fragment, question)
@@ -776,7 +775,7 @@ Banned openers for the reveal sentence:
 
 > **Correct:** _"The same quiet effect ran through the kitchen, the office, and the museum. <c:g>The aesthetic-usability effect</c:g> is the name for it, and it explains why the prettier machine kept winning."_ (the reveal stays inside the scenes and lets the topic name land)
 
-> **Wrong:** _"What all three stories have in common is that the choice happened in the body before the mind. This is called <c:g>the visceral level</c:g>."_ (checklist sentence followed by "this is" — both banned)
+> **Wrong:** _"What all three stories have in common is that the choice happened in the body before the mind. This is called <c:g>the visceral level</c:g>."_ (checklist sentence followed by "this is", both banned)
 
 > **Correct:** _"The child's hand, the museum visitor's eyes, the woman's fingers on the polished stone: all three were obeying <c:g>the visceral level</c:g> before any thought had time to arrive."_ (the scenes carry the reveal)
 
@@ -813,8 +812,8 @@ A `@pause` swipe is a standalone screen with a nice animation and a single sente
 
 **What it must never be:**
 
-- _"Did you know..."_ — banned.
-- _"Fun fact:"_ / _"Pro tip:"_ — banned.
+- _"Did you know..."_, banned.
+- _"Fun fact:"_ / _"Pro tip:"_, banned.
 - A trivia quiz question.
 - A motivational line.
 - A summary of what was just taught.
@@ -840,7 +839,7 @@ This phase uses `@reflect` points only. No `@text`. **@reflect is optional.** Sk
 
 **Format.** 2 to 3 points, one per line. Each point is a single short sentence, ~14 words, that prompts the reader to reflect. No colon-example format. No "label: situation" pairs. Just a sentence that opens a question in the reader's mind about their own life.
 
-**Tone.** Quiet and inviting, never instructional. The point names a place to look, not what to find. Use no "you" — phrase as a noun phrase or a humanity-wide observation.
+**Tone.** Quiet and inviting, never instructional. The point names a place to look, not what to find. Use no "you", phrase as a noun phrase or a humanity-wide observation.
 
 > **Correct:** _"A habit kept going even when day one felt too small."_
 > **Correct:** _"A decision someone else quietly made by naming the first number."_
@@ -902,7 +901,7 @@ All lengths and counts for a course live in this table. If anything else in the 
 | 4. Topic Reveal               | 1 to 2             | `@text`                    | Same as Phase 2: 5 to 7 sentences, ~14 words per sentence.                                                                                            |
 | Optional estimate             | 0 or 1             | `@estimate`                | After Phase 4. Only when the topic has a numerical element. One question, answer 0-100.                                                               |
 | 5. True/False or Deeper Check | 1 to 2             | `@true_false`              | One statement per swipe, usually one sentence. Semi-obvious, not a trap.                                                                              |
-| 6. Reflect (optional)         | 0 or 1             | `@reflect`                 | 2 to 3 short reflection-prompting sentences, one per line, each ~14 words. No colon-example format. Skip when the package feels complete without it.   |
+| 6. Reflect (optional)         | 0 or 1             | `@reflect`                 | 2 to 3 short reflection-prompting sentences, one per line, each ~14 words. No colon-example format. Skip when the package feels complete without it.  |
 | **Package outro**             | **1**              | `@text`                    | Last swipe of every package. 2 to 3 sentences. Non-last packages: close the thought and transition. Last package: name the thread, end on a question. |
 | **Package total**             | **7 to 11 swipes** | see phase order below      | Each phase in order. Skipping an optional phase is fine.                                                                                              |
 
@@ -996,9 +995,3 @@ Before submitting any `@text` block, run these checks:
 4. **"So what" test.** After every statement, ask "so what?" The next sentence should answer that.
 
 5. **Deletion test.** Remove the sentence. Does the paragraph still work? If yes, the sentence was not earning its place.
-
----
-
-## 8. After Writing
-
-When the draft is done, run it through `ReadlockFinalTest.xml`. Every rule in this guide is listed there as a pass/fail checkbox. A draft that passes every box is ready. One unchecked box means it goes back for a fix. Do not ship with known failures.

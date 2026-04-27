@@ -2,8 +2,10 @@
 // Renders a wrapping row of toggleable chips with consistent styling
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/constants/RLTypography.dart';
+import 'package:readlock/design_system/RLLunarBlur.dart';
 
 class SelectableFilterChips extends StatelessWidget {
   final List<String> options;
@@ -23,11 +25,7 @@ class SelectableFilterChips extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Wrap(
-      spacing: chipSpacing,
-      runSpacing: runSpacing,
-      children: ChipItems(),
-    );
+    return Wrap(spacing: chipSpacing, runSpacing: runSpacing, children: ChipItems());
   }
 
   List<Widget> ChipItems() {
@@ -65,11 +63,7 @@ class SelectableFilterChipsMulti extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Wrap(
-      spacing: chipSpacing,
-      runSpacing: runSpacing,
-      children: ChipItems(),
-    );
+    return Wrap(spacing: chipSpacing, runSpacing: runSpacing, children: ChipItems());
   }
 
   List<Widget> ChipItems() {
@@ -97,32 +91,44 @@ class SelectableFilterChip extends StatelessWidget {
     required this.onTap,
   });
 
+  static const EdgeInsets chipPadding = EdgeInsets.symmetric(
+    horizontal: RLDS.spacing16,
+    vertical: RLDS.spacing8,
+  );
+
   @override
   Widget build(BuildContext context) {
-    Color chipColor = RLDS.backgroundLight.withValues(alpha: 0.08);
-    Color chipTextColor = RLDS.info;
+    final Color chipTextColor = isSelected ? RLDS.white : RLDS.textMuted;
 
-    if (isSelected) {
-      chipColor = RLDS.info;
-      chipTextColor = RLDS.white;
+    void handleTapWithHaptic() {
+      HapticFeedback.selectionClick();
+      onTap();
     }
 
-    final BoxDecoration chipDecoration = BoxDecoration(
-      color: chipColor,
-      borderRadius: BorderRadius.circular(RLDS.radiusLarge),
-      border: Border.all(color: RLDS.info.withValues(alpha: 0.3)),
-    );
+    final Widget label = RLTypography.bodyMedium(this.label, color: chipTextColor);
 
     return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(
-          horizontal: RLDS.spacing16,
-          vertical: RLDS.spacing8,
-        ),
-        decoration: chipDecoration,
-        child: RLTypography.bodyMedium(label, color: chipTextColor),
-      ),
+      onTap: handleTapWithHaptic,
+      behavior: HitTestBehavior.opaque,
+      child: ChipBody(label: label),
     );
+  }
+
+  // Selected chip sits on the shared LunarBlur surface tinted with the
+  // primary accent so the active state keeps the red fill, just on the
+  // frosted-pane family used everywhere else. Unselected chips render
+  // as plain padded text — no decoration, no border — so the row stays
+  // quiet and the active selection carries all the visual weight.
+  Widget ChipBody({required Widget label}) {
+    if (isSelected) {
+      return RLLunarBlur(
+        borderRadius: BorderRadius.zero,
+        surfaceColor: RLDS.primary,
+        padding: chipPadding,
+        child: label,
+      );
+    }
+
+    return Padding(padding: chipPadding, child: label);
   }
 }

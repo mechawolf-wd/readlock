@@ -342,10 +342,9 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
 
   // Build content item widget for specific index. Every CC widget is wrapped
   // in a centered column whose max width is driven by the reader's choice in
-  // Settings (selectedReadingColumnNotifier) — narrow / comfortable / wide.
-  // Wide means no constraint; the other two cap line-length so the reading
-  // surface doesn't flatten past the comfortable 45–75 character target on
-  // wider phones.
+  // Settings (selectedReadingColumnNotifier) — Newspaper (narrow) or
+  // Classic (comfortable) — both cap line-length so the reading surface
+  // stays within the 45–75 character target on wider phones.
   Widget getContentItem(BuildContext context, int contentItemIndex) {
     final JSONMap content = allContent[contentItemIndex];
     final Widget contentWidget = CCJSONContentFactory.createContentWidget(content);
@@ -357,16 +356,11 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
     );
   }
 
-  // Applies the selected column width as a max constraint. Wide returns the
-  // child as-is; narrow/comfortable centre it inside a ConstrainedBox.
+  // Applies the selected column width as a max constraint. Both options
+  // (narrow / comfortable) are bounded so the child is always centred
+  // inside a ConstrainedBox — no unconstrained branch.
   Widget buildColumnFrame(BuildContext context, ReadingColumn column, Widget? child) {
-    final double? maxWidth = maxWidthFor(column);
-    final bool isUnconstrained = maxWidth == null;
-
-    if (isUnconstrained) {
-      return child!;
-    }
-
+    final double maxWidth = maxWidthFor(column);
     final BoxConstraints columnConstraints = BoxConstraints(maxWidth: maxWidth);
 
     return Center(

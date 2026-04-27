@@ -3,11 +3,6 @@
 
   <meta>
     <title>.rlockie Syntax Reference</title>
-    <related_files>
-      <file name="ReadlockCopywritingGuide.md" role="content authority (tone, voice, phase structure, lengths, all writing rules)" />
-      <file name="ReadlockFinalTest.xml" role="rule checklist, run after writing" />
-      <file name="ReadlockBlacklist.xml" role="banned AI writing patterns" />
-    </related_files>
     <authority_note>This file defines how .rlockie files are structured: what blocks exist, what fields each block needs, and how to format them. It is NOT the content authority. For tone, voice, register, phase structure, swipe length, consequence/hint rules, reflect content, color highlight meanings, and every other "what do I actually write" question, the authority is ReadlockCopywritingGuide.md. If anything here contradicts the copywriting guide, the copywriting guide wins.</authority_note>
   </meta>
 
@@ -74,7 +69,7 @@ language: [two-letter uppercase language code, e.g. EN]
 title: [course display title]
 author: [author display name]
 description: [one-line description]
-color: [one of the 12 allowed swatches, e.g. 8461BD — NO leading #]
+color: [one of the 12 allowed swatches, e.g. 8461BD, NO leading #]
 genres: [3 to 5 comma-separated keys from the closed list, e.g. design, psychology, productivity]
 relevant_for: [comma-separated keys from the closed list: designers, product-managers, founders, engineers, writers, marketers, leaders, investors, students, anyone]
     </template>
@@ -235,7 +230,7 @@ hint: [Hint shown before answering]
     </block>
 
     <block name="@true_false">
-      <description>A statement the learner must judge as true or false. The two answer options are always literally "True" and "False" — never descriptive text.</description>
+      <description>A statement the learner must judge as true or false. The two answer options are always literally "True" and "False", never descriptive text.</description>
 
       <template>
 @true_false
@@ -358,7 +353,6 @@ First line of text.
       <rule>Comments are FULL-LINE only. Inline comments (text followed by "#" on the same line) are NOT supported.</rule>
       <rule>Comments can sit anywhere in the file: between blocks, inside blocks, between properties, even between an answer: line and its consequence: line. The parser strips them before block splitting.</rule>
       <rule>To temporarily disable a swipe, prefix every line of the swipe (including the @declaration line) with "#".</rule>
-      <rule>Comments do NOT count toward any length rule, swipe count, or character budget. They are invisible to the parser and to ReadlockFinalTest.xml.</rule>
       <rule>Comments are highlighted in the same muted grey (#9ca3af, italic) that property names (answer:, consequence:, hint:, explanation:) use, so comments sit quietly in the same visual register as format scaffolding rather than content.</rule>
     </rules>
 

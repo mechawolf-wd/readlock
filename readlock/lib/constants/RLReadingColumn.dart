@@ -1,10 +1,8 @@
 // Reader-selectable column width for every CC widget in the course viewer.
-// Three options covering the useful range:
+// Two options:
 //
 //   - narrow       → 320 pt. Newspaper-column tight (45–55 char lines); the default.
-//   - comfortable  → 360 pt. Between narrow and wide.
-//   - wide         → unconstrained. Fills the full phone width, matching the
-//                    pre-column-constraint behaviour.
+//   - comfortable  → 360 pt. Classic, slightly wider than newspaper.
 //
 // Held in selectedReadingColumnNotifier and consumed by CourseContentViewer
 // via ValueListenableBuilder so every content swipe picks up a Settings
@@ -12,14 +10,12 @@
 
 import 'package:flutter/foundation.dart';
 
-enum ReadingColumn { narrow, comfortable, wide }
+enum ReadingColumn { narrow, comfortable }
 
 class ReadingColumnOption {
   final ReadingColumn column;
   final String displayName;
-
-  // Null = no constraint; content fills the full available width.
-  final double? maxWidth;
+  final double maxWidth;
 
   const ReadingColumnOption({
     required this.column,
@@ -36,8 +32,6 @@ const List<ReadingColumnOption> READING_COLUMN_OPTIONS = [
     displayName: 'Classic',
     maxWidth: 360.0,
   ),
-
-  ReadingColumnOption(column: ReadingColumn.wide, displayName: 'Expanded', maxWidth: null),
 ];
 
 const ReadingColumn DEFAULT_READING_COLUMN = ReadingColumn.narrow;
@@ -46,13 +40,14 @@ final ValueNotifier<ReadingColumn> selectedReadingColumnNotifier = ValueNotifier
   DEFAULT_READING_COLUMN,
 );
 
-// Resolves the column enum to its max width. Returns null for unconstrained.
-double? maxWidthFor(ReadingColumn column) {
+// Resolves the column enum to its max width. Both options are constrained
+// (no unconstrained "wide" anymore), so callers can rely on a finite value.
+double maxWidthFor(ReadingColumn column) {
   for (final ReadingColumnOption option in READING_COLUMN_OPTIONS) {
     if (option.column == column) {
       return option.maxWidth;
     }
   }
 
-  return null;
+  return READING_COLUMN_OPTIONS.first.maxWidth;
 }

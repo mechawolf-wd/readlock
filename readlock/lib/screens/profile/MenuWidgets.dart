@@ -149,12 +149,6 @@ class MenuSection extends StatelessWidget {
 
         RevealDemo(isEnabled: revealAllTrueFalse),
 
-        // Sub-preview that always demos the all-at-once cadence — sits under
-        // Progressive so the reader can compare the two reveal styles side
-        // by side. The toggle is local-state and demo-only; no persisted
-        // preference, no onboarding surfacing.
-        const RevealAllAtOnceRow(),
-
         SwitchMenuItem(
           icon: Pixel.eye,
           title: RLUIStrings.MENU_BLUR,
@@ -350,41 +344,6 @@ class SwitchMenuItem extends StatelessWidget {
         ),
       ),
     );
-  }
-}
-
-// Local-state wrapper that pairs a SwitchMenuItem with the
-// RevealAllAtOnceDemo card. Switch toggles the demo's visibility only — no
-// preference round-trip, no onboarding step — kept here next to its only
-// caller so the wiring stays trivial to follow.
-class RevealAllAtOnceRow extends StatefulWidget {
-  const RevealAllAtOnceRow({super.key});
-
-  @override
-  State<RevealAllAtOnceRow> createState() => RevealAllAtOnceRowState();
-}
-
-class RevealAllAtOnceRowState extends State<RevealAllAtOnceRow> {
-  bool isPreviewEnabled = false;
-
-  void handleToggled(bool newValue) {
-    setState(() {
-      isPreviewEnabled = newValue;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Div.column([
-      SwitchMenuItem(
-        icon: Pixel.sun,
-        title: RLUIStrings.MENU_REVEAL_ALL_AT_ONCE,
-        value: isPreviewEnabled,
-        onChanged: handleToggled,
-      ),
-
-      RenderIf.condition(isPreviewEnabled, const RevealAllAtOnceDemo()),
-    ], crossAxisAlignment: CrossAxisAlignment.stretch);
   }
 }
 

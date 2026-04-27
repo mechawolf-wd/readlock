@@ -30,15 +30,15 @@ class RLUIStrings {
   static const String FEATHERS_BOOK_PRICING_NOTE = 'Each book costs 10 feathers';
 
   // Per-plan copy.
-  static const String PLAN_READER_NAME = 'Reader';
-  static const String PLAN_READER_PRICE = '\$6.99';
-  static const String PLAN_READER_FEATHERS = '110 feathers';
-  static const String PLAN_READER_BOOKS = 'About 11 books a month';
+  static const String PLAN_BEGINNER_NAME = 'Beginner';
+  static const String PLAN_BEGINNER_PRICE = '\$6.99';
+  static const String PLAN_BEGINNER_FEATHERS = '110 feathers';
+  static const String PLAN_BEGINNER_BOOKS = 'About 11 books a month';
 
-  static const String PLAN_INSIDER_NAME = 'Insider';
-  static const String PLAN_INSIDER_PRICE = '\$10.99';
-  static const String PLAN_INSIDER_FEATHERS = '210 feathers';
-  static const String PLAN_INSIDER_BOOKS = 'About 21 books a month';
+  static const String PLAN_READER_NAME = 'Reader';
+  static const String PLAN_READER_PRICE = '\$10.99';
+  static const String PLAN_READER_FEATHERS = '210 feathers';
+  static const String PLAN_READER_BOOKS = 'About 21 books a month';
 
   // * Feedback Snackbar
   static const String CORRECT_ANSWER_MESSAGE = 'Correct, you read it';
@@ -262,16 +262,14 @@ class RLUIStrings {
       'Good design is honest. It reveals the product and its function.';
 
   // * Reading Column Width
-  static const String MENU_READING_COLUMN = 'Column width';
+  static const String MENU_READING_COLUMN = 'Column style';
   static const String DEMO_READING_COLUMN_TEXT =
-      'The width of the reading column sets the line-length of every swipe. '
-      'Tighter columns read like a newspaper; wider ones fill the screen.';
+      'Strongly preferred for long reading sessions. Narrower columns reduce '
+      'cognitive load and eye movement, letting your gaze sweep one short '
+      'line at a time instead of tracking across the full width of the screen.';
 
   // * Settings Demos
   static const String DEMO_REVEAL_TEXT = 'Design is not just what it looks like.';
-  static const String MENU_REVEAL_ALL_AT_ONCE = 'Reveal all at once';
-  static const String DEMO_REVEAL_ALL_AT_ONCE_TEXT =
-      'The whole sentence appears in a single beat.';
   static const String DEMO_BLUR_PREVIOUS = 'Previous sentence fades away.';
   static const String DEMO_BLUR_CURRENT = 'Current sentence stays clear.';
   static const String DEMO_COLORED_HIGHLIGHT = 'Key terms';

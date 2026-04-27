@@ -197,7 +197,7 @@
       <rule ref="guide: Section 2, Subjective claims">Zero subjective claims presented as universal truth.</rule>
       <rule ref="guide: Section 2, Claims and evidence, Every abstract idea needs an anchor from everyday life">Every abstract concept in the package has ONE everyday anchor next to it (an object, scene, or moment from ordinary life that the reader has actually lived). Examples: snowflake-and-avalanche for compound effects, parking meter for anchoring bias, kitchen drawer for the behavioral level.</rule>
       <rule ref="guide: Section 2, Claims and evidence, Every abstract idea needs an anchor from everyday life">The anchor must be something the reader has actually lived, not a poetic image or metaphor for sounding clever.</rule>
-      <rule ref="guide: Section 2, Claims and evidence, Every abstract idea needs an anchor from everyday life">One anchor per concept, never two. If two anchors appear for the same concept in one package, the first was too weak — replace it, do not stack.</rule>
+      <rule ref="guide: Section 2, Claims and evidence, Every abstract idea needs an anchor from everyday life">One anchor per concept, never two. If two anchors appear for the same concept in one package, the first was too weak, replace it, do not stack.</rule>
       <rule ref="guide: Section 2, Claims and evidence, Every abstract idea needs an anchor from everyday life">Retention test: after one read, can the concept be recalled by recalling the anchor? If no, the anchor failed.</rule>
       <rule ref="guide: Section 2, Claims and evidence, Every abstract idea needs an anchor from everyday life">Zero abstract dictionary-entry sentences ("X describes how...", "Y is when..."). Every concept arrives wrapped around a concrete picture from daily life.</rule>
     </group>
@@ -229,7 +229,7 @@
     <group name="Craft techniques">
       <rule ref="guide: Section 2, Difficult concepts">Plain reframes only when genuinely needed, not reflexively.</rule>
       <rule ref="guide: Section 2, Read aloud">Draft reads naturally aloud. Zero stumbles, zero fragments.</rule>
-      <rule ref="guide: Section 2, No em dashes">Zero em dashes (—) anywhere in any swipe or property field. Use a comma, period, colon, or parentheses instead.</rule>
+      <rule ref="guide: Section 2, No em dashes">Zero em dashes anywhere in any swipe or property field. Use a comma, period, colon, or parentheses instead.</rule>
       <rule ref="guide: Section 2, No public-speaking tricks">Zero ascending lists of three, dramatic pauses, rhetorical Q-then-A, callback lines, "let that sink in."</rule>
     </group>
 

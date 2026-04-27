@@ -1,16 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <blacklist>
-
-  <meta>
-    <title>AI Writing Blacklist</title>
-    <description>Ordered by how detectable each pattern is. The most robotic, most AI-obvious patterns are at the top. Every item is banned. No exceptions.</description>
-    <related_files>
-      <file name="ReadlockCopywritingGuide.md" role="content authority" />
-      <file name="RlockieFormatGuide.xml" role="syntax reference for .rlockie files" />
-      <file name="ReadlockFinalTest.xml" role="rule checklist, run after writing" />
-    </related_files>
-  </meta>
-
   <critical_rules>
     <rule id="1">Never use em dashes. Rewrite as two sentences or use a comma, period, or colon.</rule>
     <rule id="2">Never use any word from the banned verbs list. Use the plain replacement.</rule>
@@ -18,14 +7,6 @@
     <rule id="4">Never open or close with a cliched frame ("In today's world...", "In conclusion...", "At the end of the day...").</rule>
     <rule id="5">If you remove a word and the sentence still works, the word was not earning its place. Leave it out.</rule>
   </critical_rules>
-
-  <!-- ============================================================
-       ORDERING RATIONALE:
-       Sections are ordered by how obviously AI each pattern is.
-       The most robotic, most instantly detectable trash goes first.
-       Structural shells > formatting tells > buzzwords > inflators >
-       openers > transitions > filler > abstract nouns > metaphors > closers.
-       ============================================================ -->
 
   <section id="1" name="Sentence templates and structural shells" summary="The skeletons of AI writing. Even clean vocabulary cannot hide these. These are the MOST detectable AI patterns. Rewrite from scratch.">
 

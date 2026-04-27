@@ -36,7 +36,7 @@ class BirdPickerSheet extends StatelessWidget {
   );
 
   static final Widget HeaderIcon = const Icon(
-    Pixel.human,
+    Pixel.shuffle,
     color: RLDS.primary,
     size: RLDS.iconMedium,
   );
@@ -53,9 +53,9 @@ class BirdPickerSheet extends StatelessWidget {
         RLTypography.headingMedium(RLUIStrings.BIRD_PICKER_TITLE),
       ], padding: headerPadding, mainAxisAlignment: MainAxisAlignment.start),
 
-      const Spacing.height(RLDS.spacing16),
-
-      // Carousel + selected name
+      // Carousel + selected name — sits flush below the header so the
+      // bird sprite reads as the immediate subject. Carousel owns its own
+      // top padding via its 200pt height; no extra Spacing here.
       const BirdCarousel(),
     ], padding: const EdgeInsets.only(bottom: RLDS.spacing24));
   }

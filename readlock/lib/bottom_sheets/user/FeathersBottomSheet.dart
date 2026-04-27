@@ -1,5 +1,5 @@
 // Feathers subscription bottom sheet — feather-based monthly subscription
-// with two plan tiers (Reader / Insider). Plans are presented in a
+// with two plan tiers (Beginner / Reader). Plans are presented in a
 // horizontal slider so the reader swipes through them one at a time;
 // tapping a card is the purchase action — there is no separate CTA
 // button, the card itself is the affordance.
@@ -9,6 +9,7 @@
 // as a small companion accent.
 
 import 'package:flutter/material.dart' hide Typography;
+import 'package:flutter/services.dart';
 import 'package:readlock/bottom_sheets/RLBottomSheet.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/constants/RLTypography.dart';
@@ -59,23 +60,23 @@ BirdOption lookupBirdByName(String birdName) {
 
 final List<FeatherPlan> FEATHER_PLANS = [
   FeatherPlan(
+    name: RLUIStrings.PLAN_BEGINNER_NAME,
+    price: RLUIStrings.PLAN_BEGINNER_PRICE,
+    feathers: RLUIStrings.PLAN_BEGINNER_FEATHERS,
+    books: RLUIStrings.PLAN_BEGINNER_BOOKS,
+    bird: lookupBirdByName(RLUIStrings.BIRD_SPARROW),
+  ),
+
+  FeatherPlan(
     name: RLUIStrings.PLAN_READER_NAME,
     price: RLUIStrings.PLAN_READER_PRICE,
     feathers: RLUIStrings.PLAN_READER_FEATHERS,
     books: RLUIStrings.PLAN_READER_BOOKS,
-    bird: lookupBirdByName(RLUIStrings.BIRD_BLUE_MACAW),
-  ),
-
-  FeatherPlan(
-    name: RLUIStrings.PLAN_INSIDER_NAME,
-    price: RLUIStrings.PLAN_INSIDER_PRICE,
-    feathers: RLUIStrings.PLAN_INSIDER_FEATHERS,
-    books: RLUIStrings.PLAN_INSIDER_BOOKS,
     bird: lookupBirdByName(RLUIStrings.BIRD_TOUCAN),
   ),
 ];
 
-const int DEFAULT_PLAN_INDEX = 0; // Reader — the default tier on open.
+const int DEFAULT_PLAN_INDEX = 0; // Beginner — the default tier on open.
 
 class FeathersBottomSheet {
   static void show(BuildContext context) {
@@ -115,6 +116,10 @@ class FeathersSheetState extends State<FeathersSheet> {
   }
 
   void handlePlanChanged(int index) {
+    // Tick haptic per page change — same selectionClick the bird carousel
+    // uses, so swiping between Beginner and Reader feels detented.
+    HapticFeedback.selectionClick();
+
     setState(() {
       selectedPlanIndex = index;
     });

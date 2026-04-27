@@ -138,7 +138,6 @@ const List<BirdOption> BIRD_OPTIONS = [
     frameHeight: 18,
     contentOffsetX: 0,
     contentOffsetY: 0,
-    contentWidth: 32,
     contentHeight: 18,
   ),
 ];

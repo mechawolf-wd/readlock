@@ -68,19 +68,21 @@ class AccountSheet extends StatelessWidget {
   }
 
   void handleDeleteAccountTap(BuildContext context) {
+    // Mirrors the Sign out dialog — Cancel renders as the filled red CTA on
+    // top so the safer default carries the visual weight, and Delete drops
+    // to a regular muted tertiary text button below so committing requires
+    // a deliberate tap.
     RLConfirmationDialog.show(
       context,
       title: RLUIStrings.ACCOUNT_DELETE_LABEL,
       message: RLUIStrings.ACCOUNT_DELETE_MESSAGE,
-      // CTA = Delete in neutral colour (filled primary on top).
-      // Cancel = red, rendered as the tertiary text button below.
       cta: const RLConfirmationAction(
-        label: RLUIStrings.ACCOUNT_DELETE_CONFIRM,
-        variant: RLConfirmationVariant.neutral,
-      ),
-      cancel: const RLConfirmationAction(
         label: RLUIStrings.CANCEL_LABEL,
         variant: RLConfirmationVariant.destructive,
+      ),
+      cancel: const RLConfirmationAction(
+        label: RLUIStrings.ACCOUNT_DELETE_CONFIRM,
+        variant: RLConfirmationVariant.neutral,
       ),
     );
   }

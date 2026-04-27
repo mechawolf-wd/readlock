@@ -17,7 +17,17 @@ class RLSegmentTabOption<T> {
   final T value;
   final String label;
 
-  const RLSegmentTabOption({required this.value, required this.label});
+  // Compact form shown when the tab is not selected — e.g. an acronym so
+  // long titles collapse to two letters and only the active tab reveals
+  // its full name. Optional; falls back to `label` for both states when
+  // omitted, preserving the simple single-label call sites.
+  final String? compactLabel;
+
+  const RLSegmentTabOption({
+    required this.value,
+    required this.label,
+    this.compactLabel,
+  });
 }
 
 class RLSegmentTabs<T> extends StatelessWidget {
@@ -64,6 +74,7 @@ class RLSegmentTabs<T> extends StatelessWidget {
         Expanded(
           child: RLSegmentTab(
             label: option.label,
+            compactLabel: option.compactLabel,
             isSelected: isSelected,
             selectedLabelColor: selectedLabelColor,
             onTap: onTabTap,
@@ -78,6 +89,7 @@ class RLSegmentTabs<T> extends StatelessWidget {
 
 class RLSegmentTab extends StatelessWidget {
   final String label;
+  final String? compactLabel;
   final bool isSelected;
   final Color selectedLabelColor;
   final VoidCallback onTap;
@@ -88,6 +100,7 @@ class RLSegmentTab extends StatelessWidget {
     required this.isSelected,
     required this.selectedLabelColor,
     required this.onTap,
+    this.compactLabel,
   });
 
   static const EdgeInsets tabPadding = EdgeInsets.symmetric(
@@ -95,11 +108,22 @@ class RLSegmentTab extends StatelessWidget {
     vertical: RLDS.spacing8,
   );
 
+  String getDisplayLabel() {
+    final String? compact = compactLabel;
+    final bool shouldUseCompact = !isSelected && compact != null && compact.isNotEmpty;
+
+    if (shouldUseCompact) {
+      return compact;
+    }
+
+    return label;
+  }
+
   @override
   Widget build(BuildContext context) {
     final Color labelColor = isSelected ? selectedLabelColor : RLDS.textSecondary;
     final Widget tabLabel = RLTypography.bodyMedium(
-      label,
+      getDisplayLabel(),
       color: labelColor,
       textAlign: TextAlign.center,
     );
@@ -112,6 +136,7 @@ class RLSegmentTab extends StatelessWidget {
     if (isSelected) {
       return GestureDetector(
         onTap: handleTabTap,
+        behavior: HitTestBehavior.opaque,
         child: RLLunarBlur(
           borderRadius: RLDS.borderRadiusSmall,
           padding: tabPadding,
@@ -120,13 +145,18 @@ class RLSegmentTab extends StatelessWidget {
       );
     }
 
-    // Div already fires its own haptic when its onTap is called, so the
-    // unselected branch routes through the raw onTap to avoid a double-fire.
-    return Div.row(
-      [tabLabel],
-      padding: tabPadding,
-      mainAxisAlignment: MainAxisAlignment.center,
-      onTap: onTap,
+    // Wrap the unselected tab in an opaque GestureDetector so the entire
+    // padded slot registers taps — clicking the empty space around the
+    // label still flips the selection. Haptic is fired here directly
+    // (the inner Div has no onTap, so there's no double-fire risk).
+    return GestureDetector(
+      onTap: handleTabTap,
+      behavior: HitTestBehavior.opaque,
+      child: Container(
+        padding: tabPadding,
+        alignment: Alignment.center,
+        child: tabLabel,
+      ),
     );
   }
 }

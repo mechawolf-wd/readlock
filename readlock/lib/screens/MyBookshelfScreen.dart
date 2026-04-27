@@ -5,6 +5,7 @@
 // so the shelf doesn't eagerly render every saved course.
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:readlock/course_screens/CourseRoadmapScreen.dart';
 import 'package:readlock/course_screens/data/CourseData.dart';
 import 'package:readlock/design_system/RLUtility.dart';
@@ -38,9 +39,9 @@ class MyBookshelfScreen extends StatefulWidget {
 
 class MyBookshelfScreenState extends State<MyBookshelfScreen> {
   static final Widget SettingsIcon = const Icon(
-    Pixel.sliders,
+    Pixel.menu,
     color: RLDS.textSecondary,
-    size: RLDS.iconLarge,
+    size: RLDS.iconXLarge,
   );
 
   JSONList savedCourses = [];
@@ -198,14 +199,21 @@ class MyBookshelfScreenState extends State<MyBookshelfScreen> {
   }
 
   Widget BookshelfHeaderWithSettings() {
-    void onSettingsTap() => SettingsBottomSheet.show(context);
+    void onSettingsTap() {
+      HapticFeedback.lightImpact();
+      SettingsBottomSheet.show(context);
+    }
 
     return Div.row([
       RLTypography.headingLarge(RLUIStrings.BOOKSHELF_TITLE),
 
       const Spacer(),
 
-      GestureDetector(onTap: onSettingsTap, child: SettingsIcon),
+      GestureDetector(
+        onTap: onSettingsTap,
+        behavior: HitTestBehavior.opaque,
+        child: SettingsIcon,
+      ),
     ], crossAxisAlignment: CrossAxisAlignment.center);
   }
 

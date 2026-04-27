@@ -16,6 +16,7 @@ import 'package:readlock/design_system/RLLoadingIndicator.dart';
 import 'package:readlock/design_system/RLLunarBlur.dart';
 import 'package:readlock/design_system/RLSelectableFilterChips.dart';
 import 'package:readlock/design_system/RLTextField.dart';
+import 'package:readlock/constants/RLCourseGenres.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/constants/RLUIStrings.dart';
@@ -151,46 +152,14 @@ class CoursesScreenState extends State<CoursesScreen> {
     }).toList();
   }
 
-  // Pulls the unique genre vocabulary out of whatever courses have been
-  // fetched so far. Driving the chip row from real data keeps the filter
-  // honest — a genre only appears when there is at least one course tagged
-  // with it on screen — and avoids hard-coding a list that could drift.
+  // Returns the canonical closed list of genres (RLCourseGenres). The
+  // chip row paints every possible filter even before any course tagged
+  // with that genre has loaded, so the reader sees the full vocabulary
+  // up-front instead of a partial set that fills in as more courses
+  // arrive. The list is mirrored in rlockie's content rules — courses
+  // can only tag with these entries.
   List<String> getAvailableGenres() {
-    final Set<String> uniqueGenres = <String>{};
-
-    for (final dynamic course in availableCourses) {
-      collectGenresFromCourse(course as JSONMap, uniqueGenres);
-    }
-
-    final List<String> sortedGenres = uniqueGenres.toList()..sort();
-
-    return sortedGenres;
-  }
-
-  void collectGenresFromCourse(JSONMap course, Set<String> sink) {
-    final dynamic raw = course['genres'];
-    final bool isList = raw is List;
-
-    if (!isList) {
-      return;
-    }
-
-    for (final dynamic entry in raw) {
-      final bool isString = entry is String;
-
-      if (!isString) {
-        continue;
-      }
-
-      final String trimmed = entry.trim();
-      final bool isEmpty = trimmed.isEmpty;
-
-      if (isEmpty) {
-        continue;
-      }
-
-      sink.add(trimmed);
-    }
+    return COURSE_GENRES;
   }
 
   bool courseMatchesAnySelectedGenre(JSONMap course) {
@@ -375,12 +344,58 @@ class CoursesScreenState extends State<CoursesScreen> {
     );
   }
 
+  // Splits the closed genre list into two horizontally-scrollable rows so
+  // the chip block is always exactly two lines tall — no fourth row appears
+  // on small screens, no half-empty trailing line on big ones. The first
+  // row gets the front half (rounded up), the second row gets the rest.
   Widget GenreChipsRow(List<String> availableGenres) {
-    return SelectableFilterChipsMulti(
-      options: availableGenres,
-      selectedOptions: selectedGenres,
-      onToggled: handleGenreToggled,
+    final int splitIndex = (availableGenres.length / 2).ceil();
+    final List<String> firstRowGenres = availableGenres.sublist(0, splitIndex);
+    final List<String> secondRowGenres = availableGenres.sublist(splitIndex);
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        ChipScrollRow(rowGenres: firstRowGenres),
+
+        const Spacing.height(RLDS.spacing8),
+
+        ChipScrollRow(rowGenres: secondRowGenres),
+      ],
     );
+  }
+
+  Widget ChipScrollRow({required List<String> rowGenres}) {
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(children: ChipRowChildren(rowGenres: rowGenres)),
+    );
+  }
+
+  List<Widget> ChipRowChildren({required List<String> rowGenres}) {
+    final List<Widget> children = [];
+
+    for (int chipIndex = 0; chipIndex < rowGenres.length; chipIndex++) {
+      final bool isFirstChip = chipIndex == 0;
+
+      if (!isFirstChip) {
+        children.add(const Spacing.width(RLDS.spacing8));
+      }
+
+      final String genre = rowGenres[chipIndex];
+      final bool isSelected = selectedGenres.contains(genre);
+
+      children.add(
+        SelectableFilterChip(
+          label: genre,
+          isSelected: isSelected,
+          onTap: () => handleGenreToggled(genre),
+        ),
+      );
+    }
+
+    return children;
   }
 
   Widget SearchBar() {

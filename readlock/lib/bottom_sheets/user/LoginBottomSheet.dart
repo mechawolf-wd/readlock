@@ -7,7 +7,6 @@
 import 'package:flutter/material.dart' hide Typography;
 import 'package:readlock/bottom_sheets/RLBottomSheet.dart';
 import 'package:readlock/bottom_sheets/user/LoginSupportBottomSheet.dart';
-import 'package:readlock/screens/OnboardingScreen.dart';
 import 'package:readlock/design_system/RLButton.dart';
 import 'package:readlock/design_system/RLReveal.dart';
 import 'package:readlock/design_system/RLToast.dart';
@@ -250,12 +249,11 @@ class LoginSheetState extends State<LoginSheet> {
     Navigator.of(context).pop();
   }
 
-  // * Dev-only mock — pushes the onboarding screen on top of the login
-  // sheet so the flow can be inspected without going through a real
-  // sign-up. The real wiring lives in finaliseAuthResult once registration
-  // is complete; this button is a temporary way to reach onboarding.
+  // * Dev-only — dismisses the login sheet. Mirrors handleDevSkipTap so
+  // tapping the link gets you past the gate without going through real
+  // auth. Real onboarding wiring will live in finaliseAuthResult later.
   void handleTriggerOnboardingTap() {
-    OnboardingScreen.show(context);
+    handleDevSkipTap();
   }
 
   // * Render
