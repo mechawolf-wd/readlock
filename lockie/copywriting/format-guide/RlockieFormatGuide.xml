@@ -315,16 +315,17 @@ hint: [Hint text]
 
       <template>
 @reflect
-[First thinking point, including one concrete example]
-[Second thinking point, including one concrete example]
-[Third thinking point, including one concrete example]
+[First short sentence that opens a question for the reader]
+[Second short sentence that opens a question for the reader]
+[Third short sentence that opens a question for the reader]
       </template>
 
       <rules>
         <rule>2 to 3 thinking points, one per line.</rule>
-        <rule>Each point is about 14 to 16 words.</rule>
-        <rule>Each point contains one concrete example (a situation, an object, a moment, or a type of person). A reflect prompt without an anchor fails.</rule>
-        <rule>No platitudes, no fridge-magnet wisdom.</rule>
+        <rule>Each point is a single short sentence of about 14 words.</rule>
+        <rule>No "label: situation" pairs. No colon-example format. Each point is one sentence that opens a question in the reader's mind about their own life.</rule>
+        <rule>No "you". Phrase as a noun phrase or a humanity-wide observation.</rule>
+        <rule>No platitudes, no fridge-magnet wisdom. The point names a place to look, not what to find.</rule>
       </rules>
     </block>
 

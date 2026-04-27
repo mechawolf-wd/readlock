@@ -3,8 +3,10 @@
 // real swipe:
 //   - Font: readingMedium promoted to fontSize 18 / height 1.5 (the style
 //     ProgressiveText.getConsistentTextStyle applies to every line)
-//   - Reveal animation: character-by-character typewriter via a transparent
-//     tail (no layout shift as chars fill in)
+//   - Reveal animation: character-by-character typewriter where each char
+//     crossfades in from alpha 0 → 1 over progressiveTextLeadingCharacterFadeDuration
+//     (the same per-character fade ProgressiveText runs in a real swipe).
+//     The hidden tail is rendered transparent so layout never reflows.
 //   - Blur: sigma 4 / opacity 0.2 on completed sentences (the ProgressiveText
 //     / BlurOverlay defaults)
 //   - Colored text: RLDS.markupGreen + FontWeight.bold (the exact style
@@ -23,6 +25,7 @@ import 'package:readlock/design_system/RLSegmentTabs.dart';
 import 'package:readlock/design_system/RLUtility.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/utility_widgets/text_animation/BionicText.dart';
+import 'package:readlock/utility_widgets/text_animation/ProgressiveText.dart';
 import 'package:readlock/utility_widgets/text_animation/RSVPText.dart';
 import 'package:readlock/utility_widgets/visual_effects/BlurOverlay.dart';
 
@@ -159,34 +162,128 @@ class RevealDemoState extends State<RevealDemo> with SingleTickerProviderStateMi
   }
 
   Widget AnimatedTextDisplay() {
+    // Both branches render the same RichText shape so toggling Progressive
+    // doesn't swap widget types under the same slot — Text vs RichText
+    // measure baselines slightly differently and the demo would visibly
+    // nudge on toggle. Keeping the root identical pins the layout.
     if (widget.isEnabled) {
-      return Text(demoText, style: demoReadingStyle);
+      return RichText(text: TextSpan(style: demoReadingStyle, text: demoText));
     }
 
     return AnimatedBuilder(animation: animationController, builder: buildTypewriterFrame);
   }
 
-  // Renders the current typewriter frame — visible prefix painted in the
-  // swipe's text colour, hidden tail painted transparent so the layout stays
-  // reserved from the first frame (same technique ProgressiveText uses).
+  // Renders the current typewriter frame — each revealed character carries
+  // its own alpha so it crossfades in from 0 → 1 over the same window
+  // ProgressiveText uses (progressiveTextLeadingCharacterFadeDuration).
+  // Unrevealed characters render transparent so the layout stays reserved
+  // from the first frame.
   Widget buildTypewriterFrame(BuildContext context, Widget? child) {
-    final int charCount = (animationController.value * demoText.length).toInt();
-    final String visibleText = demoText.substring(0, charCount);
-    final String hiddenText = demoText.substring(charCount);
+    final List<TextSpan> characterSpans = buildFadingCharacterSpans();
 
     return RichText(
-      text: TextSpan(
-        style: demoReadingStyle,
-        children: [
-          TextSpan(text: visibleText),
-
-          TextSpan(
-            text: hiddenText,
-            style: const TextStyle(color: RLDS.transparent),
-          ),
-        ],
-      ),
+      text: TextSpan(style: demoReadingStyle, children: characterSpans),
     );
+  }
+
+  // Builds one TextSpan per character with a per-character alpha based on
+  // elapsed-since-reveal / fade duration. Mirrors ProgressiveText's
+  // getCharacterFadeAlpha so the demo is a truthful preview of the swipe.
+  List<TextSpan> buildFadingCharacterSpans() {
+    final int textLength = demoText.length;
+    final double totalAnimationMs =
+        animationController.duration!.inMilliseconds.toDouble();
+    final double currentMs = animationController.value * totalAnimationMs;
+    final double charStepMs = totalAnimationMs / textLength;
+    final double fadeWindowMs =
+        progressiveTextLeadingCharacterFadeDuration.inMilliseconds.toDouble();
+    final Color baseColor = demoReadingStyle.color ?? RLDS.textPrimary;
+
+    TextSpan buildCharacterSpan(int characterIndex) {
+      final double revealAtMs = characterIndex * charStepMs;
+      final double elapsedSinceReveal = currentMs - revealAtMs;
+      final double characterAlpha = (elapsedSinceReveal / fadeWindowMs).clamp(0.0, 1.0);
+      final TextStyle characterStyle = TextStyle(
+        color: baseColor.withValues(alpha: characterAlpha),
+      );
+
+      return TextSpan(text: demoText[characterIndex], style: characterStyle);
+    }
+
+    return List.generate(textLength, buildCharacterSpan);
+  }
+}
+
+// Demo for the "Reveal all at once" preview — sits under the Progressive
+// section in Settings as a sibling preview to RevealDemo. Loops between an
+// empty frame and the full sentence so the reader can judge the all-at-once
+// cadence without flipping the Progressive switch off. Demo-only — does not
+// drive any persisted preference.
+class RevealAllAtOnceDemo extends StatefulWidget {
+  const RevealAllAtOnceDemo({super.key});
+
+  @override
+  State<RevealAllAtOnceDemo> createState() => RevealAllAtOnceDemoState();
+}
+
+class RevealAllAtOnceDemoState extends State<RevealAllAtOnceDemo> {
+  static const String demoText = RLUIStrings.DEMO_REVEAL_ALL_AT_ONCE_TEXT;
+  static const Duration emptyFrameDuration = Duration(milliseconds: 600);
+  static const Duration filledFrameDuration = Duration(milliseconds: 1400);
+
+  bool isTextVisible = false;
+  Timer? loopTimer;
+
+  @override
+  void initState() {
+    super.initState();
+    scheduleNextFrame();
+  }
+
+  @override
+  void dispose() {
+    loopTimer?.cancel();
+    super.dispose();
+  }
+
+  void scheduleNextFrame() {
+    loopTimer?.cancel();
+
+    final Duration nextDelay = isTextVisible ? filledFrameDuration : emptyFrameDuration;
+
+    loopTimer = Timer(nextDelay, toggleVisibility);
+  }
+
+  void toggleVisibility() {
+    final bool isUnmounted = !mounted;
+
+    if (isUnmounted) {
+      return;
+    }
+
+    setState(() {
+      isTextVisible = !isTextVisible;
+    });
+
+    scheduleNextFrame();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return demoFontListener(DemoBody);
+  }
+
+  Widget DemoBody(BuildContext context) {
+    return DemoSurface(child: Align(alignment: Alignment.centerLeft, child: SampleText()));
+  }
+
+  // Renders the sentence with the visible/hidden colour swap so the card
+  // height is reserved from the first frame — no jump when the text appears.
+  Widget SampleText() {
+    final Color visibleColor = isTextVisible ? RLDS.textPrimary : RLDS.transparent;
+    final TextStyle frameStyle = demoReadingStyle.copyWith(color: visibleColor);
+
+    return Text(demoText, style: frameStyle);
   }
 }
 

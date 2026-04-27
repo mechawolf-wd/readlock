@@ -7,6 +7,7 @@
 import 'package:flutter/material.dart' hide Typography;
 import 'package:readlock/bottom_sheets/RLBottomSheet.dart';
 import 'package:readlock/bottom_sheets/user/LoginSupportBottomSheet.dart';
+import 'package:readlock/screens/OnboardingScreen.dart';
 import 'package:readlock/design_system/RLButton.dart';
 import 'package:readlock/design_system/RLReveal.dart';
 import 'package:readlock/design_system/RLToast.dart';
@@ -249,6 +250,14 @@ class LoginSheetState extends State<LoginSheet> {
     Navigator.of(context).pop();
   }
 
+  // * Dev-only mock — pushes the onboarding screen on top of the login
+  // sheet so the flow can be inspected without going through a real
+  // sign-up. The real wiring lives in finaliseAuthResult once registration
+  // is complete; this button is a temporary way to reach onboarding.
+  void handleTriggerOnboardingTap() {
+    OnboardingScreen.show(context);
+  }
+
   // * Render
 
   @override
@@ -283,13 +292,29 @@ class LoginSheetState extends State<LoginSheet> {
   }
 
   Widget DevSkipButton() {
+    final Color devLinkColor = RLDS.textSecondary.withValues(alpha: 0.6);
+
     return Div.row(
       [
         GestureDetector(
           onTap: handleDevSkipTap,
           child: RLTypography.bodySmall(
             RLUIStrings.DEV_SKIP_LOGIN_LABEL,
-            color: RLDS.textSecondary.withValues(alpha: 0.6),
+            color: devLinkColor,
+          ),
+        ),
+
+        const Spacing.width(RLDS.spacing8),
+
+        RLTypography.bodySmall(' · ', color: devLinkColor),
+
+        const Spacing.width(RLDS.spacing8),
+
+        GestureDetector(
+          onTap: handleTriggerOnboardingTap,
+          child: RLTypography.bodySmall(
+            RLUIStrings.DEV_TRIGGER_ONBOARDING_LABEL,
+            color: devLinkColor,
           ),
         ),
       ],

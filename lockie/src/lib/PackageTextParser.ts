@@ -799,10 +799,10 @@ Steve Jobs`,
     {
       name: "Reflect",
       tag: "@reflect",
-      description: "A reflection prompt. Each line is a thinking point that should make the reader see something familiar differently.",
+      description: "A reflection prompt. 2 to 3 short sentences, one per line, each ~14 words. No \"label: situation\" pairs, no colon-example format. Each line opens a question in the reader's mind. No \"you\", no platitudes.",
       example: `@reflect
-If every app uses the same cognitive shortcuts, are we designing for humans, or training humans to fit our designs?
-Next time you feel frustrated by an interface, ask yourself: is the task actually hard, or is the design making it harder?`,
+A familiar interface that quietly trains its users to think a certain way.
+An app whose shortcuts felt natural, until they shaped a habit no one chose.`,
     },
   ],
 };

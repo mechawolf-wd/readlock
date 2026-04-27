@@ -14,6 +14,8 @@ class UserPreferenceField {
   static const String REVEAL = 'reveal';
   static const String BLUR = 'blur';
   static const String COLORED_TEXT = 'coloredText';
+  static const String BIONIC = 'bionic';
+  static const String RSVP = 'rsvp';
   static const String SAVED_COURSE_IDS = 'savedCourseIds';
 }
 
@@ -120,6 +122,8 @@ class UserService {
         UserPreferenceField.REVEAL: false,
         UserPreferenceField.BLUR: true,
         UserPreferenceField.COLORED_TEXT: true,
+        UserPreferenceField.BIONIC: false,
+        UserPreferenceField.RSVP: false,
         UserPreferenceField.SAVED_COURSE_IDS: <String>[],
       };
 
@@ -158,6 +162,14 @@ class UserService {
 
   static Future<bool> updateColoredText(bool enabled) {
     return updateField(UserPreferenceField.COLORED_TEXT, enabled, 'updateColoredText');
+  }
+
+  static Future<bool> updateBionic(bool enabled) {
+    return updateField(UserPreferenceField.BIONIC, enabled, 'updateBionic');
+  }
+
+  static Future<bool> updateRsvp(bool enabled) {
+    return updateField(UserPreferenceField.RSVP, enabled, 'updateRsvp');
   }
 
   // * Field updates

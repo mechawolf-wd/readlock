@@ -165,6 +165,11 @@ class RLDS {
   static const double dialogOuterHorizontalInset = spacing24;
   static const EdgeInsets dialogContentInsets = EdgeInsets.all(spacing24);
 
+  // * Scrim painted behind any modal dialog. Single source of truth so
+  // every dialog (alert, confirmation, future ones) dims the page by the
+  // same amount instead of each call site picking its own alpha.
+  static final Color dialogBarrierColor = black.withValues(alpha: 0.5);
+
   // * Hex color parsing
 
   static Color? parseHexColor(String? hex) {

@@ -13,6 +13,8 @@ import 'package:readlock/design_system/RLBookListCard.dart';
 import 'package:readlock/design_system/RLButton.dart';
 import 'package:readlock/design_system/RLFadeSwitcher.dart';
 import 'package:readlock/design_system/RLLoadingIndicator.dart';
+import 'package:readlock/design_system/RLLunarBlur.dart';
+import 'package:readlock/design_system/RLSelectableFilterChips.dart';
 import 'package:readlock/design_system/RLTextField.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
@@ -45,6 +47,10 @@ class CoursesScreenState extends State<CoursesScreen> {
   final TextEditingController searchController = TextEditingController();
   String searchQuery = '';
   Timer? searchDebounce;
+
+  // Active genre filters layered on top of the title search. Empty means
+  // "no genre constraint" — every course passes the genre check.
+  Set<String> selectedGenres = <String>{};
 
   @override
   void initState() {
@@ -125,19 +131,103 @@ class CoursesScreenState extends State<CoursesScreen> {
     }
   }
 
-  // Local title filter over the already-fetched list.
+  // Local title + genre filter over the already-fetched list.
   JSONList getLocallyFilteredCourses() {
     final String query = searchQuery.trim().toLowerCase();
     final bool hasNoQuery = query.isEmpty;
+    final bool hasNoGenres = selectedGenres.isEmpty;
+    final bool hasNoFilters = hasNoQuery && hasNoGenres;
 
-    if (hasNoQuery) {
+    if (hasNoFilters) {
       return availableCourses;
     }
 
     return availableCourses.where((course) {
       final String courseTitle = (course['title'] as String? ?? '').toLowerCase();
-      return courseTitle.contains(query);
+      final bool titleMatches = hasNoQuery || courseTitle.contains(query);
+      final bool genreMatches = hasNoGenres || courseMatchesAnySelectedGenre(course);
+
+      return titleMatches && genreMatches;
     }).toList();
+  }
+
+  // Pulls the unique genre vocabulary out of whatever courses have been
+  // fetched so far. Driving the chip row from real data keeps the filter
+  // honest — a genre only appears when there is at least one course tagged
+  // with it on screen — and avoids hard-coding a list that could drift.
+  List<String> getAvailableGenres() {
+    final Set<String> uniqueGenres = <String>{};
+
+    for (final dynamic course in availableCourses) {
+      collectGenresFromCourse(course as JSONMap, uniqueGenres);
+    }
+
+    final List<String> sortedGenres = uniqueGenres.toList()..sort();
+
+    return sortedGenres;
+  }
+
+  void collectGenresFromCourse(JSONMap course, Set<String> sink) {
+    final dynamic raw = course['genres'];
+    final bool isList = raw is List;
+
+    if (!isList) {
+      return;
+    }
+
+    for (final dynamic entry in raw) {
+      final bool isString = entry is String;
+
+      if (!isString) {
+        continue;
+      }
+
+      final String trimmed = entry.trim();
+      final bool isEmpty = trimmed.isEmpty;
+
+      if (isEmpty) {
+        continue;
+      }
+
+      sink.add(trimmed);
+    }
+  }
+
+  bool courseMatchesAnySelectedGenre(JSONMap course) {
+    final dynamic raw = course['genres'];
+    final bool isList = raw is List;
+
+    if (!isList) {
+      return false;
+    }
+
+    for (final dynamic entry in raw) {
+      final bool isString = entry is String;
+
+      if (!isString) {
+        continue;
+      }
+
+      final bool isMatch = selectedGenres.contains(entry.trim());
+
+      if (isMatch) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  void handleGenreToggled(String genre) {
+    setState(() {
+      final bool isAlreadySelected = selectedGenres.contains(genre);
+
+      if (isAlreadySelected) {
+        selectedGenres.remove(genre);
+      } else {
+        selectedGenres.add(genre);
+      }
+    });
   }
 
   void handleSearchChanged(String value) {
@@ -152,11 +242,15 @@ class CoursesScreenState extends State<CoursesScreen> {
   }
 
   // Only hit Firestore when the local list misses. Keeps the common case free.
+  // Also skipped while a genre filter is active — the remote prefix search
+  // doesn't honour genre constraints, so falling back to it would surface
+  // results the user explicitly filtered out.
   Future<void> triggerRemoteSearchIfNeeded() async {
     final String query = searchQuery.trim();
     final bool hasNoQuery = query.isEmpty;
+    final bool hasGenreFilter = selectedGenres.isNotEmpty;
 
-    if (hasNoQuery) {
+    if (hasNoQuery || hasGenreFilter) {
       return;
     }
 
@@ -246,15 +340,46 @@ class CoursesScreenState extends State<CoursesScreen> {
 
         const Spacing.height(RLDS.spacing24),
 
-        // Results take the bulk of the screen; search bar pinned at the
-        // bottom under the list so the input sits in thumb reach and the
-        // books read top-down without a header bar between them.
+        // Results take the bulk of the screen; the genre chips + search
+        // input live in a single frosted panel pinned at the bottom so the
+        // controls float over the main navigation in thumb reach.
         Expanded(child: ResultsArea()),
 
         const Spacing.height(RLDS.spacing16),
 
-        SearchBar(),
+        FloatingFilterPanel(),
       ], crossAxisAlignment: CrossAxisAlignment.stretch),
+    );
+  }
+
+  // Single frosted box hosting the genre chip row + the search input. The
+  // shared LunarBlur surface ties the two controls together visually so they
+  // read as one floating filter affordance hovering above the bottom nav.
+  Widget FloatingFilterPanel() {
+    final List<String> availableGenres = getAvailableGenres();
+    final bool hasGenres = availableGenres.isNotEmpty;
+
+    return RLLunarBlur(
+      borderRadius: RLDS.borderRadiusMedium,
+      padding: const EdgeInsets.all(RLDS.spacing12),
+      child: Div.column(
+        [
+          RenderIf.condition(hasGenres, GenreChipsRow(availableGenres)),
+
+          RenderIf.condition(hasGenres, const Spacing.height(RLDS.spacing12)),
+
+          SearchBar(),
+        ],
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+      ),
+    );
+  }
+
+  Widget GenreChipsRow(List<String> availableGenres) {
+    return SelectableFilterChipsMulti(
+      options: availableGenres,
+      selectedOptions: selectedGenres,
+      onToggled: handleGenreToggled,
     );
   }
 
@@ -268,9 +393,11 @@ class CoursesScreenState extends State<CoursesScreen> {
   }
 
   Widget ResultsArea() {
-    final bool isDefaultListing = searchQuery.trim().isEmpty;
+    final bool hasNoQuery = searchQuery.trim().isEmpty;
+    final bool hasNoGenres = selectedGenres.isEmpty;
+    final bool isUnfilteredListing = hasNoQuery && hasNoGenres;
 
-    if (isDefaultListing) {
+    if (isUnfilteredListing) {
       return CoursesScrollList(availableCourses, showLoadMore: true);
     }
 

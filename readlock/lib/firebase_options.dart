@@ -66,6 +66,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '976267746377',
     projectId: 'readlock-production',
     storageBucket: 'readlock-production.firebasestorage.app',
+    iosClientId: '976267746377-ml00p50nngsr9hg8fb65jl6o7rpmdgq8.apps.googleusercontent.com',
     iosBundleId: 'org.readlock.readlock',
   );
+
 }

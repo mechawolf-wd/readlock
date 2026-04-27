@@ -3,29 +3,19 @@
 
 import 'package:flutter/material.dart' hide Typography;
 import 'package:readlock/bottom_sheets/RLBottomSheet.dart';
-import 'package:readlock/design_system/RLButton.dart';
-import 'package:readlock/design_system/RLUtility.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
-import 'package:readlock/constants/RLUIStrings.dart';
+import 'package:readlock/utility_widgets/text_animation/BionicText.dart';
 
 class FeedbackBottomSheets {
   // Show explanation bottom sheet for correct answers
   static void showExplanation({required BuildContext context, required String explanation}) {
-    showFeedbackSheet(
-      context: context,
-      content: explanation,
-      buttonColor: RLDS.success,
-    );
+    showFeedbackSheet(context: context, content: explanation);
   }
 
   // Show hint bottom sheet for wrong answers
   static void showHint({required BuildContext context, required String hint}) {
-    showFeedbackSheet(
-      context: context,
-      content: hint,
-      buttonColor: RLDS.info,
-    );
+    showFeedbackSheet(context: context, content: hint);
   }
 
   // Generic bottom sheet implementation — LunarBlur over `backgroundLight` to
@@ -35,70 +25,67 @@ class FeedbackBottomSheets {
   static void showFeedbackSheet({
     required BuildContext context,
     required String content,
-    required Color buttonColor,
   }) {
     RLBottomSheet.show(
       context,
       backgroundColor: RLDS.backgroundLight,
       showGrabber: false,
-      child: FeedbackSheet(
-        content: content,
-        buttonColor: buttonColor,
-      ),
+      child: FeedbackSheet(content: content),
     );
   }
 }
 
 class FeedbackSheet extends StatelessWidget {
   final String content;
-  final Color buttonColor;
 
-  const FeedbackSheet({
-    super.key,
-    required this.content,
-    required this.buttonColor,
-  });
+  const FeedbackSheet({super.key, required this.content});
 
   // Style definitions
   static const EdgeInsets bodyPadding = EdgeInsets.fromLTRB(
     RLDS.spacing24,
     RLDS.spacing24,
     RLDS.spacing24,
-    0,
+    RLDS.spacing24,
   );
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        BodySection(),
-
-        const Spacing.height(RLDS.spacing24),
-
-        FooterButton(),
-      ],
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: () => Navigator.of(context).pop(),
+      child: Padding(
+        padding: bodyPadding,
+        child: BionicAwareReadingText(content: content),
+      ),
     );
   }
+}
 
-  Widget BodySection() {
-    return Padding(
-      padding: bodyPadding,
-      child: RLTypography.readingLarge(content, textAlign: TextAlign.left),
-    );
-  }
+// Reading body that mirrors RLTypography.readingLarge but flips into
+// bionic-bold spans when the global bionic toggle is on. Listens to the
+// notifier so the sheet repaints live if the user flips the setting while
+// the sheet is open — matches the ProgressiveText contract used in CC content.
+class BionicAwareReadingText extends StatelessWidget {
+  final String content;
 
-  // Tertiary footer — transparent background, just the coloured label.
-  // The reader doesn't need a filled CTA to know what to tap; the body
-  // text is the focus, the dismiss action sits quietly underneath.
-  Widget FooterButton() {
-    return Builder(
-      builder: (context) {
-        return RLButton.tertiary(
-          label: RLUIStrings.FEEDBACK_GOT_IT_LABEL,
-          color: buttonColor,
-          margin: RL_BOTTOM_SHEET_FOOTER_BUTTON_MARGIN,
-          onTap: () => Navigator.of(context).pop(),
+  const BionicAwareReadingText({super.key, required this.content});
+
+  @override
+  Widget build(BuildContext context) {
+    return ValueListenableBuilder<bool>(
+      valueListenable: bionicEnabledNotifier,
+      builder: (context, bionicEnabled, _) {
+        final TextStyle baseStyle = RLTypography.readingLargeStyle;
+
+        if (!bionicEnabled) {
+          return Text(content, style: baseStyle, textAlign: TextAlign.left);
+        }
+
+        final List<InlineSpan> spans = bionicSpans(content, baseStyle);
+
+        return Text.rich(
+          TextSpan(children: spans),
+          textAlign: TextAlign.left,
         );
       },
     );

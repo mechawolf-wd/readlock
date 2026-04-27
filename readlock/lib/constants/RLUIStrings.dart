@@ -20,31 +20,25 @@ class RLUIStrings {
   static const String CANCEL_LABEL = 'Cancel';
   static const String DIALOG_DEFAULT_ACTION_LABEL = 'OK';
 
-  // * Story Pass bottom sheet — feather-based monthly subscription. Three
-  // plans (Enough / Reader / Knowledge) shown in a horizontal slider, each
-  // giving a fixed monthly feather budget the reader spends on books.
-  // Every book costs 10 feathers.
-  static const String STORY_PASS_TITLE = 'Story Pass';
-  static const String STORY_PASS_SUBTITLE = 'Feathers for the books you want';
+  // * Feathers bottom sheet — feather-based monthly subscription. Two
+  // plans (Reader / Insider) shown in a horizontal slider, each giving a
+  // fixed monthly feather budget the reader spends on books. Every book
+  // costs 10 feathers.
+  static const String FEATHERS_TITLE = 'Feathers Plan';
+  static const String FEATHERS_SUBTITLE = 'Feathers for the books you want';
   static const String PRICE_PERIOD = '/month';
-  static const String SUBSCRIBE_BUTTON_TEXT = 'Subscribe';
-  static const String STORY_PASS_BOOK_PRICING_NOTE = 'Each book costs 10 feathers';
+  static const String FEATHERS_BOOK_PRICING_NOTE = 'Each book costs 10 feathers';
 
   // Per-plan copy.
-  static const String PLAN_ENOUGH_NAME = 'Enough';
-  static const String PLAN_ENOUGH_PRICE = '\$4.99';
-  static const String PLAN_ENOUGH_FEATHERS = '70 feathers';
-  static const String PLAN_ENOUGH_BOOKS = 'About 7 books a month';
-
   static const String PLAN_READER_NAME = 'Reader';
   static const String PLAN_READER_PRICE = '\$6.99';
   static const String PLAN_READER_FEATHERS = '110 feathers';
   static const String PLAN_READER_BOOKS = 'About 11 books a month';
 
-  static const String PLAN_KNOWLEDGE_NAME = 'Knowledge';
-  static const String PLAN_KNOWLEDGE_PRICE = '\$10.99';
-  static const String PLAN_KNOWLEDGE_FEATHERS = '210 feathers';
-  static const String PLAN_KNOWLEDGE_BOOKS = 'About 21 books a month';
+  static const String PLAN_INSIDER_NAME = 'Insider';
+  static const String PLAN_INSIDER_PRICE = '\$10.99';
+  static const String PLAN_INSIDER_FEATHERS = '210 feathers';
+  static const String PLAN_INSIDER_BOOKS = 'About 21 books a month';
 
   // * Feedback Snackbar
   static const String CORRECT_ANSWER_MESSAGE = 'Correct, you read it';
@@ -112,7 +106,6 @@ class RLUIStrings {
   // * Feedback Bottom Sheet
   static const String FEEDBACK_DIALOG_TITLE = 'Explanation';
   static const String HINT_DIALOG_TITLE = 'Hint';
-  static const String FEEDBACK_GOT_IT_LABEL = 'Read';
 
   // * Course Loading Screen
   static const String LOADING_MESSAGE = 'Birds are indexing the course';
@@ -227,7 +220,7 @@ class RLUIStrings {
 
   // * Profile / Settings Menu
   static const String MENU_ACCOUNT = 'Account';
-  static const String MENU_STORY_PASS = 'Story Pass';
+  static const String MENU_FEATHERS = 'Feathers';
   static const String MENU_TYPING_SOUND = 'Typing sound';
   static const String MENU_SOUNDS = 'Sounds';
   static const String MENU_HAPTICS = 'Haptics';
@@ -256,6 +249,11 @@ class RLUIStrings {
   static const String BIRD_CROW = 'Crow';
   static const String BIRD_PIGEON = 'Pigeon';
   static const String BIRD_SPARROW = 'Sparrow';
+  static const String BIRD_BLUE_MACAW = 'Blue Macaw';
+  static const String BIRD_FLAMINGO = 'Flamingo';
+  static const String BIRD_KIWI = 'Kiwi';
+  static const String BIRD_SHOEBILL = 'Shoebill';
+  static const String BIRD_TOUCAN = 'Toucan';
 
   // * Reading Font Picker
   static const String MENU_READING_FONT = 'Typeface';
@@ -271,6 +269,9 @@ class RLUIStrings {
 
   // * Settings Demos
   static const String DEMO_REVEAL_TEXT = 'Design is not just what it looks like.';
+  static const String MENU_REVEAL_ALL_AT_ONCE = 'Reveal all at once';
+  static const String DEMO_REVEAL_ALL_AT_ONCE_TEXT =
+      'The whole sentence appears in a single beat.';
   static const String DEMO_BLUR_PREVIOUS = 'Previous sentence fades away.';
   static const String DEMO_BLUR_CURRENT = 'Current sentence stays clear.';
   static const String DEMO_COLORED_HIGHLIGHT = 'Key terms';
@@ -284,6 +285,9 @@ class RLUIStrings {
 
   // * Settings Bottom Sheet
   static const String SETTINGS_TITLE = 'Settings';
+
+  // * Onboarding
+  static const String DEV_TRIGGER_ONBOARDING_LABEL = 'Trigger onboarding (mock)';
 
   // * Account Dialogs
   static const String ACCOUNT_DEACTIVATE_MESSAGE =

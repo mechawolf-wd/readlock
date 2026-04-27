@@ -77,10 +77,14 @@ class RLConfirmationDialog {
     RLConfirmationLayout layout = RLConfirmationLayout.vertical,
     bool isDismissible = true,
   }) {
+    // Dark scrim behind the dialog — RLDS.dialogBarrierColor is the single
+    // source of truth shared with RLDialog, so every modal dims the page
+    // by the same amount. The card itself is RLLunarBlur (same family as
+    // RLToast / login sheet).
     showDialog<void>(
       context: context,
       barrierDismissible: isDismissible,
-      barrierColor: RLDS.black.withValues(alpha: 0.5),
+      barrierColor: RLDS.dialogBarrierColor,
       builder: (BuildContext dialogContext) {
         return DialogContainer(
           child: ConfirmationDialogContent(
@@ -205,12 +209,10 @@ class ConfirmationDialogContent extends StatelessWidget {
     );
   }
 
-  // Vertical: the destructive action always renders as the tertiary text
-  // button, and the safer non-destructive action is the filled primary on
-  // top. This matches "Sign out?" (Cancel filled, Sign out as text) and
-  // "Quit?" (Learn filled, Quit as text) — the dialog keeps the user safely
-  // on the default action, and committing to the destructive one requires
-  // a deliberate tap on text.
+  // Vertical: cta renders as the filled primary on top, cancel as the
+  // tertiary text button below. Each action's variant only controls its
+  // colour — the call site decides which role carries the visual weight
+  // by choosing what to put in `cta` vs `cancel`.
   Widget VerticalButtons() {
     final RLConfirmationAction? cancelAction = cancel;
     final bool hasCancel = cancelAction != null;
@@ -219,20 +221,15 @@ class ConfirmationDialogContent extends StatelessWidget {
       return PrimaryButton(action: cta);
     }
 
-    final bool isCtaDestructive = cta.variant == RLConfirmationVariant.destructive;
-
-    final RLConfirmationAction filledAction = isCtaDestructive ? cancelAction : cta;
-    final RLConfirmationAction textAction = isCtaDestructive ? cta : cancelAction;
-
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        PrimaryButton(action: filledAction),
+        PrimaryButton(action: cta),
 
         const Spacing.height(RLDS.spacing12),
 
-        TertiaryButton(action: textAction),
+        TertiaryButton(action: cancelAction),
       ],
     );
   }

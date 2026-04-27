@@ -19,6 +19,13 @@ const EdgeInsets RL_BOTTOM_SHEET_FOOTER_BUTTON_MARGIN = EdgeInsets.fromLTRB(
   RLDS.spacing24,
 );
 
+// * Fraction of the screen used by every "tall" bottom sheet that needs to
+// dominate the view but still leave a peek of the page behind it. Used by
+// FullHeightSheetContainer (the existing 90% sheet) and by the onboarding
+// sheet container — change here once and every "tall sheet" in the app
+// follows.
+const double RL_FULL_HEIGHT_SHEET_FRACTION = 0.9;
+
 // * Standardised content padding for bottom sheets that render without a
 // grabber (Account, Font picker, Support, etc.). These sheets own their
 // own top chrome, so this constant is the single source of truth for
@@ -194,7 +201,8 @@ class FullHeightSheetContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final double sheetHeight = MediaQuery.of(context).size.height * 0.9;
+    final double sheetHeight =
+        MediaQuery.of(context).size.height * RL_FULL_HEIGHT_SHEET_FRACTION;
 
     return SizedBox(
       height: sheetHeight,

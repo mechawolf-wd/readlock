@@ -47,6 +47,12 @@ class UserModel {
   @JsonKey(defaultValue: true)
   final bool coloredText;
 
+  @JsonKey(defaultValue: false)
+  final bool bionic;
+
+  @JsonKey(defaultValue: false)
+  final bool rsvp;
+
   // * Bookshelf — course-ids the user has saved from search or the roadmap.
   @JsonKey(defaultValue: <String>[])
   final List<String> savedCourseIds;
@@ -66,6 +72,8 @@ class UserModel {
     this.reveal = false,
     this.blur = true,
     this.coloredText = true,
+    this.bionic = false,
+    this.rsvp = false,
     this.savedCourseIds = const <String>[],
   });
 
@@ -102,6 +110,8 @@ class UserModel {
     bool? reveal,
     bool? blur,
     bool? coloredText,
+    bool? bionic,
+    bool? rsvp,
     List<String>? savedCourseIds,
   }) {
     return UserModel(
@@ -119,6 +129,8 @@ class UserModel {
       reveal: reveal ?? this.reveal,
       blur: blur ?? this.blur,
       coloredText: coloredText ?? this.coloredText,
+      bionic: bionic ?? this.bionic,
+      rsvp: rsvp ?? this.rsvp,
       savedCourseIds: savedCourseIds ?? this.savedCourseIds,
     );
   }

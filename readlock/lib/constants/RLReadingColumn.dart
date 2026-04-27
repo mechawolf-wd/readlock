@@ -1,8 +1,8 @@
 // Reader-selectable column width for every CC widget in the course viewer.
 // Three options covering the useful range:
 //
-//   - narrow       → 320 pt. Newspaper-column tight (45–55 char lines).
-//   - comfortable  → 360 pt. Between narrow and wide; the default.
+//   - narrow       → 320 pt. Newspaper-column tight (45–55 char lines); the default.
+//   - comfortable  → 360 pt. Between narrow and wide.
 //   - wide         → unconstrained. Fills the full phone width, matching the
 //                    pre-column-constraint behaviour.
 //
@@ -40,7 +40,7 @@ const List<ReadingColumnOption> READING_COLUMN_OPTIONS = [
   ReadingColumnOption(column: ReadingColumn.wide, displayName: 'Expanded', maxWidth: null),
 ];
 
-const ReadingColumn DEFAULT_READING_COLUMN = ReadingColumn.comfortable;
+const ReadingColumn DEFAULT_READING_COLUMN = ReadingColumn.narrow;
 
 final ValueNotifier<ReadingColumn> selectedReadingColumnNotifier = ValueNotifier<ReadingColumn>(
   DEFAULT_READING_COLUMN,

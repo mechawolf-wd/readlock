@@ -25,7 +25,7 @@ class RLDialog {
     showDialog(
       context: context,
       barrierDismissible: isDismissible,
-      barrierColor: RLDS.black.withValues(alpha: 0.5),
+      barrierColor: RLDS.dialogBarrierColor,
       builder: (BuildContext dialogContext) {
         return DialogContainer(backgroundColor: dialogColor, child: child);
       },

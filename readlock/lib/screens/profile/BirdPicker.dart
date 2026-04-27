@@ -6,13 +6,19 @@ import 'package:flame/cache.dart';
 import 'package:flame/extensions.dart';
 import 'package:flame/widgets.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:readlock/constants/RLDesignSystem.dart';
+import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLUIStrings.dart';
+import 'package:readlock/design_system/RLUtility.dart';
 
-// * Sprite sheet layout — every bird sits in 32x32 art centered inside a
-// 64x64 cell. The widget samples the inner region per frame to drop the
-// transparent padding around each bird.
+// * Common-bird sheets pack art into 64x64 cells with 32x32 content centered.
+// * Exotic-bird sheets are tightly packed (each cell is its own bird-bounding
+// * box with zero padding). Per-bird metrics on BirdOption let one widget
+// * render both layouts without sheet-level branching.
 const double BIRD_FRAME_SIZE = 64.0;
 const double BIRD_CONTENT_SIZE = 32.0;
+const double BIRD_COMMON_CONTENT_OFFSET = (BIRD_FRAME_SIZE - BIRD_CONTENT_SIZE) / 2;
 const double BIRD_ANIMATION_STEP_TIME = 0.20;
 const double BIRD_PREVIEW_SIZE_LARGE = 128.0;
 const double BIRD_PREVIEW_SIZE_SMALL = 96.0;
@@ -23,16 +29,30 @@ class BirdOption {
   final String assetFile;
   final int firstFrame;
   final int frameCount;
+  final double frameWidth;
+  final double frameHeight;
+  final double contentOffsetX;
+  final double contentOffsetY;
+  final double contentWidth;
+  final double contentHeight;
 
   const BirdOption({
     required this.name,
     required this.assetFile,
     required this.firstFrame,
     required this.frameCount,
+    this.frameWidth = BIRD_FRAME_SIZE,
+    this.frameHeight = BIRD_FRAME_SIZE,
+    this.contentOffsetX = BIRD_COMMON_CONTENT_OFFSET,
+    this.contentOffsetY = BIRD_COMMON_CONTENT_OFFSET,
+    this.contentWidth = BIRD_CONTENT_SIZE,
+    this.contentHeight = BIRD_CONTENT_SIZE,
   });
 }
 
-// * All birds use their Idle tag (Sparrow starts at 0, the rest at 1)
+// * Common birds — Sparrow's Idle tag begins at frame 0, the rest at frame 1.
+// * Exotic birds — dedicated Idle PNGs starting at frame 0; frame size matches
+// * the bird's true bounding box (per Aseprite JSON metadata).
 const List<BirdOption> BIRD_OPTIONS = [
   BirdOption(
     name: RLUIStrings.BIRD_SPARROW,
@@ -56,6 +76,71 @@ const List<BirdOption> BIRD_OPTIONS = [
   ),
 
   BirdOption(name: RLUIStrings.BIRD_CROW, assetFile: 'Crow.png', firstFrame: 1, frameCount: 4),
+
+  BirdOption(
+    name: RLUIStrings.BIRD_BLUE_MACAW,
+    assetFile: 'BlueMacaw.png',
+    firstFrame: 0,
+    frameCount: 5,
+    frameWidth: 26,
+    frameHeight: 17,
+    contentOffsetX: 0,
+    contentOffsetY: 0,
+    contentWidth: 26,
+    contentHeight: 17,
+  ),
+
+  BirdOption(
+    name: RLUIStrings.BIRD_FLAMINGO,
+    assetFile: 'Flamingo.png',
+    firstFrame: 0,
+    frameCount: 4,
+    frameWidth: 35,
+    frameHeight: 33,
+    contentOffsetX: 0,
+    contentOffsetY: 0,
+    contentWidth: 35,
+    contentHeight: 33,
+  ),
+
+  BirdOption(
+    name: RLUIStrings.BIRD_KIWI,
+    assetFile: 'Kiwi.png',
+    firstFrame: 0,
+    frameCount: 4,
+    frameWidth: 27,
+    frameHeight: 17,
+    contentOffsetX: 0,
+    contentOffsetY: 0,
+    contentWidth: 27,
+    contentHeight: 17,
+  ),
+
+  BirdOption(
+    name: RLUIStrings.BIRD_SHOEBILL,
+    assetFile: 'Shoebill.png',
+    firstFrame: 0,
+    frameCount: 4,
+    frameWidth: 30,
+    frameHeight: 36,
+    contentOffsetX: 0,
+    contentOffsetY: 0,
+    contentWidth: 30,
+    contentHeight: 36,
+  ),
+
+  BirdOption(
+    name: RLUIStrings.BIRD_TOUCAN,
+    assetFile: 'Toucan.png',
+    firstFrame: 0,
+    frameCount: 5,
+    frameWidth: 32,
+    frameHeight: 18,
+    contentOffsetX: 0,
+    contentOffsetY: 0,
+    contentWidth: 32,
+    contentHeight: 18,
+  ),
 ];
 
 // Shared Images cache so Flame.images doesn't need reconfiguring globally
@@ -79,21 +164,19 @@ class BirdAnimationSprite extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const double innerOffset = (BIRD_FRAME_SIZE - BIRD_CONTENT_SIZE) / 2;
-
     final List<SpriteAnimationFrameData> frames = List.generate(bird.frameCount, (frameIndex) {
-      final double cellOriginX = (bird.firstFrame + frameIndex) * BIRD_FRAME_SIZE;
+      final double cellOriginX = (bird.firstFrame + frameIndex) * bird.frameWidth;
 
       return SpriteAnimationFrameData(
-        srcPosition: Vector2(cellOriginX + innerOffset, innerOffset),
-        srcSize: Vector2.all(BIRD_CONTENT_SIZE),
+        srcPosition: Vector2(cellOriginX + bird.contentOffsetX, bird.contentOffsetY),
+        srcSize: Vector2(bird.contentWidth, bird.contentHeight),
         stepTime: BIRD_ANIMATION_STEP_TIME,
       );
     });
 
     final SpriteAnimationData animationData = SpriteAnimationData(frames);
 
-    final double renderedSize = previewSize * zoom;
+    final double boxSize = previewSize * zoom;
 
     final Widget animationWidget = SpriteAnimationWidget.asset(
       path: bird.assetFile,
@@ -101,6 +184,127 @@ class BirdAnimationSprite extends StatelessWidget {
       data: animationData,
     );
 
-    return SizedBox(width: renderedSize, height: renderedSize, child: animationWidget);
+    // Render at native pixel dimensions then scale-to-fit the square preview
+    // so non-square exotics (eg Flamingo 35x33) keep their aspect ratio.
+    final Widget nativeSizedSprite = SizedBox(
+      width: bird.contentWidth,
+      height: bird.contentHeight,
+      child: animationWidget,
+    );
+
+    return SizedBox(
+      width: boxSize,
+      height: boxSize,
+      child: FittedBox(child: nativeSizedSprite),
+    );
+  }
+}
+
+// * Bird-carousel geometry — values shared by every surface that uses the
+// horizontal snap-slider (the dedicated picker sheet and the onboarding
+// step). Tuning lives here so a future change to the slider feel ripples
+// through both call sites without divergence.
+const double BIRD_CAROUSEL_HEIGHT = 200.0;
+const double BIRD_CAROUSEL_VIEWPORT_FRACTION = 0.45;
+const double BIRD_CAROUSEL_UNSELECTED_SCALE = 0.7;
+const double BIRD_CAROUSEL_UNSELECTED_OPACITY = 0.5;
+const double BIRD_CAROUSEL_SELECTED_SCALE = 1.0;
+const double BIRD_CAROUSEL_SELECTED_OPACITY = 1.0;
+
+// Reusable bird snap-slider — owns its own PageController and selection
+// state, syncs with selectedBirdNotifier on every page change. Renders the
+// slider stacked above the selected bird's name so callers don't have to
+// stitch the label themselves. Ships with the BirdPickerBottomSheet (the
+// dedicated picker sheet) and the OnboardingBottomSheet (the bird step).
+class BirdCarousel extends StatefulWidget {
+  final double height;
+
+  const BirdCarousel({super.key, this.height = BIRD_CAROUSEL_HEIGHT});
+
+  @override
+  State<BirdCarousel> createState() => BirdCarouselState();
+}
+
+class BirdCarouselState extends State<BirdCarousel> {
+  late PageController pageController;
+  late int selectedIndex;
+
+  @override
+  void initState() {
+    super.initState();
+
+    final int initialIndex = BIRD_OPTIONS.indexWhere(
+      (BirdOption bird) => bird.name == selectedBirdNotifier.value.name,
+    );
+    final bool hasNoMatch = initialIndex < 0;
+
+    selectedIndex = hasNoMatch ? 0 : initialIndex;
+
+    pageController = PageController(
+      initialPage: selectedIndex,
+      viewportFraction: BIRD_CAROUSEL_VIEWPORT_FRACTION,
+    );
+  }
+
+  @override
+  void dispose() {
+    pageController.dispose();
+    super.dispose();
+  }
+
+  void handlePageChanged(int newIndex) {
+    HapticFeedback.selectionClick();
+
+    setState(() {
+      selectedIndex = newIndex;
+    });
+
+    selectedBirdNotifier.value = BIRD_OPTIONS[newIndex];
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final BirdOption selectedBird = BIRD_OPTIONS[selectedIndex];
+
+    final Widget slider = PageView.builder(
+      controller: pageController,
+      physics: const PageScrollPhysics(),
+      onPageChanged: handlePageChanged,
+      itemCount: BIRD_OPTIONS.length,
+      itemBuilder: SliderItemBuilder,
+    );
+
+    return Div.column([
+      Div.column(
+        [Expanded(child: slider)],
+        height: widget.height,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+      ),
+
+      const Spacing.height(RLDS.spacing16),
+
+      RLTypography.headingLarge(selectedBird.name, color: RLDS.primary),
+    ]);
+  }
+
+  Widget SliderItemBuilder(BuildContext context, int birdIndex) {
+    final BirdOption bird = BIRD_OPTIONS[birdIndex];
+    final bool isSelected = birdIndex == selectedIndex;
+    final double itemScale = isSelected
+        ? BIRD_CAROUSEL_SELECTED_SCALE
+        : BIRD_CAROUSEL_UNSELECTED_SCALE;
+    final double itemOpacity = isSelected
+        ? BIRD_CAROUSEL_SELECTED_OPACITY
+        : BIRD_CAROUSEL_UNSELECTED_OPACITY;
+
+    return Center(
+      child: Opacity(
+        opacity: itemOpacity,
+        child: Transform.scale(
+          scale: itemScale,
+          child: BirdAnimationSprite(bird: bird),
+        ),
+      ),
+    );
   }
 }

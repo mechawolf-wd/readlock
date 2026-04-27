@@ -12,7 +12,12 @@
           "package_name": "org.readlock.readlock"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "976267746377-7c22evkga7pgh11qouimklaq92p8jqms.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyAOGhRV482BHQ2NiKT2t8WY0mjk8N53zno"
@@ -20,7 +25,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "976267746377-7c22evkga7pgh11qouimklaq92p8jqms.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "976267746377-ml00p50nngsr9hg8fb65jl6o7rpmdgq8.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "org.readlock.readlock"
+              }
+            }
+          ]
         }
       }
     }

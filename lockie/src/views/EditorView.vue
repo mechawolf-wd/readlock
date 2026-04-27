@@ -801,6 +801,180 @@ function getNavItemStyle(isSelected: boolean): Record<string, string> {
     color: courseColor.value,
   };
 }
+
+// * Template helpers — keep template free of complex expressions
+
+const courseCountSuffix = computed(() => {
+  const count = store.courseData.courses.length;
+
+  if (count === 1) {
+    return "";
+  }
+
+  return "s";
+});
+
+function getCourseCardClass(courseIndex: number): string {
+  const isActive = courseIndex === store.activeCourseIndex;
+
+  if (isActive) {
+    return "bg-primary/10 ring-1 ring-primary/20";
+  }
+
+  return "hover:bg-accent";
+}
+
+function getTrashChevronClass(isOpen: boolean): string {
+  if (isOpen) {
+    return "rotate-180";
+  }
+
+  return "";
+}
+
+function getColorSwatchClass(swatch: string): string {
+  if (isSelectedCourseColor(swatch)) {
+    return "border-foreground";
+  }
+
+  return "border-border";
+}
+
+function getMessageBubbleClass(role: string): string {
+  if (role === "user") {
+    return "bg-primary/10";
+  }
+
+  return "bg-muted";
+}
+
+function getPanelBadgeClass(panelName: FocusPanel): string {
+  if (activePanel.value === panelName) {
+    return "bg-foreground text-background";
+  }
+
+  return "";
+}
+
+function getSwipePanelBadgeClass(): string {
+  if (activePanel.value === "swipes") {
+    return "bg-foreground text-background";
+  }
+
+  return "text-muted-foreground";
+}
+
+function getJsonButtonClass(): string {
+  if (showJsonView.value) {
+    return "bg-header-foreground/10";
+  }
+
+  return "";
+}
+
+function getGuideBlockTabClass(blockTag: string): string {
+  if (selectedGuideBlock.value === blockTag) {
+    return "bg-accent text-accent-foreground font-medium";
+  }
+
+  return "text-muted-foreground";
+}
+
+const formatGuideToggleLabel = computed(() => {
+  if (showFormatGuide.value) {
+    return "Hide";
+  }
+
+  return "Show";
+});
+
+const saveButtonLabel = computed(() => {
+  if (store.isSavingToFirebase) {
+    return "Saving...";
+  }
+
+  return "Save";
+});
+
+const coverImageUploadLabel = computed(() => {
+  if (isUploadingCoverImage.value) {
+    return "Uploading...";
+  }
+
+  return "Upload image";
+});
+
+function handleSegmentItemClick(event: MouseEvent, segmentIndex: number) {
+  if (event.shiftKey) {
+    openSegmentSettingsIndex.value = segmentIndex;
+    return;
+  }
+
+  store.selectSegment(segmentIndex);
+  activePanel.value = "segments";
+}
+
+function handlePackageItemClick(event: MouseEvent, packageIndex: number) {
+  if (event.shiftKey) {
+    openPackageSettingsIndex.value = packageIndex;
+    return;
+  }
+
+  store.selectPackage(packageIndex);
+  activePanel.value = "swipes";
+}
+
+function handleSegmentSettingsOpen(isOpen: boolean) {
+  if (!isOpen) {
+    openSegmentSettingsIndex.value = null;
+  }
+}
+
+function handlePackageSettingsOpen(isOpen: boolean) {
+  if (!isOpen) {
+    openPackageSettingsIndex.value = null;
+  }
+}
+
+function handleCourseCardClick(courseIndex: number) {
+  store.selectCourse(courseIndex);
+  showCourseSelectDialog.value = false;
+}
+
+function handleSwipeItemClick(swipeIndex: number) {
+  store.selectSwipe(swipeIndex);
+  activePanel.value = "swipes";
+}
+
+function handleSegmentDelete(segmentIndex: number) {
+  store.removeSegment(segmentIndex);
+  openSegmentSettingsIndex.value = null;
+}
+
+function handlePackageDelete(packageIndex: number) {
+  store.removePackage(packageIndex);
+  openPackageSettingsIndex.value = null;
+}
+
+function toggleFormatGuide() {
+  showFormatGuide.value = !showFormatGuide.value;
+}
+
+const totalSwipesNumber = computed(() => store.activePackage?.content.length ?? 0);
+
+const activeSwipeBadgeNumber = computed(() => (store.activeSwipeIndex ?? 0) + 1);
+
+const courseJsonSizeKb = computed(() => (formattedJson.value.length / 1024).toFixed(1));
+
+function getCourseStatsLine(): string {
+  const course = store.activeCourse;
+
+  if (!course) {
+    return "";
+  }
+
+  return `${course.segments.length} segments · ${totalPackageCount.value} packages · ${totalSwipeCount.value} swipes`;
+}
 </script>
 
 <template>
@@ -822,7 +996,7 @@ function getNavItemStyle(isSelected: boolean): Record<string, string> {
               <DialogHeader>
                 <DialogTitle>Courses</DialogTitle>
                 <DialogDescription>
-                  {{ store.courseData.courses.length }} course{{ store.courseData.courses.length !== 1 ? 's' : '' }}
+                  {{ store.courseData.courses.length }} course{{ courseCountSuffix }}
                 </DialogDescription>
               </DialogHeader>
 
@@ -832,13 +1006,8 @@ function getNavItemStyle(isSelected: boolean): Record<string, string> {
                   v-for="(course, courseIndex) in store.courseData.courses"
                   :key="courseIndex"
                   class="group flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer transition-colors"
-                  :class="courseIndex === store.activeCourseIndex
-                    ? 'bg-primary/10 ring-1 ring-primary/20'
-                    : 'hover:bg-accent'"
-                  @click="
-                    store.selectCourse(courseIndex);
-                  showCourseSelectDialog = false;
-                  "
+                  :class="getCourseCardClass(Number(courseIndex))"
+                  @click="handleCourseCardClick(Number(courseIndex))"
                 >
                   <!-- Course info -->
                   <div class="flex-1 min-w-0">
@@ -881,7 +1050,7 @@ function getNavItemStyle(isSelected: boolean): Record<string, string> {
                     Trash ({{ store.trashedCourses.length }})
                     <ChevronDown
                       class="h-3 w-3 ml-auto transition-transform"
-                      :class="showTrashSection ? 'rotate-180' : ''"
+                      :class="getTrashChevronClass(showTrashSection)"
                     />
                   </Button>
 
@@ -922,11 +1091,7 @@ function getNavItemStyle(isSelected: boolean): Record<string, string> {
             </DialogContent>
           </Dialog>
           <span class="text-sm text-header-foreground/60">for Readlock</span>
-          <span v-if="hasActiveCourse" class="text-xs text-header-foreground/40"
-            >{{ store.activeCourse!.segments.length }} segments ·
-            {{ totalPackageCount }} packages ·
-            {{ totalSwipeCount }} swipes</span
-          >
+          <span v-if="hasActiveCourse" class="text-xs text-header-foreground/40">{{ getCourseStatsLine() }}</span>
         </div>
 
         <div class="flex items-center gap-2">
@@ -1018,7 +1183,7 @@ function getNavItemStyle(isSelected: boolean): Record<string, string> {
                         @click="coverImageInputRef?.click()"
                       >
                         <Upload class="h-3.5 w-3.5" />
-                        {{ isUploadingCoverImage ? 'Uploading...' : 'Upload image' }}
+                        {{ coverImageUploadLabel }}
                       </Button>
 
                       <Input
@@ -1058,7 +1223,7 @@ function getNavItemStyle(isSelected: boolean): Record<string, string> {
                       :key="swatch"
                       type="button"
                       class="w-8 h-8 rounded-md border-2 transition-transform hover:scale-110"
-                      :class="isSelectedCourseColor(swatch) ? 'border-foreground' : 'border-border'"
+                      :class="getColorSwatchClass(swatch)"
                       :style="{ backgroundColor: swatch }"
                       :title="swatch"
                       @click="handlePickCourseColor(swatch)"
@@ -1153,7 +1318,7 @@ function getNavItemStyle(isSelected: boolean): Record<string, string> {
             variant="ghost"
             size="icon"
             class="text-header-foreground/80 hover:text-header-foreground hover:bg-header-foreground/10"
-            :class="showJsonView ? 'bg-header-foreground/10' : ''"
+            :class="getJsonButtonClass()"
             @click="toggleJsonView"
             ><Code class="h-4 w-4"
           /></Button>
@@ -1174,7 +1339,7 @@ function getNavItemStyle(isSelected: boolean): Record<string, string> {
                 :disabled="!hasActiveCourse || store.isSavingToFirebase"
               >
                 <CloudUpload class="h-4 w-4" />
-                {{ store.isSavingToFirebase ? 'Saving...' : 'Save' }}
+                {{ saveButtonLabel }}
               </Button>
             </AlertDialogTrigger>
 
@@ -1233,7 +1398,7 @@ function getNavItemStyle(isSelected: boolean): Record<string, string> {
         >
           <span class="text-sm font-medium">Course JSON</span>
           <span v-if="hasActiveCourse" class="text-xs text-muted-foreground"
-            >{{ (formattedJson.length / 1024).toFixed(1) }} KB</span
+            >{{ courseJsonSizeKb }} KB</span
           >
         </div>
         <ScrollArea class="flex-1 h-0">
@@ -1330,7 +1495,7 @@ function getNavItemStyle(isSelected: boolean): Record<string, string> {
             >
             <div
               class="text-sm rounded-lg px-3 py-2"
-              :class="message.role === 'user' ? 'bg-primary/10' : 'bg-muted'"
+              :class="getMessageBubbleClass(message.role)"
             >
               {{ message.text }}
             </div>
@@ -1366,10 +1531,7 @@ function getNavItemStyle(isSelected: boolean): Record<string, string> {
                   Segments
                   <span
                     class="text-xs normal-case tracking-normal px-2 py-1 rounded-full"
-                    :class="activePanel === 'segments'
-                      ? 'bg-foreground text-background'
-                      : ''
-                      "
+                    :class="getPanelBadgeClass('segments')"
                     >{{ store.activeSegmentIndex + 1 }}/{{
                       store.activeCourse!.segments.length
                     }}</span
@@ -1416,17 +1578,8 @@ function getNavItemStyle(isSelected: boolean): Record<string, string> {
                   class="text-sm px-4 py-3 rounded-lg cursor-pointer transition-colors flex items-center gap-2 group/seg"
                   :class="getNavItemClass(isSegmentSelected(segmentIndex))"
                   :style="getNavItemStyle(isSegmentSelected(segmentIndex))"
-                  @click="
-                    (e: MouseEvent) => {
-                      if (e.shiftKey) {
-                        openSegmentSettingsIndex = segmentIndex;
-                      } else {
-                        store.selectSegment(segmentIndex);
-                        activePanel = 'segments';
-                      }
-                    }
-                  "
-                  @contextmenu.prevent="openSegmentSettingsIndex = segmentIndex"
+                  @click="(e: MouseEvent) => handleSegmentItemClick(e, Number(segmentIndex))"
+                  @contextmenu.prevent="openSegmentSettingsIndex = Number(segmentIndex)"
                 >
                   <span class="flex-1 truncate select-none">{{
                     segment["segment-title"]
@@ -1434,11 +1587,7 @@ function getNavItemStyle(isSelected: boolean): Record<string, string> {
 
                   <Popover
                     :open="openSegmentSettingsIndex === segmentIndex"
-                    @update:open="
-                      (val: boolean) => {
-                        if (!val) openSegmentSettingsIndex = null;
-                      }
-                    "
+                    @update:open="handleSegmentSettingsOpen"
                   >
                     <PopoverTrigger as-child><span /></PopoverTrigger>
                     <PopoverContent side="right" :side-offset="8" class="w-64">
@@ -1490,10 +1639,7 @@ function getNavItemStyle(isSelected: boolean): Record<string, string> {
                               <AlertDialogCancel>Cancel</AlertDialogCancel>
                               <AlertDialogAction
                                 class="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-                                @click="
-                                  store.removeSegment(segmentIndex);
-                                openSegmentSettingsIndex = null;
-                                "
+                                @click="handleSegmentDelete(Number(segmentIndex))"
                                 >Delete</AlertDialogAction
                               >
                             </AlertDialogFooter>
@@ -1517,10 +1663,7 @@ function getNavItemStyle(isSelected: boolean): Record<string, string> {
                   Packages
                   <span
                     class="text-xs normal-case tracking-normal px-2 py-1 rounded-full"
-                    :class="activePanel === 'packages'
-                      ? 'bg-foreground text-background'
-                      : ''
-                      "
+                    :class="getPanelBadgeClass('packages')"
                     >{{ store.activePackageIndex + 1 }}/{{
                       store.activeSegment!.lessons.length
                     }}</span
@@ -1567,17 +1710,8 @@ function getNavItemStyle(isSelected: boolean): Record<string, string> {
                   class="text-sm px-4 py-3 rounded-lg cursor-pointer transition-colors flex items-center gap-2 group/pkg"
                   :class="getNavItemClass(isPackageSelected(packageIndex))"
                   :style="getNavItemStyle(isPackageSelected(packageIndex))"
-                  @click="
-                    (e: MouseEvent) => {
-                      if (e.shiftKey) {
-                        openPackageSettingsIndex = packageIndex;
-                      } else {
-                        store.selectPackage(packageIndex);
-                        activePanel = 'swipes';
-                      }
-                    }
-                  "
-                  @contextmenu.prevent="openPackageSettingsIndex = packageIndex"
+                  @click="(e: MouseEvent) => handlePackageItemClick(e, Number(packageIndex))"
+                  @contextmenu.prevent="openPackageSettingsIndex = Number(packageIndex)"
                 >
                   <span class="flex-1 truncate select-none">{{
                     pkg.title
@@ -1586,11 +1720,7 @@ function getNavItemStyle(isSelected: boolean): Record<string, string> {
                   <!-- Package settings popover (shift+click) -->
                   <Popover
                     :open="openPackageSettingsIndex === packageIndex"
-                    @update:open="
-                      (val: boolean) => {
-                        if (!val) openPackageSettingsIndex = null;
-                      }
-                    "
+                    @update:open="handlePackageSettingsOpen"
                   >
                     <PopoverTrigger as-child><span /></PopoverTrigger>
                     <PopoverContent side="right" :side-offset="8" class="w-64">
@@ -1605,9 +1735,7 @@ function getNavItemStyle(isSelected: boolean): Record<string, string> {
                         <div class="flex items-center gap-2">
                           <Checkbox
                             :model-value="pkg.isFree"
-                            @update:model-value="
-                              (val: boolean) => (pkg.isFree = val)
-                            "
+                            @update:model-value="(val: boolean) => { pkg.isFree = val }"
                           />
                           <label class="text-xs text-muted-foreground"
                             >Free</label
@@ -1639,10 +1767,7 @@ function getNavItemStyle(isSelected: boolean): Record<string, string> {
                               <AlertDialogCancel>Cancel</AlertDialogCancel>
                               <AlertDialogAction
                                 class="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-                                @click="
-                                  store.removePackage(packageIndex);
-                                openPackageSettingsIndex = null;
-                                "
+                                @click="handlePackageDelete(Number(packageIndex))"
                                 >Delete</AlertDialogAction
                               >
                             </AlertDialogFooter>
@@ -1762,13 +1887,8 @@ function getNavItemStyle(isSelected: boolean): Record<string, string> {
               <span class="flex-1 flex justify-end">
                 <span
                   class="text-xs px-2 py-1 rounded-full"
-                  :class="activePanel === 'swipes'
-                    ? 'bg-foreground text-background'
-                    : 'text-muted-foreground'
-                    "
-                  >{{ (store.activeSwipeIndex ?? 0) + 1 }}/{{
-                    store.activePackage?.content.length
-                  }}</span
+                  :class="getSwipePanelBadgeClass()"
+                  >{{ activeSwipeBadgeNumber }}/{{ totalSwipesNumber }}</span
                 >
               </span>
 
@@ -1798,10 +1918,7 @@ function getNavItemStyle(isSelected: boolean): Record<string, string> {
                   class="px-4 py-3 rounded-lg flex items-center gap-2 group transition-colors cursor-pointer"
                   :class="[getSwipeItemClass(isSwipeSelected(swipeIndex))]"
                   :style="getSwipeItemStyle(swipe, isSwipeSelected(swipeIndex))"
-                  @click="
-                    store.selectSwipe(swipeIndex);
-                  activePanel = 'swipes';
-                  "
+                  @click="handleSwipeItemClick(Number(swipeIndex))"
                 >
                   <!-- Icon -->
                   <component
@@ -1957,10 +2074,7 @@ function getNavItemStyle(isSelected: boolean): Record<string, string> {
                 variant="ghost"
                 size="sm"
                 class="h-7 px-2 text-xs"
-                :class="selectedGuideBlock === block.tag
-                  ? 'bg-accent text-accent-foreground font-medium'
-                  : 'text-muted-foreground'
-                  "
+                :class="getGuideBlockTabClass(block.tag)"
                 @click="selectedGuideBlock = block.tag"
               >
                 {{ block.name }}
@@ -2031,8 +2145,8 @@ function getNavItemStyle(isSelected: boolean): Record<string, string> {
             <Upload class="h-4 w-4" /> Upload
           </Button>
 
-          <Button variant="ghost" @click="showFormatGuide = !showFormatGuide">
-            {{ showFormatGuide ? "Hide" : "Show" }} Guide
+          <Button variant="ghost" @click="toggleFormatGuide">
+            {{ formatGuideToggleLabel }} Guide
           </Button>
 
           <div class="flex-1" />

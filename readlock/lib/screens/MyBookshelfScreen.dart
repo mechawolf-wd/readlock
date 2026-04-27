@@ -20,6 +20,8 @@ import 'package:readlock/bottom_sheets/user/SettingsBottomSheet.dart';
 import 'package:readlock/screens/profile/BirdPicker.dart';
 import 'package:readlock/services/auth/UserService.dart';
 import 'package:readlock/models/UserModel.dart';
+import 'package:readlock/utility_widgets/text_animation/BionicText.dart';
+import 'package:readlock/utility_widgets/text_animation/RSVPText.dart';
 
 import 'package:pixelarticons/pixel.dart';
 
@@ -56,6 +58,11 @@ class MyBookshelfScreenState extends State<MyBookshelfScreen> {
       final UserModel? user = await UserService.getCurrentUserProfile();
       final List<String> savedIds = user?.savedCourseIds ?? const <String>[];
       final JSONList courses = await CourseDataService.fetchCoursesByIds(savedIds);
+
+      if (user != null) {
+        bionicEnabledNotifier.value = user.bionic;
+        rsvpEnabledNotifier.value = user.rsvp;
+      }
 
       if (!mounted) {
         return;

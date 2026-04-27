@@ -18,9 +18,6 @@ import 'package:readlock/services/feedback/HapticsService.dart';
 import 'package:readlock/utility_widgets/text_animation/ProgressiveText.dart';
 import 'package:readlock/utility_widgets/visual_effects/BlurOverlay.dart';
 
-// * Each thinking point rotates through one of these accent colours.
-const List<Color> REFLECT_POINT_COLORS = [RLDS.markupRed, RLDS.markupGreen, RLDS.onSurface];
-
 const int REFLECT_POINTS_LIMIT = 3;
 
 class CCReflect extends StatefulWidget {
@@ -84,7 +81,6 @@ class CCReflectState extends State<CCReflect> {
   }
 
   Widget PointEntry({required int pointIndex, required String point}) {
-    final Color pointColor = REFLECT_POINT_COLORS[pointIndex % REFLECT_POINT_COLORS.length];
     final bool isRevealed = revealedPoints.contains(pointIndex);
 
     void onEntryTap() => handlePointTap(pointIndex);
@@ -92,7 +88,6 @@ class CCReflectState extends State<CCReflect> {
     final Widget pointText = PointText(
       pointIndex: pointIndex,
       point: point,
-      color: pointColor,
       isRevealed: isRevealed,
     );
 
@@ -124,7 +119,6 @@ class CCReflectState extends State<CCReflect> {
   Widget PointText({
     required int pointIndex,
     required String point,
-    required Color color,
     required bool isRevealed,
   }) {
     if (!isRevealed) {
@@ -138,7 +132,7 @@ class CCReflectState extends State<CCReflect> {
     return ProgressiveText(
       key: ValueKey('reflect_point_$pointIndex'),
       textSegments: [point],
-      textStyle: RLTypography.readingLargeStyle.copyWith(color: color),
+      textStyle: RLTypography.readingLargeStyle.copyWith(color: RLDS.textPrimary),
       textAlign: TextAlign.center,
       blurCompletedSentences: false,
       enableTapToReveal: false,

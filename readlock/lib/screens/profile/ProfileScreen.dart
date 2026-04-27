@@ -52,11 +52,7 @@ class ProfileContentState extends State<ProfileContent> {
   bool revealEnabled = false;
   bool blurEnabled = true;
   bool coloredTextEnabled = true;
-  // Bionic reading lives in-memory only for now — no UserModel round-trip
-  // until we integrate the transform into ProgressiveText / CCTextContent.
   bool bionicEnabled = false;
-  // RSVP (rapid reading) — also in-memory only until it's wired into the
-  // reading surfaces. The demo is self-contained in SettingsDemos.
   bool rsvpEnabled = false;
   bool isLoggingOut = false;
 
@@ -88,7 +84,12 @@ class ProfileContentState extends State<ProfileContent> {
       revealEnabled = user.reveal;
       blurEnabled = user.blur;
       coloredTextEnabled = user.coloredText;
+      bionicEnabled = user.bionic;
+      rsvpEnabled = user.rsvp;
     });
+
+    bionicEnabledNotifier.value = user.bionic;
+    rsvpEnabledNotifier.value = user.rsvp;
   }
 
   // * Individual preference handlers — optimistic setState + fire-and-forget
@@ -128,11 +129,13 @@ class ProfileContentState extends State<ProfileContent> {
   void handleBionicToggled(bool value) {
     setState(() => bionicEnabled = value);
     bionicEnabledNotifier.value = value;
+    UserService.updateBionic(value);
   }
 
   void handleRsvpToggled(bool value) {
     setState(() => rsvpEnabled = value);
     rsvpEnabledNotifier.value = value;
+    UserService.updateRsvp(value);
   }
 
   void handleSupportTap() {}
@@ -149,16 +152,22 @@ class ProfileContentState extends State<ProfileContent> {
       return;
     }
 
+    // Cancel renders as the filled red CTA on top — the safer default
+    // carries the visual weight. Sign out drops to a regular tertiary
+    // text button below so committing requires a deliberate tap.
     RLConfirmationDialog.show(
       context,
       title: RLUIStrings.LOGOUT_CONFIRMATION_TITLE,
       message: RLUIStrings.LOGOUT_CONFIRMATION_MESSAGE,
-      cta: RLConfirmationAction(
-        label: RLUIStrings.LOGOUT_CONFIRMATION_CONFIRM,
+      cta: const RLConfirmationAction(
+        label: RLUIStrings.CANCEL_LABEL,
         variant: RLConfirmationVariant.destructive,
+      ),
+      cancel: RLConfirmationAction(
+        label: RLUIStrings.LOGOUT_CONFIRMATION_CONFIRM,
+        variant: RLConfirmationVariant.neutral,
         onTap: handleLogoutConfirmed,
       ),
-      cancel: rlDismissCancelAction(),
     );
   }
 

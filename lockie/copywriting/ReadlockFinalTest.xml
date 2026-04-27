@@ -142,10 +142,10 @@
 
     <group name="Phase 6, Reflect (optional)" rlockie_field="@reflect">
       <rule ref="guide: Section 5, Phase 6">0 or 1 @reflect swipe. Optional. Skip when the package arc feels complete without it. Phase 6 contains @reflect only, no @text.</rule>
-      <rule ref="guide: Section 5, Length reference">When present: 2 or 3 points, each 14 to 16 words.</rule>
-      <rule ref="guide: Section 5, Phase 6, Each reflect point needs one concrete example">Each point contains one concrete example: a situation, an object, a moment, or a type of person.</rule>
-      <rule ref="guide: Section 5, Phase 6, Reflect points should not be cliche">Zero platitudes, zero fridge-magnet wisdom.</rule>
-      <rule ref="guide: Section 3, We rule">Reflect points use no "you." Phrase as a noun phrase the reader can match to their own life ("A kitchen tool kept for its looks alone:..."), not a direct address.</rule>
+      <rule ref="guide: Section 5, Length reference">When present: 2 or 3 points, each a single short sentence of ~14 words that prompts reflection.</rule>
+      <rule ref="guide: Section 5, Phase 6, Format">Zero colon-example format. Zero "label: situation" pairs. Each point is just a sentence that opens a question in the reader's mind about their own life.</rule>
+      <rule ref="guide: Section 5, Phase 6, Reflect points should not be cliche">Zero platitudes, zero fridge-magnet wisdom. The point names a place to look, not what to find.</rule>
+      <rule ref="guide: Section 3, We rule">Reflect points use no "you." Phrase as a noun phrase or humanity-wide observation, not a direct address.</rule>
     </group>
 
     <group name="Package outro">
@@ -416,8 +416,8 @@
     </group>
 
     <group name="@reflect">
-      <rule>2 or 3 thinking points, one per line.</rule>
-      <rule>Each point 14 to 16 words with a concrete example.</rule>
+      <rule>2 or 3 reflection-prompting sentences, one per line.</rule>
+      <rule>Each point is a single short sentence (~14 words) that opens a question for the reader. No colon-example format.</rule>
     </group>
 
     <group name="General formatting">

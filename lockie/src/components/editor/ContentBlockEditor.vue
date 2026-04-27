@@ -600,7 +600,7 @@ const GUIDELINES: Record<string, string> = {
   'true-false-question': 'Write a statement, not a question. The reader decides if it is true or false. Consequence messages should explain the reasoning.',
   'estimate': 'Use real statistics. Let the reader guess before revealing the answer.',
   'pause': 'Short motivational pause between sections. Keep it to one sentence.',
-  'reflect': 'Personal application prompt. Include 3-4 thinking points.',
+  'reflect': '2 to 3 short sentences, one per line, ~14 words each. No "label: situation" pairs, no colon-example format. Each point opens a question for the reader. No "you", no platitudes.',
   'quote': 'Memorable insight from the author. Keep it impactful.',
 }
 
@@ -873,19 +873,19 @@ function getThinkingPointPlaceholder(pointIndex: number): string {
             <!-- Text input (rich text for all segments) -->
             <div class="relative">
               <RichTextSegment
-                :model-value="isImageSegment((block as any)['text-segments'][segmentIndex]) ? getImageUrl((block as any)['text-segments'][segmentIndex]) : (block as any)['text-segments'][segmentIndex]"
-                :class="shiftHeld && hoveredSegmentIndex === Number(segmentIndex) ? 'opacity-50' : ''"
-                @update:model-value="(val: string) => isImageSegment((block as any)['text-segments'][segmentIndex]) ? setImageUrl(Number(segmentIndex), val) : handleSegmentUpdate(Number(segmentIndex), val)"
+                :model-value="getSegmentRichTextValue(Number(segmentIndex))"
+                :class="getRichTextOpacityClass(Number(segmentIndex))"
+                @update:model-value="(val: string) => handleSegmentRichTextUpdate(Number(segmentIndex), val)"
               />
 
               <!-- Controls overlay on the input -->
-              <div v-if="shiftHeld && hoveredSegmentIndex === Number(segmentIndex)" class="absolute inset-0 z-10 flex items-center justify-center gap-1 backdrop-blur-sm rounded-md">
+              <div v-if="isShiftHovered(Number(segmentIndex))" class="absolute inset-0 z-10 flex items-center justify-center gap-1 backdrop-blur-sm rounded-md">
                 <Button variant="ghost" size="icon" class="h-8 w-8" @click="removeTextSegment(Number(segmentIndex))">
                   <Minus class="h-4 w-4" />
                 </Button>
 
                 <Button
-                  v-if="isImageSegment((block as any)['text-segments'][segmentIndex])"
+                  v-if="isImageSegmentAt(Number(segmentIndex))"
                   variant="ghost" size="icon" class="h-8 w-8"
                   @click="toggleSegmentToText(Number(segmentIndex))"
                 >
@@ -904,14 +904,14 @@ function getThinkingPointPlaceholder(pointIndex: number): string {
 
             <!-- Image preview -->
             <img
-              v-if="isImageSegment((block as any)['text-segments'][segmentIndex]) && getImageUrl((block as any)['text-segments'][segmentIndex]).length > 0"
-              :src="getImageUrl((block as any)['text-segments'][segmentIndex])"
+              v-if="hasImagePreview(Number(segmentIndex))"
+              :src="getSegmentImageUrlAt(Number(segmentIndex))"
               class="w-full max-h-32 object-contain rounded-md border border-border mt-2 pointer-events-none select-none"
             />
 
             <!-- Insert after — only when Shift held + hovered -->
             <div
-              v-if="shiftHeld && hoveredSegmentIndex === Number(segmentIndex)"
+              v-if="isShiftHovered(Number(segmentIndex))"
               class="border border-dashed border-border rounded-md flex items-center justify-center h-12 cursor-pointer hover:border-foreground/30 transition-colors mt-2 group/insert"
               @click="insertTextSegmentAfter(Number(segmentIndex))"
             >
@@ -943,11 +943,11 @@ function getThinkingPointPlaceholder(pointIndex: number): string {
       <div class="flex flex-col gap-4">
         <div
           v-for="(option, optionIndex) in block.options"
-          :key="(option as any)._uid ?? optionIndex"
+          :key="getOptionKey(option, Number(optionIndex))"
           class="flex flex-col gap-2"
         >
           <div class="flex gap-2 items-center">
-            <Input v-model="option.text" :placeholder="optionIndex === 0 ? 'True' : 'False'" class="flex-1" />
+            <Input v-model="option.text" :placeholder="getOptionPlaceholder(Number(optionIndex))" class="flex-1" />
 
             <Checkbox
               v-if="'correct-answer-indices' in block"
@@ -966,7 +966,7 @@ function getThinkingPointPlaceholder(pointIndex: number): string {
       </div>
 
       <p
-        v-if="'correct-answer-indices' in block && (block as any)['correct-answer-indices'].length === 0"
+        v-if="isEmptyCorrectAnswerIndices()"
         class="text-xs text-primary italic"
       >Select the correct answer</p>
     </div>
@@ -981,7 +981,7 @@ function getThinkingPointPlaceholder(pointIndex: number): string {
       <TransitionGroup tag="div" name="reorder-list" class="flex flex-col gap-4">
         <div
           v-for="(option, optionIndex) in block.options"
-          :key="(option as any)._uid ?? optionIndex"
+          :key="getOptionKey(option, Number(optionIndex))"
           class="flex gap-2 items-stretch"
         >
           <!-- Minus / Plus column -->
@@ -1008,7 +1008,7 @@ function getThinkingPointPlaceholder(pointIndex: number): string {
 
           <!-- Option fields -->
           <div class="flex flex-col gap-2 flex-1 min-w-0">
-            <Input v-model="option.text" :placeholder="`Option ${Number(optionIndex) + 1}`" />
+            <Input v-model="option.text" :placeholder="getOptionsListPlaceholder(Number(optionIndex))" />
 
             <Input
               v-if="'consequence-message' in option || block['entity-type'] === 'question'"
@@ -1029,7 +1029,7 @@ function getThinkingPointPlaceholder(pointIndex: number): string {
       </TransitionGroup>
 
       <p
-        v-if="'correct-answer-indices' in block && (block as any)['correct-answer-indices'].length === 0"
+        v-if="isEmptyCorrectAnswerIndices()"
         class="text-xs text-primary italic"
       >Select at least one correct answer</p>
     </div>
@@ -1055,11 +1055,11 @@ function getThinkingPointPlaceholder(pointIndex: number): string {
             type="range"
             min="0"
             max="100"
-            :value="(block as any)['correct-answer-indices']?.[0] ?? 50"
+            :value="getEstimateAnswer()"
             class="flex-1 accent-primary"
-            @input="(e: any) => { (block as any)['correct-answer-indices'] = [Number(e.target.value)] }"
+            @input="(e: Event) => setEstimateAnswer(Number((e.target as HTMLInputElement).value))"
           />
-          <span class="text-sm font-mono w-10 text-right tabular-nums">{{ (block as any)['correct-answer-indices']?.[0] ?? 50 }}%</span>
+          <span class="text-sm font-mono w-10 text-right tabular-nums">{{ getEstimateAnswer() }}%</span>
         </div>
       </div>
 
@@ -1070,11 +1070,11 @@ function getThinkingPointPlaceholder(pointIndex: number): string {
             type="range"
             min="1"
             max="50"
-            :value="(block as any)['close-threshold'] ?? 10"
+            :value="getEstimateThreshold()"
             class="flex-1 accent-primary"
-            @input="(e: any) => { (block as any)['close-threshold'] = Number(e.target.value) }"
+            @input="(e: Event) => setEstimateThreshold(Number((e.target as HTMLInputElement).value))"
           />
-          <span class="text-sm font-mono w-10 text-right tabular-nums">±{{ (block as any)['close-threshold'] ?? 10 }}%</span>
+          <span class="text-sm font-mono w-10 text-right tabular-nums">±{{ getEstimateThreshold() }}%</span>
         </div>
       </div>
     </div>
@@ -1109,7 +1109,7 @@ function getThinkingPointPlaceholder(pointIndex: number): string {
         >
           <Input
             v-model="(block as any)['thinking-points'][pointIndex]"
-            :placeholder="`Point ${Number(pointIndex) + 1}`"
+            :placeholder="getThinkingPointPlaceholder(Number(pointIndex))"
           />
 
           <Button

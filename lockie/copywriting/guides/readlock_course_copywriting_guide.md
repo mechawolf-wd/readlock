@@ -836,14 +836,17 @@ A quiet moment to connect what was taught to the reader's own life. Phase 6 is a
 
 This phase uses `@reflect` points only. No `@text`. **@reflect is optional.** Skip it when the package arc feels complete without it. Include it when the topic has personal applications the reader would benefit from sitting with.
 
-**Reflect points should not be cliche.** They should make the reader actually think. If a point could appear on a fridge magnet, rewrite it. 2 to 3 points, each 14 to 16 words.
+**Reflect points should not be cliche.** They should make the reader actually think. If a point could appear on a fridge magnet, rewrite it.
 
-**Each reflect point needs one concrete example.** Reflecting from a blank page is hard. Give the reader something specific to push off from: a situation, an object, a moment, or a type of person.
+**Format.** 2 to 3 points, one per line. Each point is a single short sentence, ~14 words, that prompts the reader to reflect. No colon-example format. No "label: situation" pairs. Just a sentence that opens a question in the reader's mind about their own life.
 
-> **Correct:** _"A habit you kept going even when day one felt too small: reading one paragraph before bed."_
-> **Correct:** _"A decision someone else made for you by naming the first number, the way a seller names a price."_
+**Tone.** Quiet and inviting, never instructional. The point names a place to look, not what to find. Use no "you" — phrase as a noun phrase or a humanity-wide observation.
+
+> **Correct:** _"A habit kept going even when day one felt too small."_
+> **Correct:** _"A decision someone else quietly made by naming the first number."_
+> **Wrong:** _"A habit you kept going: reading one paragraph before bed."_ (colon-example format, uses "you")
 > **Wrong:** _"Which habits of yours have lasted."_ (too abstract)
-> **Wrong:** _"Think about your decisions."_ (no anchor)
+> **Wrong:** _"Think about your decisions."_ (instructional)
 
 ### Package outro
 
@@ -899,7 +902,7 @@ All lengths and counts for a course live in this table. If anything else in the 
 | 4. Topic Reveal               | 1 to 2             | `@text`                    | Same as Phase 2: 5 to 7 sentences, ~14 words per sentence.                                                                                            |
 | Optional estimate             | 0 or 1             | `@estimate`                | After Phase 4. Only when the topic has a numerical element. One question, answer 0-100.                                                               |
 | 5. True/False or Deeper Check | 1 to 2             | `@true_false`              | One statement per swipe, usually one sentence. Semi-obvious, not a trap.                                                                              |
-| 6. Reflect (optional)         | 0 or 1             | `@reflect`                 | 2 to 3 points, each ~14 to 16 words. Each point includes one concrete example. Skip when the package feels complete without it.                       |
+| 6. Reflect (optional)         | 0 or 1             | `@reflect`                 | 2 to 3 short reflection-prompting sentences, one per line, each ~14 words. No colon-example format. Skip when the package feels complete without it.   |
 | **Package outro**             | **1**              | `@text`                    | Last swipe of every package. 2 to 3 sentences. Non-last packages: close the thought and transition. Last package: name the thread, end on a question. |
 | **Package total**             | **7 to 11 swipes** | see phase order below      | Each phase in order. Skipping an optional phase is fine.                                                                                              |
 

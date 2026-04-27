@@ -21,6 +21,8 @@ UserModel _$UserModelFromJson(Map<String, dynamic> json) => UserModel(
   reveal: json['reveal'] as bool? ?? false,
   blur: json['blur'] as bool? ?? true,
   coloredText: json['coloredText'] as bool? ?? true,
+  bionic: json['bionic'] as bool? ?? false,
+  rsvp: json['rsvp'] as bool? ?? false,
   savedCourseIds:
       (json['savedCourseIds'] as List<dynamic>?)
           ?.map((item) => item as String)
@@ -42,5 +44,7 @@ Map<String, dynamic> _$UserModelToJson(UserModel instance) => <String, dynamic>{
   'reveal': instance.reveal,
   'blur': instance.blur,
   'coloredText': instance.coloredText,
+  'bionic': instance.bionic,
+  'rsvp': instance.rsvp,
   'savedCourseIds': instance.savedCourseIds,
 };

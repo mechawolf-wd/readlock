@@ -43,6 +43,48 @@ class SelectableFilterChips extends StatelessWidget {
   }
 }
 
+// Multi-select sibling of SelectableFilterChips. Same chip widget, same
+// styling — only the selection model differs: callers hold a Set of active
+// labels and `onToggled` fires the tapped label so the parent can flip its
+// membership in/out of that Set. Used by the search screen's genre row.
+class SelectableFilterChipsMulti extends StatelessWidget {
+  final List<String> options;
+  final Set<String> selectedOptions;
+  final ValueChanged<String> onToggled;
+  final double chipSpacing;
+  final double runSpacing;
+
+  const SelectableFilterChipsMulti({
+    super.key,
+    required this.options,
+    required this.selectedOptions,
+    required this.onToggled,
+    this.chipSpacing = RLDS.spacing8,
+    this.runSpacing = RLDS.spacing8,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Wrap(
+      spacing: chipSpacing,
+      runSpacing: runSpacing,
+      children: ChipItems(),
+    );
+  }
+
+  List<Widget> ChipItems() {
+    return options.map((option) {
+      final bool isSelected = selectedOptions.contains(option);
+
+      return SelectableFilterChip(
+        label: option,
+        isSelected: isSelected,
+        onTap: () => onToggled(option),
+      );
+    }).toList();
+  }
+}
+
 class SelectableFilterChip extends StatelessWidget {
   final String label;
   final bool isSelected;

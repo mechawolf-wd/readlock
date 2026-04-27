@@ -10,7 +10,6 @@ import 'package:readlock/design_system/RLUtility.dart';
 import 'package:readlock/design_system/RLCard.dart';
 import 'package:readlock/design_system/RLCourseBookImage.dart';
 import 'package:readlock/design_system/RLLunarBlur.dart';
-import 'package:readlock/design_system/RLRelevantForChip.dart';
 import 'package:readlock/design_system/RLSegmentTabs.dart';
 import 'package:readlock/design_system/RLStarfieldBackground.dart';
 import 'package:readlock/constants/RLCoursePalette.dart';
@@ -47,7 +46,7 @@ class CourseRoadmapScreen extends StatefulWidget {
 }
 
 class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
-    with SingleTickerProviderStateMixin {
+    with TickerProviderStateMixin {
   JSONMap? courseData;
   JSONList courseSegments = [];
   JSONList courseLessons = [];
@@ -61,6 +60,12 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
   late ScrollController scrollController;
   late AnimationController progressRingController;
   late Animation<double> progressRingAnimation;
+
+  // Breathing pulse for the circular disc that hosts the progress ring.
+  // A slow scale loop (0.97 ↔ 1.03) so the disc reads as gently alive
+  // rather than a flat token sitting on the page.
+  late AnimationController breathingController;
+  late Animation<double> breathingAnimation;
 
   double? screenHeight;
 
@@ -106,6 +111,15 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
       end: roadmapTargetProgress,
     ).animate(
       CurvedAnimation(parent: progressRingController, curve: Curves.easeOutCubic),
+    );
+
+    breathingController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 3200),
+    )..repeat(reverse: true);
+
+    breathingAnimation = Tween<double>(begin: 0.97, end: 1.03).animate(
+      CurvedAnimation(parent: breathingController, curve: Curves.easeInOut),
     );
 
     fetchCourseData();
@@ -167,6 +181,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
     scrollController.removeListener(handleScrollUpdate);
     scrollController.dispose();
     progressRingController.dispose();
+    breathingController.dispose();
     super.dispose();
   }
 
@@ -359,6 +374,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
         courseData?['title'] as String? ?? RLUIStrings.ROADMAP_DEFAULT_TITLE;
     final String courseAuthor =
         courseData?['author'] as String? ?? RLUIStrings.ROADMAP_DEFAULT_AUTHOR;
+    final String courseDescription = (courseData?['description'] as String? ?? '').trim();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -390,24 +406,36 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
         // Hero card — full-bleed, no side padding, so it stretches the
         // full width of the screen. Intentional violation of the page
         // padding.
-        HeroCard(courseTitle: courseTitle, courseAuthor: courseAuthor),
+        HeroCard(
+          courseTitle: courseTitle,
+          courseAuthor: courseAuthor,
+          courseDescription: courseDescription,
+        ),
       ],
     );
   }
 
-  // Circular LunarBlur pane that hosts the progress ring + book. Size
+  // Circular solid-colour disc that hosts the progress ring + book. Size
   // matches the ring exactly — the disc sits flush behind the ring stroke,
-  // no inner padding, no squircle fallback.
-  static final BorderRadius bookRingPaneRadius = RLDS.borderRadiusCircle;
+  // no inner padding. Wrapped in a ScaleTransition driven by
+  // breathingAnimation so the whole assembly subtly breathes (0.97 ↔ 1.03)
+  // — gives the otherwise static token a heartbeat without competing with
+  // the page content for attention.
+  static const BoxDecoration bookRingPaneDecoration = BoxDecoration(
+    color: RLDS.backgroundLight,
+    shape: BoxShape.circle,
+  );
 
   Widget BookRingPane() {
     return SizedBox(
       width: progressRingSize,
       height: progressRingSize,
-      child: RLLunarBlur(
-        borderRadius: bookRingPaneRadius,
-        borderColor: RLDS.transparent,
-        child: ProgressRing(),
+      child: ScaleTransition(
+        scale: breathingAnimation,
+        child: Container(
+          decoration: bookRingPaneDecoration,
+          child: ProgressRing(),
+        ),
       ),
     );
   }
@@ -464,7 +492,13 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
   // it touches the screen edges on both sides. Uses RLLunarBlur directly
   // (RLCard.elevated always rounds) with RL_CARD_ALPHA so the
   // frosted-dark tint still matches the BottomFloatingBar and the book disc.
-  Widget HeroCard({required String courseTitle, required String courseAuthor}) {
+  Widget HeroCard({
+    required String courseTitle,
+    required String courseAuthor,
+    required String courseDescription,
+  }) {
+    final bool hasDescription = courseDescription.isNotEmpty;
+
     return RLLunarBlur(
       borderRadius: BorderRadius.zero,
       borderColor: RLDS.transparent,
@@ -484,45 +518,27 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
             textAlign: TextAlign.center,
           ),
 
-          const Spacing.height(RLDS.spacing16),
+          // Description — one-line course pitch from the rlockie front
+          // matter. Hidden when the course doesn't supply one so the card
+          // doesn't show empty padding under the author line.
+          RenderIf.condition(
+            hasDescription,
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const Spacing.height(RLDS.spacing16),
 
-          // Relevant-for tags
-          Center(child: RelevantForRow()),
+                RLTypography.bodyMedium(
+                  courseDescription,
+                  color: RLDS.textMuted,
+                  textAlign: TextAlign.center,
+                ),
+              ],
+            ),
+          ),
         ],
       ),
     );
-  }
-
-  Widget RelevantForRow() {
-    final List<String> relevantFor = getCourseRelevantFor();
-    final bool hasNoTags = relevantFor.isEmpty;
-
-    if (hasNoTags) {
-      return const SizedBox.shrink();
-    }
-
-    return Wrap(
-      alignment: WrapAlignment.center,
-      spacing: RLDS.spacing8,
-      runSpacing: RLDS.spacing8,
-      children: RelevantForChips(relevantFor),
-    );
-  }
-
-  List<Widget> RelevantForChips(List<String> relevantFor) {
-    return relevantFor.map((String key) => RLRelevantForChip(relevantForKey: key)).toList();
-  }
-
-  List<String> getCourseRelevantFor() {
-    final dynamic raw = courseData?['relevant-for'];
-
-    final bool isList = raw is List;
-
-    if (!isList) {
-      return const <String>[];
-    }
-
-    return raw.whereType<String>().map((String tag) => tag.trim()).toList();
   }
 
   // Full-width segment tab row — routes through the shared RLSegmentTabs
