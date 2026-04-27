@@ -303,7 +303,7 @@ class RSVPTextState extends State<RSVPText> {
   // its own tappable BlurredSegment so the tap toggles that specific
   // segment's blur — mirroring ProgressiveText's per-sentence unblur.
   Widget PreviousSegmentsList() {
-    final List<Widget> children = buildPreviousSegmentChildren();
+    final List<Widget> children = PreviousSegmentChildren();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -311,7 +311,7 @@ class RSVPTextState extends State<RSVPText> {
     );
   }
 
-  List<Widget> buildPreviousSegmentChildren() {
+  List<Widget> PreviousSegmentChildren() {
     final List<Widget> children = [];
     final TextStyle staticStyle = getBaseTextStyle();
 

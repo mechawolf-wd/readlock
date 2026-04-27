@@ -467,12 +467,12 @@ class OnboardingArrowButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final bool isDisabled = onTap == null;
     final Color iconColor = isDisabled ? RLDS.textMuted : RLDS.textPrimary;
-    final Widget arrowIcon = Icon(icon, color: iconColor, size: RLDS.iconXLarge);
+    final Widget ArrowIcon = Icon(icon, color: iconColor, size: RLDS.iconXLarge);
 
     return GestureDetector(
       onTap: wrapWithHaptic(onTap),
       behavior: HitTestBehavior.opaque,
-      child: Padding(padding: ONBOARDING_ARROW_BUTTON_PADDING, child: arrowIcon),
+      child: Padding(padding: ONBOARDING_ARROW_BUTTON_PADDING, child: ArrowIcon),
     );
   }
 

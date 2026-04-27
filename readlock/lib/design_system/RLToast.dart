@@ -252,7 +252,7 @@ class RLToastViewState extends State<RLToastView> with SingleTickerProviderState
   // transparent floating pane. Variant colour is carried entirely by the
   // leading icon; no coloured border on the card.
   Widget ToastCard({required RLToastVariantStyle style}) {
-    final Icon variantIcon = Icon(style.icon, color: style.color, size: TOAST_ICON_SIZE);
+    final Icon VariantIcon = Icon(style.icon, color: style.color, size: TOAST_ICON_SIZE);
 
     return RLLunarBlur(
       borderRadius: RLDS.borderRadiusSmall,
@@ -264,7 +264,7 @@ class RLToastViewState extends State<RLToastView> with SingleTickerProviderState
       ),
       child: Row(
         children: [
-          variantIcon,
+          VariantIcon,
 
           const SizedBox(width: RLDS.spacing12),
 

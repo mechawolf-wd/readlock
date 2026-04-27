@@ -72,7 +72,7 @@ class DemoSurface extends StatelessWidget {
 //
 // Getter (not a `final`) so it re-evaluates against the current
 // selectedReadingFontNotifier value on each call. Demos that need to
-// live-update on a font change wrap their output in demoFontListener below.
+// live-update on a font change wrap their output in DemoFontListener below.
 TextStyle get demoReadingStyle {
   return RLTypography.readingMediumStyle.copyWith(fontSize: 18, height: 1.6);
 }
@@ -82,7 +82,7 @@ TextStyle get demoReadingStyle {
 // demo with the new typeface. Every demo that consumes demoReadingStyle
 // (RevealDemo, BlurDemo, ColoredTextDemo) needs this; the ReadingFontDemo
 // itself subscribes directly.
-Widget demoFontListener(WidgetBuilder builder) {
+Widget DemoFontListener(WidgetBuilder builder) {
   Widget fontBuilder(BuildContext context, ReadingFont font, Widget? unusedChild) {
     return builder(context);
   }
@@ -153,7 +153,7 @@ class RevealDemoState extends State<RevealDemo> with SingleTickerProviderStateMi
 
   @override
   Widget build(BuildContext context) {
-    return demoFontListener(DemoBody);
+    return DemoFontListener(DemoBody);
   }
 
   Widget DemoBody(BuildContext context) {
@@ -171,7 +171,7 @@ class RevealDemoState extends State<RevealDemo> with SingleTickerProviderStateMi
       return RichText(text: TextSpan(style: demoReadingStyle, text: demoText));
     }
 
-    return AnimatedBuilder(animation: animationController, builder: buildTypewriterFrame);
+    return AnimatedBuilder(animation: animationController, builder: TypewriterFrame);
   }
 
   // Renders the current typewriter frame — each revealed character carries
@@ -179,7 +179,7 @@ class RevealDemoState extends State<RevealDemo> with SingleTickerProviderStateMi
   // ProgressiveText uses (progressiveTextLeadingCharacterFadeDuration).
   // Unrevealed characters render transparent so the layout stays reserved
   // from the first frame.
-  Widget buildTypewriterFrame(BuildContext context, Widget? child) {
+  Widget TypewriterFrame(BuildContext context, Widget? child) {
     final List<TextSpan> characterSpans = buildFadingCharacterSpans();
 
     return RichText(
@@ -226,7 +226,7 @@ class BlurDemo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return demoFontListener(DemoBody);
+    return DemoFontListener(DemoBody);
   }
 
   Widget DemoBody(BuildContext context) {
@@ -262,7 +262,7 @@ class ColoredTextDemo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return demoFontListener(DemoBody);
+    return DemoFontListener(DemoBody);
   }
 
   Widget DemoBody(BuildContext context) {
@@ -312,7 +312,7 @@ class BionicDemo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return demoFontListener(DemoBody);
+    return DemoFontListener(DemoBody);
   }
 
   Widget DemoBody(BuildContext context) {
@@ -380,7 +380,7 @@ class ReadingColumnDemo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return demoFontListener(DemoBody);
+    return DemoFontListener(DemoBody);
   }
 
   Widget DemoBody(BuildContext context) {
@@ -426,10 +426,10 @@ class SampleSurface extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(builder: buildAtSlot);
+    return LayoutBuilder(builder: AtSlot);
   }
 
-  Widget buildAtSlot(BuildContext context, BoxConstraints constraints) {
+  Widget AtSlot(BuildContext context, BoxConstraints constraints) {
     final double slotWidth = constraints.maxWidth;
     final double columnMaxWidth = maxWidthFor(column);
     final EdgeInsets innerPadding = computeInnerPadding(slotWidth, columnMaxWidth);
@@ -621,7 +621,7 @@ class RSVPDemoState extends State<RSVPDemo> {
 
   @override
   Widget build(BuildContext context) {
-    return demoFontListener(DemoBody);
+    return DemoFontListener(DemoBody);
   }
 
   Widget DemoBody(BuildContext context) {

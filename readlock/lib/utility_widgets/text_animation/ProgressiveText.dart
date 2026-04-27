@@ -238,7 +238,9 @@ class ProgressiveTextState extends State<ProgressiveText> with TickerProviderSta
 
     // Simple character-by-character reveal with stable layout
     for (int charIndex = 0; charIndex < currentSentenceText.length; charIndex++) {
-      if (!mounted || !isRevealingCurrentSentence) {
+      final bool shouldAbortReveal = !mounted || !isRevealingCurrentSentence;
+
+      if (shouldAbortReveal) {
         break;
       }
 
@@ -951,7 +953,9 @@ class ProgressiveTextState extends State<ProgressiveText> with TickerProviderSta
           final bool runMatchesBold =
               (shouldApplyBionic && isBionicBoldAt(runGlobalIndex)) == shouldBoldChar;
 
-          if (!runSettled || !runMatchesBold) {
+          final bool shouldEndRun = !runSettled || !runMatchesBold;
+
+          if (shouldEndRun) {
             break;
           }
 

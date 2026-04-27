@@ -233,7 +233,7 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
       scrollDirection: Axis.vertical,
       itemCount: allContent.length,
       onPageChanged: handlePageChanged,
-      itemBuilder: getContentItem,
+      itemBuilder: ContentItem,
     );
   }
 
@@ -345,13 +345,13 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
   // Settings (selectedReadingColumnNotifier) — Newspaper (narrow) or
   // Classic (comfortable) — both cap line-length so the reading surface
   // stays within the 45–75 character target on wider phones.
-  Widget getContentItem(BuildContext context, int contentItemIndex) {
+  Widget ContentItem(BuildContext context, int contentItemIndex) {
     final JSONMap content = allContent[contentItemIndex];
     final Widget contentWidget = CCJSONContentFactory.createContentWidget(content);
 
     return ValueListenableBuilder<ReadingColumn>(
       valueListenable: selectedReadingColumnNotifier,
-      builder: buildColumnFrame,
+      builder: ColumnFrame,
       child: contentWidget,
     );
   }
@@ -359,7 +359,7 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
   // Applies the selected column width as a max constraint. Both options
   // (narrow / comfortable) are bounded so the child is always centred
   // inside a ConstrainedBox — no unconstrained branch.
-  Widget buildColumnFrame(BuildContext context, ReadingColumn column, Widget? child) {
+  Widget ColumnFrame(BuildContext context, ReadingColumn column, Widget? child) {
     final double maxWidth = maxWidthFor(column);
     final BoxConstraints columnConstraints = BoxConstraints(maxWidth: maxWidth);
 

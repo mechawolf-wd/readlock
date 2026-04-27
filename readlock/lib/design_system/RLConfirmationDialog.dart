@@ -332,10 +332,10 @@ class ConfirmationDialogContent extends StatelessWidget {
       borderRadius: RLDS.borderRadiusSmall,
     );
 
-    final Widget glyphWidget = Icon(glyph, color: RLDS.white, size: RLDS.iconMedium);
+    final Widget GlyphIcon = Icon(glyph, color: RLDS.white, size: RLDS.iconMedium);
     final bool hasLabel = action.label.isNotEmpty;
 
-    final List<Widget> rowChildren = [glyphWidget];
+    final List<Widget> rowChildren = [GlyphIcon];
 
     if (hasLabel) {
       rowChildren.add(const Spacing.width(RLDS.spacing8));
@@ -359,11 +359,13 @@ class ConfirmationDialogContent extends StatelessWidget {
     return RLButton.tertiary(
       label: action.label,
       color: buttonColor,
-      onTap: () {
-        onDismiss();
-        action.onTap?.call();
-      },
+      onTap: () => handleTertiaryTap(action),
     );
+  }
+
+  void handleTertiaryTap(RLConfirmationAction action) {
+    onDismiss();
+    action.onTap?.call();
   }
 }
 

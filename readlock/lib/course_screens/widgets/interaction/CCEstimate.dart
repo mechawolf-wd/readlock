@@ -214,19 +214,19 @@ class CCEstimateState extends State<CCEstimate>
           decoration: getResultCardDecoration(isClose),
           child: Div.column([
             // Result header
-            getResultHeader(isClose, difference),
+            ResultHeader(isClose, difference),
 
             const Spacing.height(RLDS.spacing12),
 
             // Comparison display
-            getComparisonDisplay(difference),
+            ComparisonDisplay(difference),
           ]),
         ),
       ]),
     );
   }
 
-  Widget getResultHeader(bool isClose, int difference) {
+  Widget ResultHeader(bool isClose, int difference) {
     if (isClose) {
       return Div.row([
         CheckIcon,
@@ -264,7 +264,7 @@ class CCEstimateState extends State<CCEstimate>
     ]);
   }
 
-  Widget getComparisonDisplay(int difference) {
+  Widget ComparisonDisplay(int difference) {
     final Widget ArrowForwardIcon = Icon(
       Pixel.arrowright,
       color: RLDS.textPrimary.withValues(alpha: 0.3),

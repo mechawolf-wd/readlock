@@ -195,12 +195,12 @@ class FeathersSheetState extends State<FeathersSheet> {
         controller: planController,
         itemCount: FEATHER_PLANS.length,
         onPageChanged: handlePlanChanged,
-        itemBuilder: buildPlanCardForIndex,
+        itemBuilder: PlanCardForIndex,
       ),
     );
   }
 
-  Widget buildPlanCardForIndex(BuildContext context, int planIndex) {
+  Widget PlanCardForIndex(BuildContext context, int planIndex) {
     final FeatherPlan plan = FEATHER_PLANS[planIndex];
     final bool isSelected = planIndex == selectedPlanIndex;
 
