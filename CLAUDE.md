@@ -120,3 +120,5 @@ This applies to ALL Dart files in the project - widgets, models, services, utili
 39. Always use a centralised file for constants, never use UPPER_SNAKE_CASE constants in the same file as the code, use a centralised file for constants and reference them in the code.
 
 40. If a method fetches something from the network, it should have "fetch" in its name (eg. fetchUserData, fetchCourseList). If it performs an action without fetching, use a more descriptive verb (eg. submitFeedback, updateProfile).
+
+41. (important) **No em dashes.** Never use the em dash character (the long horizontal dash) anywhere in this project, including code comments, docstrings, file headers, commit messages, PR descriptions, and prose in any markdown or XML file. Use a comma, period, colon, or parentheses instead. Applies to every file under this repo.

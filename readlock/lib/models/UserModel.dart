@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:readlock/constants/DartAliases.dart';
+import 'package:readlock/models/CourseProgressModel.dart';
 
 part 'UserModel.g.dart';
 
@@ -57,6 +58,20 @@ class UserModel {
   @JsonKey(defaultValue: <String>[])
   final List<String> savedCourseIds;
 
+  // * Feather wallet — count of feathers the user owns. Spent on plan
+  // tiers / purchases; topped up by subscription. Stored as an int in
+  // Firestore. Default 0 so existing user docs without the field read
+  // cleanly through the generated fromJson.
+  @JsonKey(defaultValue: 0)
+  final int balance;
+
+  // * Per-course reading progress, keyed by courseId. Each entry tracks
+  // the last package the reader opened in that course and the set of
+  // packages they've unlocked so far. Empty until the user opens their
+  // first package; new entries are added as they progress.
+  @JsonKey(defaultValue: <String, CourseProgressModel>{})
+  final Map<String, CourseProgressModel> courseProgress;
+
   const UserModel({
     required this.id,
     required this.email,
@@ -75,6 +90,8 @@ class UserModel {
     this.bionic = false,
     this.rsvp = false,
     this.savedCourseIds = const <String>[],
+    this.balance = 0,
+    this.courseProgress = const <String, CourseProgressModel>{},
   });
 
   factory UserModel.fromJson(JSONMap json) => _$UserModelFromJson(json);
@@ -113,6 +130,8 @@ class UserModel {
     bool? bionic,
     bool? rsvp,
     List<String>? savedCourseIds,
+    int? balance,
+    Map<String, CourseProgressModel>? courseProgress,
   }) {
     return UserModel(
       id: id,
@@ -132,6 +151,8 @@ class UserModel {
       bionic: bionic ?? this.bionic,
       rsvp: rsvp ?? this.rsvp,
       savedCourseIds: savedCourseIds ?? this.savedCourseIds,
+      balance: balance ?? this.balance,
+      courseProgress: courseProgress ?? this.courseProgress,
     );
   }
 }

@@ -98,4 +98,6 @@ Coding conventions and architectural patterns for the Lockie course editor (Vue 
 
 32. **Centralised constants.** Never use UPPER_SNAKE_CASE constants in the same file as the code. Use a centralised file for constants and reference them.
 
+33. (important) **No em dashes.** Never use the em dash character (the long horizontal dash) anywhere in this project, including code comments, docstrings, file headers, commit messages, PR descriptions, and prose in any markdown or XML file (copywriting guides included). Use a comma, period, colon, or parentheses instead.
+
 @important: After aligning code with the above rules, write down what was changed for each applicable point.
