@@ -367,6 +367,8 @@ These are AI-writing fingerprints. If any appear in a draft, rewrite the whole s
 | realm                    | area, field, or drop it               |
 | landscape (metaphorical) | ("the design landscape" is filler)    |
 | arguably                 | (either argue it or do not)           |
+| better                   | say what is better and why (faster, cheaper, easier to read, longer-lasting). Never write "better" alone, the reader has no idea what changed. |
+| good, bad, great, nice, amazing, interesting, useful, easy, simple, effective, meaningful, special, unique | same rule as "better". These are vague judgments. Name the specific quality (faster, smaller, fewer steps, fewer errors, lasts longer, costs less). If you cannot say what makes it good, the sentence is not ready. |
 
 **Empty filler phrases:**
 
