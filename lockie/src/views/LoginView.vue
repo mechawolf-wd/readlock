@@ -1,5 +1,5 @@
 <script setup lang="ts">
-// Login screen for Lockie — single card, themed with app primary.
+// Login screen for Lockie, single card themed with app primary.
 
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
@@ -14,7 +14,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
-import { BookLock, Loader2 } from 'lucide-vue-next'
+import { Loader2 } from 'lucide-vue-next'
 
 // * Store and router
 
@@ -46,19 +46,14 @@ async function handleLogin() {
 
 <template>
   <div class="relative min-h-screen w-full flex items-center justify-center bg-background p-6 overflow-hidden">
-    <!-- Ambient background — two soft color blobs tinted with the app primary -->
+    <!-- Ambient background, two soft color blobs tinted with the app primary -->
     <div class="pointer-events-none absolute inset-0">
       <div class="absolute -top-32 -right-32 w-[520px] h-[520px] rounded-full bg-primary/15 blur-3xl" />
       <div class="absolute -bottom-40 -left-40 w-[520px] h-[520px] rounded-full bg-primary/10 blur-3xl" />
     </div>
 
     <Card class="relative w-full max-w-md shadow-2xl border-border/60">
-      <CardHeader class="gap-4">
-        <!-- Logo mark -->
-        <div class="size-11 rounded-xl bg-primary/10 flex items-center justify-center ring-1 ring-primary/20">
-          <BookLock class="size-5 text-primary" />
-        </div>
-
+      <CardHeader>
         <div class="flex flex-col gap-1.5">
           <CardTitle class="text-2xl font-semibold tracking-tight">Sign in to Lockie</CardTitle>
           <CardDescription>Course content creator for Readlock.</CardDescription>

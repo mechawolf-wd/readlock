@@ -1,5 +1,5 @@
 <script setup lang="ts">
-// Phone-shaped preview — renders swipes like the Dart app
+// Phone-shaped preview, renders swipes like the Dart app
 // Progressive text reveal, tap to advance
 
 import { computed, ref, watch, onMounted, onUnmounted } from 'vue'
@@ -118,7 +118,7 @@ function resetAndStartReveal() {
 function startSegmentReveal() {
   stopRevealTimer()
 
-  // Skip image segments — reveal them instantly and move to next
+  // Skip image segments, reveal them instantly and move to next
   const currentSegment = textSegments.value[activeSegmentIndex.value] ?? ''
   const isImage = isImageSegment(currentSegment)
 
@@ -344,7 +344,7 @@ function getLabel(entityType: string): string {
   return ENTITY_TYPE_LABELS[entityType as EntityType] ?? entityType
 }
 
-// * Template helpers — keep template free of complex expressions
+// * Template helpers, keep template free of complex expressions
 
 const currentEntityType = computed<string>(() => {
   const swipe = currentSwipe.value
@@ -523,7 +523,7 @@ defineExpose({ handleContentTap })
         />
       </div>
 
-      <!-- Swipe content — tap to reveal -->
+      <!-- Swipe content, tap to reveal -->
       <ScrollArea class="flex-1 min-h-0 cursor-pointer" @click="handleContentTap">
         <!-- Empty state -->
         <div v-if="hasNoSwipes" class="flex-1 flex items-center justify-center text-muted-foreground text-sm px-6 text-center cursor-default">
@@ -534,7 +534,7 @@ defineExpose({ handleContentTap })
         <template v-else-if="currentSwipe">
           <div class="min-h-full p-6 flex flex-col gap-3">
 
-            <!-- * Text / Intro / Outro — progressive reveal with blur -->
+            <!-- * Text / Intro / Outro: progressive reveal with blur -->
             <template v-if="isTextSwipe">
               <template v-for="(segment, segmentIndex) in textSegments" :key="segmentIndex">
                 <!-- Image segments (never blurred) -->
@@ -617,7 +617,7 @@ defineExpose({ handleContentTap })
               <div class="flex-1 flex flex-col items-center justify-center gap-4 py-8">
                 <div class="text-3xl" :style="{ color: courseColor }">"</div>
                 <p class="text-sm text-center italic text-card-foreground leading-relaxed px-2">{{ quoteText }}</p>
-                <p class="text-xs text-muted-foreground">— {{ quoteAuthor }}</p>
+                <p class="text-xs text-muted-foreground">- {{ quoteAuthor }}</p>
               </div>
             </template>
 

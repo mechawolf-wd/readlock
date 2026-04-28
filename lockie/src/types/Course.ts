@@ -183,7 +183,7 @@ export const QUICK_ADD_TYPES: EntityType[] = [
   'true-false-question',
 ]
 
-// * Course theme colors — the closed palette. A course color MUST be one of these.
+// * Course theme colors, the closed palette. A course color MUST be one of these.
 // Writers are encouraged to pick whichever swatch best matches the original book cover.
 
 export const COURSE_COLORS: string[] = [
@@ -205,7 +205,7 @@ export const DEFAULT_COURSE_COLOR: string = COURSE_COLORS[0]
 
 // Canonical closed list mirrored in copywriting/ReadlockInstructor.xml and
 // readlock/lib/constants/RLCourseGenres.dart. Authors pick 3 to 5 from
-// this set when filling a course's `genres:` field — no invented tags.
+// this set when filling a course's `genres:` field, no invented tags.
 export const PREMADE_GENRES: string[] = [
   'design',
   'psychology',

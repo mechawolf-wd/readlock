@@ -1,4 +1,4 @@
-// Firebase initialization — shared config for Firestore access
+// Firebase initialization, shared config for Firestore access
 // Uses the same credentials as the Readlock Flutter app
 
 import { initializeApp } from 'firebase/app'

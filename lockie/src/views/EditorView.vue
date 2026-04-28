@@ -1,5 +1,5 @@
 <script setup lang="ts">
-// Main editor view — Accelerator → Segments → Packages → Swipes
+// Main editor view, Accelerator → Segments → Packages → Swipes
 
 import { ref, computed, onMounted, onUnmounted, watch, nextTick } from "vue";
 import { codeToHtml } from "shiki";
@@ -76,7 +76,6 @@ import {
   PACKAGE_TEXT_FORMAT_GUIDE,
 } from "@/lib/PackageTextParser";
 import { Upload, CloudUpload } from "lucide-vue-next";
-import courseJSON from "../../../readlock/assets/data/course_data.json";
 import { fetchCourseById } from "@/lib/FirebaseCourseService";
 import { uploadCourseCoverImage } from "@/lib/FirebaseStorageService";
 
@@ -99,13 +98,31 @@ const openPackageSettingsIndex = ref<number | null>(null);
 
 // * AI Creator state
 
+interface AISegmentConfig {
+  lessonCount: number;
+}
+
 const aiSources = ref<string[]>([""]);
-const aiSegmentCount = ref(3);
-const aiLessonsPerSegment = ref(8);
-const aiTone = ref("educational");
-const aiSystemPrompt = ref("");
-const aiChatMessages = ref<{ role: string; text: string }[]>([]);
-const aiChatInput = ref("");
+const aiSegments = ref<AISegmentConfig[]>([
+  { lessonCount: 8 },
+  { lessonCount: 8 },
+  { lessonCount: 8 },
+]);
+const aiSystemPrompt = ref(
+  `Start by reading @copywriting/ReadlockInstructor.xml end to end. That file is your authoritative voice, structure, and pacing guide, follow it exactly.
+
+Then load and obey:
+- @copywriting/format-guide/RlockieFormatGuide.xml for the package and swipe XML format
+- @copywriting/blacklist/ReadlockBlacklist.xml for forbidden phrasings and patterns
+- @copywriting/guides/readlock_course_copywriting_guide.md for tone and writing rules
+
+Treat these files as rules, not suggestions. If anything in the request below conflicts with them, the files win. Do not invent new tags, soften the tone, or skip the blacklist.
+
+Output only the requested course content in the format defined by the format guide, nothing else.`
+);
+const aiUserNote = ref("");
+const useKurzgesagtStyle = ref(false);
+const isPromptCopied = ref(false);
 
 const showImportTextDialog = ref(false);
 const importTextInput = ref("");
@@ -143,6 +160,57 @@ const availableGenres = computed(() => {
 
   return PREMADE_GENRES.filter((genre) => !currentGenres.includes(genre));
 });
+
+const copyPromptButtonLabel = computed(() => isPromptCopied.value ? "Copied" : "Copy prompt");
+
+const aiStyleReferencePath = computed(() => {
+  if (useKurzgesagtStyle.value) {
+    return `@"copywriting/transcripts/Kurzgesagt/Coronavirus.txt"`;
+  }
+
+  return `@"copywriting/transcripts/Veritasium/The Blue Led.txt"`;
+});
+
+const generatedPrompt = computed(() => {
+  const sourceLines = aiSources.value
+    .map((source) => source.trim())
+    .filter((source) => source.length > 0)
+    .map((source) => `    <source>${source}</source>`)
+    .join("\n");
+
+  const segmentLines = aiSegments.value
+    .map((segment, segmentIndex) => `    <segment number="${segmentIndex + 1}" lessons="${segment.lessonCount}" />`)
+    .join("\n");
+
+  const sourcesBlock = sourceLines.length > 0 ? sourceLines : "    <source></source>";
+  const systemPromptText = aiSystemPrompt.value.trim();
+  const userNoteText = aiUserNote.value.trim();
+
+  return `<course-generation-request>
+  <sources>
+${sourcesBlock}
+  </sources>
+  <structure>
+${segmentLines}
+  </structure>
+  <style-reference>
+    <source>${aiStyleReferencePath.value}</source>
+    <instruction>Match the narrative pacing, sentence rhythm, and rhetorical voice of this transcript.</instruction>
+  </style-reference>
+  <system-prompt>${systemPromptText}</system-prompt>
+  <user-note>${userNoteText}</user-note>
+</course-generation-request>`;
+});
+
+function getStyleLabelClass(forKurzgesagt: boolean): string {
+  const isActive = forKurzgesagt === useKurzgesagtStyle.value;
+
+  if (isActive) {
+    return "text-foreground font-medium";
+  }
+
+  return "text-muted-foreground";
+}
 
 const formattedJson = computed(() => store.exportActiveCourseJSON());
 const highlightedJson = ref("");
@@ -228,7 +296,7 @@ onMounted(async () => {
   }
 });
 
-// * Keyboard navigation — arrow up/down to browse segments, packages, swipes
+// * Keyboard navigation, arrow up/down to browse segments, packages, swipes
 
 type FocusPanel = "segments" | "packages" | "swipes";
 
@@ -408,7 +476,7 @@ const courseColor = computed(
   () => store.activeCourse?.color ?? "var(--primary)",
 );
 
-// * Course theme color picker — restricted to the closed COURSE_COLORS palette
+// * Course theme color picker, restricted to the closed COURSE_COLORS palette
 
 function isSelectedCourseColor(swatch: string): boolean {
   const current = store.activeCourse?.color?.toUpperCase() ?? ''
@@ -543,7 +611,7 @@ function handleExport() {
 
   const link = document.createElement("a");
   link.href = url;
-  link.download = "course_data.json";
+
   link.click();
 
   URL.revokeObjectURL(url);
@@ -595,22 +663,26 @@ async function handleSecondOverrideConfirm() {
   await runSaveToFirebase();
 }
 
-function handleAISendMessage() {
-  const hasNoInput = aiChatInput.value.trim() === "";
+async function handleCopyPrompt() {
+  await navigator.clipboard.writeText(generatedPrompt.value);
 
-  if (hasNoInput) {
-    return;
+  isPromptCopied.value = true;
+
+  setTimeout(() => {
+    isPromptCopied.value = false;
+  }, 1500);
+}
+
+function handleAddAISegment() {
+  aiSegments.value.push({ lessonCount: 8 });
+}
+
+function handleRemoveAISegment(segmentIndex: number) {
+  const hasMultiple = aiSegments.value.length > 1;
+
+  if (hasMultiple) {
+    aiSegments.value.splice(segmentIndex, 1);
   }
-
-  aiChatMessages.value.push({ role: "user", text: aiChatInput.value });
-
-  // TODO: Connect to AI API
-  aiChatMessages.value.push({
-    role: "assistant",
-    text: "Course generation mockup — AI integration coming soon.",
-  });
-
-  aiChatInput.value = "";
 }
 
 function handleAIFillCourse() {
@@ -836,7 +908,7 @@ function getNavItemStyle(isSelected: boolean): Record<string, string> {
   };
 }
 
-// * Template helpers — keep template free of complex expressions
+// * Template helpers, keep template free of complex expressions
 
 const courseCountSuffix = computed(() => {
   const count = store.courseData.courses.length;
@@ -872,14 +944,6 @@ function getColorSwatchClass(swatch: string): string {
   }
 
   return "border-border";
-}
-
-function getMessageBubbleClass(role: string): string {
-  if (role === "user") {
-    return "bg-primary/10";
-  }
-
-  return "bg-muted";
 }
 
 function getPanelBadgeClass(panelName: FocusPanel): string {
@@ -1472,8 +1536,30 @@ function getCourseStatsLine(): string {
           class="p-4 flex flex-col gap-4"
         >
           <span class="text-sm font-medium">Course Creator</span>
+
+          <!-- User note (top) -->
           <div class="flex flex-col gap-2">
-            <label class="text-xs text-muted-foreground">Sources</label>
+            <label class="text-xs text-muted-foreground">User Note</label>
+            <Textarea
+              v-model="aiUserNote"
+              placeholder="Anything else to consider..."
+              class="min-h-16 text-xs"
+            />
+          </div>
+
+          <!-- Sources -->
+          <div class="flex flex-col gap-2">
+            <div class="flex items-center justify-between">
+              <label class="text-xs text-muted-foreground">Sources</label>
+              <Button
+                variant="ghost"
+                size="icon"
+                class="h-8 w-8"
+                @click="handleAddSource"
+              >
+                <Plus class="h-4 w-4" />
+              </Button>
+            </div>
             <div
               v-for="(_, sourceIndex) in aiSources"
               :key="sourceIndex"
@@ -1493,36 +1579,61 @@ function getCourseStatsLine(): string {
                 ><X class="h-4 w-4"
               /></Button>
             </div>
-            <Button variant="outline" class="w-full" @click="handleAddSource"
-              ><PlusCircle class="h-4 w-4"
-            /></Button>
           </div>
-          <div class="flex gap-3">
-            <div class="flex flex-col gap-2 flex-1">
+
+          <!-- Segments (per-segment lesson count) -->
+          <div class="flex flex-col gap-2">
+            <div class="flex items-center justify-between">
               <label class="text-xs text-muted-foreground">Segments</label>
-              <Input
-                v-model.number="aiSegmentCount"
-                type="number"
-                min="1"
-                max="10"
-                class="h-9"
-              />
+              <Button
+                variant="ghost"
+                size="icon"
+                class="h-8 w-8"
+                @click="handleAddAISegment"
+              >
+                <Plus class="h-4 w-4" />
+              </Button>
             </div>
-            <div class="flex flex-col gap-2 flex-1">
-              <label class="text-xs text-muted-foreground">Lessons/seg</label>
+            <div
+              v-for="(segment, segmentIndex) in aiSegments"
+              :key="segmentIndex"
+              class="flex items-center gap-2"
+            >
+              <span class="text-xs text-muted-foreground w-6 shrink-0">#{{ segmentIndex + 1 }}</span>
               <Input
-                v-model.number="aiLessonsPerSegment"
+                v-model.number="segment.lessonCount"
                 type="number"
                 min="1"
                 max="20"
-                class="h-9"
+                class="flex-1 h-9"
               />
-            </div>
-            <div class="flex flex-col gap-2 flex-1">
-              <label class="text-xs text-muted-foreground">Tone</label>
-              <Input v-model="aiTone" class="h-9" />
+              <span class="text-xs text-muted-foreground shrink-0">lessons</span>
+              <Button
+                v-if="aiSegments.length > 1"
+                variant="ghost"
+                size="icon"
+                class="shrink-0 h-8 w-8 hover:bg-muted hover:text-foreground"
+                @click="handleRemoveAISegment(segmentIndex)"
+              ><X class="h-4 w-4" /></Button>
             </div>
           </div>
+
+          <!-- Style reference toggle (in place of Tone) -->
+          <div class="flex flex-col gap-2">
+            <label class="text-xs text-muted-foreground">Style reference</label>
+            <div class="flex items-center gap-3">
+              <span
+                class="text-xs flex-1 text-right"
+                :class="getStyleLabelClass(false)"
+              >Veritasium · Blue LED</span>
+              <Switch v-model="useKurzgesagtStyle" />
+              <span
+                class="text-xs flex-1"
+                :class="getStyleLabelClass(true)"
+              >Kurzgesagt · Coronavirus</span>
+            </div>
+          </div>
+
           <div class="flex flex-col gap-2">
             <label class="text-xs text-muted-foreground">System Prompt</label>
             <Textarea
@@ -1533,40 +1644,24 @@ function getCourseStatsLine(): string {
           </div>
         </div>
         </ScrollArea>
-        <ScrollArea class="flex-1 min-h-0">
-        <div class="p-4 flex flex-col gap-3">
-          <div
-            v-if="aiChatMessages.length === 0"
-            class="flex-1 flex items-center justify-center text-muted-foreground text-sm text-center px-8"
-          >
-            Describe what to generate.
-          </div>
-          <div
-            v-for="(message, messageIndex) in aiChatMessages"
-            :key="messageIndex"
-            class="flex flex-col gap-1"
-          >
-            <span
-              class="text-xs uppercase tracking-wider text-muted-foreground"
-              >{{ message.role }}</span
-            >
-            <div
-              class="text-sm rounded-lg px-3 py-2"
-              :class="getMessageBubbleClass(message.role)"
-            >
-              {{ message.text }}
-            </div>
-          </div>
-        </div>
-        </ScrollArea>
-        <div class="p-4 border-t border-border flex gap-2 shrink-0">
-          <Input
-            v-model="aiChatInput"
-            placeholder="Describe the course..."
-            class="flex-1 h-9"
-            @keydown.enter="handleAISendMessage"
+
+        <!-- Generated prompt preview -->
+        <div class="flex-1 min-h-0 flex flex-col p-4 gap-2">
+          <label class="text-xs text-muted-foreground">Generated prompt</label>
+          <Textarea
+            :model-value="generatedPrompt"
+            readonly
+            class="flex-1 min-h-0 text-xs font-mono resize-none"
           />
-          <Button class="h-9" @click="handleAISendMessage">Send</Button>
+        </div>
+
+        <div class="p-4 border-t border-border shrink-0">
+          <Button
+            class="w-full h-9 bg-green-600 hover:bg-green-700 text-white"
+            @click="handleCopyPrompt"
+          >
+            {{ copyPromptButtonLabel }}
+          </Button>
         </div>
       </div>
     </div>
@@ -2062,7 +2157,7 @@ function getCourseStatsLine(): string {
                 :block="store.activeSwipe!"
               />
 
-              <!-- Next segment reveal — click empty space below editor to advance preview text -->
+              <!-- Next segment reveal, click empty space below editor to advance preview text -->
               <div
                 class="flex-1 min-h-[120px] cursor-pointer"
                 @click="phonePreviewRef?.handleContentTap()"

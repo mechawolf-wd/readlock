@@ -1,4 +1,4 @@
-// Course editor store — Accelerator → Segments → Packages → Swipes
+// Course editor store, Accelerator → Segments → Packages → Swipes
 
 import { defineStore } from 'pinia'
 import { ref, computed, watch } from 'vue'
@@ -18,7 +18,7 @@ function generateUid(): string {
 }
 
 // Assigns internal _uid to segments, packages, swipes, and options.
-// The _uid provides a stable Vue :key across mutations — segment-id / lesson-id
+// The _uid provides a stable Vue :key across mutations, segment-id / lesson-id
 // are derived from position and course id, so they change on reorder / rename,
 // and using them as keys would force spurious remounts.
 function ensureSwipeUids(data: CourseData) {

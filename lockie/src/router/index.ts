@@ -1,4 +1,4 @@
-// Router — login and editor routes with auth guard
+// Router, login and editor routes with auth guard
 
 import { createRouter, createWebHistory } from 'vue-router'
 import { useAuthStore } from '@/stores/AuthStore'

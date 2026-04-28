@@ -1,4 +1,4 @@
-// My Bookshelf screen — shows the courses the reader has recently started.
+// Bookshelf screen, shows the courses the reader has recently started.
 // A course is appended to /users/{id}.savedCourseIds the moment the reader
 // taps a lesson in the roadmap (see CourseRoadmapScreen.showLoadingScreenThenNavigate).
 // The list paginates in pages of BOOKSHELF_PAGE_SIZE via a Load more button
@@ -32,14 +32,14 @@ import 'package:pixelarticons/pixel.dart';
 // Tapping Load more reveals another BOOKSHELF_PAGE_SIZE courses.
 const int BOOKSHELF_PAGE_SIZE = 5;
 
-class MyBookshelfScreen extends StatefulWidget {
-  const MyBookshelfScreen({super.key});
+class BookshelfScreen extends StatefulWidget {
+  const BookshelfScreen({super.key});
 
   @override
-  State<MyBookshelfScreen> createState() => MyBookshelfScreenState();
+  State<BookshelfScreen> createState() => BookshelfScreenState();
 }
 
-class MyBookshelfScreenState extends State<MyBookshelfScreen> {
+class BookshelfScreenState extends State<BookshelfScreen> {
   static final Widget SettingsIcon = const Icon(
     Pixel.menu,
     color: RLDS.textSecondary,
@@ -266,7 +266,7 @@ class MyBookshelfScreenState extends State<MyBookshelfScreen> {
     );
   }
 
-  // Empty-state bird — same selectedBirdNotifier source as Settings/Pause so
+  // Empty-state bird, same selectedBirdNotifier source as Settings/Pause so
   // the shelf reflects whichever bird the reader has picked. Idle frames for
   // now (the only animation we have configured on every sprite sheet).
   Widget BookshelfBird() {

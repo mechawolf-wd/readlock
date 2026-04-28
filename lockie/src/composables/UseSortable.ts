@@ -51,7 +51,7 @@ export function useSortable(
           parent.appendChild(movedNode)
         }
 
-        // Now update the reactive array — Vue will reconcile the DOM
+        // Now update the reactive array, Vue will reconcile the DOM
         const moved = list.value.splice(oldIndex, 1)[0]
 
         if (moved) {

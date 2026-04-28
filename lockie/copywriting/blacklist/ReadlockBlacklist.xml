@@ -1,486 +1,511 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <blacklist>
-  <critical_rules>
-    <rule id="1">Never use em dashes. Rewrite as two sentences or use a comma, period, or colon.</rule>
-    <rule id="2">Never use any word from the banned verbs list. Use the plain replacement.</rule>
-    <rule id="3">Never use structural templates (correctio, colon-punchline, mirror sentence, rhetorical-Q-then-A, inflated assertions, etc.).</rule>
-    <rule id="4">Never open or close with a cliched frame ("In today's world...", "In conclusion...", "At the end of the day...").</rule>
-    <rule id="5">If you remove a word and the sentence still works, the word was not earning its place. Leave it out.</rule>
-  </critical_rules>
 
-  <section id="1" name="Sentence templates and structural shells" summary="The skeletons of AI writing. Even clean vocabulary cannot hide these. These are the MOST detectable AI patterns. Rewrite from scratch.">
+  <note>
+These bans target corporate or AI-flavored use, not literal meaning. "Heat transforms ice into water" is allowed. "Transform your workflow" is banned. "The compiler optimizes the code" is allowed. "Optimize your potential" is banned. The test: does the word point at something specific in the sentence, or is it decoration? Decoration is banned. Words with no literal use (delve, leverage, tapestry of insights, embark on a journey, navigate the frontier) have no exception, they are banned in every form.
+  </note>
 
-    <group name="Paired constructions">
-      <item>Not only X, but also Y</item>
-      <item>It is not just about X, it is also about Y</item>
-      <item>It's not just X, Y also matters</item>
-      <item>Not only does it X, but it also Y</item>
-    </group>
+  <tier_1_always_banned summary="AI fingerprints and corporate or decorative patterns with no literal use. Banned in every form, no exception. If a draft contains any of these, the sentence is rewritten from scratch.">
 
-    <group name="Named structural patterns">
-      <pattern name="correctio">The "not X, it's Y" move. Latin: correctio. Greek: epanorthosis. The speaker states something, then pretends to retract it so the second clause lands harder. BANNED ALTOGETHER in every form: one sentence ("It's not X, it's Y."), two sentences ("It is not X. It is Y."), softened ("It's not just X, it's Y." / "Not so much X as Y."), and dressed-up variants like definition-then-reframe ("X is defined as Y. But what it really means is Z."). If Y is the real claim, write only Y. The reader does not need X denied first.</pattern>
-      <pattern name="mirror-sentence">"The question is not whether X, the question is Y." A correctio built around repeating the same noun. Just state Y.</pattern>
-      <pattern name="colon-punchline">"The result: [dramatic claim]." Write a normal sentence.</pattern>
-      <pattern name="rhetorical-Q-then-A">"But why does this matter? Because..." Either let the question sit or make the statement directly.</pattern>
-      <pattern name="ascending-list-of-three">"It is not just A. It is B. It is C." Ascending drama is inflation, not emphasis. This is correctio stacked three times.</pattern>
-      <pattern name="imagine-if-escalation">"Imagine X. Now imagine Y. Now imagine Z." One is an invitation. A chain is manipulation.</pattern>
-      <pattern name="bookend-callback">"Remember the story from the beginning? It turns out..." If the connection is strong, the reader already made it.</pattern>
-    </group>
+    <section id="1" name="Sentence templates and structural shells" summary="The skeletons of AI writing. Even clean vocabulary cannot hide these. These are the MOST detectable AI patterns. Rewrite from scratch.">
 
-    <group name="Framing shells">
-      <item>By doing X, you can achieve Y</item>
-      <item>The [noun] has revolutionized the way we [verb]</item>
-      <item>A key aspect of...</item>
-      <item>Understanding [topic] is essential for...</item>
-      <item>The purpose of this [article/guide] is to...</item>
-      <item>This [tool/approach] is a game changer for...</item>
-      <item>To unlock the power of...</item>
-      <item>As we navigate the complexities of...</item>
-      <item>To shed light on...</item>
-      <item>To embark on a journey...</item>
-      <item>To pave the way for...</item>
-    </group>
+      <group name="Paired constructions (AI-flavored variants)">
+        <item>It is not just about X, it is also about Y</item>
+        <item>It's not just X, Y also matters</item>
+        <item>Not only does it X, but it also Y</item>
+      </group>
 
-  </section>
+      <group name="Named structural patterns">
+        <pattern name="correctio">The "not X, it's Y" move. Latin: correctio. Greek: epanorthosis. The speaker states something, then pretends to retract it so the second clause lands harder. BANNED ALTOGETHER in every form: one sentence ("It's not X, it's Y."), two sentences ("It is not X. It is Y."), softened ("It's not just X, it's Y." / "Not so much X as Y."), and dressed-up variants like definition-then-reframe ("X is defined as Y. But what it really means is Z."). If Y is the real claim, write only Y. The reader does not need X denied first.</pattern>
+        <pattern name="mirror-sentence">"The question is not whether X, the question is Y." A correctio built around repeating the same noun. Just state Y.</pattern>
+        <pattern name="colon-punchline">"The result: [dramatic claim]." Write a normal sentence.</pattern>
+        <pattern name="rhetorical-Q-then-A">"But why does this matter? Because..." Either let the question sit or make the statement directly.</pattern>
+        <pattern name="ascending-list-of-three">"It is not just A. It is B. It is C." Ascending drama is inflation, not emphasis. This is correctio stacked three times.</pattern>
+        <pattern name="imagine-if-escalation">"Imagine X. Now imagine Y. Now imagine Z." One is an invitation. A chain is manipulation.</pattern>
+        <pattern name="bookend-callback">"Remember the story from the beginning? It turns out..." If the connection is strong, the reader already made it.</pattern>
+      </group>
 
-  <section id="2" name="Punctuation and formatting tells" summary="Formatting choices that instantly reveal AI origin. These are the second most detectable patterns.">
+      <group name="Framing shells">
+        <item>By doing X, you can achieve Y</item>
+        <item>The [noun] has revolutionized the way we [verb]</item>
+        <item>A key aspect of...</item>
+        <item>Understanding [topic] is essential for...</item>
+        <item>The purpose of this [article/guide] is to...</item>
+        <item>This [tool/approach] is a game changer for...</item>
+        <item>To unlock the power of...</item>
+        <item>As we navigate the complexities of...</item>
+        <item>To shed light on...</item>
+        <item>To embark on a journey...</item>
+        <item>To pave the way for...</item>
+      </group>
 
-    <group name="Em dashes">
-      <rule>Never use. Rewrite as two sentences or use a comma, period, or colon.</rule>
-    </group>
+    </section>
 
-    <group name="Inflated assertions">
-      <item>"The math is real."</item>
-      <item>"That number is not a metaphor."</item>
-      <item>"The science is settled."</item>
-      <item>"The data is clear."</item>
-      <item>"The evidence speaks for itself."</item>
-      <rule>If the writing did its job, the reader already believes. If it did not, an assertion will not fix it. Cut these.</rule>
-    </group>
+    <section id="2" name="Punctuation and formatting tells" summary="Formatting choices that instantly reveal AI origin. These are the second most detectable patterns.">
 
-    <group name="Dramatic fragmentation">
-      <item>"Sixty. Thousand."</item>
-      <item>"Let. That. Sink. In."</item>
-      <item>"One word. Design."</item>
-      <rule>Fragmenting sentences for emphasis is performative. Delete.</rule>
-    </group>
+      <group name="Em dashes">
+        <rule>Never use. Rewrite as two sentences or use a comma, period, or colon.</rule>
+      </group>
 
-    <group name="Emotional imperatives">
-      <item>"Let that sink in."</item>
-      <item>"Think about that for a moment."</item>
-      <item>"Read that again."</item>
-      <rule>Never tell the reader when to pause or what to feel.</rule>
-    </group>
+      <group name="Inflated assertions">
+        <item>"The math is real."</item>
+        <item>"That number is not a metaphor."</item>
+        <item>"The science is settled."</item>
+        <item>"The data is clear."</item>
+        <item>"The evidence speaks for itself."</item>
+        <rule>If the writing did its job, the reader already believes. If it did not, an assertion will not fix it. Cut these.</rule>
+      </group>
 
-    <group name="Triple-adjective lists">
-      <item>"It is powerful, transformative, and deeply compelling."</item>
-      <rule>Pick one word. Three means the point is weak.</rule>
-    </group>
+      <group name="Dramatic fragmentation">
+        <item>"Sixty. Thousand."</item>
+        <item>"Let. That. Sink. In."</item>
+        <item>"One word. Design."</item>
+        <rule>Fragmenting sentences for emphasis is performative. Delete.</rule>
+      </group>
 
-    <group name="Rare or made-up hyphenated words (use only when necessary)">
-      <item>half-second</item>
-      <item>split-second</item>
-      <item>quarter-turn</item>
-      <item>mid-thought</item>
-      <item>near-miss</item>
-      <item>half-heartbeat</item>
-      <item>half-breath</item>
-      <item>half-glance</item>
-      <rule>Not a hard ban. These sound clever but are harder to read, so default to "instant," "moment," or "a single beat." Keep the compound only when the plain word would lose meaning the sentence needs.</rule>
-    </group>
+      <group name="Emotional imperatives">
+        <item>"Let that sink in."</item>
+        <item>"Think about that for a moment."</item>
+        <item>"Read that again."</item>
+        <rule>Never tell the reader when to pause or what to feel.</rule>
+      </group>
 
-  </section>
+      <group name="Triple-adjective lists">
+        <item>"It is powerful, transformative, and deeply compelling."</item>
+        <rule>Pick one word. Three means the point is weak.</rule>
+      </group>
 
-  <section id="3" name="Buzzwords and empty verbs" summary="These add volume, not meaning. Replace with the specific thing you actually mean.">
+    </section>
 
-    <group name="Verbs that say nothing">
-      <verb banned="leverage" replacement="use" />
-      <verb banned="utilize" replacement="use" />
-      <verb banned="empower" replacement="help, allow" />
-      <verb banned="enable" replacement="let, allow" />
-      <verb banned="enhance" replacement="say what improves" />
-      <verb banned="drive" replacement="say what causes what" />
-      <verb banned="deliver" replacement="say what is provided" />
-      <verb banned="transform" replacement="say what changes into what" />
-      <verb banned="optimize" replacement="say what is made better" />
-      <verb banned="facilitate" replacement="help, make possible" />
-      <verb banned="streamline" replacement="say what is simplified" />
-      <verb banned="unlock" replacement="say what becomes available" />
-      <verb banned="foster" replacement="encourage, build" />
-      <verb banned="champion" replacement="support, promote" />
-      <verb banned="revolutionize" replacement="say what changed" />
-      <verb banned="catalyze" replacement="start, cause" />
-      <verb banned="amplify" replacement="increase, or be specific" />
-      <verb banned="harness" replacement="use" />
-      <verb banned="elevate" replacement="improve, or be specific" />
-      <verb banned="spearhead" replacement="lead" />
-      <verb banned="pioneer" replacement="start, create" />
-      <verb banned="orchestrate" replacement="organize, coordinate" />
-      <verb banned="maximize" replacement="increase, or be specific" />
-      <verb banned="undertake" replacement="do, start" />
-      <verb banned="delve" replacement="look at, examine" />
-    </group>
+    <section id="3" name="Buzzword verbs (no literal use)" summary="These add volume, not meaning. They have no specific meaning to recover. Replace with the specific thing you actually mean.">
 
-    <group name="Buzzword adjectives">
-      <item>robust</item>
-      <item>scalable</item>
-      <item>innovative</item>
-      <item>cutting-edge</item>
-      <item>next-generation</item>
-      <item>mission-critical</item>
-      <item>holistic</item>
-      <item>seamless</item>
-      <item>comprehensive</item>
-      <item>impactful</item>
-      <item>strategic</item>
-      <item>world-class</item>
-      <item>best-in-class</item>
-      <item>dynamic</item>
-      <item>turnkey</item>
-      <item>revolutionary</item>
-    </group>
+      <group name="Verbs that say nothing">
+        <verb banned="leverage" replacement="use" />
+        <verb banned="utilize" replacement="use" />
+        <verb banned="empower" replacement="help, allow" />
+        <verb banned="foster" replacement="encourage, build" />
+        <verb banned="unlock" replacement="say what becomes available" />
+        <verb banned="harness" replacement="use" />
+        <verb banned="elevate" replacement="improve, or be specific" />
+        <verb banned="spearhead" replacement="lead" />
+        <verb banned="delve" replacement="look at, examine" />
+        <verb banned="champion" replacement="support, promote" />
+        <verb banned="revolutionize" replacement="say what changed" />
+      </group>
 
-  </section>
+      <group name="Buzzword adjectives">
+        <item>robust</item>
+        <item>scalable</item>
+        <item>innovative</item>
+        <item>cutting-edge</item>
+        <item>next-generation</item>
+        <item>mission-critical</item>
+        <item>holistic</item>
+        <item>seamless</item>
+        <item>comprehensive</item>
+        <item>impactful</item>
+        <item>strategic</item>
+        <item>world-class</item>
+        <item>best-in-class</item>
+        <item>dynamic</item>
+        <item>turnkey</item>
+        <item>revolutionary</item>
+      </group>
 
-  <section id="4" name="Adjectives and adverbs that inflate without meaning" summary="These modify nothing. They make sentences feel important without adding information.">
+    </section>
 
-    <group name="Inflating modifiers">
-      <item>crucial</item>
-      <item>pivotal</item>
-      <item>vital</item>
-      <item>essential</item>
-      <item>unparalleled</item>
-      <item>transformative</item>
-      <item>compelling</item>
-      <item>groundbreaking</item>
-      <item>agile</item>
-      <item>efficient</item>
-      <item>exemplary</item>
-      <item>versatile</item>
-      <item>insightful</item>
-    </group>
+    <section id="4" name="Inflators with no literal use" summary="These modify nothing. They make sentences feel important without adding information.">
 
-    <group name="Wildcard constructions (always delete)">
-      <item>A crucial...</item>
-      <item>A seamless...</item>
-      <item>A robust...</item>
-      <item>A vital...</item>
-      <item>A strategic...</item>
-      <item>A pivotal...</item>
-      <item>A transformative...</item>
-      <item>A revolutionary...</item>
-      <item>Highly innovative...</item>
-      <item>Truly transformative...</item>
-      <item>Deeply efficient...</item>
-      <item>Highly versatile...</item>
-    </group>
+      <group name="Inflating modifiers">
+        <item>unparalleled</item>
+        <item>transformative</item>
+        <item>compelling</item>
+        <item>groundbreaking</item>
+      </group>
 
-  </section>
+      <group name="Wildcard constructions (always delete)">
+        <item>A crucial...</item>
+        <item>A seamless...</item>
+        <item>A robust...</item>
+        <item>A vital...</item>
+        <item>A strategic...</item>
+        <item>A pivotal...</item>
+        <item>A transformative...</item>
+        <item>A revolutionary...</item>
+        <item>Highly innovative...</item>
+        <item>Truly transformative...</item>
+        <item>Deeply efficient...</item>
+        <item>Highly versatile...</item>
+      </group>
 
-  <section id="5" name="Openers and lead-ins" summary="Never open a sentence, paragraph, or section with any of these.">
+    </section>
 
-    <group name="Time-based framing">
-      <item>In today's digital age</item>
-      <item>In the age of</item>
-      <item>In the realm of</item>
-      <item>In the world of</item>
-      <item>In the context of</item>
-      <item>In the field of</item>
-      <item>In the climate of</item>
-      <item>In the ever-evolving landscape of</item>
-      <item>In the ever-changing world of</item>
-      <item>In the rapidly shifting landscape of</item>
-      <item>In the constantly evolving field of</item>
-      <item>In the dynamic world of</item>
-      <item>In the modern age</item>
-      <item>In the current era</item>
-      <item>In the not-too-distant future</item>
-      <item>In the near future</item>
-      <item>With the advent of</item>
-    </group>
+    <section id="5" name="Openers and lead-ins" summary="Never open a sentence, paragraph, or section with any of these.">
 
-    <group name="Importance markers">
-      <item>It is important to note that</item>
-      <item>It is worth noting that</item>
-      <item>It should be noted that</item>
-      <item>It's worth mentioning that</item>
-      <item>It goes without saying that</item>
-      <item>It has been said that</item>
-      <item>It is often said that</item>
-      <item>It is widely believed that</item>
-      <item>It would appear that</item>
-      <item>There is no doubt that</item>
-      <item>Without a doubt</item>
-      <item>Needless to say</item>
-      <item>As a matter of fact</item>
-      <item>For all intents and purposes</item>
-      <item>Be that as it may</item>
-      <item>In light of the fact that</item>
-      <item>Due to the fact that</item>
-      <item>In spite of the fact that</item>
-    </group>
+      <group name="Time-based framing">
+        <item>In today's digital age</item>
+        <item>In the age of</item>
+        <item>In the realm of</item>
+        <item>In the world of</item>
+        <item>In the context of</item>
+        <item>In the field of</item>
+        <item>In the climate of</item>
+        <item>In the ever-evolving landscape of</item>
+        <item>In the ever-changing world of</item>
+        <item>In the rapidly shifting landscape of</item>
+        <item>In the constantly evolving field of</item>
+        <item>In the dynamic world of</item>
+        <item>In the modern age</item>
+        <item>In the current era</item>
+        <item>In the not-too-distant future</item>
+        <item>In the near future</item>
+        <item>With the advent of</item>
+      </group>
 
-    <group name="Topic-staging">
-      <item>Let's take a closer look</item>
-      <item>Let's examine this further</item>
-      <item>Let's dive into</item>
-      <item>Let's delve into</item>
-      <item>Let us explore</item>
-      <item>Let us consider</item>
-      <item>Let us break this down</item>
-      <item>To begin with</item>
-      <item>To start with</item>
-      <item>To kick things off</item>
-      <item>When it comes to</item>
-      <item>When discussing</item>
-      <item>When examining</item>
-      <item>When exploring</item>
-      <item>As we look at</item>
-      <item>As we explore</item>
-      <item>As we examine</item>
-    </group>
+      <group name="Importance markers">
+        <item>It is important to note that</item>
+        <item>It is worth noting that</item>
+        <item>It should be noted that</item>
+        <item>It's worth mentioning that</item>
+        <item>It goes without saying that</item>
+        <item>It has been said that</item>
+        <item>It is often said that</item>
+        <item>It is widely believed that</item>
+        <item>It would appear that</item>
+        <item>There is no doubt that</item>
+        <item>Without a doubt</item>
+        <item>Needless to say</item>
+        <item>As a matter of fact</item>
+        <item>For all intents and purposes</item>
+        <item>Be that as it may</item>
+        <item>In light of the fact that</item>
+        <item>Due to the fact that</item>
+        <item>In spite of the fact that</item>
+      </group>
 
-    <group name="Article-starter cliches">
-      <item>This article explores</item>
-      <item>As we begin</item>
-      <item>Embarking on a journey</item>
-      <item>Delving into</item>
-      <item>Navigating the complexities of</item>
-      <item>Unlocking the secrets of</item>
-      <item>A testament to</item>
-      <item>First and foremost</item>
-      <item>In order to</item>
-      <item>The fact that</item>
-      <item>To put it simply</item>
-      <item>With that being said</item>
-      <item>This paper aims to</item>
-      <item>One could argue that</item>
-    </group>
+      <group name="Topic-staging">
+        <item>Let's take a closer look</item>
+        <item>Let's examine this further</item>
+        <item>Let's dive into</item>
+        <item>Let's delve into</item>
+        <item>Let us explore</item>
+        <item>Let us consider</item>
+        <item>Let us break this down</item>
+        <item>To begin with</item>
+        <item>To start with</item>
+        <item>To kick things off</item>
+        <item>When it comes to</item>
+        <item>When discussing</item>
+        <item>When examining</item>
+        <item>When exploring</item>
+        <item>As we look at</item>
+        <item>As we explore</item>
+        <item>As we examine</item>
+      </group>
 
-  </section>
+      <group name="Article-starter cliches">
+        <item>This article explores</item>
+        <item>As we begin</item>
+        <item>Embarking on a journey</item>
+        <item>Delving into</item>
+        <item>Navigating the complexities of</item>
+        <item>Unlocking the secrets of</item>
+        <item>A testament to</item>
+        <item>First and foremost</item>
+        <item>In order to</item>
+        <item>The fact that</item>
+        <item>To put it simply</item>
+        <item>With that being said</item>
+        <item>This paper aims to</item>
+        <item>One could argue that</item>
+      </group>
 
-  <section id="6" name="Transitions and connectors" summary="These make writing feel assembled from parts. Two good sentences rarely need a bridge word.">
+    </section>
 
-    <group name="Robotic connectors (almost always deletable)">
-      <item>Additionally</item>
-      <item>Moreover</item>
-      <item>Furthermore</item>
-      <item>Consequently</item>
-      <item>Hence</item>
-      <item>Indeed</item>
-      <item>Thus</item>
-      <item>Ultimately</item>
-      <item>Undoubtedly</item>
-      <item>Certainly</item>
-      <item>Arguably</item>
-      <item>Nevertheless</item>
-      <item>Nonetheless</item>
-      <item>Notwithstanding</item>
-      <item>Notably</item>
-      <item>Essentially</item>
-      <item>Accordingly</item>
-    </group>
+    <section id="6" name="Robotic connectors and summary markers" summary="These make writing feel assembled from parts. Two good sentences rarely need a bridge word.">
 
-    <group name="Summary markers">
-      <item>In conclusion</item>
-      <item>In summary</item>
-      <item>To summarize</item>
-      <item>To put it simply</item>
-      <item>To wrap things up</item>
-    </group>
+      <group name="Robotic connectors (always deletable)">
+        <item>Additionally</item>
+        <item>Moreover</item>
+        <item>Furthermore</item>
+        <item>Consequently</item>
+        <item>Indeed</item>
+        <item>Ultimately</item>
+        <item>Undoubtedly</item>
+        <item>Certainly</item>
+        <item>Arguably</item>
+        <item>Notably</item>
+        <item>Essentially</item>
+      </group>
 
-    <group name="Clarifying phrases (almost always unnecessary)">
-      <item>In terms of</item>
-      <item>In general</item>
-      <item>It's important to note that</item>
-      <item>It's worth noting that</item>
-      <item>To elaborate</item>
-      <item>In light of</item>
-    </group>
+      <group name="Summary markers">
+        <item>In conclusion</item>
+        <item>In summary</item>
+        <item>To summarize</item>
+        <item>To put it simply</item>
+        <item>To wrap things up</item>
+      </group>
 
-  </section>
+      <group name="Clarifying phrases (almost always unnecessary)">
+        <item>In terms of</item>
+        <item>In general</item>
+        <item>It's important to note that</item>
+        <item>It's worth noting that</item>
+        <item>To elaborate</item>
+        <item>In light of</item>
+      </group>
 
-  <section id="7" name="Filler and padding" summary="Delete these and check if the sentence survives. It almost always does.">
+    </section>
 
-    <group name="Intensifiers (always deletable)">
-      <item>very important</item>
-      <item>truly unique</item>
-      <item>really valuable</item>
-      <item>absolutely essential</item>
-      <item>extremely helpful</item>
-      <item>especially critical</item>
-      <item>deeply insightful</item>
-      <item>remarkably important</item>
-      <item>incredibly significant</item>
-      <item>undoubtedly important</item>
-      <item>definitely notable</item>
-      <item>truly compelling</item>
-      <item>highly significant</item>
-      <item>quite important</item>
-    </group>
+    <section id="7" name="Filler and padding" summary="Delete these and check if the sentence survives. It almost always does.">
 
-    <group name="Hedging constructions">
-      <item>It seems that</item>
-      <item>It appears that</item>
-      <item>It feels like</item>
-      <item>It would seem that</item>
-      <item>It might be worth noting</item>
-      <item>It cannot be overstated that</item>
-      <item>Needless to say</item>
-      <item>Unsurprisingly</item>
-      <item>That said</item>
-      <item>With that said</item>
-      <item>May potentially help</item>
-      <item>Can often be beneficial</item>
-      <item>Indeed</item>
-    </group>
+      <group name="Intensifiers (always deletable)">
+        <item>very important</item>
+        <item>truly unique</item>
+        <item>really valuable</item>
+        <item>absolutely essential</item>
+        <item>extremely helpful</item>
+        <item>especially critical</item>
+        <item>deeply insightful</item>
+        <item>remarkably important</item>
+        <item>incredibly significant</item>
+        <item>undoubtedly important</item>
+        <item>definitely notable</item>
+        <item>truly compelling</item>
+        <item>highly significant</item>
+        <item>quite important</item>
+      </group>
 
-    <group name="Pseudo-significance">
-      <item>In other words</item>
-      <item>To put it another way</item>
-      <item>Truly unique insight</item>
-      <item>Crucial insight</item>
-      <item>Significant point</item>
-      <item>Notable idea</item>
-      <item>Compelling point</item>
-      <item>Especially noteworthy</item>
-    </group>
+      <group name="Hedging constructions (decorative)">
+        <item>It feels like</item>
+        <item>It would seem that</item>
+        <item>It might be worth noting</item>
+        <item>It cannot be overstated that</item>
+        <item>Needless to say</item>
+        <item>Unsurprisingly</item>
+        <item>That said</item>
+        <item>With that said</item>
+        <item>May potentially help</item>
+        <item>Can often be beneficial</item>
+        <item>Indeed</item>
+      </group>
 
-  </section>
+      <group name="Pseudo-significance">
+        <item>In other words</item>
+        <item>To put it another way</item>
+        <item>Truly unique insight</item>
+        <item>Crucial insight</item>
+        <item>Significant point</item>
+        <item>Notable idea</item>
+        <item>Compelling point</item>
+        <item>Especially noteworthy</item>
+      </group>
 
-  <section id="8" name="Abstract nouns that say nothing" summary="These replace concrete detail with corporate air.">
+    </section>
 
-    <group name="Empty nouns">
-      <item>synergy</item>
-      <item>solution</item>
-      <item>framework</item>
-      <item>paradigm</item>
-      <item>initiative</item>
-      <item>offering</item>
-      <item>opportunity</item>
-      <item>platform</item>
-      <item>capability</item>
-      <item>deliverable</item>
-      <item>architecture</item>
-      <item>ecosystem</item>
-      <item>methodology</item>
-      <item>alignment</item>
-      <item>roadmap</item>
-      <item>blueprint</item>
-      <item>engagement</item>
-    </group>
+    <section id="8" name="Abstract nouns with no domain use" summary="These replace concrete detail with corporate air. They have no literal use that the sentence needs.">
 
-    <group name="Construction patterns">
-      <item>Synergy of...</item>
-      <item>Framework for...</item>
-      <item>Roadmap towards...</item>
-      <item>Blueprint for...</item>
-      <item>Ecosystem of...</item>
-      <item>Solution designed to...</item>
-      <item>Initiative created to...</item>
-      <item>Platform built to...</item>
-    </group>
+      <group name="Empty nouns">
+        <item>synergy</item>
+        <item>initiative</item>
+        <item>offering</item>
+        <item>deliverable</item>
+        <item>alignment</item>
+        <item>roadmap</item>
+        <item>blueprint</item>
+        <item>engagement</item>
+      </group>
 
-  </section>
+      <group name="Construction patterns">
+        <item>Synergy of...</item>
+        <item>Framework for...</item>
+        <item>Roadmap towards...</item>
+        <item>Blueprint for...</item>
+        <item>Ecosystem of...</item>
+        <item>Solution designed to...</item>
+        <item>Initiative created to...</item>
+        <item>Platform built to...</item>
+      </group>
 
-  <section id="9" name="Metaphor and analogy tropes" summary="These substitute drama for substance. Unless a metaphor genuinely helps the reader understand something new, it is noise.">
+    </section>
 
-    <group name="Abstract visual metaphors (never use)">
-      <item>A tapestry of insights</item>
-      <item>An iceberg of complexity</item>
-      <item>A symphony of strategy</item>
-      <item>A web of insights</item>
-      <item>A mosaic of ideas</item>
-      <item>A constellation of data</item>
-      <item>A prism of perspectives</item>
-      <item>A fog of uncertainty</item>
-      <item>A labyrinth of decisions</item>
-      <item>A canvas of possibilities</item>
-      <item>A spectrum of solutions</item>
-    </group>
+    <section id="9" name="Metaphor and analogy tropes" summary="These substitute drama for substance. Unless a metaphor genuinely helps the reader understand something new, it is noise.">
 
-    <group name="Action and adventure tropes (never use)">
-      <item>Embark on a journey</item>
-      <item>Venture into the unknown</item>
-      <item>Decode the secrets</item>
-      <item>Unlock the potential</item>
-      <item>Navigate the frontier</item>
-      <item>Explore the depths</item>
-      <item>Unleash the power</item>
-      <item>Pushing the boundaries</item>
-      <item>Blazing a trail</item>
-      <item>Forging a new path</item>
-      <item>Paving the way for a brighter tomorrow</item>
-      <item>Conquering new frontiers</item>
-      <item>Delving into the unknown</item>
-    </group>
+      <group name="Abstract visual metaphors (never use)">
+        <item>A tapestry of insights</item>
+        <item>An iceberg of complexity</item>
+        <item>A symphony of strategy</item>
+        <item>A web of insights</item>
+        <item>A mosaic of ideas</item>
+        <item>A constellation of data</item>
+        <item>A prism of perspectives</item>
+        <item>A fog of uncertainty</item>
+        <item>A labyrinth of decisions</item>
+        <item>A canvas of possibilities</item>
+        <item>A spectrum of solutions</item>
+      </group>
 
-  </section>
+      <group name="Action and adventure tropes (never use)">
+        <item>Embark on a journey</item>
+        <item>Venture into the unknown</item>
+        <item>Decode the secrets</item>
+        <item>Unlock the potential</item>
+        <item>Navigate the frontier</item>
+        <item>Explore the depths</item>
+        <item>Unleash the power</item>
+        <item>Pushing the boundaries</item>
+        <item>Blazing a trail</item>
+        <item>Forging a new path</item>
+        <item>Paving the way for a brighter tomorrow</item>
+        <item>Conquering new frontiers</item>
+        <item>Delving into the unknown</item>
+      </group>
 
-  <section id="10" name="Outro and conclusion patterns" summary="Never close a section with these. They signal the writer ran out of things to say.">
+    </section>
 
-    <group name="Cliched openers">
-      <item>In conclusion</item>
-      <item>To summarize</item>
-      <item>To sum up</item>
-      <item>In closing</item>
-      <item>Ultimately</item>
-      <item>At the end of the day</item>
-      <item>In the final analysis</item>
-      <item>In brief</item>
-    </group>
+    <section id="10" name="Outro and conclusion patterns" summary="Never close a section with these. They signal the writer ran out of things to say.">
 
-    <group name="Reflective fillers">
-      <item>With that said</item>
-      <item>With all of this in mind</item>
-      <item>As we've seen</item>
-      <item>It's clear that</item>
-      <item>All things considered</item>
-      <item>To wrap things up</item>
-      <item>All in all</item>
-      <item>In light of the above</item>
-    </group>
+      <group name="Cliched openers">
+        <item>In conclusion</item>
+        <item>To summarize</item>
+        <item>To sum up</item>
+        <item>In closing</item>
+        <item>Ultimately</item>
+        <item>At the end of the day</item>
+        <item>In the final analysis</item>
+        <item>In brief</item>
+      </group>
 
-    <group name="Inference templates">
-      <item>Therefore it is clear that</item>
-      <item>Thus we can conclude that</item>
-      <item>As a result the takeaway is</item>
-      <item>This highlights that</item>
-      <item>This underscores the idea that</item>
-      <item>We can infer that</item>
-      <item>This demonstrates that</item>
-      <item>This reinforces the point that</item>
-    </group>
+      <group name="Reflective fillers">
+        <item>With that said</item>
+        <item>With all of this in mind</item>
+        <item>As we've seen</item>
+        <item>It's clear that</item>
+        <item>All things considered</item>
+        <item>To wrap things up</item>
+        <item>All in all</item>
+        <item>In light of the above</item>
+      </group>
 
-  </section>
+      <group name="Inference templates">
+        <item>Therefore it is clear that</item>
+        <item>Thus we can conclude that</item>
+        <item>As a result the takeaway is</item>
+        <item>This highlights that</item>
+        <item>This underscores the idea that</item>
+        <item>We can infer that</item>
+        <item>This demonstrates that</item>
+        <item>This reinforces the point that</item>
+      </group>
 
-  <verification>
-    <check section="1">No structural shells, no named patterns (correctio, mirror, colon-punchline, etc.).</check>
-    <check section="2">No em dashes, no inflated assertions, no fragmentation, no emotional imperatives, no triple-adjective lists.</check>
-    <check section="3">No buzzword verbs or adjectives.</check>
-    <check section="4">No inflating modifiers or wildcard constructions.</check>
-    <check section="5">No banned openers.</check>
-    <check section="6">No robotic connectors.</check>
-    <check section="7">No filler, hedging, or pseudo-significance.</check>
-    <check section="8">No abstract corporate nouns.</check>
-    <check section="9">No metaphor tropes.</check>
-    <check section="10">No cliched closers or inference templates.</check>
+    </section>
 
-    <final_checks>
-      <check name="substitution">Swap the topic for a different subject. If the sentence still works, it is generic. Rewrite it.</check>
-      <check name="aloud">Read it out loud. If you would not say it to another adult in a calm conversation, it is wrong.</check>
-      <check name="who-wrote-this">If a reader cannot tell whether a human or an AI wrote this sentence, rewrite it.</check>
-      <check name="so-what">After every statement, ask "so what?" If the next sentence does not answer that, the statement is floating.</check>
-      <check name="deletion">Remove the sentence. Does the paragraph still work? If yes, cut it.</check>
-    </final_checks>
-  </verification>
+  </tier_1_always_banned>
 
-  <critical_rules_reminder>
-    <rule id="1">Never use structural templates (correctio, colon-punchline, mirror sentence, rhetorical-Q-then-A, inflated assertions, etc.). These are BANNED ALTOGETHER.</rule>
-    <rule id="2">Never use em dashes.</rule>
-    <rule id="3">Never use any banned verb (leverage, utilize, delve, empower, unlock, foster, elevate, harness, etc.).</rule>
-    <rule id="4">Never open or close with a cliched frame.</rule>
-    <rule id="5">If you can remove a word and the sentence still works, remove it.</rule>
-  </critical_rules_reminder>
+  <tier_2_literal_exception summary="Allowed ONLY when used with literal, specific meaning the sentence actually needs. Banned when used as decoration, intensifier, or corporate flavor. Apply the test from the note: does the word point at something specific, or is it filler? If filler, cut. If specific, keep.">
 
+    <section name="Verbs with literal use">
+
+      <group name="Verbs banned when metaphorical or corporate, allowed when literal">
+        <verb banned_use="metaphorical, corporate" allowed_use="literal mechanical or causal" word="enable" replacement_when_banned="lets, allows" example_allowed="The key enables the door to open." example_banned="The course enables you to unlock your potential." />
+        <verb banned_use="metaphorical, corporate" allowed_use="technical or measurable" word="enhance" replacement_when_banned="improve, or be specific" example_allowed="The lens enhances contrast by 30%." example_banned="This will enhance your design thinking." />
+        <verb banned_use="metaphorical, corporate" allowed_use="literal mechanical or causal" word="drive" replacement_when_banned="cause, push" example_allowed="The engine drives the wheels." example_banned="What drives the modern consumer." />
+        <verb banned_use="metaphorical, corporate" allowed_use="literal physical delivery" word="deliver" replacement_when_banned="provide, give" example_allowed="The courier delivered the package." example_banned="We deliver world-class solutions." />
+        <verb banned_use="metaphorical, corporate" allowed_use="literal change of state" word="transform" replacement_when_banned="change, turn into" example_allowed="Heat transforms ice into water." example_banned="Transform your workflow." />
+        <verb banned_use="metaphorical, corporate" allowed_use="technical optimization" word="optimize" replacement_when_banned="improve, or be specific" example_allowed="The chef optimized the recipe to use half the salt." example_banned="Optimize your potential." />
+        <verb banned_use="metaphorical, corporate" allowed_use="literal facilitation role" word="facilitate" replacement_when_banned="help, make possible" example_allowed="A facilitator ran the workshop." example_banned="This will facilitate growth." />
+        <verb banned_use="metaphorical, corporate" allowed_use="literal process simplification" word="streamline" replacement_when_banned="simplify" example_allowed="The new form streamlines the application from 12 fields to 4." example_banned="A streamlined experience for users." />
+        <verb banned_use="metaphorical" allowed_use="literal chemistry" word="catalyze" replacement_when_banned="start, cause" example_allowed="Enzymes catalyze the breakdown of food in the stomach." example_banned="Catalyze change in your team." />
+        <verb banned_use="metaphorical" allowed_use="literal acoustic or signal increase" word="amplify" replacement_when_banned="increase" example_allowed="The speaker amplifies the sound of the guitar." example_banned="Amplify your message." />
+        <verb banned_use="metaphorical, corporate" allowed_use="historical first-doer" word="pioneer" replacement_when_banned="start, create" example_allowed="Marie Curie pioneered the study of radioactivity." example_banned="Pioneer a new approach." />
+        <verb banned_use="metaphorical" allowed_use="literal coordination of musicians or processes" word="orchestrate" replacement_when_banned="organize, coordinate" example_allowed="She orchestrated the symphony." example_banned="Orchestrate your strategy." />
+        <verb banned_use="metaphorical, corporate" allowed_use="literal mathematical maximum" word="maximize" replacement_when_banned="increase" example_allowed="The runner maximizes her speed in the last 100 meters." example_banned="Maximize your potential." />
+        <verb banned_use="corporate filler" allowed_use="formal but precise commitment" word="undertake" replacement_when_banned="do, start" example_allowed="The team undertook a 3-year study." example_banned="We undertake to deliver value." />
+      </group>
+
+    </section>
+
+    <section name="Adjectives with literal use">
+
+      <group name="Inflating modifiers banned as decoration, allowed when the word is precise">
+        <adjective word="crucial" banned_use="lazy intensifier" allowed_use="genuinely decisive moment" example_allowed="The crucial test came when the bridge held the full weight of the truck." example_banned="A crucial insight." />
+        <adjective word="pivotal" banned_use="lazy intensifier" allowed_use="literal turning point" example_allowed="The pivotal year was 1969, when the moon landing happened." example_banned="A pivotal moment in our journey." />
+        <adjective word="vital" banned_use="lazy intensifier" allowed_use="literally necessary for life or function" example_allowed="The kidneys are vital organs." example_banned="It is vital that you understand this." />
+        <adjective word="essential" banned_use="lazy intensifier" allowed_use="genuinely required, no alternative" example_allowed="Water is essential to life." example_banned="An essential read for designers." />
+        <adjective word="agile" banned_use="corporate buzzword" allowed_use="literal physical agility, or named methodology" example_allowed="The cat was agile on the narrow ledge." example_banned="An agile, dynamic, scalable approach." />
+        <adjective word="efficient" banned_use="vague praise" allowed_use="measurable engineering or thermodynamic efficiency" example_allowed="The engine is 40% efficient." example_banned="An efficient solution to the problem." />
+        <adjective word="exemplary" banned_use="vague praise" allowed_use="literally serving as an example" example_allowed="The trial was exemplary, used as a reference for later cases." example_banned="Exemplary performance." />
+        <adjective word="versatile" banned_use="vague praise" allowed_use="genuinely fits multiple specific uses" example_allowed="The pocket knife is versatile, it cuts, opens cans, and tightens screws." example_banned="A versatile tool for modern teams." />
+        <adjective word="insightful" banned_use="vague praise" allowed_use="rare, when something genuinely produces a new insight" example_allowed="" example_banned="An insightful piece on design." />
+      </group>
+
+    </section>
+
+    <section name="Connectors with legitimate use (sparingly)">
+
+      <group name="Connectors banned as filler, allowed when carrying real causal or contrastive weight">
+        <rule>Limit: at most one of these per package. Two or more in the same draft means they are filler again.</rule>
+        <item>Hence</item>
+        <item>Thus</item>
+        <item>Therefore</item>
+        <item>Nevertheless</item>
+        <item>Nonetheless</item>
+        <item>Notwithstanding</item>
+        <item>Accordingly</item>
+      </group>
+
+    </section>
+
+    <section name="Hedging with factual use">
+
+      <group name="Hedging banned as decoration, allowed when softening a non-canonical fact">
+        <rule>The copywriting guide allows "Research suggests..." for broad claims about behavior. The same logic permits these constructions when the underlying claim genuinely is not textbook-canonical and needs softening. Banned when used to dodge ownership of a sentence the writer means flatly.</rule>
+        <item>It seems that</item>
+        <item>It appears that</item>
+      </group>
+
+    </section>
+
+    <section name="Domain nouns">
+
+      <group name="Empty in corporate use, real in their domain">
+        <noun word="solution" allowed_use="mathematical, chemical, or named technical solution" example_allowed="The solution to the equation is x=4." example_banned="A solution for modern teams." />
+        <noun word="framework" allowed_use="legal, software, or research framework with a specific name" example_allowed="The Django framework." example_banned="A framework for thinking about creativity." />
+        <noun word="platform" allowed_use="physical platform, named software platform" example_allowed="The train left platform 4." example_banned="Our platform empowers creators." />
+        <noun word="ecosystem" allowed_use="biological ecosystem, or specific software ecosystem" example_allowed="The coral reef ecosystem." example_banned="A vibrant ecosystem of partners." />
+        <noun word="architecture" allowed_use="building architecture, named software architecture" example_allowed="Gothic architecture." example_banned="The architecture of success." />
+        <noun word="methodology" allowed_use="formal research methodology" example_allowed="The methodology section of the paper." example_banned="A robust methodology for innovation." />
+        <noun word="opportunity" allowed_use="literal specific opportunity" example_allowed="She had the opportunity to study in Vienna." example_banned="A growth opportunity." />
+        <noun word="capability" allowed_use="specific technical capability" example_allowed="The aircraft has the capability to refuel mid-air." example_banned="Core capabilities for the modern leader." />
+        <noun word="paradigm" allowed_use="academic Kuhnian sense, named scientific paradigm" example_allowed="The Newtonian paradigm dominated physics until 1905." example_banned="A new paradigm for design." />
+      </group>
+
+    </section>
+
+    <section name="Constructions with legitimate use">
+
+      <group name="Paired constructions">
+        <item allowed_use="basic English construction, used sparingly">Not only X, but also Y</item>
+        <rule>The basic form is normal English and can stand. The AI-flavored variants live in tier 1, section 1.</rule>
+      </group>
+
+    </section>
+
+    <section name="Soft compounds">
+
+      <group name="Rare or made-up hyphenated words (use only when necessary)">
+        <rule>Not a hard ban. These sound clever but are harder to read. Default to "instant," "moment," or "a single beat." Keep the compound only when the plain word would lose meaning the sentence needs.</rule>
+        <item>half-second</item>
+        <item>split-second</item>
+        <item>quarter-turn</item>
+        <item>mid-thought</item>
+        <item>near-miss</item>
+        <item>half-heartbeat</item>
+        <item>half-breath</item>
+        <item>half-glance</item>
+      </group>
+
+    </section>
+
+  </tier_2_literal_exception>
 </blacklist>

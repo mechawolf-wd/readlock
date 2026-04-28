@@ -604,7 +604,7 @@ export function parseCourseText(input: string): Accelerator {
       continue;
     }
 
-    // No segment marker — this is a regular package section
+    // No segment marker, this is a regular package section
     if (!currentSegment) {
       currentSegment = createFallbackSegment();
       segments.push(currentSegment);

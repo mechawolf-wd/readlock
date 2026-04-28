@@ -1,5 +1,5 @@
 // Firebase Storage service for course cover images.
-// Files are stored at /course-covers/{courseId}.{ext} — one cover per course,
+// Files are stored at /course-covers/{courseId}.{ext}, one cover per course,
 // reuploads overwrite the previous object.
 
 import { ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage'

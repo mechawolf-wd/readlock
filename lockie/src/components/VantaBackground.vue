@@ -11,9 +11,9 @@ let animationId: number | null = null
 function createBirdGeometry(): THREE.BufferGeometry {
   const geometry = new THREE.BufferGeometry()
 
-  // Low-poly origami bird — all triangles
+  // Low-poly origami bird, all triangles
   const vertices = new Float32Array([
-    // Body (diamond shape — 4 triangles)
+    // Body (diamond shape, 4 triangles)
     0, 0, 0.8,     0.25, 0.05, 0,    0, 0.12, 0,    // Top-right body
     0, 0, 0.8,     0, 0.12, 0,      -0.25, 0.05, 0,  // Top-left body
     0, 0, 0.8,    -0.25, -0.05, 0,   0, -0.12, 0,    // Bottom-left body

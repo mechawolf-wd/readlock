@@ -1,4 +1,4 @@
-// Auth store — hardcoded credential check
+// Auth store, hardcoded credential check
 
 import { defineStore } from 'pinia'
 import { ref } from 'vue'

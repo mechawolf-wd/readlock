@@ -7,36 +7,16 @@
   </meta>
 
   <contents>
-    <item id="1">Metadata writing rules</item>
-    <item id="2">Document structure</item>
-    <item id="3">@course</item>
-    <item id="4">@segment</item>
-    <item id="5">@package</item>
-    <item id="6">Content blocks: @text, @question, @true_false, @estimate, @quote, @pause, @reflect</item>
-    <item id="7">Formatting rules</item>
-    <item id="8">Comments</item>
+    <item id="1">Document structure</item>
+    <item id="2">@course</item>
+    <item id="3">@segment</item>
+    <item id="4">@package</item>
+    <item id="5">Content blocks: @text, @question, @true_false, @estimate, @quote, @pause, @reflect</item>
+    <item id="6">Formatting rules</item>
+    <item id="7">Comments</item>
   </contents>
 
-  <section id="1" name="Metadata writing rules">
-    <description>The copywriting guide covers @text, @question, and other content blocks. Metadata fields (title, description, author, segment titles) are not covered by that guide, but they must follow the same register.</description>
-
-    <principle>Write metadata the way a person would describe a book to a friend, not the way a marketing team would pitch it to investors.</principle>
-
-    <example type="bad">Explore the fascinating world of cognitive biases and unlock powerful psychological principles that will transform your design thinking.</example>
-    <example type="good">How cognitive biases shape the way people interact with designed objects.</example>
-
-    <example type="bad">A comprehensive deep dive into the art and science of color theory.</example>
-    <example type="good">Why colors make people feel, and how designers have used that for centuries.</example>
-
-    <rules>
-      <rule>Every rule in ReadlockCopywritingGuide.md Sections 2 and 4 applies to metadata as well (banned verbs, banned openers, banned closers, banned inflators, casual slang, em dashes, triple-anything lists).</rule>
-      <rule>Descriptions state what the course is about. They do not sell it.</rule>
-      <rule>Segment titles are short, plain nouns or noun phrases ("Foundations," "Perception and Decisions"). Not taglines.</rule>
-      <rule>If a sentence could appear in any course about any topic and still make sense, it is too generic. Rewrite it to be specific to this course.</rule>
-    </rules>
-  </section>
-
-  <section id="2" name="Document structure">
+  <section id="1" name="Document structure">
     <description>A .rlockie file has three levels of hierarchy:</description>
 
     <hierarchy>
@@ -58,43 +38,33 @@
     </rules>
   </section>
 
-  <section id="3" name="@course">
-    <description>Must be the very first line. Followed by course metadata as key: value pairs.</description>
+  <section id="2" name="@course">
+    <description>The first declaration in every .rlockie file. Body is metadata as key: value pairs.</description>
 
     <template>
 @course
 
-id: [course identifier]
-language: [two-letter uppercase language code, e.g. EN]
-title: [course display title]
-author: [author display name]
-description: [one-line description]
-color: [one of the 12 allowed swatches, e.g. 8461BD, NO leading #]
-genres: [3 to 5 comma-separated keys from the closed list, e.g. design, psychology, productivity]
-relevant_for: [comma-separated keys from the closed list: designers, product-managers, founders, engineers, writers, marketers, leaders, investors, students, anyone]
+id: [value]
+language: [value]
+title: [value]
+author: [value]
+description: [value]
+color: [value]
+genres: [value]
+relevant_for: [value]
     </template>
 
-    <rules>
-      <rule>All eight fields are required.</rule>
+    <structure>
+      <rule>@course must be the first line of the file.</rule>
       <rule>One blank line between @course and the first field.</rule>
-      <rule>language is a two-letter uppercase code (e.g. EN, PL, DE). Defaults to EN when omitted.</rule>
-      <rule>description must be a single line.</rule>
-      <rule>color must be exactly one of these 12 hex values, WITHOUT a leading "#": 9E7071, D0CBD6, C78871, FAF0A2, 8461BD, 78A3ED, 72ACAD, C85159, 6D7487, CAC7EE, 6A99D4, FFC1E2. The "#" is never written in the .rlockie file (e.g. "color: 8461BD", not "color: #8461BD"). Pick the swatch closest to the original book cover when available; otherwise pick the swatch that best fits the topic's mood. Never invent a new hex value.</rule>
-      <rule>genres must contain 3 to 5 comma-separated tags drawn from this closed list ONLY: design, psychology, business, technology, self-help, science, philosophy, history, economics, leadership, creativity, productivity, communication, user-experience, product-development. Never invent a new genre. Pick the closest tag from the list instead of coining a new one.</rule>
-      <rule>relevant_for values must come from the closed list: designers, product-managers, founders, engineers, writers, marketers, leaders, investors, students, anyone.</rule>
-    </rules>
+      <rule>All eight fields are required, in this order.</rule>
+      <rule>Each field is a single "key: value" line.</rule>
+    </structure>
 
-    <id_format>
-      <description>The id follows the pattern: [type]:[kebab-case-title]-[4-char-hash]</description>
-      <type name="book" description="for courses based on a book" example="book:thinking-fast-and-slow-xkfm" />
-      <type name="topic" description="for courses about a standalone topic" example="topic:psychology-of-design-abwq" />
-      <type name="article" description="for courses based on an article" example="article:cognitive-load-theory-plnz" />
-      <rule>The 4-char hash is randomly generated from lowercase a-z.</rule>
-      <rule>The kebab-case title is a shortened version of the course title, not the full title.</rule>
-    </id_format>
+    <pointer>How to write each field (allowed values, palette, closed lists, voice) is defined in ReadlockInstructor.xml step 6. This file defines structure only.</pointer>
   </section>
 
-  <section id="4" name="@segment">
+  <section id="3" name="@segment">
     <description>Defines a chapter/section. Body is exactly two lines.</description>
 
     <template>
@@ -105,12 +75,13 @@ relevant_for: [comma-separated keys from the closed list: designers, product-man
 
     <rules>
       <rule>A course must have at least one segment.</rule>
+      <rule>The segment title is a short, plain noun or noun phrase ("Foundations", "Perception and Decisions"). Not a tagline.</rule>
       <rule>The symbol is a short abbreviation (e.g. "BD" for "Basic Design").</rule>
       <rule>Every segment must be followed by at least one @package.</rule>
     </rules>
   </section>
 
-  <section id="5" name="@package">
+  <section id="4" name="@package">
     <description>Separates packages (lessons) within a segment. The lines immediately after @package (before the first content block) are package metadata.</description>
 
     <template>
@@ -131,7 +102,7 @@ Free
     </rules>
   </section>
 
-  <section id="6" name="Content blocks">
+  <section id="5" name="Content blocks">
 
     <block name="@text">
       <description>A reading slide. Each line becomes a separate text segment displayed one at a time.</description>
@@ -326,7 +297,7 @@ hint: [Hint text]
 
   </section>
 
-  <section id="7" name="Formatting rules">
+  <section id="6" name="Formatting rules">
     <rule id="1">Blank lines are meaningful. They separate logical sections within a block.</rule>
     <rule id="2">No trailing whitespace on any line.</rule>
     <rule id="3">No tabs. Spaces only.</rule>
@@ -335,7 +306,7 @@ hint: [Hint text]
     <rule id="6">Properties (answer:, consequence:, correct_answers:, explanation:, hint:, true:, false:) are NOT declarations. They use "key: value" syntax with a colon and space.</rule>
   </section>
 
-  <section id="8" name="Comments">
+  <section id="7" name="Comments">
     <description>The .rlockie format supports full-line comments. Comments are a writer-only feature: the parser strips them before any other parsing happens, so they never reach the reader and never affect block boundaries, properties, or text segments.</description>
 
     <syntax>Any line whose first non-whitespace character is "#" is a comment.</syntax>

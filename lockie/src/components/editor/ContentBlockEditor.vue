@@ -286,7 +286,7 @@ const TEXT_AI_GROUPS = [
     actions: [
       { label: 'Fix grammar', prompt: 'Fix grammar and spelling errors in this slide' },
       { label: 'Make concise', prompt: 'Make the text more concise without losing meaning' },
-      { label: 'Pop-scientific', prompt: 'Rewrite in an engaging popular science tone — vivid, surprising, accessible' },
+      { label: 'Pop-scientific', prompt: 'Rewrite in an engaging popular science tone: vivid, surprising, accessible' },
       { label: 'Simplify', prompt: 'Simplify the language for easier reading' },
     ],
   },
@@ -301,7 +301,7 @@ const TEXT_AI_GROUPS = [
   {
     label: 'Review',
     actions: [
-      { label: 'Critique', prompt: 'Critique this slide — point out weaknesses and suggest improvements' },
+      { label: 'Critique', prompt: 'Critique this slide, point out weaknesses and suggest improvements' },
       { label: 'Fact check', prompt: 'Verify claims and flag anything that needs a source or correction' },
     ],
   },
@@ -321,7 +321,7 @@ const QUESTION_AI_GROUPS = [
   {
     label: 'Review',
     actions: [
-      { label: 'Critique', prompt: 'Critique this question — is it clear, fair, and testing the right thing?' },
+      { label: 'Critique', prompt: 'Critique this question: is it clear, fair, and testing the right thing?' },
       { label: 'Fix grammar', prompt: 'Fix grammar and spelling in the question and options' },
     ],
   },
@@ -517,7 +517,7 @@ function initSegmentsSortable() {
         return
       }
 
-      // Revert DOM — let Vue handle updates
+      // Revert DOM, let Vue handle updates
       const parent = event.from
       const movedNode = event.item
 
@@ -610,7 +610,7 @@ const currentGuideline = computed(() => {
   return GUIDELINES[entityType] ?? ''
 })
 
-// * Template helpers — keep template free of complex expressions
+// * Template helpers, keep template free of complex expressions
 
 const rawTextToggleLabel = computed(() => {
   if (showRawTextEditor.value) {
@@ -909,7 +909,7 @@ function getThinkingPointPlaceholder(pointIndex: number): string {
               class="w-full max-h-32 object-contain rounded-md border border-border mt-2 pointer-events-none select-none"
             />
 
-            <!-- Insert after — only when Shift held + hovered -->
+            <!-- Insert after, only when Shift held + hovered -->
             <div
               v-if="isShiftHovered(Number(segmentIndex))"
               class="border border-dashed border-border rounded-md flex items-center justify-center h-12 cursor-pointer hover:border-foreground/30 transition-colors mt-2 group/insert"
@@ -936,7 +936,7 @@ function getThinkingPointPlaceholder(pointIndex: number): string {
       <Textarea v-model="(block as any).question" placeholder="Question text..." />
     </div>
 
-    <!-- True/False options — compact row -->
+    <!-- True/False options, compact row -->
     <div v-if="block['entity-type'] === 'true-false-question' && 'options' in block" class="flex flex-col gap-2">
       <label class="text-sm text-muted-foreground">Answer</label>
 

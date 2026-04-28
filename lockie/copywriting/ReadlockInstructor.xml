@@ -85,20 +85,54 @@ Your job: produce one complete, valid .rlockie file that follows every rule in t
   <phase name="B, Writing (one package at a time)">
 
     <step id="6" name="Write @course metadata">
-      - id: [type]:[kebab-case-title]. Type is "book", "topic", or "article".
-      - language: two-letter uppercase language code (e.g. "EN", "PL", "DE"). Defaults to "EN" when the course is written in English. Required on every @course.
-      - title: the course display title.
-      - author: the real author of the book when the id type is "book" (e.g. "Donald A. Norman", "James Clear"). For "topic" or "article" types, or when no real author exists, use "Readlock".
-      - description: one line. Says what the course is about. Does not sell it.
-      - color: MUST be exactly one of these 12 hex values, uppercase, WITHOUT a leading "#":
-          9E7071, D0CBD6, C78871, FAF0A2, 8461BD, 78A3ED, 72ACAD, C85159, 6D7487, CAC7EE, 6A99D4, FFC1E2.
-          NEVER write the "#" prefix in the .rlockie file. Example of the correct line: "color: 8461BD".
-          Pick the swatch that best matches the original book cover when the course is a book. For "topic" or "article" courses, pick the swatch that best fits the mood of the subject. Never invent a new hex value, only the 12 above are allowed.
-      - genres: 3 to 5 comma-separated tags drawn from this closed list ONLY:
-          design, psychology, business, technology, self-help, science, philosophy, history, economics, leadership, creativity, productivity, communication, user-experience, product-development.
-          Never invent a new genre. Never use a tag outside this list (e.g. "ux", "strategy", "habits", "anthropology", "physics", "decision-making", "self-improvement", "publishing" are all forbidden, pick the closest tag from the list instead).
-      - relevant_for: comma-separated audience tags drawn from this closed list only:
-          designers, product-managers, founders, engineers, writers, marketers, leaders, investors, students, anyone.
+      <authority>This step is the only source for @course metadata. No other reference file defines it.</authority>
+
+      <placement>
+        <rule>@course is the first line of the file.</rule>
+        <rule>One blank line between @course and the first field.</rule>
+        <rule>All fields below are required, in this order.</rule>
+      </placement>
+
+      <voice>
+        Describe the course like you would describe a book to a friend, not like a marketing pitch. The blacklist and guide rules apply here too. If a sentence could fit any course about any topic, it is too generic.
+        <example type="bad">Explore the fascinating world of cognitive biases and unlock powerful psychological principles.</example>
+        <example type="good">How cognitive biases shape the way people interact with designed objects.</example>
+      </voice>
+
+      <field name="id" format="[type]:[kebab-case-title]">
+        <rule>type is "book", "topic", or "article".</rule>
+        <rule>kebab-case-title is short, not the full title.</rule>
+        <example>book:thinking-fast-and-slow</example>
+        <example>topic:psychology-of-design</example>
+        <example>article:cognitive-load-theory</example>
+      </field>
+
+      <field name="language">Two-letter uppercase code: EN, PL, DE. Defaults to EN.</field>
+
+      <field name="title">The course display title.</field>
+
+      <field name="author">
+        For book courses: the real author (e.g. Donald A. Norman, James Clear). For topic or article courses: "Readlock".
+      </field>
+
+      <field name="description">One line. Says what the course is about. Does not sell.</field>
+
+      <field name="color">
+        <rule>Pick exactly one of the 12 hex values below, uppercase, NO leading "#".</rule>
+        <rule>For book courses: closest swatch to the cover. For topic or article: closest to the subject's mood.</rule>
+        <palette>9E7071, D0CBD6, C78871, FAF0A2, 8461BD, 78A3ED, 72ACAD, C85159, 6D7487, CAC7EE, 6A99D4, FFC1E2</palette>
+      </field>
+
+      <field name="genres">
+        <rule>3 to 5 tags, comma-separated, from the closed list below. Never invent.</rule>
+        <closed_list>design, psychology, business, technology, self-help, science, philosophy, history, economics, leadership, creativity, productivity, communication, user-experience, product-development</closed_list>
+        <traps>"ux" → user-experience. "strategy" → business. "habits" or "self-improvement" → self-help. "decision-making" → psychology. "physics" → science.</traps>
+      </field>
+
+      <field name="relevant_for">
+        <rule>Tags from the closed list below, comma-separated.</rule>
+        <closed_list>designers, product-managers, founders, engineers, writers, marketers, leaders, investors, students, anyone</closed_list>
+      </field>
     </step>
 
     <step id="7" name="Write each package through all phases">
