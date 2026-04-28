@@ -10,6 +10,7 @@ import 'package:readlock/constants/RLUIStrings.dart';
 import 'package:readlock/services/LoggingService.dart';
 import 'package:readlock/services/auth/UserService.dart';
 import 'package:readlock/services/notifications/FirebaseMessagingService.dart';
+import 'package:readlock/services/purchases/PurchaseNotifiers.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 // * Auth result
@@ -415,6 +416,8 @@ class AuthService {
     await FirebaseMessagingService.deleteToken();
 
     prepopulatedNickname = null;
+
+    resetPurchaseState();
 
     await FirebaseAuth.instance.signOut();
 

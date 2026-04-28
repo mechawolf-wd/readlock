@@ -16,7 +16,11 @@ import 'package:readlock/constants/RLCoursePalette.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/constants/RLUIStrings.dart';
+import 'package:readlock/design_system/RLToast.dart';
 import 'package:readlock/services/auth/UserService.dart';
+import 'package:readlock/services/purchases/PurchaseConstants.dart';
+import 'package:readlock/services/purchases/PurchaseNotifiers.dart';
+import 'package:readlock/services/purchases/PurchaseService.dart';
 import 'package:readlock/constants/DartAliases.dart';
 
 import 'package:pixelarticons/pixel.dart';
@@ -53,6 +57,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
   bool isCourseDataLoading = true;
   int lastLessonAtThreshold = -1;
   bool isProgrammaticScroll = false;
+  bool isPurchasing = false;
 
   List<GlobalKey> lessonKeys = [];
   late ScrollController scrollController;
@@ -128,6 +133,12 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
     scrollController = ScrollController();
     scrollController.addListener(handleScrollUpdate);
 
+    // React to purchase state changes (the only "live" state on this
+    // screen). When the user taps Purchase, PurchaseService flips the
+    // notifier, this listener fires a setState, and the bottom bar
+    // swaps from Purchase to Continue + tiles unlock in the same frame.
+    purchasedCoursesNotifier.addListener(handlePurchasedCoursesChanged);
+
     progressRingController = AnimationController(
       vsync: this,
       duration: RLDS.opacityFadeDurationIntro,
@@ -191,8 +202,21 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
     return -1;
   }
 
+  void handlePurchasedCoursesChanged() {
+    if (!mounted) {
+      return;
+    }
+
+    setState(() {});
+  }
+
+  bool getIsCoursePurchased() {
+    return PurchaseService.isCoursePurchased(widget.courseId);
+  }
+
   @override
   void dispose() {
+    purchasedCoursesNotifier.removeListener(handlePurchasedCoursesChanged);
     scrollController.removeListener(handleScrollUpdate);
     scrollController.dispose();
     progressRingController.dispose();
@@ -277,7 +301,11 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
       slivers.add(const SliverToBoxAdapter(child: Spacing.height(RLDS.spacing40)));
     }
 
-    // Lessons from selected segment
+    // Lessons from selected segment. Tile-lock state combines the
+    // per-lesson `isFree` flag with the course-wide purchase gate, so
+    // every tile reads as locked until the reader buys the course.
+    final bool isCoursePurchased = getIsCoursePurchased();
+
     slivers.add(
       SliverToBoxAdapter(
         child: Padding(
@@ -286,6 +314,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
             lessons: courseLessons,
             lessonKeys: lessonKeys,
             accentColor: getCourseAccentColor(),
+            isCoursePurchased: isCoursePurchased,
             onLessonTap: navigateToLesson,
           ),
         ),
@@ -325,10 +354,81 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
   }
 
   Widget BottomFloatingBar() {
+    final bool isCoursePurchased = getIsCoursePurchased();
+    final Widget barContent = isCoursePurchased
+        ? ContinueButton()
+        : PurchaseButton();
+
     return RLCard.elevated(
       padding: const EdgeInsets.all(RLDS.spacing12),
-      child: ContinueButton(),
+      child: barContent,
     );
+  }
+
+  // Feather-priced purchase button. Reads cost from PurchaseConstants so
+  // the price label and the deduction always agree. Tapping fires
+  // PurchaseService.purchaseCourse which optimistically flips the
+  // notifier (continue button replaces this in the next frame) and
+  // writes both Firestore mutations atomically.
+  Widget PurchaseButton() {
+    final Color accentColor = getCourseAccentColor();
+    final Color dimmedBackground = accentColor.withValues(alpha: 0.15);
+    final BoxDecoration buttonDecoration = BoxDecoration(
+      color: dimmedBackground,
+      borderRadius: RLDS.borderRadiusSmall,
+    );
+
+    const EdgeInsets buttonPadding = EdgeInsets.symmetric(
+      vertical: RLDS.spacing16,
+      horizontal: RLDS.spacing24,
+    );
+
+    final String purchaseLabel = isPurchasing
+        ? RLUIStrings.ROADMAP_PURCHASE_LOADING_LABEL
+        : '${RLUIStrings.ROADMAP_PURCHASE_LABEL} '
+              '${PurchaseConstants.COURSE_PURCHASE_COST} '
+              '${RLUIStrings.ROADMAP_PURCHASE_FEATHERS_SUFFIX}';
+
+    return Div.row(
+      [RLTypography.bodyLarge(purchaseLabel, color: accentColor)],
+      width: double.infinity,
+      padding: buttonPadding,
+      decoration: buttonDecoration,
+      mainAxisAlignment: MainAxisAlignment.center,
+      onTap: isPurchasing ? null : handlePurchaseTap,
+    );
+  }
+
+  Future<void> handlePurchaseTap() async {
+    if (isPurchasing) {
+      return;
+    }
+
+    setState(() {
+      isPurchasing = true;
+    });
+
+    final PurchaseResult result = await PurchaseService.purchaseCourse(widget.courseId);
+
+    if (!mounted) {
+      return;
+    }
+
+    setState(() {
+      isPurchasing = false;
+    });
+
+    if (result == PurchaseResult.success) {
+      RLToast.success(context, RLUIStrings.ROADMAP_PURCHASE_SUCCESS);
+      return;
+    }
+
+    if (result == PurchaseResult.insufficientFeathers) {
+      RLToast.error(context, RLUIStrings.ROADMAP_PURCHASE_INSUFFICIENT);
+      return;
+    }
+
+    RLToast.error(context, RLUIStrings.ERROR_UNKNOWN);
   }
 
   static final Widget BackChevronIcon = const Icon(
@@ -616,11 +716,14 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
   }
 }
 
-// Path with connected lesson nodes
+// Path with connected lesson nodes. Tile-lock state combines the
+// per-lesson `isFree` flag with the course-wide purchase gate, so every
+// tile reads as locked until the course has been purchased.
 class PathWithNodes extends StatelessWidget {
   final List<dynamic> lessons;
   final List<GlobalKey> lessonKeys;
   final Color accentColor;
+  final bool isCoursePurchased;
   final Function(int, int) onLessonTap;
 
   const PathWithNodes({
@@ -628,6 +731,7 @@ class PathWithNodes extends StatelessWidget {
     required this.lessons,
     required this.lessonKeys,
     required this.accentColor,
+    required this.isCoursePurchased,
     required this.onLessonTap,
   });
 
@@ -641,8 +745,10 @@ class PathWithNodes extends StatelessWidget {
 
     for (int lessonIndex = 0; lessonIndex < lessons.length; lessonIndex++) {
       final JSONMap lesson = lessons[lessonIndex] as JSONMap;
-      final bool isFreeLesson = lesson['isFree'] == true;
-      final bool isLocked = !isFreeLesson;
+      // Whole-course ownership: every tile unlocks together once the
+      // user buys the course. Drops the older per-lesson `isFree` gate
+      // since the purchase flow now handles access end-to-end.
+      final bool isLocked = !isCoursePurchased;
 
       // Determine horizontal alignment (zigzag pattern)
       final PathNodeAlignment alignment = getAlignmentForIndex(lessonIndex);

@@ -10,6 +10,8 @@
 //   - Each action carries its own RLConfirmationVariant for button colour.
 //   - layout controls whether the two buttons stack vertically or sit side-by-side.
 
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:readlock/bottom_sheets/RLDialog.dart';
@@ -77,23 +79,31 @@ class RLConfirmationDialog {
     RLConfirmationLayout layout = RLConfirmationLayout.vertical,
     bool isDismissible = true,
   }) {
-    // Dark scrim behind the dialog — RLDS.dialogBarrierColor is the single
-    // source of truth shared with RLDialog, so every modal dims the page
-    // by the same amount. The card itself is RLLunarBlur (same family as
-    // RLToast / login sheet).
+    // Dark scrim behind the dialog. RLDS.dialogBarrierColor is the
+    // single source of truth shared with RLDialog, so every modal dims
+    // the page by the same amount. The BackdropFilter wrapper blurs
+    // everything behind the dialog so the page reads as a frosted layer
+    // around the centered card; the card itself sits on top of the
+    // BackdropFilter and is rendered crisp.
     showDialog<void>(
       context: context,
       barrierDismissible: isDismissible,
       barrierColor: RLDS.dialogBarrierColor,
       builder: (BuildContext dialogContext) {
-        return DialogContainer(
-          child: ConfirmationDialogContent(
-            title: title,
-            message: message,
-            cta: cta,
-            cancel: cancel,
-            layout: layout,
-            onDismiss: () => Navigator.of(dialogContext).pop(),
+        return BackdropFilter(
+          filter: ImageFilter.blur(
+            sigmaX: RLDS.backdropBlurSigma,
+            sigmaY: RLDS.backdropBlurSigma,
+          ),
+          child: DialogContainer(
+            child: ConfirmationDialogContent(
+              title: title,
+              message: message,
+              cta: cta,
+              cancel: cancel,
+              layout: layout,
+              onDismiss: () => Navigator.of(dialogContext).pop(),
+            ),
           ),
         );
       },

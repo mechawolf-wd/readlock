@@ -19,7 +19,9 @@ import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/constants/RLUIStrings.dart';
 import 'package:readlock/bottom_sheets/user/SettingsBottomSheet.dart';
 import 'package:readlock/screens/profile/BirdPicker.dart';
+import 'package:readlock/bottom_sheets/user/FeathersBottomSheet.dart';
 import 'package:readlock/services/auth/UserService.dart';
+import 'package:readlock/services/purchases/PurchaseNotifiers.dart';
 import 'package:readlock/models/UserModel.dart';
 import 'package:readlock/utility_widgets/text_animation/BionicText.dart';
 import 'package:readlock/utility_widgets/text_animation/RSVPText.dart';
@@ -63,6 +65,7 @@ class MyBookshelfScreenState extends State<MyBookshelfScreen> {
       if (user != null) {
         bionicEnabledNotifier.value = user.bionic;
         rsvpEnabledNotifier.value = user.rsvp;
+        hydratePurchaseStateFromUser(user);
       }
 
       if (!mounted) {
@@ -209,12 +212,58 @@ class MyBookshelfScreenState extends State<MyBookshelfScreen> {
 
       const Spacer(),
 
+      BalancePill(),
+
       GestureDetector(
         onTap: onSettingsTap,
         behavior: HitTestBehavior.opaque,
         child: SettingsIcon,
       ),
     ], crossAxisAlignment: CrossAxisAlignment.center);
+  }
+
+  // Live feather balance pill, rendered as a coin icon + count. Tapping
+  // it opens the Feathers sheet so the indicator doubles as the
+  // affordance for topping up. Subscribes to userBalanceNotifier so a
+  // top-up done from any other surface reflects here without a refetch.
+  // Hidden entirely when the balance is zero so the header stays quiet
+  // until the user has feathers to track.
+  Widget BalancePill() {
+    return ValueListenableBuilder<int>(
+      valueListenable: userBalanceNotifier,
+      builder: BalancePillContent,
+    );
+  }
+
+  Widget BalancePillContent(BuildContext context, int balance, Widget? unusedChild) {
+    final bool isEmpty = balance <= 0;
+
+    if (isEmpty) {
+      return const SizedBox.shrink();
+    }
+
+    void onBalanceTap() {
+      HapticFeedback.lightImpact();
+      FeathersBottomSheet.show(context);
+    }
+
+    return GestureDetector(
+      onTap: onBalanceTap,
+      behavior: HitTestBehavior.opaque,
+      child: Padding(
+        padding: const EdgeInsets.only(right: RLDS.spacing16),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Icon(Pixel.coin, color: RLDS.primary, size: RLDS.iconLarge),
+
+            const Spacing.width(RLDS.spacing4),
+
+            RLTypography.bodyLarge('$balance', color: RLDS.primary),
+          ],
+        ),
+      ),
+    );
   }
 
   // Empty-state bird — same selectedBirdNotifier source as Settings/Pause so

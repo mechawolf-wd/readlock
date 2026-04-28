@@ -122,7 +122,9 @@ const isUploadingCoverImage = ref(false);
 const coverImageUploadError = ref("");
 
 const showSaveConfirmDialog = ref(false);
+const showOverrideSecondConfirmDialog = ref(false);
 const saveSuccessMessage = ref("");
+const isCheckingCourseExists = ref(false);
 
 const sidebarScrollRef = ref<HTMLElement | null>(null);
 const phonePreviewRef = ref<InstanceType<typeof PhonePreview> | null>(null);
@@ -547,7 +549,29 @@ function handleExport() {
   URL.revokeObjectURL(url);
 }
 
-async function handleSaveToFirebase() {
+async function handleSaveButtonClick() {
+  const hasNoActiveCourse = !hasActiveCourse.value;
+
+  if (hasNoActiveCourse) {
+    return;
+  }
+
+  isCheckingCourseExists.value = true;
+
+  const exists = await store.checkActiveCourseExistsInFirebase();
+
+  isCheckingCourseExists.value = false;
+
+  if (exists) {
+    showSaveConfirmDialog.value = true;
+
+    return;
+  }
+
+  await runSaveToFirebase();
+}
+
+async function runSaveToFirebase() {
   const isSuccess = await store.saveActiveCourseToFirebase();
 
   if (isSuccess) {
@@ -559,6 +583,16 @@ async function handleSaveToFirebase() {
   }
 
   showSaveConfirmDialog.value = false;
+  showOverrideSecondConfirmDialog.value = false;
+}
+
+function handleFirstOverrideConfirm() {
+  showSaveConfirmDialog.value = false;
+  showOverrideSecondConfirmDialog.value = true;
+}
+
+async function handleSecondOverrideConfirm() {
+  await runSaveToFirebase();
 }
 
 function handleAISendMessage() {
@@ -1331,23 +1365,23 @@ function getCourseStatsLine(): string {
           /></Button>
 
           <!-- Save to Firebase -->
-          <AlertDialog v-model:open="showSaveConfirmDialog">
-            <AlertDialogTrigger as-child>
-              <Button
-                size="sm"
-                class="bg-emerald-600 hover:bg-emerald-700 text-white gap-1.5 ml-1"
-                :disabled="!hasActiveCourse || store.isSavingToFirebase"
-              >
-                <CloudUpload class="h-4 w-4" />
-                {{ saveButtonLabel }}
-              </Button>
-            </AlertDialogTrigger>
+          <Button
+            size="sm"
+            class="bg-emerald-600 hover:bg-emerald-700 text-white gap-1.5 ml-1"
+            :disabled="!hasActiveCourse || store.isSavingToFirebase || isCheckingCourseExists"
+            @click="handleSaveButtonClick"
+          >
+            <CloudUpload class="h-4 w-4" />
+            {{ saveButtonLabel }}
+          </Button>
 
+          <!-- First override warning: course id already exists -->
+          <AlertDialog v-model:open="showSaveConfirmDialog">
             <AlertDialogContent>
               <AlertDialogHeader>
-                <AlertDialogTitle>Save to Firebase</AlertDialogTitle>
+                <AlertDialogTitle>Course already exists</AlertDialogTitle>
                 <AlertDialogDescription>
-                  This will overwrite the course "{{ store.activeCourse?.title }}" in production. Are you sure?
+                  A course with id "{{ store.activeCourse?.['course-id'] }}" already exists in Firebase. Saving will override the production course "{{ store.activeCourse?.title }}". Continue?
                 </AlertDialogDescription>
               </AlertDialogHeader>
 
@@ -1355,10 +1389,33 @@ function getCourseStatsLine(): string {
                 <AlertDialogCancel>Cancel</AlertDialogCancel>
 
                 <AlertDialogAction
-                  class="bg-emerald-600 hover:bg-emerald-700"
-                  @click="handleSaveToFirebase"
+                  class="bg-amber-600 hover:bg-amber-700"
+                  @click="handleFirstOverrideConfirm"
                 >
-                  Save
+                  Override
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+
+          <!-- Second override warning: final confirmation -->
+          <AlertDialog v-model:open="showOverrideSecondConfirmDialog">
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  This permanently replaces the production course at "{{ store.activeCourse?.['course-id'] }}". There is no undo.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+
+                <AlertDialogAction
+                  class="bg-red-600 hover:bg-red-700"
+                  @click="handleSecondOverrideConfirm"
+                >
+                  Override course
                 </AlertDialogAction>
               </AlertDialogFooter>
             </AlertDialogContent>

@@ -54,14 +54,21 @@ class UserModel {
   @JsonKey(defaultValue: false)
   final bool rsvp;
 
-  // * Bookshelf — course-ids the user has saved from search or the roadmap.
+  // * Bookshelf, course-ids the user has saved from search or the roadmap.
   @JsonKey(defaultValue: <String>[])
   final List<String> savedCourseIds;
 
-  // * Feather wallet — count of feathers the user owns. Spent on plan
-  // tiers / purchases; topped up by subscription. Stored as an int in
-  // Firestore. Default 0 so existing user docs without the field read
-  // cleanly through the generated fromJson.
+  // * Course-ids the user has purchased with feathers. Roadmap unlocks
+  // the lesson tiles and the continue button only when the course's id
+  // is in this list; otherwise the roadmap shows a feather-priced
+  // purchase button instead.
+  @JsonKey(defaultValue: <String>[])
+  final List<String> purchasedCourses;
+
+  // * Feather wallet, count of feathers the user owns. Spent on course
+  // purchases, topped up by tier purchases in the Feathers sheet.
+  // Stored as an int in Firestore. Default 0 so existing user docs
+  // without the field read cleanly through the generated fromJson.
   @JsonKey(defaultValue: 0)
   final int balance;
 
@@ -90,6 +97,7 @@ class UserModel {
     this.bionic = false,
     this.rsvp = false,
     this.savedCourseIds = const <String>[],
+    this.purchasedCourses = const <String>[],
     this.balance = 0,
     this.courseProgress = const <String, CourseProgressModel>{},
   });
@@ -130,6 +138,7 @@ class UserModel {
     bool? bionic,
     bool? rsvp,
     List<String>? savedCourseIds,
+    List<String>? purchasedCourses,
     int? balance,
     Map<String, CourseProgressModel>? courseProgress,
   }) {
@@ -151,6 +160,7 @@ class UserModel {
       bionic: bionic ?? this.bionic,
       rsvp: rsvp ?? this.rsvp,
       savedCourseIds: savedCourseIds ?? this.savedCourseIds,
+      purchasedCourses: purchasedCourses ?? this.purchasedCourses,
       balance: balance ?? this.balance,
       courseProgress: courseProgress ?? this.courseProgress,
     );

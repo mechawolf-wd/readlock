@@ -15,7 +15,10 @@ import 'package:readlock/screens/CoursesScreen.dart';
 import 'package:readlock/screens/HomeScreen.dart';
 import 'package:readlock/screens/MyBookshelfScreen.dart';
 import 'package:readlock/bottom_sheets/user/LoginBottomSheet.dart';
+import 'package:readlock/models/UserModel.dart';
 import 'package:readlock/services/auth/AuthService.dart';
+import 'package:readlock/services/auth/UserService.dart';
+import 'package:readlock/services/purchases/PurchaseNotifiers.dart';
 
 import 'package:pixelarticons/pixel.dart';
 
@@ -53,12 +56,22 @@ class MainNavigationState extends State<MainNavigation> {
 
   // Show the login sheet whenever the user is signed out. This also covers the
   // first-launch case (currentUser is null before auth completes) and the
-  // post-logout case from Settings → Log out.
+  // post-logout case from Settings, Log out.
   //
   // Honours the dev bypass flag so testers can skip auth and drive the rest
   // of the app without signing in.
+  //
+  // Also hydrates the purchase notifiers (balance + purchasedCourses) the
+  // moment auth resolves to a real user, so any screen the user lands on
+  // first (search, roadmap, bookshelf) reads correct wallet state without
+  // each screen having to refetch.
   void handleAuthStateChange(User? user) {
     final bool hasNoUser = user == null;
+
+    if (!hasNoUser) {
+      hydratePurchaseStateForCurrentUser();
+    }
+
     final bool isBypassed = LoginBottomSheet.isDevBypassed;
     final bool shouldShowLoginSheet =
         hasNoUser && !isBypassed && !isLoginSheetVisible && mounted;
@@ -70,6 +83,16 @@ class MainNavigationState extends State<MainNavigation> {
     isLoginSheetVisible = true;
 
     WidgetsBinding.instance.addPostFrameCallback(presentLoginSheet);
+  }
+
+  Future<void> hydratePurchaseStateForCurrentUser() async {
+    final UserModel? user = await UserService.getCurrentUserProfile();
+
+    if (user == null) {
+      return;
+    }
+
+    hydratePurchaseStateFromUser(user);
   }
 
   void presentLoginSheet(Duration timestamp) {

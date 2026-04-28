@@ -28,6 +28,11 @@ UserModel _$UserModelFromJson(Map<String, dynamic> json) => UserModel(
           ?.map((item) => item as String)
           .toList() ??
       <String>[],
+  purchasedCourses:
+      (json['purchasedCourses'] as List<dynamic>?)
+          ?.map((item) => item as String)
+          .toList() ??
+      <String>[],
   balance: (json['balance'] as num?)?.toInt() ?? 0,
   courseProgress:
       (json['courseProgress'] as Map<String, dynamic>?)?.map(
@@ -56,6 +61,7 @@ Map<String, dynamic> _$UserModelToJson(UserModel instance) => <String, dynamic>{
   'bionic': instance.bionic,
   'rsvp': instance.rsvp,
   'savedCourseIds': instance.savedCourseIds,
+  'purchasedCourses': instance.purchasedCourses,
   'balance': instance.balance,
   'courseProgress': instance.courseProgress.map(
     (key, value) => MapEntry(key, value.toJson()),

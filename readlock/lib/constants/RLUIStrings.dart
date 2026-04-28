@@ -169,6 +169,11 @@ class RLUIStrings {
   static const String ROADMAP_SUBTITLE = 'Master design psychology fundamentals';
   static const String ROADMAP_CONTINUE_LABEL = 'Continue';
   static const String ROADMAP_DEFAULT_LESSON_LABEL = 'Lesson';
+  static const String ROADMAP_PURCHASE_LABEL = 'Unlock for';
+  static const String ROADMAP_PURCHASE_FEATHERS_SUFFIX = 'feathers';
+  static const String ROADMAP_PURCHASE_LOADING_LABEL = 'Unlocking...';
+  static const String ROADMAP_PURCHASE_SUCCESS = 'Course unlocked';
+  static const String ROADMAP_PURCHASE_INSUFFICIENT = 'Not enough feathers';
 
   // * Feedback Snackbar Buttons
   static const String WHY_BUTTON_LABEL = 'Why?';

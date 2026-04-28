@@ -24,6 +24,13 @@ function ensureHashPrefix(hex: string): string {
   return `#${hex}`
 }
 
+export async function courseExistsInFirebase(courseId: string): Promise<boolean> {
+  const courseRef = doc(firestore, COURSES_COLLECTION, courseId)
+  const snapshot = await getDoc(courseRef)
+
+  return snapshot.exists()
+}
+
 export async function fetchCourseById(courseId: string): Promise<Accelerator | null> {
   try {
     const courseRef = doc(firestore, COURSES_COLLECTION, courseId)

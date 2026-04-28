@@ -3,7 +3,7 @@
 import { defineStore } from 'pinia'
 import { ref, computed, watch } from 'vue'
 import type { CourseData, Accelerator, Segment, Package, Swipe, EntityType } from '@/types/Course'
-import { fetchCourseById, saveCourse } from '@/lib/FirebaseCourseService'
+import { courseExistsInFirebase, fetchCourseById, saveCourse } from '@/lib/FirebaseCourseService'
 
 // * LocalStorage keys
 const STORAGE_KEY = 'lockie-course-data'
@@ -742,6 +742,24 @@ export const useCourseStore = defineStore('course', () => {
     return course
   }
 
+  async function checkActiveCourseExistsInFirebase(): Promise<boolean> {
+    const hasNoCourse = !activeCourse.value
+
+    if (hasNoCourse) {
+      return false
+    }
+
+    const courseId = activeCourse.value!['course-id']
+
+    try {
+      return await courseExistsInFirebase(courseId)
+    } catch (error) {
+      console.error('[CourseStore.checkActiveCourseExistsInFirebase]', error)
+
+      return false
+    }
+  }
+
   async function saveActiveCourseToFirebase(): Promise<boolean> {
     const hasNoCourse = !activeCourse.value
 
@@ -811,6 +829,7 @@ export const useCourseStore = defineStore('course', () => {
     importCourse,
     importPackageFromSwipes,
     fetchCourseFromFirebase,
+    checkActiveCourseExistsInFirebase,
     saveActiveCourseToFirebase,
   }
 })

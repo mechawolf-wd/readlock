@@ -1,6 +1,8 @@
 // Generic dialog primitives for the Readlock application.
 // For two-action confirmations, use RLConfirmationDialog in design_system/.
 
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/constants/RLTypography.dart';
@@ -10,15 +12,15 @@ import 'package:readlock/design_system/RLLunarBlur.dart';
 import 'package:readlock/design_system/RLUtility.dart';
 
 class RLDialog {
-  // * Standard dialog — centered card with title, content, and action buttons
+  // * Standard dialog, centered card with title, content, and action buttons
   static void show(
     BuildContext context, {
     required Widget child,
     bool isDismissible = true,
     Color? backgroundColor,
   }) {
-    // Matches the Support bottom sheet's surface — RLDS.backgroundLight
-    // tinted by RLLunarBlur — so every modal in the app sits on the same
+    // Matches the Support bottom sheet's surface, RLDS.backgroundLight
+    // tinted by RLLunarBlur, so every modal in the app sits on the same
     // frosted pane instead of a flat dark card.
     final Color dialogColor = backgroundColor ?? RLDS.backgroundLight;
 
@@ -27,7 +29,13 @@ class RLDialog {
       barrierDismissible: isDismissible,
       barrierColor: RLDS.dialogBarrierColor,
       builder: (BuildContext dialogContext) {
-        return DialogContainer(backgroundColor: dialogColor, child: child);
+        return BackdropFilter(
+          filter: ImageFilter.blur(
+            sigmaX: RLDS.backdropBlurSigma,
+            sigmaY: RLDS.backdropBlurSigma,
+          ),
+          child: DialogContainer(backgroundColor: dialogColor, child: child),
+        );
       },
     );
   }
@@ -56,11 +64,12 @@ class RLDialog {
 }
 
 // * Dialog container with consistent styling. The card is the exact same
-// surface as RLToast — RLLunarBlur over `backgroundLight` with a transparent
-// border — so dialogs read as the same frosted floating pane as every
-// other top-level surface (toast, login bottom sheet). One LunarBlur pass
-// is enough; no extra outer BackdropFilter so the card's translucency
-// stays honest instead of compounding into a second frosted layer.
+// surface as RLToast, RLLunarBlur over `backgroundLight` with a
+// transparent border, so dialogs read as the same frosted floating pane
+// as every other top-level surface (toast, login bottom sheet). The
+// page behind the dialog gets its own backdrop blur via the BackdropFilter
+// wrapper in `RLDialog.show`, so the dialog card sits on a softly
+// blurred-and-dimmed page rather than the page's raw pixels.
 class DialogContainer extends StatelessWidget {
   final Widget child;
   final Color? backgroundColor;

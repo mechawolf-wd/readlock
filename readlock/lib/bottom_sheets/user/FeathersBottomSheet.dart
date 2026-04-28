@@ -15,8 +15,10 @@ import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLUIStrings.dart';
 import 'package:readlock/design_system/RLLunarBlur.dart';
+import 'package:readlock/design_system/RLToast.dart';
 import 'package:readlock/design_system/RLUtility.dart';
 import 'package:readlock/screens/profile/BirdPicker.dart';
+import 'package:readlock/services/purchases/PurchaseService.dart';
 
 // Horizontal inset for every content row inside the sheet. Matches the
 // no-grabber sheet constant so the Feathers sheet breathes the same as
@@ -29,16 +31,22 @@ const EdgeInsets FEATHERS_CONTENT_PADDING = EdgeInsets.symmetric(horizontal: RLD
 // content (heading, price, feathers, books, bird) with no trailing slack.
 const double PLAN_SLIDER_HEIGHT = 320.0;
 const double PLAN_CARD_VIEWPORT_FRACTION = 0.78;
-const double PLAN_CARD_BIRD_PREVIEW_SIZE = 88.0;
+const double PLAN_CARD_BIRD_PREVIEW_SIZE = 112.0;
 
-// Plan data model — two tiers shown in the slider. Each plan ships with a
-// fixed companion bird (the small sprite at the base of the card) so the
-// tier reads as visually distinct at a glance, independent of whatever the
+// Plan data model. Two tiers shown in the slider, each with a fixed
+// companion bird (the small sprite at the base of the card) so the tier
+// reads as visually distinct at a glance, independent of whatever the
 // user has set in the bird picker.
+//
+// `feathers` is the display string ("110 feathers"). `feathersValue` is
+// the raw integer credited to the user's wallet on purchase. Two fields
+// because the display copy is localised and can include suffix text,
+// while the value is what the wallet writer actually adds.
 class FeatherPlan {
   final String name;
   final String price;
   final String feathers;
+  final int feathersValue;
   final String books;
   final BirdOption bird;
 
@@ -46,6 +54,7 @@ class FeatherPlan {
     required this.name,
     required this.price,
     required this.feathers,
+    required this.feathersValue,
     required this.books,
     required this.bird,
   });
@@ -58,11 +67,18 @@ BirdOption lookupBirdByName(String birdName) {
   return BIRD_OPTIONS.firstWhere((BirdOption bird) => bird.name == birdName);
 }
 
+// Feather grant per plan. Mirrors the integer count in the display
+// strings (PLAN_BEGINNER_FEATHERS = '110 feathers', PLAN_READER_FEATHERS
+// = '210 feathers') so a tap credits exactly what the card promised.
+const int PLAN_BEGINNER_FEATHERS_VALUE = 110;
+const int PLAN_READER_FEATHERS_VALUE = 210;
+
 final List<FeatherPlan> FEATHER_PLANS = [
   FeatherPlan(
     name: RLUIStrings.PLAN_BEGINNER_NAME,
     price: RLUIStrings.PLAN_BEGINNER_PRICE,
     feathers: RLUIStrings.PLAN_BEGINNER_FEATHERS,
+    feathersValue: PLAN_BEGINNER_FEATHERS_VALUE,
     books: RLUIStrings.PLAN_BEGINNER_BOOKS,
     bird: lookupBirdByName(RLUIStrings.BIRD_SPARROW),
   ),
@@ -71,6 +87,7 @@ final List<FeatherPlan> FEATHER_PLANS = [
     name: RLUIStrings.PLAN_READER_NAME,
     price: RLUIStrings.PLAN_READER_PRICE,
     feathers: RLUIStrings.PLAN_READER_FEATHERS,
+    feathersValue: PLAN_READER_FEATHERS_VALUE,
     books: RLUIStrings.PLAN_READER_BOOKS,
     bird: lookupBirdByName(RLUIStrings.BIRD_TOUCAN),
   ),
@@ -98,6 +115,7 @@ class FeathersSheet extends StatefulWidget {
 class FeathersSheetState extends State<FeathersSheet> {
   late PageController planController;
   int selectedPlanIndex = DEFAULT_PLAN_INDEX;
+  bool isPurchasing = false;
 
   @override
   void initState() {
@@ -116,7 +134,7 @@ class FeathersSheetState extends State<FeathersSheet> {
   }
 
   void handlePlanChanged(int index) {
-    // Tick haptic per page change — same selectionClick the bird carousel
+    // Tick haptic per page change. Same selectionClick the bird carousel
     // uses, so swiping between Beginner and Reader feels detented.
     HapticFeedback.selectionClick();
 
@@ -125,13 +143,40 @@ class FeathersSheetState extends State<FeathersSheet> {
     });
   }
 
-  // Mock payment trigger — fired when the user taps a plan card. Real
-  // purchase flow will replace this body; the surface contract (tap a
-  // card = start checkout for that tier) stays the same.
-  void handlePlanPurchase(int planIndex) {
+  // Mock payment trigger fired when the user taps a plan card. Routes
+  // through PurchaseService.creditFeathers, which optimistically bumps
+  // the balance notifier and writes the increment to Firestore. When
+  // the real CF lands, only that service swaps; this caller is unchanged.
+  Future<void> handlePlanPurchase(int planIndex) async {
+    if (isPurchasing) {
+      return;
+    }
+
     final FeatherPlan purchasedPlan = FEATHER_PLANS[planIndex];
 
-    debugPrint('Mock purchase: ${purchasedPlan.name} (${purchasedPlan.price})');
+    setState(() {
+      isPurchasing = true;
+    });
+
+    final PurchaseResult result = await PurchaseService.creditFeathers(
+      purchasedPlan.feathersValue,
+    );
+
+    if (!mounted) {
+      return;
+    }
+
+    setState(() {
+      isPurchasing = false;
+    });
+
+    if (result == PurchaseResult.success) {
+      RLToast.success(context, '+${purchasedPlan.feathersValue} feathers');
+      Navigator.of(context).pop();
+      return;
+    }
+
+    RLToast.error(context, RLUIStrings.ERROR_UNKNOWN);
   }
 
   @override

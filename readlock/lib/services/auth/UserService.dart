@@ -17,6 +17,8 @@ class UserPreferenceField {
   static const String BIONIC = 'bionic';
   static const String RSVP = 'rsvp';
   static const String SAVED_COURSE_IDS = 'savedCourseIds';
+  static const String PURCHASED_COURSES = 'purchasedCourses';
+  static const String BALANCE = 'balance';
 }
 
 class UserService {
@@ -125,6 +127,8 @@ class UserService {
         UserPreferenceField.BIONIC: false,
         UserPreferenceField.RSVP: false,
         UserPreferenceField.SAVED_COURSE_IDS: <String>[],
+        UserPreferenceField.PURCHASED_COURSES: <String>[],
+        UserPreferenceField.BALANCE: 0,
       };
 
       await userDoc(userId).set(profileData);
@@ -211,6 +215,60 @@ class UserService {
       return true;
     } on Exception catch (error) {
       logger.failure('addSavedCourseId', '$error');
+      return false;
+    }
+  }
+
+  // * Feather wallet (balance) and course purchases.
+  //
+  // Both writes are atomic Firestore operations: balance uses
+  // FieldValue.increment so concurrent ticks add up cleanly, and
+  // purchasedCourses uses arrayUnion so re-running a purchase is
+  // idempotent. Callers (PurchaseService) should still update the
+  // local notifiers optimistically for instant UI feedback.
+
+  static Future<bool> incrementBalance(int delta) async {
+    final String? userId = AuthService.currentUserId;
+    final bool hasNoUser = userId == null;
+
+    if (hasNoUser) {
+      logger.info('incrementBalance', 'No user logged in');
+      return false;
+    }
+
+    try {
+      await userDoc(userId).update({
+        UserPreferenceField.BALANCE: FieldValue.increment(delta),
+      });
+
+      logger.success('incrementBalance', 'delta=$delta');
+
+      return true;
+    } on Exception catch (error) {
+      logger.failure('incrementBalance', '$error');
+      return false;
+    }
+  }
+
+  static Future<bool> addPurchasedCourse(String courseId) async {
+    final String? userId = AuthService.currentUserId;
+    final bool hasNoUser = userId == null;
+
+    if (hasNoUser) {
+      logger.info('addPurchasedCourse', 'No user logged in');
+      return false;
+    }
+
+    try {
+      await userDoc(userId).update({
+        UserPreferenceField.PURCHASED_COURSES: FieldValue.arrayUnion([courseId]),
+      });
+
+      logger.success('addPurchasedCourse', 'courseId=$courseId');
+
+      return true;
+    } on Exception catch (error) {
+      logger.failure('addPurchasedCourse', '$error');
       return false;
     }
   }
