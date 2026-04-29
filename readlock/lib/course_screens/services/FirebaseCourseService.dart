@@ -162,4 +162,42 @@ class FirebaseCourseService {
 
     return data;
   }
+
+  // * Top-N courses ranked by lifetime purchase count.
+  //
+  // Used by the home screen's "How about these?" row. Firestore's orderBy
+  // skips documents where the field is missing, so courses that have
+  // never had timesPurchased seeded (legacy docs that pre-date the field)
+  // won't appear here until they're re-saved through Lockie.
+
+  static Future<JSONList> fetchMostPurchasedCourses({required int limit}) async {
+    final QuerySnapshot<JSONMap> snapshot = await firestore
+        .collection(FirebaseConfig.COURSES_COLLECTION)
+        .orderBy('timesPurchased', descending: true)
+        .limit(limit)
+        .get();
+
+    return snapshot.docs.map((doc) {
+      final JSONMap data = doc.data();
+
+      data['course-id'] ??= doc.id;
+
+      return data;
+    }).toList();
+  }
+
+  // * Bumps a course's lifetime purchase counter by one.
+  //
+  // Called by PurchaseService.purchaseCourse on a successful unlock so the
+  // /courses doc tracks how many readers have bought it. Uses
+  // FieldValue.increment so concurrent purchases from multiple devices
+  // accumulate cleanly without read-modify-write races.
+
+  static Future<void> incrementTimesPurchased(String courseId) async {
+    final DocumentReference<JSONMap> courseRef = firestore
+        .collection(FirebaseConfig.COURSES_COLLECTION)
+        .doc(courseId);
+
+    await courseRef.update({'timesPurchased': FieldValue.increment(1)});
+  }
 }

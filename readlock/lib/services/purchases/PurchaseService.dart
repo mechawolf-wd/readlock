@@ -9,6 +9,7 @@
 // Local notifiers update optimistically before the Firestore write so
 // the UI flips instantly; a failed write rolls them back.
 
+import 'package:readlock/course_screens/services/FirebaseCourseService.dart';
 import 'package:readlock/services/auth/UserService.dart';
 import 'package:readlock/services/purchases/PurchaseConstants.dart';
 import 'package:readlock/services/purchases/PurchaseNotifiers.dart';
@@ -88,6 +89,12 @@ class PurchaseService {
 
       return PurchaseResult.failed;
     }
+
+    // Lifetime purchase counter on the course doc — fire-and-forget so a
+    // slow analytics write doesn't gate the user-visible success path. The
+    // increment is atomic via FieldValue.increment, so a missed write here
+    // only loses one tally, never the wallet/library mutations above.
+    FirebaseCourseService.incrementTimesPurchased(courseId);
 
     return PurchaseResult.success;
   }

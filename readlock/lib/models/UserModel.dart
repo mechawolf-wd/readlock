@@ -81,6 +81,11 @@ class UserModel {
   @JsonKey(defaultValue: <String>[])
   final List<String> savedCourseIds;
 
+  // * Most recently opened course — set whenever the reader taps a node
+  // (package) on a course's roadmap. Drives the "Reading now…" card on
+  // the home screen. Null until the reader taps their first node.
+  final String? lastOpenedCourseId;
+
   // * Course-ids the user has purchased with feathers. Roadmap unlocks
   // the lesson tiles and the continue button only when the course's id
   // is in this list; otherwise the roadmap shows a feather-priced
@@ -126,6 +131,7 @@ class UserModel {
     this.nightShiftLevel = 0,
     this.birdName = 'Sparrow',
     this.savedCourseIds = const <String>[],
+    this.lastOpenedCourseId,
     this.purchasedCourses = const <String>[],
     this.balance = 0,
     this.courseProgress = const <String, CourseProgressModel>{},
@@ -173,6 +179,7 @@ class UserModel {
     int? nightShiftLevel,
     String? birdName,
     List<String>? savedCourseIds,
+    String? lastOpenedCourseId,
     List<String>? purchasedCourses,
     int? balance,
     Map<String, CourseProgressModel>? courseProgress,
@@ -201,6 +208,7 @@ class UserModel {
       nightShiftLevel: nightShiftLevel ?? this.nightShiftLevel,
       birdName: birdName ?? this.birdName,
       savedCourseIds: savedCourseIds ?? this.savedCourseIds,
+      lastOpenedCourseId: lastOpenedCourseId ?? this.lastOpenedCourseId,
       purchasedCourses: purchasedCourses ?? this.purchasedCourses,
       balance: balance ?? this.balance,
       courseProgress: courseProgress ?? this.courseProgress,

@@ -85,6 +85,17 @@ export async function saveCourse(course: Accelerator): Promise<void> {
     cleanCourse.color = stripHashPrefix(cleanCourse.color)
   }
 
+  // Lifetime purchase counter. Brand-new courses start at 0; existing
+  // courses keep whatever the Flutter app has incremented to so far. We
+  // re-read the existing doc (cheap, single get) instead of using
+  // setDoc(merge:true) because the rest of the payload is a full overwrite
+  // and merge would silently leave orphaned fields behind on edits.
+  const existingDoc = await getDoc(doc(firestore, COURSES_COLLECTION, courseId))
+  const existingTimesPurchased =
+    (existingDoc.exists() ? (existingDoc.data() as Accelerator).timesPurchased : undefined) ?? 0
+
+  cleanCourse.timesPurchased = existingTimesPurchased
+
   // Diagnostics: Firestore silently rejects payloads over 1 MiB and certain
   // field shapes; log size + structure alongside any error so the cause is
   // visible in the console.

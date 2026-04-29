@@ -243,25 +243,36 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
     return Center(child: RLTypography.bodyMedium(RLUIStrings.NO_CONTENT_AVAILABLE_MESSAGE));
   }
 
-  // Top navigation bar with progress indicator
+  // Top navigation bar with progress indicator.
+  //
+  // The whole row (its outer padding + the gaps between buttons) reveals the
+  // chrome on tap while blurred, not just the icons themselves. An opaque
+  // GestureDetector wraps the row so taps in the padding fall through to
+  // handleProgressBarTap; the inner per-button GestureDetectors still claim
+  // their own hits first, so back/night-shift fire their real action when
+  // revealed and ride the reveal-on-first-tap path while blurred.
   Widget TopProgressBar() {
-    return Div.row(
-      [
-        // Back navigation button
-        BackNavigationButton(),
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: handleProgressBarTap,
+      child: Div.row(
+        [
+          // Back navigation button
+          BackNavigationButton(),
 
-        const Spacing.width(RLDS.spacing12),
+          const Spacing.width(RLDS.spacing12),
 
-        // Course progress indicator
-        Expanded(child: ProgressIndicator()),
+          // Course progress indicator
+          Expanded(child: ProgressIndicator()),
 
-        const Spacing.width(RLDS.spacing12),
+          const Spacing.width(RLDS.spacing12),
 
-        // Night Shift toggle (eye-strain overlay)
-        NightShiftButton(),
-      ],
-      key: topChromeKey,
-      padding: RLDS.spacing16,
+          // Night Shift toggle (eye-strain overlay)
+          NightShiftButton(),
+        ],
+        key: topChromeKey,
+        padding: RLDS.spacing16,
+      ),
     );
   }
 

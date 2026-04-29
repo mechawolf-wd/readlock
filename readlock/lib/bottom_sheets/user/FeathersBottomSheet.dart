@@ -81,7 +81,7 @@ final List<FeatherPlan> FEATHER_PLANS = [
     feathers: RLUIStrings.PLAN_BEGINNER_FEATHERS,
     feathersValue: PLAN_BEGINNER_FEATHERS_VALUE,
     books: RLUIStrings.PLAN_BEGINNER_BOOKS,
-    bird: lookupBirdByName(RLUIStrings.BIRD_SPARROW),
+    bird: lookupBirdByName(RLUIStrings.BIRD_KIWI),
   ),
 
   FeatherPlan(

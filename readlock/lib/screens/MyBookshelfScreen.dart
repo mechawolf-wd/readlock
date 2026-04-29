@@ -57,16 +57,24 @@ class BookshelfScreenState extends State<BookshelfScreen> {
   // re-runs its character-by-character reveal.
   int titleAnimationVersion = 0;
 
+  // Re-entrancy guard. fetchSavedCourses ends up writing to
+  // purchasedCoursesNotifier via hydratePurchaseStateFromUser, which would
+  // re-fire handlePurchasedCoursesChanged below and recurse. The flag
+  // short-circuits the listener while a fetch is already in flight.
+  bool isFetchingSavedCourses = false;
+
   @override
   void initState() {
     super.initState();
     fetchSavedCourses();
     activeTabIndexNotifier.addListener(handleTabActivated);
+    purchasedCoursesNotifier.addListener(handlePurchasedCoursesChanged);
   }
 
   @override
   void dispose() {
     activeTabIndexNotifier.removeListener(handleTabActivated);
+    purchasedCoursesNotifier.removeListener(handlePurchasedCoursesChanged);
     super.dispose();
   }
 
@@ -82,7 +90,21 @@ class BookshelfScreenState extends State<BookshelfScreen> {
     });
   }
 
+  // Fired by PurchaseService.purchaseCourse the moment a course unlock
+  // succeeds. Re-pulls /users/{id}.savedCourseIds so the bookshelf shows
+  // the freshly-owned course as soon as the reader switches back to this
+  // tab, instead of waiting for an app restart.
+  void handlePurchasedCoursesChanged() {
+    fetchSavedCourses();
+  }
+
   Future<void> fetchSavedCourses() async {
+    if (isFetchingSavedCourses) {
+      return;
+    }
+
+    isFetchingSavedCourses = true;
+
     try {
       final UserModel? user = await UserService.getCurrentUserProfile();
       final List<String> savedIds = user?.savedCourseIds ?? const <String>[];
@@ -111,6 +133,8 @@ class BookshelfScreenState extends State<BookshelfScreen> {
       setState(() {
         isBookshelfLoading = false;
       });
+    } finally {
+      isFetchingSavedCourses = false;
     }
   }
 

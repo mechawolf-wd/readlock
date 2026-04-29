@@ -34,6 +34,7 @@ UserModel _$UserModelFromJson(Map<String, dynamic> json) => UserModel(
           ?.map((item) => item as String)
           .toList() ??
       <String>[],
+  lastOpenedCourseId: json['lastOpenedCourseId'] as String?,
   purchasedCourses:
       (json['purchasedCourses'] as List<dynamic>?)
           ?.map((item) => item as String)
@@ -73,6 +74,7 @@ Map<String, dynamic> _$UserModelToJson(UserModel instance) => <String, dynamic>{
   'nightShiftLevel': instance.nightShiftLevel,
   'birdName': instance.birdName,
   'savedCourseIds': instance.savedCourseIds,
+  'lastOpenedCourseId': instance.lastOpenedCourseId,
   'purchasedCourses': instance.purchasedCourses,
   'balance': instance.balance,
   'courseProgress': instance.courseProgress.map(

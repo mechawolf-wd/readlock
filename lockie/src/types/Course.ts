@@ -20,6 +20,12 @@ export interface Accelerator {
   'relevant-for': string[]
   genres: string[]
   'preloaded-assets'?: string[]
+  // Lifetime purchase counter. Seeded to 0 on a brand-new save and bumped
+  // by the Flutter app on every successful unlock. Lockie never edits this
+  // value directly; saveCourse() only preserves whatever is already in
+  // Firestore (or 0 for first-time saves) so editing a course doesn't
+  // reset the count.
+  timesPurchased?: number
   segments: Segment[]
 }
 

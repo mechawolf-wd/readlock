@@ -23,6 +23,7 @@ class UserPreferenceField {
   static const String NIGHT_SHIFT_LEVEL = 'nightShiftLevel';
   static const String BIRD_NAME = 'birdName';
   static const String SAVED_COURSE_IDS = 'savedCourseIds';
+  static const String LAST_OPENED_COURSE_ID = 'lastOpenedCourseId';
   static const String PURCHASED_COURSES = 'purchasedCourses';
   static const String BALANCE = 'balance';
 }
@@ -139,6 +140,7 @@ class UserService {
         UserPreferenceField.NIGHT_SHIFT_LEVEL: 0,
         UserPreferenceField.BIRD_NAME: 'Sparrow',
         UserPreferenceField.SAVED_COURSE_IDS: <String>[],
+        UserPreferenceField.LAST_OPENED_COURSE_ID: null,
         UserPreferenceField.PURCHASED_COURSES: <String>[],
         UserPreferenceField.BALANCE: 0,
       };
@@ -243,6 +245,16 @@ class UserService {
   }
 
   // * Saved courses (bookshelf)
+
+  // * Latest opened course — set every time the reader taps a roadmap
+  // node. Drives the home screen's "Reading now…" card.
+  static Future<bool> updateLastOpenedCourseId(String courseId) {
+    return updateField(
+      UserPreferenceField.LAST_OPENED_COURSE_ID,
+      courseId,
+      'updateLastOpenedCourseId',
+    );
+  }
 
   static Future<bool> addSavedCourseId(String courseId) async {
     final String? userId = AuthService.currentUserId;

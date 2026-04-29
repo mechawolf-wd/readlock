@@ -8,12 +8,12 @@ import 'package:readlock/bottom_sheets/NightShiftBottomSheet.dart';
 import 'package:readlock/course_screens/CourseContentViewer.dart';
 import 'package:readlock/course_screens/data/CourseData.dart';
 import 'package:readlock/design_system/RLUtility.dart';
-import 'package:readlock/design_system/RLCard.dart';
 import 'package:readlock/design_system/RLCourseBookImage.dart';
 import 'package:readlock/design_system/RLLunarBlur.dart';
 import 'package:readlock/design_system/RLSegmentTabs.dart';
 import 'package:readlock/design_system/RLStarfieldBackground.dart';
 import 'package:readlock/constants/RLCoursePalette.dart';
+import 'package:readlock/constants/RLLatestCourse.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/constants/RLUIStrings.dart';
@@ -119,18 +119,17 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
     progressRingAnimation = Tween<double>(
       begin: 0.0,
       end: roadmapTargetProgress,
-    ).animate(
-      CurvedAnimation(parent: progressRingController, curve: Curves.easeOutCubic),
-    );
+    ).animate(CurvedAnimation(parent: progressRingController, curve: Curves.easeOutCubic));
 
     breathingController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 3200),
+      duration: const Duration(milliseconds: 2200),
     )..repeat(reverse: true);
 
-    breathingAnimation = Tween<double>(begin: 0.97, end: 1.03).animate(
-      CurvedAnimation(parent: breathingController, curve: Curves.easeInOut),
-    );
+    breathingAnimation = Tween<double>(
+      begin: 0.97,
+      end: 1.03,
+    ).animate(CurvedAnimation(parent: breathingController, curve: Curves.easeInOut));
 
     fetchCourseData();
   }
@@ -311,7 +310,9 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
                 // Scrollable content with sticky headers
                 CustomScrollView(controller: scrollController, slivers: slivers),
 
-                // Continue bar pinned to the bottom — always visible.
+                // Continue / purchase CTA pinned to the bottom — always
+                // visible, painted as a standalone surface-coloured pill
+                // (no card chrome behind it).
                 Positioned(
                   left: RLDS.spacing24,
                   right: RLDS.spacing24,
@@ -326,16 +327,18 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
     );
   }
 
+  // Floating bottom bar — bare button, no RLCard chrome. The button
+  // itself owns its full surface treatment (RLDS.surface fill + white
+  // label), so the bar reads as a single floating pill rather than a
+  // tinted button nested inside a card.
   Widget BottomFloatingBar() {
     final bool isCoursePurchased = getIsCoursePurchased();
-    final Widget barContent = isCoursePurchased
-        ? ContinueButton()
-        : PurchaseButton();
 
-    return RLCard.elevated(
-      padding: const EdgeInsets.all(RLDS.spacing12),
-      child: barContent,
-    );
+    if (isCoursePurchased) {
+      return ContinueButton();
+    }
+
+    return PurchaseButton();
   }
 
   // Feather-priced purchase button. Reads cost from PurchaseConstants so
@@ -343,13 +346,13 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
   // PurchaseService.purchaseCourse which optimistically flips the
   // notifier (continue button replaces this in the next frame) and
   // writes both Firestore mutations atomically.
+  //
+  // Frosted LunarBlur surface (same defaults as the HeroCard and the
+  // book-ring disc) so every floating surface in this screen reads as
+  // the same family. Label adopts the course's accent so the CTA
+  // colour-matches the book it belongs to.
   Widget PurchaseButton() {
     final Color accentColor = getCourseAccentColor();
-    final Color dimmedBackground = RLDS.glass15(accentColor);
-    final BoxDecoration buttonDecoration = BoxDecoration(
-      color: dimmedBackground,
-      borderRadius: RLDS.borderRadiusSmall,
-    );
 
     const EdgeInsets buttonPadding = EdgeInsets.symmetric(
       vertical: RLDS.spacing16,
@@ -362,13 +365,16 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
               '${PurchaseConstants.COURSE_PURCHASE_COST} '
               '${RLUIStrings.ROADMAP_PURCHASE_FEATHERS_SUFFIX}';
 
-    return Div.row(
-      [RLTypography.bodyLarge(purchaseLabel, color: accentColor)],
-      width: double.infinity,
-      padding: buttonPadding,
-      decoration: buttonDecoration,
-      mainAxisAlignment: MainAxisAlignment.center,
-      onTap: isPurchasing ? null : handlePurchaseTap,
+    return RLLunarBlur(
+      borderRadius: RLDS.borderRadiusSmall,
+      borderColor: RLDS.transparent,
+      child: Div.row(
+        [RLTypography.bodyLarge(purchaseLabel, color: accentColor)],
+        width: double.infinity,
+        padding: buttonPadding,
+        mainAxisAlignment: MainAxisAlignment.center,
+        onTap: isPurchasing ? null : handlePurchaseTap,
+      ),
     );
   }
 
@@ -442,24 +448,21 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
         // diving into a lesson.
         Padding(
           padding: roadmapHeaderSidePadding,
-          child: Div.row(
-            [
-              Div.row(
-                [BackChevronIcon],
-                padding: RLDS.spacing8,
-                radius: RLDS.borderRadiusCircle,
-                onTap: handleBackTap,
-              ),
+          child: Div.row([
+            Div.row(
+              [BackChevronIcon],
+              padding: RLDS.spacing8,
+              radius: RLDS.borderRadiusCircle,
+              onTap: handleBackTap,
+            ),
 
-              Div.row(
-                [NightShiftHeaderIcon],
-                padding: RLDS.spacing8,
-                radius: RLDS.borderRadiusCircle,
-                onTap: handleNightShiftTap,
-              ),
-            ],
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          ),
+            Div.row(
+              [NightShiftHeaderIcon],
+              padding: RLDS.spacing8,
+              radius: RLDS.borderRadiusCircle,
+              onTap: handleNightShiftTap,
+            ),
+          ], mainAxisAlignment: MainAxisAlignment.spaceBetween),
         ),
 
         const Spacing.height(RLDS.spacing16),
@@ -492,9 +495,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
   // driven by breathingAnimation so the whole assembly subtly breathes
   // (0.97 ↔ 1.03) — gives the otherwise static token a heartbeat without
   // competing with page content for attention.
-  static final BorderRadius bookRingPaneRadius = BorderRadius.circular(
-    progressRingSize / 2,
-  );
+  static final BorderRadius bookRingPaneRadius = BorderRadius.circular(progressRingSize / 2);
 
   Widget BookRingPane() {
     return SizedBox(
@@ -504,6 +505,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
         scale: breathingAnimation,
         child: RLLunarBlur(
           borderRadius: bookRingPaneRadius,
+          borderColor: RLDS.transparent,
           child: ProgressRing(),
         ),
       ),
@@ -650,25 +652,22 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
 
   Widget ContinueButton() {
     final Color accentColor = getCourseAccentColor();
-    final Color dimmedBackground = RLDS.glass15(accentColor);
-
-    final BoxDecoration buttonDecoration = BoxDecoration(
-      color: dimmedBackground,
-      borderRadius: RLDS.borderRadiusSmall,
-    );
 
     const EdgeInsets buttonPadding = EdgeInsets.symmetric(
       vertical: RLDS.spacing16,
       horizontal: RLDS.spacing24,
     );
 
-    return Div.row(
-      [RLTypography.bodyLarge(RLUIStrings.ROADMAP_CONTINUE_LABEL, color: RLDS.white)],
-      width: double.infinity,
-      padding: buttonPadding,
-      decoration: buttonDecoration,
-      mainAxisAlignment: MainAxisAlignment.center,
-      onTap: handleContinueTap,
+    return RLLunarBlur(
+      borderRadius: RLDS.borderRadiusSmall,
+      borderColor: RLDS.transparent,
+      child: Div.row(
+        [RLTypography.bodyLarge(RLUIStrings.ROADMAP_CONTINUE_LABEL, color: accentColor)],
+        width: double.infinity,
+        padding: buttonPadding,
+        mainAxisAlignment: MainAxisAlignment.center,
+        onTap: handleContinueTap,
+      ),
     );
   }
 
@@ -696,6 +695,14 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
     // "recently used" the moment they start a lesson. No need to await; the
     // Firestore arrayUnion is idempotent and the UI doesn't depend on it.
     UserService.addSavedCourseId(widget.courseId);
+
+    // Mark this course as the latest opened. The notifier is updated
+    // optimistically so HomeScreen's "Reading now…" card reflects the
+    // tap immediately when the user pops back; the Firestore write
+    // catches up async so a fresh launch on another device sees the
+    // same course pinned at the top.
+    lastOpenedCourseIdNotifier.value = widget.courseId;
+    UserService.updateLastOpenedCourseId(widget.courseId);
 
     Navigator.push(
       context,
@@ -880,8 +887,7 @@ class PathLessonNodeState extends State<PathLessonNode> {
 
   @override
   Widget build(BuildContext context) {
-    final String title =
-        widget.lesson['title'] ?? RLUIStrings.ROADMAP_DEFAULT_LESSON_LABEL;
+    final String title = widget.lesson['title'] ?? RLUIStrings.ROADMAP_DEFAULT_LESSON_LABEL;
     final double offsetX = getOffsetForAlignment();
     final Color titleColor = getTitleColor();
 
@@ -951,10 +957,7 @@ class PathLessonNodeState extends State<PathLessonNode> {
     final Widget nodeContent = NodeIcon();
 
     // Borderless circular tile.
-    final BoxDecoration tileDecoration = BoxDecoration(
-      color: bgColor,
-      shape: BoxShape.circle,
-    );
+    final BoxDecoration tileDecoration = BoxDecoration(color: bgColor, shape: BoxShape.circle);
 
     // Circular drop shadow offset down+right.
     final BoxDecoration shadowDecoration = BoxDecoration(

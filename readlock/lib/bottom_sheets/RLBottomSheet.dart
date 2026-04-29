@@ -56,6 +56,11 @@ class RLBottomSheet {
     return showModalBottomSheet<void>(
       context: context,
       backgroundColor: RLDS.transparent,
+      // Same scrim as RLDialog so the dimming weight behind every modal
+      // (sheet or dialog) matches. Flutter's default is Colors.black54
+      // which is close but not identical, and the difference reads as
+      // "this sheet feels heavier than that dialog" once a user opens
+      // both in quick succession.
       isScrollControlled: true,
       isDismissible: isDismissible,
       enableDrag: enableDrag,

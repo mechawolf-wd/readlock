@@ -129,7 +129,7 @@ class RLUIStrings {
   static const String NIGHT_SHIFT_DESCRIPTION =
       'Warm the screen for easier reading before sleep.';
   static const String NIGHT_SHIFT_LESS_WARM_LABEL = 'Off';
-  static const String NIGHT_SHIFT_MORE_WARM_LABEL = 'More warm';
+  static const String NIGHT_SHIFT_MORE_WARM_LABEL = 'Nocturnal';
 
   // * Course Content Factory
   static const String UNKNOWN_CONTENT_TYPE_MESSAGE = 'Unknown content type: ';
@@ -141,10 +141,6 @@ class RLUIStrings {
   static const String REFLECTION_ASPECTS_LABEL = 'Consider these aspects:';
   static const String REFLECTION_SWIPE_HINT = 'Swipe right to confirm';
   static const String REFLECT_TITLE = 'Take a Moment to Reflect';
-
-  // * Quote
-  static const String NOTABLE_QUOTE_TITLE = 'Notable Quote';
-  static const String QUOTE_BOOKMARKED_LABEL = 'Bookmarked ✓';
 
   // * Text Content
   static const String TEXT_CONTENT_CONTINUE_LABEL = 'Continue';

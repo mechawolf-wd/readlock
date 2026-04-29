@@ -115,6 +115,10 @@ class CCQuestionState extends State<CCQuestion> {
       option: option,
       textColor: optionTextColor,
       isRevealed: isRevealed,
+      // Flips the ValueKey on the picked correct answer so the
+      // ProgressiveText remounts and the typewriter replays alongside
+      // the green border reveal.
+      shouldReplayTypewriter: shouldShowCorrect,
     );
 
     final Widget optionRowContent = Row(
@@ -167,17 +171,20 @@ class CCQuestionState extends State<CCQuestion> {
   //   1. not revealed → transparent label wrapped in a Div.column with the
   //      same width:infinity that ProgressiveText wraps its own content
   //      in — reserves the final card height from the first frame.
-  //   2. revealed → ProgressiveText mounted with a stable ValueKey.
-  //      Because the key persists across every later parent rebuild
-  //      (e.g. the correct-answer selection), its State is preserved and
-  //      the typewriter plays exactly once. The fully-revealed widget is
-  //      never swapped out to a different widget — which was what caused
-  //      the layout to snap at the moment of completion.
+  //   2. revealed → ProgressiveText mounted with a ValueKey. The key is
+  //      stable across rebuilds while the option is in its idle revealed
+  //      state, so the typewriter plays exactly once. When the option is
+  //      the correct picked answer, `shouldReplayTypewriter` flips the
+  //      key, forcing a remount so the typewriter replays in lock-step
+  //      with the green border reveal. Layout stays stable because
+  //      ProgressiveText reserves its final height via a transparent
+  //      tail from the first frame.
   Widget OptionText({
     required int optionIndex,
     required QuestionOption option,
     required Color textColor,
     required bool isRevealed,
+    required bool shouldReplayTypewriter,
   }) {
     if (!isRevealed) {
       return Div.column(
@@ -187,8 +194,10 @@ class CCQuestionState extends State<CCQuestion> {
       );
     }
 
+    final String replayPhase = shouldReplayTypewriter ? 'correct' : 'idle';
+
     return ProgressiveText(
-      key: ValueKey('option_text_$optionIndex'),
+      key: ValueKey('option_text_${optionIndex}_$replayPhase'),
       textSegments: [option.text],
       textStyle: RLTypography.readingLargeStyle.copyWith(color: textColor),
       blurCompletedSentences: false,

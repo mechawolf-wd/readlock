@@ -27,4 +27,8 @@ class CourseDataService {
   static Future<JSONList> fetchCoursesByIds(List<String> courseIds) {
     return FirebaseCourseService.fetchCoursesByIds(courseIds);
   }
+
+  static Future<JSONList> fetchMostPurchasedCourses({required int limit}) {
+    return FirebaseCourseService.fetchMostPurchasedCourses(limit: limit);
+  }
 }

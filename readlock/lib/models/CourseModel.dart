@@ -33,6 +33,12 @@ class Accelerator {
   @JsonKey(name: 'preloaded-assets', defaultValue: [])
   final List<String> preloadedAssets;
 
+  // * Lifetime purchase counter. Bumped via FieldValue.increment(1) on every
+  // successful PurchaseService.purchaseCourse call. Lockie seeds it to 0 on
+  // a brand-new course doc; existing courses keep their accumulated count.
+  @JsonKey(name: 'timesPurchased', defaultValue: 0)
+  final int timesPurchased;
+
   final List<Segment> segments;
 
   const Accelerator({
@@ -45,6 +51,7 @@ class Accelerator {
     required this.relevantFor,
     required this.genres,
     required this.preloadedAssets,
+    this.timesPurchased = 0,
     required this.segments,
   });
 

@@ -17,11 +17,14 @@ import 'package:readlock/constants/RLReadingFont.dart';
 class RLTypography {
   // * Display font — Press Start 2P (8-bit, for headings and standout elements)
 
+  // Pixel display fonts read better with tight leading (1.1–1.3); 1.5 felt
+  // like body copy and diluted the 8-bit punch. Keeping the gap tight makes
+  // the heading land as one solid block.
   static final TextStyle headingLargeStyle = GoogleFonts.pressStart2p(
     fontSize: 20,
     fontWeight: RLDS.weightBold,
     color: RLDS.textPrimary,
-    height: 1.5,
+    height: 1.2,
     letterSpacing: -0.3,
   );
 
@@ -29,7 +32,7 @@ class RLTypography {
     fontSize: 14,
     fontWeight: RLDS.weightSemibold,
     color: RLDS.textPrimary,
-    height: 1.5,
+    height: 1.25,
     letterSpacing: -0.2,
   );
 
@@ -53,11 +56,14 @@ class RLTypography {
 
   // * UI font — JetBrains MONO (clean, for buttons, labels, menus)
 
+  // UI body — used for menu rows, buttons, and most labels. Mostly renders
+  // on a single line, so 1.4 (Material's lower bound) reclaims vertical
+  // density in long settings lists without making multi-line UI feel cramped.
   static final TextStyle bodyLargeStyle = GoogleFonts.jetBrainsMono(
     fontSize: 16,
     fontWeight: RLDS.weightMedium,
     color: RLDS.textPrimary,
-    height: 1.5,
+    height: 1.4,
     letterSpacing: 0.1,
   );
 
@@ -69,11 +75,13 @@ class RLTypography {
     letterSpacing: 0.15,
   );
 
+  // Captions / fine print — small glyphs need proportionally MORE leading,
+  // not less. 1.6 keeps 12pt text breathable on mobile.
   static final TextStyle bodySmallStyle = GoogleFonts.jetBrainsMono(
     fontSize: 12,
     fontWeight: RLDS.weightRegular,
     color: RLDS.textSecondary,
-    height: 1.5,
+    height: 1.6,
     letterSpacing: 0.2,
   );
 

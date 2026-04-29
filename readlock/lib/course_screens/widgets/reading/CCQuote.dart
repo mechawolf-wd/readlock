@@ -1,115 +1,107 @@
-// Widget for displaying notable quotes with bookmark functionality
-// Clean design highlighting important insights from authors
+// Notable-quote slide. Mirrors CCPause's structure (bird companion above
+// a centred typewriter line) so the reader's eye lands the same way on
+// both interaction beats. Quote body is italic and wrapped in opening /
+// closing quotation marks; the author sits underneath in muted text as a
+// quiet attribution.
 
 import 'package:flutter/material.dart' hide Typography;
-import 'package:readlock/models/CourseModel.dart';
-import 'package:readlock/design_system/RLUtility.dart';
-import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
-import 'package:readlock/constants/RLUIStrings.dart';
+import 'package:readlock/constants/RLTypography.dart';
+import 'package:readlock/design_system/RLUtility.dart';
+import 'package:readlock/models/CourseModel.dart';
+import 'package:readlock/screens/profile/BirdPicker.dart';
+import 'package:readlock/utility_widgets/text_animation/ProgressiveText.dart';
 
-import 'package:pixelarticons/pixel.dart';
-class CCQuote extends StatefulWidget {
+class CCQuote extends StatelessWidget {
   final QuoteSwipe content;
 
   const CCQuote({super.key, required this.content});
 
-  @override
-  State<CCQuote> createState() => CCQuoteState();
-}
+  static const double birdPreviewSize = BIRD_PREVIEW_SIZE_SMALL;
 
-class CCQuoteState extends State<CCQuote> {
-  bool isBookmarked = false;
+  // Slower than the default 10ms/char — the quote is short, and a default-
+  // speed reveal finishes before the swipe animation does, so the reader
+  // never sees it type in. 40ms/char keeps the reveal in progress while
+  // the user lands on the page. Same pace as CCPause for consistency.
+  static const Duration quoteTypewriterCharacterDelay = Duration(milliseconds: 40);
 
   @override
   Widget build(BuildContext context) {
-    final BoxDecoration quoteContainerDecoration = BoxDecoration(
-      color: RLDS.backgroundLight,
-      borderRadius: RLDS.borderRadiusMedium,
-      border: Border.all(color: RLDS.glass15(RLDS.warning)),
+    // Italic reading style — same weight and colour as CCPause but tilted
+    // so the line reads as a citation rather than narration.
+    final TextStyle quoteTextStyle = RLTypography.readingLargeStyle.copyWith(
+      color: RLDS.textPrimary,
+      fontStyle: FontStyle.italic,
     );
 
-    return Padding(
-      padding: const EdgeInsets.all(RLDS.spacing24),
-      child: Center(
-        child: Container(
-          padding: const EdgeInsets.all(RLDS.spacing20),
-          decoration: quoteContainerDecoration,
-          child: Div.column([
-            QuoteHeader(),
-
-            const Spacing.height(RLDS.spacing16),
-
-            QuoteText(),
-
-            const Spacing.height(RLDS.spacing12),
-
-            QuoteFooter(),
-          ]),
-        ),
-      ),
+    return Div.column(
+      [
+        QuoteContent(quoteTextStyle: quoteTextStyle),
+      ],
+      padding: RLDS.contentPaddingInsets,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.center,
     );
   }
 
-  Widget QuoteHeader() {
-    final Widget QuoteIcon = const Icon(Pixel.message, color: RLDS.warning, size: RLDS.iconLarge);
+  Widget QuoteContent({required TextStyle quoteTextStyle}) {
+    return Div.column(
+      [
+        BirdCompanion(),
 
-    IconData bookmarkIconData = Pixel.bookmark;
+        const Spacing.height(RLDS.spacing16),
 
-    if (isBookmarked) {
-      bookmarkIconData = Pixel.bookmark;
-    }
+        QuoteBody(textStyle: quoteTextStyle),
 
-    final Widget BookmarkToggleIcon = Icon(
-      bookmarkIconData,
-      color: RLDS.warning,
-      size: RLDS.iconLarge,
-    );
+        const Spacing.height(RLDS.spacing12),
 
-    return Div.row([
-      QuoteIcon,
-
-      const Spacing.width(RLDS.spacing12),
-
-      Expanded(child: RLTypography.bodyLarge(RLUIStrings.NOTABLE_QUOTE_TITLE)),
-
-      Div.row([BookmarkToggleIcon], onTap: handleBookmarkToggle),
-    ]);
-  }
-
-  void handleBookmarkToggle() {
-    setState(() {
-      isBookmarked = !isBookmarked;
-    });
-  }
-
-  Widget QuoteText() {
-    final BoxDecoration quoteTextDecoration = BoxDecoration(
-      color: RLDS.glass10(RLDS.warning),
-      borderRadius: RLDS.borderRadiusSmall,
-      border: Border.all(color: RLDS.glass15(RLDS.warning), width: 2),
-    );
-
-    return Container(
-      padding: const EdgeInsets.all(RLDS.spacing16),
-      decoration: quoteTextDecoration,
-      child: RLTypography.readingLarge('"${widget.content.quote}"'),
+        AuthorAttribution(),
+      ],
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.center,
     );
   }
 
-  Widget QuoteFooter() {
-    return Div.row([
-      RLTypography.bodyMedium(
-        '— ${widget.content.author}',
-        color: RLDS.glass70(RLDS.textPrimary),
-      ),
+  // Subscribes to selectedBirdNotifier so the sprite updates whenever the
+  // user switches birds in Settings. Always renders the idle tag.
+  Widget BirdCompanion() {
+    return ValueListenableBuilder<BirdOption>(
+      valueListenable: selectedBirdNotifier,
+      builder: BirdBuilder,
+    );
+  }
 
-      const Spacer(),
+  Widget BirdBuilder(BuildContext context, BirdOption bird, Widget? unusedChild) {
+    return BirdAnimationSprite(bird: bird, previewSize: birdPreviewSize);
+  }
 
-      RenderIf.condition(
-        isBookmarked,
-        RLTypography.bodyMedium(RLUIStrings.QUOTE_BOOKMARKED_LABEL, color: RLDS.warning),
-      ),
-    ]);
+  Widget QuoteBody({required TextStyle textStyle}) {
+    final String wrappedQuote = '"${content.quote}"';
+
+    return ProgressiveText(
+      textSegments: [wrappedQuote],
+      textStyle: textStyle,
+      textAlignment: CrossAxisAlignment.center,
+      textAlign: TextAlign.center,
+      blurCompletedSentences: false,
+      enableTapToReveal: false,
+      typewriterCharacterDelay: quoteTypewriterCharacterDelay,
+    );
+  }
+
+  Widget AuthorAttribution() {
+    // Reuses the reader-picked reading family (Lora / Lexend / Mono) so the
+    // attribution sits in the same voice as the quote above instead of
+    // jumping to the JetBrains Mono UI font. Muted colour drops the line
+    // back so the quote stays the visual focus.
+    final TextStyle authorTextStyle = RLTypography.readingMediumStyle.copyWith(
+      color: RLDS.textMuted,
+    );
+
+    return Text(
+      content.author,
+      style: authorTextStyle,
+      textAlign: TextAlign.center,
+    );
   }
 }

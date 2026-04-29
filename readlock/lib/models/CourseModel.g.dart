@@ -22,6 +22,7 @@ Accelerator _$AcceleratorFromJson(Map<String, dynamic> json) => Accelerator(
           ?.map((e) => e as String)
           .toList() ??
       [],
+  timesPurchased: (json['timesPurchased'] as num?)?.toInt() ?? 0,
   segments: (json['segments'] as List<dynamic>)
       .map((e) => Segment.fromJson(e as Map<String, dynamic>))
       .toList(),
@@ -38,6 +39,7 @@ Map<String, dynamic> _$AcceleratorToJson(Accelerator instance) =>
       'relevant-for': instance.relevantFor,
       'genres': instance.genres,
       'preloaded-assets': instance.preloadedAssets,
+      'timesPurchased': instance.timesPurchased,
       'segments': instance.segments.map((e) => e.toJson()).toList(),
     };
 

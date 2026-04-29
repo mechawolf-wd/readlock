@@ -9,6 +9,7 @@
 // a dashboard.
 
 import 'package:flutter/material.dart' hide Typography;
+import 'package:pixelarticons/pixel.dart';
 import 'package:readlock/models/CourseModel.dart';
 import 'package:readlock/design_system/RLLunarBlur.dart';
 import 'package:readlock/design_system/RLUtility.dart';
@@ -32,6 +33,16 @@ class CCReflect extends StatefulWidget {
 class CCReflectState extends State<CCReflect> {
   // Point indices the reader has already tapped to reveal.
   Set<int> revealedPoints = {};
+
+  // Per-card "tap me" affordance — open eye centred on every blurred
+  // reflect point. Disappears once the card reveals so the typewriter
+  // takes the centre uncluttered. Muted secondary colour so it reads as
+  // a quiet hint, not a CTA.
+  static final Widget RevealEyeIcon = const Icon(
+    Pixel.eye,
+    color: RLDS.textSecondary,
+    size: RLDS.iconXXLarge * 2,
+  );
 
   List<String> getLimitedPoints() {
     return widget.content.thinkingPoints.take(REFLECT_POINTS_LIMIT).toList();
@@ -101,10 +112,21 @@ class CCReflectState extends State<CCReflect> {
       child: pointText,
     );
 
+    // Stack the open-eye affordance ON TOP of the BlurOverlay so the
+    // icon stays crisp while the card behind it is blurred. The icon
+    // is centred over the card's reserved height (PointText keeps the
+    // final text height even while transparent), so its position
+    // doesn't shift when the typewriter takes over after reveal.
+    final List<Widget> stackChildren = [BlurOverlay(enabled: !isRevealed, child: pointSurface)];
+
+    if (!isRevealed) {
+      stackChildren.add(Positioned.fill(child: Center(child: RevealEyeIcon)));
+    }
+
     return GestureDetector(
       onTap: onEntryTap,
       behavior: HitTestBehavior.opaque,
-      child: BlurOverlay(enabled: !isRevealed, child: pointSurface),
+      child: Stack(children: stackChildren),
     );
   }
 
@@ -116,11 +138,7 @@ class CCReflectState extends State<CCReflect> {
   //      persists across later parent rebuilds, so the reveal plays
   //      exactly once and never swaps to a different widget — the snap
   //      at completion is what that swap was causing.
-  Widget PointText({
-    required int pointIndex,
-    required String point,
-    required bool isRevealed,
-  }) {
+  Widget PointText({required int pointIndex, required String point, required bool isRevealed}) {
     if (!isRevealed) {
       return RLTypography.readingLarge(
         point,

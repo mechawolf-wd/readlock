@@ -9,6 +9,7 @@
 // rsvpEnabledNotifier and bionicEnabledNotifier — those handlers stay in
 // ProfileScreen so the toggles can update both in one place.
 
+import 'package:readlock/constants/RLLatestCourse.dart';
 import 'package:readlock/constants/RLNightShift.dart';
 import 'package:readlock/constants/RLReadingColumn.dart';
 import 'package:readlock/constants/RLReadingFont.dart';
@@ -29,4 +30,6 @@ void hydrateUserPreferenceNotifiersFromUser(UserModel user) {
   selectedBirdNotifier.value = birdOptionFromName(user.birdName);
 
   justifiedReadingEnabledNotifier.value = user.justifiedReading;
+
+  lastOpenedCourseIdNotifier.value = user.lastOpenedCourseId;
 }

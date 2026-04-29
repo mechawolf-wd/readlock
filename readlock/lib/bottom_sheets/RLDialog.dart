@@ -27,7 +27,6 @@ class RLDialog {
     showDialog(
       context: context,
       barrierDismissible: isDismissible,
-      barrierColor: RLDS.dialogBarrierColor,
       builder: (BuildContext dialogContext) {
         return BackdropFilter(
           filter: ImageFilter.blur(
