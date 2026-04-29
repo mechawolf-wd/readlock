@@ -290,7 +290,7 @@ class LoginSheetState extends State<LoginSheet> {
   }
 
   Widget DevSkipButton() {
-    final Color devLinkColor = RLDS.textSecondary.withValues(alpha: 0.6);
+    final Color devLinkColor = RLDS.glass70(RLDS.textSecondary);
 
     return Div.row(
       [
@@ -376,7 +376,7 @@ class LoginSheetState extends State<LoginSheet> {
   }
 
   Widget AppleLoginButton() {
-    final Icon AppleIcon = const Icon(Icons.apple, color: RLDS.white, size: 20);
+    final Icon AppleIcon = const Icon(Icons.apple, color: RLDS.white, size: RLDS.iconMedium);
 
     final BoxDecoration buttonDecoration = BoxDecoration(
       color: RLDS.black,
@@ -403,7 +403,7 @@ class LoginSheetState extends State<LoginSheet> {
     final BoxDecoration buttonDecoration = BoxDecoration(
       color: RLDS.backgroundDark,
       borderRadius: RLDS.borderRadiusSmall,
-      border: Border.all(color: RLDS.textPrimary.withValues(alpha: 0.1)),
+      border: Border.all(color: RLDS.glass10(RLDS.textPrimary)),
     );
 
     return GestureDetector(
@@ -427,7 +427,7 @@ class LoginSheetState extends State<LoginSheet> {
   }
 
   Widget OrDivider() {
-    final Color dividerColor = RLDS.textPrimary.withValues(alpha: 0.1);
+    final Color dividerColor = RLDS.glass10(RLDS.textPrimary);
 
     return Div.row([
       Expanded(child: Container(height: 1, color: dividerColor)),

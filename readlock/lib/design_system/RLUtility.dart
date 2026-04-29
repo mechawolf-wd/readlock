@@ -729,7 +729,7 @@ class BottomSheetGrabber extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final BoxDecoration grabberDecoration = BoxDecoration(
-      color: RLDS.textSecondary.withValues(alpha: 0.3),
+      color: RLDS.glass40(RLDS.textSecondary),
       borderRadius: BorderRadius.circular(4),
     );
 

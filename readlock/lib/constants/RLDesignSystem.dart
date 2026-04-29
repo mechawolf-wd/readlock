@@ -106,6 +106,31 @@ class RLDS {
   static const double borderWidth = 2;
   static const double separatorWidth = 48.0;
 
+  // * Glass helpers — five buckets cover every translucent paint in the
+  // app. Use the helper at the call site so changing the curve is a
+  // single edit here. Naming is value-based so the alpha reads at a
+  // glance: glass10 = 10% opacity, glass70 = 70% opacity.
+
+  static Color glass10(Color color) {
+    return color.withValues(alpha: 0.10);
+  }
+
+  static Color glass15(Color color) {
+    return color.withValues(alpha: 0.15);
+  }
+
+  static Color glass40(Color color) {
+    return color.withValues(alpha: 0.40);
+  }
+
+  static Color glass50(Color color) {
+    return color.withValues(alpha: 0.50);
+  }
+
+  static Color glass70(Color color) {
+    return color.withValues(alpha: 0.70);
+  }
+
   // * Icon sizes
 
   static const double iconSmall = 16.0;
@@ -168,7 +193,7 @@ class RLDS {
   // * Scrim painted behind any modal dialog. Single source of truth so
   // every dialog (alert, confirmation, future ones) dims the page by the
   // same amount instead of each call site picking its own alpha.
-  static final Color dialogBarrierColor = black.withValues(alpha: 0.5);
+  static final Color dialogBarrierColor = glass50(black);
 
   // * Hex color parsing
 

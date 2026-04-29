@@ -19,7 +19,7 @@ class RLSwitch extends StatelessWidget {
       value: value,
       onChanged: onChanged,
       activeTrackColor: resolvedActiveColor,
-      inactiveTrackColor: RLDS.textPrimary.withValues(alpha: 0.15),
+      inactiveTrackColor: RLDS.glass15(RLDS.textPrimary),
     );
   }
 }

@@ -57,7 +57,7 @@ class RLStatsCard extends StatelessWidget {
           Container(
             width: 1.0,
             height: RLDS.separatorWidth,
-            color: RLDS.white.withValues(alpha: 0.2),
+            color: RLDS.glass15(RLDS.white),
           ),
         );
       }
@@ -94,7 +94,7 @@ class StatItemWidget extends StatelessWidget {
 
         RLTypography.bodyMedium(
           item.unit,
-          color: RLDS.white.withValues(alpha: 0.8),
+          color: RLDS.glass70(RLDS.white),
         ),
       ], mainAxisAlignment: MainAxisAlignment.center),
 
@@ -102,7 +102,7 @@ class StatItemWidget extends StatelessWidget {
 
       RLTypography.bodyMedium(
         item.label,
-        color: RLDS.white.withValues(alpha: 0.6),
+        color: RLDS.glass70(RLDS.white),
         textAlign: TextAlign.center,
       ),
     ], crossAxisAlignment: CrossAxisAlignment.center);

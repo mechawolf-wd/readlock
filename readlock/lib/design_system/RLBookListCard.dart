@@ -120,12 +120,12 @@ class BookCoverThumbnail extends StatelessWidget {
 
   Widget CoverPlaceholder() {
     final BoxDecoration placeholderDecoration = BoxDecoration(
-      color: RLDS.info.withValues(alpha: 0.1),
+      color: RLDS.glass10(RLDS.info),
       borderRadius: RLDS.borderRadiusXSmall,
-      border: Border.all(color: RLDS.info.withValues(alpha: 0.2)),
+      border: Border.all(color: RLDS.glass15(RLDS.info)),
     );
 
-    final Widget BookIcon = const Icon(Pixel.book, color: RLDS.info, size: 20);
+    final Widget BookIcon = const Icon(Pixel.book, color: RLDS.info, size: RLDS.iconMedium);
 
     return Container(
       width: width,

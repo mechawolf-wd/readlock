@@ -345,7 +345,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
   // writes both Firestore mutations atomically.
   Widget PurchaseButton() {
     final Color accentColor = getCourseAccentColor();
-    final Color dimmedBackground = accentColor.withValues(alpha: 0.15);
+    final Color dimmedBackground = RLDS.glass15(accentColor);
     final BoxDecoration buttonDecoration = BoxDecoration(
       color: dimmedBackground,
       borderRadius: RLDS.borderRadiusSmall,
@@ -545,7 +545,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
             height: progressRingSize,
             child: AnimatedProgressArc(
               animation: progressRingAnimation,
-              color: accentColor.withValues(alpha: 0.75),
+              color: RLDS.glass70(accentColor),
               strokeWidth: progressRingStrokeWidth,
             ),
           ),
@@ -650,7 +650,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
 
   Widget ContinueButton() {
     final Color accentColor = getCourseAccentColor();
-    final Color dimmedBackground = accentColor.withValues(alpha: 0.15);
+    final Color dimmedBackground = RLDS.glass15(accentColor);
 
     final BoxDecoration buttonDecoration = BoxDecoration(
       color: dimmedBackground,
@@ -834,7 +834,7 @@ class PathLessonNode extends StatefulWidget {
 
 class PathLessonNodeState extends State<PathLessonNode> {
   static const double roadmapTileShadowOffset = 4.0;
-  static const double roadmapTileIconSize = 32.0;
+  static const double roadmapTileIconSize = RLDS.iconXLarge;
 
   bool isPressed = false;
 
@@ -940,7 +940,7 @@ class PathLessonNodeState extends State<PathLessonNode> {
 
   Color getTitleColor() {
     if (widget.isLocked) {
-      return RLDS.textSecondary.withValues(alpha: 0.5);
+      return RLDS.glass50(RLDS.textSecondary);
     }
 
     return RLDS.textPrimary;
@@ -958,7 +958,7 @@ class PathLessonNodeState extends State<PathLessonNode> {
 
     // Circular drop shadow offset down+right.
     final BoxDecoration shadowDecoration = BoxDecoration(
-      color: RLDS.black.withValues(alpha: 0.5),
+      color: RLDS.glass50(RLDS.black),
       shape: BoxShape.circle,
     );
 
@@ -1014,14 +1014,14 @@ class PathLessonNodeState extends State<PathLessonNode> {
       return RLDS.backgroundLight;
     }
 
-    return widget.accentColor.withValues(alpha: 0.15);
+    return RLDS.glass15(widget.accentColor);
   }
 
   // * Tile glyphs — 32px so they land on pixelarticons' 16×16 grid (2x).
 
   static final Widget LockedIcon = Icon(
     Pixel.lock,
-    color: RLDS.textSecondary.withValues(alpha: 0.4),
+    color: RLDS.glass40(RLDS.textSecondary),
     size: roadmapTileIconSize,
   );
 

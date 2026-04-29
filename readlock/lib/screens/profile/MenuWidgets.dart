@@ -244,7 +244,7 @@ class MenuSection extends StatelessWidget {
         Center(
           child: RLTypography.bodyMedium(
             RLUIStrings.MENU_VERSION,
-            color: RLDS.textPrimary.withValues(alpha: 0.5),
+            color: RLDS.glass50(RLDS.textPrimary),
           ),
         ),
       ],
@@ -270,7 +270,7 @@ class MenuItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final bool hasTextColor = textColor != null;
 
-    Color iconColor = RLDS.textPrimary.withValues(alpha: 0.7);
+    Color iconColor = RLDS.glass70(RLDS.textPrimary);
     Color titleColor = RLDS.textPrimary;
 
     if (hasTextColor) {
@@ -332,7 +332,7 @@ class SwitchMenuItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Color iconColor = RLDS.textPrimary.withValues(alpha: 0.7);
+    final Color iconColor = RLDS.glass70(RLDS.textPrimary);
     final Color titleColor = RLDS.textPrimary;
 
     final Widget MenuItemIcon = Icon(icon, color: iconColor, size: RLDS.iconMedium);
@@ -369,7 +369,7 @@ class MenuDivider extends StatelessWidget {
     return Container(
       height: 1.0,
       margin: const EdgeInsets.symmetric(vertical: RLDS.spacing8),
-      color: RLDS.textPrimary.withValues(alpha: 0.1),
+      color: RLDS.glass10(RLDS.textPrimary),
     );
   }
 }

@@ -119,7 +119,7 @@ class LoginSupportPickerContentState extends State<LoginSupportPickerContent> {
   }) {
     final Widget ChevronIcon = Icon(
       Pixel.chevronright,
-      color: RLDS.textSecondary.withValues(alpha: 0.5),
+      color: RLDS.glass50(RLDS.textSecondary),
       size: RLDS.iconMedium,
     );
 

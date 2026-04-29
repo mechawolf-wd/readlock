@@ -75,7 +75,7 @@ class ExpandableCardState extends State<ExpandableCard> {
     Border? cardBorder;
 
     if (!hasGradient) {
-      cardBorder = Border.all(color: RLDS.textPrimary.withValues(alpha: 0.1));
+      cardBorder = Border.all(color: RLDS.glass10(RLDS.textPrimary));
     }
 
     return BoxDecoration(
@@ -131,7 +131,7 @@ class ExpandableCardState extends State<ExpandableCard> {
   }
 
   Widget MainIcon(Color iconColor) {
-    return Icon(widget.icon, color: iconColor, size: 24.0);
+    return Icon(widget.icon, color: iconColor, size: RLDS.iconLarge);
   }
 
   Widget TitleText(Color titleColor) {
@@ -145,7 +145,7 @@ class ExpandableCardState extends State<ExpandableCard> {
       chevronIcon = Pixel.chevronup;
     }
 
-    return Icon(chevronIcon, color: titleColor.withValues(alpha: 0.7), size: 20.0);
+    return Icon(chevronIcon, color: RLDS.glass70(titleColor), size: RLDS.iconMedium);
   }
 
   Widget ExpandedSection(Color titleColor) {
@@ -159,7 +159,7 @@ class ExpandableCardState extends State<ExpandableCard> {
   Widget DividerLine(Color titleColor) {
     return Container(
       height: 1.0,
-      color: titleColor.withValues(alpha: 0.1),
+      color: RLDS.glass10(titleColor),
       margin: const EdgeInsets.symmetric(horizontal: RLDS.spacing20),
     );
   }

@@ -123,7 +123,7 @@ class MainNavigationState extends State<MainNavigation> {
   }
 
   // * Nav chrome sizing
-  static const double navIconSize = 32.0;
+  static const double navIconSize = RLDS.iconXLarge;
   static const double navLabelFontSize = 12.0;
 
   // Icon definitions for navigation items

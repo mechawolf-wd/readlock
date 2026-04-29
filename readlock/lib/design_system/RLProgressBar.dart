@@ -21,7 +21,7 @@ class RLProgressBar extends StatelessWidget {
     final BorderRadius barRadius = BorderRadius.circular(height);
 
     final BoxDecoration trackDecoration = BoxDecoration(
-      color: color.withValues(alpha: 0.2),
+      color: RLDS.glass15(color),
       borderRadius: barRadius,
     );
 

@@ -111,14 +111,14 @@ class CCEstimateState extends State<CCEstimate>
     return Div.row([
       RLTypography.bodyMedium(
         RLUIStrings.ESTIMATE_YOUR_LABEL,
-        color: RLDS.textPrimary.withValues(alpha: 0.7),
+        color: RLDS.glass70(RLDS.textPrimary),
       ),
 
       const Spacing.width(RLDS.spacing12),
 
       RLTypography.headingLarge('${currentEstimate.round()}', color: RLDS.info),
 
-      RLTypography.headingMedium('%', color: RLDS.info.withValues(alpha: 0.7)),
+      RLTypography.headingMedium('%', color: RLDS.glass70(RLDS.info)),
     ], mainAxisAlignment: MainAxisAlignment.center);
   }
 
@@ -148,7 +148,7 @@ class CCEstimateState extends State<CCEstimate>
   }
 
   Widget SliderLabelsRow() {
-    final Color labelColor = RLDS.textPrimary.withValues(alpha: 0.5);
+    final Color labelColor = RLDS.glass50(RLDS.textPrimary);
 
     return Div.row(
       [
@@ -238,7 +238,7 @@ class CCEstimateState extends State<CCEstimate>
     final Widget LightbulbIcon = const Icon(
       Pixel.infobox,
       color: RLDS.warning,
-      size: 20,
+      size: RLDS.iconMedium,
     );
 
     final bool isLargeDifference = difference > 30;
@@ -259,7 +259,7 @@ class CCEstimateState extends State<CCEstimate>
 
       RLTypography.bodyMedium(
         getHintMessage(difference),
-        color: RLDS.textPrimary.withValues(alpha: 0.7),
+        color: RLDS.glass70(RLDS.textPrimary),
       ),
     ]);
   }
@@ -267,14 +267,14 @@ class CCEstimateState extends State<CCEstimate>
   Widget ComparisonDisplay(int difference) {
     final Widget ArrowForwardIcon = Icon(
       Pixel.arrowright,
-      color: RLDS.textPrimary.withValues(alpha: 0.3),
-      size: 20,
+      color: RLDS.glass40(RLDS.textPrimary),
+      size: RLDS.iconMedium,
     );
 
     final TextStyle comparisonLabelStyle = TextStyle(
       fontSize: 11,
       fontWeight: FontWeight.w600,
-      color: RLDS.textPrimary.withValues(alpha: 0.5),
+      color: RLDS.glass50(RLDS.textPrimary),
       letterSpacing: 0.5,
     );
 
@@ -321,16 +321,16 @@ class CCEstimateState extends State<CCEstimate>
   }
 
   BoxDecoration getResultCardDecoration(bool isClose) {
-    Color backgroundColor = RLDS.warning.withValues(alpha: 0.08);
+    Color backgroundColor = RLDS.glass10(RLDS.warning);
 
     if (isClose) {
-      backgroundColor = RLDS.success.withValues(alpha: 0.08);
+      backgroundColor = RLDS.glass10(RLDS.success);
     }
 
-    Color borderColor = RLDS.warning.withValues(alpha: 0.3);
+    Color borderColor = RLDS.glass40(RLDS.warning);
 
     if (isClose) {
-      borderColor = RLDS.success.withValues(alpha: 0.3);
+      borderColor = RLDS.glass40(RLDS.success);
     }
 
     return BoxDecoration(
@@ -400,9 +400,9 @@ class Style {
   static SliderThemeData getSliderTheme() {
     return SliderThemeData(
       activeTrackColor: RLDS.info,
-      inactiveTrackColor: RLDS.textPrimary.withValues(alpha: 0.1),
+      inactiveTrackColor: RLDS.glass10(RLDS.textPrimary),
       thumbColor: RLDS.info,
-      overlayColor: RLDS.info.withValues(alpha: 0.1),
+      overlayColor: RLDS.glass10(RLDS.info),
       thumbShape: const RoundSliderThumbShape(),
       trackHeight: 4,
       tickMarkShape: const RoundSliderTickMarkShape(),

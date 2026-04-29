@@ -222,7 +222,7 @@ class CCQuestionState extends State<CCQuestion> {
   Widget IncorrectIcon() {
     return Icon(
       Pixel.close,
-      color: RLDS.textPrimary.withValues(alpha: 0.6),
+      color: RLDS.glass70(RLDS.textPrimary),
       size: RLDS.iconMedium,
     );
   }
@@ -301,7 +301,7 @@ class CCQuestionState extends State<CCQuestion> {
 
   Color getOptionTextColor({required bool isMuted}) {
     if (isMuted) {
-      return RLDS.textPrimary.withValues(alpha: 0.4);
+      return RLDS.glass40(RLDS.textPrimary);
     }
 
     return RLDS.textPrimary;

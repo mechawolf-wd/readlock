@@ -238,7 +238,7 @@ class CCTrueFalseQuestionState extends State<CCTrueFalseQuestion> {
   }) {
     if (shouldShowCorrect) {
       return ButtonColors(
-        backgroundColor: RLDS.success.withValues(alpha: 0.1),
+        backgroundColor: RLDS.glass10(RLDS.success),
         borderColor: RLDS.success,
         textColor: RLDS.success,
         iconColor: RLDS.success,
@@ -247,7 +247,7 @@ class CCTrueFalseQuestionState extends State<CCTrueFalseQuestion> {
 
     if (isSelected && !hasAnswered) {
       return ButtonColors(
-        backgroundColor: baseColor.withValues(alpha: 0.1),
+        backgroundColor: RLDS.glass10(baseColor),
         borderColor: baseColor,
         textColor: baseColor,
         iconColor: baseColor,
@@ -257,17 +257,17 @@ class CCTrueFalseQuestionState extends State<CCTrueFalseQuestion> {
     if (shouldMute) {
       return ButtonColors(
         backgroundColor: RLDS.backgroundLight,
-        borderColor: RLDS.textPrimary.withValues(alpha: 0.1),
-        textColor: RLDS.textPrimary.withValues(alpha: 0.4),
-        iconColor: RLDS.textPrimary.withValues(alpha: 0.4),
+        borderColor: RLDS.glass10(RLDS.textPrimary),
+        textColor: RLDS.glass40(RLDS.textPrimary),
+        iconColor: RLDS.glass40(RLDS.textPrimary),
       );
     }
 
     return ButtonColors(
       backgroundColor: RLDS.backgroundLight,
-      borderColor: RLDS.textPrimary.withValues(alpha: 0.2),
+      borderColor: RLDS.glass15(RLDS.textPrimary),
       textColor: RLDS.textPrimary,
-      iconColor: RLDS.textPrimary.withValues(alpha: 0.6),
+      iconColor: RLDS.glass70(RLDS.textPrimary),
     );
   }
 

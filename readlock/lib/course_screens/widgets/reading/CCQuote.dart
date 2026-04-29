@@ -26,7 +26,7 @@ class CCQuoteState extends State<CCQuote> {
     final BoxDecoration quoteContainerDecoration = BoxDecoration(
       color: RLDS.backgroundLight,
       borderRadius: RLDS.borderRadiusMedium,
-      border: Border.all(color: RLDS.warning.withValues(alpha: 0.2)),
+      border: Border.all(color: RLDS.glass15(RLDS.warning)),
     );
 
     return Padding(
@@ -52,7 +52,7 @@ class CCQuoteState extends State<CCQuote> {
   }
 
   Widget QuoteHeader() {
-    final Widget QuoteIcon = const Icon(Pixel.message, color: RLDS.warning, size: 24);
+    final Widget QuoteIcon = const Icon(Pixel.message, color: RLDS.warning, size: RLDS.iconLarge);
 
     IconData bookmarkIconData = Pixel.bookmark;
 
@@ -85,9 +85,9 @@ class CCQuoteState extends State<CCQuote> {
 
   Widget QuoteText() {
     final BoxDecoration quoteTextDecoration = BoxDecoration(
-      color: RLDS.warning.withValues(alpha: 0.05),
+      color: RLDS.glass10(RLDS.warning),
       borderRadius: RLDS.borderRadiusSmall,
-      border: Border.all(color: RLDS.warning.withValues(alpha: 0.2), width: 2),
+      border: Border.all(color: RLDS.glass15(RLDS.warning), width: 2),
     );
 
     return Container(
@@ -101,7 +101,7 @@ class CCQuoteState extends State<CCQuote> {
     return Div.row([
       RLTypography.bodyMedium(
         '— ${widget.content.author}',
-        color: RLDS.textPrimary.withValues(alpha: 0.7),
+        color: RLDS.glass70(RLDS.textPrimary),
       ),
 
       const Spacer(),

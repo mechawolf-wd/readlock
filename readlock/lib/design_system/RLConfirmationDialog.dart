@@ -10,8 +10,6 @@
 //   - Each action carries its own RLConfirmationVariant for button colour.
 //   - layout controls whether the two buttons stack vertically or sit side-by-side.
 
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:readlock/bottom_sheets/RLDialog.dart';
@@ -79,35 +77,25 @@ class RLConfirmationDialog {
     RLConfirmationLayout layout = RLConfirmationLayout.vertical,
     bool isDismissible = true,
   }) {
-    // The BackdropFilter wrapper blurs everything behind the dialog so
-    // the page reads as a frosted layer around the centered card; the
-    // card itself sits on top of the BackdropFilter and is rendered crisp.
-    // No dark scrim — the blur alone separates the dialog from the page,
-    // and stacking a 50% black barrier on top of the blur produced a
-    // muddy grey wash.
-    showDialog<void>(
-      context: context,
-      barrierDismissible: isDismissible,
-      barrierColor: RLDS.dialogBarrierColor,
-      builder: (BuildContext dialogContext) {
-        return BackdropFilter(
-          filter: ImageFilter.blur(
-            sigmaX: RLDS.backdropBlurSigma,
-            sigmaY: RLDS.backdropBlurSigma,
-          ),
-          child: DialogContainer(
-            backgroundColor: RLDS.surface,
-            child: ConfirmationDialogContent(
-              title: title,
-              message: message,
-              cta: cta,
-              cancel: cancel,
-              layout: layout,
-              onDismiss: () => Navigator.of(dialogContext).pop(),
-            ),
-          ),
-        );
-      },
+    // Routes through RLDialog.show so the BackdropFilter, barrier scrim,
+    // DialogContainer surface (RLDS.surface tinted by RLLunarBlur), and
+    // border radius are sourced from a single primitive. Confirmation
+    // dialogs and generic dialogs render on the exact same frosted card.
+    RLDialog.show(
+      context,
+      isDismissible: isDismissible,
+      child: Builder(
+        builder: (BuildContext dialogContext) {
+          return ConfirmationDialogContent(
+            title: title,
+            message: message,
+            cta: cta,
+            cancel: cancel,
+            layout: layout,
+            onDismiss: () => Navigator.of(dialogContext).pop(),
+          );
+        },
+      ),
     );
   }
 
@@ -336,7 +324,7 @@ class ConfirmationDialogContent extends StatelessWidget {
     required IconData glyph,
     required VoidCallback onTap,
   }) {
-    final Color dimmedBackground = buttonColor.withValues(alpha: 0.15);
+    final Color dimmedBackground = RLDS.glass15(buttonColor);
     final BoxDecoration buttonDecoration = BoxDecoration(
       color: dimmedBackground,
       borderRadius: RLDS.borderRadiusSmall,

@@ -11,7 +11,7 @@ import 'package:readlock/design_system/RLLunarBlur.dart';
 // * Tuning — fade timing pulled from RLDS so every opacity transition in
 // the app (reveal, fade switcher, toast) shares one token.
 const Duration TOAST_VISIBLE_DURATION = Duration(seconds: 3);
-const double TOAST_ICON_SIZE = 20.0;
+const double TOAST_ICON_SIZE = RLDS.iconMedium;
 
 const RL_TOAST_SURFACE_ALPHA = 0.20;
 

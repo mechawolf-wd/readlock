@@ -97,13 +97,13 @@ class HomeScreenState extends State<HomeScreen> {
   static final Widget ChevronRightIcon = const Icon(
     Pixel.chevronright,
     color: RLDS.textSecondary,
-    size: 24.0,
+    size: RLDS.iconLarge,
   );
 
   static final Widget ShuffleIcon = const Icon(
     Pixel.shuffle,
     color: RLDS.info,
-    size: 24.0,
+    size: RLDS.iconLarge,
   );
 
   @override
