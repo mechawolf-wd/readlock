@@ -14,6 +14,7 @@ import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLUIStrings.dart';
 import 'package:readlock/design_system/RLLunarBlur.dart';
 import 'package:readlock/design_system/RLUtility.dart';
+import 'package:readlock/services/auth/UserService.dart';
 
 import 'package:pixelarticons/pixel.dart';
 
@@ -100,6 +101,11 @@ class FontPickerSheetState extends State<FontPickerSheet> {
     setState(() {
       selectedFont = nextFont;
     });
+
+    // Optimistic persistence — the notifier update above already drove the UI,
+    // and the Firestore write is fire-and-forget so swiping between fonts
+    // never stalls on a network round-trip. UserService logs failures.
+    UserService.updateReadingFont(nextFont.name);
   }
 
   // Tapping an off-centre card animates the slider to that page; tapping

@@ -16,6 +16,7 @@ import 'package:readlock/screens/MyBookshelfScreen.dart';
 import 'package:readlock/bottom_sheets/user/LoginBottomSheet.dart';
 import 'package:readlock/models/UserModel.dart';
 import 'package:readlock/services/auth/AuthService.dart';
+import 'package:readlock/services/auth/UserPreferencesHydrator.dart';
 import 'package:readlock/services/auth/UserService.dart';
 import 'package:readlock/services/purchases/PurchaseNotifiers.dart';
 
@@ -92,6 +93,12 @@ class MainNavigationState extends State<MainNavigation> {
     }
 
     hydratePurchaseStateFromUser(user);
+
+    // Same one-shot hydration for the reading-preference notifiers (font,
+    // column, RSVP wpm, night-shift, bird) so a fresh launch picks up the
+    // values the reader last set on any device — without each surface
+    // having to refetch the user profile.
+    hydrateUserPreferenceNotifiersFromUser(user);
   }
 
   void presentLoginSheet(Duration timestamp) {
@@ -151,7 +158,7 @@ class MainNavigationState extends State<MainNavigation> {
       // extendBody lets the starfield paint under the nav, so the frosted
       // surface has actual stars to blur instead of flat Scaffold colour.
       extendBody: true,
-      backgroundColor: RLDS.backgroundDark,
+      backgroundColor: RLDS.surface,
       body: Stack(
         children: [
           const Positioned.fill(child: RLStarfieldBackground()),

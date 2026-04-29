@@ -45,7 +45,7 @@ class BookListCard extends StatelessWidget {
 
         Expanded(
           child: Div.column([
-            RLTypography.bodyLarge(title),
+            RLTypography.bodyLarge(title, maxLines: 1, overflow: TextOverflow.ellipsis),
 
             const Spacing.height(RLDS.spacing4),
 

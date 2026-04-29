@@ -12,6 +12,7 @@ import 'package:readlock/constants/RLNightShift.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLUIStrings.dart';
 import 'package:readlock/design_system/RLUtility.dart';
+import 'package:readlock/services/auth/UserService.dart';
 
 import 'package:pixelarticons/pixel.dart';
 
@@ -66,6 +67,8 @@ class NightShiftSheetState extends State<NightShiftSheet> {
     setState(() {
       currentLevel = nextLevel;
     });
+
+    UserService.updateNightShiftLevel(nextLevel);
   }
 
   @override

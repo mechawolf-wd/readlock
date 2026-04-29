@@ -470,7 +470,10 @@ class AuthService {
     }
   }
 
-  static Future<void> createUserProfileIfNeeded(User user) async {
+  // Returns true when a new profile document was created during this call —
+  // the caller uses that signal to route fresh sign-ups through onboarding
+  // instead of dropping them straight onto the home screen.
+  static Future<bool> createUserProfileIfNeeded(User user) async {
     logger.info('Profile Ensure', 'Checking profile for user: ${user.uid}');
 
     try {
@@ -480,16 +483,21 @@ class AuthService {
       if (profileDoesNotExist) {
         logger.info('Profile Ensure', 'Profile does not exist, creating...');
 
-        await createUserProfile(
+        final bool wasCreated = await createUserProfile(
           user.uid,
           email: user.email,
           nickname: prepopulatedNickname,
         );
-      } else {
-        logger.info('Profile Ensure', 'Profile already exists');
+
+        return wasCreated;
       }
+
+      logger.info('Profile Ensure', 'Profile already exists');
+
+      return false;
     } on Exception catch (error) {
       logger.failure('Profile Ensure', error.toString());
+      return false;
     }
   }
 

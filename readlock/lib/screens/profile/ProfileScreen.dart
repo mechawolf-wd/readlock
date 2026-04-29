@@ -12,6 +12,7 @@ import 'package:readlock/design_system/RLUtility.dart';
 import 'package:readlock/models/UserModel.dart';
 import 'package:readlock/screens/profile/MenuWidgets.dart';
 import 'package:readlock/services/auth/AuthService.dart';
+import 'package:readlock/services/auth/UserPreferencesHydrator.dart';
 import 'package:readlock/services/auth/UserService.dart';
 import 'package:readlock/utility_widgets/text_animation/BionicText.dart';
 import 'package:readlock/utility_widgets/text_animation/RSVPText.dart';
@@ -27,7 +28,7 @@ class ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
-      backgroundColor: RLDS.backgroundDark,
+      backgroundColor: RLDS.surface,
       body: SafeArea(
         child: SingleChildScrollView(
           padding: EdgeInsets.all(RLDS.spacing20),
@@ -90,6 +91,11 @@ class ProfileContentState extends State<ProfileContent> {
 
     bionicEnabledNotifier.value = user.bionic;
     rsvpEnabledNotifier.value = user.rsvp;
+
+    // Re-apply the persisted enums and tunables (font, column, RSVP wpm,
+    // night-shift, bird) in case the sheet is opened before MainNavigation's
+    // initial hydration has finished, or a subsequent device write landed.
+    hydrateUserPreferenceNotifiersFromUser(user);
   }
 
   // * Individual preference handlers — optimistic setState + fire-and-forget

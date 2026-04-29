@@ -139,6 +139,11 @@ class RLDS {
   static const double iconXLarge = 32.0;
   static const double iconXXLarge = 48.0;
 
+  // * Feather currency icon — native 16x16 pixel sprite. Used wherever the
+  // app counts feathers (bookshelf balance pill, Feathers sheet plan cards)
+  // so the unit reads visually instead of relying on the word.
+  static const String featherIconAsset = 'assets/Plume 16x16.png';
+
   // * Backdrop blur — applied behind every modal surface (bottom sheets,
   // dialogs) so they all read as one family.
   static const double backdropBlurSigma = 10.0;

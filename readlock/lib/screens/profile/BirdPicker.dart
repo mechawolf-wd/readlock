@@ -11,6 +11,7 @@ import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLUIStrings.dart';
 import 'package:readlock/design_system/RLUtility.dart';
+import 'package:readlock/services/auth/UserService.dart';
 
 // * Common-bird sheets pack art into 64x64 cells with 32x32 content centered.
 // * Exotic-bird sheets are tightly packed (each cell is its own bird-bounding
@@ -149,6 +150,23 @@ final Images birdImageCache = Images(prefix: BIRD_ASSET_PREFIX);
 // * surface that wants to display the user's chosen bird (eg. bookshelf title).
 final ValueNotifier<BirdOption> selectedBirdNotifier = ValueNotifier(BIRD_OPTIONS.first);
 
+// Resolves a stored bird name back to its option. Falls back to the first
+// option when the name is unrecognised (eg. a future build wrote a name
+// this build doesn't know about, or the field is missing entirely).
+BirdOption birdOptionFromName(String? birdName) {
+  if (birdName == null) {
+    return BIRD_OPTIONS.first;
+  }
+
+  for (final BirdOption option in BIRD_OPTIONS) {
+    if (option.name == birdName) {
+      return option;
+    }
+  }
+
+  return BIRD_OPTIONS.first;
+}
+
 class BirdAnimationSprite extends StatelessWidget {
   final BirdOption bird;
   final double previewSize;
@@ -258,7 +276,11 @@ class BirdCarouselState extends State<BirdCarousel> {
       selectedIndex = newIndex;
     });
 
-    selectedBirdNotifier.value = BIRD_OPTIONS[newIndex];
+    final BirdOption nextBird = BIRD_OPTIONS[newIndex];
+
+    selectedBirdNotifier.value = nextBird;
+
+    UserService.updateBirdName(nextBird.name);
   }
 
   @override

@@ -5,6 +5,7 @@
 // - Verification mail is sent automatically on sign-up
 
 import 'package:flutter/material.dart' hide Typography;
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:readlock/bottom_sheets/RLBottomSheet.dart';
 import 'package:readlock/bottom_sheets/user/LoginSupportBottomSheet.dart';
 import 'package:readlock/design_system/RLButton.dart';
@@ -15,7 +16,9 @@ import 'package:readlock/design_system/RLTextField.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/constants/RLUIStrings.dart';
+import 'package:readlock/screens/OnboardingScreen.dart';
 import 'package:readlock/services/auth/AuthService.dart';
+import 'package:readlock/services/auth/UserService.dart';
 
 class LoginBottomSheet {
   // * Dev-only bypass.
@@ -112,15 +115,9 @@ class LoginSheetState extends State<LoginSheet> {
     AuthResult result;
 
     if (isSignUpMode) {
-      result = await AuthService.signUpWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
+      result = await AuthService.signUpWithEmailAndPassword(email: email, password: password);
     } else {
-      result = await AuthService.signInWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
+      result = await AuthService.signInWithEmailAndPassword(email: email, password: password);
     }
 
     await finaliseAuthResult(result);
@@ -148,7 +145,8 @@ class LoginSheetState extends State<LoginSheet> {
     await finaliseAuthResult(result);
   }
 
-  // * Shared result handling — creates the profile doc when needed, closes on success.
+  // * Shared result handling — creates the profile doc when needed, then
+  // either routes fresh sign-ups through onboarding or just closes the sheet.
 
   Future<void> finaliseAuthResult(AuthResult result) async {
     final bool isUnmounted = !mounted;
@@ -175,15 +173,39 @@ class LoginSheetState extends State<LoginSheet> {
     final user = result.credential?.user;
     final bool hasUser = user != null;
 
+    bool isNewlyCreatedProfile = false;
+
     if (hasUser) {
-      await AuthService.createUserProfileIfNeeded(user);
+      isNewlyCreatedProfile = await AuthService.createUserProfileIfNeeded(user);
     }
 
     // The mounted check must stay inline for the use_build_context_synchronously
     // lint to recognise it as the guard before we touch BuildContext.
-    if (mounted) {
-      Navigator.of(context).pop();
+    if (!mounted) {
+      return;
     }
+
+    if (isNewlyCreatedProfile) {
+      await routeNewUserThroughOnboarding();
+      return;
+    }
+
+    Navigator.of(context).pop();
+  }
+
+  // Brand-new accounts go through the onboarding flow before they land on
+  // the home screen. We close the login sheet first so onboarding pushes
+  // onto the main navigator, not on top of a still-mounted modal sheet —
+  // mirrors the LoginSupportPicker pattern. Once onboarding closes, mark
+  // the profile complete so we don't replay it on next launch.
+  Future<void> routeNewUserThroughOnboarding() async {
+    final NavigatorState rootNavigator = Navigator.of(context, rootNavigator: true);
+
+    Navigator.of(context).pop();
+
+    await OnboardingScreen.show(rootNavigator.context);
+
+    await UserService.markOnboardingComplete();
   }
 
   // * Reset password
@@ -234,10 +256,7 @@ class LoginSheetState extends State<LoginSheet> {
       return;
     }
 
-    LoginSupportPicker.show(
-      context,
-      prefillEmail: emailController.text.trim(),
-    );
+    LoginSupportPicker.show(context, prefillEmail: emailController.text.trim());
   }
 
   // * Dev bypass — for testing only. Sets the static flag so MainNavigation
@@ -296,10 +315,7 @@ class LoginSheetState extends State<LoginSheet> {
       [
         GestureDetector(
           onTap: handleDevSkipTap,
-          child: RLTypography.bodySmall(
-            RLUIStrings.DEV_SKIP_LOGIN_LABEL,
-            color: devLinkColor,
-          ),
+          child: RLTypography.bodySmall(RLUIStrings.DEV_SKIP_LOGIN_LABEL, color: devLinkColor),
         ),
 
         const Spacing.width(RLDS.spacing8),
@@ -349,19 +365,25 @@ class LoginSheetState extends State<LoginSheet> {
     final String title = getHeaderTitle();
     final String subtitle = getHeaderSubtitle();
 
-    return Div.column([
-      RLTypography.headingLarge(title, textAlign: TextAlign.center),
+    return Div.column(
+      [
+        RLTypography.headingLarge(title, textAlign: TextAlign.center),
 
-      const Spacing.height(RLDS.spacing4),
+        const Spacing.height(RLDS.spacing4),
 
-      RLTypography.bodyMedium(
-        subtitle,
-        color: RLDS.textSecondary,
-        textAlign: TextAlign.center,
-      ),
-    ],
+        RLTypography.bodyMedium(
+          subtitle,
+          color: RLDS.textSecondary,
+          textAlign: TextAlign.center,
+        ),
+      ],
       crossAxisAlignment: CrossAxisAlignment.center,
-      padding: const EdgeInsets.fromLTRB(RLDS.spacing24, RLDS.spacing24, RLDS.spacing24, RLDS.spacing16),
+      padding: const EdgeInsets.fromLTRB(
+        RLDS.spacing24,
+        RLDS.spacing24,
+        RLDS.spacing24,
+        RLDS.spacing16,
+      ),
     );
   }
 
@@ -401,9 +423,8 @@ class LoginSheetState extends State<LoginSheet> {
 
   Widget GoogleLoginButton() {
     final BoxDecoration buttonDecoration = BoxDecoration(
-      color: RLDS.backgroundDark,
+      color: RLDS.black,
       borderRadius: RLDS.borderRadiusSmall,
-      border: Border.all(color: RLDS.glass10(RLDS.textPrimary)),
     );
 
     return GestureDetector(
@@ -423,21 +444,28 @@ class LoginSheetState extends State<LoginSheet> {
   }
 
   Widget GoogleIcon() {
-    return const Icon(Icons.g_mobiledata, color: RLDS.white, size: 28);
+    return SvgPicture.asset(
+      'assets/logo/google.svg',
+      height: RLDS.iconSmall,
+      width: RLDS.iconSmall,
+    );
   }
 
   Widget OrDivider() {
     final Color dividerColor = RLDS.glass10(RLDS.textPrimary);
 
-    return Div.row([
-      Expanded(child: Container(height: 1, color: dividerColor)),
+    return Div.row(
+      [
+        Expanded(child: Container(height: 1, color: dividerColor)),
 
-      Div.row([
-        RLTypography.bodyMedium(RLUIStrings.OR_DIVIDER_LABEL, color: RLDS.textSecondary),
-      ], padding: const EdgeInsets.symmetric(horizontal: RLDS.spacing16)),
+        Div.row([
+          RLTypography.bodyMedium(RLUIStrings.OR_DIVIDER_LABEL, color: RLDS.textSecondary),
+        ], padding: const EdgeInsets.symmetric(horizontal: RLDS.spacing16)),
 
-      Expanded(child: Container(height: 1, color: dividerColor)),
-    ], padding: const EdgeInsets.symmetric(horizontal: RLDS.spacing24, vertical: RLDS.spacing20));
+        Expanded(child: Container(height: 1, color: dividerColor)),
+      ],
+      padding: const EdgeInsets.symmetric(horizontal: RLDS.spacing24, vertical: RLDS.spacing20),
+    );
   }
 
   Widget FormSection() {
@@ -457,18 +485,12 @@ class LoginSheetState extends State<LoginSheet> {
     // app-wide opacity fade on top so the field fades in with the same
     // timing as every other reveal (continue button, true/false buttons).
     final bool hasAtSymbol = emailController.text.contains('@');
-    final Widget passwordContent = RenderIf.condition(
-      hasAtSymbol,
-      PasswordField(),
-    );
+    final Widget passwordContent = RenderIf.condition(hasAtSymbol, PasswordField());
 
     return AnimatedSize(
       duration: const Duration(milliseconds: 300),
       curve: Curves.easeInOut,
-      child: RLReveal(
-        visible: hasAtSymbol,
-        child: passwordContent,
-      ),
+      child: RLReveal(visible: hasAtSymbol, child: passwordContent),
     );
   }
 
@@ -489,7 +511,12 @@ class LoginSheetState extends State<LoginSheet> {
     return RLButton.primary(
       label: label,
       color: actionColor,
-      margin: const EdgeInsets.fromLTRB(RLDS.spacing24, RLDS.spacing20, RLDS.spacing24, RLDS.spacing8),
+      margin: const EdgeInsets.fromLTRB(
+        RLDS.spacing24,
+        RLDS.spacing20,
+        RLDS.spacing24,
+        RLDS.spacing8,
+      ),
       onTap: asTapHandler(handleEmailPasswordSubmit),
     );
   }
@@ -554,14 +581,10 @@ class LoginSheetState extends State<LoginSheet> {
     return RLUIStrings.SWITCH_TO_SIGN_UP_LABEL;
   }
 
-  Widget ClickableTextLink({
-    required String label,
-    required VoidCallback? onTap,
-  }) {
+  Widget ClickableTextLink({required String label, required VoidCallback? onTap}) {
     return GestureDetector(
       onTap: onTap,
       child: RLTypography.bodyMedium(label, color: RLDS.textSecondary),
     );
   }
 }
-

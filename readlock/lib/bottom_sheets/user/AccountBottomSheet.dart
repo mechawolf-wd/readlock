@@ -17,7 +17,7 @@ class AccountBottomSheet {
   static void show(BuildContext context) {
     RLBottomSheet.show(
       context,
-      backgroundColor: RLDS.backgroundDark,
+      backgroundColor: RLDS.surface,
       showGrabber: false,
       child: const AccountSheet(),
     );
@@ -55,16 +55,13 @@ class AccountSheet extends StatelessWidget {
   }
 
   Widget HeaderRow() {
-    return Div.row(
-      [
-        HeaderIcon,
+    return Div.row([
+      HeaderIcon,
 
-        const Spacing.width(RLDS.spacing12),
+      const Spacing.width(RLDS.spacing12),
 
-        RLTypography.headingMedium(RLUIStrings.ACCOUNT_TITLE),
-      ],
-      mainAxisAlignment: MainAxisAlignment.start,
-    );
+      RLTypography.headingMedium(RLUIStrings.ACCOUNT_TITLE),
+    ], mainAxisAlignment: MainAxisAlignment.start);
   }
 
   void handleDeleteAccountTap(BuildContext context) {
@@ -103,11 +100,7 @@ class AccountActionRow extends StatelessWidget {
     );
 
     return Div.row(
-      [
-        Expanded(child: RLTypography.bodyLarge(label)),
-
-        ChevronIcon,
-      ],
+      [Expanded(child: RLTypography.bodyLarge(label)), ChevronIcon],
       padding: const EdgeInsets.symmetric(vertical: RLDS.spacing12),
       onTap: onTap,
     );

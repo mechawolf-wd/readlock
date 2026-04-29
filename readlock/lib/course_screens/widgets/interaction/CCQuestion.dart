@@ -101,12 +101,9 @@ class CCQuestionState extends State<CCQuestion> {
     final bool shouldShowCorrect = hasAnsweredQuestion && isCorrectAnswer && isSelected;
     final bool shouldShowIncorrect = hasAnsweredQuestion && !isCorrectAnswer && isSelected;
 
-    final bool isMutedOption =
-        hasAnsweredQuestion && !isCorrectAnswer && !isSelected;
+    final bool isMutedOption = hasAnsweredQuestion && !isCorrectAnswer && !isSelected;
 
-    final Color optionTextColor = getOptionTextColor(
-      isMuted: isMutedOption,
-    );
+    final Color optionTextColor = getOptionTextColor(isMuted: isMutedOption);
 
     final VoidCallback? tapHandler = buildOptionTapHandler(
       optionIndex: optionIndex,
@@ -124,11 +121,7 @@ class CCQuestionState extends State<CCQuestion> {
       children: [
         Expanded(child: optionText),
 
-        RenderIf.condition(
-          shouldShowIncorrect,
-          IncorrectIcon(),
-          const SizedBox.shrink(),
-        ),
+        RenderIf.condition(shouldShowIncorrect, IncorrectIcon(), const SizedBox.shrink()),
       ],
     );
 
@@ -143,14 +136,16 @@ class CCQuestionState extends State<CCQuestion> {
       child: optionRowContent,
     );
 
+    final childWrappedWithCorrectAnswerBorder = Container(
+      decoration: BoxDecoration(
+        borderRadius: RLDS.borderRadiusMedium,
+        border: Border.all(color: RLDS.success, width: 2.0),
+      ),
+      child: frostedSurface,
+    );
+
     final Widget surfaceWithCorrectBorder = shouldShowCorrect
-        ? Container(
-            decoration: BoxDecoration(
-              borderRadius: RLDS.borderRadiusMedium,
-              border: Border.all(color: RLDS.success, width: 2.0),
-            ),
-            child: frostedSurface,
-          )
+        ? childWrappedWithCorrectAnswerBorder
         : frostedSurface;
 
     final Widget optionRow = GestureDetector(
@@ -164,10 +159,7 @@ class CCQuestionState extends State<CCQuestion> {
     final bool shouldBlurAfterAnswer = hasAnsweredQuestion && !isSelected;
     final bool shouldBlur = !isRevealed || shouldBlurAfterAnswer;
 
-    return BlurOverlay(
-      enabled: shouldBlur,
-      child: optionRow,
-    );
+    return BlurOverlay(enabled: shouldBlur, child: optionRow);
   }
 
   // Two-state render:
@@ -204,10 +196,7 @@ class CCQuestionState extends State<CCQuestion> {
     );
   }
 
-  VoidCallback? buildOptionTapHandler({
-    required int optionIndex,
-    required bool isRevealed,
-  }) {
+  VoidCallback? buildOptionTapHandler({required int optionIndex, required bool isRevealed}) {
     if (hasAnsweredQuestion) {
       return null;
     }
@@ -220,11 +209,7 @@ class CCQuestionState extends State<CCQuestion> {
   }
 
   Widget IncorrectIcon() {
-    return Icon(
-      Pixel.close,
-      color: RLDS.glass70(RLDS.textPrimary),
-      size: RLDS.iconMedium,
-    );
+    return Icon(Pixel.close, color: RLDS.glass70(RLDS.textPrimary), size: RLDS.iconMedium);
   }
 
   void handleAnswerReveal(int optionIndex) {

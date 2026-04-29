@@ -63,6 +63,23 @@ double maxWidthFor(ReadingColumn column) {
   return READING_COLUMN_OPTIONS.first.maxWidth;
 }
 
+// Parses a persisted column name back to a ReadingColumn. Falls back to
+// the default when the name is unrecognised (e.g. an older build wrote a
+// value this build doesn't know about, or the field is missing entirely).
+ReadingColumn readingColumnFromName(String? name) {
+  if (name == null) {
+    return DEFAULT_READING_COLUMN;
+  }
+
+  for (final ReadingColumn column in ReadingColumn.values) {
+    if (column.name == name) {
+      return column;
+    }
+  }
+
+  return DEFAULT_READING_COLUMN;
+}
+
 // Settings-demo only. Returns the fraction of the available slot width the
 // preview should occupy for the given column option, so the picker remains
 // visibly different on phones whose slot is already narrower than maxWidth.

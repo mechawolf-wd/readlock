@@ -14,6 +14,7 @@ import 'package:readlock/bottom_sheets/RLBottomSheet.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLUIStrings.dart';
+import 'package:readlock/design_system/RLFeatherIcon.dart';
 import 'package:readlock/design_system/RLLunarBlur.dart';
 import 'package:readlock/design_system/RLToast.dart';
 import 'package:readlock/design_system/RLUtility.dart';
@@ -97,11 +98,7 @@ const int DEFAULT_PLAN_INDEX = 0; // Beginner — the default tier on open.
 
 class FeathersBottomSheet {
   static void show(BuildContext context) {
-    RLBottomSheet.show(
-      context,
-      backgroundColor: RLDS.backgroundDark,
-      child: const FeathersSheet(),
-    );
+    RLBottomSheet.show(context, backgroundColor: RLDS.surface, child: const FeathersSheet());
   }
 }
 
@@ -340,8 +337,9 @@ class PlanCardBody extends StatelessWidget {
 
         const Spacing.height(RLDS.spacing20),
 
-        // Feather allotment — the primary spend currency for the plan.
-        RLTypography.bodyLarge(plan.feathers, textAlign: TextAlign.center),
+        // Feather allotment — plume sprite + the unit string so the count
+        // reads visually as the currency, not just a number.
+        FeatherAllotmentRow(feathersText: plan.feathers),
 
         const Spacing.height(RLDS.spacing4),
 
@@ -359,6 +357,29 @@ class PlanCardBody extends StatelessWidget {
         // the card reads as visually distinct independent of the user's
         // own bird-picker choice.
         PlanBird(bird: plan.bird),
+      ],
+    );
+  }
+}
+
+// Feather count row — plume sprite + the existing "N feathers" copy. Image
+// is small (RLDS.iconSmall, native 16x16) so it pairs as an inline glyph
+// next to the count rather than competing with the larger numbers above.
+class FeatherAllotmentRow extends StatelessWidget {
+  final String feathersText;
+
+  const FeatherAllotmentRow({super.key, required this.feathersText});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        const RLFeatherIcon(size: RLDS.iconSmall),
+
+        const Spacing.width(RLDS.spacing8),
+
+        RLTypography.bodyLarge(feathersText),
       ],
     );
   }

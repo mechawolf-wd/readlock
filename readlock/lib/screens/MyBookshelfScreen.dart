@@ -12,6 +12,7 @@ import 'package:readlock/design_system/RLUtility.dart';
 import 'package:readlock/design_system/RLBookListCard.dart';
 import 'package:readlock/design_system/RLButton.dart';
 import 'package:readlock/design_system/RLFadeSwitcher.dart';
+import 'package:readlock/design_system/RLFeatherIcon.dart';
 import 'package:readlock/design_system/RLLoadingIndicator.dart';
 import 'package:readlock/constants/DartAliases.dart';
 import 'package:readlock/constants/RLTypography.dart';
@@ -222,12 +223,12 @@ class BookshelfScreenState extends State<BookshelfScreen> {
     ], crossAxisAlignment: CrossAxisAlignment.center);
   }
 
-  // Live feather balance pill, rendered as a coin icon + count. Tapping
-  // it opens the Feathers sheet so the indicator doubles as the
+  // Live feather balance pill, rendered as the plume sprite + count.
+  // Tapping it opens the Feathers sheet so the indicator doubles as the
   // affordance for topping up. Subscribes to userBalanceNotifier so a
   // top-up done from any other surface reflects here without a refetch.
-  // Hidden entirely when the balance is zero so the header stays quiet
-  // until the user has feathers to track.
+  // Always rendered — even at a zero balance — so the affordance for
+  // topping up is always visible from the bookshelf header.
   Widget BalancePill() {
     return ValueListenableBuilder<int>(
       valueListenable: userBalanceNotifier,
@@ -236,12 +237,6 @@ class BookshelfScreenState extends State<BookshelfScreen> {
   }
 
   Widget BalancePillContent(BuildContext context, int balance, Widget? unusedChild) {
-    final bool isEmpty = balance <= 0;
-
-    if (isEmpty) {
-      return const SizedBox.shrink();
-    }
-
     void onBalanceTap() {
       HapticFeedback.lightImpact();
       FeathersBottomSheet.show(context);
@@ -255,7 +250,7 @@ class BookshelfScreenState extends State<BookshelfScreen> {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(Pixel.coin, color: RLDS.primary, size: RLDS.iconLarge),
+            const RLFeatherIcon(size: RLDS.iconLarge),
 
             const Spacing.width(RLDS.spacing4),
 

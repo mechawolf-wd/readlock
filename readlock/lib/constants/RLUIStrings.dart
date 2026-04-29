@@ -46,20 +46,20 @@ class RLUIStrings {
 
   // * Login Bottom Sheet
   static const String LOGIN_TITLE = 'Welcome reader!';
-  static const String LOGIN_SUBTITLE = 'Sign in to hop in';
+  static const String LOGIN_SUBTITLE = 'Login to hop in';
   static const String SIGNUP_TITLE = 'Create account';
   static const String SIGNUP_SUBTITLE = 'Look! They’re joining us!';
-  static const String EMAIL_PLACEHOLDER = 'Email';
+  static const String EMAIL_PLACEHOLDER = 'Email...';
   static const String PASSWORD_PLACEHOLDER = 'Password';
-  static const String SIGN_IN_BUTTON_LABEL = 'Sign In';
-  static const String SIGN_UP_BUTTON_LABEL = 'New account';
-  static const String LOGIN_SUPPORT_LABEL = 'Support';
-  static const String SIGN_IN_LOADING_LABEL = 'Signing in...';
-  static const String SIGN_UP_LOADING_LABEL = 'Creating account...';
+  static const String SIGN_IN_BUTTON_LABEL = 'Login';
+  static const String SIGN_UP_BUTTON_LABEL = 'Create';
+  static const String LOGIN_SUPPORT_LABEL = 'Any help?';
+  static const String SIGN_IN_LOADING_LABEL = 'Hopping in...';
+  static const String SIGN_UP_LOADING_LABEL = 'Creating...';
   static const String FORGOT_PASSWORD_LABEL = 'Reset password';
   static const String SIGN_UP_LABEL = 'Sign up';
-  static const String SWITCH_TO_SIGN_IN_LABEL = 'Sign in';
-  static const String SWITCH_TO_SIGN_UP_LABEL = 'New account';
+  static const String SWITCH_TO_SIGN_IN_LABEL = 'Login';
+  static const String SWITCH_TO_SIGN_UP_LABEL = 'Create account';
   static const String DEV_SKIP_LOGIN_LABEL = 'Skip for now (dev)';
 
   // * Support bottom sheet (opened from the login sheet)
@@ -71,16 +71,18 @@ class RLUIStrings {
   static const String SUPPORT_RESEND_VERIFICATION_DESCRIPTION =
       'We will resend the link for you';
   static const String SUPPORT_RESEND_VERIFICATION_BUTTON_LABEL = 'Resend verification';
+  static const String SUPPORT_SEND_RESET_LINK_LOADING_LABEL = 'Resetting...';
+  static const String SUPPORT_RESEND_VERIFICATION_LOADING_LABEL = 'Resending...';
   static const String SUPPORT_EMAIL_LABEL = 'Email support';
   static const String SUPPORT_EMAIL_DESCRIPTION = 'Reach us directly at the address below.';
-  static const String SUPPORT_COPY_EMAIL_BUTTON_LABEL = 'Copy support email';
-  static const String SUPPORT_EMAIL_ADDRESS = 'support@readlock.app';
+  static const String SUPPORT_COPY_EMAIL_BUTTON_LABEL = 'Copy';
+  static const String SUPPORT_EMAIL_ADDRESS = 'support@readlock.org';
   static const String SUPPORT_EMAIL_COPIED_MESSAGE = 'Support email copied to clipboard.';
-  static const String RESEND_VERIFICATION_SIGN_IN_REQUIRED =
-      'Sign in and we can resend that for you.';
   static const String RESEND_VERIFICATION_ALREADY_VERIFIED = 'Your email is already verified.';
   static const String RESEND_VERIFICATION_FAILED =
       'That verification email didn\'t go through. Try again in a moment.';
+  static const String RESEND_VERIFICATION_REQUIRES_SIGN_IN =
+      'Sign in first, then we can resend the verification link.';
   static const String RESET_PASSWORD_SENT_MESSAGE = 'Reset link sent. Check your inbox.';
   static const String RESET_PASSWORD_EMAIL_REQUIRED = 'We need your email to send the link.';
   static const String LOGIN_EMAIL_REQUIRED = 'Your email, please.';
@@ -97,10 +99,10 @@ class RLUIStrings {
   static const String ACCOUNT_DELETE_LABEL = 'Delete Account';
 
   // * Logout confirmation
-  static const String LOGOUT_CONFIRMATION_TITLE = 'Sign out?';
+  static const String LOGOUT_CONFIRMATION_TITLE = 'Logout?';
   static const String LOGOUT_CONFIRMATION_MESSAGE =
       'You will need to sign back in to continue reading.';
-  static const String LOGOUT_CONFIRMATION_CONFIRM = 'Sign out';
+  static const String LOGOUT_CONFIRMATION_CONFIRM = 'Logout';
   static const String LOGOUT_IN_PROGRESS_LABEL = 'Signing out...';
 
   // * Feedback Bottom Sheet
@@ -123,7 +125,7 @@ class RLUIStrings {
   static const String QUIT_CONFIRMATION_PAUSE_BUTTON = 'Pause';
 
   // * Night Shift (eye-strain overlay)
-  static const String NIGHT_SHIFT_TITLE = 'Night Shift';
+  static const String NIGHT_SHIFT_TITLE = 'Night Session';
   static const String NIGHT_SHIFT_DESCRIPTION =
       'Warm the screen for easier reading before sleep.';
   static const String NIGHT_SHIFT_LESS_WARM_LABEL = 'Off';
@@ -250,7 +252,7 @@ class RLUIStrings {
   static const String MENU_PRIVACY_POLICY = 'Privacy Policy';
   static const String MENU_TERMS_AND_CONDITIONS = 'Terms & Conditions';
   static const String MENU_EULA = 'EULA';
-  static const String MENU_LOG_OUT = 'Sign out';
+  static const String MENU_LOG_OUT = 'Logout';
   static const String MENU_VERSION = 'Sowa 1.0.0';
 
   // * Bird Picker
@@ -316,7 +318,7 @@ class RLUIStrings {
   static const String ERROR_INVALID_EMAIL = 'That email doesn\'t look quite right.';
   static const String ERROR_NETWORK = 'The connection is a little shaky. Give it another try.';
   static const String ERROR_TOO_MANY_REQUESTS = 'Let\'s take a short breather, then try again.';
-  static const String ERROR_REQUIRES_RECENT_LOGIN = 'Sign in again to continue.';
+  static const String ERROR_REQUIRES_RECENT_LOGIN = 'Login again to continue.';
   static const String ERROR_USER_DISABLED = 'This account isn\'t active anymore.';
   static const String ERROR_UNKNOWN = 'Something went wrong on our end. Give it another try.';
   static const String ERROR_NO_USER_LOGGED_IN = 'No one is signed in yet.';

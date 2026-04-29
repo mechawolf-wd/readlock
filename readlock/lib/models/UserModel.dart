@@ -54,6 +54,26 @@ class UserModel {
   @JsonKey(defaultValue: false)
   final bool rsvp;
 
+  // * Reader-pickable enums and tunables — persisted as primitives so the
+  // generated json_serializable round-trips without custom converters.
+  // Each consumer parses its own enum from the stored name (eg.
+  // readingFontFromName), with a sensible fallback for unknown values.
+
+  @JsonKey(defaultValue: 'serif')
+  final String readingFont;
+
+  @JsonKey(defaultValue: 'narrow')
+  final String readingColumn;
+
+  @JsonKey(defaultValue: 300)
+  final int rsvpWordsPerMinute;
+
+  @JsonKey(defaultValue: 0)
+  final int nightShiftLevel;
+
+  @JsonKey(defaultValue: 'Sparrow')
+  final String birdName;
+
   // * Bookshelf, course-ids the user has saved from search or the roadmap.
   @JsonKey(defaultValue: <String>[])
   final List<String> savedCourseIds;
@@ -96,6 +116,11 @@ class UserModel {
     this.coloredText = true,
     this.bionic = false,
     this.rsvp = false,
+    this.readingFont = 'serif',
+    this.readingColumn = 'narrow',
+    this.rsvpWordsPerMinute = 300,
+    this.nightShiftLevel = 0,
+    this.birdName = 'Sparrow',
     this.savedCourseIds = const <String>[],
     this.purchasedCourses = const <String>[],
     this.balance = 0,
@@ -137,6 +162,11 @@ class UserModel {
     bool? coloredText,
     bool? bionic,
     bool? rsvp,
+    String? readingFont,
+    String? readingColumn,
+    int? rsvpWordsPerMinute,
+    int? nightShiftLevel,
+    String? birdName,
     List<String>? savedCourseIds,
     List<String>? purchasedCourses,
     int? balance,
@@ -159,6 +189,11 @@ class UserModel {
       coloredText: coloredText ?? this.coloredText,
       bionic: bionic ?? this.bionic,
       rsvp: rsvp ?? this.rsvp,
+      readingFont: readingFont ?? this.readingFont,
+      readingColumn: readingColumn ?? this.readingColumn,
+      rsvpWordsPerMinute: rsvpWordsPerMinute ?? this.rsvpWordsPerMinute,
+      nightShiftLevel: nightShiftLevel ?? this.nightShiftLevel,
+      birdName: birdName ?? this.birdName,
       savedCourseIds: savedCourseIds ?? this.savedCourseIds,
       purchasedCourses: purchasedCourses ?? this.purchasedCourses,
       balance: balance ?? this.balance,

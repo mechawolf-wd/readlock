@@ -51,7 +51,7 @@ class RLBottomSheet {
     bool useLunarBlurSurface = true,
     Color? backgroundColor,
   }) {
-    final Color sheetColor = backgroundColor ?? RLDS.backgroundDark;
+    final Color sheetColor = backgroundColor ?? RLDS.surface;
 
     return showModalBottomSheet<void>(
       context: context,
@@ -91,7 +91,7 @@ class RLBottomSheet {
     bool applyBackdropBlur = true,
     Color? backgroundColor,
   }) {
-    final Color sheetColor = backgroundColor ?? RLDS.backgroundDark;
+    final Color sheetColor = backgroundColor ?? RLDS.surface;
 
     showModalBottomSheet(
       context: context,
@@ -140,7 +140,7 @@ class SheetContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Color sheetColor = backgroundColor ?? RLDS.backgroundDark;
+    final Color sheetColor = backgroundColor ?? RLDS.surface;
 
     // SafeArea lives inside the sheet surface so the surface (LunarBlur or
     // solid tint) paints to the bottom edge of the screen — the home-

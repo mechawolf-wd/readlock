@@ -26,6 +26,7 @@ import 'package:readlock/design_system/RLSegmentTabs.dart';
 import 'package:readlock/design_system/RLUtility.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/utility_widgets/text_animation/BionicText.dart';
+import 'package:readlock/services/auth/UserService.dart';
 import 'package:readlock/utility_widgets/text_animation/ProgressiveText.dart';
 import 'package:readlock/utility_widgets/text_animation/RSVPText.dart';
 import 'package:readlock/utility_widgets/visual_effects/BlurOverlay.dart';
@@ -467,8 +468,11 @@ class SampleSurface extends StatelessWidget {
       (ReadingColumnOption option) => option.column == column,
     );
     final int nextIndex = (currentIndex + 1) % READING_COLUMN_OPTIONS.length;
+    final ReadingColumn nextColumn = READING_COLUMN_OPTIONS[nextIndex].column;
 
-    selectedReadingColumnNotifier.value = READING_COLUMN_OPTIONS[nextIndex].column;
+    selectedReadingColumnNotifier.value = nextColumn;
+
+    UserService.updateReadingColumn(nextColumn.name);
   }
 
   // Holds the base demo padding (top/bottom + a minimum horizontal inset)
@@ -534,6 +538,8 @@ class ColumnOptionTabs extends StatelessWidget {
 
   void handleColumnChanged(ReadingColumn newColumn) {
     selectedReadingColumnNotifier.value = newColumn;
+
+    UserService.updateReadingColumn(newColumn.name);
   }
 }
 
@@ -636,6 +642,13 @@ class RSVPDemoState extends State<RSVPDemo> {
     // Mirror to the global notifier so a course read with RSVP enabled
     // picks up the same pace next time CCTextContent mounts an RSVPText.
     rsvpWordsPerMinuteNotifier.value = roundedWpm;
+
+    // Persist the picked pace to the user profile, fire-and-forget so the
+    // slider stays buttery as the reader drags it. Only writes when the
+    // value actually changes so a still drag doesn't hammer Firestore.
+    if (hasWpmChanged) {
+      UserService.updateRsvpWordsPerMinute(roundedWpm);
+    }
 
     // Reschedule with the new interval only if the demo is currently
     // running — otherwise the new pace just waits for the toggle to flip.

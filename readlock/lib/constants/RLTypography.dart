@@ -163,12 +163,24 @@ class RLTypography {
 
   // * UI text widgets
 
-  static Widget bodyLarge(String content, {Color? color, TextAlign? textAlign}) {
+  static Widget bodyLarge(
+    String content, {
+    Color? color,
+    TextAlign? textAlign,
+    int? maxLines,
+    TextOverflow? overflow,
+  }) {
     final TextStyle style = color != null
         ? bodyLargeStyle.copyWith(color: color)
         : bodyLargeStyle;
 
-    return Text(content, style: style, textAlign: textAlign);
+    return Text(
+      content,
+      style: style,
+      textAlign: textAlign,
+      maxLines: maxLines,
+      overflow: overflow,
+    );
   }
 
   static Widget bodyMedium(String content, {Color? color, TextAlign? textAlign}) {

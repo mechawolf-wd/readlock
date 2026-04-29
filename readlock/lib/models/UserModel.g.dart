@@ -23,6 +23,11 @@ UserModel _$UserModelFromJson(Map<String, dynamic> json) => UserModel(
   coloredText: json['coloredText'] as bool? ?? true,
   bionic: json['bionic'] as bool? ?? false,
   rsvp: json['rsvp'] as bool? ?? false,
+  readingFont: json['readingFont'] as String? ?? 'serif',
+  readingColumn: json['readingColumn'] as String? ?? 'narrow',
+  rsvpWordsPerMinute: (json['rsvpWordsPerMinute'] as num?)?.toInt() ?? 300,
+  nightShiftLevel: (json['nightShiftLevel'] as num?)?.toInt() ?? 0,
+  birdName: json['birdName'] as String? ?? 'Sparrow',
   savedCourseIds:
       (json['savedCourseIds'] as List<dynamic>?)
           ?.map((item) => item as String)
@@ -60,6 +65,11 @@ Map<String, dynamic> _$UserModelToJson(UserModel instance) => <String, dynamic>{
   'coloredText': instance.coloredText,
   'bionic': instance.bionic,
   'rsvp': instance.rsvp,
+  'readingFont': instance.readingFont,
+  'readingColumn': instance.readingColumn,
+  'rsvpWordsPerMinute': instance.rsvpWordsPerMinute,
+  'nightShiftLevel': instance.nightShiftLevel,
+  'birdName': instance.birdName,
   'savedCourseIds': instance.savedCourseIds,
   'purchasedCourses': instance.purchasedCourses,
   'balance': instance.balance,

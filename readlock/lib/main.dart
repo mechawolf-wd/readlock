@@ -10,6 +10,8 @@ import 'package:readlock/services/NightShiftBrightnessService.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  silenceEngineWindowAssertionSpam();
+
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   // Drives the panel brightness from the Night Shift slider so the dim
@@ -17,6 +19,29 @@ void main() async {
   NightShiftBrightnessService.initialize();
 
   runApp(const ReadlockApp());
+}
+
+// Drops the noisy "Assertion failed: .../lib/_engine/engine/window.dart:99:12"
+// errors that the Flutter engine fires in a tight loop on some platforms.
+// Every other error still goes through the default handler.
+void silenceEngineWindowAssertionSpam() {
+  final defaultOnError = FlutterError.onError;
+
+  FlutterError.onError = (FlutterErrorDetails details) {
+    final String message = details.exceptionAsString();
+    final bool isEngineWindowSpam = message.contains('engine/window.dart');
+
+    if (isEngineWindowSpam) {
+      return;
+    }
+
+    if (defaultOnError != null) {
+      defaultOnError(details);
+      return;
+    }
+
+    FlutterError.presentError(details);
+  };
 }
 
 class ReadlockApp extends StatelessWidget {
@@ -49,13 +74,10 @@ class ReadlockApp extends StatelessWidget {
     );
 
     return ThemeData(
-      colorScheme: ColorScheme.fromSeed(
-        seedColor: RLDS.primary,
-        brightness: Brightness.dark,
-      ),
-      scaffoldBackgroundColor: RLDS.backgroundDark,
+      colorScheme: ColorScheme.fromSeed(seedColor: RLDS.primary, brightness: Brightness.dark),
+      scaffoldBackgroundColor: RLDS.surface,
       appBarTheme: const AppBarTheme(
-        backgroundColor: RLDS.backgroundDark,
+        backgroundColor: RLDS.surface,
         foregroundColor: RLDS.textPrimary,
         elevation: 0,
         iconTheme: IconThemeData(color: RLDS.textPrimary),

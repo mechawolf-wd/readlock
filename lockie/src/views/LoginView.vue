@@ -27,7 +27,7 @@ const username = ref('')
 const password = ref('')
 const isSubmitting = ref(false)
 
-const submitButtonLabel = computed(() => isSubmitting.value ? 'Signing in...' : 'Sign in')
+const submitButtonLabel = computed(() => isSubmitting.value ? 'Signing...' : 'Login')
 
 // * Methods
 
@@ -55,7 +55,7 @@ async function handleLogin() {
     <Card class="relative w-full max-w-md shadow-2xl border-border/60">
       <CardHeader>
         <div class="flex flex-col gap-1.5">
-          <CardTitle class="text-2xl font-semibold tracking-tight">Sign in to Lockie</CardTitle>
+          <CardTitle class="text-2xl font-semibold tracking-tight">Login to Lockie</CardTitle>
           <CardDescription>Course content creator for Readlock.</CardDescription>
         </div>
       </CardHeader>

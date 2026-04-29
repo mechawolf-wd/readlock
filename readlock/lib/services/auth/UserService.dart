@@ -16,6 +16,11 @@ class UserPreferenceField {
   static const String COLORED_TEXT = 'coloredText';
   static const String BIONIC = 'bionic';
   static const String RSVP = 'rsvp';
+  static const String READING_FONT = 'readingFont';
+  static const String READING_COLUMN = 'readingColumn';
+  static const String RSVP_WORDS_PER_MINUTE = 'rsvpWordsPerMinute';
+  static const String NIGHT_SHIFT_LEVEL = 'nightShiftLevel';
+  static const String BIRD_NAME = 'birdName';
   static const String SAVED_COURSE_IDS = 'savedCourseIds';
   static const String PURCHASED_COURSES = 'purchasedCourses';
   static const String BALANCE = 'balance';
@@ -126,6 +131,11 @@ class UserService {
         UserPreferenceField.COLORED_TEXT: true,
         UserPreferenceField.BIONIC: false,
         UserPreferenceField.RSVP: false,
+        UserPreferenceField.READING_FONT: 'serif',
+        UserPreferenceField.READING_COLUMN: 'narrow',
+        UserPreferenceField.RSVP_WORDS_PER_MINUTE: 300,
+        UserPreferenceField.NIGHT_SHIFT_LEVEL: 0,
+        UserPreferenceField.BIRD_NAME: 'Sparrow',
         UserPreferenceField.SAVED_COURSE_IDS: <String>[],
         UserPreferenceField.PURCHASED_COURSES: <String>[],
         UserPreferenceField.BALANCE: 0,
@@ -174,6 +184,34 @@ class UserService {
 
   static Future<bool> updateRsvp(bool enabled) {
     return updateField(UserPreferenceField.RSVP, enabled, 'updateRsvp');
+  }
+
+  static Future<bool> updateReadingFont(String fontName) {
+    return updateField(UserPreferenceField.READING_FONT, fontName, 'updateReadingFont');
+  }
+
+  static Future<bool> updateReadingColumn(String columnName) {
+    return updateField(UserPreferenceField.READING_COLUMN, columnName, 'updateReadingColumn');
+  }
+
+  static Future<bool> updateRsvpWordsPerMinute(int wpm) {
+    return updateField(
+      UserPreferenceField.RSVP_WORDS_PER_MINUTE,
+      wpm,
+      'updateRsvpWordsPerMinute',
+    );
+  }
+
+  static Future<bool> updateNightShiftLevel(int level) {
+    return updateField(
+      UserPreferenceField.NIGHT_SHIFT_LEVEL,
+      level,
+      'updateNightShiftLevel',
+    );
+  }
+
+  static Future<bool> updateBirdName(String birdName) {
+    return updateField(UserPreferenceField.BIRD_NAME, birdName, 'updateBirdName');
   }
 
   // * Field updates

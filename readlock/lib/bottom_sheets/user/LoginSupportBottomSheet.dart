@@ -27,8 +27,7 @@ import 'package:readlock/services/auth/AuthService.dart';
 // sheet without a grabber (Support, Account, etc.) breathes the same.
 
 class LoginSupportLayout {
-  static const EdgeInsets SUPPORT_SHEET_PADDING =
-      RL_BOTTOM_SHEET_NO_GRABBER_CONTENT_PADDING;
+  static const EdgeInsets SUPPORT_SHEET_PADDING = RL_BOTTOM_SHEET_NO_GRABBER_CONTENT_PADDING;
 
   static const EdgeInsets SUPPORT_BUTTON_PADDING = EdgeInsets.symmetric(
     vertical: RLDS.spacing16,
@@ -42,7 +41,7 @@ class LoginSupportPicker {
   static void show(BuildContext context, {String? prefillEmail}) {
     RLBottomSheet.show(
       context,
-      backgroundColor: RLDS.backgroundLight,
+      backgroundColor: RLDS.surface,
       showGrabber: false,
       child: LoginSupportPickerContent(prefillEmail: prefillEmail),
     );
@@ -100,16 +99,13 @@ class LoginSupportPickerContentState extends State<LoginSupportPickerContent> {
   }
 
   Widget HeaderRow() {
-    return Div.row(
-      [
-        HeaderIcon,
+    return Div.row([
+      HeaderIcon,
 
-        const Spacing.width(RLDS.spacing12),
+      const Spacing.width(RLDS.spacing12),
 
-        RLTypography.headingMedium(RLUIStrings.SUPPORT_OPTIONS_TITLE),
-      ],
-      mainAxisAlignment: MainAxisAlignment.start,
-    );
+      RLTypography.headingMedium(RLUIStrings.SUPPORT_OPTIONS_TITLE),
+    ], mainAxisAlignment: MainAxisAlignment.start);
   }
 
   Widget PickerRow({
@@ -117,21 +113,15 @@ class LoginSupportPickerContentState extends State<LoginSupportPickerContent> {
     required String label,
     required VoidCallback onTap,
   }) {
-    final Widget ChevronIcon = Icon(
-      Pixel.chevronright,
+    final Widget TrailingIcon = Icon(
+      icon,
       color: RLDS.glass50(RLDS.textSecondary),
       size: RLDS.iconMedium,
     );
 
     return Div.row(
-      [
-        Expanded(child: RLTypography.bodyLarge(label)),
-
-        ChevronIcon,
-      ],
-      padding: const EdgeInsets.symmetric(
-        vertical: RLDS.spacing12,
-      ),
+      [Expanded(child: RLTypography.bodyLarge(label)), TrailingIcon],
+      padding: const EdgeInsets.symmetric(vertical: RLDS.spacing12),
       onTap: onTap,
     );
   }
@@ -145,10 +135,7 @@ class LoginSupportPickerContentState extends State<LoginSupportPickerContent> {
 
     Navigator.of(context).pop();
 
-    ResetPasswordSupportSheet.show(
-      rootNavigator.context,
-      prefillEmail: widget.prefillEmail,
-    );
+    ResetPasswordSupportSheet.show(rootNavigator.context, prefillEmail: widget.prefillEmail);
   }
 
   void handleResendVerificationTap() {
@@ -259,9 +246,18 @@ class ResetPasswordSupportContentState extends State<ResetPasswordSupportContent
     RLToast.success(context, RLUIStrings.RESET_PASSWORD_SENT_MESSAGE);
   }
 
+  String getButtonLabel() {
+    if (isBusy) {
+      return RLUIStrings.SUPPORT_SEND_RESET_LINK_LOADING_LABEL;
+    }
+
+    return RLUIStrings.SUPPORT_SEND_RESET_LINK_LABEL;
+  }
+
   @override
   Widget build(BuildContext context) {
     final VoidCallback? submitHandler = getSubmitHandler();
+    final String buttonLabel = getButtonLabel();
 
     return Padding(
       padding: LoginSupportLayout.SUPPORT_SHEET_PADDING,
@@ -276,15 +272,12 @@ class ResetPasswordSupportContentState extends State<ResetPasswordSupportContent
 
           const Spacing.height(RLDS.spacing16),
 
-          RLTextField.email(
-            controller: emailController,
-            focusNode: emailFocusNode,
-          ),
+          RLTextField.email(controller: emailController, focusNode: emailFocusNode),
 
           const Spacing.height(RLDS.spacing24),
 
           RLButton.primary(
-            label: RLUIStrings.SUPPORT_SEND_RESET_LINK_LABEL,
+            label: buttonLabel,
             color: RLDS.primary,
             padding: LoginSupportLayout.SUPPORT_BUTTON_PADDING,
             onTap: submitHandler,
@@ -318,8 +311,7 @@ class ResendVerificationSupportContent extends StatefulWidget {
       ResendVerificationSupportContentState();
 }
 
-class ResendVerificationSupportContentState
-    extends State<ResendVerificationSupportContent> {
+class ResendVerificationSupportContentState extends State<ResendVerificationSupportContent> {
   final TextEditingController emailController = TextEditingController();
   final FocusNode emailFocusNode = FocusNode();
 
@@ -375,29 +367,34 @@ class ResendVerificationSupportContentState
       return;
     }
 
+    // The Firebase client SDK can only resend verification to the currently
+    // signed-in user — there is no "resend by email" endpoint. If we hit
+    // this sheet while signed out, calling sendEmailVerification just fails
+    // silently, so we surface the requirement explicitly instead.
+    final bool isSignedOut = !AuthService.isSignedIn;
+
+    if (isSignedOut) {
+      RLToast.warning(context, RLUIStrings.RESEND_VERIFICATION_REQUIRES_SIGN_IN);
+      return;
+    }
+
     setState(() {
       isBusy = true;
     });
 
-    // If a user is currently signed in, check + send through their session
-    // directly. Otherwise fall through to the signed-out path below.
-    final bool isSignedIn = AuthService.isSignedIn;
+    final bool isAlreadyVerified = await AuthService.isEmailVerified();
 
-    if (isSignedIn) {
-      final bool isAlreadyVerified = await AuthService.isEmailVerified();
+    if (!mounted) {
+      return;
+    }
 
-      if (!mounted) {
-        return;
-      }
+    if (isAlreadyVerified) {
+      setState(() {
+        isBusy = false;
+      });
 
-      if (isAlreadyVerified) {
-        setState(() {
-          isBusy = false;
-        });
-
-        RLToast.info(context, RLUIStrings.RESEND_VERIFICATION_ALREADY_VERIFIED);
-        return;
-      }
+      RLToast.info(context, RLUIStrings.RESEND_VERIFICATION_ALREADY_VERIFIED);
+      return;
     }
 
     final bool wasSent = await AuthService.sendEmailVerification();
@@ -418,9 +415,18 @@ class ResendVerificationSupportContentState
     RLToast.error(context, RLUIStrings.RESEND_VERIFICATION_FAILED);
   }
 
+  String getButtonLabel() {
+    if (isBusy) {
+      return RLUIStrings.SUPPORT_RESEND_VERIFICATION_LOADING_LABEL;
+    }
+
+    return RLUIStrings.SUPPORT_RESEND_VERIFICATION_BUTTON_LABEL;
+  }
+
   @override
   Widget build(BuildContext context) {
     final VoidCallback? submitHandler = getSubmitHandler();
+    final String buttonLabel = getButtonLabel();
 
     return Padding(
       padding: LoginSupportLayout.SUPPORT_SHEET_PADDING,
@@ -435,15 +441,12 @@ class ResendVerificationSupportContentState
 
           const Spacing.height(RLDS.spacing16),
 
-          RLTextField.email(
-            controller: emailController,
-            focusNode: emailFocusNode,
-          ),
+          RLTextField.email(controller: emailController, focusNode: emailFocusNode),
 
           const Spacing.height(RLDS.spacing24),
 
           RLButton.primary(
-            label: RLUIStrings.SUPPORT_RESEND_VERIFICATION_BUTTON_LABEL,
+            label: buttonLabel,
             color: RLDS.primary,
             padding: LoginSupportLayout.SUPPORT_BUTTON_PADDING,
             onTap: submitHandler,
@@ -496,9 +499,7 @@ class EmailSupportContentState extends State<EmailSupportContent> {
       isBusy = true;
     });
 
-    await Clipboard.setData(
-      const ClipboardData(text: RLUIStrings.SUPPORT_EMAIL_ADDRESS),
-    );
+    await Clipboard.setData(const ClipboardData(text: RLUIStrings.SUPPORT_EMAIL_ADDRESS));
 
     if (!mounted) {
       return;
@@ -556,12 +557,7 @@ class SheetHeader extends StatelessWidget {
   final String title;
   final String description;
 
-  const SheetHeader({
-    super.key,
-    this.icon,
-    required this.title,
-    required this.description,
-  });
+  const SheetHeader({super.key, this.icon, required this.title, required this.description});
 
   @override
   Widget build(BuildContext context) {
@@ -570,7 +566,7 @@ class SheetHeader extends StatelessWidget {
       children: [
         TitleRow(),
 
-        const Spacing.height(RLDS.spacing8),
+        const Spacing.height(RLDS.spacing16),
 
         RLTypography.bodyMedium(description, color: RLDS.textSecondary),
       ],
@@ -599,4 +595,3 @@ class SheetHeader extends StatelessWidget {
     );
   }
 }
-
