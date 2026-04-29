@@ -1,0 +1,493 @@
+@course
+
+id: book:the-design-of-everyday-things
+language: EN
+title: The Design of Everyday Things
+author: Donald A. Norman
+description: Why some everyday objects feel obvious in the hand and others quietly resist every move.
+color: C85159
+genres: design, psychology, user-experience, product-development
+relevant_for: designers, product-managers, engineers, anyone
+
+@segment
+How Objects Speak
+HOS
+
+@package
+Why Won't This Door Open?
+Free
+# @text, @text, @text, @text, @question, @text, @true_false, @reflect, @text
+# Variant C (3 stories), default intro, teaching: affordances
+
+@text
+Most everyday objects were made by someone who never met the user.
+A hand picks one up, eyes glance at it, and a guess happens before any thought.
+Sometimes the guess is right.
+Sometimes the body pulls a handle that was supposed to be pushed.
+
+@text
+Ravi approaches a glass door with a vertical metal handle on each side.
+His hand wraps around the bar and pulls.
+The door does not move.
+He pulls again, harder, and the door still does not budge.
+A small sticker near the hinge says PUSH.
+Once he pushes instead of pulls, the door opens easily.
+
+@text
+A kettle sits on a stove, full and steaming, with a smooth wooden curve as a handle.
+The hand reaches for the curve without checking.
+The fingers wrap, the wrist lifts, and the kettle pours into the cup.
+Nobody read the manual. Nobody had to.
+The shape is the same as a hundred other kettles in a hundred other kitchens.
+Lifting it was already a familiar move.
+
+@text
+Sofia steps into a hotel shower in a city far from home.
+A single chrome ring sits on the wall, with no labels and no arrows.
+She turns it left, and ice-cold water arrives.
+She turns it right, and ice-cold water arrives again.
+Then the ring is pushed inward, and warm water finally appears.
+The sequence took 2 minutes, in a room that should have taken zero.
+
+@question
+Why did the wooden kettle handle work without a single label?
+
+answer: The label was hidden underneath the curve.
+consequence: Nothing was hidden. The handle worked because its shape already showed what to do.
+
+answer: The shape matched a thousand other kettle handles the hand had lifted before.
+consequence: The shape was familiar from memory, and lifting was already the obvious move.
+
+answer: Kettles are simpler than doors and showers.
+consequence: Many doors are simpler than that kettle. Simplicity is not what saved it. The shape was.
+
+correct_answers: 2
+explanation: A familiar shape lets the hand know what to do without any thought.
+hint: The hand had already met that shape on hundreds of other kettles.
+
+@text
+In the kitchen, the wooden curve had already shown what to do before the hand moved.
+The shape itself can already say how to use the object.
+This is called an <c:g>affordance</c:g>, the first way a designed object speaks to the user.
+A kettle handle affords lifting, a flat plate affords pushing, and a vertical bar affords pulling.
+When the shape matches the action, the object disappears into the work.
+
+@true_false
+A kettle handle shaped like a smooth wooden curve already shows the hand what to do with it.
+
+true: True
+consequence: The shape lets the hand act without waiting for any label.
+
+false: False
+consequence: The wooden curve was the entire instruction. No words were needed.
+
+correct_answers: 1
+explanation: A familiar handle shape carries the action inside it, and the hand reacts before the eyes do.
+hint: A kettle is rarely lifted by reading a manual first.
+
+@reflect
+A door that resisted before the right way was guessed.
+A handle that fit the hand on the first reach.
+A control panel that needed three glances before the first action.
+
+@text
+Some objects show their use right on the surface, while others hide it behind a flat panel.
+The shape is only one of the cues an object can give.
+Beyond it, small visible signs decide where the hand goes when the shape stays silent.
+
+@package
+Quiet Cues
+# @quote, @text, @text, @true_false, @text, @text
+# Variant A (2 scenes), quote intro, teaching: signifiers
+
+@quote
+Affordances determine what actions are possible. Signifiers communicate where the action should take place.
+Donald A. Norman
+
+@text
+Imagine standing in front of an elevator panel inside a tall office building.
+Two metal arrows point up and down, with a small light behind one of them.
+The finger reaches without thinking, and the up arrow is pressed.
+There is no instruction, no voice, no manual to consult.
+The arrow itself was the message, and the light underneath confirmed it.
+Five seconds later, the right car is on its way.
+
+@text
+Picture the same kind of glass door as a moment ago, the one with the metal handle.
+A small flat plate has been added at chest height, where a hand naturally lands.
+The plate is brushed steel, the size of a postcard, with no words on it.
+The plate has nothing to grip and nothing to pull.
+The hand pushes, because pushing is the only thing the plate offers.
+This time the door opens at once.
+
+@true_false
+A flat metal plate on a glass door tells the hand to push without using a single word.
+
+true: True
+consequence: The plate has nothing to grip, so pushing is the only thing it can mean.
+
+false: False
+consequence: The flat shape already says push, even with no word printed on it.
+
+correct_answers: 1
+explanation: The plate is a pure visual sign. Its shape rules out pulling, so only pushing is left.
+hint: Consider what the plate offers to the fingers compared to a vertical handle.
+
+@text
+On the elevator panel, the arrow on the wall did more than allow a press.
+It told the finger exactly where to press.
+The flat plate on the door did the same job for the open hand.
+A small visible sign that points to the right place is called a <c:g>signifier</c:g>.
+This is the second way a designed object speaks to the user.
+
+@text
+Most well-made objects use a shape and a sign together.
+Even with both in place, an object can still confuse if it answers the wrong question.
+The third part of the vocabulary is about how a control lines up with what it actually moves.
+
+@package
+Before the Hand Moves
+# @text, @text, @text, @pause, @text, @true_false, @reflect, @text
+# Variant D (3 stories), skip intro, teaching: natural mapping
+
+@text
+Yuki has a four-burner stove in a small apartment kitchen.
+Two knobs are on the left, two on the right, but the burners are arranged in a square.
+A pot of water sits on the front-right burner, steam beginning to rise.
+She reaches for the front-right knob and turns it.
+The back-left burner clicks on instead, and the heat is wasted on empty air.
+Yuki checks the small diagram by the knobs and turns each one until the right burner glows.
+
+@text
+A meeting room has three light switches in a row by the door.
+The ceiling has two lamp panels at the front and one over the table.
+Nothing on the switches says which is which.
+The first person in the morning flips the leftmost switch and the table light comes on.
+The second flips the middle, and one of the front panels joins.
+The third gives up and turns on all three.
+
+@text
+Marek's small car turns onto a quiet country road at dusk.
+He eases the wheel a quarter to the left, and the car drifts left in the lane.
+A second turn, sharper and to the right, and the car answers the same way.
+Marek did not have to think about which direction the wheel matched on the road.
+A wheel that turned right when spun left would have ended the trip on the first corner.
+For 100 years, this match has been so reliable nobody calls it design at all.
+
+@pause
+In a well-built cockpit, the levers for the landing gear are sometimes shaped like tiny wheels.
+
+@text
+On the stove, the knobs and the burners did not match, and the cook had to translate every meal.
+On the country road, the wheel and the road matched, and no translation was needed.
+A control that lines up with what it moves is using <c:g>natural mapping</c:g>.
+This is the third way a designed object speaks to the user.
+When the layout of the knobs mirrors the burners, no labels are needed at all.
+
+@true_false
+On a four-burner stove, knobs arranged in a square that mirrors the burners need fewer labels to work.
+
+true: True
+consequence: The shape of the layout already shows which knob goes with which burner.
+
+false: False
+consequence: A square arrangement that mirrors the burners removes most of the need for labels.
+
+correct_answers: 1
+explanation: When controls share the layout of what they control, the hand reads the position instead of the text.
+hint: A label is rarely needed when the position itself gives the answer.
+
+@reflect
+A control that always seems to need a glance at its label first.
+A familiar steering wheel that has not surprised the driver in years.
+A volume dial whose direction was learned once and never misread again.
+
+@text
+Shape, sign, and layout work together to let an object speak before the hand moves.
+What happens in the moment after the hand acts is its own kind of message.
+An object that goes silent right after a press leaves the user guessing.
+
+@package
+What the Click Should Have Said...
+# @text, @text, @text, @question, @text, @true_false, @text
+# Variant B (2 beats), misconception intro, teaching: feedback
+
+@text
+Most people assume an object's job is to <c:r>do the work in silence</c:r>.
+A button is pressed, and the rest is the machine's problem.
+But silence after a press is also a message.
+A silent machine and a broken machine look the same to the user.
+
+@text
+At the end of a long day, Akira stands in a small kitchen with dishes stacked next to a microwave.
+A bowl of soup is placed inside, and the door closes with a soft thud.
+The 1-minute button is pressed, and a tiny green dot lights on the panel.
+A faint hum begins behind the metal wall, and the timer counts down in pale digits.
+Akira turns away, knowing the soup will arrive in about a minute.
+
+@text
+Now picture the same kitchen with a different microwave, where the panel sits dark after the press.
+There is no light, no sound, no number on the screen.
+Akira waits 10 seconds, then 20, then taps the door.
+Maybe it is heating, maybe the press did not register, maybe the bowl is going cold.
+Without a single signal, every second of waiting is a guess.
+
+@question
+Why did the second microwave feel broken even when nothing inside had actually failed?
+
+answer: A microwave with no display is always broken on the inside.
+consequence: Nothing was wrong inside the second machine. The lack of a signal made it feel wrong.
+
+answer: Without any signal back, Akira could not know the press had been received.
+consequence: The press might have worked. With no light or sound to confirm it, Akira had to guess.
+
+answer: Akira pressed too gently for the button to register.
+consequence: Whether the press registered or not, Akira could not tell, and that was the problem.
+
+correct_answers: 2
+explanation: A signal back from the machine turns a press into a confirmed action.
+hint: The first kitchen had proof the machine was working, the second had only silence.
+
+@text
+The hum, the dot, and the counting digits told Akira the machine had heard the press.
+A signal back from the object after an action is called <c:g>feedback</c:g>.
+This is the fourth way a designed object speaks to the user.
+Without feedback, a working microwave can look the same as a broken one.
+With feedback, even a long heating cycle feels short.
+
+@true_false
+A microwave that hums and shows a timer feels faster than one that goes silent for the same minute.
+
+true: True
+consequence: A visible signal turns a wait into a confirmed countdown, even when the time is identical.
+
+false: False
+consequence: The two minutes feel different because one is filled with proof of work.
+
+correct_answers: 1
+explanation: The clock measures the same minute, but the hand and the eyes do not.
+hint: Compare a minute watching numbers count down with a minute watching a dark panel.
+
+@text
+Affordance, signifier, mapping, and feedback are four ways an object can speak to the user.
+When all four show up, the object disappears into the work.
+What happens, though, when the user already carries the wrong picture of how the object works?
+
+@segment
+Where Design Fails
+WDF
+
+@package
+The Object Has a Story
+# @text, @text, @text, @text, @question, @text, @true_false, @text
+# Variant C (3 stories), default intro, teaching: conceptual models
+
+@text
+Every object that anyone has ever picked up came with a story.
+The story is what the user thinks the object is doing inside, when no one is watching.
+Sometimes the story matches what really happens.
+Often it does not, and the gap is where every small problem begins.
+
+@text
+A refrigerator hums in the corner of Mira's kitchen, with two dials on a panel inside.
+One dial says FRESH FOOD, the other says FREEZER, and both run from 1 to 7.
+A summer week comes along, the milk turns sour faster, and Mira turns the FRESH FOOD dial to 7.
+Three days later the freezer is over-icing, and the fridge compartment is barely cool.
+The two dials seem to control two separate cabinets, but they really control one cooling unit and a valve.
+The picture in Mira's head was wrong, and the food spoiled.
+
+@text
+Hassan's small house gets cold around 4pm in October.
+The thermostat reads 16 degrees, and his hand turns it all the way up to 30.
+Heat will arrive faster this way, Hassan thinks, the way water arrives faster from a fully open tap.
+But the heater is either on or off, and 30 will heat the room no faster than 22 would.
+By the time the room is warm, it is too warm, and the window has to be opened.
+
+@text
+A hotel elevator has a close-door button next to the floor numbers.
+Lena, late for a meeting, presses it 5 times before the doors begin to slide together.
+The pressing felt like progress, and the speed felt like a result.
+In most modern elevators, the button is wired to do nothing for a public passenger.
+The doors closed on the same timer they would have closed on without a finger near them.
+
+@question
+Why does a working object become a daily problem when the user's picture of it is wrong?
+
+answer: The user presses the right control in the wrong way.
+consequence: The user acts on the picture in the head. Every press matches a story that is not really happening.
+
+answer: The inside of the machine breaks over time.
+consequence: The fridge and the heater worked exactly as built. The user's expectations were the only problem.
+
+answer: The user should have read the manual more carefully.
+consequence: Reading the manual once would not help. The wrong story survives in the head after the words fade.
+
+correct_answers: 1
+explanation: Every action follows the picture in the head, even when the picture is wrong.
+hint: Consider what Mira believed about the fridge versus what the fridge actually does.
+
+@text
+Each person had a different picture of how the object worked inside.
+Mira pictured two cabinets, Hassan a tap, and Lena a button speaking to a door.
+This picture in the user's head is called a <c:g>conceptual model</c:g>.
+It is the fifth way a designed object meets the user.
+When the picture is wrong, every press follows a story the object never confirmed.
+
+@true_false
+Pressing a thermostat from 16 to 30 will warm a room faster than pressing it to 22.
+
+true: True
+consequence: The heater is either on or off, and 30 produces no faster a warm-up than 22.
+
+false: False
+consequence: The heater runs at one speed, no matter the number on the dial.
+
+correct_answers: 2
+explanation: The user's tap-style picture does not match an on-or-off heater.
+hint: Most heaters have only one running speed, no slow setting and no fast setting.
+
+@text
+A wrong story inside the head turns a working object into a daily small fight.
+There is, though, a kind of object built to refuse the wrong story altogether.
+
+@package
+1 Move That Cannot Fail
+# @true_false, @text, @text, @question, @text, @reflect, @text
+# Variant E (2 mechanisms), true/false intro, teaching: forcing functions
+
+@true_false
+A bank machine that keeps the card in the slot until the cash is pulled out is poor design.
+
+true: True
+consequence: The reversed order looks like extra friction, but it forces the user to take both cash and card.
+
+false: False
+consequence: The reversed order ended a quiet daily mistake, where someone walks away with cash but no card.
+
+correct_answers: 2
+explanation: Holding the card hostage until the cash is taken is a step that quietly removes a common error.
+hint: Think about which item used to be left behind at older bank machines.
+
+@text
+A modern car has a small chain that ties the gas cap to the fuel door.
+The cap cannot be set down on the roof, where it would be forgotten.
+At the pump, the cap is unscrewed, the nozzle goes in, and the cap dangles by its tether.
+There is no way to drive off without first noticing the cap and screwing it back on.
+The driver does not have to remember the cap. The car remembers it on their behalf.
+
+@text
+Older bank machines gave out cash first and the card second.
+A person in a rush would take the cash, turn away, and leave the card behind.
+Newer machines flipped the order. The card is returned first, then the cash.
+The user cannot walk away without the card, because the card is back in the wallet first.
+A change in the order of two steps removed a common mistake from millions of cash machines.
+
+@question
+How does a tethered gas cap remove an error without telling the driver anything?
+
+answer: It locks the fuel door until the cap is back in place.
+consequence: The cap is just the visible reminder. The driver does the closing themselves.
+
+answer: It refuses to let the cap leave the car, so forgetting it becomes physically impossible.
+consequence: The chain ties the cap to the car. Wherever the driver is, the cap is too.
+
+answer: It alerts the driver with a beep when the cap is open.
+consequence: A beep can be ignored. The chain cannot. The mechanism works without a sound.
+
+correct_answers: 2
+explanation: A forgotten cap is no longer possible if the cap cannot leave the car at all.
+hint: Notice what is physically tying the cap to the body of the car.
+
+@text
+The chain on the cap and the new order at the bank machine do the same job.
+Each one only allows the next correct action and blocks every wrong one.
+This kind of design is called a <c:g>forcing function</c:g>.
+It is the sixth way a designed object meets the user.
+The cap cannot be forgotten because the cap cannot leave the car.
+
+@reflect
+A small object that used to be left behind, on a counter or in a coat pocket.
+A door that requires the lights off before it will close, in a darkroom or a fridge.
+A tool whose order of steps has been redesigned to remove a single common mistake.
+
+@text
+A forcing function takes the wrong move off the table before the user can choose it.
+But not every error can be designed away in advance.
+A small story remains, about who really gets blamed when the object and the hand do not agree.
+
+@package
+Bad Day, Worse Design
+# @text, @text, @text, @question, @pause, @text, @true_false, @reflect, @text
+# Variant D (3 stories), skip intro, teaching: design error
+
+@text
+Tomas's small kitchen settles into a Tuesday morning.
+The toaster has a dial labelled 1 to 6 and a button marked START.
+He sets the dial to 4, presses the button, and 2 minutes later a smoke alarm is screaming.
+Tomas blames himself for not paying attention, opens a window, and writes a note: be more careful.
+But the dial never explained that 4 was meant for two thin slices of white bread.
+The dense whole-grain he brought home this morning needed a different number.
+
+@text
+Linnea has to take a pill once in the morning and once at night, in two different doses.
+The two bottles look almost identical, the labels are dense, and she is sleepy at 10pm.
+She opens the wrong bottle, and the morning dose is swallowed at night.
+Linnea calls herself careless, sets a louder alarm, and tries again the next day.
+The label was 8 lines of small print on a curved white surface, in a dim kitchen.
+
+@text
+On an airplane, a flight attendant has to demonstrate the seat belt every flight.
+The reason is that the seat belt is not the kind found in any car the passengers know.
+A car belt clicks in and unclicks with a button.
+An airplane belt has a metal tongue that has to be lifted, not pressed.
+Every wrong attempt has been blamed on the passenger, year after year.
+But the same belt has fooled the same kind of person on every flight for decades.
+
+@question
+What do the toaster, the pill bottle, and the seat belt have in common after the mistake?
+
+answer: A user who agrees the mistake was their own fault.
+consequence: Each user did blame themselves first. But the same blame appears in every kitchen and every airplane.
+
+answer: An object whose design quietly invited the same mistake from many different people.
+consequence: The object is the common factor. The same error happens across countless hands and homes.
+
+answer: A clear sign that the user should have read the manual.
+consequence: Most people do not read manuals for toasters or seat belts. The design has to work without them.
+
+correct_answers: 2
+explanation: When the same error appears across thousands of users, the cause is the object, not the people.
+hint: Look at what is identical across all three scenes after the mistake.
+
+@pause
+The flight attendant who shows the seat belt every day has watched the same confusion appear for years.
+
+@text
+On the toaster, the pill bottle, and the seat belt, the same mistake repeats across many users.
+When the same error appears on the same object, the cause is in the object, not the user.
+This is called a <c:g>design error</c:g>, the seventh and final way a designed object meets the user.
+A failure that keeps happening to many people is rarely a personal failure to pay attention.
+The first six pieces show the user what to do, and the seventh decides who carries the blame.
+
+@true_false
+A seat belt that confuses passengers flight after flight is best understood as a problem with the passengers.
+
+true: True
+consequence: After thousands of confused passengers on the same belt, the common factor is the belt.
+
+false: False
+consequence: A confusion shared by millions on the same object is a fact about the object first.
+
+correct_answers: 2
+explanation: Repeated identical errors across very different users point to the design, not the user.
+hint: Notice which side of the scene has been identical for decades.
+
+@reflect
+A small daily mistake that has been quietly blamed on personal carelessness for years.
+A common confusion that shows up on the same object, across many different hands.
+A button or a switch whose error rate stays the same regardless of who is pressing it.
+
+@text
+Affordance, signifier, mapping, feedback, conceptual model, forcing function, and a fair look at blame.
+These seven pieces decide whether an object disappears into the work or quietly resists every user.
+When an everyday object resists next time, which of the seven was missing, and was anyone really at fault?
