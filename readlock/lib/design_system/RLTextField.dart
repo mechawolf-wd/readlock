@@ -99,7 +99,7 @@ class RLTextFieldState extends State<RLTextField> {
       suffixIconConstraints: tightIconConstraints,
       border: InputBorder.none,
       isDense: true,
-      contentPadding: const EdgeInsets.symmetric(vertical: RLDS.spacing20),
+      contentPadding: const EdgeInsets.symmetric(vertical: RLDS.spacing16),
     );
 
     // Frosted surface — same configuration as the login bottom sheet's

@@ -94,8 +94,10 @@ class CCQuestionState extends State<CCQuestion> {
   Widget OptionButton({required int optionIndex, required QuestionOption option}) {
     final bool isRevealed = revealedAnswers.contains(optionIndex);
     final bool isSelected = selectedAnswerIndex == optionIndex;
-    // correctAnswerIndex is 1-based on the data (1 = first answer).
-    final bool isCorrectAnswer = widget.content.correctAnswerIndex == optionIndex + 1;
+    // correctAnswerIndex is 0-based — matches the options list directly,
+    // same as CCTrueFalseQuestion. lockie's exporter already converts the
+    // 1-based source value to 0-based when writing the JSON.
+    final bool isCorrectAnswer = widget.content.correctAnswerIndex == optionIndex;
     final bool shouldShowCorrect = hasAnsweredQuestion && isCorrectAnswer && isSelected;
     final bool shouldShowIncorrect = hasAnsweredQuestion && !isCorrectAnswer && isSelected;
 
@@ -103,7 +105,6 @@ class CCQuestionState extends State<CCQuestion> {
         hasAnsweredQuestion && !isCorrectAnswer && !isSelected;
 
     final Color optionTextColor = getOptionTextColor(
-      shouldShowCorrect: shouldShowCorrect,
       isMuted: isMutedOption,
     );
 
@@ -133,15 +134,28 @@ class CCQuestionState extends State<CCQuestion> {
 
     // LunarBlur surface — matches the continue button in CCTextContent so
     // every interactive pane on a swipe reads as the same frosted glass.
-    // The correct-answer state only recolours the text; the surface itself
-    // stays the same frosted pane.
+    // The correct-answer state wraps the pane in a 2px green border; the
+    // text colour itself stays unchanged (white) so the border carries
+    // all the success signal.
+    final Widget frostedSurface = RLLunarBlur(
+      borderRadius: RLDS.borderRadiusMedium,
+      padding: RLDS.contentPaddingMediumInsets,
+      child: optionRowContent,
+    );
+
+    final Widget surfaceWithCorrectBorder = shouldShowCorrect
+        ? Container(
+            decoration: BoxDecoration(
+              borderRadius: RLDS.borderRadiusMedium,
+              border: Border.all(color: RLDS.success, width: 2.0),
+            ),
+            child: frostedSurface,
+          )
+        : frostedSurface;
+
     final Widget optionRow = GestureDetector(
       onTap: tapHandler,
-      child: RLLunarBlur(
-        borderRadius: RLDS.borderRadiusMedium,
-        padding: RLDS.contentPaddingMediumInsets,
-        child: optionRowContent,
-      ),
+      child: surfaceWithCorrectBorder,
     );
 
     // Non-selected options re-blur after a correct answer so the reader's
@@ -228,8 +242,8 @@ class CCQuestionState extends State<CCQuestion> {
 
     HapticsService.lightImpact();
 
-    // correctAnswerIndex is 1-based on the data (1 = first answer).
-    final bool isCorrectAnswer = widget.content.correctAnswerIndex == optionIndex + 1;
+    // correctAnswerIndex is 0-based — matches the options list directly.
+    final bool isCorrectAnswer = widget.content.correctAnswerIndex == optionIndex;
 
     if (!isCorrectAnswer) {
       showIncorrectAnswerFeedback(optionIndex);
@@ -285,11 +299,7 @@ class CCQuestionState extends State<CCQuestion> {
     });
   }
 
-  Color getOptionTextColor({required bool shouldShowCorrect, required bool isMuted}) {
-    if (shouldShowCorrect) {
-      return RLDS.success;
-    }
-
+  Color getOptionTextColor({required bool isMuted}) {
     if (isMuted) {
       return RLDS.textPrimary.withValues(alpha: 0.4);
     }

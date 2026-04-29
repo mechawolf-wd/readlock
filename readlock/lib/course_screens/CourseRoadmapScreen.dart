@@ -4,6 +4,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:readlock/bottom_sheets/NightShiftBottomSheet.dart';
 import 'package:readlock/course_screens/CourseContentViewer.dart';
 import 'package:readlock/course_screens/data/CourseData.dart';
 import 'package:readlock/design_system/RLUtility.dart';
@@ -86,35 +87,6 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
 
   bool isPaletteColor() {
     return KNOWN_COURSE_COLORS.contains(getNormalizedCourseColor());
-  }
-
-  // Fallback for when a segment doesn't ship a `segment-symbol`. Builds a
-  // compact tab label from the segment title — first letter of every word
-  // that starts with an uppercase character, joined and uppercased. So
-  // "Mastery and Innovation" reads as "MI", "Design Fundamentals" as
-  // "DF". Lowercase function words drop out so the compact label stays at
-  // the recognised acronym length.
-  String getSegmentAcronym(String segmentTitle) {
-    final List<String> words = segmentTitle.trim().split(RegExp(r'\s+'));
-    final StringBuffer acronymBuffer = StringBuffer();
-
-    for (final String word in words) {
-      final bool isEmptyWord = word.isEmpty;
-
-      if (isEmptyWord) {
-        continue;
-      }
-
-      final String firstChar = word[0];
-      final bool isUppercaseLetter = firstChar == firstChar.toUpperCase()
-          && firstChar.toUpperCase() != firstChar.toLowerCase();
-
-      if (isUppercaseLetter) {
-        acronymBuffer.write(firstChar.toUpperCase());
-      }
-    }
-
-    return acronymBuffer.toString();
   }
 
   Color getCourseAccentColor() {
@@ -316,6 +288,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
             accentColor: getCourseAccentColor(),
             isCoursePurchased: isCoursePurchased,
             onLessonTap: navigateToLesson,
+            breathingAnimation: breathingAnimation,
           ),
         ),
       ),
@@ -437,6 +410,12 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
     size: RLDS.iconLarge,
   );
 
+  static final Widget NightShiftHeaderIcon = const Icon(
+    Pixel.moon,
+    color: RLDS.textPrimary,
+    size: RLDS.iconLarge,
+  );
+
   // Padding applied to each non-card sibling in the header. The HeroCard
   // deliberately does NOT get this inset — it spans the full screen width,
   // violating the page margin, so the info panel reads as a banner strip
@@ -457,15 +436,29 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
       children: [
         const Spacing.height(RLDS.spacing12),
 
-        // Back button — its own row above the book, anchored to the
-        // screen-edge inset.
+        // Back button + Night Shift entry. Single row above the book,
+        // anchored to the screen-edge inset. Night Shift sits at the right
+        // edge so the reader can warm the screen from the roadmap before
+        // diving into a lesson.
         Padding(
           padding: roadmapHeaderSidePadding,
           child: Div.row(
-            [BackChevronIcon],
-            padding: RLDS.spacing8,
-            radius: RLDS.borderRadiusCircle,
-            onTap: handleBackTap,
+            [
+              Div.row(
+                [BackChevronIcon],
+                padding: RLDS.spacing8,
+                radius: RLDS.borderRadiusCircle,
+                onTap: handleBackTap,
+              ),
+
+              Div.row(
+                [NightShiftHeaderIcon],
+                padding: RLDS.spacing8,
+                radius: RLDS.borderRadiusCircle,
+                onTap: handleNightShiftTap,
+              ),
+            ],
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
           ),
         ),
 
@@ -634,15 +627,12 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
     for (int segmentIndex = 0; segmentIndex < courseSegments.length; segmentIndex++) {
       final JSONMap segment = courseSegments[segmentIndex];
       final String segmentTitle = segment['segment-title'] as String? ?? '';
-      final String segmentSymbol = (segment['segment-symbol'] as String? ?? '').trim();
-      final bool hasSymbol = segmentSymbol.isNotEmpty;
-      final String compactLabel = hasSymbol ? segmentSymbol : getSegmentAcronym(segmentTitle);
 
       tabOptions.add(
         RLSegmentTabOption<int>(
           value: segmentIndex,
           label: segmentTitle,
-          compactLabel: compactLabel,
+          unselectedIcon: Pixel.eye,
         ),
       );
     }
@@ -673,7 +663,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
     );
 
     return Div.row(
-      [RLTypography.bodyLarge(RLUIStrings.ROADMAP_CONTINUE_LABEL, color: accentColor)],
+      [RLTypography.bodyLarge(RLUIStrings.ROADMAP_CONTINUE_LABEL, color: RLDS.white)],
       width: double.infinity,
       padding: buttonPadding,
       decoration: buttonDecoration,
@@ -690,6 +680,10 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
 
   void handleBackTap() {
     Navigator.of(context).pop();
+  }
+
+  void handleNightShiftTap() {
+    NightShiftBottomSheet.show(context);
   }
 
   // Navigates straight into the lesson. The destination's own loading
@@ -725,6 +719,10 @@ class PathWithNodes extends StatelessWidget {
   final Color accentColor;
   final bool isCoursePurchased;
   final Function(int, int) onLessonTap;
+  // Shared with the BookRingPane so every lesson tile breathes in lock-step
+  // with the book disc — one heartbeat across the screen instead of N
+  // independently driven controllers.
+  final Animation<double> breathingAnimation;
 
   const PathWithNodes({
     super.key,
@@ -733,6 +731,7 @@ class PathWithNodes extends StatelessWidget {
     required this.accentColor,
     required this.isCoursePurchased,
     required this.onLessonTap,
+    required this.breathingAnimation,
   });
 
   @override
@@ -745,10 +744,9 @@ class PathWithNodes extends StatelessWidget {
 
     for (int lessonIndex = 0; lessonIndex < lessons.length; lessonIndex++) {
       final JSONMap lesson = lessons[lessonIndex] as JSONMap;
-      // Whole-course ownership: every tile unlocks together once the
-      // user buys the course. Drops the older per-lesson `isFree` gate
-      // since the purchase flow now handles access end-to-end.
-      final bool isLocked = !isCoursePurchased;
+      // MOCK: every lesson tile is unlocked regardless of purchase state.
+      // Restore `!isCoursePurchased` to re-enable the purchase gate.
+      final bool isLocked = false;
 
       // Determine horizontal alignment (zigzag pattern)
       final PathNodeAlignment alignment = getAlignmentForIndex(lessonIndex);
@@ -769,6 +767,7 @@ class PathWithNodes extends StatelessWidget {
           accentColor: accentColor,
           isLocked: isLocked,
           onTap: () => onLessonTap(lessonIndex, 0),
+          breathingAnimation: breathingAnimation,
         ),
       );
     }
@@ -817,6 +816,7 @@ class PathLessonNode extends StatefulWidget {
   final Color accentColor;
   final bool isLocked;
   final VoidCallback onTap;
+  final Animation<double> breathingAnimation;
 
   const PathLessonNode({
     super.key,
@@ -825,6 +825,7 @@ class PathLessonNode extends StatefulWidget {
     required this.accentColor,
     required this.isLocked,
     required this.onTap,
+    required this.breathingAnimation,
   });
 
   @override
@@ -889,14 +890,19 @@ class PathLessonNodeState extends State<PathLessonNode> {
       child: Column(
         children: [
           // Pixel-style square tile — opaque hit-test so the entire box
-          // (including the shadow inset) registers presses.
-          GestureDetector(
-            onTapDown: handleTapDown,
-            onTapUp: handleTapUp,
-            onTapCancel: handleTapCancel,
-            onTap: handleTap,
-            behavior: HitTestBehavior.opaque,
-            child: NodeTile(),
+          // (including the shadow inset) registers presses. Wrapped in the
+          // shared breathing animation so the tile pulses in lock-step
+          // with the book disc above it.
+          ScaleTransition(
+            scale: widget.breathingAnimation,
+            child: GestureDetector(
+              onTapDown: handleTapDown,
+              onTapUp: handleTapUp,
+              onTapCancel: handleTapCancel,
+              onTap: handleTap,
+              behavior: HitTestBehavior.opaque,
+              child: NodeTile(),
+            ),
           ),
 
           const Spacing.height(RLDS.spacing8),

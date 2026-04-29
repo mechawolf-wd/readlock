@@ -59,10 +59,15 @@ class DemoSurface extends StatelessWidget {
     final bool hasTapHandler = onTap != null;
 
     if (hasTapHandler) {
-      return GestureDetector(onTap: onTap, child: surface);
+      return GestureDetector(onTap: handleTap, child: surface);
     }
 
     return surface;
+  }
+
+  void handleTap() {
+    HapticFeedback.selectionClick();
+    onTap!.call();
   }
 }
 
@@ -103,8 +108,9 @@ const FontWeight demoHighlightWeight = FontWeight.bold;
 // Shows text appearing all at once vs character by character
 class RevealDemo extends StatefulWidget {
   final bool isEnabled;
+  final VoidCallback? onTap;
 
-  const RevealDemo({super.key, required this.isEnabled});
+  const RevealDemo({super.key, required this.isEnabled, this.onTap});
 
   @override
   State<RevealDemo> createState() => RevealDemoState();
@@ -158,6 +164,7 @@ class RevealDemoState extends State<RevealDemo> with SingleTickerProviderStateMi
 
   Widget DemoBody(BuildContext context) {
     return DemoSurface(
+      onTap: widget.onTap,
       child: Align(alignment: Alignment.centerLeft, child: AnimatedTextDisplay()),
     );
   }
@@ -221,8 +228,9 @@ class RevealDemoState extends State<RevealDemo> with SingleTickerProviderStateMi
 // (sigma + opacity sourced from RLDS.lyricsBlur* via BlurOverlay defaults).
 class BlurDemo extends StatelessWidget {
   final bool isEnabled;
+  final VoidCallback? onTap;
 
-  const BlurDemo({super.key, required this.isEnabled});
+  const BlurDemo({super.key, required this.isEnabled, this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -231,6 +239,7 @@ class BlurDemo extends StatelessWidget {
 
   Widget DemoBody(BuildContext context) {
     return DemoSurface(
+      onTap: onTap,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -257,8 +266,9 @@ class BlurDemo extends StatelessWidget {
 // Shows how highlighted terms appear in the content
 class ColoredTextDemo extends StatelessWidget {
   final bool isEnabled;
+  final VoidCallback? onTap;
 
-  const ColoredTextDemo({super.key, required this.isEnabled});
+  const ColoredTextDemo({super.key, required this.isEnabled, this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -284,6 +294,7 @@ class ColoredTextDemo extends StatelessWidget {
     );
 
     return DemoSurface(
+      onTap: onTap,
       child: Align(
         alignment: Alignment.centerLeft,
         child: RichText(
@@ -307,8 +318,9 @@ class ColoredTextDemo extends StatelessWidget {
 // exact transformation that would be applied to reading content.
 class BionicDemo extends StatelessWidget {
   final bool isEnabled;
+  final VoidCallback? onTap;
 
-  const BionicDemo({super.key, required this.isEnabled});
+  const BionicDemo({super.key, required this.isEnabled, this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -317,6 +329,7 @@ class BionicDemo extends StatelessWidget {
 
   Widget DemoBody(BuildContext context) {
     return DemoSurface(
+      onTap: onTap,
       child: Align(alignment: Alignment.centerLeft, child: BionicSample()),
     );
   }
@@ -431,25 +444,43 @@ class SampleSurface extends StatelessWidget {
 
   Widget AtSlot(BuildContext context, BoxConstraints constraints) {
     final double slotWidth = constraints.maxWidth;
-    final double columnMaxWidth = maxWidthFor(column);
-    final EdgeInsets innerPadding = computeInnerPadding(slotWidth, columnMaxWidth);
+    final double widthFraction = previewWidthFractionFor(column);
+    final EdgeInsets innerPadding = computeInnerPadding(slotWidth, widthFraction);
 
-    return RLLunarBlur(
-      surfaceAlpha: demoSurfaceAlpha,
-      padding: innerPadding,
-      child: const SizedBox(width: double.infinity, child: SampleParagraph()),
+    return GestureDetector(
+      onTap: handleSampleTap,
+      behavior: HitTestBehavior.opaque,
+      child: RLLunarBlur(
+        surfaceAlpha: demoSurfaceAlpha,
+        padding: innerPadding,
+        child: const SizedBox(width: double.infinity, child: SampleParagraph()),
+      ),
     );
+  }
+
+  // Tapping the sample box cycles to the next column option, so the
+  // preview itself doubles as an affordance for changing the column style.
+  void handleSampleTap() {
+    HapticFeedback.selectionClick();
+
+    final int currentIndex = READING_COLUMN_OPTIONS.indexWhere(
+      (ReadingColumnOption option) => option.column == column,
+    );
+    final int nextIndex = (currentIndex + 1) % READING_COLUMN_OPTIONS.length;
+
+    selectedReadingColumnNotifier.value = READING_COLUMN_OPTIONS[nextIndex].column;
   }
 
   // Holds the base demo padding (top/bottom + a minimum horizontal inset)
   // and adds whatever extra horizontal inset is needed to bring the text
-  // run down to the column's target maxWidth. If the slot is already
-  // narrower than maxWidth (small phones), no extra inset is added — the
-  // text just fills the slot.
-  EdgeInsets computeInnerPadding(double slotWidth, double columnMaxWidth) {
+  // run down to a fraction of the slot. Percentage based so the picker
+  // produces a visible change on small phones too, where absolute maxWidth
+  // values would both clamp to the slot width.
+  EdgeInsets computeInnerPadding(double slotWidth, double widthFraction) {
     final double basePadding = demoSurfacePadding.left;
     final double textBudget = slotWidth - basePadding * 2;
-    final double overflowToShave = (textBudget - columnMaxWidth).clamp(0.0, textBudget);
+    final double targetTextWidth = slotWidth * widthFraction;
+    final double overflowToShave = (textBudget - targetTextWidth).clamp(0.0, textBudget);
     final double extraInsetPerSide = overflowToShave / 2;
 
     return EdgeInsets.fromLTRB(
@@ -512,14 +543,12 @@ class ColumnOptionTabs extends StatelessWidget {
 // lines up on the same X axis (the Spritz / Spreeder technique). Range
 // 150–800 wpm covers the full usable span (average silent reading sits
 // near 250; comprehension plateaus around 400–600 with practice). Default
-// 300 is the recommended starting point. The demo always animates so the
-// reader can judge the pace before flipping the toggle — the parent
-// switch only gates the feature in CCTextContent, not this preview.
+// 300 is the recommended starting point. The demo only animates while the
+// parent toggle is on, so the preview reflects the actual feature state.
 class RSVPDemo extends StatefulWidget {
-  // No isEnabled prop — the demo deliberately ignores the parent toggle so
-  // the preview always animates. The toggle only gates the feature in
-  // CCTextContent.
-  const RSVPDemo({super.key});
+  final bool isEnabled;
+
+  const RSVPDemo({super.key, required this.isEnabled});
 
   @override
   State<RSVPDemo> createState() => RSVPDemoState();
@@ -541,11 +570,26 @@ class RSVPDemoState extends State<RSVPDemo> {
   void initState() {
     super.initState();
 
-    // Demo always animates regardless of the parent toggle — the toggle
-    // gates the FEATURE in CCTextContent, not this preview. Keeps the card
-    // showing what RSVP looks like even when it's off so the reader can
-    // judge before flipping it on.
-    scheduleNextWord();
+    if (widget.isEnabled) {
+      scheduleNextWord();
+    }
+  }
+
+  @override
+  void didUpdateWidget(covariant RSVPDemo oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    final bool justEnabled = widget.isEnabled && !oldWidget.isEnabled;
+    final bool justDisabled = !widget.isEnabled && oldWidget.isEnabled;
+
+    if (justEnabled) {
+      scheduleNextWord();
+    }
+
+    if (justDisabled) {
+      advanceTimer?.cancel();
+      advanceTimer = null;
+    }
   }
 
   @override
@@ -593,8 +637,11 @@ class RSVPDemoState extends State<RSVPDemo> {
     // picks up the same pace next time CCTextContent mounts an RSVPText.
     rsvpWordsPerMinuteNotifier.value = roundedWpm;
 
-    // Reschedule with the new interval — the demo always animates.
-    scheduleNextWord();
+    // Reschedule with the new interval only if the demo is currently
+    // running — otherwise the new pace just waits for the toggle to flip.
+    if (widget.isEnabled) {
+      scheduleNextWord();
+    }
   }
 
   // Optimal Recognition Point position — the letter the eye anchors on.

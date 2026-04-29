@@ -8,7 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/constants/RLUIStrings.dart';
-import 'package:readlock/design_system/RLFadeSwitcher.dart';
 import 'package:readlock/design_system/RLLunarBlur.dart';
 import 'package:readlock/design_system/RLStarfieldBackground.dart';
 import 'package:readlock/screens/CoursesScreen.dart';
@@ -43,7 +42,7 @@ class MainNavigationState extends State<MainNavigation> {
     super.initState();
     currentIndex = widget.initialTabIndex;
 
-    screens = [const HomeScreen(), const CoursesScreen(), const MyBookshelfScreen()];
+    screens = [const HomeScreen(), const CoursesScreen(), const BookshelfScreen()];
 
     authStateSubscription = AuthService.authStateChanges.listen(handleAuthStateChange);
   }
@@ -157,9 +156,7 @@ class MainNavigationState extends State<MainNavigation> {
         children: [
           const Positioned.fill(child: RLStarfieldBackground()),
 
-          RLFadeSwitcher(
-            child: KeyedSubtree(key: ValueKey<int>(currentIndex), child: screens[currentIndex]),
-          ),
+          ...TabLayers(),
         ],
       ),
       bottomNavigationBar: RLLunarBlur(
@@ -190,6 +187,34 @@ class MainNavigationState extends State<MainNavigation> {
         ),
       ),
     );
+  }
+
+  // Each tab is kept mounted in its own layer so switching back doesn't
+  // re-trigger its loader. The active tab fades to opacity 1, the others
+  // fade out to 0 — gives the small fade swap without the loading flash
+  // that AnimatedSwitcher's mount/unmount cycle used to cause.
+  List<Widget> TabLayers() {
+    final List<Widget> layers = [];
+
+    for (int tabIndex = 0; tabIndex < screens.length; tabIndex++) {
+      final bool isActive = tabIndex == currentIndex;
+
+      layers.add(
+        Positioned.fill(
+          child: IgnorePointer(
+            ignoring: !isActive,
+            child: AnimatedOpacity(
+              duration: RLDS.opacityFadeDurationFast,
+              curve: Curves.easeOut,
+              opacity: isActive ? 1.0 : 0.0,
+              child: screens[tabIndex],
+            ),
+          ),
+        ),
+      );
+    }
+
+    return layers;
   }
 
   List<BottomNavigationBarItem> NavigationItems() {

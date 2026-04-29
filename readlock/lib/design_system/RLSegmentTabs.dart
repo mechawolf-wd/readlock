@@ -17,17 +17,13 @@ class RLSegmentTabOption<T> {
   final T value;
   final String label;
 
-  // Compact form shown when the tab is not selected — e.g. an acronym so
-  // long titles collapse to two letters and only the active tab reveals
-  // its full name. Optional; falls back to `label` for both states when
-  // omitted, preserving the simple single-label call sites.
-  final String? compactLabel;
+  // Glyph rendered in place of the label when the tab is not selected.
+  // Lets unselected tabs collapse to a single icon (e.g. an eye) so only
+  // the active tab carries text. Optional; falls back to the text label
+  // for both states when omitted.
+  final IconData? unselectedIcon;
 
-  const RLSegmentTabOption({
-    required this.value,
-    required this.label,
-    this.compactLabel,
-  });
+  const RLSegmentTabOption({required this.value, required this.label, this.unselectedIcon});
 }
 
 class RLSegmentTabs<T> extends StatelessWidget {
@@ -74,7 +70,7 @@ class RLSegmentTabs<T> extends StatelessWidget {
         Expanded(
           child: RLSegmentTab(
             label: option.label,
-            compactLabel: option.compactLabel,
+            unselectedIcon: option.unselectedIcon,
             isSelected: isSelected,
             selectedLabelColor: selectedLabelColor,
             onTap: onTabTap,
@@ -89,7 +85,7 @@ class RLSegmentTabs<T> extends StatelessWidget {
 
 class RLSegmentTab extends StatelessWidget {
   final String label;
-  final String? compactLabel;
+  final IconData? unselectedIcon;
   final bool isSelected;
   final Color selectedLabelColor;
   final VoidCallback onTap;
@@ -100,7 +96,7 @@ class RLSegmentTab extends StatelessWidget {
     required this.isSelected,
     required this.selectedLabelColor,
     required this.onTap,
-    this.compactLabel,
+    this.unselectedIcon,
   });
 
   static const EdgeInsets tabPadding = EdgeInsets.symmetric(
@@ -108,25 +104,24 @@ class RLSegmentTab extends StatelessWidget {
     vertical: RLDS.spacing8,
   );
 
-  String getDisplayLabel() {
-    final String? compact = compactLabel;
-    final bool shouldUseCompact = !isSelected && compact != null && compact.isNotEmpty;
-
-    if (shouldUseCompact) {
-      return compact;
-    }
-
-    return label;
-  }
+  static const double tabIconSize = RLDS.iconLarge;
 
   @override
   Widget build(BuildContext context) {
     final Color labelColor = isSelected ? selectedLabelColor : RLDS.textSecondary;
-    final Widget tabLabel = RLTypography.bodyMedium(
-      getDisplayLabel(),
+
+    final Widget selectedContent = RLTypography.bodyMedium(
+      label,
       color: labelColor,
       textAlign: TextAlign.center,
     );
+
+    final IconData? icon = unselectedIcon;
+    final bool shouldShowIcon = !isSelected && icon != null;
+
+    final Widget unselectedContent = shouldShowIcon
+        ? Icon(icon, color: labelColor, size: tabIconSize)
+        : RLTypography.bodyMedium(label, color: labelColor, textAlign: TextAlign.center);
 
     void handleTabTap() {
       HapticFeedback.lightImpact();
@@ -140,22 +135,22 @@ class RLSegmentTab extends StatelessWidget {
         child: RLLunarBlur(
           borderRadius: RLDS.borderRadiusSmall,
           padding: tabPadding,
-          child: tabLabel,
+          child: selectedContent,
         ),
       );
     }
 
     // Wrap the unselected tab in an opaque GestureDetector so the entire
     // padded slot registers taps — clicking the empty space around the
-    // label still flips the selection. Haptic is fired here directly
-    // (the inner Div has no onTap, so there's no double-fire risk).
+    // glyph still flips the selection. Haptic is fired here directly
+    // (the inner Container has no onTap, so there's no double-fire risk).
     return GestureDetector(
       onTap: handleTabTap,
       behavior: HitTestBehavior.opaque,
       child: Container(
         padding: tabPadding,
         alignment: Alignment.center,
-        child: tabLabel,
+        child: unselectedContent,
       ),
     );
   }

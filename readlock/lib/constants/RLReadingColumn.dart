@@ -1,7 +1,7 @@
 // Reader-selectable column width for every CC widget in the course viewer.
 // Two options:
 //
-//   - narrow       → 320 pt. Newspaper-column tight (45–55 char lines); the default.
+//   - narrow       → 320 pt. Newspaper-column tight (45-55 char lines); the default.
 //   - comfortable  → 360 pt. Classic, slightly wider than newspaper.
 //
 // Held in selectedReadingColumnNotifier and consumed by CourseContentViewer
@@ -16,21 +16,32 @@ class ReadingColumnOption {
   final ReadingColumn column;
   final String displayName;
   final double maxWidth;
+  // Used only by the Settings demo preview so the option picker stays
+  // visibly different on small phones, where both absolute maxWidth values
+  // would clamp to the same slot width and produce no perceptible change.
+  final double previewWidthFraction;
 
   const ReadingColumnOption({
     required this.column,
     required this.displayName,
     required this.maxWidth,
+    required this.previewWidthFraction,
   });
 }
 
 const List<ReadingColumnOption> READING_COLUMN_OPTIONS = [
-  ReadingColumnOption(column: ReadingColumn.narrow, displayName: 'Newspaper', maxWidth: 320.0),
+  ReadingColumnOption(
+    column: ReadingColumn.narrow,
+    displayName: 'Newspaper',
+    maxWidth: 320.0,
+    previewWidthFraction: 0.7,
+  ),
 
   ReadingColumnOption(
     column: ReadingColumn.comfortable,
     displayName: 'Classic',
     maxWidth: 360.0,
+    previewWidthFraction: 0.92,
   ),
 ];
 
@@ -50,4 +61,17 @@ double maxWidthFor(ReadingColumn column) {
   }
 
   return READING_COLUMN_OPTIONS.first.maxWidth;
+}
+
+// Settings-demo only. Returns the fraction of the available slot width the
+// preview should occupy for the given column option, so the picker remains
+// visibly different on phones whose slot is already narrower than maxWidth.
+double previewWidthFractionFor(ReadingColumn column) {
+  for (final ReadingColumnOption option in READING_COLUMN_OPTIONS) {
+    if (option.column == column) {
+      return option.previewWidthFraction;
+    }
+  }
+
+  return READING_COLUMN_OPTIONS.first.previewWidthFraction;
 }

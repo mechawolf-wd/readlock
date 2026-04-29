@@ -79,12 +79,12 @@ class RLConfirmationDialog {
     RLConfirmationLayout layout = RLConfirmationLayout.vertical,
     bool isDismissible = true,
   }) {
-    // Dark scrim behind the dialog. RLDS.dialogBarrierColor is the
-    // single source of truth shared with RLDialog, so every modal dims
-    // the page by the same amount. The BackdropFilter wrapper blurs
-    // everything behind the dialog so the page reads as a frosted layer
-    // around the centered card; the card itself sits on top of the
-    // BackdropFilter and is rendered crisp.
+    // The BackdropFilter wrapper blurs everything behind the dialog so
+    // the page reads as a frosted layer around the centered card; the
+    // card itself sits on top of the BackdropFilter and is rendered crisp.
+    // No dark scrim — the blur alone separates the dialog from the page,
+    // and stacking a 50% black barrier on top of the blur produced a
+    // muddy grey wash.
     showDialog<void>(
       context: context,
       barrierDismissible: isDismissible,
@@ -96,6 +96,7 @@ class RLConfirmationDialog {
             sigmaY: RLDS.backdropBlurSigma,
           ),
           child: DialogContainer(
+            backgroundColor: RLDS.surface,
             child: ConfirmationDialogContent(
               title: title,
               message: message,
@@ -325,21 +326,25 @@ class ConfirmationDialogContent extends StatelessWidget {
     );
   }
 
-  // Filled primary button with a leading glyph (e.g. play icon on the
-  // quit dialog's CTA). Keeps the same vertical footprint as
-  // RLButton.primary so icon-cancel + icon-label rows stay aligned. The
-  // glyph renders in the button's text colour (white) so it reads as a
-  // single unit with the label. When the action's label is empty the
-  // button becomes icon-only — useful for a pure "▶" CTA.
+  // Mirrors the roadmap Continue button: dimmed variant-coloured fill
+  // (alpha 0.15) with a white glyph + optional white label centred. Used
+  // for the quit dialog's CTA so the play action reads as a calm green
+  // resume button rather than a saturated success block.
   Widget IconLabelPrimaryButton({
     required RLConfirmationAction action,
     required Color buttonColor,
     required IconData glyph,
     required VoidCallback onTap,
   }) {
+    final Color dimmedBackground = buttonColor.withValues(alpha: 0.15);
     final BoxDecoration buttonDecoration = BoxDecoration(
-      color: buttonColor,
+      color: dimmedBackground,
       borderRadius: RLDS.borderRadiusSmall,
+    );
+
+    const EdgeInsets roadmapStyleButtonPadding = EdgeInsets.symmetric(
+      vertical: RLDS.spacing16,
+      horizontal: RLDS.spacing24,
     );
 
     final Widget GlyphIcon = Icon(glyph, color: RLDS.white, size: RLDS.iconMedium);
@@ -356,7 +361,7 @@ class ConfirmationDialogContent extends StatelessWidget {
       onTap: onTap,
       child: Container(
         width: double.infinity,
-        padding: dialogButtonPadding,
+        padding: roadmapStyleButtonPadding,
         decoration: buttonDecoration,
         child: Row(mainAxisAlignment: MainAxisAlignment.center, children: rowChildren),
       ),

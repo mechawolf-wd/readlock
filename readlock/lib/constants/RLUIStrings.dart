@@ -121,7 +121,13 @@ class RLUIStrings {
   static const String QUIT_CONFIRMATION_TITLE = 'Wait';
   static const String QUIT_CONFIRMATION_MESSAGE = 'If you quit you will lose your progress.';
   static const String QUIT_CONFIRMATION_PAUSE_BUTTON = 'Pause';
-  static const String BOOKMARK_FEEDBACK_MESSAGE = 'Knowledge swipe saved to your nest.';
+
+  // * Night Shift (eye-strain overlay)
+  static const String NIGHT_SHIFT_TITLE = 'Night Shift';
+  static const String NIGHT_SHIFT_DESCRIPTION =
+      'Warm the screen for easier reading before sleep.';
+  static const String NIGHT_SHIFT_LESS_WARM_LABEL = 'Off';
+  static const String NIGHT_SHIFT_MORE_WARM_LABEL = 'More warm';
 
   // * Course Content Factory
   static const String UNKNOWN_CONTENT_TYPE_MESSAGE = 'Unknown content type: ';
@@ -245,7 +251,7 @@ class RLUIStrings {
   static const String MENU_TERMS_AND_CONDITIONS = 'Terms & Conditions';
   static const String MENU_EULA = 'EULA';
   static const String MENU_LOG_OUT = 'Sign out';
-  static const String MENU_VERSION = 'Version 1.0.0';
+  static const String MENU_VERSION = 'Sowa 1.0.0';
 
   // * Bird Picker
   static const String MENU_PROFILE_BIRD = 'Profile bird';
@@ -269,9 +275,8 @@ class RLUIStrings {
   // * Reading Column Width
   static const String MENU_READING_COLUMN = 'Column style';
   static const String DEMO_READING_COLUMN_TEXT =
-      'Strongly preferred for long reading sessions. Narrower columns reduce '
-      'cognitive load and eye movement, letting your gaze sweep one short '
-      'line at a time instead of tracking across the full width of the screen.';
+      'Narrow columns ease eye movement and let you sweep one short line at '
+      'a time, keeping focus steady on long reads.';
 
   // * Settings Demos
   static const String DEMO_REVEAL_TEXT = 'Design is not just what it looks like.';
@@ -306,7 +311,8 @@ class RLUIStrings {
   static const String ERROR_INVALID_CREDENTIALS =
       'Couldn\'t match that email and password. Give it another try.';
   static const String ERROR_EMAIL_IN_USE = 'An account with this email already exists.';
-  static const String ERROR_WEAK_PASSWORD = 'That password is a little short. A longer one will do.';
+  static const String ERROR_WEAK_PASSWORD =
+      'That password is a little short. A longer one will do.';
   static const String ERROR_INVALID_EMAIL = 'That email doesn\'t look quite right.';
   static const String ERROR_NETWORK = 'The connection is a little shaky. Give it another try.';
   static const String ERROR_TOO_MANY_REQUESTS = 'Let\'s take a short breather, then try again.';

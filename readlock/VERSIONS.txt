@@ -1,0 +1,12 @@
+Readlock major version codenames (Polish birds)
+
+1.0.0  - Bocian       (White Stork)
+2.0.0  - Sowa         (Tawny Owl)
+3.0.0  - Zuraw        (Common Crane)
+4.0.0  - Kruk         (Common Raven)
+5.0.0  - Sikorka      (Eurasian Blue Tit)
+6.0.0  - Zimorodek    (Common Kingfisher)
+7.0.0  - Dudek        (Eurasian Hoopoe)
+8.0.0  - Slowik       (Common Nightingale)
+9.0.0  - Jastrzab     (Northern Goshawk)
+10.0.0 - Orzel Bielik (White-tailed Eagle)

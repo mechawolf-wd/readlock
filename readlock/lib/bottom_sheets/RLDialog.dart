@@ -22,7 +22,7 @@ class RLDialog {
     // Matches the Support bottom sheet's surface, RLDS.backgroundLight
     // tinted by RLLunarBlur, so every modal in the app sits on the same
     // frosted pane instead of a flat dark card.
-    final Color dialogColor = backgroundColor ?? RLDS.backgroundLight;
+    final Color dialogColor = backgroundColor ?? RLDS.surface;
 
     showDialog(
       context: context,

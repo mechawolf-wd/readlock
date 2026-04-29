@@ -37,22 +37,19 @@ const List<ReadingFontOption> READING_FONT_OPTIONS = [
   ReadingFontOption(
     font: ReadingFont.serif,
     displayName: 'Serif',
-    description: 'Looks like a printed book. Calm shapes, nice for sitting '
-        'down with something long.',
+    description: 'Calm, classic shapes that feel like a printed novel in your hands.',
   ),
 
   ReadingFontOption(
     font: ReadingFont.dyslexic,
     displayName: 'Dyslexic Friendly',
-    description: 'Letters sit further apart and the shapes are tuned so b, '
-        'd, and p never blur together. Helpful if reading feels heavy.',
+    description: 'Weighted letters and tuned shapes so b, d, p never blur together.',
   ),
 
   ReadingFontOption(
     font: ReadingFont.monospace,
     displayName: 'Monospace',
-    description: 'Every letter takes the same width. Typewriter feel, good '
-        'for slowing down and reading carefully.',
+    description: 'Sharp, even-width letters with a focused, almost analytical feel.',
   ),
 ];
 

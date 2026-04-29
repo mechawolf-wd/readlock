@@ -344,26 +344,11 @@ class CoursesScreenState extends State<CoursesScreen> {
     );
   }
 
-  // Splits the closed genre list into two horizontally-scrollable rows so
-  // the chip block is always exactly two lines tall — no fourth row appears
-  // on small screens, no half-empty trailing line on big ones. The first
-  // row gets the front half (rounded up), the second row gets the rest.
+  // Single horizontally-scrollable row for the closed genre list. Reads as
+  // one long ribbon the user pans through, instead of stacking onto a
+  // second line.
   Widget GenreChipsRow(List<String> availableGenres) {
-    final int splitIndex = (availableGenres.length / 2).ceil();
-    final List<String> firstRowGenres = availableGenres.sublist(0, splitIndex);
-    final List<String> secondRowGenres = availableGenres.sublist(splitIndex);
-
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        ChipScrollRow(rowGenres: firstRowGenres),
-
-        const Spacing.height(RLDS.spacing8),
-
-        ChipScrollRow(rowGenres: secondRowGenres),
-      ],
-    );
+    return ChipScrollRow(rowGenres: availableGenres);
   }
 
   Widget ChipScrollRow({required List<String> rowGenres}) {

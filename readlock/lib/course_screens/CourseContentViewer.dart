@@ -11,6 +11,7 @@ import 'package:readlock/course_screens/data/CourseData.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/constants/RLReadingColumn.dart';
 import 'package:readlock/constants/RLUIStrings.dart';
+import 'package:readlock/bottom_sheets/NightShiftBottomSheet.dart';
 import 'package:readlock/design_system/RLLunarBlur.dart';
 import 'package:readlock/design_system/RLStarfieldBackground.dart';
 import 'package:readlock/design_system/RLUtility.dart';
@@ -79,8 +80,8 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
     size: RLDS.iconMedium,
   );
 
-  static const Icon BookmarkIcon = Icon(
-    Pixel.bookmark,
+  static const Icon NightShiftIcon = Icon(
+    Pixel.moon,
     color: progressChromeColor,
     size: RLDS.iconLarge,
   );
@@ -172,10 +173,10 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
   }
 
   // Re-blur the top chrome when the user taps outside of it. "Outside" means
-  // outside the whole TopProgressBar row (back button, progress bar, bookmark)
-  // — not just the progress bar itself. Otherwise a tap on close/bookmark
-  // would re-blur first, then the rebuilt GestureDetector would route the tap
-  // back to reveal instead of firing the intended action.
+  // outside the whole TopProgressBar row (back button, progress bar, night
+  // shift toggle), not just the progress bar itself. Otherwise a tap on
+  // close/night-shift would re-blur first, then the rebuilt GestureDetector
+  // would route the tap back to reveal instead of firing the intended action.
   void handleGlobalPointerDown(PointerDownEvent event) {
     if (!isProgressBarRevealed) {
       return;
@@ -256,8 +257,8 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
 
         const Spacing.width(RLDS.spacing12),
 
-        // Bookmark slide icon
-        BookmarkButton(),
+        // Night Shift toggle (eye-strain overlay)
+        NightShiftButton(),
       ],
       key: topChromeKey,
       padding: RLDS.spacing16,
@@ -277,19 +278,20 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
     );
   }
 
-  // Bookmark button for slide favoriting — same reveal-before-action semantics.
-  Widget BookmarkButton() {
-    final VoidCallback bookmarkTapHandler = getChromeTapHandler(handleBookmarkTap);
+  // Night Shift button. Opens the warmth picker with the same
+  // reveal-before-action semantics as the close button.
+  Widget NightShiftButton() {
+    final VoidCallback nightShiftTapHandler = getChromeTapHandler(handleNightShiftTap);
 
     return GestureDetector(
-      onTap: bookmarkTapHandler,
-      child: ChromeBlur(child: BookmarkIcon),
+      onTap: nightShiftTapHandler,
+      child: ChromeBlur(child: NightShiftIcon),
     );
   }
 
   // Wraps a chrome action so the first tap on a blurred chrome element reveals
   // the whole top bar; only once revealed does the tap propagate to the real
-  // action. Keeps the close and bookmark icons from firing through the blur.
+  // action. Keeps the close and night-shift icons from firing through the blur.
   VoidCallback getChromeTapHandler(VoidCallback action) {
     final bool isRevealed = isProgressBarRevealed;
 
@@ -300,7 +302,7 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
     return handleProgressBarTap;
   }
 
-  // Shared blur + dim treatment for the top chrome (close, progress, bookmark)
+  // Shared blur + dim treatment for the top chrome (close, progress, night-shift)
   Widget ChromeBlur({required Widget child}) {
     final bool isRevealed = isProgressBarRevealed;
     final double targetOpacity = isRevealed ? 1.0 : 0.25;
@@ -492,25 +494,12 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
     );
   }
 
-  // Handle bookmark tap to favorite current slide
-  void handleBookmarkTap() {
-    // Check if PageController is attached to a PageView
-    if (!pageController.hasClients) {
-      return; // PageController not attached yet
-    }
-
-    // Get current page index
-    final double? currentPageDouble = pageController.page;
-    final bool hasCurrentPage = currentPageDouble != null;
-
-    if (!hasCurrentPage) {
-      return;
-    }
-
+  // Open the eye-strain (Night Shift) picker. Lives on the same chrome slot
+  // the bookmark used to occupy.
+  void handleNightShiftTap() {
     HapticFeedback.lightImpact();
 
-    // Show bookmark feedback using custom snackbar
-    FeedbackSnackBar.showCustomFeedback(context, RLUIStrings.BOOKMARK_FEEDBACK_MESSAGE, true);
+    NightShiftBottomSheet.show(context);
   }
 }
 

@@ -13,6 +13,8 @@ import 'package:readlock/design_system/RLLunarBlur.dart';
 const Duration TOAST_VISIBLE_DURATION = Duration(seconds: 3);
 const double TOAST_ICON_SIZE = 20.0;
 
+const RL_TOAST_SURFACE_ALPHA = 0.20;
+
 enum RLToastVariant { info, warning, error, success }
 
 // * Controller — owns the active overlay entry so consecutive calls replace
@@ -67,35 +69,19 @@ final RLToastController rlToastController = RLToastController();
 // * Public API
 class RLToast {
   static void info(BuildContext context, String message) {
-    rlToastController.show(
-      context: context,
-      message: message,
-      variant: RLToastVariant.info,
-    );
+    rlToastController.show(context: context, message: message, variant: RLToastVariant.info);
   }
 
   static void warning(BuildContext context, String message) {
-    rlToastController.show(
-      context: context,
-      message: message,
-      variant: RLToastVariant.warning,
-    );
+    rlToastController.show(context: context, message: message, variant: RLToastVariant.warning);
   }
 
   static void error(BuildContext context, String message) {
-    rlToastController.show(
-      context: context,
-      message: message,
-      variant: RLToastVariant.error,
-    );
+    rlToastController.show(context: context, message: message, variant: RLToastVariant.error);
   }
 
   static void success(BuildContext context, String message) {
-    rlToastController.show(
-      context: context,
-      message: message,
-      variant: RLToastVariant.success,
-    );
+    rlToastController.show(context: context, message: message, variant: RLToastVariant.success);
   }
 
   static void dismiss() {
@@ -163,10 +149,7 @@ class RLToastViewState extends State<RLToastView> with SingleTickerProviderState
 
     widget.onStateCreated(this);
 
-    fadeController = AnimationController(
-      vsync: this,
-      duration: RLDS.opacityFadeDurationFast,
-    );
+    fadeController = AnimationController(vsync: this, duration: RLDS.opacityFadeDurationFast);
 
     fadeAnimation = CurvedAnimation(
       parent: fadeController,
@@ -256,21 +239,16 @@ class RLToastViewState extends State<RLToastView> with SingleTickerProviderState
 
     return RLLunarBlur(
       borderRadius: RLDS.borderRadiusSmall,
-      surfaceColor: RLDS.backgroundLight,
-      borderColor: RLDS.transparent,
-      padding: const EdgeInsets.symmetric(
-        horizontal: RLDS.spacing16,
-        vertical: RLDS.spacing12,
-      ),
+      surfaceColor: style.color,
+      surfaceAlpha: RL_TOAST_SURFACE_ALPHA,
+      padding: const EdgeInsets.symmetric(horizontal: RLDS.spacing16, vertical: RLDS.spacing12),
       child: Row(
         children: [
           VariantIcon,
 
           const SizedBox(width: RLDS.spacing12),
 
-          Expanded(
-            child: RLTypography.bodyMedium(widget.message, color: RLDS.textPrimary),
-          ),
+          Expanded(child: RLTypography.bodyMedium(widget.message, color: RLDS.textPrimary)),
         ],
       ),
     );

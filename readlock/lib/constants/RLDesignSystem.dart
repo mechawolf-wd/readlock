@@ -7,12 +7,12 @@ import 'package:flutter/material.dart';
 class RLDS {
   // * Brand colors
 
-  static const Color primary = Color(0xFFE63946); // warm vivid red
-  static const Color info = Color(0xFF1E88E5); // bright blue
-  static const Color green = Color(0xFF2EAE6E); // fresh green
+  static const Color primary = Color.fromARGB(255, 238, 70, 84); // warm vivid red
+  static const Color info = Color.fromARGB(255, 41, 177, 244); // bright blue
+  static const Color green = Color.fromARGB(255, 34, 181, 98); // fresh green
   static const Color success = green; // success uses the fresh green, not the primary red
-  static const Color warning = Color(0xFFF5A509); // amber
-  static const Color error = Color(0xFFE63946); // shares the primary red
+  static const Color warning = Color.fromARGB(255, 249, 180, 44); // amber
+  static const Color error = Color.fromARGB(255, 246, 85, 98); // shares the primary red
 
   // * Text-markup accents
   //

@@ -28,9 +28,7 @@ import 'package:readlock/services/auth/UserService.dart';
 import 'package:readlock/utility_widgets/text_animation/BionicText.dart';
 import 'package:readlock/utility_widgets/text_animation/RSVPText.dart';
 
-const EdgeInsets ONBOARDING_PAGE_PADDING = EdgeInsets.symmetric(
-  horizontal: RLDS.spacing24,
-);
+const EdgeInsets ONBOARDING_PAGE_PADDING = EdgeInsets.symmetric(horizontal: RLDS.spacing24);
 const EdgeInsets ONBOARDING_FOOTER_PADDING = EdgeInsets.fromLTRB(
   RLDS.spacing24,
   RLDS.spacing16,
@@ -52,9 +50,7 @@ class OnboardingScreen extends StatelessWidget {
   // navigation once the reader finishes the flow).
   static Future<void> show(BuildContext context) {
     return Navigator.of(context).push<void>(
-      MaterialPageRoute<void>(
-        builder: (BuildContext routeContext) => const OnboardingScreen(),
-      ),
+      MaterialPageRoute<void>(builder: (BuildContext routeContext) => const OnboardingScreen()),
     );
   }
 
@@ -136,15 +132,9 @@ class OnboardingFlowState extends State<OnboardingFlow> {
     return [
       // Bird step — no header, no card. The carousel floats directly on
       // the starfield so the chosen bird reads as the screen's hero.
-      const OnboardingStepSpec(
-        body: BirdCarousel(),
-        transparentBackground: true,
-      ),
+      const OnboardingStepSpec(body: BirdCarousel(), transparentBackground: true),
 
-      const OnboardingStepSpec(
-        title: RLUIStrings.MENU_READING_FONT,
-        body: ReadingFontDemo(),
-      ),
+      const OnboardingStepSpec(title: RLUIStrings.MENU_READING_FONT, body: ReadingFontDemo()),
 
       const OnboardingStepSpec(
         title: RLUIStrings.MENU_READING_COLUMN,
@@ -162,10 +152,7 @@ class OnboardingFlowState extends State<OnboardingFlow> {
 
       OnboardingStepSpec(
         title: RLUIStrings.MENU_BLUR,
-        toggle: OnboardingToggle(
-          value: blurEnabled,
-          onChanged: handleBlurToggled,
-        ),
+        toggle: OnboardingToggle(value: blurEnabled, onChanged: handleBlurToggled),
         body: BlurDemo(isEnabled: blurEnabled),
       ),
 
@@ -180,20 +167,14 @@ class OnboardingFlowState extends State<OnboardingFlow> {
 
       OnboardingStepSpec(
         title: RLUIStrings.MENU_BIONIC,
-        toggle: OnboardingToggle(
-          value: bionicEnabled,
-          onChanged: handleBionicToggled,
-        ),
+        toggle: OnboardingToggle(value: bionicEnabled, onChanged: handleBionicToggled),
         body: BionicDemo(isEnabled: bionicEnabled),
       ),
 
       OnboardingStepSpec(
         title: RLUIStrings.MENU_RSVP,
-        toggle: OnboardingToggle(
-          value: rsvpEnabled,
-          onChanged: handleRsvpToggled,
-        ),
-        body: const RSVPDemo(),
+        toggle: OnboardingToggle(value: rsvpEnabled, onChanged: handleRsvpToggled),
+        body: const RSVPDemo(isEnabled: true),
       ),
     ];
   }
@@ -298,10 +279,7 @@ class OnboardingFlowState extends State<OnboardingFlow> {
             ),
           ),
 
-          OnboardingFooter(
-            onPreviousTap: previousHandler,
-            onNextTap: handleNextTap,
-          ),
+          OnboardingFooter(onPreviousTap: previousHandler, onNextTap: handleNextTap),
         ],
       ),
     );
@@ -413,14 +391,10 @@ class StepHeader extends StatelessWidget {
     final String title = spec.title!;
     final OnboardingToggle? toggle = spec.toggle;
     final bool hasToggle = toggle != null;
-    final List<Widget> headerChildren = [
-      Expanded(child: RLTypography.headingLarge(title)),
-    ];
+    final List<Widget> headerChildren = [Expanded(child: RLTypography.headingLarge(title))];
 
     if (hasToggle) {
-      headerChildren.add(
-        RLSwitch(value: toggle.value, onChanged: toggle.onChanged),
-      );
+      headerChildren.add(RLSwitch(value: toggle.value, onChanged: toggle.onChanged));
     }
 
     return Row(children: headerChildren);

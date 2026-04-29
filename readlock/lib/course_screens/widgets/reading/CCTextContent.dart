@@ -143,7 +143,7 @@ class CCTextContentState extends State<CCTextContent> {
     }
 
     // Wait for user to read the last segment
-    await Future.delayed(const Duration(milliseconds: 700));
+    await Future.delayed(const Duration(milliseconds: 1400));
 
     // Check mounted again after delay
     final bool stillMounted = mounted;

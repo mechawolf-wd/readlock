@@ -10,16 +10,13 @@ import 'package:readlock/design_system/RLLunarBlur.dart';
 import 'package:readlock/design_system/RLUtility.dart';
 
 import 'package:pixelarticons/pixel.dart';
+
 // Snackbar controller singleton
 class SnackbarController {
   OverlayEntry? overlayEntry;
   AnimatedSnackbarState? snackbarState;
 
-  void show({
-    required BuildContext context,
-    required Widget content,
-    Duration? duration,
-  }) {
+  void show({required BuildContext context, required Widget content, Duration? duration}) {
     // Dismiss any existing snackbar instantly
     dismiss();
 
@@ -118,7 +115,8 @@ class AnimatedSnackbar extends StatefulWidget {
   final VoidCallback onDismiss;
   final void Function(AnimatedSnackbarState) onStateCreated;
 
-  const AnimatedSnackbar({super.key,
+  const AnimatedSnackbar({
+    super.key,
     required this.content,
     required this.duration,
     required this.onDismiss,
@@ -279,11 +277,7 @@ class WrongAnswerContent extends StatelessWidget {
 
   const WrongAnswerContent({super.key, required this.hasHint, this.hint});
 
-  static final Icon LightbulbIcon = const Icon(
-    Pixel.infobox,
-    color: RLDS.info,
-    size: 20,
-  );
+  static final Icon LightbulbIcon = const Icon(Pixel.infobox, color: RLDS.info, size: 20);
 
   @override
   Widget build(BuildContext context) {

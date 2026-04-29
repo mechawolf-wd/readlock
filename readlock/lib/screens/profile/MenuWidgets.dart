@@ -8,6 +8,7 @@ import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/design_system/RLUtility.dart';
 import 'package:readlock/design_system/RLSwitch.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
+import 'package:readlock/bottom_sheets/NightShiftBottomSheet.dart';
 import 'package:readlock/bottom_sheets/user/AccountBottomSheet.dart';
 import 'package:readlock/bottom_sheets/user/BirdPickerBottomSheet.dart';
 import 'package:readlock/bottom_sheets/user/FontPickerBottomSheet.dart';
@@ -80,28 +81,28 @@ class MenuSection extends StatelessWidget {
     void onBirdPickerTap() => BirdPickerBottomSheet.show(context);
     void onFontPickerTap() => FontPickerBottomSheet.show(context);
     void onFeathersTap() => FeathersBottomSheet.show(context);
+    void onNightShiftTap() => NightShiftBottomSheet.show(context);
     // Column width row has its control (chips) inside the demo card below,
     // so the row itself is a label — tap is a no-op.
     void onColumnWidthRowTap() {}
+
+    // Tapping a demo card flips the matching switch — same effect as
+    // clicking the switch itself, so the preview doubles as the control.
+    void onProgressiveDemoTap() => handleProgressiveToggled(revealAllTrueFalse);
+    void onBlurDemoTap() => onBlurToggled(!blurEnabled);
+    void onColoredTextDemoTap() => onColoredTextToggled(!coloredTextEnabled);
+    void onBionicDemoTap() => onBionicToggled(!bionicEnabled);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         // Account & Subscription
-        MenuItem(
-          icon: Pixel.user,
-          title: RLUIStrings.MENU_ACCOUNT,
-          onTap: onAccountTap,
-        ),
+        MenuItem(icon: Pixel.user, title: RLUIStrings.MENU_ACCOUNT, onTap: onAccountTap),
+
+        MenuItem(icon: Pixel.card, title: RLUIStrings.MENU_FEATHERS, onTap: onFeathersTap),
 
         MenuItem(
-          icon: Pixel.card,
-          title: RLUIStrings.MENU_FEATHERS,
-          onTap: onFeathersTap,
-        ),
-
-        MenuItem(
-          icon: Pixel.human,
+          icon: Pixel.bookopen,
           title: RLUIStrings.MENU_PROFILE_BIRD,
           onTap: onBirdPickerTap,
         ),
@@ -110,7 +111,7 @@ class MenuSection extends StatelessWidget {
 
         // Sound & Haptics
         SwitchMenuItem(
-          icon: Pixel.keyboard,
+          icon: Pixel.volume2,
           title: RLUIStrings.MENU_TYPING_SOUND,
           value: typingSoundEnabled,
           onChanged: onTypingSoundToggled,
@@ -134,6 +135,15 @@ class MenuSection extends StatelessWidget {
 
         // Reading Settings.
         //
+        // Night Shift sits at the top: it shifts the global tint of every
+        // reading surface, so it reads naturally as a frame around the
+        // per-feature toggles below it.
+        MenuItem(
+          icon: Pixel.moon,
+          title: RLUIStrings.NIGHT_SHIFT_TITLE,
+          onTap: onNightShiftTap,
+        ),
+
         // "Progressive" is the user-facing inverse of the internal
         // `revealAllTrueFalse` flag: when the switch is ON the text types
         // in progressively (revealAllTrueFalse = false); when OFF it lands
@@ -147,7 +157,7 @@ class MenuSection extends StatelessWidget {
           onChanged: handleProgressiveToggled,
         ),
 
-        RevealDemo(isEnabled: revealAllTrueFalse),
+        RevealDemo(isEnabled: revealAllTrueFalse, onTap: onProgressiveDemoTap),
 
         SwitchMenuItem(
           icon: Pixel.eye,
@@ -156,7 +166,7 @@ class MenuSection extends StatelessWidget {
           onChanged: onBlurToggled,
         ),
 
-        BlurDemo(isEnabled: blurEnabled),
+        BlurDemo(isEnabled: blurEnabled, onTap: onBlurDemoTap),
 
         SwitchMenuItem(
           icon: Pixel.edit,
@@ -165,7 +175,7 @@ class MenuSection extends StatelessWidget {
           onChanged: onColoredTextToggled,
         ),
 
-        ColoredTextDemo(isEnabled: coloredTextEnabled),
+        ColoredTextDemo(isEnabled: coloredTextEnabled, onTap: onColoredTextDemoTap),
 
         SwitchMenuItem(
           icon: Pixel.speedfast,
@@ -174,7 +184,7 @@ class MenuSection extends StatelessWidget {
           onChanged: onBionicToggled,
         ),
 
-        BionicDemo(isEnabled: bionicEnabled),
+        BionicDemo(isEnabled: bionicEnabled, onTap: onBionicDemoTap),
 
         // RSVP — switch gates the demo stream, the card itself hosts the
         // WPM slider (the tempo is the configurator). Sits after Bionic
@@ -186,7 +196,7 @@ class MenuSection extends StatelessWidget {
           onChanged: onRsvpToggled,
         ),
 
-        const RSVPDemo(),
+        RSVPDemo(isEnabled: rsvpEnabled),
 
         // Font picker + live demo — sits at the end of Reading Settings so
         // it follows the toggles that govern what text looks like.
@@ -214,7 +224,11 @@ class MenuSection extends StatelessWidget {
         // Legal (Support listed last, after EULA)
         MenuItem(icon: Pixel.shield, title: RLUIStrings.MENU_PRIVACY_POLICY, onTap: () {}),
 
-        MenuItem(icon: Pixel.article, title: RLUIStrings.MENU_TERMS_AND_CONDITIONS, onTap: () {}),
+        MenuItem(
+          icon: Pixel.article,
+          title: RLUIStrings.MENU_TERMS_AND_CONDITIONS,
+          onTap: () {},
+        ),
 
         MenuItem(icon: Pixel.scale, title: RLUIStrings.MENU_EULA, onTap: () {}),
 
