@@ -9,10 +9,10 @@ import 'package:flutter/services.dart';
 import 'package:readlock/course_screens/CourseRoadmapScreen.dart';
 import 'package:readlock/course_screens/data/CourseData.dart';
 import 'package:readlock/design_system/RLUtility.dart';
+import 'package:readlock/design_system/RLBalancePill.dart';
 import 'package:readlock/design_system/RLBookListCard.dart';
 import 'package:readlock/design_system/RLButton.dart';
 import 'package:readlock/design_system/RLFadeSwitcher.dart';
-import 'package:readlock/design_system/RLFeatherIcon.dart';
 import 'package:readlock/design_system/RLLoadingIndicator.dart';
 import 'package:readlock/constants/DartAliases.dart';
 import 'package:readlock/constants/RLTypography.dart';
@@ -20,12 +20,13 @@ import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/constants/RLUIStrings.dart';
 import 'package:readlock/bottom_sheets/user/SettingsBottomSheet.dart';
 import 'package:readlock/screens/profile/BirdPicker.dart';
-import 'package:readlock/bottom_sheets/user/FeathersBottomSheet.dart';
 import 'package:readlock/services/auth/UserService.dart';
 import 'package:readlock/services/purchases/PurchaseNotifiers.dart';
 import 'package:readlock/models/UserModel.dart';
 import 'package:readlock/utility_widgets/text_animation/BionicText.dart';
+import 'package:readlock/utility_widgets/text_animation/RLTypewriterText.dart';
 import 'package:readlock/utility_widgets/text_animation/RSVPText.dart';
+import 'package:readlock/MainNavigation.dart';
 
 import 'package:pixelarticons/pixel.dart';
 
@@ -51,10 +52,34 @@ class BookshelfScreenState extends State<BookshelfScreen> {
   bool isBookshelfLoading = true;
   int visibleCoursesCount = BOOKSHELF_PAGE_SIZE;
 
+  // Bumped every time this tab becomes active. Used as the typewriter
+  // heading's ValueKey so a fresh activation remounts the widget and
+  // re-runs its character-by-character reveal.
+  int titleAnimationVersion = 0;
+
   @override
   void initState() {
     super.initState();
     fetchSavedCourses();
+    activeTabIndexNotifier.addListener(handleTabActivated);
+  }
+
+  @override
+  void dispose() {
+    activeTabIndexNotifier.removeListener(handleTabActivated);
+    super.dispose();
+  }
+
+  void handleTabActivated() {
+    final bool isMyTabActive = activeTabIndexNotifier.value == TAB_INDEX_BOOKSHELF;
+
+    if (!isMyTabActive) {
+      return;
+    }
+
+    setState(() {
+      titleAnimationVersion++;
+    });
   }
 
   Future<void> fetchSavedCourses() async {
@@ -209,11 +234,17 @@ class BookshelfScreenState extends State<BookshelfScreen> {
     }
 
     return Div.row([
-      RLTypography.headingLarge(RLUIStrings.BOOKSHELF_TITLE),
+      RLTypewriterText(
+        key: ValueKey<int>(titleAnimationVersion),
+        text: RLUIStrings.BOOKSHELF_TITLE,
+        style: RLTypography.headingLargeStyle,
+      ),
 
       const Spacer(),
 
-      BalancePill(),
+      const RLBalancePill(),
+
+      const Spacing.width(RLDS.spacing16),
 
       GestureDetector(
         onTap: onSettingsTap,
@@ -221,44 +252,6 @@ class BookshelfScreenState extends State<BookshelfScreen> {
         child: SettingsIcon,
       ),
     ], crossAxisAlignment: CrossAxisAlignment.center);
-  }
-
-  // Live feather balance pill, rendered as the plume sprite + count.
-  // Tapping it opens the Feathers sheet so the indicator doubles as the
-  // affordance for topping up. Subscribes to userBalanceNotifier so a
-  // top-up done from any other surface reflects here without a refetch.
-  // Always rendered — even at a zero balance — so the affordance for
-  // topping up is always visible from the bookshelf header.
-  Widget BalancePill() {
-    return ValueListenableBuilder<int>(
-      valueListenable: userBalanceNotifier,
-      builder: BalancePillContent,
-    );
-  }
-
-  Widget BalancePillContent(BuildContext context, int balance, Widget? unusedChild) {
-    void onBalanceTap() {
-      HapticFeedback.lightImpact();
-      FeathersBottomSheet.show(context);
-    }
-
-    return GestureDetector(
-      onTap: onBalanceTap,
-      behavior: HitTestBehavior.opaque,
-      child: Padding(
-        padding: const EdgeInsets.only(right: RLDS.spacing16),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const RLFeatherIcon(size: RLDS.iconLarge),
-
-            const Spacing.width(RLDS.spacing4),
-
-            RLTypography.bodyLarge('$balance', color: RLDS.primary),
-          ],
-        ),
-      ),
-    );
   }
 
   // Empty-state bird, same selectedBirdNotifier source as Settings/Pause so

@@ -16,6 +16,7 @@ class UserPreferenceField {
   static const String COLORED_TEXT = 'coloredText';
   static const String BIONIC = 'bionic';
   static const String RSVP = 'rsvp';
+  static const String JUSTIFIED_READING = 'justifiedReading';
   static const String READING_FONT = 'readingFont';
   static const String READING_COLUMN = 'readingColumn';
   static const String RSVP_WORDS_PER_MINUTE = 'rsvpWordsPerMinute';
@@ -131,6 +132,7 @@ class UserService {
         UserPreferenceField.COLORED_TEXT: true,
         UserPreferenceField.BIONIC: false,
         UserPreferenceField.RSVP: false,
+        UserPreferenceField.JUSTIFIED_READING: false,
         UserPreferenceField.READING_FONT: 'serif',
         UserPreferenceField.READING_COLUMN: 'narrow',
         UserPreferenceField.RSVP_WORDS_PER_MINUTE: 300,
@@ -184,6 +186,14 @@ class UserService {
 
   static Future<bool> updateRsvp(bool enabled) {
     return updateField(UserPreferenceField.RSVP, enabled, 'updateRsvp');
+  }
+
+  static Future<bool> updateJustifiedReading(bool enabled) {
+    return updateField(
+      UserPreferenceField.JUSTIFIED_READING,
+      enabled,
+      'updateJustifiedReading',
+    );
   }
 
   static Future<bool> updateReadingFont(String fontName) {

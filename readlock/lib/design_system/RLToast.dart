@@ -13,7 +13,10 @@ import 'package:readlock/design_system/RLLunarBlur.dart';
 const Duration TOAST_VISIBLE_DURATION = Duration(seconds: 3);
 const double TOAST_ICON_SIZE = RLDS.iconMedium;
 
-const RL_TOAST_SURFACE_ALPHA = 0.20;
+// 2px variant-coloured border on a neutral surface — the variant identity
+// rides on the icon and the edge, the body stays the standard surface so
+// the toast reads consistently regardless of severity.
+const double RL_TOAST_BORDER_WIDTH = 2.0;
 
 enum RLToastVariant { info, warning, error, success }
 
@@ -230,17 +233,16 @@ class RLToastViewState extends State<RLToastView> with SingleTickerProviderState
     );
   }
 
-  // Frosted LunarBlur surface tinted with `backgroundLight` — same treatment
-  // the login bottom sheet uses, so the toast reads as the same family of
-  // transparent floating pane. Variant colour is carried entirely by the
-  // leading icon; no coloured border on the card.
+  // Frosted LunarBlur surface (default RLDS.surface tint) with a 2px
+  // variant-coloured border. Variant identity = leading icon + edge colour;
+  // the body stays the same neutral surface across info/warning/error/success.
   Widget ToastCard({required RLToastVariantStyle style}) {
     final Icon VariantIcon = Icon(style.icon, color: style.color, size: TOAST_ICON_SIZE);
 
     return RLLunarBlur(
       borderRadius: RLDS.borderRadiusSmall,
-      surfaceColor: style.color,
-      surfaceAlpha: RL_TOAST_SURFACE_ALPHA,
+      borderColor: style.color,
+      borderWidth: RL_TOAST_BORDER_WIDTH,
       padding: const EdgeInsets.symmetric(horizontal: RLDS.spacing16, vertical: RLDS.spacing12),
       child: Row(
         children: [

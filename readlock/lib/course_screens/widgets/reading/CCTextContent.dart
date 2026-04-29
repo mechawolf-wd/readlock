@@ -9,6 +9,7 @@ import 'package:readlock/utility_widgets/text_animation/RSVPText.dart';
 import 'package:readlock/design_system/RLReveal.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
+import 'package:readlock/constants/RLReadingJustified.dart';
 import 'package:readlock/constants/RLUIStrings.dart';
 import 'package:readlock/course_screens/CourseContentViewer.dart';
 
@@ -68,11 +69,24 @@ class CCTextContentState extends State<CCTextContent> {
   }
 
   Widget ProgressiveReadingSurface() {
-    return ProgressiveText(
-      textSegments: widget.content.textSegments,
-      textStyle: RLTypography.readingMediumStyle,
-      textAlignment: CrossAxisAlignment.start,
-      onAllSegmentsRevealed: handleAllSegmentsRevealed,
+    // Live-rebuilds when the user flips the Justified text toggle in
+    // Settings, so the open swipe re-justifies (or un-justifies) without
+    // leaving the reading surface.
+    return ValueListenableBuilder<bool>(
+      valueListenable: justifiedReadingEnabledNotifier,
+      builder: (context, isJustified, _) {
+        final TextAlign paragraphAlignment = isJustified
+            ? TextAlign.justify
+            : TextAlign.left;
+
+        return ProgressiveText(
+          textSegments: widget.content.textSegments,
+          textStyle: RLTypography.readingMediumStyle,
+          textAlignment: CrossAxisAlignment.start,
+          textAlign: paragraphAlignment,
+          onAllSegmentsRevealed: handleAllSegmentsRevealed,
+        );
+      },
     );
   }
 

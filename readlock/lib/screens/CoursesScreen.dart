@@ -9,6 +9,7 @@ import 'package:pixelarticons/pixel.dart';
 import 'package:readlock/course_screens/CourseRoadmapScreen.dart';
 import 'package:readlock/course_screens/data/CourseData.dart';
 import 'package:readlock/design_system/RLUtility.dart';
+import 'package:readlock/design_system/RLBalancePill.dart';
 import 'package:readlock/design_system/RLBookListCard.dart';
 import 'package:readlock/design_system/RLButton.dart';
 import 'package:readlock/design_system/RLFadeSwitcher.dart';
@@ -21,6 +22,8 @@ import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/constants/RLUIStrings.dart';
 import 'package:readlock/constants/DartAliases.dart';
+import 'package:readlock/MainNavigation.dart';
+import 'package:readlock/utility_widgets/text_animation/RLTypewriterText.dart';
 
 // * Search tuning — debounce keeps us from hitting Firestore on every keystroke.
 const Duration SEARCH_DEBOUNCE_DURATION = Duration(milliseconds: 350);
@@ -53,17 +56,36 @@ class CoursesScreenState extends State<CoursesScreen> {
   // "no genre constraint" — every course passes the genre check.
   Set<String> selectedGenres = <String>{};
 
+  // Bumped every time this tab becomes active. Used as the typewriter
+  // heading's ValueKey so a fresh activation remounts the widget and
+  // re-runs its character-by-character reveal.
+  int titleAnimationVersion = 0;
+
   @override
   void initState() {
     super.initState();
     fetchInitialCoursesPage();
+    activeTabIndexNotifier.addListener(handleTabActivated);
   }
 
   @override
   void dispose() {
+    activeTabIndexNotifier.removeListener(handleTabActivated);
     searchDebounce?.cancel();
     searchController.dispose();
     super.dispose();
+  }
+
+  void handleTabActivated() {
+    final bool isMyTabActive = activeTabIndexNotifier.value == TAB_INDEX_SEARCH;
+
+    if (!isMyTabActive) {
+      return;
+    }
+
+    setState(() {
+      titleAnimationVersion++;
+    });
   }
 
   Future<void> fetchInitialCoursesPage() async {
@@ -305,7 +327,7 @@ class CoursesScreenState extends State<CoursesScreen> {
       key: const ValueKey('courses-content'),
       padding: contentPadding,
       child: Div.column([
-        RLTypography.headingLarge(RLUIStrings.SEARCH_TAB_LABEL),
+        SearchHeaderRow(),
 
         const Spacing.height(RLDS.spacing24),
 
@@ -319,6 +341,23 @@ class CoursesScreenState extends State<CoursesScreen> {
         FloatingFilterPanel(),
       ], crossAxisAlignment: CrossAxisAlignment.stretch),
     );
+  }
+
+  // Page header — title on the left, live feather wallet on the right so
+  // the reader can see their balance without leaving Search and tap straight
+  // into the Feathers sheet to top up.
+  Widget SearchHeaderRow() {
+    return Div.row([
+      RLTypewriterText(
+        key: ValueKey<int>(titleAnimationVersion),
+        text: RLUIStrings.SEARCH_TAB_LABEL,
+        style: RLTypography.headingLargeStyle,
+      ),
+
+      const Spacer(),
+
+      const RLBalancePill(),
+    ], crossAxisAlignment: CrossAxisAlignment.center);
   }
 
   // Single frosted box hosting the genre chip row + the search input. The

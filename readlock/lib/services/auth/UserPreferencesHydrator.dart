@@ -12,6 +12,7 @@
 import 'package:readlock/constants/RLNightShift.dart';
 import 'package:readlock/constants/RLReadingColumn.dart';
 import 'package:readlock/constants/RLReadingFont.dart';
+import 'package:readlock/constants/RLReadingJustified.dart';
 import 'package:readlock/models/UserModel.dart';
 import 'package:readlock/screens/profile/BirdPicker.dart';
 import 'package:readlock/utility_widgets/text_animation/RSVPText.dart';
@@ -26,4 +27,6 @@ void hydrateUserPreferenceNotifiersFromUser(UserModel user) {
   nightShiftLevelNotifier.value = user.nightShiftLevel;
 
   selectedBirdNotifier.value = birdOptionFromName(user.birdName);
+
+  justifiedReadingEnabledNotifier.value = user.justifiedReading;
 }

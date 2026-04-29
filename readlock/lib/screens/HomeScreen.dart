@@ -13,6 +13,8 @@ import 'package:readlock/design_system/RLFadeSwitcher.dart';
 import 'package:readlock/design_system/RLLoadingIndicator.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
+import 'package:readlock/MainNavigation.dart';
+import 'package:readlock/utility_widgets/text_animation/RLTypewriterText.dart';
 
 import 'package:pixelarticons/pixel.dart';
 class HomeScreen extends StatefulWidget {
@@ -26,10 +28,34 @@ class HomeScreenState extends State<HomeScreen> {
   JSONList availableCourses = [];
   bool isCoursesLoading = true;
 
+  // Bumped every time this tab becomes active. Used as the typewriter
+  // heading's ValueKey so a fresh activation remounts the widget and
+  // re-runs its character-by-character reveal.
+  int titleAnimationVersion = 0;
+
   @override
   void initState() {
     super.initState();
     fetchAvailableCourses();
+    activeTabIndexNotifier.addListener(handleTabActivated);
+  }
+
+  @override
+  void dispose() {
+    activeTabIndexNotifier.removeListener(handleTabActivated);
+    super.dispose();
+  }
+
+  void handleTabActivated() {
+    final bool isMyTabActive = activeTabIndexNotifier.value == TAB_INDEX_HOME;
+
+    if (!isMyTabActive) {
+      return;
+    }
+
+    setState(() {
+      titleAnimationVersion++;
+    });
   }
 
   Future<void> fetchAvailableCourses() async {
@@ -131,7 +157,11 @@ class HomeScreenState extends State<HomeScreen> {
       padding: const EdgeInsets.all(RLDS.spacing24),
       child: Div.column(
         [
-          RLTypography.headingLarge(RLUIStrings.HOME_TAB_LABEL),
+          RLTypewriterText(
+            key: ValueKey<int>(titleAnimationVersion),
+            text: RLUIStrings.HOME_TAB_LABEL,
+            style: RLTypography.headingLargeStyle,
+          ),
 
           const Spacing.height(RLDS.spacing40),
 

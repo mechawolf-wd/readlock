@@ -39,7 +39,7 @@ const double PLAN_CARD_BIRD_PREVIEW_SIZE = 112.0;
 // reads as visually distinct at a glance, independent of whatever the
 // user has set in the bird picker.
 //
-// `feathers` is the display string ("110 feathers"). `feathersValue` is
+// `feathers` is the display string ("100 feathers"). `feathersValue` is
 // the raw integer credited to the user's wallet on purchase. Two fields
 // because the display copy is localised and can include suffix text,
 // while the value is what the wallet writer actually adds.
@@ -69,10 +69,10 @@ BirdOption lookupBirdByName(String birdName) {
 }
 
 // Feather grant per plan. Mirrors the integer count in the display
-// strings (PLAN_BEGINNER_FEATHERS = '110 feathers', PLAN_READER_FEATHERS
-// = '210 feathers') so a tap credits exactly what the card promised.
-const int PLAN_BEGINNER_FEATHERS_VALUE = 110;
-const int PLAN_READER_FEATHERS_VALUE = 210;
+// strings (PLAN_BEGINNER_FEATHERS = '100 feathers', PLAN_READER_FEATHERS
+// = '300 feathers') so a tap credits exactly what the card promised.
+const int PLAN_BEGINNER_FEATHERS_VALUE = 100;
+const int PLAN_READER_FEATHERS_VALUE = 300;
 
 final List<FeatherPlan> FEATHER_PLANS = [
   FeatherPlan(

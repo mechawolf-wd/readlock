@@ -24,6 +24,7 @@ class RLLunarBlur extends StatelessWidget {
   final double surfaceAlpha;
   final Color? surfaceColor;
   final Color? borderColor;
+  final double borderWidth;
   final EdgeInsets? padding;
 
   const RLLunarBlur({
@@ -34,6 +35,7 @@ class RLLunarBlur extends StatelessWidget {
     this.surfaceAlpha = RL_LUNAR_BLUR_DEFAULT_SURFACE_ALPHA,
     this.surfaceColor,
     this.borderColor,
+    this.borderWidth = 0,
     this.padding,
   });
 
@@ -43,9 +45,12 @@ class RLLunarBlur extends StatelessWidget {
     final Color baseSurface = surfaceColor ?? RLDS.surface;
     final Color resolvedBorder = borderColor ?? RLDS.transparent;
 
+    // Border follows the same radius as the outer ClipRRect — otherwise the
+    // border paints as a rectangle and the clip slices its corners off.
     final BoxDecoration tintDecoration = BoxDecoration(
       color: baseSurface.withValues(alpha: surfaceAlpha),
-      border: Border.all(color: resolvedBorder, width: 0),
+      border: Border.all(color: resolvedBorder, width: borderWidth),
+      borderRadius: resolvedRadius,
     );
 
     return ClipRRect(

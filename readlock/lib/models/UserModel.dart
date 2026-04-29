@@ -54,6 +54,9 @@ class UserModel {
   @JsonKey(defaultValue: false)
   final bool rsvp;
 
+  @JsonKey(defaultValue: false)
+  final bool justifiedReading;
+
   // * Reader-pickable enums and tunables — persisted as primitives so the
   // generated json_serializable round-trips without custom converters.
   // Each consumer parses its own enum from the stored name (eg.
@@ -116,6 +119,7 @@ class UserModel {
     this.coloredText = true,
     this.bionic = false,
     this.rsvp = false,
+    this.justifiedReading = false,
     this.readingFont = 'serif',
     this.readingColumn = 'narrow',
     this.rsvpWordsPerMinute = 300,
@@ -162,6 +166,7 @@ class UserModel {
     bool? coloredText,
     bool? bionic,
     bool? rsvp,
+    bool? justifiedReading,
     String? readingFont,
     String? readingColumn,
     int? rsvpWordsPerMinute,
@@ -189,6 +194,7 @@ class UserModel {
       coloredText: coloredText ?? this.coloredText,
       bionic: bionic ?? this.bionic,
       rsvp: rsvp ?? this.rsvp,
+      justifiedReading: justifiedReading ?? this.justifiedReading,
       readingFont: readingFont ?? this.readingFont,
       readingColumn: readingColumn ?? this.readingColumn,
       rsvpWordsPerMinute: rsvpWordsPerMinute ?? this.rsvpWordsPerMinute,

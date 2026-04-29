@@ -22,6 +22,19 @@ import 'package:readlock/services/purchases/PurchaseNotifiers.dart';
 
 import 'package:pixelarticons/pixel.dart';
 
+// Bottom-nav tab indices, kept here so screen-level subscribers
+// (HomeScreen / CoursesScreen / MyBookshelfScreen) reference one source
+// of truth instead of scattering magic numbers.
+const int TAB_INDEX_HOME = 0;
+const int TAB_INDEX_SEARCH = 1;
+const int TAB_INDEX_BOOKSHELF = 2;
+
+// Live index of the currently-active bottom-nav tab. Each tab screen
+// subscribes so it can re-trigger its heading typewriter every time its
+// tab becomes active again — tabs are kept mounted, so without this signal
+// the header would only animate once per app launch.
+final ValueNotifier<int> activeTabIndexNotifier = ValueNotifier<int>(TAB_INDEX_HOME);
+
 class MainNavigation extends StatefulWidget {
   final int initialTabIndex;
 
@@ -42,6 +55,7 @@ class MainNavigationState extends State<MainNavigation> {
   void initState() {
     super.initState();
     currentIndex = widget.initialTabIndex;
+    activeTabIndexNotifier.value = currentIndex;
 
     screens = [const HomeScreen(), const CoursesScreen(), const BookshelfScreen()];
 
@@ -127,6 +141,8 @@ class MainNavigationState extends State<MainNavigation> {
     setState(() {
       currentIndex = navigationItemIndex;
     });
+
+    activeTabIndexNotifier.value = navigationItemIndex;
   }
 
   // * Nav chrome sizing

@@ -32,13 +32,13 @@ class RLUIStrings {
   // Per-plan copy.
   static const String PLAN_BEGINNER_NAME = 'Beginner';
   static const String PLAN_BEGINNER_PRICE = '\$6.99';
-  static const String PLAN_BEGINNER_FEATHERS = '110 feathers';
-  static const String PLAN_BEGINNER_BOOKS = 'About 11 books a month';
+  static const String PLAN_BEGINNER_FEATHERS = '100 feathers';
+  static const String PLAN_BEGINNER_BOOKS = '10 books a month';
 
   static const String PLAN_READER_NAME = 'Reader';
-  static const String PLAN_READER_PRICE = '\$10.99';
-  static const String PLAN_READER_FEATHERS = '210 feathers';
-  static const String PLAN_READER_BOOKS = 'About 21 books a month';
+  static const String PLAN_READER_PRICE = '\$12.99';
+  static const String PLAN_READER_FEATHERS = '300 feathers';
+  static const String PLAN_READER_BOOKS = '30 books a month';
 
   // * Feedback Snackbar
   static const String CORRECT_ANSWER_MESSAGE = 'Correct, you read it';
@@ -52,7 +52,7 @@ class RLUIStrings {
   static const String EMAIL_PLACEHOLDER = 'Email...';
   static const String PASSWORD_PLACEHOLDER = 'Password';
   static const String SIGN_IN_BUTTON_LABEL = 'Login';
-  static const String SIGN_UP_BUTTON_LABEL = 'Create';
+  static const String SIGN_UP_BUTTON_LABEL = 'Create my nest';
   static const String LOGIN_SUPPORT_LABEL = 'Any help?';
   static const String SIGN_IN_LOADING_LABEL = 'Hopping in...';
   static const String SIGN_UP_LOADING_LABEL = 'Creating...';
@@ -276,6 +276,7 @@ class RLUIStrings {
 
   // * Reading Column Width
   static const String MENU_READING_COLUMN = 'Column style';
+  static const String MENU_JUSTIFIED_READING = 'Justified text';
   static const String DEMO_READING_COLUMN_TEXT =
       'Narrow columns ease eye movement and let you sweep one short line at '
       'a time, keeping focus steady on long reads.';

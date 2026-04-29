@@ -14,6 +14,7 @@ import 'package:readlock/screens/profile/MenuWidgets.dart';
 import 'package:readlock/services/auth/AuthService.dart';
 import 'package:readlock/services/auth/UserPreferencesHydrator.dart';
 import 'package:readlock/services/auth/UserService.dart';
+import 'package:readlock/constants/RLReadingJustified.dart';
 import 'package:readlock/utility_widgets/text_animation/BionicText.dart';
 import 'package:readlock/utility_widgets/text_animation/RSVPText.dart';
 
@@ -55,6 +56,7 @@ class ProfileContentState extends State<ProfileContent> {
   bool coloredTextEnabled = true;
   bool bionicEnabled = false;
   bool rsvpEnabled = false;
+  bool justifiedReadingEnabled = false;
   bool isLoggingOut = false;
 
   @override
@@ -87,10 +89,12 @@ class ProfileContentState extends State<ProfileContent> {
       coloredTextEnabled = user.coloredText;
       bionicEnabled = user.bionic;
       rsvpEnabled = user.rsvp;
+      justifiedReadingEnabled = user.justifiedReading;
     });
 
     bionicEnabledNotifier.value = user.bionic;
     rsvpEnabledNotifier.value = user.rsvp;
+    justifiedReadingEnabledNotifier.value = user.justifiedReading;
 
     // Re-apply the persisted enums and tunables (font, column, RSVP wpm,
     // night-shift, bird) in case the sheet is opened before MainNavigation's
@@ -142,6 +146,12 @@ class ProfileContentState extends State<ProfileContent> {
     setState(() => rsvpEnabled = value);
     rsvpEnabledNotifier.value = value;
     UserService.updateRsvp(value);
+  }
+
+  void handleJustifiedReadingToggled(bool value) {
+    setState(() => justifiedReadingEnabled = value);
+    justifiedReadingEnabledNotifier.value = value;
+    UserService.updateJustifiedReading(value);
   }
 
   void handleSupportTap() {}
@@ -206,6 +216,7 @@ class ProfileContentState extends State<ProfileContent> {
       coloredTextEnabled: coloredTextEnabled,
       bionicEnabled: bionicEnabled,
       rsvpEnabled: rsvpEnabled,
+      justifiedReadingEnabled: justifiedReadingEnabled,
       onTypingSoundToggled: handleTypingSoundToggled,
       onGeneralSoundsToggled: handleGeneralSoundsToggled,
       onHapticsToggled: handleHapticsToggled,
@@ -214,6 +225,7 @@ class ProfileContentState extends State<ProfileContent> {
       onColoredTextToggled: handleColoredTextToggled,
       onBionicToggled: handleBionicToggled,
       onRsvpToggled: handleRsvpToggled,
+      onJustifiedReadingToggled: handleJustifiedReadingToggled,
       onSupportTap: handleSupportTap,
       onLogoutTap: handleLogoutTap,
     );

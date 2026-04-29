@@ -34,6 +34,7 @@ class MenuSection extends StatelessWidget {
   final bool coloredTextEnabled;
   final bool bionicEnabled;
   final bool rsvpEnabled;
+  final bool justifiedReadingEnabled;
   final ValueChanged<bool> onTypingSoundToggled;
   final ValueChanged<bool> onGeneralSoundsToggled;
   final ValueChanged<bool> onHapticsToggled;
@@ -42,6 +43,7 @@ class MenuSection extends StatelessWidget {
   final ValueChanged<bool> onColoredTextToggled;
   final ValueChanged<bool> onBionicToggled;
   final ValueChanged<bool> onRsvpToggled;
+  final ValueChanged<bool> onJustifiedReadingToggled;
   final VoidCallback onSupportTap;
   final VoidCallback onLogoutTap;
 
@@ -55,6 +57,7 @@ class MenuSection extends StatelessWidget {
     required this.coloredTextEnabled,
     required this.bionicEnabled,
     required this.rsvpEnabled,
+    required this.justifiedReadingEnabled,
     required this.onTypingSoundToggled,
     required this.onGeneralSoundsToggled,
     required this.onHapticsToggled,
@@ -63,6 +66,7 @@ class MenuSection extends StatelessWidget {
     required this.onColoredTextToggled,
     required this.onBionicToggled,
     required this.onRsvpToggled,
+    required this.onJustifiedReadingToggled,
     required this.onSupportTap,
     required this.onLogoutTap,
   });
@@ -218,6 +222,16 @@ class MenuSection extends StatelessWidget {
         ),
 
         const ReadingColumnDemo(),
+
+        // Justified text — paragraph-shape preference for long-form reading.
+        // Off by default (regular/left-aligned); flipping it on retypes every
+        // ProgressiveText surface that opts in (CCTextContent) as justified.
+        SwitchMenuItem(
+          icon: Pixel.alignjustify,
+          title: RLUIStrings.MENU_JUSTIFIED_READING,
+          value: justifiedReadingEnabled,
+          onChanged: onJustifiedReadingToggled,
+        ),
 
         const MenuDivider(),
 
