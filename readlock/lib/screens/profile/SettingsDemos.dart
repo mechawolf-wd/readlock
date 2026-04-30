@@ -19,6 +19,7 @@ import 'package:flutter/services.dart';
 import 'package:readlock/bottom_sheets/user/FontPickerBottomSheet.dart';
 import 'package:readlock/constants/RLReadingColumn.dart';
 import 'package:readlock/constants/RLReadingFont.dart';
+import 'package:readlock/constants/RLReadingJustified.dart';
 import 'package:readlock/constants/RLUIStrings.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/design_system/RLLunarBlur.dart';
@@ -759,6 +760,48 @@ class RSVPDemoState extends State<RSVPDemo> {
           onChanged: handleWpmChanged,
         ),
       ],
+    );
+  }
+}
+
+// Live preview of the Justified text toggle. Renders the same sample
+// paragraph in either justified or default (left-aligned) mode based on
+// justifiedReadingEnabledNotifier, and tapping the surface flips the
+// setting through the same handler the SwitchMenuItem uses — so the box
+// doubles as a tap-target for the toggle.
+class JustifiedReadingDemo extends StatelessWidget {
+  // Same callback shape as the SwitchMenuItem onChanged: receives the
+  // new desired value. Tapping the demo passes the inverted current
+  // value, so the parent runs its full toggle pipeline (local state +
+  // notifier + Firestore) and the switch UI tracks the change.
+  final ValueChanged<bool> onToggle;
+
+  const JustifiedReadingDemo({super.key, required this.onToggle});
+
+  @override
+  Widget build(BuildContext context) {
+    return DemoFontListener(DemoBody);
+  }
+
+  Widget DemoBody(BuildContext context) {
+    return ValueListenableBuilder<bool>(
+      valueListenable: justifiedReadingEnabledNotifier,
+      builder: SampleBuilder,
+    );
+  }
+
+  Widget SampleBuilder(BuildContext context, bool isJustified, Widget? unusedChild) {
+    final TextAlign sampleAlignment = isJustified ? TextAlign.justify : TextAlign.start;
+
+    void handleDemoTap() => onToggle(!isJustified);
+
+    return DemoSurface(
+      onTap: handleDemoTap,
+      child: Text(
+        RLUIStrings.DEMO_JUSTIFIED_TEXT,
+        style: demoReadingStyle,
+        textAlign: sampleAlignment,
+      ),
     );
   }
 }

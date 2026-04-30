@@ -5,11 +5,12 @@
 class RLUIStrings {
   // * Navigation
   static const String HOME_TAB_LABEL = 'Home';
-  static const String SEARCH_TAB_LABEL = 'Search';
+  static const String SEARCH_TAB_LABEL = 'Store';
   static const String BOOKSHELF_TAB_LABEL = 'Bookshelf';
 
   // * My Bookshelf Screen
   static const String BOOKSHELF_TITLE = 'Bookshelf';
+  static const String BOOKSHELF_OWNED_HEADING = 'Owned';
   static const String BOOKSHELF_EMPTY_MESSAGE = '*chirp* - read something to see it here';
   static const String BOOKSHELF_LOAD_MORE_LABEL = 'Load more';
 
@@ -146,12 +147,14 @@ class RLUIStrings {
   static const String TEXT_CONTENT_CONTINUE_LABEL = 'Continue';
 
   // * Home Screen Sections
-  static const String CONTINUE_READING_TITLE = 'Reading now...';
+  static const String CONTINUE_READING_TITLE = 'Latest read';
   static const String CONTINUE_READING_SUBTITLE = 'Continue the latest title';
   static const String CONTINUE_BUTTON_LABEL = 'Continue';
-  static const String FOR_YOUR_PERSONALITY_TITLE = 'How about these?';
+  static const String FOR_YOUR_PERSONALITY_TITLE = 'Top 3 (most purchased)';
   static const String FOR_YOUR_PERSONALITY_SUBTITLE = 'Read these only if you want';
   static const String SURPRISE_ME_LABEL = 'Try out something new';
+  static const String SURPRISE_ME_NO_RESULTS_TOAST =
+      'No new course to try right now.';
 
   // * Courses Screen
   static const String SEARCH_PLACEHOLDER = 'Title';
@@ -173,7 +176,7 @@ class RLUIStrings {
   static const String ROADMAP_SUBTITLE = 'Master design psychology fundamentals';
   static const String ROADMAP_CONTINUE_LABEL = 'Continue';
   static const String ROADMAP_DEFAULT_LESSON_LABEL = 'Lesson';
-  static const String ROADMAP_PURCHASE_LABEL = 'Unlock for';
+  static const String ROADMAP_PURCHASE_LABEL = 'Pay';
   static const String ROADMAP_PURCHASE_FEATHERS_SUFFIX = 'feathers';
   static const String ROADMAP_PURCHASE_LOADING_LABEL = 'Unlocking...';
   static const String ROADMAP_PURCHASE_SUCCESS = 'Course unlocked';
@@ -276,6 +279,10 @@ class RLUIStrings {
   static const String DEMO_READING_COLUMN_TEXT =
       'Narrow columns ease eye movement and let you sweep one short line at '
       'a time, keeping focus steady on long reads.';
+  static const String DEMO_JUSTIFIED_TEXT =
+      'Justified text aligns both edges of the paragraph so every line meets '
+      'the same right margin, giving long passages a calmer, more bookish '
+      'silhouette on the page.';
 
   // * Settings Demos
   static const String DEMO_REVEAL_TEXT = 'Design is not just what it looks like.';

@@ -16,6 +16,7 @@ import 'package:readlock/design_system/RLTextField.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/constants/RLUIStrings.dart';
+import 'package:readlock/models/UserModel.dart';
 import 'package:readlock/screens/OnboardingScreen.dart';
 import 'package:readlock/services/auth/AuthService.dart';
 import 'package:readlock/services/auth/UserService.dart';
@@ -173,11 +174,14 @@ class LoginSheetState extends State<LoginSheet> {
     final user = result.credential?.user;
     final bool hasUser = user != null;
 
-    bool isNewlyCreatedProfile = false;
-
     if (hasUser) {
-      isNewlyCreatedProfile = await AuthService.createUserProfileIfNeeded(user);
+      await AuthService.createUserProfileIfNeeded(user);
     }
+
+    // Onboarding fires whenever the signed-in profile hasn't completed it
+    // yet — covers fresh sign-ups (a brand-new doc starts with the flag
+    // false) and any returning user who bailed out of the flow before.
+    final bool shouldRunOnboarding = hasUser && await isOnboardingPending();
 
     // The mounted check must stay inline for the use_build_context_synchronously
     // lint to recognise it as the guard before we touch BuildContext.
@@ -185,12 +189,26 @@ class LoginSheetState extends State<LoginSheet> {
       return;
     }
 
-    if (isNewlyCreatedProfile) {
+    if (shouldRunOnboarding) {
       await routeNewUserThroughOnboarding();
       return;
     }
 
     Navigator.of(context).pop();
+  }
+
+  // Reads /users/{id}.hasCompletedOnboarding. Treats a missing profile as
+  // "needs onboarding" so any race between profile creation and this read
+  // still funnels the user through the flow rather than past it.
+  Future<bool> isOnboardingPending() async {
+    final UserModel? profile = await UserService.getCurrentUserProfile();
+    final bool hasNoProfile = profile == null;
+
+    if (hasNoProfile) {
+      return true;
+    }
+
+    return !profile.hasCompletedOnboarding;
   }
 
   // Brand-new accounts go through the onboarding flow before they land on

@@ -34,8 +34,6 @@ const String NONCE_CHARSET =
 // * Auth service
 
 class AuthService {
-  static String? prepopulatedNickname;
-
   static final ServiceLogger logger = ServiceLogger.forService('AuthService');
 
   static Stream<User?> get authStateChanges => FirebaseAuth.instance.authStateChanges();
@@ -320,13 +318,6 @@ class AuthService {
             nonce: hashedNonce,
           );
 
-      final String? firstName = appleCredential.givenName;
-      final bool hasFirstName = firstName != null && firstName.isNotEmpty;
-
-      if (hasFirstName) {
-        prepopulatedNickname = firstName;
-      }
-
       final OAuthCredential oAuthCredential = OAuthProvider('apple.com').credential(
         idToken: appleCredential.identityToken,
         rawNonce: rawNonce,
@@ -415,8 +406,6 @@ class AuthService {
 
     await FirebaseMessagingService.deleteToken();
 
-    prepopulatedNickname = null;
-
     resetPurchaseState();
 
     await FirebaseAuth.instance.signOut();
@@ -445,7 +434,6 @@ class AuthService {
   static Future<bool> createUserProfile(
     String userId, {
     String? email,
-    String? nickname,
   }) async {
     logger.info('Profile Creation', 'Creating profile for: $userId');
 
@@ -453,7 +441,6 @@ class AuthService {
       final bool success = await UserService.createUser(
         userId: userId,
         email: fallback(email, ''),
-        nickname: fallback(nickname, ''),
       );
 
       if (success) {
@@ -486,7 +473,6 @@ class AuthService {
         final bool wasCreated = await createUserProfile(
           user.uid,
           email: user.email,
-          nickname: prepopulatedNickname,
         );
 
         return wasCreated;

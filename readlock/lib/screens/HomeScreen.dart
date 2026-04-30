@@ -3,6 +3,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:readlock/bottom_sheets/course/CoursePurchaseBottomSheet.dart';
 import 'package:readlock/course_screens/CourseRoadmapScreen.dart';
 import 'package:readlock/course_screens/data/CourseData.dart';
 import 'package:readlock/constants/RLLatestCourse.dart';
@@ -15,10 +16,12 @@ import 'package:readlock/design_system/RLCourseBookImage.dart';
 import 'package:readlock/design_system/RLFadeSwitcher.dart';
 import 'package:readlock/design_system/RLLoadingIndicator.dart';
 import 'package:readlock/design_system/RLLunarBlur.dart';
+import 'package:readlock/design_system/RLToast.dart';
 import 'package:readlock/design_system/RLUtility.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/MainNavigation.dart';
+import 'package:readlock/services/purchases/PurchaseNotifiers.dart';
 import 'package:readlock/utility_widgets/text_animation/RLTypewriterText.dart';
 
 import 'package:pixelarticons/pixel.dart';
@@ -107,37 +110,35 @@ class HomeScreenState extends State<HomeScreen> {
   void navigateToCourse(String courseId) {
     Navigator.push(
       context,
-      PageRouteBuilder(
-        pageBuilder: (context, animation, secondaryAnimation) =>
-            CourseRoadmapScreen(courseId: courseId),
-        transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          const Offset begin = Offset(0.0, 1.0);
-          const Offset end = Offset.zero;
-          const Curve curve = Curves.easeInOut;
-
-          final Animatable<Offset> tween = Tween(
-            begin: begin,
-            end: end,
-          ).chain(CurveTween(curve: curve));
-
-          final Animation<Offset> offsetAnimation = animation.drive(tween);
-
-          return SlideTransition(position: offsetAnimation, child: child);
-        },
-      ),
+      RLDS.fadeTransition(CourseRoadmapScreen(courseId: courseId)),
     );
   }
 
+  // Picks a random course the reader does NOT already own. "Try out
+  // something new" should never resurface a course already on their
+  // shelf, so we filter the catalogue against purchasedCoursesNotifier
+  // before drawing. When every course is owned (or the catalogue is
+  // empty) we surface an info toast so the tap doesn't read as a dead
+  // button.
   void handleRandomBookTap() {
-    final bool hasCourses = availableCourses.isNotEmpty;
+    final Set<String> ownedCourseIds = purchasedCoursesNotifier.value;
 
-    if (!hasCourses) {
+    final JSONList unownedCourses = availableCourses.where((course) {
+      final String courseId = course['course-id'] as String? ?? '';
+
+      return !ownedCourseIds.contains(courseId);
+    }).toList();
+
+    final bool hasUnownedCourses = unownedCourses.isNotEmpty;
+
+    if (!hasUnownedCourses) {
+      RLToast.info(context, RLUIStrings.SURPRISE_ME_NO_RESULTS_TOAST);
       return;
     }
 
     // RLCard fires its own haptic on tap — no need for a second one here.
-    final int randomIndex = Random().nextInt(availableCourses.length);
-    final JSONMap randomCourse = availableCourses[randomIndex];
+    final int randomIndex = Random().nextInt(unownedCourses.length);
+    final JSONMap randomCourse = unownedCourses[randomIndex];
     final String randomCourseId = randomCourse['course-id'] as String;
 
     navigateToCourse(randomCourseId);
@@ -242,10 +243,7 @@ class HomeScreenState extends State<HomeScreen> {
   }
 
   Widget LatestCourseHeading() {
-    return RLTypography.bodyMedium(
-      RLUIStrings.CONTINUE_READING_TITLE,
-      color: RLDS.textSecondary,
-    );
+    return const LatestCourseDotsHeading();
   }
 
   // Custom Reading-Now card. Mirrors BookListCard's top row (cover + title
@@ -334,14 +332,14 @@ class HomeScreenState extends State<HomeScreen> {
 
     final Widget continueLabel = RLTypography.bodyLarge(
       RLUIStrings.CONTINUE_BUTTON_LABEL,
-      color: RLDS.green,
+      color: RLDS.markupGreen,
     );
 
     return GestureDetector(
       onTap: onContinueTap,
       behavior: HitTestBehavior.opaque,
       child: RLLunarBlur(
-        surfaceColor: RLDS.green,
+        surfaceColor: RLDS.markupGreen,
         surfaceAlpha: 0.05,
         padding: const EdgeInsets.symmetric(
           vertical: RLDS.spacing16,
@@ -368,18 +366,33 @@ class HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  // Top-N courses by lifetime purchases, rendered as a row of three
-  // circular books. Hidden when the catalogue is sparse (<3 results from
-  // the orderBy query) so we never render a broken half-row.
+  // Top-N courses by lifetime purchases, rendered as the same horizontal
+  // BookListCard rows used on the search screen so the home and search
+  // surfaces feel like one family. Wrapped in a ValueListenableBuilder
+  // on purchasedCoursesNotifier so the cart icon disappears the moment
+  // a course is bought from any surface in the app. Hidden when the
+  // catalogue is sparse (<POPULAR_COURSES_COUNT results from the
+  // orderBy query) so we never render a broken half-list.
   Widget PopularCoursesSection() {
-    final bool hasEnoughForRow = popularCourses.length >= POPULAR_COURSES_COUNT;
+    final bool hasEnoughForList = popularCourses.length >= POPULAR_COURSES_COUNT;
 
-    if (!hasEnoughForRow) {
+    if (!hasEnoughForList) {
       return const SizedBox.shrink();
     }
 
-    final List<Widget> popularBookCircles = popularCourses
-        .map<Widget>(PopularCourseCircle)
+    return ValueListenableBuilder<Set<String>>(
+      valueListenable: purchasedCoursesNotifier,
+      builder: PopularCoursesContent,
+    );
+  }
+
+  Widget PopularCoursesContent(
+    BuildContext context,
+    Set<String> purchasedCourses,
+    Widget? unusedChild,
+  ) {
+    final List<Widget> popularBookCards = popularCourses
+        .map<Widget>((JSONMap course) => PopularCourseCard(course, purchasedCourses))
         .toList();
 
     return Div.column([
@@ -387,13 +400,9 @@ class HomeScreenState extends State<HomeScreen> {
 
       PopularCoursesHeading(),
 
-      const Spacing.height(RLDS.spacing16),
+      const Spacing.height(RLDS.spacing12),
 
-      Div.row(
-        popularBookCircles,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.start,
-      ),
+      ...popularBookCards,
     ], crossAxisAlignment: CrossAxisAlignment.stretch);
   }
 
@@ -404,54 +413,107 @@ class HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  // Single circular book + title pair. Circle is a tinted disc with the
-  // course's palette book floated in the centre, so the row reads as a
-  // small "tap one of these" picker without competing visually with the
-  // larger Surprise Me card above.
-  Widget PopularCourseCircle(JSONMap course) {
+  // Single popular course rendered as the shared horizontal book row,
+  // identical to the search screen's listing — cover + title + author,
+  // tap navigates straight into the course. The cart icon is wired only
+  // for courses the reader does NOT already own; tapping it opens the
+  // purchase sheet without firing the row's navigate-to-roadmap onTap.
+  Widget PopularCourseCard(JSONMap course, Set<String> purchasedCourses) {
     final String courseTitle = course['title'] as String? ?? '';
-    final String courseId = course['course-id'] as String? ?? '';
+    final String courseAuthor = course['author'] as String? ?? '';
     final String? courseColor = course['color'] as String?;
+    final String? coverImagePath = course['cover-image-path'] as String?;
+    final String courseId = course['course-id'] as String? ?? '';
 
-    void onCircleTap() => navigateToCourse(courseId);
+    final bool isOwned = purchasedCourses.contains(courseId);
+    final VoidCallback? onBuyTap = isOwned
+        ? null
+        : () => CoursePurchaseBottomSheet.show(context, course: course);
 
-    final BoxDecoration circleDecoration = BoxDecoration(
-      color: RLDS.glass10(RLDS.info),
-      shape: BoxShape.circle,
-      border: Border.all(color: RLDS.glass15(RLDS.info)),
-    );
+    void onCardTap() => navigateToCourse(courseId);
 
-    final Widget circleArt = Container(
-      width: POPULAR_CIRCLE_DIAMETER,
-      height: POPULAR_CIRCLE_DIAMETER,
-      decoration: circleDecoration,
-      alignment: Alignment.center,
-      child: RLCourseBookImage(courseColor: courseColor, size: POPULAR_BOOK_SIZE),
-    );
-
-    return GestureDetector(
-      onTap: onCircleTap,
-      behavior: HitTestBehavior.opaque,
-      child: SizedBox(
-        width: POPULAR_CIRCLE_DIAMETER,
-        child: Div.column([
-          circleArt,
-
-          const Spacing.height(RLDS.spacing8),
-
-          RLTypography.bodyMedium(
-            courseTitle,
-            color: RLDS.textPrimary,
-            textAlign: TextAlign.center,
-          ),
-        ], crossAxisAlignment: CrossAxisAlignment.center),
-      ),
+    return BookListCard(
+      title: courseTitle,
+      author: courseAuthor,
+      courseColor: courseColor,
+      coverImagePath: coverImagePath,
+      onTap: onCardTap,
+      onBuyTap: onBuyTap,
     );
   }
 }
 
-// Circle geometry. Diameter sits a touch above the icon scale so the
-// pixel-art book reads cleanly inside the disc; book size is tuned so the
-// art floats with comfortable padding rather than touching the rim.
-const double POPULAR_CIRCLE_DIAMETER = 88.0;
-const double POPULAR_BOOK_SIZE = 56.0;
+// "Reading now" heading with three trailing dots that fade in one-by-one
+// over a single cycle, then loop. Reuses the dot-count + cycle tuning
+// from RLLoadingIndicator so the rhythm matches the "Chirping…" loader,
+// keeping the family of "live, in-progress" indicators consistent.
+class LatestCourseDotsHeading extends StatefulWidget {
+  const LatestCourseDotsHeading({super.key});
+
+  @override
+  State<LatestCourseDotsHeading> createState() => LatestCourseDotsHeadingState();
+}
+
+class LatestCourseDotsHeadingState extends State<LatestCourseDotsHeading>
+    with SingleTickerProviderStateMixin {
+  late AnimationController dotsController;
+
+  @override
+  void initState() {
+    super.initState();
+
+    dotsController = AnimationController(vsync: this, duration: LOADING_DOT_CYCLE_DURATION);
+
+    dotsController.repeat();
+  }
+
+  @override
+  void dispose() {
+    dotsController.dispose();
+    super.dispose();
+  }
+
+  // Three discrete steps: ".", "..", "...", then loop back to ".".
+  // No empty phase — the reader never sees the heading without dots.
+  int getActiveDotsCount() {
+    final int phase = (dotsController.value * LOADING_DOT_COUNT).floor();
+    final int clampedPhase = phase.clamp(0, LOADING_DOT_COUNT - 1);
+
+    return clampedPhase + 1;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(animation: dotsController, builder: HeadingFrame);
+  }
+
+  Widget HeadingFrame(BuildContext context, Widget? unusedChild) {
+    final int activeDots = getActiveDotsCount();
+
+    final List<Widget> rowChildren = [
+      RLTypography.bodyMedium(
+        RLUIStrings.CONTINUE_READING_TITLE,
+        color: RLDS.textSecondary,
+      ),
+    ];
+
+    // One Opacity-wrapped dot per slot. Flutter sees three distinct
+    // children every frame, so a phase change produces a clean rebuild
+    // (no TextSpan-tree caching surprises). Each dot still occupies its
+    // slot at opacity 0, so the heading width stays stable across the
+    // cycle.
+    for (int dotIndex = 0; dotIndex < LOADING_DOT_COUNT; dotIndex++) {
+      final bool isActive = dotIndex < activeDots;
+      final double dotOpacity = isActive ? 1.0 : 0.0;
+
+      rowChildren.add(
+        Opacity(
+          opacity: dotOpacity,
+          child: RLTypography.bodyMedium('.', color: RLDS.textSecondary),
+        ),
+      );
+    }
+
+    return Row(mainAxisSize: MainAxisSize.min, children: rowChildren);
+  }
+}

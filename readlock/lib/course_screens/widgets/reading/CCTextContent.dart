@@ -75,9 +75,7 @@ class CCTextContentState extends State<CCTextContent> {
     return ValueListenableBuilder<bool>(
       valueListenable: justifiedReadingEnabledNotifier,
       builder: (context, isJustified, _) {
-        final TextAlign paragraphAlignment = isJustified
-            ? TextAlign.justify
-            : TextAlign.left;
+        final TextAlign paragraphAlignment = isJustified ? TextAlign.justify : TextAlign.left;
 
         return ProgressiveText(
           textSegments: widget.content.textSegments,
@@ -104,10 +102,7 @@ class CCTextContentState extends State<CCTextContent> {
   Widget ContinueButtonContainer() {
     final bool shouldShowContinueButton = isAllTextRevealed;
 
-    return RLReveal(
-      visible: shouldShowContinueButton,
-      child: ContinueButton(),
-    );
+    return RLReveal(visible: shouldShowContinueButton, child: ContinueButton());
   }
 
   // Continue CTA — no background, just the accent-coloured label centred in
@@ -141,7 +136,7 @@ class CCTextContentState extends State<CCTextContent> {
     final bool hasAncestor = courseDetailScreen != null;
 
     if (!hasAncestor) {
-      return RLDS.green;
+      return RLDS.markupGreen;
     }
 
     return courseDetailScreen.getCourseAccentColor();

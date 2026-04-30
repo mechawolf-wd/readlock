@@ -32,7 +32,28 @@ const EdgeInsets FEATHERS_CONTENT_PADDING = EdgeInsets.symmetric(horizontal: RLD
 // content (heading, price, feathers, books, bird) with no trailing slack.
 const double PLAN_SLIDER_HEIGHT = 320.0;
 const double PLAN_CARD_VIEWPORT_FRACTION = 0.78;
-const double PLAN_CARD_BIRD_PREVIEW_SIZE = 112.0;
+// Visual height each plan-card bird sprite renders at. BirdAnimationSprite
+// fits the sprite into a square `previewSize × previewSize` box, so a
+// wider sprite (Toucan 32×18) at the same preview size ends up shorter on
+// screen than a narrower one (Kiwi 27×17). Driving the card sprite by
+// rendered height instead — and computing the matching square box size
+// per bird — keeps every plan card's bird at the same on-screen height.
+const double PLAN_CARD_BIRD_VISUAL_HEIGHT = 70.0;
+
+// Returns the square previewSize that, fed into BirdAnimationSprite,
+// produces a sprite rendered at exactly PLAN_CARD_BIRD_VISUAL_HEIGHT
+// pixels tall. Vertical sprites (h >= w) keep a square box equal to the
+// target height; horizontal sprites are widened by their aspect ratio so
+// the FittedBox scales the sprite to width without cropping.
+double planCardBirdPreviewSize(BirdOption bird) {
+  final bool isVerticalSprite = bird.contentHeight >= bird.contentWidth;
+
+  if (isVerticalSprite) {
+    return PLAN_CARD_BIRD_VISUAL_HEIGHT;
+  }
+
+  return PLAN_CARD_BIRD_VISUAL_HEIGHT * bird.contentWidth / bird.contentHeight;
+}
 
 // Plan data model. Two tiers shown in the slider, each with a fixed
 // companion bird (the small sprite at the base of the card) so the tier
@@ -392,8 +413,10 @@ class PlanBird extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final double previewSize = planCardBirdPreviewSize(bird);
+
     return Center(
-      child: BirdAnimationSprite(bird: bird, previewSize: PLAN_CARD_BIRD_PREVIEW_SIZE),
+      child: BirdAnimationSprite(bird: bird, previewSize: previewSize),
     );
   }
 }

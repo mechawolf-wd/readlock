@@ -22,7 +22,6 @@ class UserPreferenceField {
   static const String RSVP_WORDS_PER_MINUTE = 'rsvpWordsPerMinute';
   static const String NIGHT_SHIFT_LEVEL = 'nightShiftLevel';
   static const String BIRD_NAME = 'birdName';
-  static const String SAVED_COURSE_IDS = 'savedCourseIds';
   static const String LAST_OPENED_COURSE_ID = 'lastOpenedCourseId';
   static const String PURCHASED_COURSES = 'purchasedCourses';
   static const String BALANCE = 'balance';
@@ -113,13 +112,11 @@ class UserService {
   static Future<bool> createUser({
     required String userId,
     required String email,
-    required String nickname,
     String language = 'en',
   }) async {
     try {
       final JSONMap profileData = {
         'email': email,
-        'nickname': nickname,
         'language': language,
         'hasCompletedOnboarding': false,
         'hasReaderPass': false,
@@ -139,7 +136,6 @@ class UserService {
         UserPreferenceField.RSVP_WORDS_PER_MINUTE: 300,
         UserPreferenceField.NIGHT_SHIFT_LEVEL: 0,
         UserPreferenceField.BIRD_NAME: 'Sparrow',
-        UserPreferenceField.SAVED_COURSE_IDS: <String>[],
         UserPreferenceField.LAST_OPENED_COURSE_ID: null,
         UserPreferenceField.PURCHASED_COURSES: <String>[],
         UserPreferenceField.BALANCE: 0,
@@ -228,10 +224,6 @@ class UserService {
 
   // * Field updates
 
-  static Future<bool> updateNickname(String nickname) async {
-    return updateField('nickname', nickname, 'updateNickname');
-  }
-
   static Future<bool> updateLanguage(String language) async {
     return updateField('language', language, 'updateLanguage');
   }
@@ -244,8 +236,6 @@ class UserService {
     return updateField('hasReaderPass', hasReaderPass, 'updateReaderPass');
   }
 
-  // * Saved courses (bookshelf)
-
   // * Latest opened course — set every time the reader taps a roadmap
   // node. Drives the home screen's "Reading now…" card.
   static Future<bool> updateLastOpenedCourseId(String courseId) {
@@ -254,29 +244,6 @@ class UserService {
       courseId,
       'updateLastOpenedCourseId',
     );
-  }
-
-  static Future<bool> addSavedCourseId(String courseId) async {
-    final String? userId = AuthService.currentUserId;
-    final bool hasNoUser = userId == null;
-
-    if (hasNoUser) {
-      logger.info('addSavedCourseId', 'No user logged in');
-      return false;
-    }
-
-    try {
-      await userDoc(userId).update({
-        UserPreferenceField.SAVED_COURSE_IDS: FieldValue.arrayUnion([courseId]),
-      });
-
-      logger.success('addSavedCourseId', 'courseId=$courseId');
-
-      return true;
-    } on Exception catch (error) {
-      logger.failure('addSavedCourseId', '$error');
-      return false;
-    }
   }
 
   // * Feather wallet (balance) and course purchases.
@@ -329,29 +296,6 @@ class UserService {
       return true;
     } on Exception catch (error) {
       logger.failure('addPurchasedCourse', '$error');
-      return false;
-    }
-  }
-
-  static Future<bool> removeSavedCourseId(String courseId) async {
-    final String? userId = AuthService.currentUserId;
-    final bool hasNoUser = userId == null;
-
-    if (hasNoUser) {
-      logger.info('removeSavedCourseId', 'No user logged in');
-      return false;
-    }
-
-    try {
-      await userDoc(userId).update({
-        UserPreferenceField.SAVED_COURSE_IDS: FieldValue.arrayRemove([courseId]),
-      });
-
-      logger.success('removeSavedCourseId', 'courseId=$courseId');
-
-      return true;
-    } on Exception catch (error) {
-      logger.failure('removeSavedCourseId', '$error');
       return false;
     }
   }

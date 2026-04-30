@@ -16,6 +16,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pixelarticons/pixel.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
+import 'package:readlock/constants/RLReadingJustified.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLUIStrings.dart';
 import 'package:readlock/design_system/RLLunarBlur.dart';
@@ -91,6 +92,7 @@ class OnboardingFlowState extends State<OnboardingFlow> {
   bool coloredTextEnabled = true;
   bool bionicEnabled = false;
   bool rsvpEnabled = false;
+  bool justifiedReadingEnabled = false;
 
   @override
   void initState() {
@@ -120,6 +122,7 @@ class OnboardingFlowState extends State<OnboardingFlow> {
       coloredTextEnabled = user.coloredText;
       bionicEnabled = user.bionic;
       rsvpEnabled = user.rsvp;
+      justifiedReadingEnabled = user.justifiedReading;
     });
   }
 
@@ -176,6 +179,18 @@ class OnboardingFlowState extends State<OnboardingFlow> {
         toggle: OnboardingToggle(value: rsvpEnabled, onChanged: handleRsvpToggled),
         body: const RSVPDemo(isEnabled: true),
       ),
+
+      // Justified text — paragraph-shape preference. The demo card itself
+      // doubles as a tap-target via JustifiedReadingDemo's onToggle, so
+      // tapping either the switch or the preview flips the setting.
+      OnboardingStepSpec(
+        title: RLUIStrings.MENU_JUSTIFIED_READING,
+        toggle: OnboardingToggle(
+          value: justifiedReadingEnabled,
+          onChanged: handleJustifiedReadingToggled,
+        ),
+        body: JustifiedReadingDemo(onToggle: handleJustifiedReadingToggled),
+      ),
     ];
   }
 
@@ -212,6 +227,12 @@ class OnboardingFlowState extends State<OnboardingFlow> {
     setState(() => rsvpEnabled = value);
     rsvpEnabledNotifier.value = value;
     UserService.updateRsvp(value);
+  }
+
+  void handleJustifiedReadingToggled(bool value) {
+    setState(() => justifiedReadingEnabled = value);
+    justifiedReadingEnabledNotifier.value = value;
+    UserService.updateJustifiedReading(value);
   }
 
   void handleStepChanged(int newStepIndex) {

@@ -233,6 +233,8 @@ class MenuSection extends StatelessWidget {
           onChanged: onJustifiedReadingToggled,
         ),
 
+        JustifiedReadingDemo(onToggle: onJustifiedReadingToggled),
+
         const MenuDivider(),
 
         // Legal (Support listed last, after EULA)

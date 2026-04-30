@@ -9,7 +9,6 @@ part of 'UserModel.dart';
 UserModel _$UserModelFromJson(Map<String, dynamic> json) => UserModel(
   id: json['id'] as String,
   email: json['email'] as String,
-  nickname: json['nickname'] as String,
   language: json['language'] as String? ?? 'en',
   fcmToken: json['fcmToken'] as String?,
   createdAt: timestampFromJson(json['createdAt']),
@@ -29,11 +28,6 @@ UserModel _$UserModelFromJson(Map<String, dynamic> json) => UserModel(
   rsvpWordsPerMinute: (json['rsvpWordsPerMinute'] as num?)?.toInt() ?? 300,
   nightShiftLevel: (json['nightShiftLevel'] as num?)?.toInt() ?? 0,
   birdName: json['birdName'] as String? ?? 'Sparrow',
-  savedCourseIds:
-      (json['savedCourseIds'] as List<dynamic>?)
-          ?.map((item) => item as String)
-          .toList() ??
-      <String>[],
   lastOpenedCourseId: json['lastOpenedCourseId'] as String?,
   purchasedCourses:
       (json['purchasedCourses'] as List<dynamic>?)
@@ -53,7 +47,6 @@ UserModel _$UserModelFromJson(Map<String, dynamic> json) => UserModel(
 
 Map<String, dynamic> _$UserModelToJson(UserModel instance) => <String, dynamic>{
   'email': instance.email,
-  'nickname': instance.nickname,
   'language': instance.language,
   'fcmToken': instance.fcmToken,
   'createdAt': timestampToJson(instance.createdAt),
@@ -73,7 +66,6 @@ Map<String, dynamic> _$UserModelToJson(UserModel instance) => <String, dynamic>{
   'rsvpWordsPerMinute': instance.rsvpWordsPerMinute,
   'nightShiftLevel': instance.nightShiftLevel,
   'birdName': instance.birdName,
-  'savedCourseIds': instance.savedCourseIds,
   'lastOpenedCourseId': instance.lastOpenedCourseId,
   'purchasedCourses': instance.purchasedCourses,
   'balance': instance.balance,

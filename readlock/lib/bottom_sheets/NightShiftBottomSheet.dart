@@ -2,7 +2,11 @@
 // overlay. CupertinoSlider with five divisions (off + four warmth steps),
 // matching Apple's Night Shift "Less Warm / More Warm" picker. Updates the
 // global nightShiftLevelNotifier on every drag so RLNightShiftOverlay
-// reflects the change live.
+// reflects the change live; the Firestore write is debounced so dragging
+// across the slider issues a single persistence call instead of one per
+// division crossed.
+
+import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
@@ -15,6 +19,12 @@ import 'package:readlock/design_system/RLUtility.dart';
 import 'package:readlock/services/auth/UserService.dart';
 
 import 'package:pixelarticons/pixel.dart';
+
+// * How long the slider waits after the last value change before
+// persisting to Firestore. Long enough to coalesce a full sweep across
+// all four divisions into one write, short enough that releasing the
+// thumb feels effectively instant.
+const Duration NIGHT_SHIFT_PERSIST_DEBOUNCE = Duration(milliseconds: 400);
 
 const EdgeInsets NIGHT_SHIFT_SHEET_PADDING = EdgeInsets.fromLTRB(
   RLDS.spacing24,
@@ -44,12 +54,34 @@ class NightShiftSheetState extends State<NightShiftSheet> {
   );
 
   late int currentLevel;
+  // Last value persisted to Firestore. Used by the debounced writer so a
+  // settle-back to the original level (drag right then back to start)
+  // doesn't fire a redundant write.
+  late int lastPersistedLevel;
+  Timer? persistDebounce;
 
   @override
   void initState() {
     super.initState();
 
     currentLevel = nightShiftLevelNotifier.value;
+    lastPersistedLevel = currentLevel;
+  }
+
+  @override
+  void dispose() {
+    // Flush any pending write before tearing down so the level the user
+    // landed on still makes it to Firestore even if they close the sheet
+    // immediately after dragging.
+    final Timer? pendingDebounce = persistDebounce;
+    final bool hasPendingWrite = pendingDebounce != null && pendingDebounce.isActive;
+
+    if (hasPendingWrite) {
+      pendingDebounce.cancel();
+      persistLevel(currentLevel);
+    }
+
+    super.dispose();
   }
 
   void handleLevelChanged(double value) {
@@ -68,7 +100,30 @@ class NightShiftSheetState extends State<NightShiftSheet> {
       currentLevel = nextLevel;
     });
 
-    UserService.updateNightShiftLevel(nextLevel);
+    schedulePersist(nextLevel);
+  }
+
+  // Coalesces drag updates into a single Firestore write. Each new step
+  // resets the timer, so the network call only fires once the slider has
+  // been still for NIGHT_SHIFT_PERSIST_DEBOUNCE.
+  void schedulePersist(int level) {
+    persistDebounce?.cancel();
+
+    persistDebounce = Timer(NIGHT_SHIFT_PERSIST_DEBOUNCE, () {
+      persistLevel(level);
+    });
+  }
+
+  void persistLevel(int level) {
+    final bool isAlreadyPersisted = level == lastPersistedLevel;
+
+    if (isAlreadyPersisted) {
+      return;
+    }
+
+    lastPersistedLevel = level;
+
+    UserService.updateNightShiftLevel(level);
   }
 
   @override

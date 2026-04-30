@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:readlock/bottom_sheets/NightShiftBottomSheet.dart';
+import 'package:readlock/bottom_sheets/user/FeathersBottomSheet.dart';
 import 'package:readlock/course_screens/CourseContentViewer.dart';
 import 'package:readlock/course_screens/data/CourseData.dart';
 import 'package:readlock/design_system/RLUtility.dart';
@@ -274,7 +275,9 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
 
     // Lessons from selected segment. Tile-lock state combines the
     // per-lesson `isFree` flag with the course-wide purchase gate, so
-    // every tile reads as locked until the reader buys the course.
+    // every tile reads as locked until the reader buys the course —
+    // except lessons explicitly marked free in the JSON, which stay
+    // unlocked as previews.
     final bool isCoursePurchased = getIsCoursePurchased();
 
     slivers.add(
@@ -403,7 +406,9 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
     }
 
     if (result == PurchaseResult.insufficientFeathers) {
-      RLToast.error(context, RLUIStrings.ROADMAP_PURCHASE_INSUFFICIENT);
+      // Out of feathers — push them straight to the Feathers Plan sheet
+      // so they can top up without leaving the roadmap.
+      FeathersBottomSheet.show(context);
       return;
     }
 
@@ -690,12 +695,14 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
   // `isLoading` is true) handles the slow path, so this surface no longer
   // forces an intermediate "Chirping" screen for 500ms when there's
   // nothing to wait for.
+  //
+  // `lessonIndex` is segment-local (the index inside the path the reader
+  // is looking at). CourseDetailScreen indexes into the FLATTENED list
+  // of every segment's lessons, so we add the cumulative length of every
+  // earlier segment before pushing — otherwise tapping lesson 0 in any
+  // segment past the first would always open the course's very first
+  // lesson.
   void navigateToLesson(int lessonIndex, int contentIndex) {
-    // Fire-and-forget — the course is now in the reader's bookshelf as
-    // "recently used" the moment they start a lesson. No need to await; the
-    // Firestore arrayUnion is idempotent and the UI doesn't depend on it.
-    UserService.addSavedCourseId(widget.courseId);
-
     // Mark this course as the latest opened. The notifier is updated
     // optimistically so HomeScreen's "Reading now…" card reflects the
     // tap immediately when the user pops back; the Firestore write
@@ -704,22 +711,41 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
     lastOpenedCourseIdNotifier.value = widget.courseId;
     UserService.updateLastOpenedCourseId(widget.courseId);
 
+    final int absoluteLessonIndex = computeAbsoluteLessonIndex(lessonIndex);
+
     Navigator.push(
       context,
       RLDS.slowFadeTransition(
         CourseDetailScreen(
           courseId: widget.courseId,
-          initialLessonIndex: lessonIndex,
+          initialLessonIndex: absoluteLessonIndex,
           initialContentIndex: contentIndex,
         ),
       ),
     );
   }
+
+  // Sums lesson counts of every segment before the active one, then adds
+  // the segment-local index. Returns the position in the flattened
+  // course-wide lesson list that CourseDetailScreen expects.
+  int computeAbsoluteLessonIndex(int localLessonIndex) {
+    int precedingLessonCount = 0;
+
+    for (int segmentIdx = 0; segmentIdx < selectedSegmentIndex; segmentIdx++) {
+      final JSONMap segment = courseSegments[segmentIdx];
+      final JSONList segmentLessons = JSONList.from(segment['lessons'] ?? []);
+
+      precedingLessonCount += segmentLessons.length;
+    }
+
+    return precedingLessonCount + localLessonIndex;
+  }
 }
 
-// Path with connected lesson nodes. Tile-lock state combines the
-// per-lesson `isFree` flag with the course-wide purchase gate, so every
-// tile reads as locked until the course has been purchased.
+// Path with connected lesson nodes. Lock rule: every tile is locked unless
+// the lesson is flagged `isFree: true` in the course JSON. Once the course
+// is purchased, purchasedCoursesNotifier flips, the parent rebuilds, and
+// every paid tile drops to unlocked in the same frame.
 class PathWithNodes extends StatelessWidget {
   final List<dynamic> lessons;
   final List<GlobalKey> lessonKeys;
@@ -751,9 +777,11 @@ class PathWithNodes extends StatelessWidget {
 
     for (int lessonIndex = 0; lessonIndex < lessons.length; lessonIndex++) {
       final JSONMap lesson = lessons[lessonIndex] as JSONMap;
-      // MOCK: every lesson tile is unlocked regardless of purchase state.
-      // Restore `!isCoursePurchased` to re-enable the purchase gate.
-      final bool isLocked = false;
+      // Tile-lock = course-wide purchase gate, lifted only by the
+      // per-lesson `isFree` flag. Any lesson without that flag stays
+      // locked until the course is purchased.
+      final bool isFreePreview = (lesson['isFree'] as bool?) ?? false;
+      final bool isLocked = !isCoursePurchased && !isFreePreview;
 
       // Determine horizontal alignment (zigzag pattern)
       final PathNodeAlignment alignment = getAlignmentForIndex(lessonIndex);

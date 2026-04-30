@@ -5,7 +5,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:pixelarticons/pixel.dart';
+import 'package:readlock/bottom_sheets/course/CoursePurchaseBottomSheet.dart';
 import 'package:readlock/course_screens/CourseRoadmapScreen.dart';
 import 'package:readlock/course_screens/data/CourseData.dart';
 import 'package:readlock/design_system/RLUtility.dart';
@@ -14,14 +14,13 @@ import 'package:readlock/design_system/RLBookListCard.dart';
 import 'package:readlock/design_system/RLButton.dart';
 import 'package:readlock/design_system/RLFadeSwitcher.dart';
 import 'package:readlock/design_system/RLLoadingIndicator.dart';
-import 'package:readlock/design_system/RLLunarBlur.dart';
-import 'package:readlock/design_system/RLSelectableFilterChips.dart';
-import 'package:readlock/design_system/RLTextField.dart';
+import 'package:readlock/design_system/RLCourseFilterPanel.dart';
 import 'package:readlock/constants/RLCourseGenres.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/constants/RLUIStrings.dart';
 import 'package:readlock/constants/DartAliases.dart';
+import 'package:readlock/services/purchases/PurchaseNotifiers.dart';
 import 'package:readlock/MainNavigation.dart';
 import 'package:readlock/utility_widgets/text_animation/RLTypewriterText.dart';
 
@@ -282,9 +281,7 @@ class CoursesScreenState extends State<CoursesScreen> {
   void navigateToCourse(String courseId) {
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (context) => CourseRoadmapScreen(courseId: courseId),
-      ),
+      RLDS.fadeTransition(CourseRoadmapScreen(courseId: courseId)),
     );
   }
 
@@ -360,74 +357,17 @@ class CoursesScreenState extends State<CoursesScreen> {
     ], crossAxisAlignment: CrossAxisAlignment.center);
   }
 
-  // Single frosted box hosting the genre chip row + the search input. The
-  // shared LunarBlur surface ties the two controls together visually so they
-  // read as one floating filter affordance hovering above the bottom nav.
+  // Floating filter pane hovering above the bottom nav. Wraps the shared
+  // RLCourseFilterPanel so the bookshelf can mount the same UI when its
+  // own filter affordance is toggled.
   Widget FloatingFilterPanel() {
-    final List<String> availableGenres = getAvailableGenres();
-    final bool hasGenres = availableGenres.isNotEmpty;
-
-    return RLLunarBlur(
-      borderRadius: RLDS.borderRadiusMedium,
-      padding: const EdgeInsets.all(RLDS.spacing12),
-      child: Div.column(
-        [
-          RenderIf.condition(hasGenres, GenreChipsRow(availableGenres)),
-
-          RenderIf.condition(hasGenres, const Spacing.height(RLDS.spacing12)),
-
-          SearchBar(),
-        ],
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-      ),
-    );
-  }
-
-  // Single horizontally-scrollable row for the closed genre list. Reads as
-  // one long ribbon the user pans through, instead of stacking onto a
-  // second line.
-  Widget GenreChipsRow(List<String> availableGenres) {
-    return ChipScrollRow(rowGenres: availableGenres);
-  }
-
-  Widget ChipScrollRow({required List<String> rowGenres}) {
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: Row(children: ChipRowChildren(rowGenres: rowGenres)),
-    );
-  }
-
-  List<Widget> ChipRowChildren({required List<String> rowGenres}) {
-    final List<Widget> children = [];
-
-    for (int chipIndex = 0; chipIndex < rowGenres.length; chipIndex++) {
-      final bool isFirstChip = chipIndex == 0;
-
-      if (!isFirstChip) {
-        children.add(const Spacing.width(RLDS.spacing8));
-      }
-
-      final String genre = rowGenres[chipIndex];
-      final bool isSelected = selectedGenres.contains(genre);
-
-      children.add(
-        SelectableFilterChip(
-          label: genre,
-          isSelected: isSelected,
-          onTap: () => handleGenreToggled(genre),
-        ),
-      );
-    }
-
-    return children;
-  }
-
-  Widget SearchBar() {
-    return RLTextField(
-      controller: searchController,
-      hintText: RLUIStrings.SEARCH_PLACEHOLDER,
-      leadingIcon: Pixel.search,
-      onChanged: handleSearchChanged,
+    return RLCourseFilterPanel(
+      availableGenres: getAvailableGenres(),
+      selectedGenres: selectedGenres,
+      onGenreToggled: handleGenreToggled,
+      searchController: searchController,
+      onSearchChanged: handleSearchChanged,
+      searchPlaceholder: RLUIStrings.SEARCH_PLACEHOLDER,
     );
   }
 
@@ -460,15 +400,25 @@ class CoursesScreenState extends State<CoursesScreen> {
     return EmptyStateMessage();
   }
 
+  // Wrapped in a ValueListenableBuilder so a purchase made via the
+  // CoursePurchaseBottomSheet flips purchasedCoursesNotifier and the cart
+  // icon disappears from that course's row in the same frame.
   Widget CoursesScrollList(JSONList courses, {required bool showLoadMore}) {
-    final List<Widget> listChildren = List<Widget>.from(CourseCards(courses));
+    return ValueListenableBuilder<Set<String>>(
+      valueListenable: purchasedCoursesNotifier,
+      builder: (BuildContext context, Set<String> purchasedCourses, Widget? _) {
+        final List<Widget> listChildren = List<Widget>.from(
+          CourseCards(courses, purchasedCourses),
+        );
 
-    if (showLoadMore) {
-      listChildren.add(LoadMoreSlot());
-    }
+        if (showLoadMore) {
+          listChildren.add(LoadMoreSlot());
+        }
 
-    return SingleChildScrollView(
-      child: Div.column(listChildren, crossAxisAlignment: CrossAxisAlignment.stretch),
+        return SingleChildScrollView(
+          child: Div.column(listChildren, crossAxisAlignment: CrossAxisAlignment.stretch),
+        );
+      },
     );
   }
 
@@ -496,7 +446,12 @@ class CoursesScreenState extends State<CoursesScreen> {
     );
   }
 
-  List<Widget> CourseCards(JSONList courses) {
+  // Renders one BookListCard per course. Cart icon is wired only when the
+  // course is NOT already in the user's purchasedCourses set, so owned
+  // courses read as "in your collection" without a redundant buy
+  // affordance. Tapping the cart opens the purchase sheet without
+  // triggering the row's navigate-to-roadmap onTap.
+  List<Widget> CourseCards(JSONList courses, Set<String> purchasedCourses) {
     return courses.map((course) {
       final String courseTitle = course['title'] as String? ?? '';
       final String courseAuthor = course['author'] as String? ?? '';
@@ -504,12 +459,18 @@ class CoursesScreenState extends State<CoursesScreen> {
       final String? courseColor = course['color'] as String?;
       final String courseId = course['course-id'] as String? ?? '';
 
+      final bool isOwned = purchasedCourses.contains(courseId);
+      final VoidCallback? buyHandler = isOwned
+          ? null
+          : () => CoursePurchaseBottomSheet.show(context, course: course);
+
       return BookListCard(
         title: courseTitle,
         author: courseAuthor,
         courseColor: courseColor,
         coverImagePath: coverImagePath,
         onTap: () => navigateToCourse(courseId),
+        onBuyTap: buyHandler,
       );
     }).toList();
   }

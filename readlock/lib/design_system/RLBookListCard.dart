@@ -20,6 +20,11 @@ class BookListCard extends StatelessWidget {
   final String? courseColor;
   final String? coverImagePath;
   final VoidCallback? onTap;
+  // Optional trailing buy affordance — renders a cart icon at the right
+  // edge of the card with its own tap target. Inner GestureDetector
+  // absorbs the tap so the outer card's onTap (typically navigate-to-
+  // roadmap) doesn't fire when the user hits the icon.
+  final VoidCallback? onBuyTap;
   final EdgeInsets margin;
 
   const BookListCard({
@@ -29,30 +34,59 @@ class BookListCard extends StatelessWidget {
     this.courseColor,
     this.coverImagePath,
     this.onTap,
+    this.onBuyTap,
     this.margin = const EdgeInsets.only(bottom: RLDS.spacing12),
   });
 
   @override
   Widget build(BuildContext context) {
+    final List<Widget> rowChildren = [
+      ListCardBook(),
+
+      const Spacing.width(RLDS.spacing12),
+
+      Expanded(
+        child: Div.column([
+          RLTypography.bodyLarge(title, maxLines: 1, overflow: TextOverflow.ellipsis),
+
+          const Spacing.height(RLDS.spacing4),
+
+          RLTypography.bodyMedium(author, color: RLDS.textSecondary),
+        ], crossAxisAlignment: CrossAxisAlignment.start),
+      ),
+    ];
+
+    final VoidCallback? buyHandler = onBuyTap;
+    final bool hasBuyHandler = buyHandler != null;
+
+    if (hasBuyHandler) {
+      rowChildren.add(const Spacing.width(RLDS.spacing12));
+      rowChildren.add(BuyIconButton(onTap: buyHandler));
+    }
+
     return RLCard.subtle(
       padding: const EdgeInsets.all(RLDS.spacing12),
       margin: margin,
       onTap: onTap,
-      child: Div.row([
-        ListCardBook(),
+      child: Div.row(rowChildren),
+    );
+  }
 
-        const Spacing.width(RLDS.spacing12),
+  // Trailing cart icon — sits at the right edge of the card with a
+  // small padding so the tap target stays comfortable without growing
+  // the card's row height. Muted glyph color so the icon reads as a
+  // secondary affordance, not a primary CTA.
+  Widget BuyIconButton({required VoidCallback onTap}) {
+    final Widget CartIcon = const Icon(
+      Pixel.cart,
+      color: RLDS.markupGreen,
+      size: RLDS.iconLarge,
+    );
 
-        Expanded(
-          child: Div.column([
-            RLTypography.bodyLarge(title, maxLines: 1, overflow: TextOverflow.ellipsis),
-
-            const Spacing.height(RLDS.spacing4),
-
-            RLTypography.bodyMedium(author, color: RLDS.textSecondary),
-          ], crossAxisAlignment: CrossAxisAlignment.start),
-        ),
-      ]),
+    return GestureDetector(
+      onTap: onTap,
+      behavior: HitTestBehavior.opaque,
+      child: Padding(padding: const EdgeInsets.all(RLDS.spacing4), child: CartIcon),
     );
   }
 
@@ -62,10 +96,7 @@ class BookListCard extends StatelessWidget {
     final bool hasCourseColor = courseColor != null && courseColor!.isNotEmpty;
 
     if (hasCourseColor) {
-      return RLCourseBookImage(
-        courseColor: courseColor,
-        size: LIST_CARD_BOOK_SIZE,
-      );
+      return RLCourseBookImage(courseColor: courseColor, size: LIST_CARD_BOOK_SIZE);
     }
 
     return BookCoverThumbnail(coverImagePath: coverImagePath);

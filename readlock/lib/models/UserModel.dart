@@ -12,8 +12,6 @@ class UserModel {
 
   final String email;
 
-  final String nickname;
-
   @JsonKey(defaultValue: 'en')
   final String language;
 
@@ -77,10 +75,6 @@ class UserModel {
   @JsonKey(defaultValue: 'Sparrow')
   final String birdName;
 
-  // * Bookshelf, course-ids the user has saved from search or the roadmap.
-  @JsonKey(defaultValue: <String>[])
-  final List<String> savedCourseIds;
-
   // * Most recently opened course — set whenever the reader taps a node
   // (package) on a course's roadmap. Drives the "Reading now…" card on
   // the home screen. Null until the reader taps their first node.
@@ -110,7 +104,6 @@ class UserModel {
   const UserModel({
     required this.id,
     required this.email,
-    required this.nickname,
     this.language = 'en',
     this.fcmToken,
     required this.createdAt,
@@ -130,7 +123,6 @@ class UserModel {
     this.rsvpWordsPerMinute = 300,
     this.nightShiftLevel = 0,
     this.birdName = 'Sparrow',
-    this.savedCourseIds = const <String>[],
     this.lastOpenedCourseId,
     this.purchasedCourses = const <String>[],
     this.balance = 0,
@@ -152,14 +144,12 @@ class UserModel {
     return UserModel(
       id: '',
       email: '',
-      nickname: '',
       createdAt: DateTime.fromMillisecondsSinceEpoch(0),
     );
   }
 
   UserModel copyWith({
     String? email,
-    String? nickname,
     String? language,
     String? fcmToken,
     bool? hasCompletedOnboarding,
@@ -178,7 +168,6 @@ class UserModel {
     int? rsvpWordsPerMinute,
     int? nightShiftLevel,
     String? birdName,
-    List<String>? savedCourseIds,
     String? lastOpenedCourseId,
     List<String>? purchasedCourses,
     int? balance,
@@ -187,7 +176,6 @@ class UserModel {
     return UserModel(
       id: id,
       email: email ?? this.email,
-      nickname: nickname ?? this.nickname,
       language: language ?? this.language,
       fcmToken: fcmToken ?? this.fcmToken,
       createdAt: createdAt,
@@ -207,7 +195,6 @@ class UserModel {
       rsvpWordsPerMinute: rsvpWordsPerMinute ?? this.rsvpWordsPerMinute,
       nightShiftLevel: nightShiftLevel ?? this.nightShiftLevel,
       birdName: birdName ?? this.birdName,
-      savedCourseIds: savedCourseIds ?? this.savedCourseIds,
       lastOpenedCourseId: lastOpenedCourseId ?? this.lastOpenedCourseId,
       purchasedCourses: purchasedCourses ?? this.purchasedCourses,
       balance: balance ?? this.balance,
