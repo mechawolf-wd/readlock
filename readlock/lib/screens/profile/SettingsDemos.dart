@@ -567,11 +567,17 @@ class RSVPDemoState extends State<RSVPDemo> {
   static const double maxWpm = 800.0;
   static const int defaultWpm = 300;
 
+  // Slider drags fire onChanged on every notch, so we coalesce the
+  // Firestore write until the reader's settled on a value. Long enough
+  // to swallow a full sweep, short enough that letting go feels saved.
+  static const Duration wpmPersistDebounce = Duration(milliseconds: 400);
+
   // Initial value is read from the notifier so the slider remembers the
   // last setting between Profile screen re-mounts.
   int currentWpm = rsvpWordsPerMinuteNotifier.value;
   int wordIndex = 0;
   Timer? advanceTimer;
+  Timer? wpmPersistTimer;
 
   @override
   void initState() {
@@ -601,8 +607,24 @@ class RSVPDemoState extends State<RSVPDemo> {
 
   @override
   void dispose() {
+    flushPendingWpmPersist();
+
     advanceTimer?.cancel();
+
     super.dispose();
+  }
+
+  // Flushes any pending debounced wpm write so a value the reader dragged
+  // to but never settled on isn't lost when the sheet closes mid-drag.
+  void flushPendingWpmPersist() {
+    final bool hasPendingWrite = wpmPersistTimer?.isActive ?? false;
+
+    wpmPersistTimer?.cancel();
+    wpmPersistTimer = null;
+
+    if (hasPendingWrite) {
+      UserService.updateRsvpWordsPerMinute(currentWpm);
+    }
   }
 
   void scheduleNextWord() {
@@ -644,11 +666,15 @@ class RSVPDemoState extends State<RSVPDemo> {
     // picks up the same pace next time CCTextContent mounts an RSVPText.
     rsvpWordsPerMinuteNotifier.value = roundedWpm;
 
-    // Persist the picked pace to the user profile, fire-and-forget so the
-    // slider stays buttery as the reader drags it. Only writes when the
-    // value actually changes so a still drag doesn't hammer Firestore.
+    // Persist the picked pace to the user profile, debounced so a drag
+    // across notches coalesces into one Firestore write once the reader
+    // settles. dispose flushes any pending write if the sheet closes
+    // before the timer fires.
     if (hasWpmChanged) {
-      UserService.updateRsvpWordsPerMinute(roundedWpm);
+      wpmPersistTimer?.cancel();
+      wpmPersistTimer = Timer(wpmPersistDebounce, () {
+        UserService.updateRsvpWordsPerMinute(roundedWpm);
+      });
     }
 
     // Reschedule with the new interval only if the demo is currently

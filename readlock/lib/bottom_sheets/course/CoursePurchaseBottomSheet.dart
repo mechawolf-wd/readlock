@@ -15,6 +15,7 @@ import 'package:readlock/design_system/RLCourseBookImage.dart';
 import 'package:readlock/design_system/RLLunarBlur.dart';
 import 'package:readlock/design_system/RLToast.dart';
 import 'package:readlock/design_system/RLUtility.dart';
+import 'package:readlock/services/feedback/SoundService.dart';
 import 'package:readlock/services/purchases/PurchaseConstants.dart';
 import 'package:readlock/services/purchases/PurchaseService.dart';
 
@@ -222,6 +223,7 @@ class CoursePurchaseSheetState extends State<CoursePurchaseSheet> {
     });
 
     if (result == PurchaseResult.success) {
+      SoundService.playPurchased();
       Navigator.of(context).pop();
       RLToast.success(context, RLUIStrings.ROADMAP_PURCHASE_SUCCESS);
       return;

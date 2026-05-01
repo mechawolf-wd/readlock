@@ -12,6 +12,7 @@ import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/design_system/RLLunarBlur.dart';
 import 'package:readlock/design_system/RLUtility.dart';
+import 'package:readlock/services/feedback/SoundService.dart';
 
 class RLSegmentTabOption<T> {
   final T value;
@@ -124,6 +125,7 @@ class RLSegmentTab extends StatelessWidget {
         : RLTypography.bodyMedium(label, color: labelColor, textAlign: TextAlign.center);
 
     void handleTabTap() {
+      SoundService.playRandomTextClick();
       HapticFeedback.lightImpact();
       onTap();
     }

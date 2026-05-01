@@ -14,6 +14,7 @@ import 'package:readlock/screens/profile/MenuWidgets.dart';
 import 'package:readlock/services/auth/AuthService.dart';
 import 'package:readlock/services/auth/UserPreferencesHydrator.dart';
 import 'package:readlock/services/auth/UserService.dart';
+import 'package:readlock/services/feedback/SoundService.dart';
 import 'package:readlock/constants/RLReadingJustified.dart';
 import 'package:readlock/utility_widgets/text_animation/BionicText.dart';
 import 'package:readlock/utility_widgets/text_animation/RSVPText.dart';
@@ -167,6 +168,8 @@ class ProfileContentState extends State<ProfileContent> {
     if (isLoggingOut) {
       return;
     }
+
+    SoundService.playLogout();
 
     // Cancel renders as the filled red CTA on top — the safer default
     // carries the visual weight. Sign out drops to a regular tertiary

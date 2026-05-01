@@ -11,11 +11,13 @@
 import 'package:flutter/material.dart' hide Typography;
 import 'package:pixelarticons/pixel.dart';
 import 'package:readlock/models/CourseModel.dart';
+import 'package:readlock/course_screens/CourseAccentScope.dart';
 import 'package:readlock/design_system/RLLunarBlur.dart';
 import 'package:readlock/design_system/RLUtility.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/services/feedback/HapticsService.dart';
+import 'package:readlock/services/feedback/SoundService.dart';
 import 'package:readlock/utility_widgets/text_animation/ProgressiveText.dart';
 import 'package:readlock/utility_widgets/visual_effects/BlurOverlay.dart';
 
@@ -36,13 +38,21 @@ class CCReflectState extends State<CCReflect> {
 
   // Per-card "tap me" affordance — open eye centred on every blurred
   // reflect point. Disappears once the card reveals so the typewriter
-  // takes the centre uncluttered. Muted secondary colour so it reads as
-  // a quiet hint, not a CTA.
-  static final Widget RevealEyeIcon = const Icon(
-    Pixel.eye,
-    color: RLDS.textSecondary,
-    size: RLDS.iconXXLarge * 2,
-  );
+  // takes the centre uncluttered. Tinted with the active course's accent
+  // colour so the hint reads as part of the course's voice; falls back to
+  // the muted secondary tone when no CourseAccentScope is in place.
+  Widget RevealEyeIcon() {
+    final Color iconColor = CourseAccentScope.of(
+      context,
+      fallback: RLDS.textSecondary,
+    );
+
+    return Icon(
+      Pixel.eye,
+      color: iconColor,
+      size: RLDS.iconXXLarge,
+    );
+  }
 
   List<String> getLimitedPoints() {
     return widget.content.thinkingPoints.take(REFLECT_POINTS_LIMIT).toList();
@@ -56,6 +66,7 @@ class CCReflectState extends State<CCReflect> {
     }
 
     HapticsService.lightImpact();
+    SoundService.playRandomTextClick();
 
     setState(() {
       revealedPoints.add(pointIndex);
@@ -120,7 +131,7 @@ class CCReflectState extends State<CCReflect> {
     final List<Widget> stackChildren = [BlurOverlay(enabled: !isRevealed, child: pointSurface)];
 
     if (!isRevealed) {
-      stackChildren.add(Positioned.fill(child: Center(child: RevealEyeIcon)));
+      stackChildren.add(Positioned.fill(child: Center(child: RevealEyeIcon())));
     }
 
     return GestureDetector(

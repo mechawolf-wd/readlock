@@ -14,6 +14,7 @@ import 'package:readlock/bottom_sheets/user/BirdPickerBottomSheet.dart';
 import 'package:readlock/bottom_sheets/user/FontPickerBottomSheet.dart';
 import 'package:readlock/bottom_sheets/user/FeathersBottomSheet.dart';
 import 'package:readlock/screens/profile/SettingsDemos.dart';
+import 'package:readlock/services/feedback/SoundService.dart';
 
 import 'package:pixelarticons/pixel.dart';
 
@@ -91,11 +92,39 @@ class MenuSection extends StatelessWidget {
     void onColumnWidthRowTap() {}
 
     // Tapping a demo card flips the matching switch — same effect as
-    // clicking the switch itself, so the preview doubles as the control.
-    void onProgressiveDemoTap() => handleProgressiveToggled(revealAllTrueFalse);
-    void onBlurDemoTap() => onBlurToggled(!blurEnabled);
-    void onColoredTextDemoTap() => onColoredTextToggled(!coloredTextEnabled);
-    void onBionicDemoTap() => onBionicToggled(!bionicEnabled);
+    // clicking the switch itself, so the preview doubles as the control
+    // and gets the same switch click sound. The user-supplied toggle
+    // handlers are also called from RLSwitch directly, so we play the
+    // sound here (the demo path) rather than inside the handler to avoid
+    // double-firing when the switch itself is tapped.
+    void onProgressiveDemoTap() {
+      SoundService.playSwitch();
+      handleProgressiveToggled(revealAllTrueFalse);
+    }
+
+    void onBlurDemoTap() {
+      SoundService.playSwitch();
+      onBlurToggled(!blurEnabled);
+    }
+
+    void onColoredTextDemoTap() {
+      SoundService.playSwitch();
+      onColoredTextToggled(!coloredTextEnabled);
+    }
+
+    void onBionicDemoTap() {
+      SoundService.playSwitch();
+      onBionicToggled(!bionicEnabled);
+    }
+
+    // Same wrapping for JustifiedReadingDemo's onToggle — its tap also
+    // commits a boolean swap, just via a different prop name. Wrapping
+    // here keeps the un-wrapped onJustifiedReadingToggled intact for the
+    // SwitchMenuItem above (which routes through RLSwitch's own click).
+    void onJustifiedReadingDemoToggle(bool nextValue) {
+      SoundService.playSwitch();
+      onJustifiedReadingToggled(nextValue);
+    }
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -233,7 +262,7 @@ class MenuSection extends StatelessWidget {
           onChanged: onJustifiedReadingToggled,
         ),
 
-        JustifiedReadingDemo(onToggle: onJustifiedReadingToggled),
+        JustifiedReadingDemo(onToggle: onJustifiedReadingDemoToggle),
 
         const MenuDivider(),
 
@@ -298,6 +327,7 @@ class MenuItem extends StatelessWidget {
 
     void handleMenuItemTap() {
       HapticFeedback.lightImpact();
+      SoundService.playRandomTextClick();
       onTap();
     }
 
@@ -342,7 +372,11 @@ class SwitchMenuItem extends StatelessWidget {
   }
 
   // Tap anywhere on the row (icon, title, whitespace) toggles the switch.
+  // Fires the switch click here because the row tap bypasses RLSwitch
+  // (which only sounds when CupertinoSwitch itself is the tap target),
+  // so without this the row would commit the toggle silently.
   void handleRowTap() {
+    SoundService.playSwitch();
     handleSwitchChange(!value);
   }
 

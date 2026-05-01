@@ -5,6 +5,7 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:readlock/course_screens/CourseAccentScope.dart';
 import 'package:readlock/course_screens/CourseLoadingScreen.dart';
 import 'package:readlock/course_screens/widgets/CCJSONContentFactory.dart';
 import 'package:readlock/course_screens/data/CourseData.dart';
@@ -20,6 +21,7 @@ import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/design_system/RLConfirmationDialog.dart';
 import 'package:readlock/constants/DartAliases.dart';
 import 'package:readlock/services/ScreenProtectionService.dart';
+import 'package:readlock/services/feedback/SoundService.dart';
 
 import 'package:pixelarticons/pixel.dart';
 
@@ -129,7 +131,12 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
       return LoadingScreen();
     }
 
-    return SelectionContainer.disabled(child: MainCourseScreen());
+    final Color courseAccentColor = getCourseAccentColor();
+
+    return CourseAccentScope(
+      accentColor: courseAccentColor,
+      child: SelectionContainer.disabled(child: MainCourseScreen()),
+    );
   }
 
   // Loading screen widget — shares CourseLoadingScreen so the picked bird
@@ -509,6 +516,7 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
   // the bookmark used to occupy.
   void handleNightShiftTap() {
     HapticFeedback.lightImpact();
+    SoundService.playRandomTextClick();
 
     NightShiftBottomSheet.show(context);
   }

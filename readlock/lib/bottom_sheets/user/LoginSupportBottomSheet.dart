@@ -21,6 +21,7 @@ import 'package:readlock/design_system/RLTextField.dart';
 import 'package:readlock/design_system/RLToast.dart';
 import 'package:readlock/design_system/RLUtility.dart';
 import 'package:readlock/services/auth/AuthService.dart';
+import 'package:readlock/services/feedback/SoundService.dart';
 
 // * Shared layout constants across all four sheets. The outer sheet padding
 // routes through RLBottomSheet's shared no-grabber constant, so every
@@ -119,10 +120,15 @@ class LoginSupportPickerContentState extends State<LoginSupportPickerContent> {
       size: RLDS.iconMedium,
     );
 
+    void onPickerRowTap() {
+      SoundService.playRandomTextClick();
+      onTap();
+    }
+
     return Div.row(
       [Expanded(child: RLTypography.bodyLarge(label)), TrailingIcon],
       padding: const EdgeInsets.symmetric(vertical: RLDS.spacing12),
-      onTap: onTap,
+      onTap: onPickerRowTap,
     );
   }
 

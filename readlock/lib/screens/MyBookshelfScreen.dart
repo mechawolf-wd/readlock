@@ -17,6 +17,7 @@ import 'package:readlock/design_system/RLCourseFilterPanel.dart';
 import 'package:readlock/design_system/RLFadeSwitcher.dart';
 import 'package:readlock/design_system/RLLoadingIndicator.dart';
 import 'package:readlock/design_system/RLLunarBlur.dart';
+import 'package:readlock/design_system/RLToast.dart';
 import 'package:readlock/constants/DartAliases.dart';
 import 'package:readlock/constants/RLCourseGenres.dart';
 import 'package:readlock/constants/RLCoursePalette.dart';
@@ -26,6 +27,7 @@ import 'package:readlock/constants/RLUIStrings.dart';
 import 'package:readlock/bottom_sheets/user/SettingsBottomSheet.dart';
 import 'package:readlock/screens/profile/BirdPicker.dart';
 import 'package:readlock/services/auth/UserService.dart';
+import 'package:readlock/services/feedback/SoundService.dart';
 import 'package:readlock/services/purchases/PurchaseNotifiers.dart';
 import 'package:readlock/models/UserModel.dart';
 import 'package:readlock/utility_widgets/text_animation/BionicText.dart';
@@ -234,16 +236,22 @@ class BookshelfScreenState extends State<BookshelfScreen> {
   }
 
   void handleLoadMoreTap() {
+    final int totalFilteredCount = getFilteredSavedCourses().length;
+    final bool hasNothingMoreToLoad = visibleCoursesCount >= totalFilteredCount;
+
+    if (hasNothingMoreToLoad) {
+      RLToast.info(context, RLUIStrings.LOAD_MORE_NOTHING_LEFT);
+      return;
+    }
+
     setState(() {
       visibleCoursesCount += BOOKSHELF_PAGE_SIZE;
     });
   }
 
   void navigateToCourse(String courseId) {
-    Navigator.push(
-      context,
-      RLDS.fadeTransition(CourseRoadmapScreen(courseId: courseId)),
-    );
+    SoundService.playRandomTextClick();
+    Navigator.push(context, RLDS.fadeTransition(CourseRoadmapScreen(courseId: courseId)));
   }
 
   @override
@@ -530,18 +538,10 @@ class BookshelfScreenState extends State<BookshelfScreen> {
     );
   }
 
-  // Rendered only when more filtered courses exist than are currently visible.
-  // Tapping it expands the visible window by BOOKSHELF_PAGE_SIZE. Counts
-  // against the filtered list so an active filter doesn't keep showing
-  // Load more for hidden rows that no longer pass the filter.
+  // Always rendered under the Owned list, matching the Search screen's
+  // unfiltered Load more button. handleLoadMoreTap surfaces an info toast
+  // when the visible window already covers the filtered list.
   Widget LoadMoreSlot() {
-    final int totalFilteredCount = getFilteredSavedCourses().length;
-    final bool hasMoreCoursesToShow = visibleCoursesCount < totalFilteredCount;
-
-    return RenderIf.condition(hasMoreCoursesToShow, LoadMoreButton());
-  }
-
-  Widget LoadMoreButton() {
     return Padding(
       padding: const EdgeInsets.only(top: RLDS.spacing16),
       child: RLButton.secondary(

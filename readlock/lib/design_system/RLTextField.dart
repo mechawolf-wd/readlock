@@ -8,6 +8,7 @@ import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/constants/RLUIStrings.dart';
 import 'package:readlock/design_system/RLLunarBlur.dart';
+import 'package:readlock/services/feedback/SoundService.dart';
 
 class RLTextField extends StatefulWidget {
   final TextEditingController? controller;
@@ -60,6 +61,14 @@ class RLTextField extends StatefulWidget {
 class RLTextFieldState extends State<RLTextField> {
   // True while the user is actively pressing the eye icon.
   bool isRevealing = false;
+
+  // Fires the same random text-click as the rest of the UI when the
+  // reader taps into the field. TextField.onTap fires on each tap,
+  // including taps that just move the caret inside an already-focused
+  // field, which matches the "every interaction clicks" feel.
+  void handleFieldTap() {
+    SoundService.playRandomTextClick();
+  }
 
   void handleRevealStart() {
     setState(() {
@@ -121,6 +130,7 @@ class RLTextFieldState extends State<RLTextField> {
         decoration: inputDecoration,
         onChanged: widget.onChanged,
         onEditingComplete: widget.onEditingComplete,
+        onTap: handleFieldTap,
       ),
     );
   }

@@ -12,6 +12,7 @@ import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLUIStrings.dart';
 import 'package:readlock/design_system/RLUtility.dart';
 import 'package:readlock/services/auth/UserService.dart';
+import 'package:readlock/services/feedback/SoundService.dart';
 
 // * Common-bird sheets pack art into 64x64 cells with 32x32 content centered.
 // * Exotic-bird sheets are tightly packed (each cell is its own bird-bounding
@@ -271,6 +272,7 @@ class BirdCarouselState extends State<BirdCarousel> {
 
   void handlePageChanged(int newIndex) {
     HapticFeedback.selectionClick();
+    SoundService.playRandomTextClick();
 
     setState(() {
       selectedIndex = newIndex;

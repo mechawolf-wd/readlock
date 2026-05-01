@@ -2,7 +2,7 @@
 // bird and reading preferences before they reach the bookshelf.
 //
 // One step per page: bird, typeface, column width, then the toggle-driven
-// reading options (Progressive → Focus → Accent → Bionic → RSVP) ordered
+// reading options (Progressive → Focus → Accent → Bionic) ordered
 // most-important to special-mode. Each step reuses the same demo widget
 // that lives under it in Settings (SettingsDemos.dart) so what the reader
 // sees here is the exact preview they would see in Settings.
@@ -16,18 +16,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pixelarticons/pixel.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
-import 'package:readlock/constants/RLReadingJustified.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLUIStrings.dart';
 import 'package:readlock/design_system/RLLunarBlur.dart';
 import 'package:readlock/design_system/RLStarfieldBackground.dart';
 import 'package:readlock/design_system/RLSwitch.dart';
+import 'package:readlock/design_system/RLUtility.dart';
 import 'package:readlock/models/UserModel.dart';
 import 'package:readlock/screens/profile/BirdPicker.dart';
 import 'package:readlock/screens/profile/SettingsDemos.dart';
 import 'package:readlock/services/auth/UserService.dart';
 import 'package:readlock/utility_widgets/text_animation/BionicText.dart';
-import 'package:readlock/utility_widgets/text_animation/RSVPText.dart';
 
 const EdgeInsets ONBOARDING_PAGE_PADDING = EdgeInsets.symmetric(horizontal: RLDS.spacing24);
 const EdgeInsets ONBOARDING_FOOTER_PADDING = EdgeInsets.fromLTRB(
@@ -36,8 +35,6 @@ const EdgeInsets ONBOARDING_FOOTER_PADDING = EdgeInsets.fromLTRB(
   RLDS.spacing24,
   RLDS.spacing24,
 );
-const EdgeInsets ONBOARDING_CARD_PADDING = EdgeInsets.all(RLDS.spacing20);
-
 // Tap-area padding around each chevron — RLDS.spacing12 gives a 44pt tap
 // target with the iconXLarge glyph at its centre, matching Apple's HIG
 // minimum without growing the footer past the safe area gap below.
@@ -91,8 +88,6 @@ class OnboardingFlowState extends State<OnboardingFlow> {
   bool blurEnabled = true;
   bool coloredTextEnabled = true;
   bool bionicEnabled = false;
-  bool rsvpEnabled = false;
-  bool justifiedReadingEnabled = false;
 
   @override
   void initState() {
@@ -121,8 +116,6 @@ class OnboardingFlowState extends State<OnboardingFlow> {
       blurEnabled = user.blur;
       coloredTextEnabled = user.coloredText;
       bionicEnabled = user.bionic;
-      rsvpEnabled = user.rsvp;
-      justifiedReadingEnabled = user.justifiedReading;
     });
   }
 
@@ -135,7 +128,7 @@ class OnboardingFlowState extends State<OnboardingFlow> {
     return [
       // Bird step — no header, no card. The carousel floats directly on
       // the starfield so the chosen bird reads as the screen's hero.
-      const OnboardingStepSpec(body: BirdCarousel(), transparentBackground: true),
+      const OnboardingStepSpec(body: BirdCarousel()),
 
       const OnboardingStepSpec(title: RLUIStrings.MENU_READING_FONT, body: ReadingFontDemo()),
 
@@ -174,24 +167,14 @@ class OnboardingFlowState extends State<OnboardingFlow> {
         body: BionicDemo(isEnabled: bionicEnabled),
       ),
 
-      OnboardingStepSpec(
-        title: RLUIStrings.MENU_RSVP,
-        toggle: OnboardingToggle(value: rsvpEnabled, onChanged: handleRsvpToggled),
-        body: const RSVPDemo(isEnabled: true),
-      ),
-
-      // Justified text — paragraph-shape preference. The demo card itself
-      // doubles as a tap-target via JustifiedReadingDemo's onToggle, so
-      // tapping either the switch or the preview flips the setting.
-      OnboardingStepSpec(
-        title: RLUIStrings.MENU_JUSTIFIED_READING,
-        toggle: OnboardingToggle(
-          value: justifiedReadingEnabled,
-          onChanged: handleJustifiedReadingToggled,
-        ),
-        body: JustifiedReadingDemo(onToggle: handleJustifiedReadingToggled),
-      ),
+      // Final step — single transparent "Read" button that closes the
+      // onboarding flow and drops the reader on the bookshelf.
+      OnboardingStepSpec(body: OnboardingReadButton(onTap: handleFinishTap)),
     ];
+  }
+
+  void handleFinishTap() {
+    Navigator.of(context).maybePop();
   }
 
   // * Toggle handlers — same fire-and-forget persistence pattern as
@@ -221,18 +204,6 @@ class OnboardingFlowState extends State<OnboardingFlow> {
     setState(() => bionicEnabled = value);
     bionicEnabledNotifier.value = value;
     UserService.updateBionic(value);
-  }
-
-  void handleRsvpToggled(bool value) {
-    setState(() => rsvpEnabled = value);
-    rsvpEnabledNotifier.value = value;
-    UserService.updateRsvp(value);
-  }
-
-  void handleJustifiedReadingToggled(bool value) {
-    setState(() => justifiedReadingEnabled = value);
-    justifiedReadingEnabledNotifier.value = value;
-    UserService.updateJustifiedReading(value);
   }
 
   void handleStepChanged(int newStepIndex) {
@@ -309,22 +280,15 @@ class OnboardingFlowState extends State<OnboardingFlow> {
 
 // One step's static descriptor. `toggle` is null for picker-driven steps
 // (typeface, column) and present for every reading-mode step gated by a
-// switch. `transparentBackground` skips the lunar-blur card frame so the
-// body floats directly on the starfield (the bird picker uses this).
-// `title` is null when the step doesn't render a header at all (the bird
-// picker again — the carousel's selected-name label is its own title).
+// switch. `title` is null when the step doesn't render a header at all
+// (the bird picker, where the carousel's selected-name label is its own
+// title).
 class OnboardingStepSpec {
   final String? title;
   final OnboardingToggle? toggle;
   final Widget body;
-  final bool transparentBackground;
 
-  const OnboardingStepSpec({
-    this.title,
-    this.toggle,
-    required this.body,
-    this.transparentBackground = false,
-  });
+  const OnboardingStepSpec({this.title, this.toggle, required this.body});
 }
 
 class OnboardingToggle {
@@ -335,9 +299,9 @@ class OnboardingToggle {
 }
 
 // Single-step page — header (title + optional switch) over the body
-// widget. The frame is either a lunar-blur card or no chrome at all,
-// depending on the spec's `transparentBackground` flag. The header
-// collapses entirely when the spec's title is null.
+// widget. No card frame: every step floats directly on the starfield, so
+// the demos read as the hero of each step. The header collapses entirely
+// when the spec's title is null.
 class OnboardingStepPage extends StatelessWidget {
   final OnboardingStepSpec spec;
 
@@ -363,34 +327,7 @@ class OnboardingStepPage extends StatelessWidget {
 
     return Padding(
       padding: ONBOARDING_PAGE_PADDING,
-      child: Center(
-        child: SingleChildScrollView(
-          child: StepFrame(spec: spec, child: content),
-        ),
-      ),
-    );
-  }
-}
-
-// Wraps the step content in a lunar-blur card unless the spec opts out
-// via `transparentBackground` — in which case the content is returned
-// as-is so it sits directly on the starfield.
-class StepFrame extends StatelessWidget {
-  final OnboardingStepSpec spec;
-  final Widget child;
-
-  const StepFrame({super.key, required this.spec, required this.child});
-
-  @override
-  Widget build(BuildContext context) {
-    if (spec.transparentBackground) {
-      return child;
-    }
-
-    return RLLunarBlur(
-      borderRadius: RLDS.borderRadiusMedium,
-      padding: ONBOARDING_CARD_PADDING,
-      child: child,
+      child: Center(child: SingleChildScrollView(child: content)),
     );
   }
 }
@@ -482,5 +419,39 @@ class OnboardingArrowButton extends StatelessWidget {
       HapticFeedback.lightImpact();
       rawHandler();
     };
+  }
+}
+
+// Final-step "Read" button — same transparent lunar-blur surface as the
+// roadmap's continue button, sized to the page's full width so it reads
+// as the screen's only call to action.
+class OnboardingReadButton extends StatelessWidget {
+  final VoidCallback onTap;
+
+  const OnboardingReadButton({super.key, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    const EdgeInsets buttonPadding = EdgeInsets.symmetric(
+      vertical: RLDS.spacing16,
+      horizontal: RLDS.spacing24,
+    );
+
+    return RLLunarBlur(
+      borderRadius: RLDS.borderRadiusSmall,
+      borderColor: RLDS.transparent,
+      child: Div.row(
+        [RLTypography.bodyLarge(RLUIStrings.ONBOARDING_READ_LABEL, color: RLDS.primary)],
+        width: double.infinity,
+        padding: buttonPadding,
+        mainAxisAlignment: MainAxisAlignment.center,
+        onTap: handleTap,
+      ),
+    );
+  }
+
+  void handleTap() {
+    HapticFeedback.lightImpact();
+    onTap();
   }
 }

@@ -20,6 +20,7 @@ import 'package:readlock/models/UserModel.dart';
 import 'package:readlock/screens/OnboardingScreen.dart';
 import 'package:readlock/services/auth/AuthService.dart';
 import 'package:readlock/services/auth/UserService.dart';
+import 'package:readlock/services/feedback/SoundService.dart';
 
 class LoginBottomSheet {
   // * Dev-only bypass.
@@ -127,6 +128,8 @@ class LoginSheetState extends State<LoginSheet> {
   // * Social sign-in handlers
 
   Future<void> handleAppleLoginTap() async {
+    SoundService.playRandomTextClick();
+
     setState(() {
       isAuthenticating = true;
     });
@@ -137,6 +140,8 @@ class LoginSheetState extends State<LoginSheet> {
   }
 
   Future<void> handleGoogleLoginTap() async {
+    SoundService.playRandomTextClick();
+
     setState(() {
       isAuthenticating = true;
     });
@@ -600,8 +605,15 @@ class LoginSheetState extends State<LoginSheet> {
   }
 
   Widget ClickableTextLink({required String label, required VoidCallback? onTap}) {
+    final VoidCallback? wrappedTap = onTap == null
+        ? null
+        : () {
+            SoundService.playRandomTextClick();
+            onTap();
+          };
+
     return GestureDetector(
-      onTap: onTap,
+      onTap: wrappedTap,
       child: RLTypography.bodyMedium(label, color: RLDS.textSecondary),
     );
   }

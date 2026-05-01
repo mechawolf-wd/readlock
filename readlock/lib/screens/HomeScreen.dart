@@ -21,6 +21,7 @@ import 'package:readlock/design_system/RLUtility.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/MainNavigation.dart';
+import 'package:readlock/services/feedback/SoundService.dart';
 import 'package:readlock/services/purchases/PurchaseNotifiers.dart';
 import 'package:readlock/utility_widgets/text_animation/RLTypewriterText.dart';
 
@@ -119,7 +120,8 @@ class HomeScreenState extends State<HomeScreen> {
   // shelf, so we filter the catalogue against purchasedCoursesNotifier
   // before drawing. When every course is owned (or the catalogue is
   // empty) we surface an info toast so the tap doesn't read as a dead
-  // button.
+  // button. The toast is the only feedback in that case — the success
+  // chime only plays when a fresh course is actually picked.
   void handleRandomBookTap() {
     final Set<String> ownedCourseIds = purchasedCoursesNotifier.value;
 
@@ -141,6 +143,7 @@ class HomeScreenState extends State<HomeScreen> {
     final JSONMap randomCourse = unownedCourses[randomIndex];
     final String randomCourseId = randomCourse['course-id'] as String;
 
+    SoundService.playPurchased();
     navigateToCourse(randomCourseId);
   }
 
@@ -256,7 +259,10 @@ class HomeScreenState extends State<HomeScreen> {
     final String? courseColor = course['color'] as String?;
     final String courseId = course['course-id'] as String? ?? '';
 
-    void onCardTap() => navigateToCourse(courseId);
+    void onCardTap() {
+      SoundService.playRandomTextClick();
+      navigateToCourse(courseId);
+    }
 
     final Widget bookRow = Div.row([
       RLCourseBookImage(courseColor: courseColor, size: LIST_CARD_BOOK_SIZE),
@@ -327,6 +333,7 @@ class HomeScreenState extends State<HomeScreen> {
 
     void onContinueTap() {
       HapticFeedback.lightImpact();
+      SoundService.playEnter();
       navigateToCourse(courseId);
     }
 
@@ -430,7 +437,10 @@ class HomeScreenState extends State<HomeScreen> {
         ? null
         : () => CoursePurchaseBottomSheet.show(context, course: course);
 
-    void onCardTap() => navigateToCourse(courseId);
+    void onCardTap() {
+      SoundService.playRandomTextClick();
+      navigateToCourse(courseId);
+    }
 
     return BookListCard(
       title: courseTitle,

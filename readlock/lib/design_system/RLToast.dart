@@ -2,11 +2,14 @@
 // error, success). Card-styled, tap to dismiss, quick opacity animation.
 // Sits at the top of the overlay with the same outer margin as page content.
 
+import 'dart:ui';
+
 import 'package:flutter/material.dart' hide Typography;
 import 'package:pixelarticons/pixel.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/design_system/RLLunarBlur.dart';
+import 'package:readlock/services/feedback/SoundService.dart';
 
 // * Tuning — fade timing pulled from RLDS so every opacity transition in
 // the app (reveal, fade switcher, toast) shares one token.
@@ -72,18 +75,22 @@ final RLToastController rlToastController = RLToastController();
 // * Public API
 class RLToast {
   static void info(BuildContext context, String message) {
+    SoundService.playRandomTextClick();
     rlToastController.show(context: context, message: message, variant: RLToastVariant.info);
   }
 
   static void warning(BuildContext context, String message) {
+    SoundService.playNegative();
     rlToastController.show(context: context, message: message, variant: RLToastVariant.warning);
   }
 
   static void error(BuildContext context, String message) {
+    SoundService.playNegative();
     rlToastController.show(context: context, message: message, variant: RLToastVariant.error);
   }
 
   static void success(BuildContext context, String message) {
+    SoundService.playPurchased();
     rlToastController.show(context: context, message: message, variant: RLToastVariant.success);
   }
 
@@ -220,39 +227,68 @@ class RLToastViewState extends State<RLToastView> with SingleTickerProviderState
       top: topSafeArea + RLDS.spacing24,
       left: RLDS.spacing24,
       right: RLDS.spacing24,
-      child: FadeTransition(
-        opacity: fadeAnimation,
-        child: Material(
-          color: RLDS.transparent,
-          child: GestureDetector(
-            onTap: handleTapToDismiss,
-            child: ToastCard(style: style),
-          ),
+      child: Material(
+        color: RLDS.transparent,
+        child: GestureDetector(
+          onTap: handleTapToDismiss,
+          child: ToastCard(style: style),
         ),
       ),
     );
   }
 
-  // Frosted LunarBlur surface (default RLDS.surface tint) with a 2px
-  // variant-coloured border. Variant identity = leading icon + edge colour;
-  // the body stays the same neutral surface across info/warning/error/success.
+  // Frosted variant-bordered surface. Built inline rather than via
+  // RLLunarBlur because the toast animates its blur sigma alongside its
+  // tint and content opacity — wrapping a BackdropFilter in a FadeTransition
+  // (the obvious approach) produces a "blur snaps in at the end" pop, since
+  // Opacity around BackdropFilter doesn't blend the blur kernel smoothly.
+  // Growing sigma from 0 to full instead lets the frosted effect bloom in.
   Widget ToastCard({required RLToastVariantStyle style}) {
     final Icon VariantIcon = Icon(style.icon, color: style.color, size: TOAST_ICON_SIZE);
 
-    return RLLunarBlur(
-      borderRadius: RLDS.borderRadiusSmall,
-      borderColor: style.color,
-      borderWidth: RL_TOAST_BORDER_WIDTH,
-      padding: const EdgeInsets.symmetric(horizontal: RLDS.spacing16, vertical: RLDS.spacing12),
-      child: Row(
-        children: [
-          VariantIcon,
+    final Widget cardContent = Row(
+      children: [
+        VariantIcon,
 
-          const SizedBox(width: RLDS.spacing12),
+        const SizedBox(width: RLDS.spacing12),
 
-          Expanded(child: RLTypography.bodyMedium(widget.message, color: RLDS.textPrimary)),
-        ],
-      ),
+        Expanded(child: RLTypography.bodyMedium(widget.message, color: RLDS.textPrimary)),
+      ],
+    );
+
+    final BorderRadius radius = RLDS.borderRadiusSmall;
+    const EdgeInsets cardPadding = EdgeInsets.symmetric(
+      horizontal: RLDS.spacing16,
+      vertical: RLDS.spacing12,
+    );
+
+    return AnimatedBuilder(
+      animation: fadeAnimation,
+      builder: (BuildContext _, Widget? __) {
+        final double progress = fadeAnimation.value;
+        final double blurSigma = RL_LUNAR_BLUR_DEFAULT_SIGMA * progress;
+        final double surfaceAlpha = RL_LUNAR_BLUR_DEFAULT_SURFACE_ALPHA * progress;
+        final Color tintedSurface = RLDS.surface.withValues(alpha: surfaceAlpha);
+        final Color animatedBorder = style.color.withValues(alpha: progress);
+
+        final BoxDecoration tintDecoration = BoxDecoration(
+          color: tintedSurface,
+          border: Border.all(color: animatedBorder, width: RL_TOAST_BORDER_WIDTH),
+          borderRadius: radius,
+        );
+
+        return ClipRRect(
+          borderRadius: radius,
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: blurSigma, sigmaY: blurSigma),
+            child: Container(
+              decoration: tintDecoration,
+              padding: cardPadding,
+              child: Opacity(opacity: progress, child: cardContent),
+            ),
+          ),
+        );
+      },
     );
   }
 }

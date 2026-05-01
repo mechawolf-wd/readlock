@@ -15,11 +15,13 @@ import 'package:readlock/design_system/RLButton.dart';
 import 'package:readlock/design_system/RLFadeSwitcher.dart';
 import 'package:readlock/design_system/RLLoadingIndicator.dart';
 import 'package:readlock/design_system/RLCourseFilterPanel.dart';
+import 'package:readlock/design_system/RLToast.dart';
 import 'package:readlock/constants/RLCourseGenres.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/constants/RLUIStrings.dart';
 import 'package:readlock/constants/DartAliases.dart';
+import 'package:readlock/services/feedback/SoundService.dart';
 import 'package:readlock/services/purchases/PurchaseNotifiers.dart';
 import 'package:readlock/MainNavigation.dart';
 import 'package:readlock/utility_widgets/text_animation/RLTypewriterText.dart';
@@ -116,9 +118,15 @@ class CoursesScreenState extends State<CoursesScreen> {
 
   Future<void> handleLoadMoreTap() async {
     final bool isAlreadyLoading = isLoadingMore;
-    final bool hasNoCursor = coursesCursor == null;
 
-    if (isAlreadyLoading || hasNoCursor || !hasMoreCourses) {
+    if (isAlreadyLoading) {
+      return;
+    }
+
+    final bool hasNothingMoreToLoad = coursesCursor == null || !hasMoreCourses;
+
+    if (hasNothingMoreToLoad) {
+      RLToast.info(context, RLUIStrings.LOAD_MORE_NOTHING_LEFT);
       return;
     }
 
@@ -279,6 +287,7 @@ class CoursesScreenState extends State<CoursesScreen> {
   }
 
   void navigateToCourse(String courseId) {
+    SoundService.playRandomTextClick();
     Navigator.push(
       context,
       RLDS.fadeTransition(CourseRoadmapScreen(courseId: courseId)),
@@ -423,12 +432,6 @@ class CoursesScreenState extends State<CoursesScreen> {
   }
 
   Widget LoadMoreSlot() {
-    final bool hasNoMoreCourses = !hasMoreCourses;
-
-    if (hasNoMoreCourses) {
-      return const SizedBox.shrink();
-    }
-
     return Padding(
       padding: const EdgeInsets.only(top: RLDS.spacing16),
       child: LoadMoreControl(),

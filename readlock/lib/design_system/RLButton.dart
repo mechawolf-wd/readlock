@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
+import 'package:readlock/services/feedback/SoundService.dart';
 
 enum RLButtonVariant { primary, secondary, tertiary }
 
@@ -132,8 +133,9 @@ class RLButton extends StatelessWidget {
   }
 
   // Wraps an optional tap handler so every button press fires a single
-  // light haptic before the underlying action runs. Returns null when
-  // no handler is supplied so the GestureDetector stays inert.
+  // light haptic and a random text-click sound before the underlying
+  // action runs. Returns null when no handler is supplied so the
+  // GestureDetector stays inert.
   VoidCallback? wrapWithHaptic(VoidCallback? rawHandler) {
     if (rawHandler == null) {
       return null;
@@ -141,6 +143,7 @@ class RLButton extends StatelessWidget {
 
     return () {
       HapticFeedback.lightImpact();
+      SoundService.playRandomTextClick();
       rawHandler();
     };
   }

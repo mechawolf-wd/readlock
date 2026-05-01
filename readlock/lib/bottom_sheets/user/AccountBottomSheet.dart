@@ -10,6 +10,7 @@ import 'package:readlock/design_system/RLUtility.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/constants/RLUIStrings.dart';
+import 'package:readlock/services/feedback/SoundService.dart';
 
 import 'package:pixelarticons/pixel.dart';
 
@@ -65,6 +66,8 @@ class AccountSheet extends StatelessWidget {
   }
 
   void handleDeleteAccountTap(BuildContext context) {
+    SoundService.playLogout();
+
     // Delete is the filled red CTA on top, Cancel drops to the muted
     // tertiary slot below.
     RLConfirmationDialog.show(

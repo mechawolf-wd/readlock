@@ -13,6 +13,7 @@ class RLUIStrings {
   static const String BOOKSHELF_OWNED_HEADING = 'Owned';
   static const String BOOKSHELF_EMPTY_MESSAGE = '*chirp* - read something to see it here';
   static const String BOOKSHELF_LOAD_MORE_LABEL = 'Load more';
+  static const String LOAD_MORE_NOTHING_LEFT = "*chirp* - that's all of them";
 
   // * Empty / loading states
   static const String NO_COURSES_MESSAGE = '';
@@ -71,7 +72,7 @@ class RLUIStrings {
   static const String SUPPORT_RESEND_VERIFICATION_LABEL = 'Resend verification link';
   static const String SUPPORT_RESEND_VERIFICATION_DESCRIPTION =
       'We will resend the link for you';
-  static const String SUPPORT_RESEND_VERIFICATION_BUTTON_LABEL = 'Resend verification';
+  static const String SUPPORT_RESEND_VERIFICATION_BUTTON_LABEL = 'Resend link';
   static const String SUPPORT_SEND_RESET_LINK_LOADING_LABEL = 'Resetting...';
   static const String SUPPORT_RESEND_VERIFICATION_LOADING_LABEL = 'Resending...';
   static const String SUPPORT_EMAIL_LABEL = 'Email support';
@@ -153,8 +154,7 @@ class RLUIStrings {
   static const String FOR_YOUR_PERSONALITY_TITLE = 'Top 3 (most purchased)';
   static const String FOR_YOUR_PERSONALITY_SUBTITLE = 'Read these only if you want';
   static const String SURPRISE_ME_LABEL = 'Try out something new';
-  static const String SURPRISE_ME_NO_RESULTS_TOAST =
-      'No new course to try right now.';
+  static const String SURPRISE_ME_NO_RESULTS_TOAST = 'No new course to try right now.';
 
   // * Courses Screen
   static const String SEARCH_PLACEHOLDER = 'Title';
@@ -235,7 +235,7 @@ class RLUIStrings {
   static const String MENU_FEATHERS = 'Feathers';
   static const String MENU_TYPING_SOUND = 'Typing sound';
   static const String MENU_SOUNDS = 'Sounds';
-  static const String MENU_HAPTICS = 'Haptics';
+  static const String MENU_HAPTICS = 'Haptics (clicks)';
   // "Progressive" is the user-facing label for what the code still refers
   // to internally as "reveal" — same bool, inverted meaning. ON = text
   // types in progressively; OFF = text appears all at once. The switch
@@ -271,30 +271,30 @@ class RLUIStrings {
   static const String MENU_READING_FONT = 'Typeface';
   static const String FONT_PICKER_TITLE = 'Typography';
   static const String FONT_DEMO_SAMPLE_TEXT =
-      'Good design is honest. It reveals the product and its function.';
+      'Trees in a forest pass sugar through fungal threads under the soil.';
 
   // * Reading Column Width
   static const String MENU_READING_COLUMN = 'Column style';
   static const String MENU_JUSTIFIED_READING = 'Justified text';
   static const String DEMO_READING_COLUMN_TEXT =
-      'Narrow columns ease eye movement and let you sweep one short line at '
-      'a time, keeping focus steady on long reads.';
+      'Voyager 1 left the heliosphere in 2012 and is still calling home, with '
+      'a golden record bolted to its hull.';
   static const String DEMO_JUSTIFIED_TEXT =
-      'Justified text aligns both edges of the paragraph so every line meets '
-      'the same right margin, giving long passages a calmer, more bookish '
-      'silhouette on the page.';
+      'Airbnb started on an air mattress in a San Francisco loft after the '
+      'founders missed rent, and they kept the lights on for months by selling '
+      'Obama O\'s cereal at the 2008 conventions.';
 
   // * Settings Demos
-  static const String DEMO_REVEAL_TEXT = 'Design is not just what it looks like.';
-  static const String DEMO_BLUR_PREVIOUS = 'Previous sentence fades away.';
-  static const String DEMO_BLUR_CURRENT = 'Current sentence stays clear.';
-  static const String DEMO_COLORED_HIGHLIGHT = 'Key terms';
-  static const String DEMO_COLORED_SUFFIX = ' are highlighted in text.';
+  static const String DEMO_REVEAL_TEXT = 'The human brain runs on twenty watts.';
+  static const String DEMO_BLUR_PREVIOUS = 'Octopuses taste with their arms.';
+  static const String DEMO_BLUR_CURRENT = 'Each sucker is its own tongue.';
+  static const String DEMO_COLORED_HIGHLIGHT = 'Black holes';
+  static const String DEMO_COLORED_SUFFIX = ' spin almost at the speed of light.';
   static const String DEMO_BIONIC_TEXT =
-      'Bionic reading bolds the first few letters of each word so your eye '
-      'catches the shape before you finish reading it.';
+      'A honeybee back at the hive waggles out where the flowers are and how '
+      'far to fly, and the others head straight there.';
   static const String DEMO_RSVP_TEXT =
-      'Good design is honest. It reveals the product and its function.';
+      'Lightning hits Earth about a hundred times every second.';
   static const String RSVP_WPM_SUFFIX = ' wpm';
 
   // * Settings Bottom Sheet
@@ -302,6 +302,7 @@ class RLUIStrings {
 
   // * Onboarding
   static const String DEV_TRIGGER_ONBOARDING_LABEL = 'Trigger onboarding (mock)';
+  static const String ONBOARDING_READ_LABEL = 'Read';
 
   // * Account Dialogs
   static const String ACCOUNT_DEACTIVATE_MESSAGE =

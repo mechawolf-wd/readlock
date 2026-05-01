@@ -8,6 +8,7 @@ import 'package:flutter/foundation.dart';
 import 'package:readlock/constants/FirebaseConfig.dart';
 import 'package:readlock/constants/RLUIStrings.dart';
 import 'package:readlock/services/LoggingService.dart';
+import 'package:readlock/services/auth/UserPreferencesHydrator.dart';
 import 'package:readlock/services/auth/UserService.dart';
 import 'package:readlock/services/notifications/FirebaseMessagingService.dart';
 import 'package:readlock/services/purchases/PurchaseNotifiers.dart';
@@ -408,6 +409,8 @@ class AuthService {
 
     resetPurchaseState();
 
+    resetUserPreferenceNotifiers();
+
     await FirebaseAuth.instance.signOut();
 
     logger.success('Sign Out');
@@ -509,6 +512,10 @@ class AuthService {
       );
 
       await callable.call();
+
+      resetPurchaseState();
+
+      resetUserPreferenceNotifiers();
 
       try {
         await FirebaseAuth.instance.signOut();

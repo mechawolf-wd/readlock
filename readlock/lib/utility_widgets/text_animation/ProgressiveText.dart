@@ -6,6 +6,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLUIStrings.dart';
+import 'package:readlock/course_screens/CourseAccentScope.dart';
 import 'package:readlock/design_system/RLUtility.dart';
 import 'package:readlock/utility_widgets/text_animation/BionicText.dart';
 import 'package:readlock/utility_widgets/visual_effects/BlurOverlay.dart';
@@ -22,6 +23,36 @@ const Duration progressiveTextDoubleTapTimeout = Duration(milliseconds: 500);
 // typewriter is faster than this window — each gets its own timeline, so
 // adjacent characters crossfade smoothly without popping.
 const Duration progressiveTextLeadingCharacterFadeDuration = Duration(milliseconds: 60);
+
+// Inline markup styling for <c:g>…</c:g> and <c:r>…</c:r> spans. Both render
+// paths (live typewriter + settled CompletedSentenceWidget) route through
+// here so the rule lives in one place.
+//
+//   <c:g> — italic, painted in the active course's accent colour. Falls back
+//           to the legacy markup palette when no CourseAccentScope is in
+//           place (eg. settings preview).
+//   <c:r> — italic + bold, no colour override (inherits from the surrounding
+//           text style).
+TextStyle resolveMarkupStyle(BuildContext context, String colorCode, TextStyle baseStyle) {
+  final bool isAccentMarkup = colorCode == 'g';
+
+  if (isAccentMarkup) {
+    final Color accentColor = CourseAccentScope.of(
+      context,
+      fallback: RLDS.markupGreen,
+    );
+
+    return baseStyle.copyWith(
+      color: accentColor,
+      fontStyle: FontStyle.italic,
+    );
+  }
+
+  return baseStyle.copyWith(
+    fontStyle: FontStyle.italic,
+    fontWeight: FontWeight.bold,
+  );
+}
 
 // Class to represent a segment of text with optional highlighting
 class TextSegmentWithHighlighting {
@@ -232,8 +263,10 @@ class ProgressiveTextState extends State<ProgressiveText> with TickerProviderSta
         currentCharacterPosition = -1; // Start with no characters revealed
       });
 
-      // Start typewriter sound
-      SoundService.playTypewriter();
+      // One random click per new sentence reveal — replaces the looped
+      // typewriter clip so the cadence is one tick per beat instead of a
+      // continuous keyboard chatter.
+      SoundService.playRandomTextClick();
     }
 
     // Simple character-by-character reveal with stable layout
@@ -262,9 +295,6 @@ class ProgressiveTextState extends State<ProgressiveText> with TickerProviderSta
       setState(() {
         isRevealingCurrentSentence = false;
       });
-
-      // Stop typewriter sound
-      SoundService.stopTypewriter();
 
       // Check if all sentences have been revealed
       final bool isLastSentence = currentSentenceNumber == textSentences.length - 1;
@@ -318,9 +348,6 @@ class ProgressiveTextState extends State<ProgressiveText> with TickerProviderSta
       setState(() {
         isRevealingCurrentSentence = false;
       });
-
-      // Stop typewriter sound (in case it was playing)
-      SoundService.stopTypewriter();
 
       // Check if all sentences have been revealed
       final bool isLastSentence = currentSentenceNumber == textSentences.length - 1;
@@ -474,9 +501,6 @@ class ProgressiveTextState extends State<ProgressiveText> with TickerProviderSta
       }
     });
 
-    // Stop typewriter sound immediately
-    SoundService.stopTypewriter();
-
     // Check if all sentences have been revealed
     final bool isLastSentence = currentSentenceNumber == textSentences.length - 1;
 
@@ -539,9 +563,6 @@ class ProgressiveTextState extends State<ProgressiveText> with TickerProviderSta
   @override
   void dispose() {
     isRevealingCurrentSentence = false;
-
-    // Stop typewriter sound on disposal
-    SoundService.stopTypewriter();
 
     bionicEnabledNotifier.removeListener(onBionicEnabledChanged);
     leadingCharacterFadeTicker?.dispose();
@@ -854,14 +875,12 @@ class ProgressiveTextState extends State<ProgressiveText> with TickerProviderSta
         cleanTextPosition += beforeText.length;
       }
 
-      // Handle highlighted text
+      // Handle highlighted text. Style branches on <c:g> vs <c:r> via
+      // resolveMarkupStyle so the rule stays in one place across both
+      // render paths.
       final String colorCode = match.group(1)!;
       final String highlightedText = match.group(2)!;
-      final Color highlightColor = RLDS.getMarkupColor(colorCode);
-      final TextStyle highlightStyle = baseStyle.copyWith(
-        color: highlightColor,
-        fontWeight: FontWeight.bold,
-      );
+      final TextStyle highlightStyle = resolveMarkupStyle(context, colorCode, baseStyle);
 
       spans.add(
         createSpanWithColorTransition(
@@ -1129,7 +1148,7 @@ class CompletedSentenceWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final Widget sentenceContent = Div.column(
-      [SentenceText()],
+      [SentenceText(context)],
       crossAxisAlignment: CrossAxisAlignment.start,
       padding: const [0, 0, progressiveTextDefaultBottomSpacing, 0],
     );
@@ -1148,7 +1167,7 @@ class CompletedSentenceWidget extends StatelessWidget {
     );
   }
 
-  Widget SentenceText() {
+  Widget SentenceText(BuildContext context) {
     // Extract conditions above widget logic
     final bool isImageLinkSegment = sentenceText.startsWith('image-link');
     final bool containsHighlighting = sentenceText.contains('<c:');
@@ -1158,7 +1177,7 @@ class CompletedSentenceWidget extends StatelessWidget {
     }
 
     if (containsHighlighting) {
-      return HighlightedTextDisplay();
+      return HighlightedTextDisplay(context);
     }
 
     return Text(sentenceText, style: textStyle, textAlign: textAlign);
@@ -1255,7 +1274,7 @@ class CompletedSentenceWidget extends StatelessWidget {
     );
   }
 
-  Widget HighlightedTextDisplay() {
+  Widget HighlightedTextDisplay(BuildContext context) {
     final List<TextSpan> spans = [];
     final RegExp highlightRegex = RegExp(r'<c:([gr])>([^<]*)</c:\1>');
     String remaining = sentenceText;
@@ -1272,7 +1291,7 @@ class CompletedSentenceWidget extends StatelessWidget {
       }
 
       addTextBeforeHighlight(spans, remaining, match);
-      addHighlightedTextSpan(spans, match);
+      addHighlightedTextSpan(context, spans, match);
 
       remaining = remaining.substring(match.end);
     }
@@ -1300,15 +1319,10 @@ class CompletedSentenceWidget extends StatelessWidget {
     }
   }
 
-  void addHighlightedTextSpan(List<TextSpan> spans, RegExpMatch match) {
+  void addHighlightedTextSpan(BuildContext context, List<TextSpan> spans, RegExpMatch match) {
     final String colorCode = match.group(1)!;
     final String highlightedText = match.group(2)!;
-    final Color highlightColor = RLDS.getMarkupColor(colorCode);
-
-    final TextStyle highlightedTextStyle = textStyle.copyWith(
-      color: highlightColor,
-      fontWeight: FontWeight.bold,
-    );
+    final TextStyle highlightedTextStyle = resolveMarkupStyle(context, colorCode, textStyle);
 
     spans.add(TextSpan(text: highlightedText, style: highlightedTextStyle));
   }

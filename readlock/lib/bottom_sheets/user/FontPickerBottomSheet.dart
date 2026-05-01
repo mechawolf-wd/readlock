@@ -1,9 +1,8 @@
 // Bottom sheet that lets the reader pick the font used for course swipes.
-// Three options shown in a horizontal swipe slider, mirroring the plan
-// slider in FeathersBottomSheet: each card renders its description in the
-// option's typeface so the reader sees a true sample. Swiping the slider
-// updates selectedReadingFontNotifier; every reading surface picks up the
-// change on its next rebuild.
+// Each option is a row in a vertical list rendered in its own typeface so
+// the reader sees a true sample. Tapping a row updates
+// selectedReadingFontNotifier; every reading surface picks up the change
+// on its next rebuild.
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -12,27 +11,24 @@ import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/constants/RLReadingFont.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLUIStrings.dart';
-import 'package:readlock/design_system/RLLunarBlur.dart';
 import 'package:readlock/design_system/RLUtility.dart';
 import 'package:readlock/services/auth/UserService.dart';
 
 import 'package:pixelarticons/pixel.dart';
 
-// Matches AccountBottomSheet / Support sheet outer padding for the title
-// block. The slider itself sits flush to the screen edges so peeking
-// neighbour cards read past the page padding.
-const EdgeInsets FONT_PICKER_TITLE_PADDING = EdgeInsets.fromLTRB(
+const EdgeInsets FONT_PICKER_CONTENT_PADDING = EdgeInsets.fromLTRB(
   RLDS.spacing24,
   RLDS.spacing0,
   RLDS.spacing24,
-  RLDS.spacing0,
+  RLDS.spacing24,
 );
 
-const EdgeInsets FONT_PICKER_BOTTOM_PADDING = EdgeInsets.only(bottom: RLDS.spacing24);
+const EdgeInsets FONT_OPTION_ROW_PADDING = EdgeInsets.symmetric(
+  vertical: RLDS.spacing16,
+);
 
-// * Slider tuning — same horizontal PageView pattern as FeathersBottomSheet.
-const double FONT_SLIDER_HEIGHT = 200.0;
-const double FONT_CARD_VIEWPORT_FRACTION = 0.78;
+const double FONT_OPTION_UNSELECTED_OPACITY = 0.40;
+const Duration FONT_OPTION_OPACITY_FADE = Duration(milliseconds: 200);
 
 class FontPickerBottomSheet {
   static void show(BuildContext context) {
@@ -48,95 +44,60 @@ class FontPickerSheet extends StatefulWidget {
 }
 
 class FontPickerSheetState extends State<FontPickerSheet> {
-  static final Widget HeaderIcon = const Icon(
+  static const Icon HeaderIcon = Icon(
     Pixel.edit,
     color: RLDS.info,
     size: RLDS.iconMedium,
   );
 
   late ReadingFont selectedFont;
-  late PageController fontController;
 
   @override
   void initState() {
     super.initState();
 
     selectedFont = selectedReadingFontNotifier.value;
-
-    final int initialIndex = getInitialFontIndex();
-
-    fontController = PageController(
-      initialPage: initialIndex,
-      viewportFraction: FONT_CARD_VIEWPORT_FRACTION,
-    );
   }
 
-  @override
-  void dispose() {
-    fontController.dispose();
-    super.dispose();
-  }
-
-  int getInitialFontIndex() {
-    for (int optionIndex = 0; optionIndex < READING_FONT_OPTIONS.length; optionIndex++) {
-      final bool isCurrent = READING_FONT_OPTIONS[optionIndex].font == selectedFont;
-
-      if (isCurrent) {
-        return optionIndex;
-      }
-    }
-
-    return 0;
-  }
-
-  // Page change is the selection. Tick haptic per page change matches the
-  // plan slider so swiping between typefaces feels detented.
-  void handlePageChanged(int index) {
-    HapticFeedback.selectionClick();
-
-    final ReadingFont nextFont = READING_FONT_OPTIONS[index].font;
-
-    selectedReadingFontNotifier.value = nextFont;
-
-    setState(() {
-      selectedFont = nextFont;
-    });
-
-    // Optimistic persistence — the notifier update above already drove the UI,
-    // and the Firestore write is fire-and-forget so swiping between fonts
-    // never stalls on a network round-trip. UserService logs failures.
-    UserService.updateReadingFont(nextFont.name);
-  }
-
-  // Tapping an off-centre card animates the slider to that page; tapping
-  // the centred card is a no-op (it's already selected).
-  void handleCardTap(int index) {
-    final bool isAlreadySelected = READING_FONT_OPTIONS[index].font == selectedFont;
+  // Tapping a row selects that font. No-op when the row is already the
+  // active selection so the sheet doesn't re-fire haptics or re-write to
+  // Firestore on a redundant tap.
+  void handleOptionTap(ReadingFont nextFont) {
+    final bool isAlreadySelected = nextFont == selectedFont;
 
     if (isAlreadySelected) {
       return;
     }
 
-    fontController.animateToPage(
-      index,
-      duration: const Duration(milliseconds: 240),
-      curve: Curves.easeOut,
-    );
+    HapticFeedback.selectionClick();
+
+    setState(() {
+      selectedFont = nextFont;
+    });
+
+    selectedReadingFontNotifier.value = nextFont;
+
+    // Optimistic persistence — the notifier update above already drove the UI,
+    // and the Firestore write is fire-and-forget so the sheet never stalls
+    // on a network round-trip. UserService logs failures.
+    UserService.updateReadingFont(nextFont.name);
   }
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: FONT_PICKER_BOTTOM_PADDING,
+      padding: FONT_PICKER_CONTENT_PADDING,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Padding(padding: FONT_PICKER_TITLE_PADDING, child: HeaderRow()),
+          // Header
+          HeaderRow(),
 
-          const Spacing.height(RLDS.spacing24),
+          const Spacing.height(RLDS.spacing16),
 
-          FontSlider(),
+          // Vertical list of font options
+          FontOptionList(),
         ],
       ),
     );
@@ -152,82 +113,45 @@ class FontPickerSheetState extends State<FontPickerSheet> {
     ], mainAxisAlignment: MainAxisAlignment.start);
   }
 
-  Widget FontSlider() {
-    return SizedBox(
-      height: FONT_SLIDER_HEIGHT,
-      child: PageView.builder(
-        controller: fontController,
-        itemCount: READING_FONT_OPTIONS.length,
-        onPageChanged: handlePageChanged,
-        itemBuilder: FontCardForIndex,
-      ),
+  Widget FontOptionList() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: FontOptionRows(),
     );
   }
 
-  Widget FontCardForIndex(BuildContext context, int optionIndex) {
-    final ReadingFontOption option = READING_FONT_OPTIONS[optionIndex];
-    final bool isSelected = option.font == selectedFont;
+  List<Widget> FontOptionRows() {
+    final List<Widget> rows = [];
 
-    void onCardTap() => handleCardTap(optionIndex);
+    for (int optionIndex = 0; optionIndex < READING_FONT_OPTIONS.length; optionIndex++) {
+      final ReadingFontOption option = READING_FONT_OPTIONS[optionIndex];
+      final bool isSelected = option.font == selectedFont;
 
-    return FontCard(option: option, isSelected: isSelected, onTap: onCardTap);
+      void onRowTap() => handleOptionTap(option.font);
+
+      rows.add(FontOptionRow(option: option, isSelected: isSelected, onTap: onRowTap));
+    }
+
+    return rows;
   }
 }
 
-// Single typeface card — frosted LunarBlur pane that fills its slot. The
-// selected (centred) card paints at full opacity; off-centre cards fade
-// to the secondary alpha so the eye lands on the active typeface without
-// hiding the others. Mirrors PlanCard's geometry from FeathersBottomSheet.
-class FontCard extends StatelessWidget {
+// Single row in the font picker list. Renders the option's description in
+// the option's own typeface so the reader sees a true sample. Selected row
+// paints at full opacity; unselected rows fade so the eye lands on the
+// active typeface without hiding the alternatives.
+class FontOptionRow extends StatelessWidget {
   final ReadingFontOption option;
   final bool isSelected;
   final VoidCallback onTap;
 
-  const FontCard({
+  const FontOptionRow({
     super.key,
     required this.option,
     required this.isSelected,
     required this.onTap,
   });
 
-  static const EdgeInsets cardPadding = EdgeInsets.all(RLDS.spacing20);
-  static const EdgeInsets cardOuterPadding = EdgeInsets.symmetric(
-    horizontal: RLDS.spacing8,
-    vertical: RLDS.spacing4,
-  );
-
-  @override
-  Widget build(BuildContext context) {
-    final double cardOpacity = isSelected ? 1.0 : 0.45;
-
-    return Padding(
-      padding: cardOuterPadding,
-      child: GestureDetector(
-        onTap: onTap,
-        behavior: HitTestBehavior.opaque,
-        child: AnimatedOpacity(
-          duration: const Duration(milliseconds: 200),
-          opacity: cardOpacity,
-          child: RLLunarBlur(
-            borderRadius: RLDS.borderRadiusMedium,
-            padding: cardPadding,
-            child: FontCardBody(option: option),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-// Card body — sample text rendered in the option's typeface, centred in
-// the card so the card itself reads as a calm preview pane.
-class FontCardBody extends StatelessWidget {
-  final ReadingFontOption option;
-
-  const FontCardBody({super.key, required this.option});
-
-  // Sample-line style mirrors what CCTextContent renders: readingMedium
-  // promoted to fontSize 18 / height 1.6, white text.
   TextStyle getSampleStyle() {
     return RLTypography.readingMediumStyleFor(option.font).copyWith(
       fontSize: 18,
@@ -239,10 +163,19 @@ class FontCardBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final TextStyle sampleStyle = getSampleStyle();
+    final double rowOpacity = isSelected ? 1.0 : FONT_OPTION_UNSELECTED_OPACITY;
 
-    return Align(
-      alignment: Alignment.topLeft,
-      child: Text(option.description, style: sampleStyle),
+    return GestureDetector(
+      onTap: onTap,
+      behavior: HitTestBehavior.opaque,
+      child: AnimatedOpacity(
+        duration: FONT_OPTION_OPACITY_FADE,
+        opacity: rowOpacity,
+        child: Padding(
+          padding: FONT_OPTION_ROW_PADDING,
+          child: Text(option.description, style: sampleStyle),
+        ),
+      ),
     );
   }
 }

@@ -7,6 +7,7 @@ import 'package:readlock/design_system/RLCard.dart';
 import 'package:readlock/design_system/RLUtility.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
+import 'package:readlock/services/feedback/SoundService.dart';
 import 'package:readlock/utility_widgets/text_animation/ProgressiveText.dart';
 import 'package:readlock/utility_widgets/visual_effects/BlurOverlay.dart';
 import 'package:readlock/design_system/RLFeedbackSnackbar.dart';
@@ -205,6 +206,8 @@ class CCTrueFalseQuestionState extends State<CCTrueFalseQuestion> {
       return;
     }
 
+    SoundService.playRandomTextClick();
+
     setState(() {
       areButtonsUnblurred = true;
     });
@@ -280,10 +283,12 @@ class CCTrueFalseQuestionState extends State<CCTrueFalseQuestion> {
     final bool isCorrect = widget.content.correctAnswerIndex == answerIndex;
 
     if (!isCorrect) {
+      SoundService.playWrong();
       showIncorrectAnswerFeedback(answerIndex);
       return;
     }
 
+    SoundService.playCorrectTrue();
     markQuestionAsAnswered(answerIndex);
     showCorrectAnswerFeedback(answerIndex);
     widget.onAnswerSelected(answerIndex, isCorrect);

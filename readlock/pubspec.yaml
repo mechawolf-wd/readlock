@@ -93,6 +93,7 @@ flutter:
   assets:
     - assets/
     - assets/audio/
+    - assets/audio/ui_sounds/
     - assets/birds/
     - assets/books/
     - assets/logo/

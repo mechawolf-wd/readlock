@@ -223,6 +223,7 @@ class CCQuestionState extends State<CCQuestion> {
 
   void handleAnswerReveal(int optionIndex) {
     HapticsService.lightImpact();
+    SoundService.playRandomTextClick();
 
     setState(() {
       revealedAnswers.add(optionIndex);
@@ -240,13 +241,14 @@ class CCQuestionState extends State<CCQuestion> {
     final bool isCorrectAnswer = widget.content.correctAnswerIndex == optionIndex;
 
     if (!isCorrectAnswer) {
+      SoundService.playWrong();
       showIncorrectAnswerFeedback(optionIndex);
       return;
     }
 
     markQuestionAsAnswered(optionIndex);
     showCorrectAnswerFeedback(optionIndex);
-    SoundService.playCorrectAnswer();
+    SoundService.playCorrect();
     HapticsService.mediumImpact();
 
     widget.onAnswerSelected(optionIndex, isCorrectAnswer);

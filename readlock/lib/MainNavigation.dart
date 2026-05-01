@@ -18,6 +18,7 @@ import 'package:readlock/models/UserModel.dart';
 import 'package:readlock/services/auth/AuthService.dart';
 import 'package:readlock/services/auth/UserPreferencesHydrator.dart';
 import 'package:readlock/services/auth/UserService.dart';
+import 'package:readlock/services/feedback/SoundService.dart';
 import 'package:readlock/services/purchases/PurchaseNotifiers.dart';
 
 import 'package:pixelarticons/pixel.dart';
@@ -137,6 +138,7 @@ class MainNavigationState extends State<MainNavigation> {
     }
 
     HapticFeedback.lightImpact();
+    SoundService.playRandomTextClick();
 
     setState(() {
       currentIndex = navigationItemIndex;

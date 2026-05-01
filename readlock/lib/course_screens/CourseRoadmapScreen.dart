@@ -20,6 +20,7 @@ import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/constants/RLUIStrings.dart';
 import 'package:readlock/design_system/RLToast.dart';
 import 'package:readlock/services/auth/UserService.dart';
+import 'package:readlock/services/feedback/SoundService.dart';
 import 'package:readlock/services/purchases/PurchaseConstants.dart';
 import 'package:readlock/services/purchases/PurchaseNotifiers.dart';
 import 'package:readlock/services/purchases/PurchaseService.dart';
@@ -687,6 +688,8 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
   }
 
   void handleNightShiftTap() {
+    SoundService.playRandomTextClick();
+
     NightShiftBottomSheet.show(context);
   }
 
@@ -703,6 +706,8 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
   // segment past the first would always open the course's very first
   // lesson.
   void navigateToLesson(int lessonIndex, int contentIndex) {
+    SoundService.playEnter();
+
     // Mark this course as the latest opened. The notifier is updated
     // optimistically so HomeScreen's "Reading now…" card reflects the
     // tap immediately when the user pops back; the Firestore write
