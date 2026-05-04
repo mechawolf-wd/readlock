@@ -6,7 +6,7 @@ import 'package:cloud_functions/cloud_functions.dart';
 import 'package:readlock/constants/DartAliases.dart';
 import 'package:readlock/constants/FirebaseConfig.dart';
 
-// Paginated page of courses. `cursor` is opaque to callers — pass it back
+// Paginated page of courses. `cursor` is opaque to callers, pass it back
 // as-is to fetchCoursesPage to get the next page.
 class CoursesPage {
   final JSONList courses;

@@ -1,13 +1,15 @@
 // Mock purchase service.
 //
-// All writes go straight to the user document via UserService (no Cloud
-// Function in the loop yet). The "mock cloud function" in the user's
-// brief means: simulate the round-trip with a brief Future.delayed and
-// always succeed. When the real CF lands, the same call signatures stay,
-// only the body swaps for an HttpsCallable.
+// Wallet (balance) and library (purchasedCourses) writes still go straight
+// to the user document via UserService, so a brief Future.delayed in front
+// of them simulates the payment round-trip. When a real payment provider
+// lands, the same call signatures stay and the body swaps for an
+// HttpsCallable. The lifetime purchase counter on /courses already runs
+// through the incrementTimesPurchased callable, since direct client writes
+// to /courses are denied by firestore.rules.
 //
 // Local notifiers update optimistically before the Firestore write so
-// the UI flips instantly; a failed write rolls them back.
+// the UI flips instantly, a failed write rolls them back.
 
 import 'package:readlock/course_screens/services/FirebaseCourseService.dart';
 import 'package:readlock/services/auth/UserService.dart';
@@ -90,10 +92,11 @@ class PurchaseService {
       return PurchaseResult.failed;
     }
 
-    // Lifetime purchase counter on the course doc — fire-and-forget so a
-    // slow analytics write doesn't gate the user-visible success path. The
-    // increment is atomic via FieldValue.increment, so a missed write here
-    // only loses one tally, never the wallet/library mutations above.
+    // Lifetime purchase counter on the course doc, fire-and-forget so a
+    // slow callable write doesn't gate the user-visible success path. The
+    // bump runs server-side via FieldValue.increment in the cloud function,
+    // so a missed write here only loses one tally, never the wallet or
+    // library mutations above.
     FirebaseCourseService.incrementTimesPurchased(courseId);
 
     return PurchaseResult.success;
