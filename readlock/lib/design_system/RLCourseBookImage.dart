@@ -7,20 +7,15 @@
 import 'package:flutter/material.dart';
 import 'package:readlock/constants/RLCoursePalette.dart';
 
-class RLCourseBookImage extends StatelessWidget {
+class RLSkillBookImage extends StatelessWidget {
   final String? courseColor;
   final double size;
 
-  const RLCourseBookImage({
-    super.key,
-    required this.courseColor,
-    required this.size,
-  });
+  const RLSkillBookImage({super.key, required this.courseColor, required this.size});
 
   @override
   Widget build(BuildContext context) {
-    final String normalized =
-        (courseColor ?? '').replaceAll('#', '').trim().toUpperCase();
+    final String normalized = (courseColor ?? '').replaceAll('#', '').trim().toUpperCase();
     final bool isKnownPaletteColor = KNOWN_COURSE_COLORS.contains(normalized);
 
     final String primaryAssetPath = isKnownPaletteColor
@@ -37,21 +32,14 @@ class RLCourseBookImage extends StatelessWidget {
     );
   }
 
-  Widget FallbackImageBuilder(
-    BuildContext context,
-    Object error,
-    StackTrace? stackTrace,
-  ) {
+  Widget FallbackImageBuilder(BuildContext context, Object error, StackTrace? stackTrace) {
     return Image.asset(
       COURSE_FALLBACK_ASSET,
       width: size,
       height: size,
       fit: BoxFit.contain,
       filterQuality: FilterQuality.none,
-      errorBuilder: (context, error, stackTrace) => SizedBox(
-        width: size,
-        height: size,
-      ),
+      errorBuilder: (context, error, stackTrace) => SizedBox(width: size, height: size),
     );
   }
 }

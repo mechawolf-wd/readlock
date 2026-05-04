@@ -5,7 +5,7 @@
 // eagerly render every owned course.
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:readlock/design_system/RLCourseBookImage.dart';
 import 'package:readlock/services/feedback/HapticsService.dart';
 import 'package:readlock/course_screens/CourseRoadmapScreen.dart';
 import 'package:readlock/course_screens/data/CourseData.dart';
@@ -13,7 +13,6 @@ import 'package:readlock/design_system/RLUtility.dart';
 import 'package:readlock/design_system/RLBalancePill.dart';
 import 'package:readlock/design_system/RLBookListCard.dart';
 import 'package:readlock/design_system/RLButton.dart';
-import 'package:readlock/design_system/RLCourseBookImage.dart';
 import 'package:readlock/design_system/RLCourseFilterPanel.dart';
 import 'package:readlock/design_system/RLFadeSwitcher.dart';
 import 'package:readlock/design_system/RLLoadingIndicator.dart';
@@ -475,7 +474,7 @@ class BookshelfScreenState extends State<BookshelfScreen> {
     final bool hasCourseColor = courseColor != null && courseColor.isNotEmpty;
 
     final Widget bookImage = hasCourseColor
-        ? RLCourseBookImage(courseColor: courseColor, size: bookshelfBookSize)
+        ? RLSkillBookImage(courseColor: courseColor, size: bookshelfBookSize)
         : BookCoverThumbnail(coverImagePath: coverImagePath);
 
     final Widget bookSurface = RLLunarBlur(
@@ -555,6 +554,7 @@ class BookshelfScreenState extends State<BookshelfScreen> {
   Widget BookshelfHeaderWithSettings() {
     void onSettingsTap() {
       HapticsService.lightImpact();
+      SoundService.playRandomTextClick();
       SettingsBottomSheet.show(context);
     }
 

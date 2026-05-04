@@ -9,7 +9,6 @@
 // as a small companion accent.
 
 import 'package:flutter/material.dart' hide Typography;
-import 'package:flutter/services.dart';
 import 'package:readlock/services/feedback/HapticsService.dart';
 import 'package:readlock/bottom_sheets/RLBottomSheet.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';

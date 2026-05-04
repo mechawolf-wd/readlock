@@ -2,6 +2,7 @@
 // Replaces JSONCourseDataService (local asset loading)
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:readlock/constants/DartAliases.dart';
 import 'package:readlock/constants/FirebaseConfig.dart';
 
@@ -189,15 +190,16 @@ class FirebaseCourseService {
   // * Bumps a course's lifetime purchase counter by one.
   //
   // Called by PurchaseService.purchaseCourse on a successful unlock so the
-  // /courses doc tracks how many readers have bought it. Uses
-  // FieldValue.increment so concurrent purchases from multiple devices
-  // accumulate cleanly without read-modify-write races.
+  // /courses doc tracks how many readers have bought it. Direct client
+  // writes to /courses are blocked by firestore.rules, so the bump goes
+  // through a callable cloud function that runs the FieldValue.increment
+  // server-side via the Admin SDK.
 
   static Future<void> incrementTimesPurchased(String courseId) async {
-    final DocumentReference<JSONMap> courseRef = firestore
-        .collection(FirebaseConfig.COURSES_COLLECTION)
-        .doc(courseId);
+    final HttpsCallable callable = FirebaseFunctions.instance.httpsCallable(
+      FirebaseConfig.CLOUD_FUNCTION_INCREMENT_TIMES_PURCHASED,
+    );
 
-    await courseRef.update({'timesPurchased': FieldValue.increment(1)});
+    await callable.call({'courseId': courseId});
   }
 }

@@ -6,6 +6,7 @@ import 'package:readlock/MainNavigation.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/design_system/RLNightShift.dart';
 import 'package:readlock/firebase_options.dart';
+import 'package:readlock/services/ConnectivityService.dart';
 import 'package:readlock/services/NightShiftBrightnessService.dart';
 
 void main() async {
@@ -18,6 +19,11 @@ void main() async {
   // Drives the panel brightness from the Night Shift slider so the dim
   // step actually lowers the screen below the OS minimum.
   NightShiftBrightnessService.initialize();
+
+  // Subscribes to platform connectivity changes so any screen that depends
+  // on network reachability (CoursesScreen) can flip to an offline state
+  // the moment the device drops its transport.
+  ConnectivityService.initialize();
 
   runApp(const ReadlockApp());
 }

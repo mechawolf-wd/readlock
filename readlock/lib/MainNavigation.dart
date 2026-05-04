@@ -5,6 +5,7 @@ import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:readlock/bottom_sheets/user/LoginBottomSheet.dart';
 import 'package:readlock/services/feedback/HapticsService.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/constants/RLUIStrings.dart';
@@ -100,7 +101,17 @@ class MainNavigationState extends State<MainNavigation> {
 
     if (hasUser) {
       hydratePurchaseStateForCurrentUser();
+      return;
     }
+
+    // Signed-out path. AuthService.signOut and deleteAccount already wipe
+    // local state before this listener runs, but we re-run the wipe here
+    // (and clear the dev bypass flag) as a safety net for sessions that
+    // end without going through our explicit teardown: token expiry,
+    // server-side disable, account-deleted-elsewhere, etc.
+    wipeLocalUserSessionState();
+
+    LoginBottomSheet.isDevBypassed = false;
   }
 
   Future<void> hydratePurchaseStateForCurrentUser() async {

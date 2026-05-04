@@ -96,7 +96,7 @@ class BookListCard extends StatelessWidget {
     final bool hasCourseColor = courseColor != null && courseColor!.isNotEmpty;
 
     if (hasCourseColor) {
-      return RLCourseBookImage(courseColor: courseColor, size: LIST_CARD_BOOK_SIZE);
+      return RLSkillBookImage(courseColor: courseColor, size: LIST_CARD_BOOK_SIZE);
     }
 
     return BookCoverThumbnail(coverImagePath: coverImagePath);

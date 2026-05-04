@@ -2,7 +2,6 @@
 // Includes menu items, switches, segmented controls, and dividers
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:readlock/services/feedback/HapticsService.dart';
 import 'package:readlock/constants/RLUIStrings.dart';
 import 'package:readlock/constants/RLTypography.dart';
@@ -146,7 +145,7 @@ class MenuSection extends StatelessWidget {
           onTap: onBirdPickerTap,
         ),
 
-        const MenuDivider(),
+        const MenuDivider(label: RLUIStrings.MENU_SECTION_SOUND),
 
         // Sound & Haptics
         SwitchMenuItem(
@@ -170,7 +169,7 @@ class MenuSection extends StatelessWidget {
           onChanged: onHapticsToggled,
         ),
 
-        const MenuDivider(),
+        const MenuDivider(label: RLUIStrings.MENU_SECTION_READING),
 
         // Reading Settings.
         //
@@ -273,7 +272,7 @@ class MenuSection extends StatelessWidget {
 
         JustifiedReadingDemo(onToggle: onJustifiedReadingDemoToggle),
 
-        const MenuDivider(),
+        const MenuDivider(label: RLUIStrings.MENU_SECTION_LEGAL),
 
         // Legal (Support listed last, after EULA)
         MenuItem(icon: Pixel.shield, title: RLUIStrings.MENU_PRIVACY_POLICY, onTap: () {}),
@@ -288,7 +287,7 @@ class MenuSection extends StatelessWidget {
 
         MenuItem(icon: Pixel.message, title: RLUIStrings.MENU_SUPPORT, onTap: onSupportTap),
 
-        const MenuDivider(),
+        const MenuDivider(label: RLUIStrings.MENU_SECTION_SESSION),
 
         // Log out
         MenuItem(icon: Pixel.logout, title: RLUIStrings.MENU_LOG_OUT, onTap: onLogoutTap),
@@ -437,14 +436,40 @@ class SwitchMenuItem extends StatelessWidget {
 }
 
 class MenuDivider extends StatelessWidget {
-  const MenuDivider({super.key});
+  // Optional section label rendered to the left of the divider line.
+  // When null the divider falls back to a plain hairline (the original
+  // behaviour) so callers that don't want a section break stay clean.
+  final String? label;
+
+  const MenuDivider({super.key, this.label});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 1.0,
-      margin: const EdgeInsets.symmetric(vertical: RLDS.spacing8),
-      color: RLDS.glass10(RLDS.textPrimary),
+    final Color lineColor = RLDS.glass10(RLDS.textPrimary);
+    final String? labelText = label;
+    final bool hasLabel = labelText != null;
+
+    if (!hasLabel) {
+      return Container(
+        height: 1.0,
+        margin: const EdgeInsets.symmetric(vertical: RLDS.spacing8),
+        color: lineColor,
+      );
+    }
+
+    final Widget LineFill = Expanded(child: Container(height: 1.0, color: lineColor));
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: RLDS.spacing12),
+      child: Row(
+        children: [
+          RLTypography.bodySmall(labelText, color: RLDS.textSecondary),
+
+          const Spacing.width(RLDS.spacing12),
+
+          LineFill,
+        ],
+      ),
     );
   }
 }

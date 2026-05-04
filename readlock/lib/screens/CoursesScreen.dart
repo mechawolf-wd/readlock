@@ -21,6 +21,7 @@ import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/constants/RLUIStrings.dart';
 import 'package:readlock/constants/DartAliases.dart';
+import 'package:readlock/services/ConnectivityService.dart';
 import 'package:readlock/services/feedback/SoundService.dart';
 import 'package:readlock/services/purchases/PurchaseNotifiers.dart';
 import 'package:readlock/MainNavigation.dart';
@@ -73,14 +74,29 @@ class CoursesScreenState extends State<CoursesScreen> {
     super.initState();
     fetchInitialCoursesPage();
     activeTabIndexNotifier.addListener(handleTabActivated);
+
+    // When the device drops offline a fetch in flight will fail and the
+    // listing stays empty. Re-run the initial page fetch the moment we
+    // come back online so the store recovers without a manual reload.
+    ConnectivityService.isOnlineNotifier.addListener(handleConnectivityChange);
   }
 
   @override
   void dispose() {
     activeTabIndexNotifier.removeListener(handleTabActivated);
+    ConnectivityService.isOnlineNotifier.removeListener(handleConnectivityChange);
     searchDebounce?.cancel();
     searchController.dispose();
     super.dispose();
+  }
+
+  void handleConnectivityChange() {
+    final bool isBackOnline = ConnectivityService.isOnlineNotifier.value;
+    final bool needsRefetch = isBackOnline && availableCourses.isEmpty;
+
+    if (needsRefetch) {
+      fetchInitialCoursesPage();
+    }
   }
 
   void handleTabActivated() {
@@ -306,10 +322,23 @@ class CoursesScreenState extends State<CoursesScreen> {
   }
 
   Widget CoursesBody() {
-    return RLFadeSwitcher(child: CoursesBodyCurrent());
+    return ValueListenableBuilder<bool>(
+      valueListenable: ConnectivityService.isOnlineNotifier,
+      builder: (BuildContext context, bool isOnline, Widget? _) {
+        return RLFadeSwitcher(child: CoursesBodyCurrent(isOnline: isOnline));
+      },
+    );
   }
 
-  Widget CoursesBodyCurrent() {
+  Widget CoursesBodyCurrent({required bool isOnline}) {
+    // The store is the only screen that depends entirely on a live network
+    // fetch (Firestore page reads, remote search). Show a dedicated offline
+    // state instead of a stuck loader so the reader knows why the list is
+    // empty and that reconnecting will bring it back.
+    if (!isOnline) {
+      return const OfflineMessage(key: ValueKey('courses-offline'));
+    }
+
     if (isCoursesLoading) {
       return const RLLoadingIndicator.bird(key: ValueKey('courses-loading'));
     }
@@ -494,6 +523,40 @@ class CoursesScreenState extends State<CoursesScreen> {
         RLUIStrings.NO_COURSES_MESSAGE,
         color: RLDS.textSecondary,
         textAlign: TextAlign.center,
+      ),
+    );
+  }
+}
+
+// Stand-in for the entire Search/Store body when the device is offline.
+// Heading + chirp message in the same shape the bookshelf empty state uses
+// so the two empty surfaces feel like part of one family.
+class OfflineMessage extends StatelessWidget {
+  const OfflineMessage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(RLDS.spacing24),
+      child: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            RLTypography.headingMedium(
+              RLUIStrings.STORE_OFFLINE_TITLE,
+              color: RLDS.textPrimary,
+              textAlign: TextAlign.center,
+            ),
+
+            const Spacing.height(RLDS.sheetHeadingToSubheadingSpacing),
+
+            RLTypography.bodyMedium(
+              RLUIStrings.STORE_OFFLINE_MESSAGE,
+              color: RLDS.textSecondary,
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -4,24 +4,20 @@ rules_version = '2';
 //
 // Schema overview (gathered from the Flutter app + the Lockie publishing tool):
 //
-//   /admins/{uid}
-//     Allow-list document. Existence grants admin powers (course publishing,
-//     user-doc reads for support). Provisioned manually from the Firebase
-//     console; the body is irrelevant, only the doc id (a Firebase Auth uid)
-//     matters.
-//
 //   /courses/{courseId}
-//     Public catalog written by the Lockie web tool (admin-only). Mobile
-//     clients read freely and may bump the `timesPurchased` counter by 1
-//     on a successful purchase. Every other mutation is admin-only.
+//     Catalog. Any signed-in client can read; anonymous reads are denied
+//     so the full skillbook list isn't exposed to scrapers. Every write
+//     (course creation / edit / delete and the `timesPurchased` counter
+//     bump) is server-side only: Lockie publishes through the Admin SDK,
+//     and the purchase callable cloud function bumps the counter. Both
+//     bypass these rules, so direct client writes stay denied.
 //
 //   /users/{userId}
 //     Strictly self-owned profile + preferences + feather wallet + FCM token.
-//     Owner-only read/write; admins can read for debugging but never write.
-//     `email` and `createdAt` are frozen after creation so a hijacked client
-//     can't rewrite identity. Account deletion goes through the
-//     `deleteAccount` callable cloud function (Admin SDK), which bypasses
-//     these rules.
+//     Owner-only read/write. `email` and `createdAt` are frozen after
+//     creation so a hijacked client can't rewrite identity. Account
+//     deletion goes through the `deleteAccount` callable cloud function
+//     (Admin SDK), which bypasses these rules.
 //
 // NOTE: `balance` and `purchasedCourses` are still mutated client-side
 // today (PurchaseService). When those moves to a callable cloud function,
@@ -40,11 +36,6 @@ service cloud.firestore {
       return isSignedIn() && request.auth.uid == uid;
     }
 
-    function isAdmin() {
-      return isSignedIn()
-        && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
-    }
-
     // Set of fields whose value differs between the existing doc and the
     // proposed write. Used to enforce field-level immutability.
     function changedFields() {
@@ -55,51 +46,32 @@ service cloud.firestore {
       return !changedFields().hasAny([name]);
     }
 
-    // * /admins/{uid}
-    //
-    // Read-only allow-list. Owners can read their own admin record (so the
-    // app can detect admin status if it ever needs to); other admins can
-    // read the full list. Writes happen only from the Firebase console.
-
-    match /admins/{uid} {
-      allow read: if isOwner(uid) || isAdmin();
-      allow write: if false;
-    }
-
     // * /courses/{courseId}
 
     match /courses/{courseId} {
 
-      // Public catalog. Anyone (signed-in or not) may browse the course
-      // list and detail pages.
-      allow read: if true;
+      // Catalog is gated behind sign-in so anonymous scrapers can't pull
+      // the entire skillbook list. Every authenticated reader still gets
+      // the full catalog regardless of purchase state.
+      allow read: if isSignedIn();
 
-      // Course authoring (creation and deletion) is admin-only.
-      allow create, delete: if isAdmin();
-
-      // Two update paths:
-      //   1. Admins (Lockie) may rewrite anything.
-      //   2. Signed-in readers may bump `timesPurchased` by exactly +1
-      //      and touch nothing else. The new value must equal the old
-      //      value plus one (treats a missing field as 0), so the rule
-      //      composes cleanly with FieldValue.increment(1).
-      allow update: if isAdmin()
-        || (
-             isSignedIn()
-             && changedFields().hasOnly(['timesPurchased'])
-             && request.resource.data.timesPurchased is int
-             && request.resource.data.timesPurchased
-                  == resource.data.get('timesPurchased', 0) + 1
-           );
+      // Every write to /courses (create, edit, delete, and the
+      // timesPurchased counter bump) goes through server-side code with
+      // the Admin SDK: Lockie for authoring, the purchase callable
+      // cloud function for the counter increment. Blocking every direct
+      // client write here means a stolen session can neither publish
+      // courses nor inflate the popularity counter.
+      allow create, update, delete: if false;
     }
 
     // * /users/{userId}
 
     match /users/{userId} {
 
-      // Owner reads their own profile; admins can read any profile (for
-      // support / debugging). No cross-user reads otherwise.
-      allow read: if isOwner(userId) || isAdmin();
+      // Owner reads their own profile. No cross-user reads otherwise;f
+      // any support / debugging access goes through the Admin SDK
+      // server-side, which bypasses these rules.
+      allow read: if isOwner(userId);
 
       // Profile creation: owner only, with the doc's identity fields
       // pinned to the authenticated request so a client can't forge a

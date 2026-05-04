@@ -7,7 +7,6 @@
 // surface rather than a cluster of chips.
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:readlock/services/feedback/HapticsService.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/constants/RLTypography.dart';
@@ -126,7 +125,7 @@ class RLSegmentTab extends StatelessWidget {
         : RLTypography.bodyMedium(label, color: labelColor, textAlign: TextAlign.center);
 
     void handleTabTap() {
-      SoundService.playRandomTextClick();
+      SoundService.playSwitch();
       HapticsService.lightImpact();
       onTap();
     }
@@ -137,7 +136,7 @@ class RLSegmentTab extends StatelessWidget {
         behavior: HitTestBehavior.opaque,
         child: RLLunarBlur(
           borderRadius: RLDS.borderRadiusSmall,
-          borderColor: RLDS.glass50(labelColor),
+          borderColor: RLDS.glass70(labelColor),
           borderWidth: 2.0,
           padding: tabPadding,
           child: selectedContent,

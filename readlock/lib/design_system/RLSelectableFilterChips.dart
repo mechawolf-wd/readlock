@@ -2,7 +2,6 @@
 // Renders a wrapping row of toggleable chips with consistent styling
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:readlock/services/feedback/HapticsService.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/constants/RLTypography.dart';

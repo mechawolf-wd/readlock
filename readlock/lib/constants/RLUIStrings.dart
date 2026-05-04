@@ -17,6 +17,9 @@ class RLUIStrings {
 
   // * Empty / loading states
   static const String NO_COURSES_MESSAGE = '';
+  static const String STORE_OFFLINE_TITLE = 'Offline';
+  static const String STORE_OFFLINE_MESSAGE =
+      '*chirp* - the store needs a connection. Reconnect to keep browsing.';
 
   // * Confirmation dialog — shared
   static const String CANCEL_LABEL = 'Cancel';
@@ -27,20 +30,20 @@ class RLUIStrings {
   // fixed monthly feather budget the reader spends on books. Every book
   // costs 10 feathers.
   static const String FEATHERS_TITLE = 'Feathers Plan';
-  static const String FEATHERS_SUBTITLE = 'Enjoy the coursebooks you want';
+  static const String FEATHERS_SUBTITLE = 'Enjoy the skillbooks you want';
   static const String PRICE_PERIOD = '/month';
-  static const String FEATHERS_BOOK_PRICING_NOTE = 'Each coursebook costs 10 feathers';
+  static const String FEATHERS_BOOK_PRICING_NOTE = 'Each skillbook costs 10 feathers';
 
   // Per-plan copy.
   static const String PLAN_BEGINNER_NAME = 'Beginner';
   static const String PLAN_BEGINNER_PRICE = '\$6.99';
   static const String PLAN_BEGINNER_FEATHERS = '100 feathers';
-  static const String PLAN_BEGINNER_BOOKS = '10 coursebooks a month';
+  static const String PLAN_BEGINNER_BOOKS = '10 skillbooks a month';
 
   static const String PLAN_READER_NAME = 'Reader';
   static const String PLAN_READER_PRICE = '\$12.99';
   static const String PLAN_READER_FEATHERS = '300 feathers';
-  static const String PLAN_READER_BOOKS = '30 coursebooks a month';
+  static const String PLAN_READER_BOOKS = '30 skillbooks a month';
 
   // * Feedback Snackbar
   static const String CORRECT_ANSWER_MESSAGE = 'Correct, you read it';
@@ -78,7 +81,7 @@ class RLUIStrings {
   static const String SUPPORT_EMAIL_LABEL = 'Email support';
   static const String SUPPORT_EMAIL_DESCRIPTION = 'Reach us directly at the address below.';
   static const String SUPPORT_COPY_EMAIL_BUTTON_LABEL = 'Copy';
-  static const String SUPPORT_EMAIL_ADDRESS = 'support@readlock.or\g';
+  static const String SUPPORT_EMAIL_ADDRESS = 'support@readlock.org';
   static const String SUPPORT_EMAIL_COPIED_MESSAGE = 'Support email copied to clipboard.';
   static const String RESEND_VERIFICATION_ALREADY_VERIFIED = 'Your email is already verified.';
   static const String RESEND_VERIFICATION_FAILED =
@@ -180,7 +183,6 @@ class RLUIStrings {
   static const String ROADMAP_PURCHASE_LOADING_LABEL = 'Unlocking...';
   static const String ROADMAP_PURCHASE_SUCCESS = 'Course unlocked';
   static const String ROADMAP_PURCHASE_INSUFFICIENT = 'Not enough feathers';
-  static const String ROADMAP_PURCHASE_FEATHERS_SUFFIX = 'feathers';
 
   // * Feedback Snackbar Buttons
   static const String WHY_BUTTON_LABEL = 'Why?';
@@ -257,6 +259,14 @@ class RLUIStrings {
   static const String MENU_LOG_OUT = 'Logout';
   static const String MENU_VERSION = 'Sowa 1.0.0';
 
+  // Section labels rendered to the left of each MenuDivider so the
+  // settings list reads as grouped chapters instead of an undifferentiated
+  // run of rows.
+  static const String MENU_SECTION_SOUND = 'Sound';
+  static const String MENU_SECTION_READING = 'Reading';
+  static const String MENU_SECTION_LEGAL = 'Legal';
+  static const String MENU_SECTION_SESSION = 'Session';
+
   // * Bird Picker
   static const String MENU_PROFILE_BIRD = 'Profile bird';
   static const String BIRD_PICKER_TITLE = 'Pick your bird';
@@ -316,8 +326,7 @@ class RLUIStrings {
   static const String VERIFY_EMAIL_CHECKING_LABEL = 'Checking...';
   static const String VERIFY_EMAIL_RESEND_LABEL = 'Resend verification link';
   static const String VERIFY_EMAIL_RESENDING_LABEL = 'Resending...';
-  static const String VERIFY_EMAIL_NOT_YET_MESSAGE =
-      'Still not verified. Check your inbox.';
+  static const String VERIFY_EMAIL_NOT_YET_MESSAGE = 'Still not verified. Check your inbox.';
 
   // * Account Dialogs
   static const String ACCOUNT_DEACTIVATE_MESSAGE =
@@ -333,12 +342,14 @@ class RLUIStrings {
   // were already on tone, so the trim here is mostly cutting "give it
   // another try" filler from the tails.
   static const String ERROR_INVALID_CREDENTIALS = "Couldn't match that email and password.";
-  static const String ERROR_WEAK_PASSWORD = 'That password is a little short. A longer one will do.';
+  static const String ERROR_WEAK_PASSWORD =
+      'That password is a little short. A longer one will do.';
   static const String ERROR_INVALID_EMAIL = "That email doesn't look quite right.";
 
   // Surfaced when the sign-up email's domain is on the disposable / temp
   // mail blocklist (DisposableEmailDomains.dart).
-  static const String ERROR_DISPOSABLE_EMAIL = "We wouldn't do that to you. Use a real address.";
+  static const String ERROR_DISPOSABLE_EMAIL =
+      "We wouldn't do that to you. Use a real address.";
   static const String ERROR_NETWORK = 'The connection is a little shaky.';
   static const String ERROR_TOO_MANY_REQUESTS = "Let's take a short breather.";
   static const String ERROR_REQUIRES_RECENT_LOGIN = 'Login again to continue.';

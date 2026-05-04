@@ -9,11 +9,10 @@ import 'package:readlock/course_screens/data/CourseData.dart';
 import 'package:readlock/constants/RLLatestCourse.dart';
 import 'package:readlock/constants/RLUIStrings.dart';
 import 'package:readlock/constants/DartAliases.dart';
-import 'package:flutter/services.dart';
+import 'package:readlock/design_system/RLCourseBookImage.dart';
 import 'package:readlock/services/feedback/HapticsService.dart';
 import 'package:readlock/design_system/RLBookListCard.dart';
 import 'package:readlock/design_system/RLCard.dart';
-import 'package:readlock/design_system/RLCourseBookImage.dart';
 import 'package:readlock/design_system/RLFadeSwitcher.dart';
 import 'package:readlock/design_system/RLLoadingIndicator.dart';
 import 'package:readlock/design_system/RLLunarBlur.dart';
@@ -110,10 +109,7 @@ class HomeScreenState extends State<HomeScreen> {
   }
 
   void navigateToCourse(String courseId) {
-    Navigator.push(
-      context,
-      RLDS.fadeTransition(CourseRoadmapScreen(courseId: courseId)),
-    );
+    Navigator.push(context, RLDS.fadeTransition(CourseRoadmapScreen(courseId: courseId)));
   }
 
   // Picks a random course the reader does NOT already own. "Try out
@@ -266,7 +262,7 @@ class HomeScreenState extends State<HomeScreen> {
     }
 
     final Widget bookRow = Div.row([
-      RLCourseBookImage(courseColor: courseColor, size: LIST_CARD_BOOK_SIZE),
+      RLSkillBookImage(courseColor: courseColor, size: LIST_CARD_BOOK_SIZE),
 
       const Spacing.width(RLDS.spacing12),
 
@@ -502,10 +498,7 @@ class LatestCourseDotsHeadingState extends State<LatestCourseDotsHeading>
     final int activeDots = getActiveDotsCount();
 
     final List<Widget> rowChildren = [
-      RLTypography.bodyMedium(
-        RLUIStrings.CONTINUE_READING_TITLE,
-        color: RLDS.textSecondary,
-      ),
+      RLTypography.bodyMedium(RLUIStrings.CONTINUE_READING_TITLE, color: RLDS.textSecondary),
     ];
 
     // One Opacity-wrapped dot per slot. Flutter sees three distinct

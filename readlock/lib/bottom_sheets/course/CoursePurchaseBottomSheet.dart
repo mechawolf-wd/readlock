@@ -16,6 +16,7 @@ import 'package:readlock/design_system/RLFeatherIcon.dart';
 import 'package:readlock/design_system/RLLunarBlur.dart';
 import 'package:readlock/design_system/RLToast.dart';
 import 'package:readlock/design_system/RLUtility.dart';
+import 'package:readlock/services/feedback/HapticsService.dart';
 import 'package:readlock/services/feedback/SoundService.dart';
 import 'package:readlock/services/purchases/PurchaseConstants.dart';
 import 'package:readlock/services/purchases/PurchaseService.dart';
@@ -113,11 +114,7 @@ class CoursePurchaseSheetState extends State<CoursePurchaseSheet> {
         const Spacing.height(RLDS.sheetHeadingToSubheadingSpacing),
 
         // Author
-        RLTypography.bodyMedium(
-          author,
-          color: RLDS.textSecondary,
-          textAlign: TextAlign.center,
-        ),
+        RLTypography.bodyMedium(author, color: RLDS.textSecondary, textAlign: TextAlign.center),
 
         // Description (optional — hidden when the course doesn't supply one)
         RenderIf.condition(
@@ -146,11 +143,9 @@ class CoursePurchaseSheetState extends State<CoursePurchaseSheet> {
   // Circular LunarBlur disc — same surface family as the roadmap book ring,
   // sized to host the 96px book cover with breathing room.
   Widget BookDisc() {
-    final BorderRadius discRadius = BorderRadius.circular(
-      PURCHASE_SHEET_BOOK_DISC_SIZE / 2,
-    );
+    final BorderRadius discRadius = BorderRadius.circular(PURCHASE_SHEET_BOOK_DISC_SIZE / 2);
 
-    final Widget bookCover = RLCourseBookImage(
+    final Widget bookCover = RLSkillBookImage(
       courseColor: getCourseColor(),
       size: PURCHASE_SHEET_BOOK_SIZE,
     );
@@ -180,10 +175,7 @@ class CoursePurchaseSheetState extends State<CoursePurchaseSheet> {
 
     if (isPurchasing) {
       labelChildren = [
-        RLTypography.bodyLarge(
-          RLUIStrings.ROADMAP_PURCHASE_LOADING_LABEL,
-          color: accentColor,
-        ),
+        RLTypography.bodyLarge(RLUIStrings.ROADMAP_PURCHASE_LOADING_LABEL, color: accentColor),
       ];
     } else {
       // "Buy for 10 <plume>" — same shape as the roadmap purchase
@@ -201,15 +193,30 @@ class CoursePurchaseSheetState extends State<CoursePurchaseSheet> {
       ];
     }
 
-    return RLLunarBlur(
-      borderRadius: RLDS.borderRadiusSmall,
-      borderColor: RLDS.transparent,
-      child: Div.row(
-        labelChildren,
-        width: double.infinity,
-        padding: buttonPadding,
-        mainAxisAlignment: MainAxisAlignment.center,
-        onTap: isPurchasing ? null : handlePurchaseTap,
+    void onButtonTap() {
+      HapticsService.lightImpact();
+      SoundService.playRandomTextClick();
+      handlePurchaseTap();
+    }
+
+    final VoidCallback? buttonTap = isPurchasing ? null : onButtonTap;
+
+    // Outer GestureDetector with HitTestBehavior.opaque so the entire
+    // padded surface picks up taps. Without it the gap between the label
+    // and the feather icon swallows hits, since the inner Div has no
+    // background fill of its own.
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: buttonTap,
+      child: RLLunarBlur(
+        borderRadius: RLDS.borderRadiusSmall,
+        borderColor: RLDS.transparent,
+        child: Div.row(
+          labelChildren,
+          width: double.infinity,
+          padding: buttonPadding,
+          mainAxisAlignment: MainAxisAlignment.center,
+        ),
       ),
     );
   }

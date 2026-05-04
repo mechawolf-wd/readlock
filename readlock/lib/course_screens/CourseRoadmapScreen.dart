@@ -3,14 +3,14 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:readlock/design_system/RLCourseBookImage.dart';
 import 'package:readlock/services/feedback/HapticsService.dart';
 import 'package:readlock/bottom_sheets/NightShiftBottomSheet.dart';
 import 'package:readlock/bottom_sheets/user/FeathersBottomSheet.dart';
 import 'package:readlock/course_screens/CourseContentViewer.dart';
 import 'package:readlock/course_screens/data/CourseData.dart';
 import 'package:readlock/design_system/RLUtility.dart';
-import 'package:readlock/design_system/RLCourseBookImage.dart';
+import 'package:readlock/design_system/RLFeatherIcon.dart';
 import 'package:readlock/design_system/RLLunarBlur.dart';
 import 'package:readlock/design_system/RLSegmentTabs.dart';
 import 'package:readlock/design_system/RLStarfieldBackground.dart';
@@ -364,21 +364,51 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
       horizontal: RLDS.spacing24,
     );
 
-    final String purchaseLabel = isPurchasing
-        ? RLUIStrings.ROADMAP_PURCHASE_LOADING_LABEL
-        : '${RLUIStrings.ROADMAP_PURCHASE_LABEL} '
-              '${PurchaseConstants.COURSE_PURCHASE_COST} '
-              '${RLUIStrings.ROADMAP_PURCHASE_FEATHERS_SUFFIX}';
+    final List<Widget> labelChildren;
 
-    return RLLunarBlur(
-      borderRadius: RLDS.borderRadiusSmall,
-      borderColor: RLDS.transparent,
-      child: Div.row(
-        [RLTypography.bodyLarge(purchaseLabel, color: accentColor)],
-        width: double.infinity,
-        padding: buttonPadding,
-        mainAxisAlignment: MainAxisAlignment.center,
-        onTap: isPurchasing ? null : handlePurchaseTap,
+    if (isPurchasing) {
+      labelChildren = [
+        RLTypography.bodyLarge(RLUIStrings.ROADMAP_PURCHASE_LOADING_LABEL, color: accentColor),
+      ];
+    } else {
+      // Same "Buy for 10 <plume>" shape as the CoursePurchaseBottomSheet
+      // button so both surfaces read as the same family.
+      final String labelWithCost =
+          '${RLUIStrings.ROADMAP_PURCHASE_LABEL} '
+          '${PurchaseConstants.COURSE_PURCHASE_COST}';
+
+      labelChildren = [
+        RLTypography.bodyLarge(labelWithCost, color: accentColor),
+
+        const Spacing.width(RLDS.spacing8),
+
+        const RLFeatherIcon(size: RLDS.iconSmall),
+      ];
+    }
+
+    void onButtonTap() {
+      HapticsService.lightImpact();
+      SoundService.playRandomTextClick();
+      handlePurchaseTap();
+    }
+
+    final VoidCallback? buttonTap = isPurchasing ? null : onButtonTap;
+
+    // Outer GestureDetector with HitTestBehavior.opaque so the entire
+    // padded surface picks up taps (the inner Div has no fill, so empty
+    // space between the label and the icon would otherwise swallow hits).
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: buttonTap,
+      child: RLLunarBlur(
+        borderRadius: RLDS.borderRadiusSmall,
+        borderColor: RLDS.transparent,
+        child: Div.row(
+          labelChildren,
+          width: double.infinity,
+          padding: buttonPadding,
+          mainAxisAlignment: MainAxisAlignment.center,
+        ),
       ),
     );
   }
@@ -423,9 +453,11 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
     size: RLDS.iconLarge,
   );
 
+  // Warm amber moon — same accent the Settings, Night Session row uses,
+  // sourced from NightShiftBottomSheet so all three surfaces stay in sync.
   static final Widget NightShiftHeaderIcon = const Icon(
     Pixel.moon,
-    color: RLDS.textPrimary,
+    color: NIGHT_SHIFT_WARM_COLOR,
     size: RLDS.iconLarge,
   );
 
@@ -522,15 +554,12 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
   static const double progressRingStrokeWidth = 6.0;
   static const double progressRingSize = 176.0;
   // Book assets are square (64x64). 96 = 1.5x the source — a clean nearest-
-  // neighbour scale (handled inside RLCourseBookImage) that keeps the
+  // neighbour scale (handled inside RLSkillBookImage) that keeps the
   // pixel-art edges crisp without swallowing the progress ring around it.
-  static const double courseBookSize = 96.0;
+  static const double skillBookSize = 96.0;
 
   Widget CourseBookImage() {
-    return RLCourseBookImage(
-      courseColor: courseData?['color'] as String?,
-      size: courseBookSize,
-    );
+    return RLSkillBookImage(courseColor: courseData?['color'] as String?, size: skillBookSize);
   }
 
   Widget ProgressRing() {

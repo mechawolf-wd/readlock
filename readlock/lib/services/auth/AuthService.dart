@@ -11,7 +11,6 @@ import 'package:readlock/services/LoggingService.dart';
 import 'package:readlock/services/auth/UserPreferencesHydrator.dart';
 import 'package:readlock/services/auth/UserService.dart';
 import 'package:readlock/services/notifications/FirebaseMessagingService.dart';
-import 'package:readlock/services/purchases/PurchaseNotifiers.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 // * Auth result
@@ -304,7 +303,7 @@ class AuthService {
       logger.info('Apple re-authentication', '$error');
 
       return false;
-    } catch (error) {
+    } on Object catch (error) {
       logger.info('Apple re-authentication', '$error');
 
       return false;
@@ -481,7 +480,7 @@ class AuthService {
       logger.failure('Apple Login', '$error');
 
       return const AuthResult(errorMessage: RLUIStrings.ERROR_UNKNOWN);
-    } catch (error) {
+    } on Object catch (error) {
       // Catch-all so unexpected non-Exception errors (TypeError from JS
       // interop, etc.) still resolve the future and unfreeze the sheet.
       logger.failure('Apple Login', '$error');
@@ -540,13 +539,15 @@ class AuthService {
   static Future<void> signOut() async {
     logger.info('Sign Out', 'Starting...');
 
+    // FCM cleanup writes to Firestore so it must run before
+    // FirebaseAuth.signOut, while the user is still authenticated.
     await UserService.clearFcmToken();
 
     await FirebaseMessagingService.deleteToken();
 
-    resetPurchaseState();
-
-    resetUserPreferenceNotifiers();
+    // Wipe every user-scoped notifier in one place. Live screens see a
+    // clean slate before the auth listener runs.
+    wipeLocalUserSessionState();
 
     await FirebaseAuth.instance.signOut();
 
@@ -650,9 +651,9 @@ class AuthService {
 
       await callable.call();
 
-      resetPurchaseState();
-
-      resetUserPreferenceNotifiers();
+      // Same teardown as signOut so the deleted user's local state can't
+      // leak into whichever sign-in happens next.
+      wipeLocalUserSessionState();
 
       try {
         await FirebaseAuth.instance.signOut();

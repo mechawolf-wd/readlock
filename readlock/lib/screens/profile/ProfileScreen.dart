@@ -2,10 +2,8 @@
 // Loads preferences from /users/{id} on mount, persists every toggle/segment
 // change back to Firestore so state survives across devices and sessions.
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
-import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/MainNavigation.dart';
 import 'package:readlock/bottom_sheets/user/LoginBottomSheet.dart';
 import 'package:readlock/bottom_sheets/user/LoginSupportBottomSheet.dart';

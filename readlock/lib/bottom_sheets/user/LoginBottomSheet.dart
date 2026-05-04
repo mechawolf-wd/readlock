@@ -335,6 +335,10 @@ class LoginSheetState extends State<LoginSheet> {
 
     Navigator.of(context).pop();
 
+    if (!rootContext.mounted) {
+      return;
+    }
+
     await routeThroughEmailVerificationGate(rootNavigator, rootContext);
   }
 
@@ -351,7 +355,7 @@ class LoginSheetState extends State<LoginSheet> {
       return;
     }
 
-    if (!rootNavigator.mounted) {
+    if (!rootContext.mounted) {
       return;
     }
 
@@ -387,6 +391,10 @@ class LoginSheetState extends State<LoginSheet> {
     await OnboardingScreen.show(rootContext);
 
     await UserService.markOnboardingComplete();
+
+    if (!rootContext.mounted) {
+      return;
+    }
 
     await routeThroughEmailVerificationGate(rootNavigator, rootContext);
   }

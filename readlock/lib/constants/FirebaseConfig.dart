@@ -23,4 +23,5 @@ class FirebaseConfig {
   // * Cloud Function names
 
   static const String CLOUD_FUNCTION_DELETE_ACCOUNT = 'deleteAccount';
+  static const String CLOUD_FUNCTION_INCREMENT_TIMES_PURCHASED = 'incrementTimesPurchased';
 }

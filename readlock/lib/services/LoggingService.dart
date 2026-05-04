@@ -23,23 +23,45 @@ class ServiceLogger {
     return ServiceLogger(serviceName);
   }
 
-  // * Logging methods
+  // * Logging methods.
+  //
+  // Every method short-circuits when the app is built in release mode so
+  // the prefixed strings never reach the console of a shipped binary.
+  // Flutter's `debugPrint` still fires in release; gating on `kDebugMode`
+  // is the supported way to keep dev-only diagnostics out of production
+  // builds (and out of any web devtools console).
 
   void info(String operation, String message) {
+    if (!kDebugMode) {
+      return;
+    }
+
     debugPrint('🔵 $prefix: [$operation] $message');
   }
 
   void success(String operation, [String? details]) {
+    if (!kDebugMode) {
+      return;
+    }
+
     final String message = details != null ? 'Success - $details' : 'Success';
 
     debugPrint('🟢 $prefix: [$operation] $message');
   }
 
   void failure(String operation, String error) {
+    if (!kDebugMode) {
+      return;
+    }
+
     debugPrint('🔴 $prefix: [$operation] Failed - $error');
   }
 
   void warning(String operation, String message) {
+    if (!kDebugMode) {
+      return;
+    }
+
     debugPrint('🟡 $prefix: [$operation] Warning - $message');
   }
 }

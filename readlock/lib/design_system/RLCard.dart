@@ -3,7 +3,6 @@
 // opacity so the app's cards all read as the same surface.
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:readlock/services/feedback/HapticsService.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/design_system/RLLunarBlur.dart';

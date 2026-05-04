@@ -2,7 +2,6 @@
 // Shows a continue button at the bottom when all text segments are fully revealed
 
 import 'package:flutter/material.dart' hide Typography;
-import 'package:flutter/services.dart';
 import 'package:readlock/services/feedback/HapticsService.dart';
 import 'package:readlock/models/CourseModel.dart';
 import 'package:readlock/utility_widgets/text_animation/ProgressiveText.dart';

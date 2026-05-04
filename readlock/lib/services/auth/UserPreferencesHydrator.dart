@@ -18,6 +18,7 @@ import 'package:readlock/models/UserModel.dart';
 import 'package:readlock/screens/profile/BirdPicker.dart';
 import 'package:readlock/services/feedback/HapticsService.dart';
 import 'package:readlock/services/feedback/SoundService.dart';
+import 'package:readlock/services/purchases/PurchaseNotifiers.dart';
 import 'package:readlock/utility_widgets/text_animation/BionicText.dart';
 import 'package:readlock/utility_widgets/text_animation/RSVPText.dart';
 
@@ -75,4 +76,22 @@ void resetUserPreferenceNotifiers() {
   SoundService.soundsEnabledNotifier.value = true;
   SoundService.typingSoundEnabledNotifier.value = true;
   HapticsService.userHapticsEnabledNotifier.value = true;
+}
+
+// One-shot wipe of every in-process user-scoped notifier. Intentionally
+// synchronous and Firestore-free so it's safe to call any time, including
+// after FirebaseAuth has already signed the user out.
+//
+// Call sites:
+//   - AuthService.signOut and AuthService.deleteAccount, before the
+//     auth listener runs, so live screens see a clean slate immediately.
+//   - MainNavigation's auth state listener whenever user becomes null,
+//     as a safety net for sessions that end without going through our
+//     explicit teardown (token expiry, server-side disable, etc.).
+//
+// Anything new that holds user-scoped local state (notifiers, flags,
+// caches) must be wired into this helper so future signouts pick it up.
+void wipeLocalUserSessionState() {
+  resetPurchaseState();
+  resetUserPreferenceNotifiers();
 }
