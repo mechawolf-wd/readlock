@@ -3,6 +3,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:readlock/services/feedback/HapticsService.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/services/feedback/SoundService.dart';
@@ -142,7 +143,7 @@ class RLButton extends StatelessWidget {
     }
 
     return () {
-      HapticFeedback.lightImpact();
+      HapticsService.lightImpact();
       SoundService.playRandomTextClick();
       rawHandler();
     };

@@ -6,6 +6,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/constants/RLTypography.dart';
+import 'package:readlock/MainNavigation.dart';
+import 'package:readlock/bottom_sheets/user/LoginBottomSheet.dart';
+import 'package:readlock/bottom_sheets/user/LoginSupportBottomSheet.dart';
 import 'package:readlock/constants/RLUIStrings.dart';
 import 'package:readlock/design_system/RLConfirmationDialog.dart';
 import 'package:readlock/design_system/RLUtility.dart';
@@ -14,6 +17,7 @@ import 'package:readlock/screens/profile/MenuWidgets.dart';
 import 'package:readlock/services/auth/AuthService.dart';
 import 'package:readlock/services/auth/UserPreferencesHydrator.dart';
 import 'package:readlock/services/auth/UserService.dart';
+import 'package:readlock/services/feedback/HapticsService.dart';
 import 'package:readlock/services/feedback/SoundService.dart';
 import 'package:readlock/constants/RLReadingJustified.dart';
 import 'package:readlock/utility_widgets/text_animation/BionicText.dart';
@@ -109,16 +113,19 @@ class ProfileContentState extends State<ProfileContent> {
 
   void handleTypingSoundToggled(bool value) {
     setState(() => typingSoundEnabled = value);
+    SoundService.typingSoundEnabledNotifier.value = value;
     UserService.updateTypingSound(value);
   }
 
   void handleGeneralSoundsToggled(bool value) {
     setState(() => generalSoundsEnabled = value);
+    SoundService.soundsEnabledNotifier.value = value;
     UserService.updateSounds(value);
   }
 
   void handleHapticsToggled(bool value) {
     setState(() => hapticsEnabled = value);
+    HapticsService.userHapticsEnabledNotifier.value = value;
     UserService.updateHaptics(value);
   }
 
@@ -155,14 +162,21 @@ class ProfileContentState extends State<ProfileContent> {
     UserService.updateJustifiedReading(value);
   }
 
-  void handleSupportTap() {}
+  // A signed-in user already has password reset / resend verification in
+  // their account flow, so the settings entry skips the picker and goes
+  // straight to the email-support sheet.
+  void handleSupportTap() {
+    EmailSupportSheet.show(context);
+  }
 
   // * Logout flow.
   //
   // The settings sheet (and its confirmation dialog) must stay visible for the
   // whole trip: tap → confirm → sign out → close. Only after AuthService.signOut
-  // resolves do we pop the sheet. MainNavigation listens to auth state changes
-  // and re-presents the login sheet on its own, so we don't push it manually.
+  // resolves do we pop the sheet, and the login sheet is then explicitly
+  // presented on the root navigator so the reader has an obvious sign-back-in
+  // entry point. The app otherwise runs unauthenticated, so no auto-present
+  // sheet appears outside this flow.
 
   void handleLogoutTap() {
     if (isLoggingOut) {
@@ -171,21 +185,18 @@ class ProfileContentState extends State<ProfileContent> {
 
     SoundService.playLogout();
 
-    // Cancel renders as the filled red CTA on top — the safer default
-    // carries the visual weight. Sign out drops to a regular tertiary
-    // text button below so committing requires a deliberate tap.
     RLConfirmationDialog.show(
       context,
       title: RLUIStrings.LOGOUT_CONFIRMATION_TITLE,
       message: RLUIStrings.LOGOUT_CONFIRMATION_MESSAGE,
-      cta: const RLConfirmationAction(
-        label: RLUIStrings.CANCEL_LABEL,
-        variant: RLConfirmationVariant.destructive,
-      ),
-      cancel: RLConfirmationAction(
+      cta: RLConfirmationAction(
         label: RLUIStrings.LOGOUT_CONFIRMATION_CONFIRM,
-        variant: RLConfirmationVariant.neutral,
+        variant: RLConfirmationVariant.destructive,
         onTap: handleLogoutConfirmed,
+      ),
+      cancel: const RLConfirmationAction(
+        label: RLUIStrings.CANCEL_LABEL,
+        variant: RLConfirmationVariant.neutral,
       ),
     );
   }
@@ -199,12 +210,30 @@ class ProfileContentState extends State<ProfileContent> {
       isLoggingOut = true;
     });
 
+    // Capture the root navigator before any async gap so we can collapse
+    // the modal stack and present the login sheet on a still-mounted
+    // ancestor context once the sign-out resolves.
+    final NavigatorState rootNavigator = Navigator.of(context, rootNavigator: true);
+    final BuildContext rootContext = rootNavigator.context;
+
     await AuthService.signOut();
 
-    // The settings sheet is this widget's ancestor route — only pop it once
-    // the sign-out is complete so the user sees the in-progress state.
-    if (mounted) {
-      Navigator.of(context).maybePop();
+    // Collapse every open bottom sheet (settings, and anything stacked
+    // above it) so the login sheet lands on a clean main route. Holding
+    // the pop until sign-out resolves keeps the in-progress state visible
+    // through the trip.
+    if (rootNavigator.mounted) {
+      rootNavigator.popUntil((route) => route.isFirst);
+    }
+
+    // Switch the bottom-nav to the Search tab so the courses screen sits
+    // behind the login sheet — gives the signed-out reader something
+    // browseable to peek at instead of whatever screen happened to host the
+    // settings sheet.
+    activeTabIndexNotifier.value = TAB_INDEX_SEARCH;
+
+    if (rootContext.mounted) {
+      LoginBottomSheet.show(rootContext);
     }
   }
 
@@ -238,39 +267,10 @@ class ProfileContentState extends State<ProfileContent> {
     // happening. The sheet itself stays open until handleLogoutConfirmed pops.
     if (isLoggingOut) {
       return Div.column([
-        LogoutProgressBanner(),
-
-        const Spacing.height(RLDS.spacing12),
-
-        IgnorePointer(child: Opacity(opacity: 0.4, child: menu)),
+        IgnorePointer(child: Opacity(opacity: 0.5, child: menu)),
       ], crossAxisAlignment: CrossAxisAlignment.stretch);
     }
 
     return menu;
-  }
-
-  Widget LogoutProgressBanner() {
-    final BoxDecoration bannerDecoration = BoxDecoration(
-      color: RLDS.backgroundLight,
-      borderRadius: RLDS.borderRadiusSmall,
-    );
-
-    final Widget spinner = const CupertinoActivityIndicator(radius: 8);
-
-    return Div.row(
-      [
-        spinner,
-
-        const Spacing.width(RLDS.spacing12),
-
-        RLTypography.bodyMedium(
-          RLUIStrings.LOGOUT_IN_PROGRESS_LABEL,
-          color: RLDS.textSecondary,
-        ),
-      ],
-      padding: const EdgeInsets.symmetric(horizontal: RLDS.spacing16, vertical: RLDS.spacing12),
-      decoration: bannerDecoration,
-      mainAxisAlignment: MainAxisAlignment.start,
-    );
   }
 }

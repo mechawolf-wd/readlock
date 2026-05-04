@@ -6,6 +6,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:readlock/services/feedback/HapticsService.dart';
 import 'package:readlock/bottom_sheets/RLBottomSheet.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/constants/RLReadingFont.dart';
@@ -69,7 +70,7 @@ class FontPickerSheetState extends State<FontPickerSheet> {
       return;
     }
 
-    HapticFeedback.selectionClick();
+    HapticsService.selectionClick();
 
     setState(() {
       selectedFont = nextFont;

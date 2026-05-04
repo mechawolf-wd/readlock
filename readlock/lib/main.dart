@@ -1,9 +1,10 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:readlock/MainNavigation.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
-import 'package:readlock/design_system/RLNightShiftOverlay.dart';
+import 'package:readlock/design_system/RLNightShift.dart';
 import 'package:readlock/firebase_options.dart';
 import 'package:readlock/services/NightShiftBrightnessService.dart';
 
@@ -54,15 +55,16 @@ class ReadlockApp extends StatelessWidget {
       home: const MainNavigation(),
       debugShowCheckedModeBanner: false,
       builder: NightShiftWrapper,
+      scrollBehavior: const NoScrollbarBehavior(),
     );
   }
 
   // Wraps every routed page (and any modal/bottom sheet pushed on top of
-  // the Navigator) so the eye-strain tint paints above all content.
+  // the Navigator) so the colour-temperature shift applies app-wide.
   Widget NightShiftWrapper(BuildContext context, Widget? child) {
     final Widget content = child ?? const SizedBox.shrink();
 
-    return RLNightShiftOverlay(child: content);
+    return RLNightShift(child: content);
   }
 
   ThemeData getTheme() {
@@ -87,4 +89,24 @@ class ReadlockApp extends StatelessWidget {
       textTheme: GoogleFonts.poppinsTextTheme(ThemeData.dark().textTheme),
     );
   }
+}
+
+// App-wide scroll behaviour that strips the desktop/web scrollbar so every
+// scrollable surface (lists, sheets, scroll views) reads as a clean
+// touch-style scroll. Wheel + drag inputs are still routed through.
+class NoScrollbarBehavior extends MaterialScrollBehavior {
+  const NoScrollbarBehavior();
+
+  @override
+  Widget buildScrollbar(BuildContext context, Widget child, ScrollableDetails details) {
+    return child;
+  }
+
+  @override
+  Set<PointerDeviceKind> get dragDevices => const {
+    PointerDeviceKind.touch,
+    PointerDeviceKind.mouse,
+    PointerDeviceKind.trackpad,
+    PointerDeviceKind.stylus,
+  };
 }

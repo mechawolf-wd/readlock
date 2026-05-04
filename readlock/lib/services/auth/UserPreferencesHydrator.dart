@@ -16,6 +16,8 @@ import 'package:readlock/constants/RLReadingFont.dart';
 import 'package:readlock/constants/RLReadingJustified.dart';
 import 'package:readlock/models/UserModel.dart';
 import 'package:readlock/screens/profile/BirdPicker.dart';
+import 'package:readlock/services/feedback/HapticsService.dart';
+import 'package:readlock/services/feedback/SoundService.dart';
 import 'package:readlock/utility_widgets/text_animation/BionicText.dart';
 import 'package:readlock/utility_widgets/text_animation/RSVPText.dart';
 
@@ -37,6 +39,11 @@ void hydrateUserPreferenceNotifiersFromUser(UserModel user) {
   rsvpEnabledNotifier.value = user.rsvp;
 
   lastOpenedCourseIdNotifier.value = user.lastOpenedCourseId;
+
+  // Feedback master switches — drive every UI sound and haptic in the app.
+  SoundService.soundsEnabledNotifier.value = user.sounds;
+  SoundService.typingSoundEnabledNotifier.value = user.typingSound;
+  HapticsService.userHapticsEnabledNotifier.value = user.haptics;
 }
 
 // Resets every preference notifier touched by the hydrator back to its
@@ -61,4 +68,11 @@ void resetUserPreferenceNotifiers() {
   rsvpEnabledNotifier.value = false;
 
   lastOpenedCourseIdNotifier.value = null;
+
+  // Reset the feedback switches to their build-time defaults so the next
+  // user (or the unauthenticated state) hears every sound and feels every
+  // haptic until they sign in and their saved preferences hydrate.
+  SoundService.soundsEnabledNotifier.value = true;
+  SoundService.typingSoundEnabledNotifier.value = true;
+  HapticsService.userHapticsEnabledNotifier.value = true;
 }

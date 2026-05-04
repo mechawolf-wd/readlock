@@ -94,6 +94,13 @@ class UserModel {
   @JsonKey(defaultValue: 0)
   final int balance;
 
+  // * Cumulative seconds the reader has spent inside the course content
+  // viewer. Each lesson commits its elapsed delta when the reader taps
+  // Finish on the lesson finish screen. Default 0 so existing user docs
+  // without the field read cleanly.
+  @JsonKey(defaultValue: 0)
+  final int timeSpentReading;
+
   // * Per-course reading progress, keyed by courseId. Each entry tracks
   // the last package the reader opened in that course and the set of
   // packages they've unlocked so far. Empty until the user opens their
@@ -126,6 +133,7 @@ class UserModel {
     this.lastOpenedCourseId,
     this.purchasedCourses = const <String>[],
     this.balance = 0,
+    this.timeSpentReading = 0,
     this.courseProgress = const <String, CourseProgressModel>{},
   });
 
@@ -171,6 +179,7 @@ class UserModel {
     String? lastOpenedCourseId,
     List<String>? purchasedCourses,
     int? balance,
+    int? timeSpentReading,
     Map<String, CourseProgressModel>? courseProgress,
   }) {
     return UserModel(
@@ -198,6 +207,7 @@ class UserModel {
       lastOpenedCourseId: lastOpenedCourseId ?? this.lastOpenedCourseId,
       purchasedCourses: purchasedCourses ?? this.purchasedCourses,
       balance: balance ?? this.balance,
+      timeSpentReading: timeSpentReading ?? this.timeSpentReading,
       courseProgress: courseProgress ?? this.courseProgress,
     );
   }

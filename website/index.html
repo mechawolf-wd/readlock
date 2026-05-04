@@ -16,11 +16,18 @@
     />
     <style>
       :root {
+        /* Pulled from lib/constants/RLDesignSystem.dart */
         --bg: #000000;
-        --fg: #ffffff;
-        --muted: #8a8a8a;
-        --line: #1a1a1a;
-        --red: #e63946;
+        --surface: #1c1c1e;
+        --surface-elev: #2c2c2e;
+        --fg: #e5e5e5;
+        --muted: #a0a0a0;
+        --textMuted: #5a5a5a;
+        --line: #2c2c2e;
+        --red: #ee4654;
+        --green: #4ade80;
+        --info: #29b1f4;
+        --warning: #f9b42c;
       }
 
       * {
@@ -137,7 +144,7 @@
         inset: 0;
         background: radial-gradient(
           ellipse 45% 55% at 75% 50%,
-          rgba(230, 57, 70, 0.18),
+          rgba(238, 70, 84, 0.18),
           transparent 70%
         );
         pointer-events: none;
@@ -349,6 +356,252 @@
 
       @media (max-width: 720px) {
         .showcase-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      /* Bird picker — sprite sheets from /assets/birds copied verbatim
+         from the Flutter app. Animation runs at the same 200ms step time
+         (BIRD_ANIMATION_STEP_TIME) as in BirdPicker.dart. */
+      .picker {
+        padding: 100px 0;
+        border-top: 1px solid var(--line);
+      }
+
+      .picker-header {
+        text-align: center;
+        margin-bottom: 56px;
+      }
+
+      .bird-stage {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 24px;
+        padding: 56px 24px;
+        border: 1px solid var(--line);
+        border-radius: 28px;
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent);
+        margin-bottom: 24px;
+        min-height: 320px;
+      }
+
+      .bird-preview {
+        width: 256px;
+        height: 192px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .bird-preview .sprite {
+        transform: scale(5);
+        transform-origin: center;
+      }
+
+      .bird-name {
+        font-family: "Press Start 2P", ui-monospace, monospace;
+        font-size: 14px;
+        letter-spacing: 0;
+        color: var(--red);
+      }
+
+      .bird-grid {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 12px;
+      }
+
+      .bird-tile {
+        aspect-ratio: 1 / 1;
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: border-color 0.15s ease, transform 0.15s ease, background 0.2s ease;
+      }
+
+      .bird-tile:hover {
+        border-color: #3a3a3a;
+        transform: translateY(-2px);
+      }
+
+      .bird-tile.is-selected {
+        border-color: var(--red);
+        background: rgba(238, 70, 84, 0.08);
+      }
+
+      .bird-tile .sprite {
+        transform: scale(2);
+        transform-origin: center;
+      }
+
+      .sprite {
+        display: block;
+        background-repeat: no-repeat;
+        image-rendering: pixelated;
+        image-rendering: crisp-edges;
+      }
+
+      @media (max-width: 720px) {
+        .bird-grid {
+          grid-template-columns: repeat(3, 1fr);
+        }
+        .bird-preview .sprite {
+          transform: scale(4);
+        }
+      }
+
+      /* Reading configurator — mirrors lib/screens/profile/SettingsDemos.dart.
+         Each card pairs a tap target (toggle or sample) with a live preview
+         that re-renders on change. */
+      .reader {
+        padding: 100px 0 140px;
+        border-top: 1px solid var(--line);
+      }
+
+      .reader-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+        margin-top: 56px;
+      }
+
+      .reader-card {
+        border: 1px solid var(--line);
+        border-radius: 24px;
+        padding: 28px;
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent);
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+        transition: border-color 0.2s ease;
+      }
+
+      .reader-card:hover {
+        border-color: #3a3a3a;
+      }
+
+      .reader-card-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+      }
+
+      .reader-card-title {
+        font-family: "Press Start 2P", ui-monospace, monospace;
+        font-size: 11px;
+        letter-spacing: 0;
+        color: var(--fg);
+        line-height: 1.5;
+      }
+
+      .reader-card-sub {
+        font-family: "Playfair Display", Georgia, serif;
+        font-size: 14px;
+        line-height: 1.5;
+        color: var(--muted);
+        letter-spacing: normal;
+      }
+
+      .reader-card-body {
+        font-family: "Playfair Display", Georgia, serif;
+        font-size: 17px;
+        line-height: 1.65;
+        color: var(--fg);
+        letter-spacing: normal;
+        min-height: 5.5em;
+      }
+
+      /* Blur preview — same lyrics-blur params as RLDS.lyricsBlurSigma /
+         RLDS.lyricsBlurOpacity (3px, 0.5). */
+      .blur-prev {
+        color: var(--fg);
+      }
+
+      .blur-prev.is-blurred {
+        filter: blur(3px);
+        opacity: 0.5;
+      }
+
+      .blur-current {
+        color: var(--fg);
+      }
+
+      /* Colored text — markupGreen + bold matches ProgressiveText's
+         <c:g> rendering. */
+      .colored-key {
+        color: var(--fg);
+        font-weight: 400;
+      }
+
+      .colored-key.is-on {
+        color: var(--green);
+        font-weight: 700;
+      }
+
+      /* Bionic — bold first ~40% of each word. */
+      .bionic-word b {
+        font-weight: 800;
+      }
+
+      /* Justified text. */
+      .justified-body.is-on {
+        text-align: justify;
+      }
+
+      /* Reveal — character-by-character fade in, layout reserved by hidden tail. */
+      .reveal-body .ch {
+        opacity: 0;
+        transition: opacity 200ms linear;
+      }
+
+      .reveal-body.is-instant .ch {
+        opacity: 1;
+        transition: none;
+      }
+
+      /* iOS-style toggle. */
+      .toggle {
+        flex-shrink: 0;
+        width: 48px;
+        height: 28px;
+        border-radius: 100px;
+        background: var(--surface-elev);
+        position: relative;
+        cursor: pointer;
+        border: none;
+        padding: 0;
+        transition: background 0.2s ease;
+      }
+
+      .toggle::after {
+        content: "";
+        position: absolute;
+        top: 2px;
+        left: 2px;
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        background: #fff;
+        transition: transform 0.2s ease;
+      }
+
+      .toggle.is-on {
+        background: var(--green);
+      }
+
+      .toggle.is-on::after {
+        transform: translateX(20px);
+      }
+
+      @media (max-width: 720px) {
+        .reader-grid {
           grid-template-columns: 1fr;
         }
       }
@@ -850,29 +1103,17 @@
       </div>
     </section>
 
-    <section class="showcase">
+    <section class="picker" id="birds">
       <div class="container">
-        <div class="showcase-grid">
-          <div class="showcase-card">
-            <div class="showcase-frame">
-              <img src="northern_cardinal_bird.jpg" alt="Northern cardinal" loading="lazy" />
-            </div>
-            <p class="showcase-caption">
-              <strong>8-bit birds.</strong> Because we are s3xy, and why
-              the f**k not?
-            </p>
-          </div>
-
-          <div class="showcase-card">
-            <div class="showcase-frame">
-              <img src="memphis.webp" alt="Corporate Memphis illustration" loading="lazy" />
-            </div>
-            <p class="showcase-caption">
-              <strong>Corporate Memphis.</strong> The look every other app
-              is leaving us with. We are not.
-            </p>
-          </div>
+        <div class="picker-header">
+          <div class="section-label">Pick your bird</div>
+          <h2 class="section-title">Ten hand-pixelled birds.<br />One lives on your bookshelf.</h2>
         </div>
+        <div class="bird-stage">
+          <div class="bird-preview" id="birdPreview"></div>
+          <div class="bird-name" id="birdName">Sparrow</div>
+        </div>
+        <div class="bird-grid" id="birdGrid"></div>
       </div>
     </section>
 
@@ -937,6 +1178,83 @@
               streaks to defend, and nothing to feel bad about when life
               gets in the way.
             </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="reader" id="reader">
+      <div class="container">
+        <div class="picker-header">
+          <div class="section-label">Reading configurator</div>
+          <h2 class="section-title">Tune the reader.<br />The way it sits in the app.</h2>
+        </div>
+        <div class="reader-grid">
+          <!-- Blur -->
+          <div class="reader-card" data-card="blur">
+            <div class="reader-card-head">
+              <div class="reader-card-title">Apple-Music blur</div>
+              <button class="toggle is-on" data-toggle="blur" aria-label="Toggle blur"></button>
+            </div>
+            <div class="reader-card-body">
+              <span class="blur-prev is-blurred">The sentence you just finished softly steps back.</span><br />
+              <span class="blur-current">This one is what you are reading now.</span>
+            </div>
+          </div>
+
+          <!-- Coloured key terms -->
+          <div class="reader-card" data-card="colored">
+            <div class="reader-card-head">
+              <div class="reader-card-title">Coloured key terms</div>
+              <button class="toggle is-on" data-toggle="colored" aria-label="Toggle coloured terms"></button>
+            </div>
+            <div class="reader-card-body">
+              The idea worth holding is <span class="colored-key is-on">cognitive load</span>, and the rest of the sentence carries it.
+            </div>
+          </div>
+
+          <!-- Bionic -->
+          <div class="reader-card" data-card="bionic">
+            <div class="reader-card-head">
+              <div class="reader-card-title">Bionic reading</div>
+              <button class="toggle" data-toggle="bionic" aria-label="Toggle bionic"></button>
+            </div>
+            <div class="reader-card-body bionic-body">
+              The eye lands on the bold part of each word and the rest fills itself in without effort.
+            </div>
+          </div>
+
+          <!-- Justified -->
+          <div class="reader-card" data-card="justified">
+            <div class="reader-card-head">
+              <div class="reader-card-title">Justified text</div>
+              <button class="toggle" data-toggle="justified" aria-label="Toggle justified"></button>
+            </div>
+            <div class="reader-card-body justified-body">
+              Either edge of the column locks straight, the way a printed page reads, with the spaces between words doing the small work of keeping the line tidy.
+            </div>
+          </div>
+
+          <!-- Reveal -->
+          <div class="reader-card" data-card="reveal">
+            <div class="reader-card-head">
+              <div class="reader-card-title">Character reveal</div>
+              <button class="toggle is-on" data-toggle="reveal" aria-label="Toggle reveal"></button>
+            </div>
+            <div class="reader-card-body reveal-body" id="revealBody">Each character fades in at its own moment, the way a thought arrives.</div>
+          </div>
+
+          <!-- Colour preview of the markup palette -->
+          <div class="reader-card" data-card="palette">
+            <div class="reader-card-head">
+              <div class="reader-card-title">Markup palette</div>
+              <span class="reader-card-sub">RLDS values</span>
+            </div>
+            <div class="reader-card-body">
+              A <span style="color: var(--green); font-weight: 700">good thing</span> stays green.
+              A <span style="color: var(--red); font-weight: 700">bad thing</span> stays warm red.
+              The rest of the line stays calm.
+            </div>
           </div>
         </div>
       </div>
@@ -1208,7 +1526,7 @@
 
             if (isAccentPoint) {
               ctx.fillStyle =
-                "rgba(230, 57, 70, " + depthFactor.toFixed(3) + ")";
+                "rgba(238, 70, 84, " + depthFactor.toFixed(3) + ")";
             } else {
               ctx.fillStyle =
                 "rgba(255, 255, 255, " +
@@ -1235,6 +1553,197 @@
         }
 
         requestAnimationFrame(renderFrame);
+      })();
+
+      // === Bird picker ===
+      // Mirrors lib/screens/profile/BirdPicker.dart — same per-bird sprite
+      // metadata (frameCount, frameWidth/Height, content offsets), same
+      // 200ms step time. Each tile is one DOM node whose background-position
+      // is advanced on a shared 200ms tick.
+      (function () {
+        const BIRDS = [
+          { name: "Sparrow",       file: "Sparrow.png",      firstFrame: 0, frameCount: 4, frameW: 64, frameH: 64, offX: 16, offY: 16, contentW: 32, contentH: 32 },
+          { name: "Pigeon",        file: "Pigeon.png",       firstFrame: 1, frameCount: 4, frameW: 64, frameH: 64, offX: 16, offY: 16, contentW: 32, contentH: 32 },
+          { name: "Collared Dove", file: "CollaredDove.png", firstFrame: 1, frameCount: 4, frameW: 64, frameH: 64, offX: 16, offY: 16, contentW: 32, contentH: 32 },
+          { name: "Crow",          file: "Crow.png",         firstFrame: 1, frameCount: 4, frameW: 64, frameH: 64, offX: 16, offY: 16, contentW: 32, contentH: 32 },
+          { name: "Blue Macaw",    file: "BlueMacaw.png",    firstFrame: 0, frameCount: 5, frameW: 26, frameH: 17, offX: 0,  offY: 0,  contentW: 26, contentH: 17 },
+          { name: "Flamingo",      file: "Flamingo.png",     firstFrame: 0, frameCount: 4, frameW: 35, frameH: 33, offX: 0,  offY: 0,  contentW: 35, contentH: 33 },
+          { name: "Kiwi",          file: "Kiwi.png",         firstFrame: 0, frameCount: 4, frameW: 27, frameH: 17, offX: 0,  offY: 0,  contentW: 27, contentH: 17 },
+          { name: "Shoebill",      file: "Shoebill.png",     firstFrame: 0, frameCount: 4, frameW: 30, frameH: 36, offX: 0,  offY: 0,  contentW: 30, contentH: 36 },
+          { name: "Toucan",        file: "Toucan.png",       firstFrame: 0, frameCount: 5, frameW: 32, frameH: 18, offX: 0,  offY: 0,  contentW: 32, contentH: 18 },
+          { name: "Peacock",       file: "Peacock.png",      firstFrame: 0, frameCount: 4, frameW: 128, frameH: 128, offX: 0, offY: 0, contentW: 128, contentH: 128 },
+        ];
+
+        const STEP_MS = 200;
+        const grid = document.getElementById("birdGrid");
+        const preview = document.getElementById("birdPreview");
+        const nameEl = document.getElementById("birdName");
+        if (!grid || !preview || !nameEl) return;
+
+        const animatedSprites = [];
+        let selectedIndex = 0;
+
+        function makeSprite(bird) {
+          const sprite = document.createElement("div");
+          sprite.className = "sprite";
+          sprite.style.width = bird.contentW + "px";
+          sprite.style.height = bird.contentH + "px";
+          sprite.style.backgroundImage = "url('birds/" + bird.file + "')";
+          sprite.style.backgroundPositionY = (-bird.offY) + "px";
+          sprite._bird = bird;
+          sprite._frame = 0;
+          animatedSprites.push(sprite);
+          updateSpriteFrame(sprite);
+          return sprite;
+        }
+
+        function updateSpriteFrame(sprite) {
+          const bird = sprite._bird;
+          const cellOriginX = (bird.firstFrame + sprite._frame) * bird.frameW;
+          sprite.style.backgroundPositionX = (-(cellOriginX + bird.offX)) + "px";
+        }
+
+        function tick() {
+          for (let i = 0; i < animatedSprites.length; i++) {
+            const sprite = animatedSprites[i];
+            sprite._frame = (sprite._frame + 1) % sprite._bird.frameCount;
+            updateSpriteFrame(sprite);
+          }
+        }
+
+        function renderPreview() {
+          preview.innerHTML = "";
+          const bird = BIRDS[selectedIndex];
+          // Remove the previous preview from animation pool by walking from end
+          for (let i = animatedSprites.length - 1; i >= 0; i--) {
+            if (animatedSprites[i]._isPreview) animatedSprites.splice(i, 1);
+          }
+          const sprite = makeSprite(bird);
+          sprite._isPreview = true;
+          preview.appendChild(sprite);
+          nameEl.textContent = bird.name;
+        }
+
+        function selectBird(newIndex) {
+          if (newIndex === selectedIndex) return;
+          selectedIndex = newIndex;
+          const tiles = grid.querySelectorAll(".bird-tile");
+          tiles.forEach((tile, i) => {
+            tile.classList.toggle("is-selected", i === newIndex);
+          });
+          renderPreview();
+        }
+
+        // Build tiles
+        BIRDS.forEach((bird, index) => {
+          const tile = document.createElement("button");
+          tile.type = "button";
+          tile.className = "bird-tile" + (index === 0 ? " is-selected" : "");
+          tile.setAttribute("aria-label", bird.name);
+          tile.addEventListener("click", () => selectBird(index));
+          tile.appendChild(makeSprite(bird));
+          grid.appendChild(tile);
+        });
+
+        renderPreview();
+        setInterval(tick, STEP_MS);
+      })();
+
+      // === Reading configurator ===
+      // One-to-one with the demos in lib/screens/profile/SettingsDemos.dart:
+      // toggle flips a class on the preview body, which carries the same
+      // visual transformation as the in-app demo.
+      (function () {
+        const REVEAL_TEXT = "Each character fades in at its own moment, the way a thought arrives.";
+        const revealBody = document.getElementById("revealBody");
+        let revealTimer = null;
+
+        function buildRevealSpans() {
+          revealBody.innerHTML = "";
+          for (let i = 0; i < REVEAL_TEXT.length; i++) {
+            const ch = document.createElement("span");
+            ch.className = "ch";
+            ch.textContent = REVEAL_TEXT[i];
+            revealBody.appendChild(ch);
+          }
+        }
+
+        function runRevealLoop() {
+          if (revealTimer) clearInterval(revealTimer);
+          buildRevealSpans();
+          const spans = revealBody.querySelectorAll(".ch");
+          let i = 0;
+          revealTimer = setInterval(() => {
+            if (revealBody.classList.contains("is-instant")) return;
+            if (i >= spans.length) {
+              setTimeout(() => {
+                spans.forEach((s) => (s.style.opacity = 0));
+                i = 0;
+              }, 1200);
+              i++;
+              return;
+            }
+            spans[i].style.opacity = 1;
+            i++;
+          }, 35);
+        }
+
+        function applyBionic(enabled) {
+          const card = document.querySelector('[data-card="bionic"] .bionic-body');
+          if (!card) return;
+          if (!card.dataset.original) card.dataset.original = card.textContent;
+          const text = card.dataset.original;
+          if (!enabled) {
+            card.textContent = text;
+            return;
+          }
+          // Bold first ~40% of each word, mirroring bionicSpans in app.
+          const html = text.split(/(\s+)/).map((part) => {
+            if (/^\s+$/.test(part)) return part;
+            const cut = Math.max(1, Math.ceil(part.length * 0.4));
+            return "<b>" + part.slice(0, cut) + "</b>" + part.slice(cut);
+          }).join("");
+          card.innerHTML = html;
+        }
+
+        const handlers = {
+          blur: (on) => {
+            const el = document.querySelector('[data-card="blur"] .blur-prev');
+            el.classList.toggle("is-blurred", on);
+          },
+          colored: (on) => {
+            const el = document.querySelector('[data-card="colored"] .colored-key');
+            el.classList.toggle("is-on", on);
+          },
+          bionic: (on) => applyBionic(on),
+          justified: (on) => {
+            const el = document.querySelector('[data-card="justified"] .justified-body');
+            el.classList.toggle("is-on", on);
+          },
+          reveal: (on) => {
+            revealBody.classList.toggle("is-instant", !on);
+            if (on) {
+              runRevealLoop();
+            } else {
+              if (revealTimer) clearInterval(revealTimer);
+              revealTimer = null;
+              revealBody.querySelectorAll(".ch").forEach((s) => (s.style.opacity = 1));
+            }
+          },
+        };
+
+        document.querySelectorAll(".toggle[data-toggle]").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            btn.classList.toggle("is-on");
+            const isOn = btn.classList.contains("is-on");
+            const key = btn.getAttribute("data-toggle");
+            const handler = handlers[key];
+            if (handler) handler(isOn);
+          });
+        });
+
+        // Initial state: reveal animation runs, bionic off, others on as marked.
+        runRevealLoop();
       })();
     </script>
   </body>

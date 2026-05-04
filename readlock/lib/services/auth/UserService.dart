@@ -25,7 +25,13 @@ class UserPreferenceField {
   static const String LAST_OPENED_COURSE_ID = 'lastOpenedCourseId';
   static const String PURCHASED_COURSES = 'purchasedCourses';
   static const String BALANCE = 'balance';
+  static const String TIME_SPENT_READING = 'timeSpentReading';
 }
+
+// * Starter feather balance credited to every new user document on
+// registration so first-time readers can buy their first coursebook
+// (10 feathers each) without topping up.
+const int NEW_USER_STARTING_BALANCE = 10;
 
 class UserService {
   static final ServiceLogger logger = ServiceLogger.forService('UserService');
@@ -138,7 +144,7 @@ class UserService {
         UserPreferenceField.BIRD_NAME: 'Sparrow',
         UserPreferenceField.LAST_OPENED_COURSE_ID: null,
         UserPreferenceField.PURCHASED_COURSES: <String>[],
-        UserPreferenceField.BALANCE: 0,
+        UserPreferenceField.BALANCE: NEW_USER_STARTING_BALANCE,
       };
 
       await userDoc(userId).set(profileData);
@@ -273,6 +279,34 @@ class UserService {
       return true;
     } on Exception catch (error) {
       logger.failure('incrementBalance', '$error');
+      return false;
+    }
+  }
+
+  // Atomic FieldValue.increment write for the cumulative reading-time
+  // counter. Called when the reader taps Finish on the lesson finish
+  // screen with the elapsed seconds spent inside that lesson, so the
+  // counter accumulates across sessions without requiring a read-modify-
+  // write round-trip.
+  static Future<bool> incrementTimeSpentReading(int seconds) async {
+    final String? userId = AuthService.currentUserId;
+    final bool hasNoUser = userId == null;
+
+    if (hasNoUser) {
+      logger.info('incrementTimeSpentReading', 'No user logged in');
+      return false;
+    }
+
+    try {
+      await userDoc(userId).update({
+        UserPreferenceField.TIME_SPENT_READING: FieldValue.increment(seconds),
+      });
+
+      logger.success('incrementTimeSpentReading', 'seconds=$seconds');
+
+      return true;
+    } on Exception catch (error) {
+      logger.failure('incrementTimeSpentReading', '$error');
       return false;
     }
   }

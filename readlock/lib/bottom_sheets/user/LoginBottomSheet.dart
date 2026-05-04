@@ -8,8 +8,8 @@ import 'package:flutter/material.dart' hide Typography;
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:readlock/bottom_sheets/RLBottomSheet.dart';
 import 'package:readlock/bottom_sheets/user/LoginSupportBottomSheet.dart';
-import 'package:readlock/design_system/RLButton.dart';
 import 'package:readlock/design_system/RLReveal.dart';
+import 'package:readlock/design_system/RLStarfieldBackground.dart';
 import 'package:readlock/design_system/RLToast.dart';
 import 'package:readlock/design_system/RLUtility.dart';
 import 'package:readlock/design_system/RLTextField.dart';
@@ -18,26 +18,76 @@ import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/constants/RLUIStrings.dart';
 import 'package:readlock/models/UserModel.dart';
 import 'package:readlock/screens/OnboardingScreen.dart';
+import 'package:readlock/screens/VerifyEmailScreen.dart';
+import 'package:readlock/screens/profile/BirdPicker.dart';
+import 'package:readlock/utility_widgets/text_animation/RLTypewriterText.dart';
 import 'package:readlock/services/auth/AuthService.dart';
+import 'package:readlock/services/auth/DisposableEmailDomains.dart';
 import 'package:readlock/services/auth/UserService.dart';
 import 'package:readlock/services/feedback/SoundService.dart';
+
+// * Configuration for the login sheet.
+//
+// Default values reproduce the auth-gate flow used by MainNavigation. Other
+// flows (e.g. account deletion re-authentication) supply their own copy and
+// flip toggles to hide irrelevant UI.
+class LoginSheetConfig {
+  // Header copy at the top of the sheet.
+  final String title;
+  final String subtitle;
+
+  // Hide the sign-up toggle row when the flow only allows signing in
+  // (re-authentication can never create a new account).
+  final bool allowSignUp;
+
+  // Hide the support / forgot-password link in the secondary row.
+  final bool allowSupport;
+
+  // Hide the dev-only bypass row. Always disabled for security-sensitive
+  // flows like re-authentication.
+  final bool showDevSkip;
+
+  // When true, every sign-in handler routes through the matching Firebase
+  // re-authentication API against the currently signed-in user. Successful
+  // re-auth refreshes the auth token without changing the active user.
+  final bool isReauthMode;
+
+  // Fires after a successful authentication, before the sheet is popped.
+  // Replaces the default success path (close + onboarding) so callers can
+  // chain follow-up flows (e.g. confirm-then-delete) from a still-mounted
+  // ancestor context.
+  final void Function(BuildContext context)? onAuthenticated;
+
+  const LoginSheetConfig({
+    this.title = RLUIStrings.LOGIN_TITLE,
+    this.subtitle = RLUIStrings.LOGIN_SUBTITLE,
+    this.allowSignUp = true,
+    this.allowSupport = true,
+    this.showDevSkip = true,
+    this.isReauthMode = false,
+    this.onAuthenticated,
+  });
+}
 
 class LoginBottomSheet {
   // * Dev-only bypass.
   //
   // When true, MainNavigation's auth-state listener will not re-present the
   // login sheet even if the user is unauthenticated. Flipped by the Skip
-  // button on the login form. Reset on app restart — never persisted.
+  // button on the login form. Reset on app restart, never persisted.
   static bool isDevBypassed = false;
 
   // Returns the bottom-sheet future so callers can await dismissal (e.g. the
   // main navigation needs to know when it can show the sheet again).
-  static Future<void> show(BuildContext context) {
+  static Future<void> show(
+    BuildContext context, {
+    LoginSheetConfig config = const LoginSheetConfig(),
+  }) {
     return RLBottomSheet.show(
       context,
-      child: const LoginSheet(),
-      isDismissible: false,
-      enableDrag: false,
+      child: LoginSheet(config: config),
+      isDismissible: config.isReauthMode,
+      enableDrag: config.isReauthMode,
       showGrabber: false,
       backgroundColor: RLDS.backgroundLight,
     );
@@ -48,7 +98,9 @@ class LoginBottomSheet {
 const double SOCIAL_LOGIN_BUTTON_HEIGHT = 48.0;
 
 class LoginSheet extends StatefulWidget {
-  const LoginSheet({super.key});
+  final LoginSheetConfig config;
+
+  const LoginSheet({super.key, this.config = const LoginSheetConfig()});
 
   @override
   State<LoginSheet> createState() => LoginSheetState();
@@ -63,10 +115,19 @@ class LoginSheetState extends State<LoginSheet> {
   bool isSignUpMode = false;
   bool isAuthenticating = false;
 
+  LoginSheetConfig get config => widget.config;
+
   @override
   void initState() {
     super.initState();
     emailController.addListener(handleEmailChange);
+
+    // Reauth runs against the current user, so prefilling the email field
+    // both speeds up the form and signals which account is being verified.
+    if (config.isReauthMode) {
+      final String currentEmail = AuthService.currentUserEmail ?? '';
+      emailController.text = currentEmail;
+    }
   }
 
   @override
@@ -91,7 +152,7 @@ class LoginSheetState extends State<LoginSheet> {
     });
   }
 
-  // * Email / password submit (handles both sign-in and sign-up)
+  // * Email / password submit (handles sign-in, sign-up, and reauth)
 
   Future<void> handleEmailPasswordSubmit() async {
     final String email = emailController.text.trim();
@@ -110,9 +171,31 @@ class LoginSheetState extends State<LoginSheet> {
       return;
     }
 
+    // Disposable / temp-mail filter on sign-up only. Sign-in and reauth
+    // run against accounts that already passed the filter, so the same
+    // domain is allowed there. Block before flipping the loading state
+    // so the form stays responsive.
+    final bool isFreshSignUp = isSignUpMode && !config.isReauthMode;
+    final bool isDisposable = isFreshSignUp && isDisposableEmail(email);
+
+    if (isDisposable) {
+      RLToast.warning(context, RLUIStrings.ERROR_DISPOSABLE_EMAIL);
+      return;
+    }
+
     setState(() {
       isAuthenticating = true;
     });
+
+    if (config.isReauthMode) {
+      final bool reauthSucceeded = await AuthService.reauthenticateWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+
+      await finaliseReauthResult(reauthSucceeded);
+      return;
+    }
 
     AuthResult result;
 
@@ -134,6 +217,13 @@ class LoginSheetState extends State<LoginSheet> {
       isAuthenticating = true;
     });
 
+    if (config.isReauthMode) {
+      final bool reauthSucceeded = await AuthService.reauthenticateWithApple();
+
+      await finaliseReauthResult(reauthSucceeded);
+      return;
+    }
+
     final AuthResult result = await AuthService.signInWithApple();
 
     await finaliseAuthResult(result);
@@ -146,9 +236,48 @@ class LoginSheetState extends State<LoginSheet> {
       isAuthenticating = true;
     });
 
+    if (config.isReauthMode) {
+      final bool reauthSucceeded = await AuthService.reauthenticateWithGoogle();
+
+      await finaliseReauthResult(reauthSucceeded);
+      return;
+    }
+
     final AuthResult result = await AuthService.signInWithGoogle();
 
     await finaliseAuthResult(result);
+  }
+
+  // * Reauth result handling. Reauth keeps the existing user, so there's no
+  // onboarding branch and no profile creation. On success we close the
+  // sheet first, then fire the caller-supplied follow-up so the next dialog
+  // pushes onto the original presenting context.
+
+  Future<void> finaliseReauthResult(bool succeeded) async {
+    final bool isUnmounted = !mounted;
+
+    if (isUnmounted) {
+      return;
+    }
+
+    if (!succeeded) {
+      setState(() {
+        isAuthenticating = false;
+      });
+
+      RLToast.error(context, RLUIStrings.ERROR_INVALID_CREDENTIALS);
+      return;
+    }
+
+    final NavigatorState navigator = Navigator.of(context);
+    final void Function(BuildContext context)? followUp = config.onAuthenticated;
+    final BuildContext callerContext = navigator.context;
+
+    navigator.pop();
+
+    if (followUp != null) {
+      followUp(callerContext);
+    }
   }
 
   // * Shared result handling — creates the profile doc when needed, then
@@ -184,7 +313,7 @@ class LoginSheetState extends State<LoginSheet> {
     }
 
     // Onboarding fires whenever the signed-in profile hasn't completed it
-    // yet — covers fresh sign-ups (a brand-new doc starts with the flag
+    // yet. Covers fresh sign-ups (a brand-new doc starts with the flag
     // false) and any returning user who bailed out of the flow before.
     final bool shouldRunOnboarding = hasUser && await isOnboardingPending();
 
@@ -199,7 +328,34 @@ class LoginSheetState extends State<LoginSheet> {
       return;
     }
 
+    // Returning sign-in. Close the sheet first so the verify gate (if
+    // needed) lands on the main navigator instead of a stacked modal.
+    final NavigatorState rootNavigator = Navigator.of(context, rootNavigator: true);
+    final BuildContext rootContext = rootNavigator.context;
+
     Navigator.of(context).pop();
+
+    await routeThroughEmailVerificationGate(rootNavigator, rootContext);
+  }
+
+  // Pushes the verify-email screen on the root navigator if the signed-in
+  // user's email is still unconfirmed. Social providers (Google) flag the
+  // user verified on first sign-in, so this no-ops for them.
+  Future<void> routeThroughEmailVerificationGate(
+    NavigatorState rootNavigator,
+    BuildContext rootContext,
+  ) async {
+    final bool isVerified = await AuthService.isEmailVerified();
+
+    if (isVerified) {
+      return;
+    }
+
+    if (!rootNavigator.mounted) {
+      return;
+    }
+
+    await VerifyEmailScreen.show(rootContext);
   }
 
   // Reads /users/{id}.hasCompletedOnboarding. Treats a missing profile as
@@ -218,17 +374,21 @@ class LoginSheetState extends State<LoginSheet> {
 
   // Brand-new accounts go through the onboarding flow before they land on
   // the home screen. We close the login sheet first so onboarding pushes
-  // onto the main navigator, not on top of a still-mounted modal sheet —
-  // mirrors the LoginSupportPicker pattern. Once onboarding closes, mark
-  // the profile complete so we don't replay it on next launch.
+  // onto the main navigator, not on top of a still-mounted modal sheet,
+  // mirroring the LoginSupportPicker pattern. Once onboarding closes,
+  // mark the profile complete and route through the verify-email gate so
+  // the reader can't reach the bookshelf with an unconfirmed address.
   Future<void> routeNewUserThroughOnboarding() async {
     final NavigatorState rootNavigator = Navigator.of(context, rootNavigator: true);
+    final BuildContext rootContext = rootNavigator.context;
 
     Navigator.of(context).pop();
 
-    await OnboardingScreen.show(rootNavigator.context);
+    await OnboardingScreen.show(rootContext);
 
     await UserService.markOnboardingComplete();
+
+    await routeThroughEmailVerificationGate(rootNavigator, rootContext);
   }
 
   // * Reset password
@@ -302,10 +462,54 @@ class LoginSheetState extends State<LoginSheet> {
 
   @override
   Widget build(BuildContext context) {
-    return ModalContent();
+    // Stack with Clip.none lets the perched sparrow overflow above the
+    // sheet's rounded top edge so the bird visually sits ON the sheet
+    // rather than inside it. Re-auth flows (account deletion) hide the
+    // mascot entirely — the moment is destructive, not friendly.
+    final bool showPerchedSparrow = !config.isReauthMode;
+
+    final List<Widget> stackChildren = [ModalContent()];
+
+    if (showPerchedSparrow) {
+      stackChildren.add(PerchedSparrow());
+    }
+
+    return Stack(clipBehavior: Clip.none, children: stackChildren);
+  }
+
+  // * Sparrow perched fully above the sheet's top rim — body sits above
+  // the rounded edge with a small gap so the bird reads as standing on
+  // top of the sheet rather than crashing into it. Hardcoded to
+  // BIRD_OPTIONS first entry (Sparrow) so the login screen always shows
+  // the same mascot regardless of the reader's saved bird choice.
+  // IgnorePointer keeps it decorative — taps pass through to the scrim.
+  //
+  // The Stack origin is the SheetContainer's child slot, which itself
+  // sits RLDS.spacing12 below the sheet's actual top edge (the no-grabber
+  // lead-in inside RLBottomSheet). Offsetting the bird by perchSize plus
+  // that lead-in plus a small visual gap puts the bird's bottom just
+  // above the sheet's rounded corner.
+  Widget PerchedSparrow() {
+    const double perchSize = 72.0;
+    const double sheetTopGap = RLDS.spacing4;
+    const double topOffset = -(perchSize + RLDS.spacing12 + sheetTopGap);
+
+    return Positioned(
+      top: topOffset,
+      left: 0,
+      right: 0,
+      child: IgnorePointer(
+        child: Center(
+          child: BirdAnimationSprite(bird: BIRD_OPTIONS.first, previewSize: perchSize),
+        ),
+      ),
+    );
   }
 
   Widget ModalContent() {
+    final bool showDevSkipRow = config.showDevSkip;
+    final Widget devSkipSection = RenderIf.condition(showDevSkipRow, DevSkipButton());
+
     // Bottom 24 matches every other bottom sheet in the app.
     return Padding(
       padding: const EdgeInsets.only(bottom: RLDS.spacing24),
@@ -324,7 +528,7 @@ class LoginSheetState extends State<LoginSheet> {
 
             SecondaryLinks(),
 
-            DevSkipButton(),
+            devSkipSection,
           ]),
         ],
       ),
@@ -365,7 +569,7 @@ class LoginSheetState extends State<LoginSheet> {
       return RLUIStrings.SIGNUP_TITLE;
     }
 
-    return RLUIStrings.LOGIN_TITLE;
+    return config.title;
   }
 
   String getHeaderSubtitle() {
@@ -373,7 +577,7 @@ class LoginSheetState extends State<LoginSheet> {
       return RLUIStrings.SIGNUP_SUBTITLE;
     }
 
-    return RLUIStrings.LOGIN_SUBTITLE;
+    return config.subtitle;
   }
 
   VoidCallback? asTapHandler(VoidCallback handler) {
@@ -388,11 +592,20 @@ class LoginSheetState extends State<LoginSheet> {
     final String title = getHeaderTitle();
     final String subtitle = getHeaderSubtitle();
 
+    // Keying the typewriter on the title text remounts it whenever the
+    // sign-in / sign-up toggle flips the heading, so each new heading
+    // re-runs the character-by-character reveal — same pattern as the
+    // bottom-nav screen titles (CoursesScreen, MyBookshelfScreen).
     return Div.column(
       [
-        RLTypography.headingLarge(title, textAlign: TextAlign.center),
+        RLTypewriterText(
+          key: ValueKey<String>(title),
+          text: title,
+          style: RLTypography.headingLargeStyle,
+          textAlign: TextAlign.center,
+        ),
 
-        const Spacing.height(RLDS.spacing4),
+        const Spacing.height(RLDS.sheetHeadingToSubheadingSpacing),
 
         RLTypography.bodyMedium(
           subtitle,
@@ -405,7 +618,7 @@ class LoginSheetState extends State<LoginSheet> {
         RLDS.spacing24,
         RLDS.spacing24,
         RLDS.spacing24,
-        RLDS.spacing16,
+        RLDS.sheetSubheadingToContentSpacing,
       ),
     );
   }
@@ -530,17 +743,18 @@ class LoginSheetState extends State<LoginSheet> {
   Widget ActionRow() {
     final String label = getActionButtonLabel();
     final Color actionColor = getActionButtonColor();
+    final VoidCallback? actionTap = asTapHandler(handleEmailPasswordSubmit);
 
-    return RLButton.primary(
-      label: label,
-      color: actionColor,
-      margin: const EdgeInsets.fromLTRB(
-        RLDS.spacing24,
-        RLDS.spacing20,
-        RLDS.spacing24,
-        RLDS.spacing8,
-      ),
-      onTap: asTapHandler(handleEmailPasswordSubmit),
+    const EdgeInsets actionMargin = EdgeInsets.fromLTRB(
+      RLDS.spacing24,
+      RLDS.spacing20,
+      RLDS.spacing24,
+      RLDS.spacing8,
+    );
+
+    return Padding(
+      padding: actionMargin,
+      child: StarfieldActionButton(label: label, color: actionColor, onTap: actionTap),
     );
   }
 
@@ -574,23 +788,40 @@ class LoginSheetState extends State<LoginSheet> {
   // middle-dot separator. In sign-in mode reads: "New account · Support".
 
   Widget SecondaryLinks() {
+    final bool showModeSwitch = config.allowSignUp;
+    final bool showSupport = config.allowSupport;
+    final bool showSeparator = showModeSwitch && showSupport;
+    final bool hasNoLinks = !showModeSwitch && !showSupport;
+
+    if (hasNoLinks) {
+      return const Spacing.height(RLDS.spacing12);
+    }
+
     final String modeSwitchLabel = getModeSwitchLabel();
 
-    return Div.row(
-      [
-        ClickableTextLink(label: modeSwitchLabel, onTap: toggleMode),
+    final List<Widget> links = [];
 
-        const Spacing.width(RLDS.spacing8),
+    if (showModeSwitch) {
+      links.add(ClickableTextLink(label: modeSwitchLabel, onTap: toggleMode));
+    }
 
-        RLTypography.bodyMedium(' · ', color: RLDS.textSecondary),
+    if (showSeparator) {
+      links.add(const Spacing.width(RLDS.spacing8));
+      links.add(RLTypography.bodyMedium(' · ', color: RLDS.textSecondary));
+      links.add(const Spacing.width(RLDS.spacing8));
+    }
 
-        const Spacing.width(RLDS.spacing8),
-
+    if (showSupport) {
+      links.add(
         ClickableTextLink(
           label: RLUIStrings.LOGIN_SUPPORT_LABEL,
           onTap: asTapHandler(handleSupportTap),
         ),
-      ],
+      );
+    }
+
+    return Div.row(
+      links,
       mainAxisAlignment: MainAxisAlignment.center,
       padding: const EdgeInsets.symmetric(vertical: RLDS.spacing12),
     );
@@ -615,6 +846,57 @@ class LoginSheetState extends State<LoginSheet> {
     return GestureDetector(
       onTap: wrappedTap,
       child: RLTypography.bodyMedium(label, color: RLDS.textSecondary),
+    );
+  }
+}
+
+// Action button that paints the shared starfield behind a translucent tint
+// of the button colour. Used exclusively here for Login / Create-my-nest
+// so the primary auth call-to-action carries the brand identity; every
+// other RLButton.primary in the app keeps a flat fill.
+class StarfieldActionButton extends StatelessWidget {
+  final String label;
+  final Color color;
+  final VoidCallback? onTap;
+
+  const StarfieldActionButton({
+    super.key,
+    required this.label,
+    required this.color,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    const EdgeInsets buttonPadding = EdgeInsets.symmetric(
+      vertical: RLDS.spacing16,
+      horizontal: RLDS.spacing24,
+    );
+
+    // Translucent tint sits over the starfield so the colour reads as the
+    // button's brand without burying the stars. Alpha tuned so the label
+    // stays legible against both the red and the green variants.
+    final Color tintColor = color.withValues(alpha: 0.85);
+
+    return GestureDetector(
+      onTap: onTap,
+      child: ClipRRect(
+        borderRadius: RLDS.borderRadiusSmall,
+        child: Stack(
+          children: [
+            const Positioned.fill(child: RLStarfieldBackground()),
+
+            Positioned.fill(child: ColoredBox(color: tintColor)),
+
+            Container(
+              width: double.infinity,
+              padding: buttonPadding,
+              alignment: Alignment.center,
+              child: RLTypography.bodyLarge(label, color: RLDS.white),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

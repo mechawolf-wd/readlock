@@ -6,6 +6,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:readlock/services/feedback/HapticsService.dart';
 import 'package:readlock/course_screens/CourseRoadmapScreen.dart';
 import 'package:readlock/course_screens/data/CourseData.dart';
 import 'package:readlock/design_system/RLUtility.dart';
@@ -100,7 +101,7 @@ class BookshelfScreenState extends State<BookshelfScreen> {
   // a chip toggle or query change just rebuilds with a fresh slice.
 
   void handleFilterToggleTap() {
-    HapticFeedback.lightImpact();
+    HapticsService.lightImpact();
     setState(() {
       isFilterPanelOpen = !isFilterPanelOpen;
     });
@@ -410,7 +411,7 @@ class BookshelfScreenState extends State<BookshelfScreen> {
     final double progress = mockProgressForCourseId(courseId);
 
     void onCardTap() {
-      HapticFeedback.lightImpact();
+      HapticsService.lightImpact();
       navigateToCourse(courseId);
     }
 
@@ -553,7 +554,7 @@ class BookshelfScreenState extends State<BookshelfScreen> {
 
   Widget BookshelfHeaderWithSettings() {
     void onSettingsTap() {
-      HapticFeedback.lightImpact();
+      HapticsService.lightImpact();
       SettingsBottomSheet.show(context);
     }
 

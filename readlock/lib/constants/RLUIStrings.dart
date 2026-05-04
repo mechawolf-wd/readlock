@@ -13,7 +13,7 @@ class RLUIStrings {
   static const String BOOKSHELF_OWNED_HEADING = 'Owned';
   static const String BOOKSHELF_EMPTY_MESSAGE = '*chirp* - read something to see it here';
   static const String BOOKSHELF_LOAD_MORE_LABEL = 'Load more';
-  static const String LOAD_MORE_NOTHING_LEFT = "*chirp* - that's all of them";
+  static const String LOAD_MORE_NOTHING_LEFT = "*chirp* - that's all of them for now";
 
   // * Empty / loading states
   static const String NO_COURSES_MESSAGE = '';
@@ -27,20 +27,20 @@ class RLUIStrings {
   // fixed monthly feather budget the reader spends on books. Every book
   // costs 10 feathers.
   static const String FEATHERS_TITLE = 'Feathers Plan';
-  static const String FEATHERS_SUBTITLE = 'Feathers for the books you want';
+  static const String FEATHERS_SUBTITLE = 'Enjoy the coursebooks you want';
   static const String PRICE_PERIOD = '/month';
-  static const String FEATHERS_BOOK_PRICING_NOTE = 'Each book costs 10 feathers';
+  static const String FEATHERS_BOOK_PRICING_NOTE = 'Each coursebook costs 10 feathers';
 
   // Per-plan copy.
   static const String PLAN_BEGINNER_NAME = 'Beginner';
   static const String PLAN_BEGINNER_PRICE = '\$6.99';
   static const String PLAN_BEGINNER_FEATHERS = '100 feathers';
-  static const String PLAN_BEGINNER_BOOKS = '10 books a month';
+  static const String PLAN_BEGINNER_BOOKS = '10 coursebooks a month';
 
   static const String PLAN_READER_NAME = 'Reader';
   static const String PLAN_READER_PRICE = '\$12.99';
   static const String PLAN_READER_FEATHERS = '300 feathers';
-  static const String PLAN_READER_BOOKS = '30 books a month';
+  static const String PLAN_READER_BOOKS = '30 coursebooks a month';
 
   // * Feedback Snackbar
   static const String CORRECT_ANSWER_MESSAGE = 'Correct, you read it';
@@ -50,7 +50,7 @@ class RLUIStrings {
   static const String LOGIN_TITLE = 'Welcome reader!';
   static const String LOGIN_SUBTITLE = 'Login to hop in';
   static const String SIGNUP_TITLE = 'Create account';
-  static const String SIGNUP_SUBTITLE = 'Look! They’re joining us!';
+  static const String SIGNUP_SUBTITLE = 'Look! One of us!';
   static const String EMAIL_PLACEHOLDER = 'Email...';
   static const String PASSWORD_PLACEHOLDER = 'Password';
   static const String SIGN_IN_BUTTON_LABEL = 'Login';
@@ -78,7 +78,7 @@ class RLUIStrings {
   static const String SUPPORT_EMAIL_LABEL = 'Email support';
   static const String SUPPORT_EMAIL_DESCRIPTION = 'Reach us directly at the address below.';
   static const String SUPPORT_COPY_EMAIL_BUTTON_LABEL = 'Copy';
-  static const String SUPPORT_EMAIL_ADDRESS = 'support@readlock.org';
+  static const String SUPPORT_EMAIL_ADDRESS = 'support@readlock.or\g';
   static const String SUPPORT_EMAIL_COPIED_MESSAGE = 'Support email copied to clipboard.';
   static const String RESEND_VERIFICATION_ALREADY_VERIFIED = 'Your email is already verified.';
   static const String RESEND_VERIFICATION_FAILED =
@@ -176,11 +176,11 @@ class RLUIStrings {
   static const String ROADMAP_SUBTITLE = 'Master design psychology fundamentals';
   static const String ROADMAP_CONTINUE_LABEL = 'Continue';
   static const String ROADMAP_DEFAULT_LESSON_LABEL = 'Lesson';
-  static const String ROADMAP_PURCHASE_LABEL = 'Pay';
-  static const String ROADMAP_PURCHASE_FEATHERS_SUFFIX = 'feathers';
+  static const String ROADMAP_PURCHASE_LABEL = 'Buy for';
   static const String ROADMAP_PURCHASE_LOADING_LABEL = 'Unlocking...';
   static const String ROADMAP_PURCHASE_SUCCESS = 'Course unlocked';
   static const String ROADMAP_PURCHASE_INSUFFICIENT = 'Not enough feathers';
+  static const String ROADMAP_PURCHASE_FEATHERS_SUFFIX = 'feathers';
 
   // * Feedback Snackbar Buttons
   static const String WHY_BUTTON_LABEL = 'Why?';
@@ -222,6 +222,9 @@ class RLUIStrings {
 
   // * Course Outro
   static const String OUTRO_BUTTON_LABEL = 'Fin';
+
+  // * Lesson Finish Screen
+  static const String LESSON_FINISH_BUTTON_LABEL = 'Finish';
 
   // * Learning Statistics
   static const String LEARNING_STATS_TITLE = 'Reading';
@@ -300,9 +303,21 @@ class RLUIStrings {
   // * Settings Bottom Sheet
   static const String SETTINGS_TITLE = 'Settings';
 
-  // * Onboarding
+  // * Onboarding (dev-only menu entries; the user-visible flow is
+  // navigated entirely with chevrons, no labelled CTAs)
   static const String DEV_TRIGGER_ONBOARDING_LABEL = 'Trigger onboarding (mock)';
-  static const String ONBOARDING_READ_LABEL = 'Read';
+
+  // * Verify email screen. Gate shown after onboarding (or after any
+  // returning sign-in) when the user's email is still unconfirmed.
+  static const String VERIFY_EMAIL_TITLE = 'Verify your email';
+  static const String VERIFY_EMAIL_DESCRIPTION =
+      'We sent a confirmation link. Open it from your inbox, then tap the button below.';
+  static const String VERIFY_EMAIL_CONFIRM_LABEL = 'I have verified';
+  static const String VERIFY_EMAIL_CHECKING_LABEL = 'Checking...';
+  static const String VERIFY_EMAIL_RESEND_LABEL = 'Resend verification link';
+  static const String VERIFY_EMAIL_RESENDING_LABEL = 'Resending...';
+  static const String VERIFY_EMAIL_NOT_YET_MESSAGE =
+      'Still not verified. Check your inbox.';
 
   // * Account Dialogs
   static const String ACCOUNT_DEACTIVATE_MESSAGE =
@@ -311,22 +326,24 @@ class RLUIStrings {
   static const String ACCOUNT_DELETE_MESSAGE =
       'This action is permanent. All your data will be lost.';
   static const String ACCOUNT_DELETE_CONFIRM = 'Delete';
+  static const String ACCOUNT_DELETE_REAUTH_SUBTITLE = 'Sign in again to confirm.';
+  static const String ACCOUNT_DELETE_IN_PROGRESS_LABEL = 'Removing account...';
 
-  // * Auth Error Messages — gentle, non-accusatory copy. Errors describe
-  // the situation or own the fault on our end; they never imply the
-  // reader did something wrong.
-  static const String ERROR_INVALID_CREDENTIALS =
-      'Couldn\'t match that email and password. Give it another try.';
-  static const String ERROR_EMAIL_IN_USE = 'An account with this email already exists.';
-  static const String ERROR_WEAK_PASSWORD =
-      'That password is a little short. A longer one will do.';
-  static const String ERROR_INVALID_EMAIL = 'That email doesn\'t look quite right.';
-  static const String ERROR_NETWORK = 'The connection is a little shaky. Give it another try.';
-  static const String ERROR_TOO_MANY_REQUESTS = 'Let\'s take a short breather, then try again.';
+  // * Auth Error Messages. Loose, dry, never accusatory. The originals
+  // were already on tone, so the trim here is mostly cutting "give it
+  // another try" filler from the tails.
+  static const String ERROR_INVALID_CREDENTIALS = "Couldn't match that email and password.";
+  static const String ERROR_WEAK_PASSWORD = 'That password is a little short. A longer one will do.';
+  static const String ERROR_INVALID_EMAIL = "That email doesn't look quite right.";
+
+  // Surfaced when the sign-up email's domain is on the disposable / temp
+  // mail blocklist (DisposableEmailDomains.dart).
+  static const String ERROR_DISPOSABLE_EMAIL = "We wouldn't do that to you. Use a real address.";
+  static const String ERROR_NETWORK = 'The connection is a little shaky.';
+  static const String ERROR_TOO_MANY_REQUESTS = "Let's take a short breather.";
   static const String ERROR_REQUIRES_RECENT_LOGIN = 'Login again to continue.';
-  static const String ERROR_USER_DISABLED = 'This account isn\'t active anymore.';
-  static const String ERROR_UNKNOWN = 'Something went wrong on our end. Give it another try.';
+  static const String ERROR_USER_DISABLED = "This account isn't active anymore.";
+  static const String ERROR_UNKNOWN = 'Something went wrong on our end.';
   static const String ERROR_NO_USER_LOGGED_IN = 'No one is signed in yet.';
-  static const String ERROR_ACCOUNT_DELETION_FAILED =
-      'Couldn\'t delete the account just now. Give it another try.';
+  static const String ERROR_ACCOUNT_DELETION_FAILED = "Couldn't delete the account just now.";
 }

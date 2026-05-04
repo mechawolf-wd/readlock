@@ -57,7 +57,12 @@ class AuthService {
         }
       case 'email-already-in-use':
         {
-          return RLUIStrings.ERROR_EMAIL_IN_USE;
+          // Map to the generic unknown-error string so the user-facing
+          // message is literally identical to any other unrecognised
+          // failure. Distinguishable copy here would still let an
+          // attacker enumerate accounts by spotting the "couldn't create"
+          // wording, so the answer needs to be the same words every time.
+          return RLUIStrings.ERROR_UNKNOWN;
         }
       case 'invalid-email':
         {
@@ -121,7 +126,13 @@ class AuthService {
     } on FirebaseAuthException catch (error) {
       final String errorMessage = getErrorMessage(error.code);
 
-      logger.failure('Registration', '${error.code} - $errorMessage');
+      // email-already-in-use must never be surfaced verbatim. Even the
+      // dev console can be opened on web, so the specific code is logged
+      // as a generic failure to avoid account-enumeration via devtools.
+      final bool isEmailInUse = error.code == 'email-already-in-use';
+      final String logDetail = isEmailInUse ? 'sign-up rejected' : '${error.code} - $errorMessage';
+
+      logger.failure('Registration', logDetail);
 
       return AuthResult(errorMessage: errorMessage);
     } on Exception catch (error) {
@@ -239,6 +250,100 @@ class AuthService {
     }
   }
 
+  static Future<bool> reauthenticateWithApple() async {
+    try {
+      final User? user = FirebaseAuth.instance.currentUser;
+      final bool userNotLoggedIn = user == null;
+
+      if (userNotLoggedIn) {
+        return false;
+      }
+
+      // Web takes the Firebase popup path for the same reason signInWithApple
+      // does: sign_in_with_apple_web 3.0 crashes during JS interop.
+      if (kIsWeb) {
+        final OAuthProvider appleProvider = OAuthProvider('apple.com')
+          ..addScope('email')
+          ..addScope('name');
+
+        await user.reauthenticateWithPopup(appleProvider);
+
+        return true;
+      }
+
+      final String rawNonce = generateNonce();
+      final String hashedNonce = sha256ofString(rawNonce);
+
+      final AuthorizationCredentialAppleID appleCredential =
+          await SignInWithApple.getAppleIDCredential(
+            scopes: [
+              AppleIDAuthorizationScopes.email,
+              AppleIDAuthorizationScopes.fullName,
+            ],
+            nonce: hashedNonce,
+          );
+
+      final OAuthCredential oAuthCredential = OAuthProvider('apple.com').credential(
+        idToken: appleCredential.identityToken,
+        rawNonce: rawNonce,
+        accessToken: appleCredential.authorizationCode,
+      );
+
+      await user.reauthenticateWithCredential(oAuthCredential);
+
+      return true;
+    } on FirebaseAuthException catch (authError) {
+      logger.info('Apple re-authentication', getErrorMessage(authError.code));
+
+      return false;
+    } on SignInWithAppleAuthorizationException catch (error) {
+      logger.info('Apple re-authentication', '$error');
+
+      return false;
+    } on Exception catch (error) {
+      logger.info('Apple re-authentication', '$error');
+
+      return false;
+    } catch (error) {
+      logger.info('Apple re-authentication', '$error');
+
+      return false;
+    }
+  }
+
+  static Future<bool> reauthenticateWithGoogle() async {
+    try {
+      final User? user = FirebaseAuth.instance.currentUser;
+      final bool userNotLoggedIn = user == null;
+
+      if (userNotLoggedIn) {
+        return false;
+      }
+
+      final GoogleAuthProvider googleProvider = GoogleAuthProvider()
+        ..addScope('email')
+        ..setCustomParameters({'prompt': 'select_account'});
+
+      final bool isWebPlatform = kIsWeb;
+
+      if (isWebPlatform) {
+        await user.reauthenticateWithPopup(googleProvider);
+      } else {
+        await user.reauthenticateWithProvider(googleProvider);
+      }
+
+      return true;
+    } on FirebaseAuthException catch (authError) {
+      logger.info('Google re-authentication', getErrorMessage(authError.code));
+
+      return false;
+    } on Exception catch (error) {
+      logger.info('Google re-authentication', '$error');
+
+      return false;
+    }
+  }
+
   // * Email verification
 
   static Future<bool> sendEmailVerification() async {
@@ -307,27 +412,38 @@ class AuthService {
     logger.info('Apple Login', 'Starting...');
 
     try {
-      final String rawNonce = generateNonce();
-      final String hashedNonce = sha256ofString(rawNonce);
+      UserCredential userCredential;
 
-      final AuthorizationCredentialAppleID appleCredential =
-          await SignInWithApple.getAppleIDCredential(
-            scopes: [
-              AppleIDAuthorizationScopes.email,
-              AppleIDAuthorizationScopes.fullName,
-            ],
-            nonce: hashedNonce,
-          );
+      // sign_in_with_apple_web 3.0 throws a JS interop TypeError on the
+      // current web build. Firebase's OAuth popup is the supported web
+      // path and matches the Google web flow.
+      if (kIsWeb) {
+        final OAuthProvider appleProvider = OAuthProvider('apple.com')
+          ..addScope('email')
+          ..addScope('name');
 
-      final OAuthCredential oAuthCredential = OAuthProvider('apple.com').credential(
-        idToken: appleCredential.identityToken,
-        rawNonce: rawNonce,
-        accessToken: appleCredential.authorizationCode,
-      );
+        userCredential = await FirebaseAuth.instance.signInWithPopup(appleProvider);
+      } else {
+        final String rawNonce = generateNonce();
+        final String hashedNonce = sha256ofString(rawNonce);
 
-      final UserCredential userCredential = await FirebaseAuth.instance.signInWithCredential(
-        oAuthCredential,
-      );
+        final AuthorizationCredentialAppleID appleCredential =
+            await SignInWithApple.getAppleIDCredential(
+              scopes: [
+                AppleIDAuthorizationScopes.email,
+                AppleIDAuthorizationScopes.fullName,
+              ],
+              nonce: hashedNonce,
+            );
+
+        final OAuthCredential oAuthCredential = OAuthProvider('apple.com').credential(
+          idToken: appleCredential.identityToken,
+          rawNonce: rawNonce,
+          accessToken: appleCredential.authorizationCode,
+        );
+
+        userCredential = await FirebaseAuth.instance.signInWithCredential(oAuthCredential);
+      }
 
       final String userId = userCredential.user?.uid ?? 'unknown';
 
@@ -346,7 +462,28 @@ class AuthService {
       logger.failure('Apple Login', '$error');
 
       return const AuthResult(errorMessage: RLUIStrings.ERROR_UNKNOWN);
+    } on FirebaseAuthException catch (error) {
+      final bool userCancelledPopup =
+          error.code == 'popup-closed-by-user' || error.code == 'cancelled-popup-request';
+
+      if (userCancelledPopup) {
+        logger.info('Apple Login', 'User cancelled popup');
+
+        return const AuthResult();
+      }
+
+      final String errorMessage = getErrorMessage(error.code);
+
+      logger.failure('Apple Login', '${error.code} - $errorMessage');
+
+      return AuthResult(errorMessage: errorMessage);
     } on Exception catch (error) {
+      logger.failure('Apple Login', '$error');
+
+      return const AuthResult(errorMessage: RLUIStrings.ERROR_UNKNOWN);
+    } catch (error) {
+      // Catch-all so unexpected non-Exception errors (TypeError from JS
+      // interop, etc.) still resolve the future and unfreeze the sheet.
       logger.failure('Apple Login', '$error');
 
       return const AuthResult(errorMessage: RLUIStrings.ERROR_UNKNOWN);

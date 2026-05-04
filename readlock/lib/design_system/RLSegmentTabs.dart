@@ -8,6 +8,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:readlock/services/feedback/HapticsService.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/design_system/RLLunarBlur.dart';
@@ -126,7 +127,7 @@ class RLSegmentTab extends StatelessWidget {
 
     void handleTabTap() {
       SoundService.playRandomTextClick();
-      HapticFeedback.lightImpact();
+      HapticsService.lightImpact();
       onTap();
     }
 
@@ -136,6 +137,8 @@ class RLSegmentTab extends StatelessWidget {
         behavior: HitTestBehavior.opaque,
         child: RLLunarBlur(
           borderRadius: RLDS.borderRadiusSmall,
+          borderColor: RLDS.glass50(labelColor),
+          borderWidth: 2.0,
           padding: tabPadding,
           child: selectedContent,
         ),

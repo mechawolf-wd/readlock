@@ -9,7 +9,7 @@
 // always visible. Callers control surrounding spacing themselves.
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:readlock/services/feedback/HapticsService.dart';
 import 'package:readlock/bottom_sheets/user/FeathersBottomSheet.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/constants/RLTypography.dart';
@@ -30,7 +30,7 @@ class RLBalancePill extends StatelessWidget {
 
   Widget BalanceRow(BuildContext context, int balance, Widget? unusedChild) {
     void onBalanceTap() {
-      HapticFeedback.lightImpact();
+      HapticsService.lightImpact();
       FeathersBottomSheet.show(context);
     }
 

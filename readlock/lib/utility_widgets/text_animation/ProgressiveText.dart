@@ -13,7 +13,7 @@ import 'package:readlock/utility_widgets/visual_effects/BlurOverlay.dart';
 import 'package:readlock/services/feedback/HapticsService.dart';
 import 'package:readlock/services/feedback/SoundService.dart';
 
-const double progressiveTextDefaultBottomSpacing = RLDS.spacing8;
+const double progressiveTextDefaultBottomSpacing = RLDS.spacing0;
 const Duration progressiveTextAutoRevealDelay = Duration(milliseconds: 7);
 const Duration progressiveTextDoubleTapTimeout = Duration(milliseconds: 500);
 
@@ -37,21 +37,12 @@ TextStyle resolveMarkupStyle(BuildContext context, String colorCode, TextStyle b
   final bool isAccentMarkup = colorCode == 'g';
 
   if (isAccentMarkup) {
-    final Color accentColor = CourseAccentScope.of(
-      context,
-      fallback: RLDS.markupGreen,
-    );
+    final Color accentColor = CourseAccentScope.of(context, fallback: RLDS.markupGreen);
 
-    return baseStyle.copyWith(
-      color: accentColor,
-      fontStyle: FontStyle.italic,
-    );
+    return baseStyle.copyWith(color: accentColor, fontStyle: FontStyle.italic);
   }
 
-  return baseStyle.copyWith(
-    fontStyle: FontStyle.italic,
-    fontWeight: FontWeight.bold,
-  );
+  return baseStyle.copyWith(fontStyle: FontStyle.italic, fontWeight: FontWeight.bold);
 }
 
 // Class to represent a segment of text with optional highlighting
@@ -265,8 +256,10 @@ class ProgressiveTextState extends State<ProgressiveText> with TickerProviderSta
 
       // One random click per new sentence reveal — replaces the looped
       // typewriter clip so the cadence is one tick per beat instead of a
-      // continuous keyboard chatter.
-      SoundService.playRandomTextClick();
+      // continuous keyboard chatter. Routed through the typing-specific
+      // method so the Typing Sound switch can mute it without silencing
+      // the rest of the UI sounds.
+      SoundService.playProgressiveTextTick();
     }
 
     // Simple character-by-character reveal with stable layout
@@ -737,8 +730,7 @@ class ProgressiveTextState extends State<ProgressiveText> with TickerProviderSta
   // never reflows.
   Widget TextWithColorTransition(String fullText, int revealedPosition) {
     final TextStyle baseStyle = getConsistentTextStyle();
-    final int actualRevealedLength =
-        (revealedPosition + 1).clamp(0, fullText.length);
+    final int actualRevealedLength = (revealedPosition + 1).clamp(0, fullText.length);
 
     final List<TextSpan> spans = createRevealSpans(
       fullText,
@@ -910,12 +902,7 @@ class ProgressiveTextState extends State<ProgressiveText> with TickerProviderSta
     int startPosition,
     int revealedLength,
   ) {
-    final List<TextSpan> spans = createRevealSpans(
-      text,
-      startPosition,
-      style,
-      revealedLength,
-    );
+    final List<TextSpan> spans = createRevealSpans(text, startPosition, style, revealedLength);
 
     return TextSpan(children: spans);
   }
@@ -1024,7 +1011,8 @@ class ProgressiveTextState extends State<ProgressiveText> with TickerProviderSta
 
     final Duration elapsedSinceReveal =
         currentSentenceStopwatch.elapsed - currentSentenceCharRevealTimes[globalCharIndex];
-    final double progress = elapsedSinceReveal.inMicroseconds /
+    final double progress =
+        elapsedSinceReveal.inMicroseconds /
         progressiveTextLeadingCharacterFadeDuration.inMicroseconds;
 
     return progress.clamp(0.0, 1.0);

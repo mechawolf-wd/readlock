@@ -5,6 +5,7 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:readlock/services/feedback/HapticsService.dart';
 import 'package:readlock/course_screens/CourseAccentScope.dart';
 import 'package:readlock/course_screens/CourseLoadingScreen.dart';
 import 'package:readlock/course_screens/widgets/CCJSONContentFactory.dart';
@@ -21,6 +22,7 @@ import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/design_system/RLConfirmationDialog.dart';
 import 'package:readlock/constants/DartAliases.dart';
 import 'package:readlock/services/ScreenProtectionService.dart';
+import 'package:readlock/services/auth/UserService.dart';
 import 'package:readlock/services/feedback/SoundService.dart';
 
 import 'package:pixelarticons/pixel.dart';
@@ -61,6 +63,12 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
   // Loading state
   bool isLoading = true;
 
+  // Cumulative reading clock for this course session. Started once the
+  // content actually appears (so the loading screen doesn't pad the count)
+  // and committed back to the user model in dispose, so the write fires on
+  // real course exit, not on the lesson finish screen.
+  final Stopwatch readingStopwatch = Stopwatch();
+
   // Progress bar reveal state (tap chrome to reveal; tap elsewhere to blur)
   bool isProgressBarRevealed = false;
   final GlobalKey progressBarKey = GlobalKey();
@@ -84,7 +92,7 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
 
   static const Icon NightShiftIcon = Icon(
     Pixel.moon,
-    color: progressChromeColor,
+    color: RLDS.warning,
     size: RLDS.iconLarge,
   );
 
@@ -117,10 +125,30 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
   // Cleanup resources when widget is disposed
   @override
   void dispose() {
+    commitReadingTime();
+
     ScreenProtectionService.disableProtection();
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
     pageController.dispose();
     super.dispose();
+  }
+
+  // Stops the in-session stopwatch and bumps /users/{id}.timeSpentReading
+  // by the elapsed seconds. Fire-and-forget by design: the screen is
+  // already tearing down, and UserService logs any write failure for
+  // diagnostics. Skips zero-second exits (e.g. immediate quit during the
+  // loading screen) so noise doesn't reach Firestore.
+  void commitReadingTime() {
+    readingStopwatch.stop();
+
+    final int elapsedSeconds = readingStopwatch.elapsed.inSeconds;
+    final bool hasElapsedTime = elapsedSeconds > 0;
+
+    if (!hasElapsedTime) {
+      return;
+    }
+
+    UserService.incrementTimeSpentReading(elapsedSeconds);
   }
 
   @override
@@ -216,7 +244,7 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
       return;
     }
 
-    HapticFeedback.lightImpact();
+    HapticsService.lightImpact();
 
     setState(() {
       isProgressBarRevealed = true;
@@ -407,6 +435,10 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
         setState(() {
           isLoading = false;
         });
+
+        // Start the reading clock now that the content is actually
+        // visible. Loading-screen seconds are not reading seconds.
+        readingStopwatch.start();
       }
     }
   }
@@ -491,7 +523,7 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
   // Support bottom sheet), icon-cancel layout so Pause reads as a compact
   // red glyph on the left and Read fills the rest as the primary action.
   void showQuitConfirmationSheet() {
-    HapticFeedback.lightImpact();
+    HapticsService.lightImpact();
 
     RLConfirmationDialog.show(
       context,
@@ -515,7 +547,7 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
   // Open the eye-strain (Night Shift) picker. Lives on the same chrome slot
   // the bookmark used to occupy.
   void handleNightShiftTap() {
-    HapticFeedback.lightImpact();
+    HapticsService.lightImpact();
     SoundService.playRandomTextClick();
 
     NightShiftBottomSheet.show(context);

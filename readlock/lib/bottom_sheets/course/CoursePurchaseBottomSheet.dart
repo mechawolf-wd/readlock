@@ -12,6 +12,7 @@ import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLUIStrings.dart';
 import 'package:readlock/constants/DartAliases.dart';
 import 'package:readlock/design_system/RLCourseBookImage.dart';
+import 'package:readlock/design_system/RLFeatherIcon.dart';
 import 'package:readlock/design_system/RLLunarBlur.dart';
 import 'package:readlock/design_system/RLToast.dart';
 import 'package:readlock/design_system/RLUtility.dart';
@@ -109,7 +110,7 @@ class CoursePurchaseSheetState extends State<CoursePurchaseSheet> {
         // Title
         RLTypography.headingMedium(title, textAlign: TextAlign.center),
 
-        const Spacing.height(RLDS.spacing4),
+        const Spacing.height(RLDS.sheetHeadingToSubheadingSpacing),
 
         // Author
         RLTypography.bodyMedium(
@@ -124,7 +125,7 @@ class CoursePurchaseSheetState extends State<CoursePurchaseSheet> {
           Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const Spacing.height(RLDS.spacing16),
+              const Spacing.height(RLDS.sheetSubheadingToContentSpacing),
 
               RLTypography.bodyMedium(
                 description,
@@ -175,17 +176,36 @@ class CoursePurchaseSheetState extends State<CoursePurchaseSheet> {
       horizontal: RLDS.spacing24,
     );
 
-    final String purchaseLabel = isPurchasing
-        ? RLUIStrings.ROADMAP_PURCHASE_LOADING_LABEL
-        : '${RLUIStrings.ROADMAP_PURCHASE_LABEL} '
-              '${PurchaseConstants.COURSE_PURCHASE_COST} '
-              '${RLUIStrings.ROADMAP_PURCHASE_FEATHERS_SUFFIX}';
+    final List<Widget> labelChildren;
+
+    if (isPurchasing) {
+      labelChildren = [
+        RLTypography.bodyLarge(
+          RLUIStrings.ROADMAP_PURCHASE_LOADING_LABEL,
+          color: accentColor,
+        ),
+      ];
+    } else {
+      // "Buy for 10 <plume>" — same shape as the roadmap purchase
+      // button so both surfaces read as the same family.
+      final String labelWithCost =
+          '${RLUIStrings.ROADMAP_PURCHASE_LABEL} '
+          '${PurchaseConstants.COURSE_PURCHASE_COST}';
+
+      labelChildren = [
+        RLTypography.bodyLarge(labelWithCost, color: accentColor),
+
+        const Spacing.width(RLDS.spacing8),
+
+        const RLFeatherIcon(size: RLDS.iconSmall),
+      ];
+    }
 
     return RLLunarBlur(
       borderRadius: RLDS.borderRadiusSmall,
       borderColor: RLDS.transparent,
       child: Div.row(
-        [RLTypography.bodyLarge(purchaseLabel, color: accentColor)],
+        labelChildren,
         width: double.infinity,
         padding: buttonPadding,
         mainAxisAlignment: MainAxisAlignment.center,

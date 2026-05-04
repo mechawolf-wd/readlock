@@ -3,8 +3,10 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:readlock/services/feedback/HapticsService.dart';
 import 'package:readlock/constants/RLUIStrings.dart';
 import 'package:readlock/constants/RLTypography.dart';
+import 'package:readlock/design_system/RLFeatherIcon.dart';
 import 'package:readlock/design_system/RLUtility.dart';
 import 'package:readlock/design_system/RLSwitch.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
@@ -132,7 +134,11 @@ class MenuSection extends StatelessWidget {
         // Account & Subscription
         MenuItem(icon: Pixel.user, title: RLUIStrings.MENU_ACCOUNT, onTap: onAccountTap),
 
-        MenuItem(icon: Pixel.card, title: RLUIStrings.MENU_FEATHERS, onTap: onFeathersTap),
+        MenuItem(
+          leading: const RLFeatherIcon(size: RLDS.iconMedium),
+          title: RLUIStrings.MENU_FEATHERS,
+          onTap: onFeathersTap,
+        ),
 
         MenuItem(
           icon: Pixel.bookopen,
@@ -175,6 +181,9 @@ class MenuSection extends StatelessWidget {
           icon: Pixel.moon,
           title: RLUIStrings.NIGHT_SHIFT_TITLE,
           onTap: onNightShiftTap,
+          // Match the warm amber moon used inside NightShiftBottomSheet so
+          // the row's icon and the sheet's icon read as the same accent.
+          iconColor: NIGHT_SHIFT_WARM_COLOR,
         ),
 
         // "Progressive" is the user-facing inverse of the internal
@@ -298,35 +307,51 @@ class MenuSection extends StatelessWidget {
 }
 
 class MenuItem extends StatelessWidget {
-  final IconData icon;
+  final IconData? icon;
   final String title;
   final VoidCallback onTap;
   final Color? textColor;
+  // Optional override for the leading icon's tint only. Wins over textColor
+  // so the title can stay neutral while the icon picks up an accent (eg.
+  // Night Shift's amber matches the moon icon in NightShiftBottomSheet).
+  final Color? iconColor;
+  // Optional custom leading widget that replaces the IconData glyph. Used
+  // by the Feathers row so it can render the Plume sprite instead of a
+  // pixelarticons icon. When supplied, `icon` may be omitted.
+  final Widget? leading;
 
   const MenuItem({
     super.key,
-    required this.icon,
+    this.icon,
     required this.title,
     required this.onTap,
     this.textColor,
-  });
+    this.iconColor,
+    this.leading,
+  }) : assert(icon != null || leading != null, 'MenuItem needs an icon or a leading widget');
 
   @override
   Widget build(BuildContext context) {
     final bool hasTextColor = textColor != null;
+    final bool hasIconColorOverride = iconColor != null;
 
-    Color iconColor = RLDS.glass70(RLDS.textPrimary);
+    Color resolvedIconColor = RLDS.glass70(RLDS.textPrimary);
     Color titleColor = RLDS.textPrimary;
 
     if (hasTextColor) {
-      iconColor = textColor!;
+      resolvedIconColor = textColor!;
       titleColor = textColor!;
     }
 
-    final Widget MenuItemIcon = Icon(icon, color: iconColor, size: RLDS.iconMedium);
+    if (hasIconColorOverride) {
+      resolvedIconColor = iconColor!;
+    }
+
+    final Widget MenuItemIcon =
+        leading ?? Icon(icon, color: resolvedIconColor, size: RLDS.iconMedium);
 
     void handleMenuItemTap() {
-      HapticFeedback.lightImpact();
+      HapticsService.lightImpact();
       SoundService.playRandomTextClick();
       onTap();
     }
@@ -367,7 +392,7 @@ class SwitchMenuItem extends StatelessWidget {
   });
 
   void handleSwitchChange(bool newValue) {
-    HapticFeedback.lightImpact();
+    HapticsService.lightImpact();
     onChanged(newValue);
   }
 

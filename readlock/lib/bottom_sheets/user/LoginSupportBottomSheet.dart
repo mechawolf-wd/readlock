@@ -276,7 +276,7 @@ class ResetPasswordSupportContentState extends State<ResetPasswordSupportContent
             description: RLUIStrings.SUPPORT_RESET_PASSWORD_DESCRIPTION,
           ),
 
-          const Spacing.height(RLDS.spacing16),
+          const Spacing.height(RLDS.sheetSubheadingToContentSpacing),
 
           RLTextField.email(controller: emailController, focusNode: emailFocusNode),
 
@@ -445,7 +445,7 @@ class ResendVerificationSupportContentState extends State<ResendVerificationSupp
             description: RLUIStrings.SUPPORT_RESEND_VERIFICATION_DESCRIPTION,
           ),
 
-          const Spacing.height(RLDS.spacing16),
+          const Spacing.height(RLDS.sheetSubheadingToContentSpacing),
 
           RLTextField.email(controller: emailController, focusNode: emailFocusNode),
 
@@ -534,7 +534,7 @@ class EmailSupportContentState extends State<EmailSupportContent> {
             description: RLUIStrings.SUPPORT_EMAIL_DESCRIPTION,
           ),
 
-          const Spacing.height(RLDS.spacing16),
+          const Spacing.height(RLDS.sheetSubheadingToContentSpacing),
 
           RLTypography.bodyLarge(
             RLUIStrings.SUPPORT_EMAIL_ADDRESS,
@@ -572,7 +572,7 @@ class SheetHeader extends StatelessWidget {
       children: [
         TitleRow(),
 
-        const Spacing.height(RLDS.spacing16),
+        const Spacing.height(RLDS.sheetHeadingToSubheadingSpacing),
 
         RLTypography.bodyMedium(description, color: RLDS.textSecondary),
       ],

@@ -10,6 +10,7 @@
 
 import 'package:flutter/material.dart' hide Typography;
 import 'package:flutter/services.dart';
+import 'package:readlock/services/feedback/HapticsService.dart';
 import 'package:readlock/bottom_sheets/RLBottomSheet.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/constants/RLTypography.dart';
@@ -154,7 +155,7 @@ class FeathersSheetState extends State<FeathersSheet> {
   void handlePlanChanged(int index) {
     // Tick haptic per page change. Same selectionClick the bird carousel
     // uses, so swiping between Beginner and Reader feels detented.
-    HapticFeedback.selectionClick();
+    HapticsService.selectionClick();
 
     setState(() {
       selectedPlanIndex = index;

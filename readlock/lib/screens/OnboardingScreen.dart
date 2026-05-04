@@ -13,15 +13,13 @@
 // navigation is exclusively the chevron buttons in the footer.
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:readlock/services/feedback/HapticsService.dart';
 import 'package:pixelarticons/pixel.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLUIStrings.dart';
-import 'package:readlock/design_system/RLLunarBlur.dart';
 import 'package:readlock/design_system/RLStarfieldBackground.dart';
 import 'package:readlock/design_system/RLSwitch.dart';
-import 'package:readlock/design_system/RLUtility.dart';
 import 'package:readlock/models/UserModel.dart';
 import 'package:readlock/screens/profile/BirdPicker.dart';
 import 'package:readlock/screens/profile/SettingsDemos.dart';
@@ -166,15 +164,7 @@ class OnboardingFlowState extends State<OnboardingFlow> {
         toggle: OnboardingToggle(value: bionicEnabled, onChanged: handleBionicToggled),
         body: BionicDemo(isEnabled: bionicEnabled),
       ),
-
-      // Final step — single transparent "Read" button that closes the
-      // onboarding flow and drops the reader on the bookshelf.
-      OnboardingStepSpec(body: OnboardingReadButton(onTap: handleFinishTap)),
     ];
-  }
-
-  void handleFinishTap() {
-    Navigator.of(context).maybePop();
   }
 
   // * Toggle handlers — same fire-and-forget persistence pattern as
@@ -207,7 +197,7 @@ class OnboardingFlowState extends State<OnboardingFlow> {
   }
 
   void handleStepChanged(int newStepIndex) {
-    HapticFeedback.selectionClick();
+    HapticsService.selectionClick();
 
     setState(() {
       currentStepIndex = newStepIndex;
@@ -416,42 +406,9 @@ class OnboardingArrowButton extends StatelessWidget {
     }
 
     return () {
-      HapticFeedback.lightImpact();
+      HapticsService.lightImpact();
       rawHandler();
     };
   }
 }
 
-// Final-step "Read" button — same transparent lunar-blur surface as the
-// roadmap's continue button, sized to the page's full width so it reads
-// as the screen's only call to action.
-class OnboardingReadButton extends StatelessWidget {
-  final VoidCallback onTap;
-
-  const OnboardingReadButton({super.key, required this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    const EdgeInsets buttonPadding = EdgeInsets.symmetric(
-      vertical: RLDS.spacing16,
-      horizontal: RLDS.spacing24,
-    );
-
-    return RLLunarBlur(
-      borderRadius: RLDS.borderRadiusSmall,
-      borderColor: RLDS.transparent,
-      child: Div.row(
-        [RLTypography.bodyLarge(RLUIStrings.ONBOARDING_READ_LABEL, color: RLDS.primary)],
-        width: double.infinity,
-        padding: buttonPadding,
-        mainAxisAlignment: MainAxisAlignment.center,
-        onTap: handleTap,
-      ),
-    );
-  }
-
-  void handleTap() {
-    HapticFeedback.lightImpact();
-    onTap();
-  }
-}

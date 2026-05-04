@@ -3,6 +3,7 @@
 
 import 'package:flutter/material.dart' hide Typography;
 import 'package:flutter/services.dart';
+import 'package:readlock/services/feedback/HapticsService.dart';
 import 'package:readlock/models/CourseModel.dart';
 import 'package:readlock/utility_widgets/text_animation/ProgressiveText.dart';
 import 'package:readlock/utility_widgets/text_animation/RSVPText.dart';
@@ -177,7 +178,7 @@ class CCTextContentState extends State<CCTextContent> {
       return;
     }
 
-    HapticFeedback.lightImpact();
+    HapticsService.lightImpact();
     navigateToNextPage(pageController);
   }
 

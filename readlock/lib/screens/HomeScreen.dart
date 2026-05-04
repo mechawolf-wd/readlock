@@ -10,6 +10,7 @@ import 'package:readlock/constants/RLLatestCourse.dart';
 import 'package:readlock/constants/RLUIStrings.dart';
 import 'package:readlock/constants/DartAliases.dart';
 import 'package:flutter/services.dart';
+import 'package:readlock/services/feedback/HapticsService.dart';
 import 'package:readlock/design_system/RLBookListCard.dart';
 import 'package:readlock/design_system/RLCard.dart';
 import 'package:readlock/design_system/RLCourseBookImage.dart';
@@ -332,7 +333,7 @@ class HomeScreenState extends State<HomeScreen> {
     final String courseId = course['course-id'] as String? ?? '';
 
     void onContinueTap() {
-      HapticFeedback.lightImpact();
+      HapticsService.lightImpact();
       SoundService.playEnter();
       navigateToCourse(courseId);
     }

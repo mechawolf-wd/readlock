@@ -10,6 +10,7 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
+import 'package:readlock/services/feedback/HapticsService.dart';
 import 'package:readlock/bottom_sheets/RLBottomSheet.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/constants/RLNightShift.dart';
@@ -32,6 +33,11 @@ const EdgeInsets NIGHT_SHIFT_SHEET_PADDING = EdgeInsets.fromLTRB(
   RLDS.spacing24,
   RLDS.spacing24,
 );
+
+// Warm amber the slider tint mirrors at max warmth — same hue family as
+// the moon icon in the sheet header so the slider track reads as part of
+// the same accent.
+const Color NIGHT_SHIFT_WARM_COLOR = Color(0xFFCF6A1A);
 
 class NightShiftBottomSheet {
   static void show(BuildContext context) {
@@ -92,7 +98,7 @@ class NightShiftSheetState extends State<NightShiftSheet> {
       return;
     }
 
-    HapticFeedback.selectionClick();
+    HapticsService.selectionClick();
 
     nightShiftLevelNotifier.value = nextLevel;
 

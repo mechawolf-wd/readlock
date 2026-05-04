@@ -3,6 +3,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:readlock/services/feedback/HapticsService.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 
 // * Div layout direction and alignment identifiers
@@ -648,7 +649,7 @@ class Div extends StatelessWidget {
 
     if (isOnTapDefined) {
       void handleTapWithHaptic() {
-        HapticFeedback.lightImpact();
+        HapticsService.lightImpact();
         rawTapHandler();
       }
 

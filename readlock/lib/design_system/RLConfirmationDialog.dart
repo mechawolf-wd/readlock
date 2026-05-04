@@ -12,6 +12,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:readlock/services/feedback/HapticsService.dart';
 import 'package:readlock/bottom_sheets/RLDialog.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/constants/RLTypography.dart';
@@ -270,7 +271,7 @@ class ConfirmationDialogContent extends StatelessWidget {
     const EdgeInsets buttonPadding = EdgeInsets.all(RLDS.spacing16);
 
     void onIconCancelTap() {
-      HapticFeedback.lightImpact();
+      HapticsService.lightImpact();
       onDismiss();
       action.onTap?.call();
     }
@@ -290,7 +291,7 @@ class ConfirmationDialogContent extends StatelessWidget {
     // GestureDetector, so it needs one explicit here to match.
     void onPrimaryTap() {
       if (hasLeadingGlyph) {
-        HapticFeedback.lightImpact();
+        HapticsService.lightImpact();
       }
 
       onDismiss();

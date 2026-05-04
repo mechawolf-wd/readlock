@@ -33,6 +33,12 @@ const Duration SEARCH_DEBOUNCE_DURATION = Duration(milliseconds: 350);
 const int SEARCH_INITIAL_PAGE_SIZE = 5;
 const int SEARCH_LOAD_MORE_PAGE_SIZE = 2;
 
+// Bottom inset for the results scroll view so the last entry can scroll
+// past the floating filter panel before bottoming out. Just enough that
+// the last card clears the panel's frosted edge without leaving a tall
+// dead zone underneath the Load more button.
+const double STORE_LIST_FILTER_OVERLAY_INSET = 148.0;
+
 class CoursesScreen extends StatefulWidget {
   const CoursesScreen({super.key});
 
@@ -288,20 +294,14 @@ class CoursesScreenState extends State<CoursesScreen> {
 
   void navigateToCourse(String courseId) {
     SoundService.playRandomTextClick();
-    Navigator.push(
-      context,
-      RLDS.fadeTransition(CourseRoadmapScreen(courseId: courseId)),
-    );
+    Navigator.push(context, RLDS.fadeTransition(CourseRoadmapScreen(courseId: courseId)));
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: RLDS.transparent,
-      body: SafeArea(
-        bottom: false,
-        child: CoursesBody(),
-      ),
+      body: SafeArea(bottom: false, child: CoursesBody()),
     );
   }
 
@@ -337,14 +337,19 @@ class CoursesScreenState extends State<CoursesScreen> {
 
         const Spacing.height(RLDS.spacing24),
 
-        // Results take the bulk of the screen; the genre chips + search
-        // input live in a single frosted panel pinned at the bottom so the
-        // controls float over the main navigation in thumb reach.
-        Expanded(child: ResultsArea()),
+        // Results take the bulk of the screen; the filter panel floats on
+        // top via a Stack so the list scrolls underneath it (the panel's
+        // LunarBlur surface frosts whatever passes behind). The list adds
+        // its own bottom inset so the last entry can clear the panel.
+        Expanded(
+          child: Stack(
+            children: [
+              Positioned.fill(child: ResultsArea()),
 
-        const Spacing.height(RLDS.spacing16),
-
-        FloatingFilterPanel(),
+              Positioned(left: 0, right: 0, bottom: 0, child: FloatingFilterPanel()),
+            ],
+          ),
+        ),
       ], crossAxisAlignment: CrossAxisAlignment.stretch),
     );
   }
@@ -425,6 +430,7 @@ class CoursesScreenState extends State<CoursesScreen> {
         }
 
         return SingleChildScrollView(
+          padding: const EdgeInsets.only(bottom: STORE_LIST_FILTER_OVERLAY_INSET),
           child: Div.column(listChildren, crossAxisAlignment: CrossAxisAlignment.stretch),
         );
       },
@@ -463,9 +469,13 @@ class CoursesScreenState extends State<CoursesScreen> {
       final String courseId = course['course-id'] as String? ?? '';
 
       final bool isOwned = purchasedCourses.contains(courseId);
-      final VoidCallback? buyHandler = isOwned
-          ? null
-          : () => CoursePurchaseBottomSheet.show(context, course: course);
+
+      void openPurchaseSheet() {
+        SoundService.playRandomTextClick();
+        CoursePurchaseBottomSheet.show(context, course: course);
+      }
+
+      final VoidCallback? buyHandler = isOwned ? null : openPurchaseSheet;
 
       return BookListCard(
         title: courseTitle,

@@ -6,7 +6,7 @@ import 'package:flame/cache.dart';
 import 'package:flame/extensions.dart';
 import 'package:flame/widgets.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:readlock/services/feedback/HapticsService.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLUIStrings.dart';
@@ -271,7 +271,7 @@ class BirdCarouselState extends State<BirdCarousel> {
   }
 
   void handlePageChanged(int newIndex) {
-    HapticFeedback.selectionClick();
+    HapticsService.selectionClick();
     SoundService.playRandomTextClick();
 
     setState(() {

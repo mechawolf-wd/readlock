@@ -1,0 +1,141 @@
+rules_version = '2';
+
+// Firestore security rules for the Readlock app.
+//
+// Schema overview (gathered from the Flutter app + the Lockie publishing tool):
+//
+//   /admins/{uid}
+//     Allow-list document. Existence grants admin powers (course publishing,
+//     user-doc reads for support). Provisioned manually from the Firebase
+//     console; the body is irrelevant, only the doc id (a Firebase Auth uid)
+//     matters.
+//
+//   /courses/{courseId}
+//     Public catalog written by the Lockie web tool (admin-only). Mobile
+//     clients read freely and may bump the `timesPurchased` counter by 1
+//     on a successful purchase. Every other mutation is admin-only.
+//
+//   /users/{userId}
+//     Strictly self-owned profile + preferences + feather wallet + FCM token.
+//     Owner-only read/write; admins can read for debugging but never write.
+//     `email` and `createdAt` are frozen after creation so a hijacked client
+//     can't rewrite identity. Account deletion goes through the
+//     `deleteAccount` callable cloud function (Admin SDK), which bypasses
+//     these rules.
+//
+// NOTE: `balance` and `purchasedCourses` are still mutated client-side
+// today (PurchaseService). When those moves to a callable cloud function,
+// tighten the user-update rule to forbid direct writes to those fields.
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // * Helpers
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(uid) {
+      return isSignedIn() && request.auth.uid == uid;
+    }
+
+    function isAdmin() {
+      return isSignedIn()
+        && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+
+    // Set of fields whose value differs between the existing doc and the
+    // proposed write. Used to enforce field-level immutability.
+    function changedFields() {
+      return request.resource.data.diff(resource.data).affectedKeys();
+    }
+
+    function fieldUnchanged(name) {
+      return !changedFields().hasAny([name]);
+    }
+
+    // * /admins/{uid}
+    //
+    // Read-only allow-list. Owners can read their own admin record (so the
+    // app can detect admin status if it ever needs to); other admins can
+    // read the full list. Writes happen only from the Firebase console.
+
+    match /admins/{uid} {
+      allow read: if isOwner(uid) || isAdmin();
+      allow write: if false;
+    }
+
+    // * /courses/{courseId}
+
+    match /courses/{courseId} {
+
+      // Public catalog. Anyone (signed-in or not) may browse the course
+      // list and detail pages.
+      allow read: if true;
+
+      // Course authoring (creation and deletion) is admin-only.
+      allow create, delete: if isAdmin();
+
+      // Two update paths:
+      //   1. Admins (Lockie) may rewrite anything.
+      //   2. Signed-in readers may bump `timesPurchased` by exactly +1
+      //      and touch nothing else. The new value must equal the old
+      //      value plus one (treats a missing field as 0), so the rule
+      //      composes cleanly with FieldValue.increment(1).
+      allow update: if isAdmin()
+        || (
+             isSignedIn()
+             && changedFields().hasOnly(['timesPurchased'])
+             && request.resource.data.timesPurchased is int
+             && request.resource.data.timesPurchased
+                  == resource.data.get('timesPurchased', 0) + 1
+           );
+    }
+
+    // * /users/{userId}
+
+    match /users/{userId} {
+
+      // Owner reads their own profile; admins can read any profile (for
+      // support / debugging). No cross-user reads otherwise.
+      allow read: if isOwner(userId) || isAdmin();
+
+      // Profile creation: owner only, with the doc's identity fields
+      // pinned to the authenticated request so a client can't forge a
+      // foreign email or backdate the createdAt timestamp. The starter
+      // feather balance is capped at the value the app seeds new users
+      // with (NEW_USER_STARTING_BALANCE = 10) so a fresh sign-up can't
+      // mint extra feathers on the first write.
+      allow create: if isOwner(userId)
+        && request.resource.data.email is string
+        && request.resource.data.email == request.auth.token.email
+        && request.resource.data.createdAt == request.time
+        && request.resource.data.get('hasReaderPass', false) == false
+        && request.resource.data.get('balance', 0) <= 10;
+
+      // Profile updates: owner only. Identity fields are frozen so the
+      // owner can't rewrite their email or shift their createdAt timestamp
+      // after the fact.
+      allow update: if isOwner(userId)
+        && fieldUnchanged('email')
+        && fieldUnchanged('createdAt');
+
+      // Account deletion is the deleteAccount callable cloud function's
+      // job (it uses the Admin SDK and tears down related data). Block
+      // direct client deletes so a stolen session can't nuke a profile
+      // without going through the verified flow.
+      allow delete: if false;
+    }
+
+    // * Default deny
+    //
+    // rules_version 2 already denies anything that doesn't match a rule,
+    // but the explicit catch-all below keeps the intent obvious to anyone
+    // reading the file later.
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

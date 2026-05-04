@@ -16,6 +16,7 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
+import 'package:readlock/services/feedback/HapticsService.dart';
 import 'package:readlock/bottom_sheets/user/FontPickerBottomSheet.dart';
 import 'package:readlock/constants/RLReadingColumn.dart';
 import 'package:readlock/constants/RLReadingFont.dart';
@@ -68,7 +69,7 @@ class DemoSurface extends StatelessWidget {
   }
 
   void handleTap() {
-    HapticFeedback.selectionClick();
+    HapticsService.selectionClick();
     onTap!.call();
   }
 }
@@ -358,7 +359,7 @@ class ReadingFontDemo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     void onDemoTap() {
-      HapticFeedback.selectionClick();
+      HapticsService.selectionClick();
       FontPickerBottomSheet.show(context);
     }
 
@@ -463,7 +464,7 @@ class SampleSurface extends StatelessWidget {
   // Tapping the sample box cycles to the next column option, so the
   // preview itself doubles as an affordance for changing the column style.
   void handleSampleTap() {
-    HapticFeedback.selectionClick();
+    HapticsService.selectionClick();
 
     final int currentIndex = READING_COLUMN_OPTIONS.indexWhere(
       (ReadingColumnOption option) => option.column == column,
@@ -659,7 +660,7 @@ class RSVPDemoState extends State<RSVPDemo> {
     // carousel uses, so dragging the slider feels physically detented
     // instead of silent.
     if (hasWpmChanged) {
-      HapticFeedback.selectionClick();
+      HapticsService.selectionClick();
     }
 
     // Mirror to the global notifier so a course read with RSVP enabled

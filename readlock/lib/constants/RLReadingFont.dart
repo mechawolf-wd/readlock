@@ -74,7 +74,7 @@ TextStyle readingStyleFor(ReadingFont font, TextStyle base) {
 
     case ReadingFont.dyslexic:
       {
-        return base.copyWith(fontFamily: 'OpenDyslexic');
+        return base.copyWith(fontFamily: 'OpenDyslexic', letterSpacing: -3);
       }
 
     case ReadingFont.monospace:

@@ -5,11 +5,14 @@
 
 import 'package:flutter/material.dart' hide Typography;
 import 'package:readlock/bottom_sheets/RLBottomSheet.dart';
+import 'package:readlock/bottom_sheets/user/LoginBottomSheet.dart';
 import 'package:readlock/design_system/RLConfirmationDialog.dart';
+import 'package:readlock/design_system/RLToast.dart';
 import 'package:readlock/design_system/RLUtility.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/constants/RLUIStrings.dart';
+import 'package:readlock/services/auth/AuthService.dart';
 import 'package:readlock/services/feedback/SoundService.dart';
 
 import 'package:pixelarticons/pixel.dart';
@@ -65,24 +68,86 @@ class AccountSheet extends StatelessWidget {
     ], mainAxisAlignment: MainAxisAlignment.start);
   }
 
+  // * Delete account flow.
+  //
+  // Two checkpoints stand between the tap and the irreversible cloud-function
+  // call so an accidental tap (or a borrowed device) cannot take the account
+  // out:
+  //   1. Reauthentication via the login sheet, configured with a delete
+  //      header and the sign-up + dev-skip rows hidden.
+  //   2. A destructive confirmation dialog that asks one last time before
+  //      we hand off to AuthService.deleteAccount.
+  //
+  // Everything routes through the root navigator so the follow-up dialog
+  // pushes onto a still-mounted ancestor once the login sheet pops itself.
+
   void handleDeleteAccountTap(BuildContext context) {
     SoundService.playLogout();
 
-    // Delete is the filled red CTA on top, Cancel drops to the muted
-    // tertiary slot below.
+    final LoginSheetConfig reauthConfig = LoginSheetConfig(
+      title: RLUIStrings.ACCOUNT_DELETE_LABEL,
+      subtitle: RLUIStrings.ACCOUNT_DELETE_REAUTH_SUBTITLE,
+      allowSignUp: false,
+      allowSupport: false,
+      showDevSkip: false,
+      isReauthMode: true,
+      onAuthenticated: presentFinalDeleteConfirmation,
+    );
+
+    LoginBottomSheet.show(context, config: reauthConfig);
+  }
+
+  void presentFinalDeleteConfirmation(BuildContext context) {
     RLConfirmationDialog.show(
       context,
       title: RLUIStrings.ACCOUNT_DELETE_LABEL,
       message: RLUIStrings.ACCOUNT_DELETE_MESSAGE,
-      cta: const RLConfirmationAction(
+      cta: RLConfirmationAction(
         label: RLUIStrings.ACCOUNT_DELETE_CONFIRM,
         variant: RLConfirmationVariant.destructive,
+        onTap: () => runAccountDeletion(context),
       ),
       cancel: const RLConfirmationAction(
         label: RLUIStrings.CANCEL_LABEL,
         variant: RLConfirmationVariant.neutral,
       ),
     );
+  }
+
+  Future<void> runAccountDeletion(BuildContext context) async {
+    // Capture the root navigator before the async gap so we can present
+    // the login sheet on a still-mounted ancestor context after the modal
+    // stack collapses.
+    final NavigatorState rootNavigator = Navigator.of(context, rootNavigator: true);
+    final BuildContext rootContext = rootNavigator.context;
+
+    try {
+      await AuthService.deleteAccount();
+
+      // AuthService.deleteAccount signs the user out as its final step.
+      // The app no longer auto-presents the login sheet on sign-out, so we
+      // pop the modal stack and explicitly mount the login sheet on the
+      // root navigator — otherwise the reader would be stranded on Home
+      // with no obvious way to sign back in.
+      if (!context.mounted) {
+        return;
+      }
+
+      Navigator.of(context).popUntil((route) => route.isFirst);
+
+      LoginBottomSheet.show(rootContext);
+    } on Exception catch (error) {
+      // The error here is the localized RLUIStrings.ERROR_ACCOUNT_DELETION_FAILED
+      // copy that AuthService rethrows; surface it via toast so the user
+      // knows the action did not go through.
+      if (!context.mounted) {
+        return;
+      }
+
+      final String errorMessage = error.toString().replaceFirst('Exception: ', '');
+
+      RLToast.error(context, errorMessage);
+    }
   }
 }
 

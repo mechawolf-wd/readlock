@@ -6,6 +6,7 @@
 
 import 'dart:math';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:flutter/foundation.dart';
 import 'dart:developer' as developer;
 
 const String wrongAudioPath = 'audio/ui_sounds/wrong.wav';
@@ -42,11 +43,30 @@ class SoundService {
   // a system without working audio (eg. simulator misconfig).
   static bool isAudioEnabled = true;
 
+  // * User-facing master switches.
+  //
+  // soundsEnabledNotifier gates every UI sound the service plays, so flipping
+  // the Sounds toggle in Settings silences click feedback, success/negative
+  // chimes, switch ticks, etc. — there is no other path to the audio players.
+  //
+  // typingSoundEnabledNotifier is a narrower switch dedicated to the
+  // progressive-text reveal tick. It only affects playProgressiveTextTick, so
+  // the reader can mute the typewriter cadence while keeping the rest of the
+  // UI sounds intact.
+  static final ValueNotifier<bool> soundsEnabledNotifier = ValueNotifier<bool>(true);
+  static final ValueNotifier<bool> typingSoundEnabledNotifier = ValueNotifier<bool>(true);
+
   static Future<void> playOneShot(
     AudioPlayer player,
     String assetPath,
     String label,
   ) async {
+    final bool userMutedSounds = !soundsEnabledNotifier.value;
+
+    if (userMutedSounds) {
+      return;
+    }
+
     final bool canPlayAudio = isAudioEnabled;
 
     if (!canPlayAudio) {
@@ -56,7 +76,18 @@ class SoundService {
     try {
       await player.stop();
       await player.play(AssetSource(assetPath));
-    } on Exception catch (error) {
+    } on Object catch (error) {
+      // Catch Object, not Exception: on web, audioplayers raises a JS
+      // AbortError ("play() interrupted by a call to pause()") which surfaces
+      // as a Dart Error and would otherwise rethrow. That race is benign and
+      // happens whenever two sound triggers land in the same frame, so log
+      // and move on without latching audio off.
+      final bool isPlayInterrupted = error.toString().contains('AbortError');
+
+      if (isPlayInterrupted) {
+        return;
+      }
+
       developer.log('Failed to play $label sound: $error');
       isAudioEnabled = false;
     }
@@ -111,6 +142,20 @@ class SoundService {
   // shares the same audible beat instead of varying per-tab.
   static Future<void> playUiClick() {
     return playOneShot(uiClickPlayer, uiClickAudioPath, 'ui click');
+  }
+
+  // Per-sentence reveal tick fired by ProgressiveText every time a new
+  // sentence starts typing in. Gated by the dedicated typing-sound switch
+  // so the reader can mute the typewriter cadence without silencing the
+  // rest of the UI (button clicks, switch flips, success chimes).
+  static Future<void> playProgressiveTextTick() {
+    final bool typingMuted = !typingSoundEnabledNotifier.value;
+
+    if (typingMuted) {
+      return Future<void>.value();
+    }
+
+    return playRandomTextClick();
   }
 
   static Future<void> dispose() async {

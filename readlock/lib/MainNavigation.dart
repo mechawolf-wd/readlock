@@ -5,7 +5,7 @@ import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:readlock/services/feedback/HapticsService.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/constants/RLUIStrings.dart';
 import 'package:readlock/design_system/RLLunarBlur.dart';
@@ -13,7 +13,6 @@ import 'package:readlock/design_system/RLStarfieldBackground.dart';
 import 'package:readlock/screens/CoursesScreen.dart';
 import 'package:readlock/screens/HomeScreen.dart';
 import 'package:readlock/screens/MyBookshelfScreen.dart';
-import 'package:readlock/bottom_sheets/user/LoginBottomSheet.dart';
 import 'package:readlock/models/UserModel.dart';
 import 'package:readlock/services/auth/AuthService.dart';
 import 'package:readlock/services/auth/UserPreferencesHydrator.dart';
@@ -50,7 +49,6 @@ class MainNavigationState extends State<MainNavigation> {
   late List<Widget> screens;
 
   StreamSubscription<User?>? authStateSubscription;
-  bool isLoginSheetVisible = false;
 
   @override
   void initState() {
@@ -61,43 +59,48 @@ class MainNavigationState extends State<MainNavigation> {
     screens = [const HomeScreen(), const CoursesScreen(), const BookshelfScreen()];
 
     authStateSubscription = AuthService.authStateChanges.listen(handleAuthStateChange);
+
+    // Listen so external callers (e.g. the logout flow that wants the Search
+    // tab visible behind the login sheet) can switch tabs by writing to
+    // activeTabIndexNotifier without a state reference. The tap path also
+    // writes to the notifier and is short-circuited via the same-index guard.
+    activeTabIndexNotifier.addListener(handleActiveTabIndexNotifierChange);
   }
 
   @override
   void dispose() {
     authStateSubscription?.cancel();
+    activeTabIndexNotifier.removeListener(handleActiveTabIndexNotifierChange);
     super.dispose();
   }
 
-  // Show the login sheet whenever the user is signed out. This also covers the
-  // first-launch case (currentUser is null before auth completes) and the
-  // post-logout case from Settings, Log out.
-  //
-  // Honours the dev bypass flag so testers can skip auth and drive the rest
-  // of the app without signing in.
-  //
-  // Also hydrates the purchase notifiers (balance + purchasedCourses) the
-  // moment auth resolves to a real user, so any screen the user lands on
-  // first (search, roadmap, bookshelf) reads correct wallet state without
-  // each screen having to refetch.
-  void handleAuthStateChange(User? user) {
-    final bool hasNoUser = user == null;
+  void handleActiveTabIndexNotifierChange() {
+    final int requestedIndex = activeTabIndexNotifier.value;
+    final bool isSameTab = requestedIndex == currentIndex;
 
-    if (!hasNoUser) {
-      hydratePurchaseStateForCurrentUser();
-    }
-
-    final bool isBypassed = LoginBottomSheet.isDevBypassed;
-    final bool shouldShowLoginSheet =
-        hasNoUser && !isBypassed && !isLoginSheetVisible && mounted;
-
-    if (!shouldShowLoginSheet) {
+    if (isSameTab) {
       return;
     }
 
-    isLoginSheetVisible = true;
+    setState(() {
+      currentIndex = requestedIndex;
+    });
+  }
 
-    WidgetsBinding.instance.addPostFrameCallback(presentLoginSheet);
+  // The app runs unauthenticated by default — first-launch with no signed-in
+  // user lands the reader straight on Home, and the login sheet only appears
+  // when explicitly requested (Settings, Log out and the Account-deletion
+  // re-auth flow each call LoginBottomSheet.show themselves).
+  //
+  // We still listen to auth state purely to hydrate the purchase + preference
+  // notifiers the moment a real user appears, so every screen reads correct
+  // wallet/preference state without refetching.
+  void handleAuthStateChange(User? user) {
+    final bool hasUser = user != null;
+
+    if (hasUser) {
+      hydratePurchaseStateForCurrentUser();
+    }
   }
 
   Future<void> hydratePurchaseStateForCurrentUser() async {
@@ -116,20 +119,6 @@ class MainNavigationState extends State<MainNavigation> {
     hydrateUserPreferenceNotifiersFromUser(user);
   }
 
-  void presentLoginSheet(Duration timestamp) {
-    final bool isUnmounted = !mounted;
-
-    if (isUnmounted) {
-      return;
-    }
-
-    LoginBottomSheet.show(context).then(handleLoginSheetClosed);
-  }
-
-  void handleLoginSheetClosed(dynamic result) {
-    isLoginSheetVisible = false;
-  }
-
   void handleNavigationTap(int navigationItemIndex) {
     final bool isSameTab = navigationItemIndex == currentIndex;
 
@@ -137,7 +126,7 @@ class MainNavigationState extends State<MainNavigation> {
       return;
     }
 
-    HapticFeedback.lightImpact();
+    HapticsService.lightImpact();
     SoundService.playRandomTextClick();
 
     setState(() {

@@ -4,6 +4,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:readlock/services/feedback/HapticsService.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/design_system/RLLunarBlur.dart';
 
@@ -56,7 +57,7 @@ class RLCard extends StatelessWidget {
 
     if (hasTapHandler) {
       void handleTapWithHaptic() {
-        HapticFeedback.lightImpact();
+        HapticsService.lightImpact();
         rawTapHandler();
       }
 

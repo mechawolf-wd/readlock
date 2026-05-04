@@ -4,6 +4,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:readlock/services/feedback/HapticsService.dart';
 import 'package:readlock/bottom_sheets/NightShiftBottomSheet.dart';
 import 'package:readlock/bottom_sheets/user/FeathersBottomSheet.dart';
 import 'package:readlock/course_screens/CourseContentViewer.dart';
@@ -151,7 +152,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
 
     if (hasLessonChanged && isValidLesson) {
       lastLessonAtThreshold = currentLesson;
-      HapticFeedback.lightImpact();
+      HapticsService.lightImpact();
     }
   }
 
@@ -883,7 +884,7 @@ class PathLessonNodeState extends State<PathLessonNode> {
       return;
     }
 
-    HapticFeedback.lightImpact();
+    HapticsService.lightImpact();
 
     setState(() {
       isPressed = true;
