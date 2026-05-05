@@ -24,6 +24,7 @@ import 'package:readlock/constants/RLCoursePalette.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/constants/RLUIStrings.dart';
+import 'package:readlock/bottom_sheets/user/BirdPickerBottomSheet.dart';
 import 'package:readlock/bottom_sheets/user/SettingsBottomSheet.dart';
 import 'package:readlock/screens/profile/BirdPicker.dart';
 import 'package:readlock/services/auth/UserService.dart';
@@ -338,7 +339,15 @@ class BookshelfScreenState extends State<BookshelfScreen> {
       child: Div.column([
         BookshelfHeaderWithSettings(),
 
-        const Spacing.height(RLDS.spacing40),
+        const Spacing.height(RLDS.spacing24),
+
+        // Reading-time stopwatch sits at the screen level so the counter
+        // is visible on every shelf state (empty, populated, filter-empty),
+        // including a brand-new user whose only contribution so far is the
+        // onboarding-credited seed time.
+        ReadingTimeCounter(),
+
+        const Spacing.height(RLDS.spacing16),
 
         Expanded(child: BookshelfBodyArea()),
       ], crossAxisAlignment: CrossAxisAlignment.stretch),
@@ -372,10 +381,6 @@ class BookshelfScreenState extends State<BookshelfScreen> {
     final bool shouldShowFilterEmptyState = hasActiveFilters && filteredCourses.isEmpty;
 
     final List<Widget> listChildren = [
-      ReadingTimeCounter(),
-
-      const Spacing.height(RLDS.spacing16),
-
       OwnedHeadingRow(),
 
       const Spacing.height(RLDS.spacing12),
@@ -460,6 +465,11 @@ class BookshelfScreenState extends State<BookshelfScreen> {
       children: [readingTimeSubheader, const Spacing.height(RLDS.spacing4), readingTimeReadout],
     );
 
+    void onReadingTimeTap() {
+      HapticsService.lightImpact();
+      BirdPickerBottomSheet.show(context);
+    }
+
     final Widget counterCard = RLLunarBlur(
       borderRadius: RLDS.borderRadiusSmall,
       padding: const EdgeInsets.symmetric(vertical: RLDS.spacing12, horizontal: RLDS.spacing16),
@@ -474,7 +484,11 @@ class BookshelfScreenState extends State<BookshelfScreen> {
       ),
     );
 
-    return Container(child: counterCard);
+    return GestureDetector(
+      onTap: onReadingTimeTap,
+      behavior: HitTestBehavior.opaque,
+      child: counterCard,
+    );
   }
 
   // The reader's profile bird, rendered at the inline preview size used

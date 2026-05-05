@@ -70,7 +70,7 @@ void resetUserPreferenceNotifiers() {
 
   selectedBirdNotifier.value = BIRD_OPTIONS.first;
 
-  justifiedReadingEnabledNotifier.value = false;
+  justifiedReadingEnabledNotifier.value = true;
 
   bionicEnabledNotifier.value = false;
 

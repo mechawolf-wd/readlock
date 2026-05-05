@@ -126,7 +126,12 @@ class OnboardingFlowState extends State<OnboardingFlow> {
     return [
       // Bird step — no header, no card. The carousel floats directly on
       // the starfield so the chosen bird reads as the screen's hero.
-      const OnboardingStepSpec(body: BirdCarousel()),
+      // Restricted to ONBOARDING_BIRD_OPTIONS so a brand-new reader is
+      // offered only the three free starter birds (sparrow, pigeon,
+      // collared dove); the locked tiers stay out of onboarding and
+      // remain visible in the picker bottom sheet behind their unlock
+      // badges.
+      OnboardingStepSpec(body: BirdCarousel(birds: ONBOARDING_BIRD_OPTIONS)),
 
       const OnboardingStepSpec(title: RLUIStrings.MENU_READING_FONT, body: ReadingFontDemo()),
 

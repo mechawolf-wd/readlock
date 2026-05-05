@@ -341,6 +341,7 @@ class RLUIStrings {
   static const String ACCOUNT_DELETE_MESSAGE =
       'This action is permanent. All your data will be lost.';
   static const String ACCOUNT_DELETE_CONFIRM = 'Delete';
+  static const String ACCOUNT_DELETE_FOREVER_LABEL = 'Delete forever';
   static const String ACCOUNT_DELETE_REAUTH_SUBTITLE = 'Sign in again to confirm.';
   static const String ACCOUNT_DELETE_IN_PROGRESS_LABEL = 'Removing account...';
 

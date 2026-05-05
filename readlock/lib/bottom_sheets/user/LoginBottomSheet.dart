@@ -53,6 +53,12 @@ class LoginSheetConfig {
   // re-auth refreshes the auth token without changing the active user.
   final bool isReauthMode;
 
+  // Optional override for the primary action button label in reauth mode.
+  // Lets destructive flows replace the generic "Login" CTA with copy that
+  // matches the action being authorised (e.g. "Delete forever") so the
+  // tap reads as a commitment rather than a sign-in.
+  final String? reauthActionLabel;
+
   // Fires after a successful authentication, before the sheet is popped.
   // Replaces the default success path (close + onboarding) so callers can
   // chain follow-up flows (e.g. confirm-then-delete) from a still-mounted
@@ -66,6 +72,7 @@ class LoginSheetConfig {
     this.allowSupport = true,
     this.showDevSkip = true,
     this.isReauthMode = false,
+    this.reauthActionLabel,
     this.onAuthenticated,
   });
 }
@@ -811,6 +818,16 @@ class LoginSheetState extends State<LoginSheet> {
 
     if (isSignUpMode) {
       return RLUIStrings.SIGN_UP_BUTTON_LABEL;
+    }
+
+    // Reauth flows can rename the CTA so the button reads as the action
+    // being authorised (e.g. "Delete forever") instead of a generic
+    // "Login". Sign-up mode keeps its own copy regardless.
+    final String? reauthOverride = config.reauthActionLabel;
+    final bool hasReauthOverride = config.isReauthMode && reauthOverride != null;
+
+    if (hasReauthOverride) {
+      return reauthOverride;
     }
 
     return RLUIStrings.SIGN_IN_BUTTON_LABEL;

@@ -59,7 +59,7 @@ class ProfileContentState extends State<ProfileContent> {
   bool coloredTextEnabled = true;
   bool bionicEnabled = false;
   bool rsvpEnabled = false;
-  bool justifiedReadingEnabled = false;
+  bool justifiedReadingEnabled = true;
   bool isLoggingOut = false;
 
   @override

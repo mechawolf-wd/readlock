@@ -2,6 +2,8 @@
 // The selected bird is held in a top-level ValueNotifier so any screen
 // (menu, bookshelf header, etc.) can observe and react via ValueListenableBuilder.
 
+import 'dart:ui' as ui;
+
 import 'package:flame/cache.dart';
 import 'package:flame/extensions.dart';
 import 'package:flame/widgets.dart';
@@ -13,6 +15,9 @@ import 'package:readlock/constants/RLUIStrings.dart';
 import 'package:readlock/design_system/RLUtility.dart';
 import 'package:readlock/services/auth/UserService.dart';
 import 'package:readlock/services/feedback/SoundService.dart';
+import 'package:readlock/services/purchases/PurchaseNotifiers.dart';
+
+import 'package:pixelarticons/pixel.dart';
 
 // * Common-bird sheets pack art into 64x64 cells with 32x32 content centered.
 // * Exotic-bird sheets are tightly packed (each cell is its own bird-bounding
@@ -26,6 +31,41 @@ const double BIRD_PREVIEW_SIZE_LARGE = 128.0;
 const double BIRD_PREVIEW_SIZE_SMALL = 96.0;
 const String BIRD_ASSET_PREFIX = 'assets/birds/';
 
+// * Bird unlock economy.
+//
+// One "skillbook" of reading is the unit each unlock threshold is denominated
+// in. Picked at ~30 minutes of focused reading, which lines up with the time
+// a typical reader spends finishing a single Readlock book. Sparrow, Pigeon,
+// and Collared Dove are seeded as free starter birds (unlockSkillbooks = 0)
+// because they're already offered in onboarding; everything else unlocks as
+// the reader's cumulative timeSpentReading clears the bird's threshold.
+const int BIRD_SKILLBOOK_UNIT_SECONDS = 30 * 60;
+
+int getBirdUnlockSeconds(BirdOption bird) {
+  return bird.unlockSkillbooks * BIRD_SKILLBOOK_UNIT_SECONDS;
+}
+
+bool isBirdUnlockedAt(BirdOption bird, int totalReadingSeconds) {
+  return totalReadingSeconds >= getBirdUnlockSeconds(bird);
+}
+
+// Mirrors MyBookshelfScreen.formatStopwatchReadout so the lock caption under
+// each bird speaks the same digital-stopwatch vocabulary the bookshelf
+// reading-time tile uses. Kept as a pure helper here so the picker doesn't
+// have to import the bookshelf.
+String formatBirdUnlockReadout(int totalSeconds) {
+  final int safeSeconds = totalSeconds < 0 ? 0 : totalSeconds;
+  final int hours = safeSeconds ~/ 3600;
+  final int minutes = (safeSeconds % 3600) ~/ 60;
+  final int seconds = safeSeconds % 60;
+
+  final String hoursLabel = hours.toString().padLeft(2, '0');
+  final String minutesLabel = minutes.toString().padLeft(2, '0');
+  final String secondsLabel = seconds.toString().padLeft(2, '0');
+
+  return '$hoursLabel:$minutesLabel:$secondsLabel';
+}
+
 class BirdOption {
   final String name;
   final String assetFile;
@@ -37,6 +77,9 @@ class BirdOption {
   final double contentOffsetY;
   final double contentWidth;
   final double contentHeight;
+  // How many "skillbooks" of reading the user must accumulate before this
+  // bird unlocks. 0 means freely available from onboarding.
+  final int unlockSkillbooks;
 
   const BirdOption({
     required this.name,
@@ -49,6 +92,7 @@ class BirdOption {
     this.contentOffsetY = BIRD_COMMON_CONTENT_OFFSET,
     this.contentWidth = BIRD_CONTENT_SIZE,
     this.contentHeight = BIRD_CONTENT_SIZE,
+    this.unlockSkillbooks = 0,
   });
 }
 
@@ -77,7 +121,20 @@ const List<BirdOption> BIRD_OPTIONS = [
     frameCount: 4,
   ),
 
-  BirdOption(name: RLUIStrings.BIRD_CROW, assetFile: 'Crow.png', firstFrame: 1, frameCount: 4),
+  // Tiers below escalate with the bird's perceived rarity:
+  //   Crow      = 1 skillbook (everyday city bird, easy first reward)
+  //   Kiwi      = 2 skillbooks (cute novelty)
+  //   Flamingo  = 3 skillbooks (distinctive but accessible)
+  //   Blue Macaw = 4 skillbooks (vibrant exotic)
+  //   Shoebill  = 6 skillbooks (rare, oddly serious bird)
+  //   Toucan    = 10 skillbooks (premium, longest grind)
+  BirdOption(
+    name: RLUIStrings.BIRD_CROW,
+    assetFile: 'Crow.png',
+    firstFrame: 1,
+    frameCount: 4,
+    unlockSkillbooks: 1,
+  ),
 
   BirdOption(
     name: RLUIStrings.BIRD_BLUE_MACAW,
@@ -90,6 +147,7 @@ const List<BirdOption> BIRD_OPTIONS = [
     contentOffsetY: 0,
     contentWidth: 26,
     contentHeight: 17,
+    unlockSkillbooks: 4,
   ),
 
   BirdOption(
@@ -103,6 +161,7 @@ const List<BirdOption> BIRD_OPTIONS = [
     contentOffsetY: 0,
     contentWidth: 35,
     contentHeight: 33,
+    unlockSkillbooks: 3,
   ),
 
   BirdOption(
@@ -116,6 +175,7 @@ const List<BirdOption> BIRD_OPTIONS = [
     contentOffsetY: 0,
     contentWidth: 27,
     contentHeight: 17,
+    unlockSkillbooks: 2,
   ),
 
   BirdOption(
@@ -129,6 +189,7 @@ const List<BirdOption> BIRD_OPTIONS = [
     contentOffsetY: 0,
     contentWidth: 30,
     contentHeight: 36,
+    unlockSkillbooks: 6,
   ),
 
   BirdOption(
@@ -141,8 +202,19 @@ const List<BirdOption> BIRD_OPTIONS = [
     contentOffsetX: 0,
     contentOffsetY: 0,
     contentHeight: 18,
+    unlockSkillbooks: 10,
   ),
 ];
+
+// Onboarding only offers the unlocked starter birds (sparrow, pigeon,
+// collared dove). Derived from BIRD_OPTIONS so the moment a bird's
+// unlockSkillbooks flips to 0 in the master list it surfaces in
+// onboarding too — no second list to keep in lock-step. Locked birds
+// stay out of onboarding entirely so a brand-new reader isn't asked
+// to choose between three free birds and a row of greyed-out previews.
+final List<BirdOption> ONBOARDING_BIRD_OPTIONS = BIRD_OPTIONS
+    .where((BirdOption bird) => bird.unlockSkillbooks == 0)
+    .toList(growable: false);
 
 // Shared Images cache so Flame.images doesn't need reconfiguring globally
 final Images birdImageCache = Images(prefix: BIRD_ASSET_PREFIX);
@@ -228,6 +300,17 @@ const double BIRD_CAROUSEL_UNSELECTED_SCALE = 0.7;
 const double BIRD_CAROUSEL_UNSELECTED_OPACITY = 0.5;
 const double BIRD_CAROUSEL_SELECTED_SCALE = 1.0;
 const double BIRD_CAROUSEL_SELECTED_OPACITY = 1.0;
+// Padding between the locked badge and the bottom edge of the carousel cell.
+const double BIRD_CAROUSEL_LOCK_BADGE_BOTTOM_INSET = 8.0;
+// Animation used when the carousel snaps back from a locked bird the user
+// tried to select.
+const Duration BIRD_CAROUSEL_LOCKED_SNAP_DURATION = Duration(milliseconds: 240);
+const Curve BIRD_CAROUSEL_LOCKED_SNAP_CURVE = Curves.easeOut;
+// Gaussian blur sigma applied to both the locked bird sprite and the
+// bird-name label below it. Single source of truth so the silhouette and
+// the caption blur to the exact same degree, reading as one frosted
+// preview rather than two surfaces with mismatched softness.
+const double BIRD_CAROUSEL_LOCKED_BLUR_SIGMA = 6.0;
 
 // Reusable bird snap-slider — owns its own PageController and selection
 // state, syncs with selectedBirdNotifier on every page change. Renders the
@@ -236,8 +319,17 @@ const double BIRD_CAROUSEL_SELECTED_OPACITY = 1.0;
 // dedicated picker sheet) and the OnboardingBottomSheet (the bird step).
 class BirdCarousel extends StatefulWidget {
   final double height;
+  // Birds to show in this carousel. Defaults to the full master list so
+  // existing call sites (the picker bottom sheet) keep their behaviour;
+  // onboarding passes ONBOARDING_BIRD_OPTIONS so a brand-new reader
+  // sees only the three free starters.
+  final List<BirdOption> birds;
 
-  const BirdCarousel({super.key, this.height = BIRD_CAROUSEL_HEIGHT});
+  const BirdCarousel({
+    super.key,
+    this.height = BIRD_CAROUSEL_HEIGHT,
+    this.birds = BIRD_OPTIONS,
+  });
 
   @override
   State<BirdCarousel> createState() => BirdCarouselState();
@@ -246,39 +338,81 @@ class BirdCarousel extends StatefulWidget {
 class BirdCarouselState extends State<BirdCarousel> {
   late PageController pageController;
   late int selectedIndex;
+  // The bird whose name renders under the carousel. Tracks the centered
+  // page (including locked previews) so a locked bird the user is hovering
+  // on shows its own name rather than the previously-selected one.
+  late int displayedIndex;
 
   @override
   void initState() {
     super.initState();
 
-    final int initialIndex = BIRD_OPTIONS.indexWhere(
+    final int initialIndex = widget.birds.indexWhere(
       (BirdOption bird) => bird.name == selectedBirdNotifier.value.name,
     );
     final bool hasNoMatch = initialIndex < 0;
 
     selectedIndex = hasNoMatch ? 0 : initialIndex;
+    displayedIndex = selectedIndex;
 
     pageController = PageController(
       initialPage: selectedIndex,
       viewportFraction: BIRD_CAROUSEL_VIEWPORT_FRACTION,
     );
+
+    // Re-render so the lock badges drop the moment a session commit pushes
+    // the cumulative reading total over a bird's threshold.
+    timeSpentReadingNotifier.addListener(handleReadingTimeChanged);
   }
 
   @override
   void dispose() {
+    timeSpentReadingNotifier.removeListener(handleReadingTimeChanged);
     pageController.dispose();
     super.dispose();
   }
 
+  void handleReadingTimeChanged() {
+    final bool stillMounted = mounted;
+
+    if (!stillMounted) {
+      return;
+    }
+
+    setState(() {});
+  }
+
   void handlePageChanged(int newIndex) {
+    final BirdOption nextBird = widget.birds[newIndex];
+    final int totalReadingSeconds = timeSpentReadingNotifier.value;
+    final bool isLocked = !isBirdUnlockedAt(nextBird, totalReadingSeconds);
+
+    // displayedIndex tracks the currently centered bird (locked or not)
+    // so the name caption updates immediately on landing, before any
+    // snap-back animation.
+    setState(() {
+      displayedIndex = newIndex;
+    });
+
+    if (isLocked) {
+      // The carousel let the user swipe onto a locked bird so they can see
+      // it; selection itself is gated. Snap back to whatever was already
+      // selected without firing the usual feedback. The trailing
+      // onPageChanged from the animation will reset displayedIndex.
+      pageController.animateToPage(
+        selectedIndex,
+        duration: BIRD_CAROUSEL_LOCKED_SNAP_DURATION,
+        curve: BIRD_CAROUSEL_LOCKED_SNAP_CURVE,
+      );
+      return;
+    }
+
     HapticsService.selectionClick();
     SoundService.playRandomTextClick();
 
     setState(() {
       selectedIndex = newIndex;
     });
-
-    final BirdOption nextBird = BIRD_OPTIONS[newIndex];
 
     selectedBirdNotifier.value = nextBird;
 
@@ -287,14 +421,21 @@ class BirdCarouselState extends State<BirdCarousel> {
 
   @override
   Widget build(BuildContext context) {
-    final BirdOption selectedBird = BIRD_OPTIONS[selectedIndex];
+    final BirdOption displayedBird = widget.birds[displayedIndex];
+    final int totalReadingSeconds = timeSpentReadingNotifier.value;
+    final bool displayedBirdLocked = !isBirdUnlockedAt(displayedBird, totalReadingSeconds);
 
     final Widget slider = PageView.builder(
       controller: pageController,
       physics: const PageScrollPhysics(),
       onPageChanged: handlePageChanged,
-      itemCount: BIRD_OPTIONS.length,
+      itemCount: widget.birds.length,
       itemBuilder: SliderItemBuilder,
+    );
+
+    final Widget displayedNameLabel = BirdNameLabel(
+      bird: displayedBird,
+      isLocked: displayedBirdLocked,
     );
 
     return Div.column([
@@ -306,28 +447,123 @@ class BirdCarouselState extends State<BirdCarousel> {
 
       const Spacing.height(RLDS.spacing16),
 
-      RLTypography.headingLarge(selectedBird.name, color: RLDS.primary),
+      displayedNameLabel,
     ]);
   }
 
   Widget SliderItemBuilder(BuildContext context, int birdIndex) {
-    final BirdOption bird = BIRD_OPTIONS[birdIndex];
-    final bool isSelected = birdIndex == selectedIndex;
-    final double itemScale = isSelected
+    final BirdOption bird = widget.birds[birdIndex];
+    // Scale / opacity follow the currently centred page rather than the
+    // user's committed selection, so a locked bird the reader is hovering
+    // on still grows to full hero size like any other centred bird.
+    // selectedIndex is reserved for the persisted choice (snap-back, save).
+    final bool isCentered = birdIndex == displayedIndex;
+    final int totalReadingSeconds = timeSpentReadingNotifier.value;
+    final bool isLocked = !isBirdUnlockedAt(bird, totalReadingSeconds);
+
+    final double itemScale = isCentered
         ? BIRD_CAROUSEL_SELECTED_SCALE
         : BIRD_CAROUSEL_UNSELECTED_SCALE;
-    final double itemOpacity = isSelected
+    final double itemOpacity = isCentered
         ? BIRD_CAROUSEL_SELECTED_OPACITY
         : BIRD_CAROUSEL_UNSELECTED_OPACITY;
 
-    return Center(
-      child: Opacity(
-        opacity: itemOpacity,
-        child: Transform.scale(
-          scale: itemScale,
-          child: BirdAnimationSprite(bird: bird),
+    final Widget scaledBird = Transform.scale(
+      scale: itemScale,
+      child: BirdAnimationSprite(bird: bird),
+    );
+
+    // Locked birds wear the exact same frosted treatment as the bird-
+    // name label below them — single shared blur sigma, no extra opacity
+    // dim — so the silhouette and the caption read as one preview.
+    final ui.ImageFilter lockedBlurFilter = ui.ImageFilter.blur(
+      sigmaX: BIRD_CAROUSEL_LOCKED_BLUR_SIGMA,
+      sigmaY: BIRD_CAROUSEL_LOCKED_BLUR_SIGMA,
+    );
+
+    final Widget framedBird = isLocked
+        ? ImageFiltered(imageFilter: lockedBlurFilter, child: scaledBird)
+        : scaledBird;
+
+    final Widget birdLayer = Opacity(opacity: itemOpacity, child: framedBird);
+
+    final Widget lockBadge = LockedBirdBadge(
+      unlockSeconds: getBirdUnlockSeconds(bird),
+    );
+
+    return Stack(
+      alignment: Alignment.center,
+      children: [
+        Center(child: birdLayer),
+
+        Positioned(
+          left: 0,
+          right: 0,
+          bottom: BIRD_CAROUSEL_LOCK_BADGE_BOTTOM_INSET,
+          child: RenderIf.condition(isLocked, lockBadge),
         ),
+      ],
+    );
+  }
+}
+
+// Bird-name caption rendered below the carousel. Mirrors the centered
+// bird (selected or hovered) so the label always matches the page on
+// screen; when that bird is still locked the label is wrapped in
+// ImageFiltered so only the letterforms blur, keeping the colour and
+// position of the unlocked variant for a continuous read.
+class BirdNameLabel extends StatelessWidget {
+  final BirdOption bird;
+  final bool isLocked;
+
+  const BirdNameLabel({super.key, required this.bird, required this.isLocked});
+
+  @override
+  Widget build(BuildContext context) {
+    final Widget nameText = RLTypography.headingLarge(bird.name, color: RLDS.primary);
+
+    if (!isLocked) {
+      return nameText;
+    }
+
+    return ImageFiltered(
+      imageFilter: ui.ImageFilter.blur(
+        sigmaX: BIRD_CAROUSEL_LOCKED_BLUR_SIGMA,
+        sigmaY: BIRD_CAROUSEL_LOCKED_BLUR_SIGMA,
       ),
+      child: nameText,
+    );
+  }
+}
+
+// Lock + stopwatch caption painted under each locked bird in the carousel.
+// Uses the same JetBrains Mono / textSecondary vocabulary the bookshelf
+// reading-time tile speaks so the unlock target reads as "this is how much
+// reading is required" without any explanatory copy.
+class LockedBirdBadge extends StatelessWidget {
+  final int unlockSeconds;
+
+  const LockedBirdBadge({super.key, required this.unlockSeconds});
+
+  static const Widget LockIcon = Icon(
+    Pixel.lock,
+    size: RLDS.iconSmall,
+    color: RLDS.green,
+  );
+
+  @override
+  Widget build(BuildContext context) {
+    final String unlockReadout = formatBirdUnlockReadout(unlockSeconds);
+
+    return Div.row(
+      [
+        LockIcon,
+
+        const Spacing.width(RLDS.spacing4),
+
+        RLTypography.bodyMedium(unlockReadout, color: RLDS.textSecondary),
+      ],
+      mainAxisAlignment: MainAxisAlignment.center,
     );
   }
 }

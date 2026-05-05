@@ -37,6 +37,13 @@ class UserPreferenceField {
 // (10 feathers each) without topping up.
 const int NEW_USER_STARTING_BALANCE = 10;
 
+// * Seeded reading time credited on profile creation. Roughly how long it
+// takes to walk the 7-step onboarding (bird, font, column, reveal, blur,
+// colored text, bionic) at a casual pace, so the bookshelf stopwatch and
+// the bird-unlock economy already reflect the work the reader has done
+// to get this far. 3:30 ~= 210 seconds.
+const int NEW_USER_STARTING_TIME_SPENT_READING_SECONDS = 3 * 60 + 30;
+
 class UserService {
   static final ServiceLogger logger = ServiceLogger.forService('UserService');
 
@@ -140,7 +147,7 @@ class UserService {
         UserPreferenceField.COLORED_TEXT: true,
         UserPreferenceField.BIONIC: false,
         UserPreferenceField.RSVP: false,
-        UserPreferenceField.JUSTIFIED_READING: false,
+        UserPreferenceField.JUSTIFIED_READING: true,
         UserPreferenceField.READING_FONT: 'serif',
         UserPreferenceField.READING_COLUMN: 'narrow',
         UserPreferenceField.RSVP_WORDS_PER_MINUTE: 300,
@@ -152,6 +159,7 @@ class UserService {
         UserPreferenceField.LAST_OPENED_COURSE_ID: null,
         UserPreferenceField.PURCHASED_COURSES: <String>[],
         UserPreferenceField.BALANCE: NEW_USER_STARTING_BALANCE,
+        UserPreferenceField.TIME_SPENT_READING: NEW_USER_STARTING_TIME_SPENT_READING_SECONDS,
       };
 
       await userDoc(userId).set(profileData);

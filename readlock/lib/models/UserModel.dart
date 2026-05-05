@@ -52,7 +52,7 @@ class UserModel {
   @JsonKey(defaultValue: false)
   final bool rsvp;
 
-  @JsonKey(defaultValue: false)
+  @JsonKey(defaultValue: true)
   final bool justifiedReading;
 
   // * Reader-pickable enums and tunables — persisted as primitives so the
@@ -138,7 +138,7 @@ class UserModel {
     this.coloredText = true,
     this.bionic = false,
     this.rsvp = false,
-    this.justifiedReading = false,
+    this.justifiedReading = true,
     this.readingFont = 'serif',
     this.readingColumn = 'narrow',
     this.rsvpWordsPerMinute = 300,

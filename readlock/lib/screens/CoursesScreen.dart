@@ -78,7 +78,7 @@ class CoursesScreenState extends State<CoursesScreen> {
   // bottom-of-list CTA. Tinted with success green to telegraph "fetch
   // more" rather than the surprise-me blue.
   static final BoxDecoration loadMoreGlowDecoration = RLDS.glowDecoration(
-    color: RLDS.glass05(RLDS.success),
+    color: RLDS.glass05(RLDS.white),
   );
 
   @override
@@ -452,8 +452,7 @@ class CoursesScreenState extends State<CoursesScreen> {
   // active, so the panel reads clean by default and the X only appears
   // when there is something to clear.
   Widget FilterPanelWithReset() {
-    final bool hasActiveFilters =
-        selectedGenres.isNotEmpty || searchQuery.trim().isNotEmpty;
+    final bool hasActiveFilters = selectedGenres.isNotEmpty || searchQuery.trim().isNotEmpty;
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -478,11 +477,7 @@ class CoursesScreenState extends State<CoursesScreen> {
       child: RLLunarBlur(
         borderRadius: BorderRadius.circular(clearFiltersChipDiameter / 2),
         padding: const EdgeInsets.all(RLDS.spacing8),
-        child: const Icon(
-          Pixel.close,
-          color: RLDS.textSecondary,
-          size: RLDS.iconMedium,
-        ),
+        child: const Icon(Pixel.close, color: RLDS.textSecondary, size: RLDS.iconMedium),
       ),
     );
   }
@@ -559,6 +554,7 @@ class CoursesScreenState extends State<CoursesScreen> {
     return Container(
       decoration: loadMoreGlowDecoration,
       child: RLButton.secondary(
+        color: RLDS.white,
         label: RLUIStrings.BOOKSHELF_LOAD_MORE_LABEL,
         onTap: handleLoadMoreTap,
       ),

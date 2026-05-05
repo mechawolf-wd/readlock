@@ -5,8 +5,10 @@
 
 import 'package:flutter/material.dart' hide Typography;
 import 'package:readlock/bottom_sheets/RLBottomSheet.dart';
+import 'package:readlock/bottom_sheets/RLDialog.dart';
 import 'package:readlock/bottom_sheets/user/LoginBottomSheet.dart';
-import 'package:readlock/design_system/RLConfirmationDialog.dart';
+import 'package:readlock/design_system/RLButton.dart';
+import 'package:readlock/design_system/RLSwipeButton.dart';
 import 'package:readlock/design_system/RLToast.dart';
 import 'package:readlock/design_system/RLUtility.dart';
 import 'package:readlock/constants/RLTypography.dart';
@@ -91,25 +93,31 @@ class AccountSheet extends StatelessWidget {
       allowSupport: false,
       showDevSkip: false,
       isReauthMode: true,
+      reauthActionLabel: RLUIStrings.ACCOUNT_DELETE_FOREVER_LABEL,
       onAuthenticated: presentFinalDeleteConfirmation,
     );
 
     LoginBottomSheet.show(context, config: reauthConfig);
   }
 
+  // The final checkpoint. Reuses the standard RLDialog frosted card so the
+  // surface matches every other modal in the app, but swaps the regular CTA
+  // for a wiggling RLSwipeButton: the iOS edit-mode shake flags the row as
+  // dangerous before the reader touches it, and the swipe gesture itself
+  // forces a deliberate commitment instead of a single tap.
   void presentFinalDeleteConfirmation(BuildContext context) {
-    RLConfirmationDialog.show(
+    RLDialog.show(
       context,
-      title: RLUIStrings.ACCOUNT_DELETE_LABEL,
-      message: RLUIStrings.ACCOUNT_DELETE_MESSAGE,
-      cta: RLConfirmationAction(
-        label: RLUIStrings.ACCOUNT_DELETE_CONFIRM,
-        variant: RLConfirmationVariant.destructive,
-        onTap: () => runAccountDeletion(context),
-      ),
-      cancel: const RLConfirmationAction(
-        label: RLUIStrings.CANCEL_LABEL,
-        variant: RLConfirmationVariant.neutral,
+      child: Builder(
+        builder: (BuildContext dialogContext) {
+          return DeleteAccountDialogContent(
+            onConfirm: () {
+              Navigator.of(dialogContext).pop();
+              runAccountDeletion(context);
+            },
+            onCancel: () => Navigator.of(dialogContext).pop(),
+          );
+        },
       ),
     );
   }
@@ -151,7 +159,7 @@ class AccountSheet extends StatelessWidget {
   }
 }
 
-// Same row shape as LoginSupportPicker's PickerRow — bodyLarge label +
+// Same row shape as LoginSupportPicker's PickerRow: bodyLarge label +
 // chevron, vertical spacing12 padding.
 class AccountActionRow extends StatelessWidget {
   final String label;
@@ -171,6 +179,63 @@ class AccountActionRow extends StatelessWidget {
       [Expanded(child: RLTypography.bodyLarge(label)), ChevronIcon],
       padding: const EdgeInsets.symmetric(vertical: RLDS.spacing12),
       onTap: onTap,
+    );
+  }
+}
+
+// Final-checkpoint dialog body. Mirrors the layout of the standard
+// RLConfirmationDialog (heading, message, primary action, tertiary
+// cancel) but replaces the primary tap button with a wiggling
+// RLSwipeButton so the commit gesture is deliberate.
+class DeleteAccountDialogContent extends StatelessWidget {
+  final VoidCallback onConfirm;
+  final VoidCallback onCancel;
+
+  const DeleteAccountDialogContent({
+    super.key,
+    required this.onConfirm,
+    required this.onCancel,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: RLDS.dialogContentInsets,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          // Heading
+          RLTypography.headingMedium(RLUIStrings.ACCOUNT_DELETE_LABEL),
+
+          const Spacing.height(RLDS.spacing8),
+
+          // Message
+          RLTypography.bodyMedium(
+            RLUIStrings.ACCOUNT_DELETE_MESSAGE,
+            color: RLDS.textSecondary,
+          ),
+
+          const Spacing.height(RLDS.spacing24),
+
+          // Swipe-to-confirm CTA
+          RLSwipeButton(
+            label: RLUIStrings.ACCOUNT_DELETE_FOREVER_LABEL,
+            color: RLDS.error,
+            thumbIcon: Pixel.trash,
+            onConfirm: onConfirm,
+          ),
+
+          const Spacing.height(RLDS.dialogStackedButtonGap),
+
+          // Tertiary cancel
+          RLButton.tertiary(
+            label: RLUIStrings.CANCEL_LABEL,
+            color: RLDS.textSecondary,
+            onTap: onCancel,
+          ),
+        ],
+      ),
     );
   }
 }

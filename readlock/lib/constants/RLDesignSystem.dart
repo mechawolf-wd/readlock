@@ -220,6 +220,13 @@ class RLDS {
   static const double dialogOuterHorizontalInset = spacing24;
   static const EdgeInsets dialogContentInsets = EdgeInsets.all(spacing24);
 
+  // Gap between the primary action and the cancel action in any dialog
+  // that stacks its two buttons vertically (RLConfirmationDialog vertical
+  // layout, DeleteAccountDialogContent, future stacked dialogs). Single
+  // source of truth so every "primary on top, secondary below" dialog
+  // reads with the same vertical rhythm.
+  static const double dialogStackedButtonGap = spacing12;
+
   // * Scrim painted behind any modal dialog. Single source of truth so
   // every dialog (alert, confirmation, future ones) dims the page by the
   // same amount instead of each call site picking its own alpha.

@@ -235,6 +235,9 @@ class VerifyEmailScreenState extends State<VerifyEmailScreen> {
       child: Div.row(
         [RLTypography.bodyLarge(buttonLabel, color: RLDS.primary)],
         width: double.infinity,
+        // Transparent fill so the gesture detector receives taps across
+        // the whole button, not only on the centered label glyphs.
+        color: RLDS.transparent,
         padding: const EdgeInsets.symmetric(
           vertical: RLDS.spacing16,
           horizontal: RLDS.spacing24,

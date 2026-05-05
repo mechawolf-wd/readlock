@@ -14,6 +14,7 @@ import 'package:readlock/bottom_sheets/user/AccountBottomSheet.dart';
 import 'package:readlock/bottom_sheets/user/BirdPickerBottomSheet.dart';
 import 'package:readlock/bottom_sheets/user/FontPickerBottomSheet.dart';
 import 'package:readlock/bottom_sheets/user/FeathersBottomSheet.dart';
+import 'package:readlock/screens/profile/BirdPicker.dart';
 import 'package:readlock/screens/profile/SettingsDemos.dart';
 import 'package:readlock/services/feedback/SoundService.dart';
 
@@ -140,7 +141,11 @@ class MenuSection extends StatelessWidget {
         ),
 
         MenuItem(
-          icon: Pixel.bookopen,
+          // The reader's currently-selected bird sprite stands in for the
+          // generic glyph here so the row reads as "your bird" at a glance.
+          // Rebuilds via ValueListenableBuilder when the picker writes a
+          // new selection so the icon stays in sync.
+          leading: const ProfileBirdMenuIcon(),
           title: RLUIStrings.MENU_PROFILE_BIRD,
           onTap: onBirdPickerTap,
         ),
@@ -470,6 +475,30 @@ class MenuDivider extends StatelessWidget {
           LineFill,
         ],
       ),
+    );
+  }
+}
+
+// Live "Profile Bird" leading icon: the user's currently-selected bird
+// rendered at the standard menu-glyph size so the row icon and the
+// picker target read as the same object. Listens to selectedBirdNotifier
+// so flipping a bird in the picker sheet updates this row immediately.
+class ProfileBirdMenuIcon extends StatelessWidget {
+  const ProfileBirdMenuIcon({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return ValueListenableBuilder<BirdOption>(
+      valueListenable: selectedBirdNotifier,
+      builder: ProfileBirdMenuIconBuilder,
+    );
+  }
+
+  Widget ProfileBirdMenuIconBuilder(BuildContext context, BirdOption bird, Widget? unusedChild) {
+    return SizedBox(
+      width: RLDS.iconMedium,
+      height: RLDS.iconMedium,
+      child: BirdAnimationSprite(bird: bird, previewSize: RLDS.iconMedium),
     );
   }
 }

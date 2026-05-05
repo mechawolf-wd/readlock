@@ -226,7 +226,7 @@ class ConfirmationDialogContent extends StatelessWidget {
       children: [
         PrimaryButton(action: cta),
 
-        const Spacing.height(RLDS.spacing12),
+        const Spacing.height(RLDS.dialogStackedButtonGap),
 
         TertiaryButton(action: cancelAction),
       ],

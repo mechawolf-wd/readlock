@@ -22,7 +22,7 @@ UserModel _$UserModelFromJson(Map<String, dynamic> json) => UserModel(
   coloredText: json['coloredText'] as bool? ?? true,
   bionic: json['bionic'] as bool? ?? false,
   rsvp: json['rsvp'] as bool? ?? false,
-  justifiedReading: json['justifiedReading'] as bool? ?? false,
+  justifiedReading: json['justifiedReading'] as bool? ?? true,
   readingFont: json['readingFont'] as String? ?? 'serif',
   readingColumn: json['readingColumn'] as String? ?? 'narrow',
   rsvpWordsPerMinute: (json['rsvpWordsPerMinute'] as num?)?.toInt() ?? 300,
