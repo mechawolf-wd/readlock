@@ -493,14 +493,18 @@ class CoursesScreenState extends State<CoursesScreen> {
     final bool isUnfilteredListing = hasNoQuery && hasNoGenres;
 
     if (isUnfilteredListing) {
-      return CoursesScrollList(availableCourses, showLoadMore: true);
+      return CoursesScrollList(availableCourses, showLoadMore: hasMoreCourses);
     }
 
     final JSONList locallyFiltered = getLocallyFilteredCourses();
     final bool hasLocalMatches = locallyFiltered.isNotEmpty;
 
+    // With a filter active, the Load more button now keeps fetching the
+    // next master page from Firestore. New courses land in availableCourses
+    // and the local filter re-runs against the expanded cache, so the
+    // reader can keep paging until a match surfaces.
     if (hasLocalMatches) {
-      return CoursesScrollList(locallyFiltered, showLoadMore: false);
+      return CoursesScrollList(locallyFiltered, showLoadMore: hasMoreCourses);
     }
 
     if (isRemoteSearching) {
@@ -510,7 +514,7 @@ class CoursesScreenState extends State<CoursesScreen> {
     final bool hasRemoteMatches = remoteSearchResults.isNotEmpty;
 
     if (hasRemoteMatches) {
-      return CoursesScrollList(remoteSearchResults, showLoadMore: false);
+      return CoursesScrollList(remoteSearchResults, showLoadMore: hasMoreCourses);
     }
 
     return EmptyStateMessage();
@@ -597,7 +601,9 @@ class CoursesScreenState extends State<CoursesScreen> {
   // Same bird + chirp caption the bookshelf shows when its own filter
   // narrows to nothing. Anchored to the top of the results area so it
   // mirrors the bookshelf's FilterEmptyBird placement and the two empty
-  // surfaces feel like one family.
+  // surfaces feel like one family. When more master pages remain on
+  // Firestore, the Load more button is mounted underneath the caption so
+  // the reader can keep paging until a course matches the active filter.
   Widget EmptyStateMessage() {
     return Padding(
       padding: const EdgeInsets.only(top: RLDS.spacing40),
@@ -605,8 +611,9 @@ class CoursesScreenState extends State<CoursesScreen> {
         alignment: Alignment.topCenter,
         child: Column(
           mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            CoursesBird(),
+            Center(child: CoursesBird()),
 
             const Spacing.height(RLDS.spacing16),
 
@@ -615,9 +622,18 @@ class CoursesScreenState extends State<CoursesScreen> {
               color: RLDS.textSecondary,
               textAlign: TextAlign.center,
             ),
+
+            RenderIf.condition(hasMoreCourses, EmptyStateLoadMoreSlot()),
           ],
         ),
       ),
+    );
+  }
+
+  Widget EmptyStateLoadMoreSlot() {
+    return Padding(
+      padding: const EdgeInsets.only(top: RLDS.spacing24),
+      child: LoadMoreControl(),
     );
   }
 
