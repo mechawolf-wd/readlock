@@ -27,6 +27,11 @@ UserModel _$UserModelFromJson(Map<String, dynamic> json) => UserModel(
   readingColumn: json['readingColumn'] as String? ?? 'narrow',
   rsvpWordsPerMinute: (json['rsvpWordsPerMinute'] as num?)?.toInt() ?? 300,
   nightShiftLevel: (json['nightShiftLevel'] as num?)?.toInt() ?? 0,
+  nightShiftScheduleEnabled: json['nightShiftScheduleEnabled'] as bool? ?? true,
+  nightShiftScheduleFromMinutes:
+      (json['nightShiftScheduleFromMinutes'] as num?)?.toInt() ?? 1140,
+  nightShiftScheduleToMinutes:
+      (json['nightShiftScheduleToMinutes'] as num?)?.toInt() ?? 360,
   birdName: json['birdName'] as String? ?? 'Sparrow',
   lastOpenedCourseId: json['lastOpenedCourseId'] as String?,
   purchasedCourses:
@@ -66,6 +71,9 @@ Map<String, dynamic> _$UserModelToJson(UserModel instance) => <String, dynamic>{
   'readingColumn': instance.readingColumn,
   'rsvpWordsPerMinute': instance.rsvpWordsPerMinute,
   'nightShiftLevel': instance.nightShiftLevel,
+  'nightShiftScheduleEnabled': instance.nightShiftScheduleEnabled,
+  'nightShiftScheduleFromMinutes': instance.nightShiftScheduleFromMinutes,
+  'nightShiftScheduleToMinutes': instance.nightShiftScheduleToMinutes,
   'birdName': instance.birdName,
   'lastOpenedCourseId': instance.lastOpenedCourseId,
   'purchasedCourses': instance.purchasedCourses,

@@ -14,6 +14,13 @@ import 'package:readlock/models/UserModel.dart';
 
 final ValueNotifier<int> userBalanceNotifier = ValueNotifier<int>(0);
 
+// Cumulative seconds the reader has spent inside the course content viewer.
+// Hydrated from /users/{id}.timeSpentReading on profile load and bumped
+// optimistically by UserService.incrementTimeSpentReading on every session
+// commit so the bookshelf counter reflects the latest session without a
+// Firestore round-trip.
+final ValueNotifier<int> timeSpentReadingNotifier = ValueNotifier<int>(0);
+
 final ValueNotifier<Set<String>> purchasedCoursesNotifier = ValueNotifier<Set<String>>(
   const <String>{},
 );
@@ -27,10 +34,12 @@ final ValueNotifier<bool> bookshelfHasUnseenPurchaseNotifier = ValueNotifier<boo
 void hydratePurchaseStateFromUser(UserModel user) {
   userBalanceNotifier.value = user.balance;
   purchasedCoursesNotifier.value = Set<String>.from(user.purchasedCourses);
+  timeSpentReadingNotifier.value = user.timeSpentReading;
 }
 
 void resetPurchaseState() {
   userBalanceNotifier.value = 0;
   purchasedCoursesNotifier.value = const <String>{};
   bookshelfHasUnseenPurchaseNotifier.value = false;
+  timeSpentReadingNotifier.value = 0;
 }

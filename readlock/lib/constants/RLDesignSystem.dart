@@ -112,7 +112,7 @@ class RLDS {
   // glance: glass10 = 10% opacity, glass70 = 70% opacity.
 
   static Color glass05(Color color) {
-    return color.withValues(alpha: 0.05);
+    return color.withValues(alpha: 0.03);
   }
 
   static Color glass10(Color color) {
@@ -152,9 +152,7 @@ class RLDS {
 
     return BoxDecoration(
       borderRadius: effectiveRadius,
-      boxShadow: [
-        BoxShadow(color: color, blurRadius: blurRadius, spreadRadius: spreadRadius),
-      ],
+      boxShadow: [BoxShadow(color: color, blurRadius: blurRadius, spreadRadius: spreadRadius)],
     );
   }
 

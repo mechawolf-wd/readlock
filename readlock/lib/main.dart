@@ -8,6 +8,7 @@ import 'package:readlock/design_system/RLNightShift.dart';
 import 'package:readlock/firebase_options.dart';
 import 'package:readlock/services/ConnectivityService.dart';
 import 'package:readlock/services/NightShiftBrightnessService.dart';
+import 'package:readlock/services/NightShiftScheduleService.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -19,6 +20,11 @@ void main() async {
   // Drives the panel brightness from the Night Shift slider so the dim
   // step actually lowers the screen below the OS minimum.
   NightShiftBrightnessService.initialize();
+
+  // Auto-applies the warmth level from the user's daily Night Shift
+  // schedule (Apple-style window) so the slider flips on at sundown
+  // and back off in the morning without per-screen wiring.
+  NightShiftScheduleService.initialize();
 
   // Subscribes to platform connectivity changes so any screen that depends
   // on network reachability (CoursesScreen) can flip to an offline state

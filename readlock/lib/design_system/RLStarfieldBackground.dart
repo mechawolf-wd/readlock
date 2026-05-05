@@ -17,11 +17,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 
-// * Tuning defaults — tweak at the call site via constructor props.
+// * Tuning defaults, tweak at the call site via constructor props.
 const int STARFIELD_DEFAULT_STAR_COUNT = 80;
 const double STARFIELD_DEFAULT_STAR_SIZE = 2.0;
 const double STARFIELD_DEFAULT_DRIFT_SPEED = 8.0;
 const int STARFIELD_RANDOM_SEED = 42;
+
+// Quantize the shared clock so painters only repaint ~20x per second
+// instead of every display refresh. The drift is slow (8 px/s), so this
+// is visually indistinguishable from per-frame updates but cuts paint
+// work by 3-6x on high-refresh displays and on the web canvas.
+const double STARFIELD_TICK_INTERVAL_SECONDS = 0.05;
 // Pitch-black background — RLDS.black is a near-black grey, we want the
 // actual void behind the pixel stars.
 const Color STARFIELD_BACKGROUND_COLOR = Color(0xFF000000);
@@ -71,7 +77,18 @@ class StarfieldClock {
   }
 
   static void handleTick(Duration unused) {
-    elapsed.value = stopwatch.elapsedMicroseconds / 1e6;
+    final double rawElapsedSeconds = stopwatch.elapsedMicroseconds / 1e6;
+    final double quantizedElapsedSeconds =
+        (rawElapsedSeconds / STARFIELD_TICK_INTERVAL_SECONDS).floorToDouble() *
+            STARFIELD_TICK_INTERVAL_SECONDS;
+
+    final bool bucketUnchanged = quantizedElapsedSeconds == elapsed.value;
+
+    if (bucketUnchanged) {
+      return;
+    }
+
+    elapsed.value = quantizedElapsedSeconds;
   }
 }
 
@@ -113,12 +130,33 @@ class RLStarfieldBackground extends StatefulWidget {
 
 class RLStarfieldBackgroundState extends State<RLStarfieldBackground> {
   late List<StarSpec> stars;
+  late List<Color> starColors;
 
   @override
   void initState() {
     super.initState();
     stars = generateStars();
+    starColors = computeStarColors();
     StarfieldClock.subscribe();
+  }
+
+  @override
+  void didUpdateWidget(covariant RLStarfieldBackground oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    final bool starCountChanged = oldWidget.starCount != widget.starCount;
+    final bool starSizeChanged = oldWidget.starSize != widget.starSize;
+    final bool starColorChanged = oldWidget.starColor != widget.starColor;
+
+    final bool needsRegenerate = starCountChanged || starSizeChanged;
+
+    if (needsRegenerate) {
+      stars = generateStars();
+    }
+
+    if (needsRegenerate || starColorChanged) {
+      starColors = computeStarColors();
+    }
   }
 
   @override
@@ -144,6 +182,14 @@ class RLStarfieldBackgroundState extends State<RLStarfieldBackground> {
     });
   }
 
+  List<Color> computeStarColors() {
+    return List<Color>.generate(
+      stars.length,
+      (starIndex) => widget.starColor.withValues(alpha: stars[starIndex].opacity),
+      growable: false,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return ColoredBox(
@@ -153,9 +199,9 @@ class RLStarfieldBackgroundState extends State<RLStarfieldBackground> {
           child: CustomPaint(
             painter: StarfieldPainter(
               stars: stars,
+              starColors: starColors,
               elapsedListenable: StarfieldClock.elapsed,
               driftSpeed: widget.driftSpeed,
-              starColor: widget.starColor,
             ),
           ),
         ),
@@ -166,15 +212,15 @@ class RLStarfieldBackgroundState extends State<RLStarfieldBackground> {
 
 class StarfieldPainter extends CustomPainter {
   final List<StarSpec> stars;
+  final List<Color> starColors;
   final ValueListenable<double> elapsedListenable;
   final double driftSpeed;
-  final Color starColor;
 
   StarfieldPainter({
     required this.stars,
+    required this.starColors,
     required this.elapsedListenable,
     required this.driftSpeed,
-    required this.starColor,
   }) : super(repaint: elapsedListenable);
 
   @override
@@ -191,14 +237,18 @@ class StarfieldPainter extends CustomPainter {
       ..isAntiAlias = false
       ..filterQuality = FilterQuality.none;
 
-    for (final StarSpec star in stars) {
+    final int starCount = stars.length;
+
+    for (int starIndex = 0; starIndex < starCount; starIndex++) {
+      final StarSpec star = stars[starIndex];
+
       final double baseY = star.normalizedY * size.height;
       final double drift = elapsedSeconds * driftSpeed * star.speedMultiplier;
       // Wrap around the top as stars scroll off the bottom so the field loops.
       final double y = (baseY + drift) % size.height;
       final double x = star.normalizedX * size.width;
 
-      paint.color = starColor.withValues(alpha: star.opacity);
+      paint.color = starColors[starIndex];
 
       final Rect starRect = Rect.fromLTWH(x, y, star.size, star.size);
 
@@ -209,9 +259,9 @@ class StarfieldPainter extends CustomPainter {
   @override
   bool shouldRepaint(covariant StarfieldPainter oldDelegate) {
     final bool listenableChanged = oldDelegate.elapsedListenable != elapsedListenable;
-    final bool colorChanged = oldDelegate.starColor != starColor;
+    final bool colorsChanged = oldDelegate.starColors != starColors;
     final bool speedChanged = oldDelegate.driftSpeed != driftSpeed;
 
-    return listenableChanged || colorChanged || speedChanged;
+    return listenableChanged || colorsChanged || speedChanged;
   }
 }

@@ -11,8 +11,10 @@ class RLUIStrings {
   // * My Bookshelf Screen
   static const String BOOKSHELF_TITLE = 'Bookshelf';
   static const String BOOKSHELF_OWNED_HEADING = 'Owned';
+  static const String BOOKSHELF_READING_TIME_LABEL = 'Total reading time';
   static const String BOOKSHELF_EMPTY_MESSAGE = '*chirp* - read something to see it here';
-  static const String BOOKSHELF_FILTER_EMPTY_MESSAGE = '*chirp* - no skillbooks match that filter';
+  static const String BOOKSHELF_FILTER_EMPTY_MESSAGE =
+      '*chirp* - no skillbooks match that filter';
   static const String BOOKSHELF_LOAD_MORE_LABEL = 'Load more';
   static const String LOAD_MORE_NOTHING_LEFT = "*chirp* - that's all of them for now";
 
@@ -134,8 +136,11 @@ class RLUIStrings {
   static const String NIGHT_SHIFT_TITLE = 'Night Session';
   static const String NIGHT_SHIFT_DESCRIPTION =
       'Warm the screen for easier reading before sleep.';
-  static const String NIGHT_SHIFT_LESS_WARM_LABEL = 'Off';
+  static const String NIGHT_SHIFT_LESS_WARM_LABEL = 'Day';
   static const String NIGHT_SHIFT_MORE_WARM_LABEL = 'Nocturnal';
+  static const String NIGHT_SHIFT_SCHEDULE_LABEL = 'Scheduled';
+  static const String NIGHT_SHIFT_SCHEDULE_FROM_LABEL = 'From';
+  static const String NIGHT_SHIFT_SCHEDULE_TO_LABEL = 'To';
 
   // * Course Content Factory
   static const String UNKNOWN_CONTENT_TYPE_MESSAGE = 'Unknown content type: ';

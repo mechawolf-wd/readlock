@@ -16,6 +16,7 @@ import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLUIStrings.dart';
 import 'package:readlock/design_system/RLFeatherIcon.dart';
 import 'package:readlock/design_system/RLLunarBlur.dart';
+import 'package:readlock/design_system/RLStarfieldBackground.dart';
 import 'package:readlock/design_system/RLToast.dart';
 import 'package:readlock/design_system/RLUtility.dart';
 import 'package:readlock/screens/profile/BirdPicker.dart';
@@ -71,6 +72,10 @@ class FeatherPlan {
   final int feathersValue;
   final String books;
   final BirdOption bird;
+  // Higher tiers swap LunarBlur frosting for the shared 8-bit starfield
+  // so the premium card reads as visually distinct at a glance. Defaults
+  // off so existing tiers keep the frosted treatment.
+  final bool useStarfieldBackground;
 
   const FeatherPlan({
     required this.name,
@@ -79,6 +84,7 @@ class FeatherPlan {
     required this.feathersValue,
     required this.books,
     required this.bird,
+    this.useStarfieldBackground = false,
   });
 }
 
@@ -112,6 +118,7 @@ final List<FeatherPlan> FEATHER_PLANS = [
     feathersValue: PLAN_READER_FEATHERS_VALUE,
     books: RLUIStrings.PLAN_READER_BOOKS,
     bird: lookupBirdByName(RLUIStrings.BIRD_TOUCAN),
+    useStarfieldBackground: true,
   ),
 ];
 
@@ -317,6 +324,15 @@ class PlanCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final double cardOpacity = isSelected ? 1.0 : 0.45;
+    final Widget cardBody = PlanCardBody(plan: plan);
+
+    final Widget cardSurface = plan.useStarfieldBackground
+        ? StarfieldPlanCardSurface(padding: cardPadding, child: cardBody)
+        : RLLunarBlur(
+            borderRadius: RLDS.borderRadiusMedium,
+            padding: cardPadding,
+            child: cardBody,
+          );
 
     return Padding(
       padding: cardOuterPadding,
@@ -326,12 +342,34 @@ class PlanCard extends StatelessWidget {
         child: AnimatedOpacity(
           duration: const Duration(milliseconds: 200),
           opacity: cardOpacity,
-          child: RLLunarBlur(
-            borderRadius: RLDS.borderRadiusMedium,
-            padding: cardPadding,
-            child: PlanCardBody(plan: plan),
-          ),
+          child: cardSurface,
         ),
+      ),
+    );
+  }
+}
+
+// Premium plan-card surface: paints the shared starfield behind the card
+// content, clipped to the same rounded rect LunarBlur uses so swiping
+// between Beginner and Reader keeps a consistent silhouette. No tint
+// layer here on purpose, the starfield's own black background already
+// gives copy more than enough contrast and we want the stars to read.
+class StarfieldPlanCardSurface extends StatelessWidget {
+  final EdgeInsets padding;
+  final Widget child;
+
+  const StarfieldPlanCardSurface({super.key, required this.padding, required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return ClipRRect(
+      borderRadius: RLDS.borderRadiusMedium,
+      child: Stack(
+        children: [
+          const Positioned.fill(child: RLStarfieldBackground(starColor: RLDS.backgroundLight)),
+
+          Padding(padding: padding, child: child),
+        ],
       ),
     );
   }

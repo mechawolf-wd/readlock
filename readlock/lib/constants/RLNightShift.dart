@@ -87,6 +87,54 @@ const List<double> NIGHT_SHIFT_BRIGHTNESS = [
 
 final ValueNotifier<int> nightShiftLevelNotifier = ValueNotifier<int>(NIGHT_SHIFT_OFF_LEVEL);
 
+// * Schedule. Mirrors iOS Night Shift's "Custom Schedule": a daily window
+// (From/To minutes-since-midnight) plus a master toggle. When the toggle
+// is on and the wall clock falls inside the window, NightShiftScheduleService
+// flips the level to NIGHT_SHIFT_SCHEDULED_LEVEL on entry and back to 0 on
+// exit. The user can still override warmth manually inside the window;
+// that override is respected until the next entry boundary.
+const int NIGHT_SHIFT_SCHEDULE_DEFAULT_FROM_MINUTES = 19 * 60;
+const int NIGHT_SHIFT_SCHEDULE_DEFAULT_TO_MINUTES = 6 * 60;
+const int NIGHT_SHIFT_SCHEDULE_MINUTES_PER_DAY = 24 * 60;
+// Warmth the schedule lands on at window entry. Step 3 ("Warm", 3700K) is
+// the iOS Night Shift default position and reads as clearly tinted without
+// crushing the darker UI surfaces.
+const int NIGHT_SHIFT_SCHEDULED_LEVEL = 3;
+
+final ValueNotifier<bool> nightShiftScheduleEnabledNotifier = ValueNotifier<bool>(false);
+final ValueNotifier<int> nightShiftScheduleFromMinutesNotifier = ValueNotifier<int>(
+  NIGHT_SHIFT_SCHEDULE_DEFAULT_FROM_MINUTES,
+);
+final ValueNotifier<int> nightShiftScheduleToMinutesNotifier = ValueNotifier<int>(
+  NIGHT_SHIFT_SCHEDULE_DEFAULT_TO_MINUTES,
+);
+
+// Returns true when nowMinutes (minutes since midnight) sits inside the
+// daily window described by fromMinutes / toMinutes. Handles the common
+// overnight case (fromMinutes > toMinutes, eg. 19:00..06:00) by treating
+// the window as the union [from, 24h) ∪ [0, to). A degenerate window
+// where from == to is treated as "always on" so the toggle still has the
+// expected effect if the user picks identical times.
+bool isWithinNightShiftWindow(int nowMinutes, int fromMinutes, int toMinutes) {
+  final bool windowIsAlwaysOn = fromMinutes == toMinutes;
+
+  if (windowIsAlwaysOn) {
+    return true;
+  }
+
+  final bool windowSpansMidnight = fromMinutes > toMinutes;
+
+  if (windowSpansMidnight) {
+    return nowMinutes >= fromMinutes || nowMinutes < toMinutes;
+  }
+
+  return nowMinutes >= fromMinutes && nowMinutes < toMinutes;
+}
+
+int currentMinutesSinceMidnight(DateTime now) {
+  return now.hour * 60 + now.minute;
+}
+
 // Returns the level entry for a given index, clamped into range so a
 // stale persisted value (eg. 5 from the previous 6-step build) resolves
 // to the closest valid stop instead of throwing.

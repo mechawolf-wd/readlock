@@ -72,6 +72,20 @@ class UserModel {
   @JsonKey(defaultValue: 0)
   final int nightShiftLevel;
 
+  // * Night Shift schedule (Apple-style daily window). Default off; when
+  // enabled the auto-applier in NightShiftScheduleService flips the
+  // warmth level on/off at the window edges. Stored as minutes since
+  // midnight so a 19:00..06:00 window round-trips without timezone
+  // baggage.
+  @JsonKey(defaultValue: true)
+  final bool nightShiftScheduleEnabled;
+
+  @JsonKey(defaultValue: 1140)
+  final int nightShiftScheduleFromMinutes;
+
+  @JsonKey(defaultValue: 360)
+  final int nightShiftScheduleToMinutes;
+
   @JsonKey(defaultValue: 'Sparrow')
   final String birdName;
 
@@ -129,6 +143,9 @@ class UserModel {
     this.readingColumn = 'narrow',
     this.rsvpWordsPerMinute = 300,
     this.nightShiftLevel = 0,
+    this.nightShiftScheduleEnabled = true,
+    this.nightShiftScheduleFromMinutes = 1140,
+    this.nightShiftScheduleToMinutes = 360,
     this.birdName = 'Sparrow',
     this.lastOpenedCourseId,
     this.purchasedCourses = const <String>[],
@@ -175,6 +192,9 @@ class UserModel {
     String? readingColumn,
     int? rsvpWordsPerMinute,
     int? nightShiftLevel,
+    bool? nightShiftScheduleEnabled,
+    int? nightShiftScheduleFromMinutes,
+    int? nightShiftScheduleToMinutes,
     String? birdName,
     String? lastOpenedCourseId,
     List<String>? purchasedCourses,
@@ -203,6 +223,12 @@ class UserModel {
       readingColumn: readingColumn ?? this.readingColumn,
       rsvpWordsPerMinute: rsvpWordsPerMinute ?? this.rsvpWordsPerMinute,
       nightShiftLevel: nightShiftLevel ?? this.nightShiftLevel,
+      nightShiftScheduleEnabled:
+          nightShiftScheduleEnabled ?? this.nightShiftScheduleEnabled,
+      nightShiftScheduleFromMinutes:
+          nightShiftScheduleFromMinutes ?? this.nightShiftScheduleFromMinutes,
+      nightShiftScheduleToMinutes:
+          nightShiftScheduleToMinutes ?? this.nightShiftScheduleToMinutes,
       birdName: birdName ?? this.birdName,
       lastOpenedCourseId: lastOpenedCourseId ?? this.lastOpenedCourseId,
       purchasedCourses: purchasedCourses ?? this.purchasedCourses,

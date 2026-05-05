@@ -17,6 +17,10 @@ class RLStarfieldButton extends StatelessWidget {
   final Color color;
   final VoidCallback? onTap;
   final EdgeInsets padding;
+  // Override the default tint alpha so call sites that want more of the
+  // starfield to read through (e.g. passive stat tiles) can dial it down
+  // without forking the widget. Defaults to the CTA-strength tint.
+  final double tintAlpha;
 
   const RLStarfieldButton({
     super.key,
@@ -27,11 +31,12 @@ class RLStarfieldButton extends StatelessWidget {
       vertical: RLDS.spacing16,
       horizontal: RLDS.spacing24,
     ),
+    this.tintAlpha = RL_STARFIELD_BUTTON_TINT_ALPHA,
   });
 
   @override
   Widget build(BuildContext context) {
-    final Color tintColor = color.withValues(alpha: RL_STARFIELD_BUTTON_TINT_ALPHA);
+    final Color tintColor = color.withValues(alpha: tintAlpha);
 
     return GestureDetector(
       onTap: onTap,

@@ -24,6 +24,7 @@ import 'package:readlock/utility_widgets/text_animation/RLTypewriterText.dart';
 import 'package:readlock/services/auth/AuthService.dart';
 import 'package:readlock/services/auth/DisposableEmailDomains.dart';
 import 'package:readlock/services/auth/UserService.dart';
+import 'package:readlock/services/feedback/HapticsService.dart';
 import 'package:readlock/services/feedback/SoundService.dart';
 
 // * Configuration for the login sheet.
@@ -77,20 +78,38 @@ class LoginBottomSheet {
   // button on the login form. Reset on app restart, never persisted.
   static bool isDevBypassed = false;
 
+  // Tracks whether a login sheet is currently mounted on the navigator so
+  // overlapping callers (the auth-listener auto-show + the explicit calls
+  // in ProfileScreen / VerifyEmailScreen / AccountBottomSheet) can't
+  // present two stacked sheets after a sign-out.
+  static bool isCurrentlyVisible = false;
+
   // Returns the bottom-sheet future so callers can await dismissal (e.g. the
   // main navigation needs to know when it can show the sheet again).
   static Future<void> show(
     BuildContext context, {
     LoginSheetConfig config = const LoginSheetConfig(),
-  }) {
-    return RLBottomSheet.show(
-      context,
-      child: LoginSheet(config: config),
-      isDismissible: config.isReauthMode,
-      enableDrag: config.isReauthMode,
-      showGrabber: false,
-      backgroundColor: RLDS.backgroundLight,
-    );
+  }) async {
+    final bool alreadyOnScreen = isCurrentlyVisible;
+
+    if (alreadyOnScreen) {
+      return;
+    }
+
+    isCurrentlyVisible = true;
+
+    try {
+      await RLBottomSheet.show(
+        context,
+        child: LoginSheet(config: config),
+        isDismissible: config.isReauthMode,
+        enableDrag: config.isReauthMode,
+        showGrabber: false,
+        backgroundColor: RLDS.backgroundLight,
+      );
+    } finally {
+      isCurrentlyVisible = false;
+    }
   }
 }
 
@@ -155,6 +174,9 @@ class LoginSheetState extends State<LoginSheet> {
   // * Email / password submit (handles sign-in, sign-up, and reauth)
 
   Future<void> handleEmailPasswordSubmit() async {
+    HapticsService.lightImpact();
+    SoundService.playRandomTextClick();
+
     final String email = emailController.text.trim();
     final String password = passwordController.text;
 

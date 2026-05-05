@@ -4,6 +4,7 @@ import 'package:readlock/constants/FirebaseConfig.dart';
 import 'package:readlock/models/UserModel.dart';
 import 'package:readlock/services/LoggingService.dart';
 import 'package:readlock/services/auth/AuthService.dart';
+import 'package:readlock/services/purchases/PurchaseNotifiers.dart';
 
 // Preference field names stored under /users/{id}.
 // Matches UserModel.toJson so reads round-trip cleanly.
@@ -21,6 +22,9 @@ class UserPreferenceField {
   static const String READING_COLUMN = 'readingColumn';
   static const String RSVP_WORDS_PER_MINUTE = 'rsvpWordsPerMinute';
   static const String NIGHT_SHIFT_LEVEL = 'nightShiftLevel';
+  static const String NIGHT_SHIFT_SCHEDULE_ENABLED = 'nightShiftScheduleEnabled';
+  static const String NIGHT_SHIFT_SCHEDULE_FROM_MINUTES = 'nightShiftScheduleFromMinutes';
+  static const String NIGHT_SHIFT_SCHEDULE_TO_MINUTES = 'nightShiftScheduleToMinutes';
   static const String BIRD_NAME = 'birdName';
   static const String LAST_OPENED_COURSE_ID = 'lastOpenedCourseId';
   static const String PURCHASED_COURSES = 'purchasedCourses';
@@ -141,6 +145,9 @@ class UserService {
         UserPreferenceField.READING_COLUMN: 'narrow',
         UserPreferenceField.RSVP_WORDS_PER_MINUTE: 300,
         UserPreferenceField.NIGHT_SHIFT_LEVEL: 0,
+        UserPreferenceField.NIGHT_SHIFT_SCHEDULE_ENABLED: true,
+        UserPreferenceField.NIGHT_SHIFT_SCHEDULE_FROM_MINUTES: 1140,
+        UserPreferenceField.NIGHT_SHIFT_SCHEDULE_TO_MINUTES: 360,
         UserPreferenceField.BIRD_NAME: 'Sparrow',
         UserPreferenceField.LAST_OPENED_COURSE_ID: null,
         UserPreferenceField.PURCHASED_COURSES: <String>[],
@@ -224,6 +231,30 @@ class UserService {
     );
   }
 
+  static Future<bool> updateNightShiftScheduleEnabled(bool enabled) {
+    return updateField(
+      UserPreferenceField.NIGHT_SHIFT_SCHEDULE_ENABLED,
+      enabled,
+      'updateNightShiftScheduleEnabled',
+    );
+  }
+
+  static Future<bool> updateNightShiftScheduleFromMinutes(int minutes) {
+    return updateField(
+      UserPreferenceField.NIGHT_SHIFT_SCHEDULE_FROM_MINUTES,
+      minutes,
+      'updateNightShiftScheduleFromMinutes',
+    );
+  }
+
+  static Future<bool> updateNightShiftScheduleToMinutes(int minutes) {
+    return updateField(
+      UserPreferenceField.NIGHT_SHIFT_SCHEDULE_TO_MINUTES,
+      minutes,
+      'updateNightShiftScheduleToMinutes',
+    );
+  }
+
   static Future<bool> updateBirdName(String birdName) {
     return updateField(UserPreferenceField.BIRD_NAME, birdName, 'updateBirdName');
   }
@@ -296,6 +327,11 @@ class UserService {
       logger.info('incrementTimeSpentReading', 'No user logged in');
       return false;
     }
+
+    // Optimistic bump so subscribers (the bookshelf reading-time counter)
+    // see the new total the moment a session ends, without waiting for the
+    // Firestore round-trip below.
+    timeSpentReadingNotifier.value = timeSpentReadingNotifier.value + seconds;
 
     try {
       await userDoc(userId).update({

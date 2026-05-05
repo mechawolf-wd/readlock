@@ -91,8 +91,12 @@ class BookshelfScreenState extends State<BookshelfScreen> {
   // bottom-of-list CTA. Tinted with success green to telegraph "fetch
   // more" rather than the surprise-me blue.
   static final BoxDecoration loadMoreGlowDecoration = RLDS.glowDecoration(
-    color: RLDS.glass05(RLDS.success),
+    color: RLDS.glass05(RLDS.white),
   );
+
+  // Square box the bird is rendered into. Picked so the row aligns to
+  // the same visual height as the bookshelf's title cards.
+  static const double readingTimeBirdPreviewSize = 56.0;
 
   @override
   void initState() {
@@ -368,6 +372,10 @@ class BookshelfScreenState extends State<BookshelfScreen> {
     final bool shouldShowFilterEmptyState = hasActiveFilters && filteredCourses.isEmpty;
 
     final List<Widget> listChildren = [
+      ReadingTimeCounter(),
+
+      const Spacing.height(RLDS.spacing16),
+
       OwnedHeadingRow(),
 
       const Spacing.height(RLDS.spacing12),
@@ -418,6 +426,91 @@ class BookshelfScreenState extends State<BookshelfScreen> {
     );
   }
 
+  // Total reading time stat tile. Mirrors HomeScreen.RandomLessonSection
+  // visually (starfield surface, info-blue tint, soft halo) so the two
+  // tabs share a stat-row vocabulary. Subscribes to timeSpentReadingNotifier
+  // so a session committed in CourseContentViewer.dispose updates the
+  // counter the moment the reader returns to the bookshelf, even before
+  // the Firestore write completes.
+  Widget ReadingTimeCounter() {
+    return ValueListenableBuilder<int>(
+      valueListenable: timeSpentReadingNotifier,
+      builder: ReadingTimeCounterBuilder,
+    );
+  }
+
+  Widget ReadingTimeCounterBuilder(
+    BuildContext context,
+    int totalSeconds,
+    Widget? unusedChild,
+  ) {
+    final String stopwatchLabel = formatStopwatchReadout(totalSeconds);
+    // Subheader uses bodyMedium (JetBrains Mono) so the small caption
+    // above the readout shares the digital-monospace vocabulary the
+    // stopwatch digits speak.
+    final Widget readingTimeSubheader = RLTypography.bodyMedium(
+      RLUIStrings.BOOKSHELF_READING_TIME_LABEL,
+      color: RLDS.textSecondary,
+    );
+    final Widget readingTimeReadout = RLTypography.headingMedium(stopwatchLabel);
+
+    final Widget readingTimeStack = Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [readingTimeSubheader, const Spacing.height(RLDS.spacing4), readingTimeReadout],
+    );
+
+    final Widget counterCard = RLLunarBlur(
+      borderRadius: RLDS.borderRadiusSmall,
+      padding: const EdgeInsets.symmetric(vertical: RLDS.spacing12, horizontal: RLDS.spacing16),
+      child: Row(
+        children: [
+          Expanded(child: readingTimeStack),
+
+          const Spacing.width(RLDS.spacing16),
+
+          ReadingTimeBird(),
+        ],
+      ),
+    );
+
+    return Container(child: counterCard);
+  }
+
+  // The reader's profile bird, rendered at the inline preview size used
+  // by the stopwatch tile. Listens to selectedBirdNotifier so changing
+  // birds in Settings updates the counter live.
+  Widget ReadingTimeBird() {
+    return ValueListenableBuilder<BirdOption>(
+      valueListenable: selectedBirdNotifier,
+      builder: ReadingTimeBirdBuilder,
+    );
+  }
+
+  Widget ReadingTimeBirdBuilder(BuildContext context, BirdOption bird, Widget? unusedChild) {
+    return SizedBox(
+      width: readingTimeBirdPreviewSize,
+      height: readingTimeBirdPreviewSize,
+      child: BirdAnimationSprite(bird: bird, previewSize: readingTimeBirdPreviewSize),
+    );
+  }
+
+  // Stopwatch readout: HH:MM:SS, zero-padded. Always rendered, even at
+  // zero, so the tile reads as a fresh stopwatch waiting to start
+  // instead of an empty card.
+  String formatStopwatchReadout(int totalSeconds) {
+    final int safeSeconds = totalSeconds < 0 ? 0 : totalSeconds;
+    final int hours = safeSeconds ~/ 3600;
+    final int minutes = (safeSeconds % 3600) ~/ 60;
+    final int seconds = safeSeconds % 60;
+
+    final String hoursLabel = hours.toString().padLeft(2, '0');
+    final String minutesLabel = minutes.toString().padLeft(2, '0');
+    final String secondsLabel = seconds.toString().padLeft(2, '0');
+
+    return '$hoursLabel:$minutesLabel:$secondsLabel';
+  }
+
   // Section heading. The filter affordance moved out of this row when the
   // panel switched to the floating bottom layout — the panel itself is
   // always visible above the nav, so the heading is just a label now.
@@ -466,11 +559,7 @@ class BookshelfScreenState extends State<BookshelfScreen> {
       child: RLLunarBlur(
         borderRadius: BorderRadius.circular(clearFiltersChipDiameter / 2),
         padding: const EdgeInsets.all(RLDS.spacing8),
-        child: const Icon(
-          Pixel.close,
-          color: RLDS.textSecondary,
-          size: RLDS.iconMedium,
-        ),
+        child: const Icon(Pixel.close, color: RLDS.textSecondary, size: RLDS.iconMedium),
       ),
     );
   }
@@ -680,6 +769,7 @@ class BookshelfScreenState extends State<BookshelfScreen> {
       child: Container(
         decoration: loadMoreGlowDecoration,
         child: RLButton.secondary(
+          color: RLDS.white,
           label: RLUIStrings.BOOKSHELF_LOAD_MORE_LABEL,
           onTap: handleLoadMoreTap,
         ),

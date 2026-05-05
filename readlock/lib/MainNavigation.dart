@@ -95,14 +95,17 @@ class MainNavigationState extends State<MainNavigation> {
     });
   }
 
-  // The app runs unauthenticated by default — first-launch with no signed-in
-  // user lands the reader straight on Home, and the login sheet only appears
-  // when explicitly requested (Settings, Log out and the Account-deletion
-  // re-auth flow each call LoginBottomSheet.show themselves).
+  // Auth-state gate. On the user channel:
+  //   - User present: hydrate purchases + preferences so every screen reads
+  //     correct wallet / reading-preference state without refetching.
+  //   - User absent: wipe local user state and auto-present the login sheet
+  //     so the app is never browsable while signed out. Covers both first
+  //     launch (the auth stream emits the initial null) and any mid-session
+  //     sign-out / token expiry / server-side disable.
   //
-  // We still listen to auth state purely to hydrate the purchase + preference
-  // notifiers the moment a real user appears, so every screen reads correct
-  // wallet/preference state without refetching.
+  // The dev-skip button on the login sheet flips isDevBypassed to true so
+  // local testing can dismiss the sheet without authenticating; we honour
+  // that flag here so subsequent rebuilds don't immediately re-present.
   void handleAuthStateChange(User? user) {
     final bool hasUser = user != null;
 
@@ -119,6 +122,29 @@ class MainNavigationState extends State<MainNavigation> {
     wipeLocalUserSessionState();
 
     LoginBottomSheet.isDevBypassed = false;
+
+    presentLoginSheetWhenSignedOut();
+  }
+
+  // Schedules the login sheet for the next frame so the show call lands
+  // after the build that's currently in flight (and so the Navigator is
+  // guaranteed to be mounted on first launch when the auth stream emits
+  // its initial null synchronously). The dedup guard inside
+  // LoginBottomSheet.show keeps overlapping callers idempotent.
+  void presentLoginSheetWhenSignedOut() {
+    WidgetsBinding.instance.addPostFrameCallback((Duration _) {
+      if (!mounted) {
+        return;
+      }
+
+      final bool isBypassed = LoginBottomSheet.isDevBypassed;
+
+      if (isBypassed) {
+        return;
+      }
+
+      LoginBottomSheet.show(context);
+    });
   }
 
   Future<void> hydratePurchaseStateForCurrentUser() async {

@@ -31,6 +31,10 @@ void hydrateUserPreferenceNotifiersFromUser(UserModel user) {
 
   nightShiftLevelNotifier.value = user.nightShiftLevel;
 
+  nightShiftScheduleEnabledNotifier.value = user.nightShiftScheduleEnabled;
+  nightShiftScheduleFromMinutesNotifier.value = user.nightShiftScheduleFromMinutes;
+  nightShiftScheduleToMinutesNotifier.value = user.nightShiftScheduleToMinutes;
+
   selectedBirdNotifier.value = birdOptionFromName(user.birdName);
 
   justifiedReadingEnabledNotifier.value = user.justifiedReading;
@@ -59,6 +63,10 @@ void resetUserPreferenceNotifiers() {
   rsvpWordsPerMinuteNotifier.value = RSVP_DEFAULT_WORDS_PER_MINUTE;
 
   nightShiftLevelNotifier.value = NIGHT_SHIFT_OFF_LEVEL;
+
+  nightShiftScheduleEnabledNotifier.value = false;
+  nightShiftScheduleFromMinutesNotifier.value = NIGHT_SHIFT_SCHEDULE_DEFAULT_FROM_MINUTES;
+  nightShiftScheduleToMinutesNotifier.value = NIGHT_SHIFT_SCHEDULE_DEFAULT_TO_MINUTES;
 
   selectedBirdNotifier.value = BIRD_OPTIONS.first;
 
