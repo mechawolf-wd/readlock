@@ -16,6 +16,7 @@ import 'package:readlock/design_system/RLCard.dart';
 import 'package:readlock/design_system/RLFadeSwitcher.dart';
 import 'package:readlock/design_system/RLLoadingIndicator.dart';
 import 'package:readlock/design_system/RLLunarBlur.dart';
+import 'package:readlock/design_system/RLStarfieldButton.dart';
 import 'package:readlock/design_system/RLToast.dart';
 import 'package:readlock/design_system/RLUtility.dart';
 import 'package:readlock/constants/RLTypography.dart';
@@ -140,20 +141,25 @@ class HomeScreenState extends State<HomeScreen> {
     final JSONMap randomCourse = unownedCourses[randomIndex];
     final String randomCourseId = randomCourse['course-id'] as String;
 
-    SoundService.playPurchased();
+    SoundService.playSuccess();
     navigateToCourse(randomCourseId);
   }
 
-  static final Widget ChevronRightIcon = const Icon(
-    Pixel.chevronright,
-    color: RLDS.textSecondary,
+  // Painted white so the icon reads against the tinted starfield surface
+  // RandomLessonSection uses (RLStarfieldButton with RLDS.info tint).
+  static final Widget ShuffleIcon = const Icon(
+    Pixel.shuffle,
+    color: RLDS.white,
     size: RLDS.iconLarge,
   );
 
-  static final Widget ShuffleIcon = const Icon(
-    Pixel.shuffle,
-    color: RLDS.info,
-    size: RLDS.iconLarge,
+  // Soft blue halo behind the surprise-me button so the CTA reads as the
+  // home tab's primary affordance. Alpha kept low so it bloom-glows
+  // against the starfield without bleeding into surrounding content.
+  static final BoxDecoration surpriseMeGlowDecoration = RLDS.glowDecoration(
+    color: RLDS.glass40(RLDS.info),
+    blurRadius: 12,
+    spreadRadius: 1,
   );
 
   @override
@@ -212,7 +218,7 @@ class HomeScreenState extends State<HomeScreen> {
     ], crossAxisAlignment: CrossAxisAlignment.stretch);
   }
 
-  // "Reading now…" card — pinned above the Surprise Me row when the
+  // "Reading now…" card, pinned above the Surprise Me row when the
   // reader has tapped a roadmap node before. Re-builds reactively as the
   // global lastOpenedCourseIdNotifier changes, so popping back from a
   // course refreshes this card without HomeScreen having to refetch.
@@ -354,20 +360,29 @@ class HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  // Surprise-me row, painted on the same starfield surface as the Login
+  // and Create-my-nest auth CTAs so the "go somewhere new" feeling reads
+  // consistently across surfaces. Uses RLDS.info for the tint to keep the
+  // shuffle row in the same blue tonal family it had before the redesign.
   Widget RandomLessonSection() {
-    return RLCard.subtle(
-      padding: const EdgeInsets.all(RLDS.spacing16),
+    final Widget surpriseMeLabel = RLTypography.bodyLarge(
+      RLUIStrings.SURPRISE_ME_LABEL,
+      color: RLDS.white,
+    );
+
+    final Widget surpriseMeButton = RLStarfieldButton(
+      color: RLDS.info,
       onTap: handleRandomBookTap,
       child: Div.row([
         ShuffleIcon,
 
         const Spacing.width(RLDS.spacing12),
 
-        Expanded(child: RLTypography.bodyLarge(RLUIStrings.SURPRISE_ME_LABEL)),
-
-        ChevronRightIcon,
+        Expanded(child: surpriseMeLabel),
       ], crossAxisAlignment: CrossAxisAlignment.center),
     );
+
+    return Container(decoration: surpriseMeGlowDecoration, child: surpriseMeButton);
   }
 
   // Top-N courses by lifetime purchases, rendered as the same horizontal

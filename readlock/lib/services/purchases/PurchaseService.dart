@@ -99,6 +99,10 @@ class PurchaseService {
     // library mutations above.
     FirebaseCourseService.incrementTimesPurchased(courseId);
 
+    // Surface the bookshelf-tab red dot until the reader actually opens the
+    // bookshelf. MainNavigation clears this flag on tab activation.
+    bookshelfHasUnseenPurchaseNotifier.value = true;
+
     return PurchaseResult.success;
   }
 

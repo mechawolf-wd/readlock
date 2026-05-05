@@ -18,6 +18,12 @@ final ValueNotifier<Set<String>> purchasedCoursesNotifier = ValueNotifier<Set<St
   const <String>{},
 );
 
+// Flips true on a successful course purchase and back to false the moment
+// the reader lands on the bookshelf tab. Drives the red dot on the
+// bookshelf nav icon so a fresh unlock is visibly waiting on the shelf
+// without forcing the reader to remember they just bought one.
+final ValueNotifier<bool> bookshelfHasUnseenPurchaseNotifier = ValueNotifier<bool>(false);
+
 void hydratePurchaseStateFromUser(UserModel user) {
   userBalanceNotifier.value = user.balance;
   purchasedCoursesNotifier.value = Set<String>.from(user.purchasedCourses);
@@ -26,4 +32,5 @@ void hydratePurchaseStateFromUser(UserModel user) {
 void resetPurchaseState() {
   userBalanceNotifier.value = 0;
   purchasedCoursesNotifier.value = const <String>{};
+  bookshelfHasUnseenPurchaseNotifier.value = false;
 }

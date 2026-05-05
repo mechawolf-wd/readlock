@@ -40,7 +40,7 @@ class RLBalancePill extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const RLFeatherIcon(size: RLDS.iconLarge),
+          const RLFeatherIcon(size: RLDS.iconMedium),
 
           const Spacing.width(RLDS.spacing4),
 

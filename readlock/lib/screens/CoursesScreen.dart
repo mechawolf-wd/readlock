@@ -15,6 +15,7 @@ import 'package:readlock/design_system/RLButton.dart';
 import 'package:readlock/design_system/RLFadeSwitcher.dart';
 import 'package:readlock/design_system/RLLoadingIndicator.dart';
 import 'package:readlock/design_system/RLCourseFilterPanel.dart';
+import 'package:readlock/design_system/RLLunarBlur.dart';
 import 'package:readlock/design_system/RLToast.dart';
 import 'package:readlock/constants/RLCourseGenres.dart';
 import 'package:readlock/constants/RLTypography.dart';
@@ -22,10 +23,14 @@ import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/constants/RLUIStrings.dart';
 import 'package:readlock/constants/DartAliases.dart';
 import 'package:readlock/services/ConnectivityService.dart';
+import 'package:readlock/services/feedback/HapticsService.dart';
 import 'package:readlock/services/feedback/SoundService.dart';
 import 'package:readlock/services/purchases/PurchaseNotifiers.dart';
 import 'package:readlock/MainNavigation.dart';
+import 'package:readlock/screens/profile/BirdPicker.dart';
 import 'package:readlock/utility_widgets/text_animation/RLTypewriterText.dart';
+
+import 'package:pixelarticons/pixel.dart';
 
 // * Search tuning — debounce keeps us from hitting Firestore on every keystroke.
 const Duration SEARCH_DEBOUNCE_DURATION = Duration(milliseconds: 350);
@@ -68,6 +73,13 @@ class CoursesScreenState extends State<CoursesScreen> {
   // heading's ValueKey so a fresh activation remounts the widget and
   // re-runs its character-by-character reveal.
   int titleAnimationVersion = 0;
+
+  // Soft green halo behind the Load more button so it reads as the
+  // bottom-of-list CTA. Tinted with success green to telegraph "fetch
+  // more" rather than the surprise-me blue.
+  static final BoxDecoration loadMoreGlowDecoration = RLDS.glowDecoration(
+    color: RLDS.glass05(RLDS.success),
+  );
 
   @override
   void initState() {
@@ -196,10 +208,12 @@ class CoursesScreenState extends State<CoursesScreen> {
 
     return availableCourses.where((course) {
       final String courseTitle = (course['title'] as String? ?? '').toLowerCase();
-      final bool titleMatches = hasNoQuery || courseTitle.contains(query);
+      final String courseAuthor = (course['author'] as String? ?? '').toLowerCase();
+      final bool textMatches =
+          hasNoQuery || courseTitle.contains(query) || courseAuthor.contains(query);
       final bool genreMatches = hasNoGenres || courseMatchesAnySelectedGenre(course);
 
-      return titleMatches && genreMatches;
+      return textMatches && genreMatches;
     }).toList();
   }
 
@@ -236,6 +250,25 @@ class CoursesScreenState extends State<CoursesScreen> {
     }
 
     return false;
+  }
+
+  // Wipes the search query and every selected genre chip in one tap, also
+  // tearing down the in-flight remote search so a stale result can't land
+  // after the reset. Mirrors the close-clears-filters affordance the
+  // bookshelf uses, except here the panel itself is always mounted, so
+  // the reset is exposed as its own floating button above the panel.
+  void handleClearFiltersTap() {
+    HapticsService.lightImpact();
+    SoundService.playRandomTextClick();
+    searchDebounce?.cancel();
+    searchController.clear();
+
+    setState(() {
+      searchQuery = '';
+      selectedGenres.clear();
+      remoteSearchResults = [];
+      isRemoteSearching = false;
+    });
   }
 
   void handleGenreToggled(String genre) {
@@ -375,7 +408,7 @@ class CoursesScreenState extends State<CoursesScreen> {
             children: [
               Positioned.fill(child: ResultsArea()),
 
-              Positioned(left: 0, right: 0, bottom: 0, child: FloatingFilterPanel()),
+              Positioned(left: 0, right: 0, bottom: 0, child: FilterPanelWithReset()),
             ],
           ),
         ),
@@ -413,6 +446,51 @@ class CoursesScreenState extends State<CoursesScreen> {
       searchPlaceholder: RLUIStrings.SEARCH_PLACEHOLDER,
     );
   }
+
+  // The filter panel plus an optional reset chip floating just above its
+  // top-right corner. The chip only mounts when at least one filter is
+  // active, so the panel reads clean by default and the X only appears
+  // when there is something to clear.
+  Widget FilterPanelWithReset() {
+    final bool hasActiveFilters =
+        selectedGenres.isNotEmpty || searchQuery.trim().isNotEmpty;
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        RenderIf.condition(hasActiveFilters, ClearFiltersChip()),
+
+        RenderIf.condition(hasActiveFilters, const Spacing.height(RLDS.spacing8)),
+
+        FloatingFilterPanel(),
+      ],
+    );
+  }
+
+  // Frosted X chip that wipes the active filters. Sized to a comfortable
+  // tap target; uses the same LunarBlur surface as the panel below so the
+  // two read as part of one stack.
+  Widget ClearFiltersChip() {
+    return GestureDetector(
+      onTap: handleClearFiltersTap,
+      behavior: HitTestBehavior.opaque,
+      child: RLLunarBlur(
+        borderRadius: BorderRadius.circular(clearFiltersChipDiameter / 2),
+        padding: const EdgeInsets.all(RLDS.spacing8),
+        child: const Icon(
+          Pixel.close,
+          color: RLDS.textSecondary,
+          size: RLDS.iconMedium,
+        ),
+      ),
+    );
+  }
+
+  // Diameter of the floating reset chip — matches a 4-pixel-rule tap
+  // target while staying small enough to read as an affordance, not a
+  // button.
+  static const double clearFiltersChipDiameter = 40.0;
 
   Widget ResultsArea() {
     final bool hasNoQuery = searchQuery.trim().isEmpty;
@@ -478,9 +556,12 @@ class CoursesScreenState extends State<CoursesScreen> {
       return const Center(child: RLLoadingIndicator.text());
     }
 
-    return RLButton.secondary(
-      label: RLUIStrings.BOOKSHELF_LOAD_MORE_LABEL,
-      onTap: handleLoadMoreTap,
+    return Container(
+      decoration: loadMoreGlowDecoration,
+      child: RLButton.secondary(
+        label: RLUIStrings.BOOKSHELF_LOAD_MORE_LABEL,
+        onTap: handleLoadMoreTap,
+      ),
     );
   }
 
@@ -517,13 +598,42 @@ class CoursesScreenState extends State<CoursesScreen> {
     }).toList();
   }
 
+  // Same bird + chirp caption the bookshelf shows when its own filter
+  // narrows to nothing. Anchored to the top of the results area so it
+  // mirrors the bookshelf's FilterEmptyBird placement and the two empty
+  // surfaces feel like one family.
   Widget EmptyStateMessage() {
-    return Center(
-      child: RLTypography.headingMedium(
-        RLUIStrings.NO_COURSES_MESSAGE,
-        color: RLDS.textSecondary,
-        textAlign: TextAlign.center,
+    return Padding(
+      padding: const EdgeInsets.only(top: RLDS.spacing40),
+      child: Align(
+        alignment: Alignment.topCenter,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            CoursesBird(),
+
+            const Spacing.height(RLDS.spacing16),
+
+            RLTypography.bodyMedium(
+              RLUIStrings.BOOKSHELF_FILTER_EMPTY_MESSAGE,
+              color: RLDS.textSecondary,
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
       ),
+    );
+  }
+
+  // Reflects whichever bird the reader has picked, same source the
+  // bookshelf empty state reads from so a profile change updates both
+  // surfaces in lockstep.
+  Widget CoursesBird() {
+    return ValueListenableBuilder<BirdOption>(
+      valueListenable: selectedBirdNotifier,
+      builder: (BuildContext context, BirdOption bird, Widget? _) {
+        return BirdAnimationSprite(bird: bird);
+      },
     );
   }
 }

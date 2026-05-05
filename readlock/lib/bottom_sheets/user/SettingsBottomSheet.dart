@@ -20,7 +20,11 @@ class SettingsContent extends StatelessWidget {
   const SettingsContent({super.key});
 
   // * Heading icon — matches the Account sheet's icon-beside-title pattern.
-  static final Widget SettingsIcon = const Icon(Pixel.sliders, color: RLDS.info, size: RLDS.iconMedium);
+  static final Widget SettingsIcon = const Icon(
+    Pixel.menu,
+    color: RLDS.info,
+    size: RLDS.iconXLarge,
+  );
 
   @override
   Widget build(BuildContext context) {

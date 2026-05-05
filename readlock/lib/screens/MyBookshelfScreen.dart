@@ -4,13 +4,13 @@
 // of BOOKSHELF_PAGE_SIZE via a Load more button so the shelf doesn't
 // eagerly render every owned course.
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:readlock/design_system/RLCourseBookImage.dart';
 import 'package:readlock/services/feedback/HapticsService.dart';
 import 'package:readlock/course_screens/CourseRoadmapScreen.dart';
 import 'package:readlock/course_screens/data/CourseData.dart';
 import 'package:readlock/design_system/RLUtility.dart';
-import 'package:readlock/design_system/RLBalancePill.dart';
 import 'package:readlock/design_system/RLBookListCard.dart';
 import 'package:readlock/design_system/RLButton.dart';
 import 'package:readlock/design_system/RLCourseFilterPanel.dart';
@@ -41,6 +41,11 @@ import 'package:pixelarticons/pixel.dart';
 // Tapping Load more reveals another BOOKSHELF_PAGE_SIZE courses.
 const int BOOKSHELF_PAGE_SIZE = 5;
 
+// Bottom inset on the saved-courses scroll view so the last card can clear
+// the floating filter pane before bottoming out, mirroring the store's
+// STORE_LIST_FILTER_OVERLAY_INSET.
+const double BOOKSHELF_FILTER_OVERLAY_INSET = 148.0;
+
 class BookshelfScreen extends StatefulWidget {
   const BookshelfScreen({super.key});
 
@@ -52,7 +57,7 @@ class BookshelfScreenState extends State<BookshelfScreen> {
   static final Widget SettingsIcon = const Icon(
     Pixel.menu,
     color: RLDS.textSecondary,
-    size: RLDS.iconLarge,
+    size: RLDS.iconXLarge,
   );
 
   JSONList savedCourses = [];
@@ -66,7 +71,6 @@ class BookshelfScreenState extends State<BookshelfScreen> {
   final TextEditingController filterSearchController = TextEditingController();
   Set<String> selectedFilterGenres = <String>{};
   String filterSearchQuery = '';
-  bool isFilterPanelOpen = false;
 
   // Bumped every time this tab becomes active. Used as the typewriter
   // heading's ValueKey so a fresh activation remounts the widget and
@@ -78,6 +82,17 @@ class BookshelfScreenState extends State<BookshelfScreen> {
   // re-fire handlePurchasedCoursesChanged below and recurse. The flag
   // short-circuits the listener while a fetch is already in flight.
   bool isFetchingSavedCourses = false;
+
+  // Same idea for the lighter listener-driven re-fetch path. Keeps
+  // back-to-back purchase events from stacking up parallel queries.
+  bool isRefreshingSavedCoursesFromNotifier = false;
+
+  // Soft green halo behind the Load more button so it reads as the
+  // bottom-of-list CTA. Tinted with success green to telegraph "fetch
+  // more" rather than the surprise-me blue.
+  static final BoxDecoration loadMoreGlowDecoration = RLDS.glowDecoration(
+    color: RLDS.glass05(RLDS.success),
+  );
 
   @override
   void initState() {
@@ -98,13 +113,6 @@ class BookshelfScreenState extends State<BookshelfScreen> {
   // * Filter handlers — local state only, no Firestore round-trip. The
   // saved-courses list is rendered through getFilteredSavedCourses() so
   // a chip toggle or query change just rebuilds with a fresh slice.
-
-  void handleFilterToggleTap() {
-    HapticsService.lightImpact();
-    setState(() {
-      isFilterPanelOpen = !isFilterPanelOpen;
-    });
-  }
 
   void handleFilterGenreToggled(String genre) {
     setState(() {
@@ -188,11 +196,14 @@ class BookshelfScreenState extends State<BookshelfScreen> {
   }
 
   // Fired by PurchaseService.purchaseCourse the moment a course unlock
-  // succeeds. Re-pulls /users/{id}.purchasedCourses so the bookshelf
-  // shows the freshly-owned course as soon as the reader switches back
-  // to this tab, instead of waiting for an app restart.
+  // succeeds. Refreshes the local list from purchasedCoursesNotifier
+  // (which PurchaseService just flipped optimistically) without re-reading
+  // the user profile. Re-reading the profile here used to race the
+  // in-flight Firestore writes and overwrite the optimistic notifier with
+  // the stale set, which made every screen think the purchase had been
+  // undone.
   void handlePurchasedCoursesChanged() {
-    fetchSavedCourses();
+    refreshSavedCoursesFromNotifier();
   }
 
   Future<void> fetchSavedCourses() async {
@@ -235,6 +246,36 @@ class BookshelfScreenState extends State<BookshelfScreen> {
     }
   }
 
+  // Listener-driven refresh used after a purchase. Reads owned IDs from
+  // the already-authoritative purchasedCoursesNotifier (no /users round
+  // trip) and pulls the matching course docs so the freshly-bought
+  // course appears on the shelf immediately.
+  Future<void> refreshSavedCoursesFromNotifier() async {
+    if (isRefreshingSavedCoursesFromNotifier) {
+      return;
+    }
+
+    isRefreshingSavedCoursesFromNotifier = true;
+
+    try {
+      final List<String> ownedIds = purchasedCoursesNotifier.value.toList();
+      final JSONList courses = await CourseDataService.fetchCoursesByIds(ownedIds);
+
+      if (!mounted) {
+        return;
+      }
+
+      setState(() {
+        savedCourses = courses;
+        isBookshelfLoading = false;
+      });
+    } on Exception {
+      // Soft-fail: the next initState or tab activation re-fetches.
+    } finally {
+      isRefreshingSavedCoursesFromNotifier = false;
+    }
+  }
+
   void handleLoadMoreTap() {
     final int totalFilteredCount = getFilteredSavedCourses().length;
     final bool hasNothingMoreToLoad = visibleCoursesCount >= totalFilteredCount;
@@ -274,88 +315,180 @@ class BookshelfScreenState extends State<BookshelfScreen> {
       return const RLLoadingIndicator.bird(key: ValueKey('bookshelf-loading'));
     }
 
-    // The Bookshelf heading + settings icon always sits at the top once
-    // loading is done. The body below swaps between the saved-courses list
-    // and the empty-state bird; the header never disappears.
+    // SafeArea(bottom: false) lets the starfield paint under the nav, but
+    // the bottom-pinned filter pane would sit under it too. Mirror the
+    // CoursesScreen formula: device safe-area + nav-bar height becomes
+    // MediaQuery's bottom padding here, and adding it as the parent's
+    // bottom inset puts the floating panel exactly above the nav.
+    final double bottomInset = MediaQuery.of(context).padding.bottom;
+    final EdgeInsets contentPadding = EdgeInsets.fromLTRB(
+      RLDS.spacing24,
+      RLDS.spacing24,
+      RLDS.spacing24,
+      RLDS.spacing16 + bottomInset,
+    );
+
     return Padding(
       key: const ValueKey('bookshelf-content'),
-      padding: const EdgeInsets.all(RLDS.spacing24),
+      padding: contentPadding,
       child: Div.column([
         BookshelfHeaderWithSettings(),
 
         const Spacing.height(RLDS.spacing40),
 
-        Expanded(child: BookshelfBodyContent()),
+        Expanded(child: BookshelfBodyArea()),
       ], crossAxisAlignment: CrossAxisAlignment.stretch),
     );
   }
 
-  Widget BookshelfBodyContent() {
+  // The empty shelf collapses to just the bird greeting; the populated
+  // shelf renders the list with the same floating filter + reset chip
+  // CoursesScreen uses, so paging through your books and the store feels
+  // like one surface.
+  Widget BookshelfBodyArea() {
     final bool hasNoSavedCourses = savedCourses.isEmpty;
 
     if (hasNoSavedCourses) {
       return EmptyBookshelfMessage();
     }
 
-    return SavedCoursesList();
+    return Stack(
+      children: [
+        Positioned.fill(child: SavedCoursesList()),
+
+        Positioned(left: 0, right: 0, bottom: 0, child: FilterPanelWithReset()),
+      ],
+    );
   }
 
   Widget SavedCoursesList() {
+    final JSONList filteredCourses = getFilteredSavedCourses();
+    final bool hasActiveFilters =
+        selectedFilterGenres.isNotEmpty || filterSearchQuery.trim().isNotEmpty;
+    final bool shouldShowFilterEmptyState = hasActiveFilters && filteredCourses.isEmpty;
+
     final List<Widget> listChildren = [
       OwnedHeadingRow(),
 
-      RenderIf.condition(isFilterPanelOpen, const Spacing.height(RLDS.spacing12)),
-
-      RenderIf.condition(isFilterPanelOpen, FilterPanel()),
-
       const Spacing.height(RLDS.spacing12),
-
-      ...SavedCourseCards(),
-
-      LoadMoreSlot(),
     ];
 
+    // When the filter narrows the shelf to nothing, swap the cards + Load
+    // more block for the same bird used by the wholly-empty shelf so the
+    // reader sees a familiar "nothing here" cue instead of a dead Load
+    // more button. The floating filter still sits above the nav so they
+    // can clear it.
+    if (shouldShowFilterEmptyState) {
+      listChildren.add(FilterEmptyBird());
+    } else {
+      listChildren.addAll(SavedCourseCards());
+      listChildren.add(LoadMoreSlot());
+    }
+
     return SingleChildScrollView(
+      padding: const EdgeInsets.only(bottom: BOOKSHELF_FILTER_OVERLAY_INSET),
       child: Div.column(listChildren, crossAxisAlignment: CrossAxisAlignment.stretch),
     );
   }
 
-  // Section heading + filter affordance. Heading uses the same muted
-  // bodyMedium treatment as HomeScreen's "Reading now…" so the two
-  // surfaces feel like part of one family. The filter icon sits flush
-  // right; tapping it toggles the shared filter pane below.
+  // Bird + chirp caption shown when an active filter excludes every owned
+  // course. Mirrors the wholly-empty shelf treatment so the two empty
+  // surfaces feel like part of one family; the caption is filter-specific
+  // so the reader doesn't read it as "your shelf is empty".
+  Widget FilterEmptyBird() {
+    return Padding(
+      padding: const EdgeInsets.only(top: RLDS.spacing40),
+      child: Align(
+        alignment: Alignment.topCenter,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            BookshelfBird(),
+
+            const Spacing.height(RLDS.spacing16),
+
+            RLTypography.bodyMedium(
+              RLUIStrings.BOOKSHELF_FILTER_EMPTY_MESSAGE,
+              color: RLDS.textSecondary,
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // Section heading. The filter affordance moved out of this row when the
+  // panel switched to the floating bottom layout — the panel itself is
+  // always visible above the nav, so the heading is just a label now.
   Widget OwnedHeadingRow() {
-    final bool hasActiveFilters =
-        selectedFilterGenres.isNotEmpty || filterSearchQuery.trim().isNotEmpty;
-    final Color filterIconColor = hasActiveFilters ? RLDS.primary : RLDS.textSecondary;
-
-    final Widget filterIcon = Icon(Pixel.sliders, color: filterIconColor, size: RLDS.iconLarge);
-
     return Div.row([
       RLTypography.bodyMedium(RLUIStrings.BOOKSHELF_OWNED_HEADING, color: RLDS.textSecondary),
-
-      const Spacer(),
-
-      GestureDetector(
-        onTap: handleFilterToggleTap,
-        behavior: HitTestBehavior.opaque,
-        child: filterIcon,
-      ),
     ], crossAxisAlignment: CrossAxisAlignment.center);
   }
 
-  // Same frosted filter pane the Search screen uses. Mounted under the
-  // Owned heading when the reader has tapped the filter icon, hidden
-  // otherwise so the bookshelf stays calm by default.
-  Widget FilterPanel() {
-    return RLCourseFilterPanel(
-      availableGenres: COURSE_GENRES,
-      selectedGenres: selectedFilterGenres,
-      onGenreToggled: handleFilterGenreToggled,
-      searchController: filterSearchController,
-      onSearchChanged: handleFilterSearchChanged,
-      searchPlaceholder: RLUIStrings.SEARCH_PLACEHOLDER,
+  // Floating filter pane hovering above the bottom nav. Same shape as
+  // CoursesScreen.FilterPanelWithReset: an optional LunarBlur X chip
+  // anchored to the panel's top-right corner, mounted only when at least
+  // one filter is active.
+  Widget FilterPanelWithReset() {
+    final bool hasActiveFilters =
+        selectedFilterGenres.isNotEmpty || filterSearchQuery.trim().isNotEmpty;
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        RenderIf.condition(hasActiveFilters, ClearFiltersChip()),
+
+        RenderIf.condition(hasActiveFilters, const Spacing.height(RLDS.spacing8)),
+
+        RLCourseFilterPanel(
+          availableGenres: COURSE_GENRES,
+          selectedGenres: selectedFilterGenres,
+          onGenreToggled: handleFilterGenreToggled,
+          searchController: filterSearchController,
+          onSearchChanged: handleFilterSearchChanged,
+          searchPlaceholder: RLUIStrings.SEARCH_PLACEHOLDER,
+        ),
+      ],
     );
+  }
+
+  // Frosted X chip that wipes the active filters in one tap. Mirrors
+  // CoursesScreen.ClearFiltersChip so the two surfaces share one
+  // affordance for "reset what's narrowing this list", just docked into
+  // the heading row here instead of floating above the panel.
+  Widget ClearFiltersChip() {
+    return GestureDetector(
+      onTap: handleClearFiltersTap,
+      behavior: HitTestBehavior.opaque,
+      child: RLLunarBlur(
+        borderRadius: BorderRadius.circular(clearFiltersChipDiameter / 2),
+        padding: const EdgeInsets.all(RLDS.spacing8),
+        child: const Icon(
+          Pixel.close,
+          color: RLDS.textSecondary,
+          size: RLDS.iconMedium,
+        ),
+      ),
+    );
+  }
+
+  // Diameter of the reset chip — matches CoursesScreen so the affordance
+  // reads identically across both surfaces.
+  static const double clearFiltersChipDiameter = 40.0;
+
+  void handleClearFiltersTap() {
+    HapticsService.lightImpact();
+    SoundService.playRandomTextClick();
+    filterSearchController.clear();
+
+    setState(() {
+      selectedFilterGenres.clear();
+      filterSearchQuery = '';
+      visibleCoursesCount = BOOKSHELF_PAGE_SIZE;
+    });
   }
 
   List<Widget> SavedCourseCards() {
@@ -544,9 +677,12 @@ class BookshelfScreenState extends State<BookshelfScreen> {
   Widget LoadMoreSlot() {
     return Padding(
       padding: const EdgeInsets.only(top: RLDS.spacing16),
-      child: RLButton.secondary(
-        label: RLUIStrings.BOOKSHELF_LOAD_MORE_LABEL,
-        onTap: handleLoadMoreTap,
+      child: Container(
+        decoration: loadMoreGlowDecoration,
+        child: RLButton.secondary(
+          label: RLUIStrings.BOOKSHELF_LOAD_MORE_LABEL,
+          onTap: handleLoadMoreTap,
+        ),
       ),
     );
   }
@@ -566,10 +702,6 @@ class BookshelfScreenState extends State<BookshelfScreen> {
       ),
 
       const Spacer(),
-
-      const RLBalancePill(),
-
-      const Spacing.width(RLDS.spacing16),
 
       GestureDetector(
         onTap: onSettingsTap,

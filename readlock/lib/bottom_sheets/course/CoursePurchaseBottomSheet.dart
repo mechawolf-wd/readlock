@@ -250,9 +250,9 @@ class CoursePurchaseSheetState extends State<CoursePurchaseSheet> {
     });
 
     if (result == PurchaseResult.success) {
-      SoundService.playPurchased();
+      SoundService.playPurchase();
       Navigator.of(context).pop();
-      RLToast.success(context, RLUIStrings.ROADMAP_PURCHASE_SUCCESS);
+      RLToast.success(context, RLUIStrings.ROADMAP_PURCHASE_SUCCESS, playSound: false);
       return;
     }
 

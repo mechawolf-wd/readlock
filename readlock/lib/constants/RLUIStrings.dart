@@ -12,6 +12,7 @@ class RLUIStrings {
   static const String BOOKSHELF_TITLE = 'Bookshelf';
   static const String BOOKSHELF_OWNED_HEADING = 'Owned';
   static const String BOOKSHELF_EMPTY_MESSAGE = '*chirp* - read something to see it here';
+  static const String BOOKSHELF_FILTER_EMPTY_MESSAGE = '*chirp* - no skillbooks match that filter';
   static const String BOOKSHELF_LOAD_MORE_LABEL = 'Load more';
   static const String LOAD_MORE_NOTHING_LEFT = "*chirp* - that's all of them for now";
 
@@ -115,7 +116,7 @@ class RLUIStrings {
   static const String HINT_DIALOG_TITLE = 'Hint';
 
   // * Course Loading Screen
-  static const String LOADING_MESSAGE = 'Birds are indexing the course';
+  static const String LOADING_MESSAGE = 'Birds are indexing the skillbook';
 
   // * Shared loading indicator (dots are animated in the widget)
   static const String LOADING_LABEL = 'Chirping';
@@ -124,7 +125,7 @@ class RLUIStrings {
   static const String NO_CONTENT_AVAILABLE_MESSAGE =
       'Pigeons are still gathering content for this lesson. Please check back a bit !';
   static const String ERROR_LOADING_COURSE_DATA =
-      'Couldn\'t load the course. Please try again.';
+      'Couldn\'t load the skillbook. Please try again.';
   static const String QUIT_CONFIRMATION_TITLE = 'Wait';
   static const String QUIT_CONFIRMATION_MESSAGE = 'If you quit you will lose your progress.';
   static const String QUIT_CONFIRMATION_PAUSE_BUTTON = 'Pause';
@@ -157,7 +158,7 @@ class RLUIStrings {
   static const String FOR_YOUR_PERSONALITY_TITLE = 'Top 3 (most purchased)';
   static const String FOR_YOUR_PERSONALITY_SUBTITLE = 'Read these only if you want';
   static const String SURPRISE_ME_LABEL = 'Try out something new';
-  static const String SURPRISE_ME_NO_RESULTS_TOAST = 'No new course to try right now.';
+  static const String SURPRISE_ME_NO_RESULTS_TOAST = 'No new skillbook to try right now.';
 
   // * Courses Screen
   static const String SEARCH_PLACEHOLDER = 'Title';
@@ -180,8 +181,8 @@ class RLUIStrings {
   static const String ROADMAP_CONTINUE_LABEL = 'Continue';
   static const String ROADMAP_DEFAULT_LESSON_LABEL = 'Lesson';
   static const String ROADMAP_PURCHASE_LABEL = 'Buy for';
-  static const String ROADMAP_PURCHASE_LOADING_LABEL = 'Unlocking...';
-  static const String ROADMAP_PURCHASE_SUCCESS = 'Course unlocked';
+  static const String ROADMAP_PURCHASE_LOADING_LABEL = 'Payment in progress...';
+  static const String ROADMAP_PURCHASE_SUCCESS = 'Skillbook purchased';
   static const String ROADMAP_PURCHASE_INSUFFICIENT = 'Not enough feathers';
 
   // * Feedback Snackbar Buttons

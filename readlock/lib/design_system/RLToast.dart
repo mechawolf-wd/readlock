@@ -89,8 +89,15 @@ class RLToast {
     rlToastController.show(context: context, message: message, variant: RLToastVariant.error);
   }
 
-  static void success(BuildContext context, String message) {
-    SoundService.playPurchased();
+  // playSound defaults true so the existing callers (password reset,
+  // verify email, support email copied, feather top-up) keep their
+  // success chime. Purchase flows pass false because they already play
+  // SoundService.playPurchase, and we don't want both sounds layered.
+  static void success(BuildContext context, String message, {bool playSound = true}) {
+    if (playSound) {
+      SoundService.playSuccess();
+    }
+
     rlToastController.show(context: context, message: message, variant: RLToastVariant.success);
   }
 

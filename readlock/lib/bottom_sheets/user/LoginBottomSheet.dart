@@ -9,7 +9,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:readlock/bottom_sheets/RLBottomSheet.dart';
 import 'package:readlock/bottom_sheets/user/LoginSupportBottomSheet.dart';
 import 'package:readlock/design_system/RLReveal.dart';
-import 'package:readlock/design_system/RLStarfieldBackground.dart';
+import 'package:readlock/design_system/RLStarfieldButton.dart';
 import 'package:readlock/design_system/RLToast.dart';
 import 'package:readlock/design_system/RLUtility.dart';
 import 'package:readlock/design_system/RLTextField.dart';
@@ -762,7 +762,11 @@ class LoginSheetState extends State<LoginSheet> {
 
     return Padding(
       padding: actionMargin,
-      child: StarfieldActionButton(label: label, color: actionColor, onTap: actionTap),
+      child: RLStarfieldButton(
+        color: actionColor,
+        onTap: actionTap,
+        child: RLTypography.bodyLarge(label, color: RLDS.white),
+      ),
     );
   }
 
@@ -858,53 +862,3 @@ class LoginSheetState extends State<LoginSheet> {
   }
 }
 
-// Action button that paints the shared starfield behind a translucent tint
-// of the button colour. Used exclusively here for Login / Create-my-nest
-// so the primary auth call-to-action carries the brand identity; every
-// other RLButton.primary in the app keeps a flat fill.
-class StarfieldActionButton extends StatelessWidget {
-  final String label;
-  final Color color;
-  final VoidCallback? onTap;
-
-  const StarfieldActionButton({
-    super.key,
-    required this.label,
-    required this.color,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    const EdgeInsets buttonPadding = EdgeInsets.symmetric(
-      vertical: RLDS.spacing16,
-      horizontal: RLDS.spacing24,
-    );
-
-    // Translucent tint sits over the starfield so the colour reads as the
-    // button's brand without burying the stars. Alpha tuned so the label
-    // stays legible against both the red and the green variants.
-    final Color tintColor = color.withValues(alpha: 0.85);
-
-    return GestureDetector(
-      onTap: onTap,
-      child: ClipRRect(
-        borderRadius: RLDS.borderRadiusSmall,
-        child: Stack(
-          children: [
-            const Positioned.fill(child: RLStarfieldBackground()),
-
-            Positioned.fill(child: ColoredBox(color: tintColor)),
-
-            Container(
-              width: double.infinity,
-              padding: buttonPadding,
-              alignment: Alignment.center,
-              child: RLTypography.bodyLarge(label, color: RLDS.white),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}

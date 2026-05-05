@@ -15,7 +15,8 @@ const String correctTrueAudioPath = 'audio/ui_sounds/correct_true.wav';
 const String enterAudioPath = 'audio/ui_sounds/enter.wav';
 const String logoutAudioPath = 'audio/ui_sounds/logout.wav';
 const String negativeAudioPath = 'audio/ui_sounds/negative.wav';
-const String purchasedAudioPath = 'audio/ui_sounds/purchased.wav';
+const String successAudioPath = 'audio/ui_sounds/success.wav';
+const String purchaseAudioPath = 'audio/ui_sounds/purchase.wav';
 const String switchAudioPath = 'audio/ui_sounds/switch.wav';
 const String uiClickAudioPath = 'audio/ui_sounds/ui_click.wav';
 
@@ -32,7 +33,8 @@ class SoundService {
   static final AudioPlayer enterPlayer = AudioPlayer();
   static final AudioPlayer logoutPlayer = AudioPlayer();
   static final AudioPlayer negativePlayer = AudioPlayer();
-  static final AudioPlayer purchasedPlayer = AudioPlayer();
+  static final AudioPlayer successPlayer = AudioPlayer();
+  static final AudioPlayer purchasePlayer = AudioPlayer();
   static final AudioPlayer switchPlayer = AudioPlayer();
   static final AudioPlayer textClickPlayer = AudioPlayer();
   static final AudioPlayer uiClickPlayer = AudioPlayer();
@@ -56,11 +58,7 @@ class SoundService {
   static final ValueNotifier<bool> soundsEnabledNotifier = ValueNotifier<bool>(true);
   static final ValueNotifier<bool> typingSoundEnabledNotifier = ValueNotifier<bool>(true);
 
-  static Future<void> playOneShot(
-    AudioPlayer player,
-    String assetPath,
-    String label,
-  ) async {
+  static Future<void> playOneShot(AudioPlayer player, String assetPath, String label) async {
     final bool userMutedSounds = !soundsEnabledNotifier.value;
 
     if (userMutedSounds) {
@@ -119,8 +117,12 @@ class SoundService {
     return playOneShot(negativePlayer, negativeAudioPath, 'negative');
   }
 
-  static Future<void> playPurchased() {
-    return playOneShot(purchasedPlayer, purchasedAudioPath, 'purchased');
+  static Future<void> playSuccess() {
+    return playOneShot(successPlayer, successAudioPath, 'success');
+  }
+
+  static Future<void> playPurchase() {
+    return playOneShot(purchasePlayer, purchaseAudioPath, 'purchase');
   }
 
   static Future<void> playSwitch() {
@@ -166,7 +168,7 @@ class SoundService {
       await enterPlayer.dispose();
       await logoutPlayer.dispose();
       await negativePlayer.dispose();
-      await purchasedPlayer.dispose();
+      await successPlayer.dispose();
       await switchPlayer.dispose();
       await textClickPlayer.dispose();
       await uiClickPlayer.dispose();

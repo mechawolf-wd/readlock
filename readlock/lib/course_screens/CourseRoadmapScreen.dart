@@ -433,7 +433,8 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
     });
 
     if (result == PurchaseResult.success) {
-      RLToast.success(context, RLUIStrings.ROADMAP_PURCHASE_SUCCESS);
+      SoundService.playPurchase();
+      RLToast.success(context, RLUIStrings.ROADMAP_PURCHASE_SUCCESS, playSound: false);
       return;
     }
 

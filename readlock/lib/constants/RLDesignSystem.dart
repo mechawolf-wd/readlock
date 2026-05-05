@@ -111,6 +111,10 @@ class RLDS {
   // single edit here. Naming is value-based so the alpha reads at a
   // glance: glass10 = 10% opacity, glass70 = 70% opacity.
 
+  static Color glass05(Color color) {
+    return color.withValues(alpha: 0.05);
+  }
+
   static Color glass10(Color color) {
     return color.withValues(alpha: 0.10);
   }
@@ -129,6 +133,29 @@ class RLDS {
 
   static Color glass70(Color color) {
     return color.withValues(alpha: 0.70);
+  }
+
+  // * Glow decoration — soft halo behind a CTA so it reads as the primary
+  // affordance on its surface. Caller passes the tinted color (typically
+  // glass05/glass40 of a brand color) so the alpha is explicit at the call
+  // site. blurRadius + spreadRadius default to the bottom-of-list "Load
+  // more" treatment; tighter values (12 / 1) give the home Surprise-me
+  // look.
+
+  static BoxDecoration glowDecoration({
+    required Color color,
+    double blurRadius = 24,
+    double spreadRadius = 4,
+    BorderRadius? borderRadius,
+  }) {
+    final BorderRadius effectiveRadius = borderRadius ?? borderRadiusSmall;
+
+    return BoxDecoration(
+      borderRadius: effectiveRadius,
+      boxShadow: [
+        BoxShadow(color: color, blurRadius: blurRadius, spreadRadius: spreadRadius),
+      ],
+    );
   }
 
   // * Icon sizes

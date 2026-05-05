@@ -11,6 +11,7 @@ import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/constants/RLUIStrings.dart';
 import 'package:readlock/design_system/RLLunarBlur.dart';
 import 'package:readlock/design_system/RLStarfieldBackground.dart';
+import 'package:readlock/design_system/RLUtility.dart';
 import 'package:readlock/screens/CoursesScreen.dart';
 import 'package:readlock/screens/HomeScreen.dart';
 import 'package:readlock/screens/MyBookshelfScreen.dart';
@@ -77,6 +78,12 @@ class MainNavigationState extends State<MainNavigation> {
 
   void handleActiveTabIndexNotifierChange() {
     final int requestedIndex = activeTabIndexNotifier.value;
+    final bool isBookshelfTab = requestedIndex == TAB_INDEX_BOOKSHELF;
+
+    if (isBookshelfTab) {
+      bookshelfHasUnseenPurchaseNotifier.value = false;
+    }
+
     final bool isSameTab = requestedIndex == currentIndex;
 
     if (isSameTab) {
@@ -158,6 +165,45 @@ class MainNavigationState extends State<MainNavigation> {
   static const Icon ExploreActiveIcon = Icon(Pixel.map, size: navIconSize);
   static const Icon BookshelfIcon = Icon(Pixel.book, size: navIconSize);
   static const Icon BookshelfActiveIcon = Icon(Pixel.book, size: navIconSize);
+
+  // Red unread-purchase dot painted on top of the bookshelf nav icon.
+  // Sized so it reads as a notification mark, not a status pip.
+  static const double bookshelfBadgeSize = 8.0;
+  static final BoxDecoration bookshelfBadgeDecoration = const BoxDecoration(
+    color: RLDS.error,
+    shape: BoxShape.circle,
+  );
+
+  // Bookshelf nav icon with the unread-purchase dot overlaid. The dot is
+  // driven by bookshelfHasUnseenPurchaseNotifier, which PurchaseService
+  // flips on a successful purchase and MainNavigation clears the moment
+  // the bookshelf tab activates. clipBehavior: none lets the dot sit
+  // slightly outside the icon bounds so it reads as a badge.
+  Widget BookshelfTabIcon(Icon innerIcon) {
+    final Widget badgeDot = Container(
+      width: bookshelfBadgeSize,
+      height: bookshelfBadgeSize,
+      decoration: bookshelfBadgeDecoration,
+    );
+
+    return ValueListenableBuilder<bool>(
+      valueListenable: bookshelfHasUnseenPurchaseNotifier,
+      builder: (BuildContext context, bool hasUnseenPurchase, Widget? _) {
+        return Stack(
+          clipBehavior: Clip.none,
+          children: [
+            innerIcon,
+
+            Positioned(
+              top: 0,
+              right: 0,
+              child: RenderIf.condition(hasUnseenPurchase, badgeDot),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -256,9 +302,9 @@ class MainNavigationState extends State<MainNavigation> {
         label: RLUIStrings.SEARCH_TAB_LABEL,
       ),
 
-      const BottomNavigationBarItem(
-        icon: BookshelfIcon,
-        activeIcon: BookshelfActiveIcon,
+      BottomNavigationBarItem(
+        icon: BookshelfTabIcon(BookshelfIcon),
+        activeIcon: BookshelfTabIcon(BookshelfActiveIcon),
         label: RLUIStrings.BOOKSHELF_TAB_LABEL,
       ),
     ];

@@ -136,7 +136,7 @@ class RLSegmentTab extends StatelessWidget {
         behavior: HitTestBehavior.opaque,
         child: RLLunarBlur(
           borderRadius: RLDS.borderRadiusSmall,
-          borderColor: RLDS.glass70(labelColor),
+          borderColor: labelColor,
           borderWidth: 2.0,
           padding: tabPadding,
           child: selectedContent,
