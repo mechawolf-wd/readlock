@@ -3,6 +3,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:readlock/services/feedback/HapticsService.dart';
+import 'package:readlock/services/feedback/SoundService.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/design_system/RLLunarBlur.dart';
@@ -100,15 +101,16 @@ class SelectableFilterChip extends StatelessWidget {
   Widget build(BuildContext context) {
     final Color chipTextColor = isSelected ? RLDS.white : RLDS.textMuted;
 
-    void handleTapWithHaptic() {
+    void handleTapWithFeedback() {
       HapticsService.selectionClick();
+      SoundService.playRandomTextClick();
       onTap();
     }
 
     final Widget label = RLTypography.bodyMedium(this.label, color: chipTextColor);
 
     return GestureDetector(
-      onTap: handleTapWithHaptic,
+      onTap: handleTapWithFeedback,
       behavior: HitTestBehavior.opaque,
       child: ChipBody(label: label),
     );

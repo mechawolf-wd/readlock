@@ -22,6 +22,7 @@ import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/design_system/RLConfirmationDialog.dart';
 import 'package:readlock/constants/DartAliases.dart';
 import 'package:readlock/services/ScreenProtectionService.dart';
+import 'package:readlock/screens/profile/BirdPicker.dart';
 import 'package:readlock/services/auth/UserService.dart';
 import 'package:readlock/services/feedback/SoundService.dart';
 
@@ -262,15 +263,67 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
     return CourseContentPageView();
   }
 
-  // Vertical page view for course content
+  // Vertical page view for course content. The list grows by one extra
+  // page (the finish screen) so the reader can swipe past the last
+  // content item and land on the Finish CTA without leaving the viewer.
   Widget CourseContentPageView() {
+    final int totalPageCount = allContent.length + 1;
+
     return PageView.builder(
       controller: pageController,
       scrollDirection: Axis.vertical,
-      itemCount: allContent.length,
+      itemCount: totalPageCount,
       onPageChanged: handlePageChanged,
-      itemBuilder: ContentItem,
+      itemBuilder: ContentOrFinishItem,
     );
+  }
+
+  // Routes the PageView's itemBuilder either to the regular content
+  // factory or to the finish page when the index lands on the trailing
+  // slot. Keeps the existing ContentItem signature unchanged so the
+  // ColumnFrame layout still wraps every reading page identically.
+  Widget ContentOrFinishItem(BuildContext context, int pageIndex) {
+    final bool isFinishPage = pageIndex == allContent.length;
+
+    if (isFinishPage) {
+      return FinishPage();
+    }
+
+    return ContentItem(context, pageIndex);
+  }
+
+  // The trailing finish page. Stops the in-session stopwatch the moment
+  // the page paints (handlePageChanged also stops it on arrival, but the
+  // first frame should display the same frozen readout the button writes
+  // back), and renders the profile bird, the stopwatch readout, and the
+  // Finish button. Tapping Finish bumps this lesson's frontier on the
+  // CourseProgressModel and pops back to the roadmap; the dispose path
+  // still commits the elapsed seconds to /users/{id}.timeSpentReading.
+  Widget FinishPage() {
+    final int elapsedSeconds = readingStopwatch.elapsed.inSeconds;
+    final Color accentColor = getCourseAccentColor();
+
+    return LessonFinishScreen(
+      elapsedSeconds: elapsedSeconds,
+      accentColor: accentColor,
+      onFinishTap: handleFinishTap,
+    );
+  }
+
+  void handleFinishTap() {
+    HapticsService.lightImpact();
+    SoundService.playRandomTextClick();
+
+    // Bump the frontier so the next lesson on the roadmap unlocks. The
+    // writer is monotonic and idempotent, so re-running it on a lesson
+    // the reader already passed is a no-op (max() guard inside
+    // advanceCourseProgress drops the write).
+    UserService.advanceCourseProgress(
+      courseId: widget.courseId,
+      nextLessonIndex: currentLessonIndex + 1,
+    );
+
+    navigateBackToRoadmap();
   }
 
   // Empty state message when no content available
@@ -485,10 +538,19 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
     return lessonContent;
   }
 
-  // Handle page change events
+  // Handle page change events. Stops the in-session stopwatch when the
+  // reader reaches the trailing finish page so the elapsed-time readout
+  // on that page stays frozen at the moment of arrival. The dispose
+  // path still commits whatever value the stopwatch carries, so a later
+  // close from the finish screen logs the same seconds the reader saw.
   void handlePageChanged(int contentItemIndex) {
-    // Clear any feedback snackbar when user scrolls to next content
     FeedbackSnackBar.clearSnackbars();
+
+    final bool reachedFinishPage = contentItemIndex == allContent.length;
+
+    if (reachedFinishPage) {
+      readingStopwatch.stop();
+    }
 
     if (mounted) {
       setState(() {
@@ -497,7 +559,9 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
     }
   }
 
-  // Calculate current progress percentage
+  // Calculate current progress percentage. Caps at 1.0 once the reader
+  // crosses onto the finish page so the bar reads as a full sweep
+  // instead of overshooting past 100%.
   double calculateProgress() {
     final bool hasNoContent = allContent.isEmpty;
 
@@ -505,8 +569,14 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
       return 0.0;
     }
 
-    final int completedItems = currentContentIndex + 1;
     final int totalItems = allContent.length;
+    final bool isOnFinishPage = currentContentIndex >= totalItems;
+
+    if (isOnFinishPage) {
+      return 1.0;
+    }
+
+    final int completedItems = currentContentIndex + 1;
 
     return completedItems / totalItems;
   }
@@ -551,6 +621,100 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
     SoundService.playRandomTextClick();
 
     NightShiftBottomSheet.show(context);
+  }
+}
+
+// Lesson finish page rendered as the trailing slot in the content
+// PageView. The reader's profile bird (live from selectedBirdNotifier),
+// a stopwatch readout for the time spent on this lesson, and a Finish
+// CTA that mirrors the roadmap's ContinueButton (RLLunarBlur surface,
+// course accent label) so the two surfaces read as the same family.
+//
+// This widget is purely presentational — the page-change listener
+// handles the stopwatch stop, and the parent passes a ready-to-fire
+// onFinishTap that bumps the frontier and pops the screen.
+class LessonFinishScreen extends StatelessWidget {
+  final int elapsedSeconds;
+  final Color accentColor;
+  final VoidCallback onFinishTap;
+
+  const LessonFinishScreen({
+    super.key,
+    required this.elapsedSeconds,
+    required this.accentColor,
+    required this.onFinishTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final String stopwatchReadout = formatBirdUnlockReadout(elapsedSeconds);
+
+    final Widget profileBird = ValueListenableBuilder<BirdOption>(
+      valueListenable: selectedBirdNotifier,
+      builder: BirdPreviewBuilder,
+    );
+
+    final Widget finishButton = FinishButton();
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+        horizontal: RLDS.spacing24,
+        vertical: RLDS.spacing24,
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Center(child: profileBird),
+
+          const Spacing.height(RLDS.spacing24),
+
+          RLTypography.headingMedium(
+            RLUIStrings.LESSON_FINISH_TITLE,
+            textAlign: TextAlign.center,
+          ),
+
+          const Spacing.height(RLDS.spacing16),
+
+          RLTypography.bodyMedium(
+            RLUIStrings.LESSON_FINISH_TIME_LABEL,
+            color: RLDS.textSecondary,
+            textAlign: TextAlign.center,
+          ),
+
+          const Spacing.height(RLDS.spacing4),
+
+          RLTypography.headingMedium(stopwatchReadout, textAlign: TextAlign.center),
+
+          const Spacing.height(RLDS.spacing32),
+
+          finishButton,
+        ],
+      ),
+    );
+  }
+
+  Widget BirdPreviewBuilder(BuildContext context, BirdOption bird, Widget? unusedChild) {
+    return BirdAnimationSprite(bird: bird);
+  }
+
+  Widget FinishButton() {
+    const EdgeInsets buttonPadding = EdgeInsets.symmetric(
+      vertical: RLDS.spacing16,
+      horizontal: RLDS.spacing24,
+    );
+
+    return RLLunarBlur(
+      borderRadius: RLDS.borderRadiusSmall,
+      borderColor: RLDS.transparent,
+      child: Div.row(
+        [RLTypography.bodyLarge(RLUIStrings.LESSON_FINISH_BUTTON_LABEL, color: accentColor)],
+        width: double.infinity,
+        padding: buttonPadding,
+        mainAxisAlignment: MainAxisAlignment.center,
+        onTap: onFinishTap,
+      ),
+    );
   }
 }
 

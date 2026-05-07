@@ -728,9 +728,12 @@ class BottomSheetGrabber extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Pill grabber: any radius >= half the bar height fully rounds the
+    // ends, so the design-system circle token is the right semantic
+    // pick (no literal radius lives in this widget).
     final BoxDecoration grabberDecoration = BoxDecoration(
       color: RLDS.glass40(RLDS.textSecondary),
-      borderRadius: BorderRadius.circular(4),
+      borderRadius: RLDS.borderRadiusCircle,
     );
 
     return Center(

@@ -87,7 +87,11 @@ class DialogContainer extends StatelessWidget {
       child: Padding(
         padding: outerPadding,
         child: RLLunarBlur(
-          borderRadius: RLDS.borderRadiusSmall,
+          // Same modal-corner token the bottom-sheet container uses
+          // (top-only variant). Single radius across every top-level
+          // modal surface so a dialog and a sheet read as the same
+          // rounded family.
+          borderRadius: RLDS.borderRadiusModal,
           surfaceColor: dialogColor,
           borderColor: RLDS.transparent,
           child: Material(color: RLDS.transparent, child: child),

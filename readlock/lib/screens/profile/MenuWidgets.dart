@@ -223,27 +223,6 @@ class MenuSection extends StatelessWidget {
 
         ColoredTextDemo(isEnabled: coloredTextEnabled, onTap: onColoredTextDemoTap),
 
-        SwitchMenuItem(
-          icon: Pixel.speedfast,
-          title: RLUIStrings.MENU_BIONIC,
-          value: bionicEnabled,
-          onChanged: onBionicToggled,
-        ),
-
-        BionicDemo(isEnabled: bionicEnabled, onTap: onBionicDemoTap),
-
-        // RSVP — switch gates the demo stream, the card itself hosts the
-        // WPM slider (the tempo is the configurator). Sits after Bionic
-        // since it's the most specialised reading mode in the section.
-        SwitchMenuItem(
-          icon: Pixel.zap,
-          title: RLUIStrings.MENU_RSVP,
-          value: rsvpEnabled,
-          onChanged: onRsvpToggled,
-        ),
-
-        RSVPDemo(isEnabled: rsvpEnabled),
-
         // Font picker + live demo — sits at the end of Reading Settings so
         // it follows the toggles that govern what text looks like.
         MenuItem(
@@ -276,6 +255,27 @@ class MenuSection extends StatelessWidget {
         ),
 
         JustifiedReadingDemo(onToggle: onJustifiedReadingDemoToggle),
+
+        // Bionic + RSVP sit at the bottom of Reading Settings. They are
+        // the most specialised reading modes in the section, so they live
+        // below the everyday typography settings rather than in the middle.
+        SwitchMenuItem(
+          icon: Pixel.speedfast,
+          title: RLUIStrings.MENU_BIONIC,
+          value: bionicEnabled,
+          onChanged: onBionicToggled,
+        ),
+
+        BionicDemo(isEnabled: bionicEnabled, onTap: onBionicDemoTap),
+
+        SwitchMenuItem(
+          icon: Pixel.zap,
+          title: RLUIStrings.MENU_RSVP,
+          value: rsvpEnabled,
+          onChanged: onRsvpToggled,
+        ),
+
+        RSVPDemo(isEnabled: rsvpEnabled),
 
         const MenuDivider(label: RLUIStrings.MENU_SECTION_LEGAL),
 

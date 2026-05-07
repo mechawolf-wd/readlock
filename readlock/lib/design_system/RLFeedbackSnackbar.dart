@@ -8,6 +8,7 @@ import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/bottom_sheets/course/FeedbackBottomSheet.dart';
 import 'package:readlock/design_system/RLLunarBlur.dart';
 import 'package:readlock/design_system/RLUtility.dart';
+import 'package:readlock/services/feedback/HapticsService.dart';
 import 'package:readlock/services/feedback/SoundService.dart';
 
 import 'package:pixelarticons/pixel.dart';
@@ -247,6 +248,7 @@ class WhyButton extends StatelessWidget {
   const WhyButton({super.key, this.explanation});
 
   void handleTap(BuildContext context) {
+    HapticsService.lightImpact();
     SoundService.playRandomTextClick();
     FeedbackSnackBar.dismissAnimated();
 
@@ -302,6 +304,7 @@ class HintButton extends StatelessWidget {
   const HintButton({super.key, this.hint});
 
   void handleTap(BuildContext context) {
+    HapticsService.lightImpact();
     SoundService.playRandomTextClick();
     FeedbackSnackBar.dismissAnimated();
 

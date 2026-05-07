@@ -4,6 +4,7 @@
 
 import 'package:flutter/material.dart' hide Typography;
 import 'package:readlock/models/CourseModel.dart';
+import 'package:readlock/course_screens/CourseAccentScope.dart';
 import 'package:readlock/design_system/RLLunarBlur.dart';
 import 'package:readlock/design_system/RLUtility.dart';
 import 'package:readlock/constants/RLTypography.dart';
@@ -163,7 +164,40 @@ class CCQuestionState extends State<CCQuestion> {
     final bool shouldBlurAfterAnswer = hasAnsweredQuestion && !isSelected;
     final bool shouldBlur = !isRevealed || shouldBlurAfterAnswer;
 
-    return BlurOverlay(enabled: shouldBlur, child: optionRow);
+    final Widget blurredOption = BlurOverlay(enabled: shouldBlur, child: optionRow);
+
+    // Stack a tap-to-reveal eye centred on top of every still-blurred,
+    // pre-answer option. Same affordance as CCReflect's thinking points so
+    // the "tap me to see" gesture reads consistently across the course.
+    final bool showRevealEye = !isRevealed && !hasAnsweredQuestion;
+
+    if (!showRevealEye) {
+      return blurredOption;
+    }
+
+    return Stack(
+      children: [
+        blurredOption,
+
+        Positioned.fill(child: IgnorePointer(child: Center(child: RevealEyeIcon()))),
+      ],
+    );
+  }
+
+  // Open-eye affordance, tinted with the active course's accent (falls back
+  // to the muted secondary tone when no CourseAccentScope is in place) so
+  // every CCReflect / CCQuestion blurred surface reads as the same family.
+  Widget RevealEyeIcon() {
+    final Color iconColor = CourseAccentScope.of(
+      context,
+      fallback: RLDS.textSecondary,
+    );
+
+    return Icon(
+      Pixel.eye,
+      color: iconColor,
+      size: RLDS.iconXXLarge,
+    );
   }
 
   // Two-state render:

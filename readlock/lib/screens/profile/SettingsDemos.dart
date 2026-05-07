@@ -449,13 +449,24 @@ class SampleSurface extends StatelessWidget {
     final double widthFraction = previewWidthFractionFor(column);
     final EdgeInsets innerPadding = computeInnerPadding(slotWidth, widthFraction);
 
+    // Keying on the live font so a typeface change remounts the paragraph.
+    // The canonicalised const SampleParagraph below would otherwise be
+    // skipped on rebuild and stay on the old typeface.
+    final ValueKey<ReadingFont> fontKey = ValueKey<ReadingFont>(
+      selectedReadingFontNotifier.value,
+    );
+
     return GestureDetector(
       onTap: handleSampleTap,
       behavior: HitTestBehavior.opaque,
       child: RLLunarBlur(
         surfaceAlpha: demoSurfaceAlpha,
         padding: innerPadding,
-        child: const SizedBox(width: double.infinity, child: SampleParagraph()),
+        child: SizedBox(
+          key: fontKey,
+          width: double.infinity,
+          child: const SampleParagraph(),
+        ),
       ),
     );
   }

@@ -9,6 +9,7 @@ import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLUIStrings.dart';
 import 'package:readlock/design_system/RLUtility.dart';
 import 'package:readlock/screens/profile/ProfileScreen.dart';
+import 'package:readlock/services/feedback/HapticsService.dart';
 
 class SettingsBottomSheet {
   static void show(BuildContext context) {
@@ -30,12 +31,26 @@ class SettingsContent extends StatelessWidget {
   Widget build(BuildContext context) {
     final double bottomSafeArea = MediaQuery.of(context).padding.bottom;
 
+    // Tapping the same icon that opened this sheet pops it back closed —
+    // the menu glyph reads as a toggle, mirroring how the bookshelf
+    // settings entry treats it.
+    void onSettingsIconTap() {
+      HapticsService.lightImpact();
+      Navigator.of(context).pop();
+    }
+
+    final Widget SettingsCloseTap = GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: onSettingsIconTap,
+      child: SettingsIcon,
+    );
+
     return Div.column([
       // Heading — icon + title
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: RLDS.spacing24),
         child: Div.row([
-          SettingsIcon,
+          SettingsCloseTap,
 
           const Spacing.width(RLDS.spacing12),
 

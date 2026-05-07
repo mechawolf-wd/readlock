@@ -94,6 +94,16 @@ class RLDS {
     topRight: Radius.circular(radiusLarge),
   );
 
+  // * Modal corner — single source of truth for the rounded edge every
+  // top-level modal surface (bottom sheets, dialogs) shares. Sheets clip
+  // their TOP corners (borderRadiusModalTop), dialogs clip ALL FOUR
+  // (borderRadiusModal); both pull from the same underlying value so the
+  // two surfaces always match. Change `modalCornerRadius` here and every
+  // modal in the app moves in lock-step.
+  static const double modalCornerRadius = radiusLarge;
+  static final BorderRadius borderRadiusModal = BorderRadius.circular(modalCornerRadius);
+  static const BorderRadius borderRadiusModalTop = borderRadiusTopLarge;
+
   // * Font weights
 
   static const FontWeight weightRegular = FontWeight.w400;

@@ -92,6 +92,15 @@ class PurchaseService {
       return PurchaseResult.failed;
     }
 
+    // Seed the per-course progress record so the roadmap unlocks lesson 0
+    // immediately. Fire-and-forget — a transient failure doesn't block
+    // the user-visible success path, and the writer is idempotent
+    // (initializeCourseProgress overwrites with a fresh seed, then the
+    // first Finish-tap advances the index). The local notifier is bumped
+    // synchronously inside the call so the roadmap reads the new entry
+    // on its next rebuild.
+    UserService.initializeCourseProgress(courseId);
+
     // Lifetime purchase counter on the course doc, fire-and-forget so a
     // slow callable write doesn't gate the user-visible success path. The
     // bump runs server-side via FieldValue.increment in the cloud function,

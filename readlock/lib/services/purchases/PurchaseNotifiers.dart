@@ -10,9 +10,20 @@
 // PurchaseService keeps them in sync after every write.
 
 import 'package:flutter/foundation.dart';
+import 'package:readlock/models/CourseProgressModel.dart';
 import 'package:readlock/models/UserModel.dart';
 
 final ValueNotifier<int> userBalanceNotifier = ValueNotifier<int>(0);
+
+// Per-course progress, keyed by courseId. The roadmap consults this so a
+// new purchase (entry with currentLessonIndex == 0) and a Finish-button
+// commit (index bumped to N + 1) flip the tile-lock + active-tile state
+// in the same frame the writer fires. Empty until the reader has bought
+// at least one course.
+final ValueNotifier<Map<String, CourseProgressModel>> courseProgressNotifier =
+    ValueNotifier<Map<String, CourseProgressModel>>(
+  const <String, CourseProgressModel>{},
+);
 
 // Cumulative seconds the reader has spent inside the course content viewer.
 // Hydrated from /users/{id}.timeSpentReading on profile load and bumped
@@ -35,6 +46,7 @@ void hydratePurchaseStateFromUser(UserModel user) {
   userBalanceNotifier.value = user.balance;
   purchasedCoursesNotifier.value = Set<String>.from(user.purchasedCourses);
   timeSpentReadingNotifier.value = user.timeSpentReading;
+  courseProgressNotifier.value = Map<String, CourseProgressModel>.from(user.courseProgress);
 }
 
 void resetPurchaseState() {
@@ -42,4 +54,5 @@ void resetPurchaseState() {
   purchasedCoursesNotifier.value = const <String>{};
   bookshelfHasUnseenPurchaseNotifier.value = false;
   timeSpentReadingNotifier.value = 0;
+  courseProgressNotifier.value = const <String, CourseProgressModel>{};
 }

@@ -98,6 +98,11 @@ class ProgressiveText extends StatefulWidget {
   final bool enableTapToReveal;
   // Callback triggered when all text segments have been fully revealed
   final VoidCallback? onAllSegmentsRevealed;
+  // Tap on the bottom reveal-button area AFTER every segment has finished
+  // revealing. Overrides the default blur-toggle behavior. Lets callers
+  // (e.g. CCTextContent) repurpose the bottom tap zone as an advance-to-
+  // next-slide affordance once the last segment has landed.
+  final VoidCallback? onTapAfterAllRevealed;
 
   const ProgressiveText({
     super.key,
@@ -118,6 +123,7 @@ class ProgressiveText extends StatefulWidget {
     this.onTapCallback,
     this.enableTapToReveal = true,
     this.onAllSegmentsRevealed,
+    this.onTapAfterAllRevealed,
   });
 
   @override
@@ -425,7 +431,22 @@ class ProgressiveTextState extends State<ProgressiveText> with TickerProviderSta
     if (hasRevealableContent) {
       // Standard reveal behavior
       handleTap();
-    } else if (shouldToggleBlur) {
+      return;
+    }
+
+    // After every segment has landed, prefer the caller's "what happens
+    // when the reader taps below the last line" callback over the default
+    // blur-toggle, so a CCTextContent-style "advance to next slide" can
+    // take priority without losing the toggle elsewhere.
+    final bool hasAfterRevealCallback = widget.onTapAfterAllRevealed != null;
+
+    if (hasAfterRevealCallback) {
+      HapticsService.lightImpact();
+      widget.onTapAfterAllRevealed!();
+      return;
+    }
+
+    if (shouldToggleBlur) {
       // Handle double tap for blur toggle
       handleDoubleTapForBlurToggle();
     }
@@ -633,8 +654,14 @@ class ProgressiveTextState extends State<ProgressiveText> with TickerProviderSta
         currentSentenceNumber >= textSentences.length - 1 && !isCurrentlyAnimating;
     final bool hasToggleableSegments = sentenceBlurStates.isNotEmpty;
     final bool shouldShowToggleButton = allSegmentsRevealed && hasToggleableSegments;
+    // Caller-supplied "tap below last line to advance" affordance keeps the
+    // bottom area live after every segment has landed, even when there are
+    // no blur states left to toggle.
+    final bool shouldShowAfterRevealTap =
+        allSegmentsRevealed && widget.onTapAfterAllRevealed != null;
 
-    final bool shouldShowButton = hasRevealableContent || shouldShowToggleButton;
+    final bool shouldShowButton =
+        hasRevealableContent || shouldShowToggleButton || shouldShowAfterRevealTap;
 
     if (!shouldShowButton) {
       return const SizedBox.shrink();
@@ -656,13 +683,22 @@ class ProgressiveTextState extends State<ProgressiveText> with TickerProviderSta
       buttonHeight = minButtonHeight;
     }
 
+    // Reveal fires on the very first touch (onTapDown) so the next segment
+    // lands the moment the reader's finger contacts the screen, instead of
+    // waiting for finger-up. Reads as immediate, the way a hardware key
+    // would feel.
+    void onAreaTapDown(TapDownDetails _) {
+      handleRevealOrToggleTap(hasRevealableContent, shouldShowToggleButton);
+    }
+
     return Container(
       margin: buttonMargin,
       height: buttonHeight,
       child: MouseRegion(
         cursor: SystemMouseCursors.click,
         child: GestureDetector(
-          onTap: () => handleRevealOrToggleTap(hasRevealableContent, shouldShowToggleButton),
+          behavior: HitTestBehavior.opaque,
+          onTapDown: onAreaTapDown,
           child: Container(width: double.infinity, color: RLDS.transparent),
         ),
       ),

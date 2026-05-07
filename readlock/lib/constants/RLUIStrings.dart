@@ -123,6 +123,11 @@ class RLUIStrings {
   // * Shared loading indicator (dots are animated in the widget)
   static const String LOADING_LABEL = 'Chirping';
 
+  // * Lesson Finish Screen
+  static const String LESSON_FINISH_TITLE = 'Lesson done';
+  static const String LESSON_FINISH_TIME_LABEL = 'Time on this lesson';
+  static const String LESSON_FINISH_BUTTON_LABEL = 'Finish';
+
   // * Course Content Viewer
   static const String NO_CONTENT_AVAILABLE_MESSAGE =
       'Pigeons are still gathering content for this lesson. Please check back a bit !';
@@ -230,9 +235,6 @@ class RLUIStrings {
 
   // * Course Outro
   static const String OUTRO_BUTTON_LABEL = 'Fin';
-
-  // * Lesson Finish Screen
-  static const String LESSON_FINISH_BUTTON_LABEL = 'Finish';
 
   // * Learning Statistics
   static const String LEARNING_STATS_TITLE = 'Reading';

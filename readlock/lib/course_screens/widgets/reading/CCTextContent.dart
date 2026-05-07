@@ -35,6 +35,15 @@ class CCTextContentState extends State<CCTextContent> {
   bool isAllTextRevealed = false;
 
   @override
+  void initState() {
+    super.initState();
+    // First-view haptic: the swipe lands and the typewriter starts laying
+    // down the first segment in the same frame, so a single light impact
+    // here reads as part of the reveal landing.
+    HapticsService.lightImpact();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Padding(
       padding: RLDS.contentPaddingInsets,
@@ -83,6 +92,10 @@ class CCTextContentState extends State<CCTextContent> {
           textAlignment: CrossAxisAlignment.start,
           textAlign: paragraphAlignment,
           onAllSegmentsRevealed: handleAllSegmentsRevealed,
+          // Once every segment has landed, the empty area below the last
+          // line becomes a synonym for the continue button: tapping it
+          // advances to the next slide instead of toggling blur.
+          onTapAfterAllRevealed: handleContinueButtonTap,
         );
       },
     );

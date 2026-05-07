@@ -7,6 +7,7 @@ import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/design_system/RLCard.dart';
 import 'package:readlock/design_system/RLCourseBookImage.dart';
 import 'package:readlock/design_system/RLUtility.dart';
+import 'package:readlock/services/feedback/HapticsService.dart';
 
 import 'package:pixelarticons/pixel.dart';
 
@@ -83,8 +84,13 @@ class BookListCard extends StatelessWidget {
       size: RLDS.iconLarge,
     );
 
+    void handleCartTap() {
+      HapticsService.lightImpact();
+      onTap();
+    }
+
     return GestureDetector(
-      onTap: onTap,
+      onTap: handleCartTap,
       behavior: HitTestBehavior.opaque,
       child: Padding(padding: const EdgeInsets.all(RLDS.spacing4), child: CartIcon),
     );

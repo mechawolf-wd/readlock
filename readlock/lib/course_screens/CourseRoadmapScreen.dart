@@ -22,6 +22,7 @@ import 'package:readlock/constants/RLUIStrings.dart';
 import 'package:readlock/design_system/RLToast.dart';
 import 'package:readlock/services/auth/UserService.dart';
 import 'package:readlock/services/feedback/SoundService.dart';
+import 'package:readlock/models/CourseProgressModel.dart';
 import 'package:readlock/services/purchases/PurchaseConstants.dart';
 import 'package:readlock/services/purchases/PurchaseNotifiers.dart';
 import 'package:readlock/services/purchases/PurchaseService.dart';
@@ -114,6 +115,12 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
     // swaps from Purchase to Continue + tiles unlock in the same frame.
     purchasedCoursesNotifier.addListener(handlePurchasedCoursesChanged);
 
+    // The frontier-tile gate (i.e. "you must finish lesson N before
+    // lesson N+1 unlocks") reads currentLessonIndex out of the per-course
+    // progress notifier, so the roadmap needs to rebuild whenever a
+    // Finish-button tap bumps it.
+    courseProgressNotifier.addListener(handlePurchasedCoursesChanged);
+
     progressRingController = AnimationController(
       vsync: this,
       duration: RLDS.opacityFadeDurationIntro,
@@ -188,9 +195,25 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
     return PurchaseService.isCoursePurchased(widget.courseId);
   }
 
+  // The highest lesson index the reader has reached on this course. Used
+  // by the path to gate which tiles are tappable (i <= frontier) and to
+  // mark the active node. Returns 0 for a fresh purchase (lesson 0
+  // tappable, rest locked) and stays 0 for unpurchased courses too —
+  // the purchase gate already overrides everything in that case.
+  int getCurrentLessonFrontier() {
+    final CourseProgressModel? progress = courseProgressNotifier.value[widget.courseId];
+
+    if (progress == null) {
+      return 0;
+    }
+
+    return progress.currentLessonIndex;
+  }
+
   @override
   void dispose() {
     purchasedCoursesNotifier.removeListener(handlePurchasedCoursesChanged);
+    courseProgressNotifier.removeListener(handlePurchasedCoursesChanged);
     scrollController.removeListener(handleScrollUpdate);
     scrollController.dispose();
     progressRingController.dispose();
@@ -291,6 +314,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
             lessonKeys: lessonKeys,
             accentColor: getCourseAccentColor(),
             isCoursePurchased: isCoursePurchased,
+            currentLessonFrontier: getCurrentLessonFrontier(),
             onLessonTap: navigateToLesson,
             breathingAnimation: breathingAnimation,
           ),
@@ -563,36 +587,69 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
     return RLSkillBookImage(courseColor: courseData?['color'] as String?, size: skillBookSize);
   }
 
+  // While the course is locked the entire frosted disc gets a darkening
+  // film + a centred lock glyph stacked on top — sized and shaped to
+  // match the book-ring pane (a circle at progressRingSize) so the gate
+  // reads as "the whole disc is locked" instead of "a square box
+  // pasted on the book". Plain Stack, no blur — the book cover and the
+  // progress arc still show through the dim. Drops the moment a
+  // purchase flips purchasedCoursesNotifier and the parent rebuilds.
+  static const double discLockOverlayAlpha = 0.55;
+  static const double discLockGlyphSize = RLDS.iconXXLarge;
+
+  Widget LockedDiscOverlay() {
+    final Color overlayColor = RLDS.black.withValues(alpha: discLockOverlayAlpha);
+
+    const Widget LockGlyph = Icon(Pixel.lock, color: RLDS.white, size: discLockGlyphSize);
+
+    final BoxDecoration overlayDecoration = BoxDecoration(
+      color: overlayColor,
+      shape: BoxShape.circle,
+    );
+
+    return Container(
+      width: progressRingSize,
+      height: progressRingSize,
+      decoration: overlayDecoration,
+      alignment: Alignment.center,
+      child: LockGlyph,
+    );
+  }
+
   Widget ProgressRing() {
     final Color accentColor = getCourseAccentColor();
-    final Widget bookCover = CourseBookImage();
+    final bool isCoursePurchased = getIsCoursePurchased();
+
+    final List<Widget> ringLayers = [
+      // Progress arc — the unfilled portion is left transparent so the
+      // frosted-dark disc underneath shows through instead of a ghost
+      // ring. Painted at 0.5 opacity so it reads as an atmospheric
+      // halo rather than competing with the book cover at its centre.
+      // Driven off progressRingAnimation so the arc sweeps from 0 to
+      // its target with an ease-out curve on screen open.
+      SizedBox(
+        width: progressRingSize,
+        height: progressRingSize,
+        child: AnimatedProgressArc(
+          animation: progressRingAnimation,
+          color: RLDS.glass70(accentColor),
+          strokeWidth: progressRingStrokeWidth,
+        ),
+      ),
+
+      // Book cover in centre — always rendered; the locked-disc overlay
+      // sits on top so the cover art still reads through the dim.
+      CourseBookImage(),
+    ];
+
+    if (!isCoursePurchased) {
+      ringLayers.add(LockedDiscOverlay());
+    }
 
     return SizedBox(
       width: progressRingSize,
       height: progressRingSize,
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          // Progress arc — the unfilled portion is left transparent so the
-          // frosted-dark disc underneath shows through instead of a ghost
-          // ring. Painted at 0.5 opacity so it reads as an atmospheric
-          // halo rather than competing with the book cover at its centre.
-          // Driven off progressRingAnimation so the arc sweeps from 0 to
-          // its target with an ease-out curve on screen open.
-          SizedBox(
-            width: progressRingSize,
-            height: progressRingSize,
-            child: AnimatedProgressArc(
-              animation: progressRingAnimation,
-              color: RLDS.glass70(accentColor),
-              strokeWidth: progressRingStrokeWidth,
-            ),
-          ),
-
-          // Book cover in center
-          bookCover,
-        ],
-      ),
+      child: Stack(alignment: Alignment.center, children: ringLayers),
     );
   }
 
@@ -715,6 +772,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
   }
 
   void handleBackTap() {
+    SoundService.playRandomTextClick();
     Navigator.of(context).pop();
   }
 
@@ -778,15 +836,23 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
   }
 }
 
-// Path with connected lesson nodes. Lock rule: every tile is locked unless
-// the lesson is flagged `isFree: true` in the course JSON. Once the course
-// is purchased, purchasedCoursesNotifier flips, the parent rebuilds, and
-// every paid tile drops to unlocked in the same frame.
+// Path with connected lesson nodes. Two locks gate each tile:
+//   1. Course purchase gate — every tile is locked until the course is
+//      bought, except lessons flagged `isFree: true` in the course JSON
+//      which stay tappable as previews.
+//   2. Frontier gate — once purchased, only tiles up to and including
+//      `currentLessonFrontier` are tappable, so the reader has to finish
+//      the active lesson (which then bumps the frontier) before the
+//      next one unlocks.
+// Both notifiers (purchasedCoursesNotifier, courseProgressNotifier) drive
+// a setState on the parent so the path re-renders the moment either
+// changes.
 class PathWithNodes extends StatelessWidget {
   final List<dynamic> lessons;
   final List<GlobalKey> lessonKeys;
   final Color accentColor;
   final bool isCoursePurchased;
+  final int currentLessonFrontier;
   final Function(int, int) onLessonTap;
   // Shared with the BookRingPane so every lesson tile breathes in lock-step
   // with the book disc — one heartbeat across the screen instead of N
@@ -799,6 +865,7 @@ class PathWithNodes extends StatelessWidget {
     required this.lessonKeys,
     required this.accentColor,
     required this.isCoursePurchased,
+    required this.currentLessonFrontier,
     required this.onLessonTap,
     required this.breathingAnimation,
   });
@@ -813,11 +880,15 @@ class PathWithNodes extends StatelessWidget {
 
     for (int lessonIndex = 0; lessonIndex < lessons.length; lessonIndex++) {
       final JSONMap lesson = lessons[lessonIndex] as JSONMap;
-      // Tile-lock = course-wide purchase gate, lifted only by the
-      // per-lesson `isFree` flag. Any lesson without that flag stays
-      // locked until the course is purchased.
       final bool isFreePreview = (lesson['isFree'] as bool?) ?? false;
-      final bool isLocked = !isCoursePurchased && !isFreePreview;
+
+      // Tile-lock = course-wide purchase gate (with isFree preview
+      // exemption) OR frontier gate (lesson sits past the highest
+      // unlocked one for a purchased course).
+      final bool failsPurchaseGate = !isCoursePurchased && !isFreePreview;
+      final bool failsFrontierGate = isCoursePurchased && lessonIndex > currentLessonFrontier;
+      final bool isLocked = failsPurchaseGate || failsFrontierGate;
+      final bool isActiveFrontier = isCoursePurchased && lessonIndex == currentLessonFrontier;
 
       // Determine horizontal alignment (zigzag pattern)
       final PathNodeAlignment alignment = getAlignmentForIndex(lessonIndex);
@@ -837,6 +908,7 @@ class PathWithNodes extends StatelessWidget {
           alignment: alignment,
           accentColor: accentColor,
           isLocked: isLocked,
+          isActiveFrontier: isActiveFrontier,
           onTap: () => onLessonTap(lessonIndex, 0),
           breathingAnimation: breathingAnimation,
         ),
@@ -886,6 +958,12 @@ class PathLessonNode extends StatefulWidget {
   final PathNodeAlignment alignment;
   final Color accentColor;
   final bool isLocked;
+  // True for the single tile that sits at the reader's current frontier
+  // (the tappable one furthest down the path). The tile reuses the
+  // existing unlocked styling but the parent could later overlay a
+  // distinct marker if the design wants the active lesson called out
+  // beyond "tappable".
+  final bool isActiveFrontier;
   final VoidCallback onTap;
   final Animation<double> breathingAnimation;
 
@@ -895,6 +973,7 @@ class PathLessonNode extends StatefulWidget {
     required this.alignment,
     required this.accentColor,
     required this.isLocked,
+    required this.isActiveFrontier,
     required this.onTap,
     required this.breathingAnimation,
   });

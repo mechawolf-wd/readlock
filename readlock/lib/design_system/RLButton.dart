@@ -121,7 +121,12 @@ class RLButton extends StatelessWidget {
     required EdgeInsets? margin,
     required VoidCallback? onTap,
   }) {
+    // Opaque hit-testing so the entire padded surface (not just the label
+    // glyph itself) accepts taps. Without it the gaps either side of the
+    // centred label swallow hits, since there's no background fill of its
+    // own to defer to.
     return GestureDetector(
+      behavior: HitTestBehavior.opaque,
       onTap: wrapWithHaptic(onTap),
       child: Container(
         width: double.infinity,

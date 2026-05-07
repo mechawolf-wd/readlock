@@ -9,7 +9,7 @@ part of 'CourseProgressModel.dart';
 CourseProgressModel _$CourseProgressModelFromJson(Map<String, dynamic> json) =>
     CourseProgressModel(
       courseId: json['courseId'] as String,
-      lastPackageId: json['lastPackageId'] as String?,
+      currentLessonIndex: (json['currentLessonIndex'] as num?)?.toInt() ?? 0,
       unlockedPackageIds:
           (json['unlockedPackageIds'] as List<dynamic>?)
               ?.map((item) => item as String)
@@ -21,6 +21,6 @@ Map<String, dynamic> _$CourseProgressModelToJson(
         CourseProgressModel instance) =>
     <String, dynamic>{
       'courseId': instance.courseId,
-      'lastPackageId': instance.lastPackageId,
+      'currentLessonIndex': instance.currentLessonIndex,
       'unlockedPackageIds': instance.unlockedPackageIds,
     };

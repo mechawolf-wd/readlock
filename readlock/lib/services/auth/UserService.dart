@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:readlock/constants/DartAliases.dart';
 import 'package:readlock/constants/FirebaseConfig.dart';
+import 'package:readlock/models/CourseProgressModel.dart';
 import 'package:readlock/models/UserModel.dart';
 import 'package:readlock/services/LoggingService.dart';
 import 'package:readlock/services/auth/AuthService.dart';
@@ -30,6 +31,7 @@ class UserPreferenceField {
   static const String PURCHASED_COURSES = 'purchasedCourses';
   static const String BALANCE = 'balance';
   static const String TIME_SPENT_READING = 'timeSpentReading';
+  static const String COURSE_PROGRESS = 'courseProgress';
 }
 
 // * Starter feather balance credited to every new user document on
@@ -351,6 +353,101 @@ class UserService {
       return true;
     } on Exception catch (error) {
       logger.failure('incrementTimeSpentReading', '$error');
+      return false;
+    }
+  }
+
+  // * Course progress writers.
+  //
+  // Both writers mutate the courseProgress map's per-course entry via a
+  // dotted-path Firestore update (`courseProgress.{courseId}`) so a single
+  // round-trip touches one course's record without overwriting siblings.
+  // The local courseProgressNotifier is updated optimistically first, so
+  // the roadmap (and any other listener) sees the new state in the same
+  // frame the writer fires; a Firestore failure is logged but not rolled
+  // back since the user can retry the action and the field is monotonic.
+
+  // Seeds a fresh CourseProgressModel for a course the reader has just
+  // bought. currentLessonIndex starts at 0 (lesson 0 tappable, rest
+  // locked); subsequent advances ride the Finish button.
+  static Future<bool> initializeCourseProgress(String courseId) async {
+    final String? userId = AuthService.currentUserId;
+    final bool hasNoUser = userId == null;
+
+    if (hasNoUser) {
+      logger.info('initializeCourseProgress', 'No user logged in');
+      return false;
+    }
+
+    final CourseProgressModel seed = CourseProgressModel(courseId: courseId);
+    final Map<String, CourseProgressModel> nextProgress = {
+      ...courseProgressNotifier.value,
+      courseId: seed,
+    };
+
+    courseProgressNotifier.value = nextProgress;
+
+    try {
+      await userDoc(userId).update({
+        '${UserPreferenceField.COURSE_PROGRESS}.$courseId': seed.toJson(),
+      });
+
+      logger.success('initializeCourseProgress', 'courseId=$courseId');
+
+      return true;
+    } on Exception catch (error) {
+      logger.failure('initializeCourseProgress', '$error');
+      return false;
+    }
+  }
+
+  // Bumps `currentLessonIndex` if the supplied next-frontier value beats
+  // what's already stored. The max() guard makes the writer idempotent
+  // and monotonic — finishing an old lesson can't roll the frontier
+  // backwards, so the call site doesn't have to check first.
+  static Future<bool> advanceCourseProgress({
+    required String courseId,
+    required int nextLessonIndex,
+  }) async {
+    final String? userId = AuthService.currentUserId;
+    final bool hasNoUser = userId == null;
+
+    if (hasNoUser) {
+      logger.info('advanceCourseProgress', 'No user logged in');
+      return false;
+    }
+
+    final Map<String, CourseProgressModel> currentProgress =
+        courseProgressNotifier.value;
+    final CourseProgressModel? existing = currentProgress[courseId];
+    final CourseProgressModel base =
+        existing ?? CourseProgressModel(courseId: courseId);
+
+    final bool isAlreadyAhead = base.currentLessonIndex >= nextLessonIndex;
+
+    if (isAlreadyAhead) {
+      return true;
+    }
+
+    final CourseProgressModel updated =
+        base.copyWith(currentLessonIndex: nextLessonIndex);
+    final Map<String, CourseProgressModel> nextProgress = {
+      ...currentProgress,
+      courseId: updated,
+    };
+
+    courseProgressNotifier.value = nextProgress;
+
+    try {
+      await userDoc(userId).update({
+        '${UserPreferenceField.COURSE_PROGRESS}.$courseId': updated.toJson(),
+      });
+
+      logger.success('advanceCourseProgress', 'courseId=$courseId index=$nextLessonIndex');
+
+      return true;
+    } on Exception catch (error) {
+      logger.failure('advanceCourseProgress', '$error');
       return false;
     }
   }

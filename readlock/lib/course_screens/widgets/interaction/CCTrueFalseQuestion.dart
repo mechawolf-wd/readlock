@@ -55,24 +55,50 @@ class CCTrueFalseQuestionState extends State<CCTrueFalseQuestion> {
 
   @override
   Widget build(BuildContext context) {
-    return Div.column(
-      [
-        // Question text
-        QuestionText(),
+    return Padding(
+      padding: const EdgeInsets.all(RLDS.spacing24),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          // Question text
+          QuestionText(),
 
-        const Spacing.height(RLDS.spacing16),
+          const Spacing.height(RLDS.spacing16),
 
-        // True/False button row
-        ButtonRow(),
+          // True/False button row
+          ButtonRow(),
 
-        const Spacing.height(RLDS.spacing16),
+          const Spacing.height(RLDS.spacing16),
 
-        // Explanation section
-        ExplanationSection(),
-      ],
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      mainAxisAlignment: MainAxisAlignment.start,
-      padding: RLDS.spacing24,
+          // Explanation section
+          ExplanationSection(),
+
+          // Empty space below content also lifts the button blur on first
+          // tap. Lets the reader unblur by tapping anywhere below the
+          // statement, not just on a button.
+          Expanded(child: BottomUnblurTapArea()),
+        ],
+      ),
+    );
+  }
+
+  // Transparent fill below the explanation that, while the buttons are
+  // still blurred, behaves as a synonym for tapping a button: first tap
+  // clears the blur on both buttons. After the buttons are unblurred (or
+  // the question is answered) it stays inert so it doesn't intercept
+  // anything else.
+  Widget BottomUnblurTapArea() {
+    final bool shouldHandleTap =
+        isStatementRevealed && !areButtonsUnblurred && !hasAnswered;
+
+    if (!shouldHandleTap) {
+      return const SizedBox.expand();
+    }
+
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: handleButtonsUnblur,
+      child: const SizedBox.expand(),
     );
   }
 

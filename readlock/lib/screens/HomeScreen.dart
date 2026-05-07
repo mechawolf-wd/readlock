@@ -121,6 +121,8 @@ class HomeScreenState extends State<HomeScreen> {
   // button. The toast is the only feedback in that case — the success
   // chime only plays when a fresh course is actually picked.
   void handleRandomBookTap() {
+    HapticsService.lightImpact();
+
     final Set<String> ownedCourseIds = purchasedCoursesNotifier.value;
 
     final JSONList unownedCourses = availableCourses.where((course) {
@@ -136,7 +138,6 @@ class HomeScreenState extends State<HomeScreen> {
       return;
     }
 
-    // RLCard fires its own haptic on tap — no need for a second one here.
     final int randomIndex = Random().nextInt(unownedCourses.length);
     final JSONMap randomCourse = unownedCourses[randomIndex];
     final String randomCourseId = randomCourse['course-id'] as String;
@@ -179,7 +180,7 @@ class HomeScreenState extends State<HomeScreen> {
       return const RLLoadingIndicator.bird(key: ValueKey('home-loading'));
     }
 
-    return Padding(
+    return SingleChildScrollView(
       key: const ValueKey('home-content'),
       padding: const EdgeInsets.all(RLDS.spacing24),
       child: Div.column([
@@ -191,7 +192,7 @@ class HomeScreenState extends State<HomeScreen> {
 
         const Spacing.height(RLDS.spacing40),
 
-        Expanded(child: HomeContent()),
+        HomeContent(),
       ], crossAxisAlignment: CrossAxisAlignment.stretch),
     );
   }

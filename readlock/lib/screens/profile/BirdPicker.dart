@@ -216,6 +216,49 @@ final List<BirdOption> ONBOARDING_BIRD_OPTIONS = BIRD_OPTIONS
     .where((BirdOption bird) => bird.unlockSkillbooks == 0)
     .toList(growable: false);
 
+// * Display-name map — purely a UI-layer concern. The canonical
+// `BirdOption.name` (Sparrow, Pigeon, ...) is what's persisted to
+// Firestore as the user's chosen bird, never replaced by these labels.
+// Each bird's display name reaches for the language native to where
+// that species is from or culturally anchored, so the picker reads as
+// a small atlas instead of a flat English list:
+//   Sparrow       → Passero        (Italian, ties to genus Passer)
+//   Pigeon        → Piccione       (Italian, Mediterranean rock dove)
+//   Collared Dove → Kumru          (Turkish, spread through Europe from
+//                                   Turkey/Balkans)
+//   Crow          → Karasu         (Japanese, strong cultural anchor)
+//   Blue Macaw    → Arara-azul     (Brazilian Portuguese, endemic to Brazil)
+//   Flamingo      → Flamenco       (Spanish, origin of the word)
+//   Kiwi          → Kiwi           (Maori, already native)
+//   Shoebill      → Abu Markub     (Arabic, "father of the shoe", its
+//                                   Sudan/Uganda nickname)
+//   Toucan        → Tucano         (Brazilian Portuguese, closest to the
+//                                   original Tupi "tukana")
+const Map<String, String> BIRD_DISPLAY_NAMES_BY_CANONICAL = {
+  'Sparrow': 'Passero',
+  'Pigeon': 'Piccione',
+  'Collared Dove': 'Kumru',
+  'Crow': 'Karasu',
+  'Blue Macaw': 'Arara-azul',
+  'Flamingo': 'Flamenco',
+  'Kiwi': 'Kiwi',
+  'Shoebill': 'Abu Markub',
+  'Toucan': 'Tucano',
+};
+
+// Resolves the localised display name for a bird, falling back to the
+// canonical English name when no override is registered (so a future
+// bird that hasn't been mapped yet still renders something sensible).
+String getBirdDisplayName(BirdOption bird) {
+  final String? mappedName = BIRD_DISPLAY_NAMES_BY_CANONICAL[bird.name];
+
+  if (mappedName == null) {
+    return bird.name;
+  }
+
+  return mappedName;
+}
+
 // Shared Images cache so Flame.images doesn't need reconfiguring globally
 final Images birdImageCache = Images(prefix: BIRD_ASSET_PREFIX);
 
@@ -324,11 +367,20 @@ class BirdCarousel extends StatefulWidget {
   // onboarding passes ONBOARDING_BIRD_OPTIONS so a brand-new reader
   // sees only the three free starters.
   final List<BirdOption> birds;
+  // When true (the default), landing on an unlocked bird commits it as
+  // the reader's profile bird (selectedBirdNotifier + Firestore write)
+  // and locked birds snap back to the previously committed selection.
+  // When false the carousel runs as a browser only — the reader can
+  // swipe freely across every bird (locked included), feedback still
+  // fires on every page change, but nothing is persisted and no snap-
+  // back interrupts the swipe.
+  final bool persistSelection;
 
   const BirdCarousel({
     super.key,
     this.height = BIRD_CAROUSEL_HEIGHT,
     this.birds = BIRD_OPTIONS,
+    this.persistSelection = true,
   });
 
   @override
@@ -394,7 +446,12 @@ class BirdCarouselState extends State<BirdCarousel> {
       displayedIndex = newIndex;
     });
 
-    if (isLocked) {
+    // Snap-back only fires when the carousel is in commit mode — in
+    // browse-only mode (persistSelection == false) locked birds are
+    // valid stops since nothing is being saved.
+    final bool shouldSnapBackFromLocked = isLocked && widget.persistSelection;
+
+    if (shouldSnapBackFromLocked) {
       // The carousel let the user swipe onto a locked bird so they can see
       // it; selection itself is gated. Snap back to whatever was already
       // selected without firing the usual feedback. The trailing
@@ -409,6 +466,10 @@ class BirdCarouselState extends State<BirdCarousel> {
 
     HapticsService.selectionClick();
     SoundService.playRandomTextClick();
+
+    if (!widget.persistSelection) {
+      return;
+    }
 
     setState(() {
       selectedIndex = newIndex;
@@ -520,7 +581,8 @@ class BirdNameLabel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Widget nameText = RLTypography.headingLarge(bird.name, color: RLDS.primary);
+    final String displayName = getBirdDisplayName(bird);
+    final Widget nameText = RLTypography.headingLarge(displayName, color: RLDS.primary);
 
     if (!isLocked) {
       return nameText;

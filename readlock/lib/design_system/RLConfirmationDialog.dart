@@ -275,7 +275,11 @@ class ConfirmationDialogContent extends StatelessWidget {
       action.onTap?.call();
     }
 
+    // Opaque hit-testing so the whole padded square (not just the glyph
+    // itself) accepts taps. The empty padding around the pause icon used
+    // to swallow hits because it had no fill of its own to defer to.
     return GestureDetector(
+      behavior: HitTestBehavior.opaque,
       onTap: onIconCancelTap,
       child: Padding(padding: buttonPadding, child: iconWidget),
     );

@@ -158,7 +158,7 @@ class SheetContainer extends StatelessWidget {
 
     if (useLunarBlurSurface) {
       return RLLunarBlur(
-        borderRadius: RLDS.borderRadiusTopLarge,
+        borderRadius: RLDS.borderRadiusModalTop,
         surfaceColor: sheetColor,
         borderColor: RLDS.transparent,
         child: sheetContent,
@@ -167,7 +167,7 @@ class SheetContainer extends StatelessWidget {
 
     final BoxDecoration solidDecoration = BoxDecoration(
       color: sheetColor,
-      borderRadius: RLDS.borderRadiusTopLarge,
+      borderRadius: RLDS.borderRadiusModalTop,
     );
 
     return Container(decoration: solidDecoration, child: sheetContent);
@@ -212,7 +212,7 @@ class FullHeightSheetContainer extends StatelessWidget {
     return SizedBox(
       height: sheetHeight,
       child: RLLunarBlur(
-        borderRadius: RLDS.borderRadiusTopLarge,
+        borderRadius: RLDS.borderRadiusModalTop,
         surfaceColor: backgroundColor,
         borderColor: RLDS.transparent,
         child: Column(

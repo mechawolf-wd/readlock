@@ -258,7 +258,6 @@ class NightShiftSheetState extends State<NightShiftSheet> {
     }
 
     HapticsService.selectionClick();
-    SoundService.playRandomTextClick();
 
     setState(() {
       scheduleFromMinutes = nextMinutes;
@@ -278,7 +277,6 @@ class NightShiftSheetState extends State<NightShiftSheet> {
     }
 
     HapticsService.selectionClick();
-    SoundService.playRandomTextClick();
 
     setState(() {
       scheduleToMinutes = nextMinutes;
