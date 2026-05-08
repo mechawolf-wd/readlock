@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:readlock/constants/DartAliases.dart';
 import 'package:readlock/models/CourseProgressModel.dart';
+import 'package:readlock/models/PurchasedCourseModel.dart';
+import 'package:readlock/services/purchases/PurchaseConstants.dart';
 
 part 'UserModel.g.dart';
 
@@ -94,12 +96,25 @@ class UserModel {
   // the home screen. Null until the reader taps their first node.
   final String? lastOpenedCourseId;
 
-  // * Course-ids the user has purchased with feathers. Roadmap unlocks
-  // the lesson tiles and the continue button only when the course's id
-  // is in this list; otherwise the roadmap shows a feather-priced
-  // purchase button instead.
-  @JsonKey(defaultValue: <String>[])
-  final List<String> purchasedCourses;
+  // * Library entries — a flat array of {courseId, expires} records.
+  // Each entry carries the rental's expiry: a fresh purchase grants
+  // COURSE_RENTAL_DAYS, the resurrect flow (COURSE_RESURRECT_COST
+  // feathers, only after expiry) extends it by another window. The
+  // roadmap unlocks lesson tiles and the continue button when the
+  // course has an entry here; expired rows surface the resurrect
+  // affordance instead of the purchase button.
+  //
+  // The custom fromJson absorbs three shapes Firestore could hold:
+  //   1. The current array of objects (target shape).
+  //   2. A legacy `List<String>` of course-ids written before the
+  //      expiry mechanic landed.
+  //   3. A transient `Map<String, dynamic>` shape from the brief
+  //      keyed-map iteration of this field.
+  // Cases 2 and 3 are silently migrated into the new array; legacy
+  // ids get a fresh window from the moment the doc is read so a
+  // schema change never strands a reader mid-course.
+  @JsonKey(fromJson: purchasedCoursesFromJson, toJson: purchasedCoursesToJson)
+  final List<PurchasedCourseModel> purchasedCourses;
 
   // * Feather wallet, count of feathers the user owns. Spent on course
   // purchases, topped up by tier purchases in the Feathers sheet.
@@ -148,7 +163,7 @@ class UserModel {
     this.nightShiftScheduleToMinutes = 360,
     this.birdName = 'Sparrow',
     this.lastOpenedCourseId,
-    this.purchasedCourses = const <String>[],
+    this.purchasedCourses = const <PurchasedCourseModel>[],
     this.balance = 0,
     this.timeSpentReading = 0,
     this.courseProgress = const <String, CourseProgressModel>{},
@@ -197,7 +212,7 @@ class UserModel {
     int? nightShiftScheduleToMinutes,
     String? birdName,
     String? lastOpenedCourseId,
-    List<String>? purchasedCourses,
+    List<PurchasedCourseModel>? purchasedCourses,
     int? balance,
     int? timeSpentReading,
     Map<String, CourseProgressModel>? courseProgress,
@@ -253,3 +268,75 @@ DateTime timestampFromJson(dynamic value) {
 }
 
 dynamic timestampToJson(DateTime value) => Timestamp.fromDate(value);
+
+// purchasedCourses converters. Tolerant of three Firestore shapes:
+//
+//   1. List<Map>     — current shape, an array of {courseId, expires}
+//                      records, parsed straight through PurchasedCourseModel.
+//   2. List<String>  — legacy shape from before the expiry mechanic;
+//                      migrated by granting each id a fresh
+//                      COURSE_RENTAL_DAYS window from now.
+//   3. Map<String,_> — transient shape from the brief keyed-map
+//                      iteration; the map key is folded into the new
+//                      record as the courseId.
+//
+// Anything else (or null) collapses to an empty library so a corrupt
+// or missing field never crashes the profile load.
+List<PurchasedCourseModel> purchasedCoursesFromJson(dynamic value) {
+  if (value is List) {
+    final List<PurchasedCourseModel> entries = <PurchasedCourseModel>[];
+    final DateTime migratedExpires = DateTime.now().add(
+      const Duration(days: PurchaseConstants.COURSE_RENTAL_DAYS),
+    );
+
+    for (final dynamic entry in value) {
+      if (entry is Map) {
+        final JSONMap entryMap = JSONMap.from(entry);
+        final PurchasedCourseModel parsed = PurchasedCourseModel.fromJson(entryMap);
+
+        // Defensive — earlier shape iterations of this field could have
+        // landed Map entries in a list that didn't carry courseId
+        // alongside expires. PurchasedCourseModel falls back to an
+        // empty courseId rather than crashing, so we filter the
+        // ghost row out here. The slot reappears the next time the
+        // reader buys or charges the course.
+        final bool hasCourseId = parsed.courseId.isNotEmpty;
+
+        if (hasCourseId) {
+          entries.add(parsed);
+        }
+
+        continue;
+      }
+
+      if (entry is String) {
+        entries.add(PurchasedCourseModel(courseId: entry, expires: migratedExpires));
+      }
+    }
+
+    return entries;
+  }
+
+  if (value is Map) {
+    final List<PurchasedCourseModel> entries = <PurchasedCourseModel>[];
+
+    value.forEach((dynamic key, dynamic raw) {
+      final bool isValidEntry = key is String && raw is Map && key.isNotEmpty;
+
+      if (isValidEntry) {
+        final JSONMap entryMap = JSONMap.from(raw);
+        final JSONMap entryWithId = {...entryMap, 'courseId': key};
+
+        entries.add(PurchasedCourseModel.fromJson(entryWithId));
+      }
+    });
+
+    return entries;
+  }
+
+  return <PurchasedCourseModel>[];
+}
+
+List<JSONMap> purchasedCoursesToJson(List<PurchasedCourseModel> value) {
+  return value.map((PurchasedCourseModel entry) => entry.toJson()).toList();
+}

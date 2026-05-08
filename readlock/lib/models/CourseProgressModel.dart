@@ -16,10 +16,6 @@ part 'CourseProgressModel.g.dart';
 // when N == currentLessonIndex bumps the index to N + 1; finishing an
 // already-completed lesson is a no-op (the max() guard in the writer
 // keeps the field monotonic).
-//
-// `unlockedPackageIds` is preserved as a forward-compatibility carry-
-// through for any package-level metadata older clients wrote — nothing
-// in the current code path touches it.
 @JsonSerializable(explicitToJson: true)
 class CourseProgressModel {
   final String courseId;
@@ -27,13 +23,9 @@ class CourseProgressModel {
   @JsonKey(defaultValue: 0)
   final int currentLessonIndex;
 
-  @JsonKey(defaultValue: <String>[])
-  final List<String> unlockedPackageIds;
-
   const CourseProgressModel({
     required this.courseId,
     this.currentLessonIndex = 0,
-    this.unlockedPackageIds = const <String>[],
   });
 
   factory CourseProgressModel.fromJson(JSONMap json) =>
@@ -41,14 +33,10 @@ class CourseProgressModel {
 
   JSONMap toJson() => _$CourseProgressModelToJson(this);
 
-  CourseProgressModel copyWith({
-    int? currentLessonIndex,
-    List<String>? unlockedPackageIds,
-  }) {
+  CourseProgressModel copyWith({int? currentLessonIndex}) {
     return CourseProgressModel(
       courseId: courseId,
       currentLessonIndex: currentLessonIndex ?? this.currentLessonIndex,
-      unlockedPackageIds: unlockedPackageIds ?? this.unlockedPackageIds,
     );
   }
 }

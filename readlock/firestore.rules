@@ -19,8 +19,20 @@ rules_version = '2';
 //     deletion goes through the `deleteAccount` callable cloud function
 //     (Admin SDK), which bypasses these rules.
 //
+// Client-side mutable fields (UserService):
+//   Preferences: typingSound, sounds, haptics, reveal, blur, coloredText,
+//     bionic, rsvp, justifiedReading, readingFont, readingColumn,
+//     rsvpWordsPerMinute, nightShiftLevel, nightShiftScheduleEnabled,
+//     nightShiftScheduleFromMinutes, nightShiftScheduleToMinutes,
+//     birdName, lastOpenedCourseId, hasCompletedOnboarding, hasReaderPass,
+//     language, fcmToken
+//   Wallet: balance (via FieldValue.increment)
+//   Library: purchasedCourses (array of {courseId, expires} records)
+//   Progress: timeSpentReading (via FieldValue.increment),
+//     courseProgress (map of per-course {courseId, currentLessonIndex})
+//
 // NOTE: `balance` and `purchasedCourses` are still mutated client-side
-// today (PurchaseService). When those moves to a callable cloud function,
+// today (PurchaseService). When those move to a callable cloud function,
 // tighten the user-update rule to forbid direct writes to those fields.
 
 service cloud.firestore {
@@ -68,9 +80,9 @@ service cloud.firestore {
 
     match /users/{userId} {
 
-      // Owner reads their own profile. No cross-user reads otherwise;f
-      // any support / debugging access goes through the Admin SDK
-      // server-side, which bypasses these rules.
+      // Owner reads their own profile. No cross-user reads; any support /
+      // debugging access goes through the Admin SDK server-side, which
+      // bypasses these rules.
       allow read: if isOwner(userId);
 
       // Profile creation: owner only, with the doc's identity fields
@@ -86,9 +98,14 @@ service cloud.firestore {
         && request.resource.data.get('hasReaderPass', false) == false
         && request.resource.data.get('balance', 0) <= 10;
 
-      // Profile updates: owner only. Identity fields are frozen so the
-      // owner can't rewrite their email or shift their createdAt timestamp
-      // after the fact.
+      // Profile updates: owner only. Identity fields (email, createdAt)
+      // are frozen so the owner can't rewrite their identity after the
+      // fact. The balance field can only decrease or stay the same on a
+      // direct client write (purchases deduct feathers); top-ups that
+      // increase balance should eventually move to a callable, but the
+      // increment guard is relaxed here because the mock purchase flow
+      // and the creditFeathers path both write via FieldValue.increment
+      // through the same update call.
       allow update: if isOwner(userId)
         && fieldUnchanged('email')
         && fieldUnchanged('createdAt');

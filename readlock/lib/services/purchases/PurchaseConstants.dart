@@ -7,4 +7,12 @@
 
 class PurchaseConstants {
   static const int COURSE_PURCHASE_COST = 10;
+
+  // Rental window granted on every purchase and on every resurrect.
+  static const int COURSE_RENTAL_DAYS = 14;
+
+  // Feathers spent to resurrect an expired course for another rental
+  // window. Resurrect is only allowed once the existing entry's expires
+  // timestamp has passed.
+  static const int COURSE_RESURRECT_COST = 2;
 }

@@ -22,6 +22,7 @@ import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/constants/RLUIStrings.dart';
 import 'package:readlock/constants/DartAliases.dart';
+import 'package:readlock/models/PurchasedCourseModel.dart';
 import 'package:readlock/services/ConnectivityService.dart';
 import 'package:readlock/services/feedback/HapticsService.dart';
 import 'package:readlock/services/feedback/SoundService.dart';
@@ -524,9 +525,13 @@ class CoursesScreenState extends State<CoursesScreen> {
   // CoursePurchaseBottomSheet flips purchasedCoursesNotifier and the cart
   // icon disappears from that course's row in the same frame.
   Widget CoursesScrollList(JSONList courses, {required bool showLoadMore}) {
-    return ValueListenableBuilder<Set<String>>(
+    return ValueListenableBuilder<List<PurchasedCourseModel>>(
       valueListenable: purchasedCoursesNotifier,
-      builder: (BuildContext context, Set<String> purchasedCourses, Widget? _) {
+      builder: (
+        BuildContext context,
+        List<PurchasedCourseModel> purchasedCourses,
+        Widget? _,
+      ) {
         final List<Widget> listChildren = List<Widget>.from(
           CourseCards(courses, purchasedCourses),
         );
@@ -570,7 +575,10 @@ class CoursesScreenState extends State<CoursesScreen> {
   // courses read as "in your collection" without a redundant buy
   // affordance. Tapping the cart opens the purchase sheet without
   // triggering the row's navigate-to-roadmap onTap.
-  List<Widget> CourseCards(JSONList courses, Set<String> purchasedCourses) {
+  List<Widget> CourseCards(
+    JSONList courses,
+    List<PurchasedCourseModel> purchasedCourses,
+  ) {
     return courses.map((course) {
       final String courseTitle = course['title'] as String? ?? '';
       final String courseAuthor = course['author'] as String? ?? '';
@@ -578,7 +586,9 @@ class CoursesScreenState extends State<CoursesScreen> {
       final String? courseColor = course['color'] as String?;
       final String courseId = course['course-id'] as String? ?? '';
 
-      final bool isOwned = purchasedCourses.contains(courseId);
+      final bool isOwned = purchasedCourses.any(
+        (PurchasedCourseModel entry) => entry.courseId == courseId,
+      );
 
       void openPurchaseSheet() {
         SoundService.playRandomTextClick();

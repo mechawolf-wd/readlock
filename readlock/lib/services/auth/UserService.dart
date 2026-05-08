@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:readlock/constants/DartAliases.dart';
 import 'package:readlock/constants/FirebaseConfig.dart';
 import 'package:readlock/models/CourseProgressModel.dart';
+import 'package:readlock/models/PurchasedCourseModel.dart';
 import 'package:readlock/models/UserModel.dart';
 import 'package:readlock/services/LoggingService.dart';
 import 'package:readlock/services/auth/AuthService.dart';
@@ -159,7 +160,7 @@ class UserService {
         UserPreferenceField.NIGHT_SHIFT_SCHEDULE_TO_MINUTES: 360,
         UserPreferenceField.BIRD_NAME: 'Sparrow',
         UserPreferenceField.LAST_OPENED_COURSE_ID: null,
-        UserPreferenceField.PURCHASED_COURSES: <String>[],
+        UserPreferenceField.PURCHASED_COURSES: <JSONMap>[],
         UserPreferenceField.BALANCE: NEW_USER_STARTING_BALANCE,
         UserPreferenceField.TIME_SPENT_READING: NEW_USER_STARTING_TIME_SPENT_READING_SECONDS,
       };
@@ -295,11 +296,12 @@ class UserService {
 
   // * Feather wallet (balance) and course purchases.
   //
-  // Both writes are atomic Firestore operations: balance uses
-  // FieldValue.increment so concurrent ticks add up cleanly, and
-  // purchasedCourses uses arrayUnion so re-running a purchase is
-  // idempotent. Callers (PurchaseService) should still update the
-  // local notifiers optimistically for instant UI feedback.
+  // Balance uses FieldValue.increment so concurrent ticks add up cleanly.
+  // purchasedCourses is a flat array of {courseId, expires} records,
+  // so writes rewrite the whole field with the caller's already-
+  // reconciled list (a fresh purchase appends; a resurrect replaces
+  // the matching element in place). Callers (PurchaseService) still
+  // update the local notifiers optimistically for instant UI feedback.
 
   static Future<bool> incrementBalance(int delta) async {
     final String? userId = AuthService.currentUserId;
@@ -339,9 +341,17 @@ class UserService {
     }
 
     // Optimistic bump so subscribers (the bookshelf reading-time counter)
-    // see the new total the moment a session ends, without waiting for the
-    // Firestore round-trip below.
-    timeSpentReadingNotifier.value = timeSpentReadingNotifier.value + seconds;
+    // see the new total the moment a session ends, without waiting for
+    // the Firestore round-trip below. Deferred to a microtask because
+    // the most common caller (CourseContentViewer.dispose ->
+    // commitReadingTime) runs inside the framework's lockState window
+    // during finalizeTree; setting the notifier synchronously would
+    // fire ValueListenableBuilder's setState while the tree is locked
+    // and assert. The microtask drains right after the current frame
+    // unwinds, so the bookshelf still sees the bump on its next build.
+    Future.microtask(() {
+      timeSpentReadingNotifier.value = timeSpentReadingNotifier.value + seconds;
+    });
 
     try {
       await userDoc(userId).update({
@@ -452,25 +462,36 @@ class UserService {
     }
   }
 
-  static Future<bool> addPurchasedCourse(String courseId) async {
+  // Rewrites the entire purchasedCourses array. Used by both the
+  // initial purchase (caller appends a fresh entry to the in-memory
+  // notifier and hands the whole list off) and the resurrect flow
+  // (caller swaps the matching element in place). Idempotent — a
+  // re-run with the same list just writes the same array.
+  static Future<bool> savePurchasedCourses(
+    List<PurchasedCourseModel> entries,
+  ) async {
     final String? userId = AuthService.currentUserId;
     final bool hasNoUser = userId == null;
 
     if (hasNoUser) {
-      logger.info('addPurchasedCourse', 'No user logged in');
+      logger.info('savePurchasedCourses', 'No user logged in');
       return false;
     }
 
+    final List<JSONMap> serialized = entries
+        .map((PurchasedCourseModel entry) => entry.toJson())
+        .toList();
+
     try {
       await userDoc(userId).update({
-        UserPreferenceField.PURCHASED_COURSES: FieldValue.arrayUnion([courseId]),
+        UserPreferenceField.PURCHASED_COURSES: serialized,
       });
 
-      logger.success('addPurchasedCourse', 'courseId=$courseId');
+      logger.success('savePurchasedCourses', 'count=${entries.length}');
 
       return true;
     } on Exception catch (error) {
-      logger.failure('addPurchasedCourse', '$error');
+      logger.failure('savePurchasedCourses', '$error');
       return false;
     }
   }

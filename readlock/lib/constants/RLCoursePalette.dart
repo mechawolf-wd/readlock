@@ -55,6 +55,21 @@ const Set<String> KNOWN_COURSE_COLORS = {
 
 const String COURSE_FALLBACK_COLOR_HEX = '9E7071';
 
+// * Charge bar tile colors, ordered from critical (red) to fully charged (green).
+// 7 tiles map to the rental window so the bar reads like a game health meter.
+// Changing COURSE_RENTAL_DAYS rescales automatically; the tile count is fixed.
+const int CHARGE_BAR_TILE_COUNT = 7;
+
+const List<Color> CHARGE_BAR_TILE_COLORS = [
+  Color(0xFFA90015),
+  Color(0xFFCE1400),
+  Color(0xFFDE5007),
+  Color(0xFFED7614),
+  Color(0xFFFFA214),
+  Color(0xFF47C53A),
+  Color(0xFF21983D),
+];
+
 // Asset paths — shared so the roadmap hero and every list card that renders
 // a course book pull from the same place.
 const String COURSE_BOOKS_ASSET_PREFIX = 'assets/books/';

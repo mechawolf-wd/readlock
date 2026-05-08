@@ -5,6 +5,7 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:readlock/design_system/RLChargeBar.dart';
 import 'package:readlock/design_system/RLCourseBookImage.dart';
 import 'package:readlock/services/feedback/HapticsService.dart';
 import 'package:readlock/bottom_sheets/NightShiftBottomSheet.dart';
@@ -26,6 +27,7 @@ import 'package:readlock/design_system/RLToast.dart';
 import 'package:readlock/services/auth/UserService.dart';
 import 'package:readlock/services/feedback/SoundService.dart';
 import 'package:readlock/models/CourseProgressModel.dart';
+import 'package:readlock/models/PurchasedCourseModel.dart';
 import 'package:readlock/services/purchases/PurchaseConstants.dart';
 import 'package:readlock/services/purchases/PurchaseNotifiers.dart';
 import 'package:readlock/services/purchases/PurchaseService.dart';
@@ -66,6 +68,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
   int lastLessonAtThreshold = -1;
   bool isProgrammaticScroll = false;
   bool isPurchasing = false;
+  bool isCharging = false;
 
   List<GlobalKey> lessonKeys = [];
   late ScrollController scrollController;
@@ -198,6 +201,69 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
     return PurchaseService.isCoursePurchased(widget.courseId);
   }
 
+  // Live read of the rental's expires timestamp. Null means the user
+  // doesn't own the course at all (purchase gate still applies); when
+  // the entry exists but expires has lapsed the book is "discharged"
+  // and only the resurrect/charge action can move forward.
+  PurchasedCourseModel? getPurchasedEntry() {
+    return PurchaseService.findPurchasedEntry(purchasedCoursesNotifier.value, widget.courseId);
+  }
+
+  bool getIsSkillbookCharged() {
+    return PurchaseService.isCourseActive(widget.courseId);
+  }
+
+  // Time left on the current rental. Floors at zero so the discharged
+  // state never reports a negative duration to the bar / label.
+  Duration getChargeRemainingDuration() {
+    final PurchasedCourseModel? entry = getPurchasedEntry();
+
+    if (entry == null) {
+      return Duration.zero;
+    }
+
+    final Duration remaining = entry.expires.difference(DateTime.now());
+    final bool hasExpired = remaining.isNegative;
+
+    if (hasExpired) {
+      return Duration.zero;
+    }
+
+    return remaining;
+  }
+
+  // Fraction of the rental window still on the meter. 1.0 right after a
+  // fresh purchase or a successful charge, 0.0 once the timer has lapsed.
+  // Drives the progress bar fill on the charge pill.
+  double getChargeFraction() {
+    final Duration remaining = getChargeRemainingDuration();
+    final Duration window = const Duration(days: PurchaseConstants.COURSE_RENTAL_DAYS);
+
+    final double rawFraction = remaining.inSeconds / window.inSeconds;
+    final double clampedFraction = rawFraction.clamp(0.0, 1.0).toDouble();
+
+    return clampedFraction;
+  }
+
+  // Human-readable "X days left" / "1 day left" / "8 hours left" suffix.
+  // Falls through to hours under a day so the last-day stretch still
+  // reads as a moving number rather than a stuck "0 days left".
+  String getChargeRemainingLabel() {
+    final Duration remaining = getChargeRemainingDuration();
+    final int totalDays = remaining.inDays;
+    final int totalHours = remaining.inHours;
+
+    if (totalDays > 1) {
+      return '$totalDays ${RLUIStrings.ROADMAP_DAYS_LEFT_SUFFIX}';
+    }
+
+    if (totalDays == 1) {
+      return '1 ${RLUIStrings.ROADMAP_DAY_LEFT_SUFFIX}';
+    }
+
+    return '$totalHours ${RLUIStrings.ROADMAP_HOURS_LEFT_SUFFIX}';
+  }
+
   // The highest lesson index the reader has reached on this course. Used
   // by the path to gate which tiles are tappable (i <= frontier) and to
   // mark the active node. Returns 0 for a fresh purchase (lesson 0
@@ -317,7 +383,8 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
             lessonKeys: lessonKeys,
             accentColor: getCourseAccentColor(),
             isCoursePurchased: isCoursePurchased,
-            currentLessonFrontier: getCurrentLessonFrontier(),
+            isSkillbookCharged: getIsSkillbookCharged(),
+            currentLessonFrontier: computeSegmentLocalFrontier(),
             onLessonTap: navigateToLesson,
             breathingAnimation: breathingAnimation,
           ),
@@ -365,6 +432,12 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
   // tinted button nested inside a card.
   Widget BottomFloatingBar() {
     final bool isCoursePurchased = getIsCoursePurchased();
+    final bool isSkillbookCharged = getIsSkillbookCharged();
+    final bool isOwnedAndDischarged = isCoursePurchased && !isSkillbookCharged;
+
+    if (isOwnedAndDischarged) {
+      return ChargeButton();
+    }
 
     if (isCoursePurchased) {
       return ContinueButton();
@@ -475,6 +548,99 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
     RLToast.error(context, RLUIStrings.ERROR_UNKNOWN);
   }
 
+  // * Skillbook charge button — shown when the course is owned but its
+  // rental has lapsed. Same frosted LunarBlur surface as PurchaseButton
+  // and ContinueButton so all three states feel like the same component
+  // swapping copy. Tapping fires PurchaseService.resurrectCourse which
+  // optimistically extends the entry's expires timestamp; success flips
+  // the bar back to ContinueButton in the next frame.
+  Widget ChargeButton() {
+    final Color accentColor = getCourseAccentColor();
+
+    const EdgeInsets buttonPadding = EdgeInsets.symmetric(
+      vertical: RLDS.spacing16,
+      horizontal: RLDS.spacing24,
+    );
+
+    final List<Widget> labelChildren;
+
+    if (isCharging) {
+      labelChildren = [
+        RLTypography.bodyLarge(RLUIStrings.ROADMAP_CHARGE_LOADING_LABEL, color: accentColor),
+      ];
+    } else {
+      // "Charge skillbook for 2 [feather]" — same shape as PurchaseButton
+      // so the bar reads as one component swapping copy + price.
+      final String chargeLabel =
+          '${RLUIStrings.ROADMAP_CHARGE_LABEL} '
+          '${PurchaseConstants.COURSE_RESURRECT_COST}';
+
+      labelChildren = [
+        RLTypography.bodyLarge(chargeLabel, color: accentColor),
+
+        const Spacing.width(RLDS.spacing8),
+
+        const RLFeatherIcon(size: RLDS.iconSmall),
+      ];
+    }
+
+    void onButtonTap() {
+      HapticsService.lightImpact();
+      SoundService.playRandomTextClick();
+      handleChargeTap();
+    }
+
+    final VoidCallback? buttonTap = isCharging ? null : onButtonTap;
+
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: buttonTap,
+      child: RLLunarBlur(
+        borderRadius: RLDS.borderRadiusSmall,
+        borderColor: RLDS.transparent,
+        child: Div.row(
+          labelChildren,
+          width: double.infinity,
+          padding: buttonPadding,
+          mainAxisAlignment: MainAxisAlignment.center,
+        ),
+      ),
+    );
+  }
+
+  Future<void> handleChargeTap() async {
+    if (isCharging) {
+      return;
+    }
+
+    setState(() {
+      isCharging = true;
+    });
+
+    final ResurrectResult result = await PurchaseService.resurrectCourse(widget.courseId);
+
+    if (!mounted) {
+      return;
+    }
+
+    setState(() {
+      isCharging = false;
+    });
+
+    if (result == ResurrectResult.success) {
+      SoundService.playPurchase();
+      RLToast.success(context, RLUIStrings.ROADMAP_CHARGE_SUCCESS, playSound: false);
+      return;
+    }
+
+    if (result == ResurrectResult.insufficientFeathers) {
+      FeathersBottomSheet.show(context);
+      return;
+    }
+
+    RLToast.error(context, RLUIStrings.ERROR_UNKNOWN);
+  }
+
   static final Widget BackChevronIcon = const Icon(
     Pixel.chevrondown,
     color: RLDS.textPrimary,
@@ -541,7 +707,15 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
           child: Center(child: BookRingPane()),
         ),
 
-        const Spacing.height(RLDS.spacing24),
+        const Spacing.height(RLDS.spacing16),
+
+        // Charge meter — sits directly under the book disc so the
+        // skillbook's rental state reads as an attribute of the cover
+        // itself. Hidden for unowned courses; the lock-disc overlay
+        // already telegraphs the purchase gate up there.
+        Padding(padding: roadmapHeaderSidePadding, child: ChargeStatusPanel()),
+
+        const Spacing.height(RLDS.spacing16),
 
         // Hero card — full-bleed, no side padding, so it stretches the
         // full width of the screen. Intentional violation of the page
@@ -553,6 +727,70 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
         ),
       ],
     );
+  }
+
+  // * Charge meter — pixel-font label over a thin progress bar, both
+  // tinted with the course's own accent. The bar wears a soft halo
+  // mirroring the surprise-me button on HomeScreen (RLDS.glowDecoration
+  // with glass40-tinted brand color, blurRadius 12, spreadRadius 1) so
+  // the meter reads as a charged piece of the skillbook rather than
+  // chrome stacked on top.
+  static const double chargeGlowBlurRadius = 12.0;
+  static const double chargeGlowSpreadRadius = 1.0;
+
+  Widget ChargeStatusPanel() {
+    final bool isCoursePurchased = getIsCoursePurchased();
+
+    if (!isCoursePurchased) {
+      return const SizedBox.shrink();
+    }
+
+    final bool isSkillbookCharged = getIsSkillbookCharged();
+    final double chargeFraction = getChargeFraction();
+    final Color accentColor = getCourseAccentColor();
+    final String headlineLabel = isSkillbookCharged
+        ? RLUIStrings.ROADMAP_CHARGED_LABEL
+        : RLUIStrings.ROADMAP_DISCHARGED_LABEL;
+
+    return Div.column([
+      ChargeStatusHeadline(
+        headlineLabel: headlineLabel,
+        isSkillbookCharged: isSkillbookCharged,
+        accentColor: accentColor,
+      ),
+
+      const Spacing.height(RLDS.spacing8),
+
+      RLChargeBar(fraction: chargeFraction),
+    ], crossAxisAlignment: CrossAxisAlignment.stretch);
+  }
+
+  static const double chargeHeadlineBatterySize = RLDS.iconSmall;
+
+  Widget ChargeStatusHeadline({
+    required String headlineLabel,
+    required bool isSkillbookCharged,
+    required Color accentColor,
+  }) {
+    final List<Widget> rowChildren = [
+      RLTypography.pixelLabel(headlineLabel, color: RLDS.white),
+    ];
+
+    if (isSkillbookCharged) {
+      rowChildren.add(RLTypography.pixelLabel(getChargeRemainingLabel(), color: RLDS.white));
+    } else {
+      rowChildren.add(
+        Div.row([
+          RLTypography.pixelLabel(RLUIStrings.ROADMAP_DISCHARGED_PERCENT_LABEL, color: RLDS.white),
+
+          const Spacing.width(RLDS.spacing4),
+
+          const Icon(Pixel.battery, color: RLDS.white, size: chargeHeadlineBatterySize),
+        ]),
+      );
+    }
+
+    return Div.row(rowChildren, mainAxisAlignment: MainAxisAlignment.spaceBetween);
   }
 
   // Circular frosted disc that hosts the progress ring + book. Uses the
@@ -658,16 +896,16 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
     final List<Widget> ringLayers = [
       // Progress arc — the unfilled portion is left transparent so the
       // frosted-dark disc underneath shows through instead of a ghost
-      // ring. Painted at 0.5 opacity so it reads as an atmospheric
-      // halo rather than competing with the book cover at its centre.
-      // Driven off progressRingAnimation so the arc sweeps from 0 to
-      // its target with an ease-out curve on screen open.
+      // ring. Painted in the course's full accent so it reads as a
+      // confident pour of color. Driven off progressRingAnimation so
+      // the arc sweeps from 0 to its target with an ease-out curve on
+      // screen open.
       SizedBox(
         width: progressRingSize,
         height: progressRingSize,
         child: AnimatedProgressArc(
           animation: progressRingAnimation,
-          color: RLDS.glass70(accentColor),
+          color: accentColor,
           strokeWidth: progressRingStrokeWidth,
         ),
       ),
@@ -787,23 +1025,39 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
       horizontal: RLDS.spacing24,
     );
 
-    return RLLunarBlur(
-      borderRadius: RLDS.borderRadiusSmall,
-      borderColor: RLDS.transparent,
-      child: Div.row(
-        [RLTypography.bodyLarge(RLUIStrings.ROADMAP_CONTINUE_LABEL, color: accentColor)],
-        width: double.infinity,
-        padding: buttonPadding,
-        mainAxisAlignment: MainAxisAlignment.center,
-        onTap: handleContinueTap,
+    return GestureDetector(
+      onTap: handleContinueTap,
+      child: RLLunarBlur(
+        borderRadius: RLDS.borderRadiusSmall,
+        borderColor: RLDS.transparent,
+        child: Div.row(
+          [RLTypography.bodyLarge(RLUIStrings.ROADMAP_CONTINUE_LABEL, color: accentColor)],
+          width: double.infinity,
+          padding: buttonPadding,
+          mainAxisAlignment: MainAxisAlignment.center,
+        ),
       ),
     );
   }
 
   void handleContinueTap() {
-    const int currentLessonIndex = 0;
-    const int currentContentIndex = 0;
-    navigateToLesson(currentLessonIndex, currentContentIndex);
+    final int frontierLessonIndex = getCurrentLessonFrontier();
+
+    SoundService.playEnter();
+
+    lastOpenedCourseIdNotifier.value = widget.courseId;
+    UserService.updateLastOpenedCourseId(widget.courseId);
+
+    Navigator.push(
+      context,
+      RLDS.slowFadeTransition(
+        CourseDetailScreen(
+          courseId: widget.courseId,
+          initialLessonIndex: frontierLessonIndex,
+          initialContentIndex: 0,
+        ),
+      ),
+    );
   }
 
   void handleBackTap() {
@@ -869,6 +1123,27 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
 
     return precedingLessonCount + localLessonIndex;
   }
+
+  // Inverse of computeAbsoluteLessonIndex: converts the course-wide
+  // absolute frontier into a segment-local index for the currently
+  // selected segment. When the frontier falls in a preceding segment
+  // the result is negative, which makes every tile in the current
+  // segment fail the frontier gate (lessonIndex > negative is true).
+  // When the frontier is past the current segment, the result exceeds
+  // the segment length, so every tile passes.
+  int computeSegmentLocalFrontier() {
+    final int absoluteFrontier = getCurrentLessonFrontier();
+    int precedingLessonCount = 0;
+
+    for (int segmentIdx = 0; segmentIdx < selectedSegmentIndex; segmentIdx++) {
+      final JSONMap segment = courseSegments[segmentIdx];
+      final JSONList segmentLessons = JSONList.from(segment['lessons'] ?? []);
+
+      precedingLessonCount += segmentLessons.length;
+    }
+
+    return absoluteFrontier - precedingLessonCount;
+  }
 }
 
 // Path with connected lesson nodes. Two locks gate each tile:
@@ -887,6 +1162,7 @@ class PathWithNodes extends StatelessWidget {
   final List<GlobalKey> lessonKeys;
   final Color accentColor;
   final bool isCoursePurchased;
+  final bool isSkillbookCharged;
   final int currentLessonFrontier;
   final Function(int, int) onLessonTap;
   // Shared with the BookRingPane so every lesson tile breathes in lock-step
@@ -900,6 +1176,7 @@ class PathWithNodes extends StatelessWidget {
     required this.lessonKeys,
     required this.accentColor,
     required this.isCoursePurchased,
+    required this.isSkillbookCharged,
     required this.currentLessonFrontier,
     required this.onLessonTap,
     required this.breathingAnimation,
@@ -919,10 +1196,12 @@ class PathWithNodes extends StatelessWidget {
 
       // Tile-lock = course-wide purchase gate (with isFree preview
       // exemption) OR frontier gate (lesson sits past the highest
-      // unlocked one for a purchased course).
+      // unlocked one for a purchased course) OR discharge gate
+      // (owned but rental lapsed, every tile locks).
       final bool failsPurchaseGate = !isCoursePurchased && !isFreePreview;
       final bool failsFrontierGate = isCoursePurchased && lessonIndex > currentLessonFrontier;
-      final bool isLocked = failsPurchaseGate || failsFrontierGate;
+      final bool failsDischargeGate = isCoursePurchased && !isSkillbookCharged;
+      final bool isLocked = failsPurchaseGate || failsFrontierGate || failsDischargeGate;
       final bool isActiveFrontier = isCoursePurchased && lessonIndex == currentLessonFrontier;
 
       // Determine horizontal alignment (zigzag pattern)
@@ -943,6 +1222,7 @@ class PathWithNodes extends StatelessWidget {
           alignment: alignment,
           accentColor: accentColor,
           isLocked: isLocked,
+          isDischarged: failsDischargeGate,
           // Title-blur signal: only fire when the course itself is locked
           // (purchase gate failed), so a paid-up reader's frontier-gated
           // lessons keep their titles legible as a "what's next" preview.
@@ -997,6 +1277,9 @@ class PathLessonNode extends StatefulWidget {
   final PathNodeAlignment alignment;
   final Color accentColor;
   final bool isLocked;
+  // When true the tile shows a battery-empty icon instead of the lock,
+  // signalling "owned but rental lapsed" rather than "not purchased".
+  final bool isDischarged;
   // When true the lesson title renders behind the same Gaussian blur the
   // bird picker uses for locked-bird captions, so the silhouette of the
   // word reads as "there's a lesson here" without giving away its name.
@@ -1016,6 +1299,7 @@ class PathLessonNode extends StatefulWidget {
     required this.alignment,
     required this.accentColor,
     required this.isLocked,
+    required this.isDischarged,
     required this.shouldBlurTitle,
     required this.isActiveFrontier,
     required this.onTap,
@@ -1161,24 +1445,52 @@ class PathLessonNodeState extends State<PathLessonNode> {
   }
 
   Widget NodeTile() {
-    final Color bgColor = getBackgroundColor();
     final Widget nodeContent = NodeIcon();
 
-    // Borderless circular tile.
-    final BoxDecoration tileDecoration = BoxDecoration(color: bgColor, shape: BoxShape.circle);
+    // Borderless circular tile painted with the course accent on
+    // unlocked tiles. Locked tiles swap this out below for an
+    // RLLunarBlur disc so the foreground matches the Continue
+    // button's frosted surface.
+    final BoxDecoration tileDecoration = BoxDecoration(
+      color: getBackgroundColor(),
+      shape: BoxShape.circle,
+    );
 
-    // Circular drop shadow offset down+right.
+    // Circular drop shadow offset down+right. Same color for locked
+    // and unlocked tiles — only the foreground fill changes — so the
+    // shadow reads as a consistent grounding mark across the path.
     final BoxDecoration shadowDecoration = BoxDecoration(
       color: RLDS.glass50(RLDS.black),
       shape: BoxShape.circle,
     );
 
-    // When pressed, the foreground tile slides into the shadow's slot and
-    // the shadow itself fades out — the result reads as the tile being
-    // physically pushed down and to the right by the shadow distance.
+    // When pressed, the foreground tile slides into the shadow's slot
+    // and the shadow itself fades out — the result reads as the tile
+    // being physically pushed down and to the right by the shadow
+    // distance. Locked tiles never receive taps, so isPressed stays
+    // false and the rig sits at rest for them.
     final double tileLeftOffset = isPressed ? roadmapTileShadowOffset : 0.0;
     final double tileTopOffset = isPressed ? roadmapTileShadowOffset : 0.0;
     final double shadowOpacity = isPressed ? 0.0 : 1.0;
+
+    final BorderRadius foregroundRadius = BorderRadius.circular(roadmapNodeSize / 2);
+
+    final Widget foregroundTile = widget.isLocked
+        ? SizedBox(
+            width: roadmapNodeSize,
+            height: roadmapNodeSize,
+            child: RLLunarBlur(
+              borderRadius: foregroundRadius,
+              borderColor: RLDS.transparent,
+              child: Center(child: nodeContent),
+            ),
+          )
+        : Container(
+            width: roadmapNodeSize,
+            height: roadmapNodeSize,
+            decoration: tileDecoration,
+            child: Center(child: nodeContent),
+          );
 
     return SizedBox(
       width: roadmapNodeSize + roadmapTileShadowOffset,
@@ -1208,12 +1520,7 @@ class PathLessonNodeState extends State<PathLessonNode> {
             curve: Curves.easeOut,
             left: tileLeftOffset,
             top: tileTopOffset,
-            child: Container(
-              width: roadmapNodeSize,
-              height: roadmapNodeSize,
-              decoration: tileDecoration,
-              child: Center(child: nodeContent),
-            ),
+            child: foregroundTile,
           ),
         ],
       ),
@@ -1221,10 +1528,6 @@ class PathLessonNodeState extends State<PathLessonNode> {
   }
 
   Color getBackgroundColor() {
-    if (widget.isLocked) {
-      return RLDS.backgroundLight;
-    }
-
     return RLDS.glass15(widget.accentColor);
   }
 
@@ -1236,11 +1539,21 @@ class PathLessonNodeState extends State<PathLessonNode> {
     size: roadmapTileIconSize,
   );
 
+  static final Widget DischargedIcon = Icon(
+    Pixel.battery,
+    color: RLDS.glass40(RLDS.textSecondary),
+    size: roadmapTileIconSize,
+  );
+
   Widget PlayIcon() {
     return Icon(Pixel.play, color: widget.accentColor, size: roadmapTileIconSize);
   }
 
   Widget NodeIcon() {
+    if (widget.isDischarged) {
+      return DischargedIcon;
+    }
+
     if (widget.isLocked) {
       return LockedIcon;
     }

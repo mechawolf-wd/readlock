@@ -141,7 +141,7 @@ class RLUIStrings {
   static const String NIGHT_SHIFT_TITLE = 'Night Session';
   static const String NIGHT_SHIFT_DESCRIPTION =
       'Warm the screen for easier reading before sleep.';
-  static const String NIGHT_SHIFT_LESS_WARM_LABEL = 'Day';
+  static const String NIGHT_SHIFT_LESS_WARM_LABEL = 'Daily';
   static const String NIGHT_SHIFT_MORE_WARM_LABEL = 'Nocturnal';
   static const String NIGHT_SHIFT_SCHEDULE_LABEL = 'Scheduled';
   static const String NIGHT_SHIFT_SCHEDULE_FROM_LABEL = 'From';
@@ -194,6 +194,19 @@ class RLUIStrings {
   static const String ROADMAP_PURCHASE_LOADING_LABEL = 'Payment in progress...';
   static const String ROADMAP_PURCHASE_SUCCESS = 'Skillbook purchased';
   static const String ROADMAP_PURCHASE_INSUFFICIENT = 'Not enough feathers';
+
+  // Skillbook charge mechanic. Every purchase grants a 17-day rental;
+  // when the timer runs out the book "discharges" and the reader spends
+  // 2 feathers to charge it again for another window.
+  static const String ROADMAP_CHARGED_LABEL = 'Charged';
+  static const String ROADMAP_DISCHARGED_LABEL = 'Recharge';
+  static const String ROADMAP_DISCHARGED_PERCENT_LABEL = '0%';
+  static const String ROADMAP_CHARGE_LABEL = 'Charge skillbook for';
+  static const String ROADMAP_CHARGE_LOADING_LABEL = 'Charging...';
+  static const String ROADMAP_CHARGE_SUCCESS = 'Skillbook charged';
+  static const String ROADMAP_DAYS_LEFT_SUFFIX = 'days of reading';
+  static const String ROADMAP_DAY_LEFT_SUFFIX = 'day of reading';
+  static const String ROADMAP_HOURS_LEFT_SUFFIX = 'hours of reading';
 
   // * Feedback Snackbar Buttons
   static const String WHY_BUTTON_LABEL = 'Why?';

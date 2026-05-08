@@ -220,7 +220,10 @@ class BookshelfScreenState extends State<BookshelfScreen> {
 
     try {
       final UserModel? user = await UserService.getCurrentUserProfile();
-      final List<String> ownedIds = user?.purchasedCourses ?? const <String>[];
+      final List<String> ownedIds = user?.purchasedCourses
+              .map((entry) => entry.courseId)
+              .toList() ??
+          const <String>[];
       final JSONList courses = await CourseDataService.fetchCoursesByIds(ownedIds);
 
       if (user != null) {
@@ -263,7 +266,9 @@ class BookshelfScreenState extends State<BookshelfScreen> {
     isRefreshingSavedCoursesFromNotifier = true;
 
     try {
-      final List<String> ownedIds = purchasedCoursesNotifier.value.toList();
+      final List<String> ownedIds = purchasedCoursesNotifier.value
+          .map((entry) => entry.courseId)
+          .toList();
       final JSONList courses = await CourseDataService.fetchCoursesByIds(ownedIds);
 
       if (!mounted) {

@@ -29,18 +29,11 @@ const double PURCHASE_SHEET_BOOK_SIZE = 96.0;
 
 class CoursePurchaseBottomSheet {
   static Future<void> show(BuildContext context, {required JSONMap course}) {
-    // Solid surface (regular alpha + colour) instead of the frosted
-    // LunarBlur backdrop the rest of the sheet stack uses, so the purchase
-    // sheet reads as a flat opaque pane the cart icon dropped onto, not as
-    // another translucent layer floating above the page.
-    return RLBottomSheet.show(
-      context,
-      backgroundColor: RLDS.surface,
-      showGrabber: false,
-      useLunarBlurSurface: false,
-      applyBackdropBlur: false,
-      child: CoursePurchaseSheet(course: course),
-    );
+    // Use RLBottomSheet.show with all defaults so the purchase sheet
+    // wears the same frosted LunarBlur surface + backdrop blur + grabber
+    // as the Settings sheet. Keeps every modal in the app reading as
+    // one family of floating frosted panes.
+    return RLBottomSheet.show(context, child: CoursePurchaseSheet(course: course));
   }
 }
 

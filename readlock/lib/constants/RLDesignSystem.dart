@@ -9,6 +9,7 @@ class RLDS {
 
   static const Color primary = Color.fromARGB(255, 238, 70, 84); // warm vivid red
   static const Color info = Color.fromARGB(255, 41, 177, 244); // bright blue
+  static const Color frostBlue = Color(0xFFD8E8FF); // pale blueish-white, used by the skillbook charge indicator
   static const Color green = markupGreen; // fresh green
   static const Color success = markupGreen; // success uses the fresh green, not the primary red
   static const Color warning = Color.fromARGB(255, 249, 180, 44); // amber

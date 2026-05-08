@@ -11,6 +11,7 @@
 
 import 'package:flutter/foundation.dart';
 import 'package:readlock/models/CourseProgressModel.dart';
+import 'package:readlock/models/PurchasedCourseModel.dart';
 import 'package:readlock/models/UserModel.dart';
 
 final ValueNotifier<int> userBalanceNotifier = ValueNotifier<int>(0);
@@ -32,8 +33,14 @@ final ValueNotifier<Map<String, CourseProgressModel>> courseProgressNotifier =
 // Firestore round-trip.
 final ValueNotifier<int> timeSpentReadingNotifier = ValueNotifier<int>(0);
 
-final ValueNotifier<Set<String>> purchasedCoursesNotifier = ValueNotifier<Set<String>>(
-  const <String>{},
+// Library entries — a flat array of {courseId, expires} records.
+// The roadmap purchase gate, the bookshelf shelf and the home/store
+// cart icons all read this list so a fresh purchase or a resurrect
+// (writes a new expires) flips ownership state app-wide in the same
+// frame.
+final ValueNotifier<List<PurchasedCourseModel>> purchasedCoursesNotifier =
+    ValueNotifier<List<PurchasedCourseModel>>(
+  const <PurchasedCourseModel>[],
 );
 
 // Flips true on a successful course purchase and back to false the moment
@@ -44,14 +51,15 @@ final ValueNotifier<bool> bookshelfHasUnseenPurchaseNotifier = ValueNotifier<boo
 
 void hydratePurchaseStateFromUser(UserModel user) {
   userBalanceNotifier.value = user.balance;
-  purchasedCoursesNotifier.value = Set<String>.from(user.purchasedCourses);
+  purchasedCoursesNotifier.value =
+      List<PurchasedCourseModel>.from(user.purchasedCourses);
   timeSpentReadingNotifier.value = user.timeSpentReading;
   courseProgressNotifier.value = Map<String, CourseProgressModel>.from(user.courseProgress);
 }
 
 void resetPurchaseState() {
   userBalanceNotifier.value = 0;
-  purchasedCoursesNotifier.value = const <String>{};
+  purchasedCoursesNotifier.value = const <PurchasedCourseModel>[];
   bookshelfHasUnseenPurchaseNotifier.value = false;
   timeSpentReadingNotifier.value = 0;
   courseProgressNotifier.value = const <String, CourseProgressModel>{};

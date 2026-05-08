@@ -19,6 +19,7 @@ import 'package:readlock/design_system/RLLunarBlur.dart';
 import 'package:readlock/design_system/RLStarfieldButton.dart';
 import 'package:readlock/design_system/RLToast.dart';
 import 'package:readlock/design_system/RLUtility.dart';
+import 'package:readlock/models/PurchasedCourseModel.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/MainNavigation.dart';
@@ -123,12 +124,15 @@ class HomeScreenState extends State<HomeScreen> {
   void handleRandomBookTap() {
     HapticsService.lightImpact();
 
-    final Set<String> ownedCourseIds = purchasedCoursesNotifier.value;
+    final List<PurchasedCourseModel> ownedCourses = purchasedCoursesNotifier.value;
 
     final JSONList unownedCourses = availableCourses.where((course) {
       final String courseId = course['course-id'] as String? ?? '';
+      final bool isOwned = ownedCourses.any(
+        (PurchasedCourseModel entry) => entry.courseId == courseId,
+      );
 
-      return !ownedCourseIds.contains(courseId);
+      return !isOwned;
     }).toList();
 
     final bool hasUnownedCourses = unownedCourses.isNotEmpty;
@@ -400,7 +404,7 @@ class HomeScreenState extends State<HomeScreen> {
       return const SizedBox.shrink();
     }
 
-    return ValueListenableBuilder<Set<String>>(
+    return ValueListenableBuilder<List<PurchasedCourseModel>>(
       valueListenable: purchasedCoursesNotifier,
       builder: PopularCoursesContent,
     );
@@ -408,7 +412,7 @@ class HomeScreenState extends State<HomeScreen> {
 
   Widget PopularCoursesContent(
     BuildContext context,
-    Set<String> purchasedCourses,
+    List<PurchasedCourseModel> purchasedCourses,
     Widget? unusedChild,
   ) {
     final List<Widget> popularBookCards = popularCourses
@@ -438,14 +442,19 @@ class HomeScreenState extends State<HomeScreen> {
   // tap navigates straight into the course. The cart icon is wired only
   // for courses the reader does NOT already own; tapping it opens the
   // purchase sheet without firing the row's navigate-to-roadmap onTap.
-  Widget PopularCourseCard(JSONMap course, Set<String> purchasedCourses) {
+  Widget PopularCourseCard(
+    JSONMap course,
+    List<PurchasedCourseModel> purchasedCourses,
+  ) {
     final String courseTitle = course['title'] as String? ?? '';
     final String courseAuthor = course['author'] as String? ?? '';
     final String? courseColor = course['color'] as String?;
     final String? coverImagePath = course['cover-image-path'] as String?;
     final String courseId = course['course-id'] as String? ?? '';
 
-    final bool isOwned = purchasedCourses.contains(courseId);
+    final bool isOwned = purchasedCourses.any(
+      (PurchasedCourseModel entry) => entry.courseId == courseId,
+    );
     final VoidCallback? onBuyTap = isOwned
         ? null
         : () => CoursePurchaseBottomSheet.show(context, course: course);
