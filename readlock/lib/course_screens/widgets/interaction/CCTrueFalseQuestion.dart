@@ -11,7 +11,9 @@ import 'package:readlock/services/feedback/SoundService.dart';
 import 'package:readlock/utility_widgets/text_animation/ProgressiveText.dart';
 import 'package:readlock/utility_widgets/visual_effects/BlurOverlay.dart';
 import 'package:readlock/design_system/RLFeedbackSnackbar.dart';
+import 'package:readlock/constants/RLReadingJustified.dart';
 import 'package:readlock/constants/RLUIStrings.dart';
+import 'package:readlock/course_screens/widgets/CCContinueButton.dart';
 
 import 'package:pixelarticons/pixel.dart';
 
@@ -55,30 +57,46 @@ class CCTrueFalseQuestionState extends State<CCTrueFalseQuestion> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(RLDS.spacing24),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          // Question text
-          QuestionText(),
+    // Live-rebuild on Justify Text toggle so flipping the setting reflows
+    // the statement and explanation without leaving the swipe.
+    return ValueListenableBuilder<bool>(
+      valueListenable: justifiedReadingEnabledNotifier,
+      builder: (context, isJustified, _) {
+        final TextAlign paragraphAlignment = isJustified
+            ? TextAlign.justify
+            : TextAlign.left;
 
-          const Spacing.height(RLDS.spacing16),
+        return Padding(
+          padding: const EdgeInsets.all(RLDS.spacing24),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              // Question text
+              QuestionText(paragraphAlignment),
 
-          // True/False button row
-          ButtonRow(),
+              const Spacing.height(RLDS.spacing16),
 
-          const Spacing.height(RLDS.spacing16),
+              // True/False button row
+              ButtonRow(),
 
-          // Explanation section
-          ExplanationSection(),
+              const Spacing.height(RLDS.spacing16),
 
-          // Empty space below content also lifts the button blur on first
-          // tap. Lets the reader unblur by tapping anywhere below the
-          // statement, not just on a button.
-          Expanded(child: BottomUnblurTapArea()),
-        ],
-      ),
+              // Explanation section
+              ExplanationSection(paragraphAlignment),
+
+              // Empty space below content also lifts the button blur on first
+              // tap. Lets the reader unblur by tapping anywhere below the
+              // statement, not just on a button.
+              Expanded(child: BottomUnblurTapArea()),
+
+              // Continue affordance. Only after the question lands on a
+              // correct answer. Uses the shared CC continue button so the
+              // verb reads the same as it does on every text swipe.
+              CCContinueButton(visible: hasAnswered),
+            ],
+          ),
+        );
+      },
     );
   }
 
@@ -106,10 +124,11 @@ class CCTrueFalseQuestionState extends State<CCTrueFalseQuestion> {
   // rhythm as other swipes. Single segment reserves full layout via a
   // transparent tail, so the buttons below never shift as chars type in.
   // Cadence matches text swipes (ProgressiveText's default delay).
-  Widget QuestionText() {
+  Widget QuestionText(TextAlign paragraphAlignment) {
     return ProgressiveText(
       textSegments: [widget.content.question],
       textStyle: RLTypography.readingLargeStyle,
+      textAlign: paragraphAlignment,
       blurCompletedSentences: false,
       enableTapToReveal: false,
       onAllSegmentsRevealed: handleStatementRevealed,
@@ -239,20 +258,24 @@ class CCTrueFalseQuestionState extends State<CCTrueFalseQuestion> {
     });
   }
 
-  Widget ExplanationSection() {
+  Widget ExplanationSection(TextAlign paragraphAlignment) {
     final bool shouldShowExplanation = hasAnswered;
 
-    return RenderIf.condition(shouldShowExplanation, ExplanationContent());
+    return RenderIf.condition(
+      shouldShowExplanation,
+      ExplanationContent(paragraphAlignment),
+    );
   }
 
   static const EdgeInsets explanationCardPadding = EdgeInsets.all(RLDS.spacing16);
 
-  Widget ExplanationContent() {
+  Widget ExplanationContent(TextAlign paragraphAlignment) {
     return Div.column([
       // Explanation text
       ProgressiveText(
         textSegments: [widget.content.explanation],
         textStyle: RLTypography.readingLargeStyle,
+        textAlign: paragraphAlignment,
         blurCompletedSentences: false,
         enableTapToReveal: false,
       ),

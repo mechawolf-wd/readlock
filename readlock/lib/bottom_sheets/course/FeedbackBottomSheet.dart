@@ -5,6 +5,7 @@ import 'package:flutter/material.dart' hide Typography;
 import 'package:readlock/bottom_sheets/RLBottomSheet.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
+import 'package:readlock/services/feedback/HapticsService.dart';
 import 'package:readlock/utility_widgets/text_animation/BionicText.dart';
 
 class FeedbackBottomSheets {
@@ -50,9 +51,14 @@ class FeedbackSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    void onTapToDismiss() {
+      HapticsService.lightImpact();
+      Navigator.of(context).pop();
+    }
+
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
-      onTap: () => Navigator.of(context).pop(),
+      onTap: onTapToDismiss,
       child: Padding(
         padding: bodyPadding,
         child: BionicAwareReadingText(content: content),

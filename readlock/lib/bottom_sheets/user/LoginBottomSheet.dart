@@ -240,6 +240,7 @@ class LoginSheetState extends State<LoginSheet> {
   // * Social sign-in handlers
 
   Future<void> handleAppleLoginTap() async {
+    HapticsService.lightImpact();
     SoundService.playRandomTextClick();
 
     setState(() {
@@ -259,6 +260,7 @@ class LoginSheetState extends State<LoginSheet> {
   }
 
   Future<void> handleGoogleLoginTap() async {
+    HapticsService.lightImpact();
     SoundService.playRandomTextClick();
 
     setState(() {
@@ -890,11 +892,13 @@ class LoginSheetState extends State<LoginSheet> {
     final VoidCallback? wrappedTap = onTap == null
         ? null
         : () {
+            HapticsService.lightImpact();
             SoundService.playRandomTextClick();
             onTap();
           };
 
     return GestureDetector(
+      behavior: HitTestBehavior.opaque,
       onTap: wrappedTap,
       child: RLTypography.bodyMedium(label, color: RLDS.textSecondary),
     );

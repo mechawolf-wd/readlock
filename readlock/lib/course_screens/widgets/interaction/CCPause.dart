@@ -5,17 +5,43 @@
 import 'package:flutter/material.dart' hide Typography;
 import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/constants/RLTypography.dart';
+import 'package:readlock/course_screens/widgets/CCContinueButton.dart';
 import 'package:readlock/design_system/RLUtility.dart';
 import 'package:readlock/screens/profile/BirdPicker.dart';
 import 'package:readlock/utility_widgets/text_animation/ProgressiveText.dart';
 
-class CCPause extends StatelessWidget {
+class CCPause extends StatefulWidget {
   final String text;
   final String? iconName;
 
   const CCPause({super.key, required this.text, this.iconName});
 
+  @override
+  State<CCPause> createState() => CCPauseState();
+}
+
+class CCPauseState extends State<CCPause> {
   static const double birdPreviewSize = BIRD_PREVIEW_SIZE_SMALL;
+
+  // Slower than the default 10ms/char — the pause message is short, and a
+  // default-speed reveal finishes before the swipe animation does, so the
+  // reader never sees it type in. 40ms/char keeps the reveal in progress
+  // while the user lands on the page.
+  static const Duration pauseTypewriterCharacterDelay = Duration(milliseconds: 40);
+
+  // Flips once the typewriter lands on the last character so the continue
+  // button only appears when the message is fully readable.
+  bool isMotivationRevealed = false;
+
+  void handleMotivationRevealed() {
+    if (!mounted) {
+      return;
+    }
+
+    setState(() {
+      isMotivationRevealed = true;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,13 +53,20 @@ class CCPause extends StatelessWidget {
       color: RLDS.textPrimary,
     );
 
-    return Div.column(
-      [
-        MotivationalContent(motivationalTextStyle: motivationalTextStyle),
-      ],
+    return Padding(
       padding: RLDS.contentPaddingInsets,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisAlignment: MainAxisAlignment.center,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Expanded(
+            child: MotivationalContent(motivationalTextStyle: motivationalTextStyle),
+          ),
+
+          // Continue affordance. Reveals once the motivational message has
+          // fully typed out, so the pause moment lands before the verb does.
+          CCContinueButton(visible: isMotivationRevealed),
+        ],
+      ),
     );
   }
 
@@ -64,21 +97,16 @@ class CCPause extends StatelessWidget {
     return BirdAnimationSprite(bird: bird, previewSize: birdPreviewSize);
   }
 
-  // Slower than the default 10ms/char — the pause message is short, and a
-  // default-speed reveal finishes before the swipe animation does, so the
-  // reader never sees it type in. 40ms/char keeps the reveal in progress
-  // while the user lands on the page.
-  static const Duration pauseTypewriterCharacterDelay = Duration(milliseconds: 40);
-
   Widget MotivationalText({required TextStyle textStyle}) {
     return ProgressiveText(
-      textSegments: [text],
+      textSegments: [widget.text],
       textStyle: textStyle,
       textAlignment: CrossAxisAlignment.center,
       textAlign: TextAlign.center,
       blurCompletedSentences: false,
       enableTapToReveal: false,
       typewriterCharacterDelay: pauseTypewriterCharacterDelay,
+      onAllSegmentsRevealed: handleMotivationRevealed,
     );
   }
 }

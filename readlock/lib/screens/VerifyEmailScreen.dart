@@ -13,6 +13,7 @@ import 'package:readlock/design_system/RLLunarBlur.dart';
 import 'package:readlock/design_system/RLStarfieldBackground.dart';
 import 'package:readlock/design_system/RLToast.dart';
 import 'package:readlock/design_system/RLUtility.dart';
+import 'package:readlock/services/feedback/HapticsService.dart';
 import 'package:readlock/MainNavigation.dart';
 import 'package:readlock/bottom_sheets/user/LoginBottomSheet.dart';
 import 'package:readlock/services/auth/AuthService.dart';
@@ -74,6 +75,8 @@ class VerifyEmailScreenState extends State<VerifyEmailScreen> {
     if (isResending) {
       return;
     }
+
+    HapticsService.lightImpact();
 
     setState(() {
       isResending = true;

@@ -177,6 +177,8 @@ class FeathersSheetState extends State<FeathersSheet> {
       return;
     }
 
+    HapticsService.lightImpact();
+
     final FeatherPlan purchasedPlan = FEATHER_PLANS[planIndex];
 
     setState(() {

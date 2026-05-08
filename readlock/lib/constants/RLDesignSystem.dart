@@ -205,6 +205,13 @@ class RLDS {
   static const double lyricsBlurSigma = 3.0;
   static const double lyricsBlurOpacity = 0.5;
 
+  // * Locked-content text blur. Heavier than lyricsBlur so the silhouette
+  // of a locked label is still visible (you can tell it's a word) but the
+  // letterforms aren't readable. Shared by the bird picker's locked-name
+  // caption and the roadmap's locked-lesson titles so both surfaces frost
+  // text to the exact same degree.
+  static const double lockedTextBlurSigma = 6.0;
+
   // * Sheet standardized spacing
 
   static const double sheetTopPadding = spacing12;

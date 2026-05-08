@@ -12,10 +12,12 @@ import 'package:flutter/material.dart' hide Typography;
 import 'package:pixelarticons/pixel.dart';
 import 'package:readlock/models/CourseModel.dart';
 import 'package:readlock/course_screens/CourseAccentScope.dart';
+import 'package:readlock/course_screens/widgets/CCContinueButton.dart';
 import 'package:readlock/design_system/RLLunarBlur.dart';
 import 'package:readlock/design_system/RLUtility.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
+import 'package:readlock/constants/RLReadingJustified.dart';
 import 'package:readlock/services/feedback/HapticsService.dart';
 import 'package:readlock/services/feedback/SoundService.dart';
 import 'package:readlock/utility_widgets/text_animation/ProgressiveText.dart';
@@ -75,22 +77,50 @@ class CCReflectState extends State<CCReflect> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: RLDS.contentPaddingInsets,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: PointsColumnChildren(),
-      ),
+    // Live-rebuild on Justify Text toggle so each thinking point reflows
+    // when the setting flips, without leaving the reflect surface.
+    return ValueListenableBuilder<bool>(
+      valueListenable: justifiedReadingEnabledNotifier,
+      builder: (context, isJustified, _) {
+        final TextAlign paragraphAlignment = isJustified
+            ? TextAlign.justify
+            : TextAlign.center;
+
+        // Continue affordance. Only after every point has been tapped open,
+        // so the reader gets the full set of prompts before moving on.
+        final bool allPointsRevealed =
+            revealedPoints.length >= getLimitedPoints().length;
+
+        return Padding(
+          padding: RLDS.contentPaddingInsets,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              ...PointsColumnChildren(paragraphAlignment),
+
+              const Spacing.height(RLDS.spacing24),
+
+              CCContinueButton(visible: allPointsRevealed),
+            ],
+          ),
+        );
+      },
     );
   }
 
-  List<Widget> PointsColumnChildren() {
+  List<Widget> PointsColumnChildren(TextAlign paragraphAlignment) {
     final List<String> points = getLimitedPoints();
     final List<Widget> widgets = [];
 
     for (int pointIndex = 0; pointIndex < points.length; pointIndex++) {
-      widgets.add(PointEntry(pointIndex: pointIndex, point: points[pointIndex]));
+      widgets.add(
+        PointEntry(
+          pointIndex: pointIndex,
+          point: points[pointIndex],
+          paragraphAlignment: paragraphAlignment,
+        ),
+      );
 
       final bool isLastPoint = pointIndex == points.length - 1;
 
@@ -102,7 +132,11 @@ class CCReflectState extends State<CCReflect> {
     return widgets;
   }
 
-  Widget PointEntry({required int pointIndex, required String point}) {
+  Widget PointEntry({
+    required int pointIndex,
+    required String point,
+    required TextAlign paragraphAlignment,
+  }) {
     final bool isRevealed = revealedPoints.contains(pointIndex);
 
     void onEntryTap() => handlePointTap(pointIndex);
@@ -111,6 +145,7 @@ class CCReflectState extends State<CCReflect> {
       pointIndex: pointIndex,
       point: point,
       isRevealed: isRevealed,
+      paragraphAlignment: paragraphAlignment,
     );
 
     // Same frosted LunarBlur surface the continue button in CCTextContent
@@ -149,12 +184,17 @@ class CCReflectState extends State<CCReflect> {
   //      persists across later parent rebuilds, so the reveal plays
   //      exactly once and never swaps to a different widget — the snap
   //      at completion is what that swap was causing.
-  Widget PointText({required int pointIndex, required String point, required bool isRevealed}) {
+  Widget PointText({
+    required int pointIndex,
+    required String point,
+    required bool isRevealed,
+    required TextAlign paragraphAlignment,
+  }) {
     if (!isRevealed) {
       return RLTypography.readingLarge(
         point,
         color: RLDS.transparent,
-        textAlign: TextAlign.center,
+        textAlign: paragraphAlignment,
       );
     }
 
@@ -162,7 +202,7 @@ class CCReflectState extends State<CCReflect> {
       key: ValueKey('reflect_point_$pointIndex'),
       textSegments: [point],
       textStyle: RLTypography.readingLargeStyle.copyWith(color: RLDS.textPrimary),
-      textAlign: TextAlign.center,
+      textAlign: paragraphAlignment,
       blurCompletedSentences: false,
       enableTapToReveal: false,
     );

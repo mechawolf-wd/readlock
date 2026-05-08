@@ -470,18 +470,23 @@ class BookshelfScreenState extends State<BookshelfScreen> {
       BirdPickerBottomSheet.show(context);
     }
 
+    // While the shelf is empty, the empty-state hero already paints the
+    // reader's bird front-and-centre. Showing it again in the counter card
+    // reads as a duplicate, so the inline bird (and its leading gap) drop
+    // out until the reader owns at least one course.
+    final bool shouldShowInlineBird = savedCourses.isNotEmpty;
+
+    final List<Widget> counterChildren = [Expanded(child: readingTimeStack)];
+
+    if (shouldShowInlineBird) {
+      counterChildren.add(const Spacing.width(RLDS.spacing16));
+      counterChildren.add(ReadingTimeBird());
+    }
+
     final Widget counterCard = RLLunarBlur(
       borderRadius: RLDS.borderRadiusSmall,
       padding: const EdgeInsets.symmetric(vertical: RLDS.spacing12, horizontal: RLDS.spacing16),
-      child: Row(
-        children: [
-          Expanded(child: readingTimeStack),
-
-          const Spacing.width(RLDS.spacing16),
-
-          ReadingTimeBird(),
-        ],
-      ),
+      child: Row(children: counterChildren),
     );
 
     return GestureDetector(

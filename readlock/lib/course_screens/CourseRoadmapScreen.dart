@@ -1,11 +1,14 @@
 // Course roadmap screen with winding path
 // One long scrollable list with sticky segment tiles
 
+import 'dart:ui' as ui;
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:readlock/design_system/RLCourseBookImage.dart';
 import 'package:readlock/services/feedback/HapticsService.dart';
 import 'package:readlock/bottom_sheets/NightShiftBottomSheet.dart';
+import 'package:readlock/bottom_sheets/course/CoursePurchaseBottomSheet.dart';
 import 'package:readlock/bottom_sheets/user/FeathersBottomSheet.dart';
 import 'package:readlock/course_screens/CourseContentViewer.dart';
 import 'package:readlock/course_screens/data/CourseData.dart';
@@ -607,13 +610,45 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
       shape: BoxShape.circle,
     );
 
-    return Container(
-      width: progressRingSize,
-      height: progressRingSize,
-      decoration: overlayDecoration,
-      alignment: Alignment.center,
-      child: LockGlyph,
+    return GestureDetector(
+      onTap: handleLockTap,
+      behavior: HitTestBehavior.opaque,
+      child: Container(
+        width: progressRingSize,
+        height: progressRingSize,
+        decoration: overlayDecoration,
+        alignment: Alignment.center,
+        child: LockGlyph,
+      ),
     );
+  }
+
+  // Routes the lock-disc tap to whichever sheet matches the reader's
+  // wallet state. Enough feathers, the standard purchase sheet opens with
+  // the live course payload so they can confirm the buy. Not enough, we
+  // skip the purchase sheet entirely and go straight to the Feathers Plan
+  // sheet so the next action is "top up", not "be told no".
+  void handleLockTap() {
+    HapticsService.lightImpact();
+    SoundService.playRandomTextClick();
+
+    final JSONMap? course = courseData;
+    final bool hasNoCourseData = course == null;
+
+    if (hasNoCourseData) {
+      return;
+    }
+
+    final int currentBalance = userBalanceNotifier.value;
+    final int courseCost = PurchaseConstants.COURSE_PURCHASE_COST;
+    final bool hasEnoughFeathers = currentBalance >= courseCost;
+
+    if (!hasEnoughFeathers) {
+      FeathersBottomSheet.show(context);
+      return;
+    }
+
+    CoursePurchaseBottomSheet.show(context, course: course);
   }
 
   Widget ProgressRing() {
@@ -908,6 +943,10 @@ class PathWithNodes extends StatelessWidget {
           alignment: alignment,
           accentColor: accentColor,
           isLocked: isLocked,
+          // Title-blur signal: only fire when the course itself is locked
+          // (purchase gate failed), so a paid-up reader's frontier-gated
+          // lessons keep their titles legible as a "what's next" preview.
+          shouldBlurTitle: failsPurchaseGate,
           isActiveFrontier: isActiveFrontier,
           onTap: () => onLessonTap(lessonIndex, 0),
           breathingAnimation: breathingAnimation,
@@ -958,6 +997,10 @@ class PathLessonNode extends StatefulWidget {
   final PathNodeAlignment alignment;
   final Color accentColor;
   final bool isLocked;
+  // When true the lesson title renders behind the same Gaussian blur the
+  // bird picker uses for locked-bird captions, so the silhouette of the
+  // word reads as "there's a lesson here" without giving away its name.
+  final bool shouldBlurTitle;
   // True for the single tile that sits at the reader's current frontier
   // (the tappable one furthest down the path). The tile reuses the
   // existing unlocked styling but the parent could later overlay a
@@ -973,6 +1016,7 @@ class PathLessonNode extends StatefulWidget {
     required this.alignment,
     required this.accentColor,
     required this.isLocked,
+    required this.shouldBlurTitle,
     required this.isActiveFrontier,
     required this.onTap,
     required this.breathingAnimation,
@@ -1056,17 +1100,38 @@ class PathLessonNodeState extends State<PathLessonNode> {
 
           const Spacing.height(RLDS.spacing8),
 
-          // Lesson title in 8-bit font
+          // Lesson title in 8-bit font. Frosted with the bird-picker
+          // locked-caption blur when the course gate is locked so the
+          // title shape teases the lesson without spoiling it.
           SizedBox(
             width: lessonTitleWidth,
-            child: RLTypography.pixelLabel(
-              title,
-              color: titleColor,
-              textAlign: TextAlign.center,
-            ),
+            child: LessonTitleLabel(title: title, color: titleColor),
           ),
         ],
       ),
+    );
+  }
+
+  // Pixel label wrapped in the shared locked-text blur when the parent
+  // has flagged the title as gated. Same ImageFilter sigma the bird
+  // picker uses for locked-bird captions.
+  Widget LessonTitleLabel({required String title, required Color color}) {
+    final Widget label = RLTypography.pixelLabel(
+      title,
+      color: color,
+      textAlign: TextAlign.center,
+    );
+
+    if (!widget.shouldBlurTitle) {
+      return label;
+    }
+
+    return ImageFiltered(
+      imageFilter: ui.ImageFilter.blur(
+        sigmaX: RLDS.lockedTextBlurSigma,
+        sigmaY: RLDS.lockedTextBlurSigma,
+      ),
+      child: label,
     );
   }
 

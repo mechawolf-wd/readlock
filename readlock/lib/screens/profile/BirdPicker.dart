@@ -349,11 +349,11 @@ const double BIRD_CAROUSEL_LOCK_BADGE_BOTTOM_INSET = 8.0;
 // tried to select.
 const Duration BIRD_CAROUSEL_LOCKED_SNAP_DURATION = Duration(milliseconds: 240);
 const Curve BIRD_CAROUSEL_LOCKED_SNAP_CURVE = Curves.easeOut;
-// Gaussian blur sigma applied to both the locked bird sprite and the
-// bird-name label below it. Single source of truth so the silhouette and
-// the caption blur to the exact same degree, reading as one frosted
-// preview rather than two surfaces with mismatched softness.
-const double BIRD_CAROUSEL_LOCKED_BLUR_SIGMA = 6.0;
+// Locked sprite + caption blur. Aliases the centralised
+// RLDS.lockedTextBlurSigma token so the picker, the roadmap's locked
+// lesson titles, and any future locked-content surface frost to the
+// exact same degree.
+const double BIRD_CAROUSEL_LOCKED_BLUR_SIGMA = RLDS.lockedTextBlurSigma;
 
 // Reusable bird snap-slider — owns its own PageController and selection
 // state, syncs with selectedBirdNotifier on every page change. Renders the

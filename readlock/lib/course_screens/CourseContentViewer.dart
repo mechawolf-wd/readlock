@@ -8,7 +8,9 @@ import 'package:flutter/services.dart';
 import 'package:readlock/services/feedback/HapticsService.dart';
 import 'package:readlock/course_screens/CourseAccentScope.dart';
 import 'package:readlock/course_screens/CourseLoadingScreen.dart';
+import 'package:readlock/course_screens/widgets/CCContinueButton.dart';
 import 'package:readlock/course_screens/widgets/CCJSONContentFactory.dart';
+import 'package:readlock/utility_widgets/text_animation/RLTypewriterText.dart';
 import 'package:readlock/course_screens/data/CourseData.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/constants/RLReadingColumn.dart';
@@ -633,7 +635,12 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
 // This widget is purely presentational — the page-change listener
 // handles the stopwatch stop, and the parent passes a ready-to-fire
 // onFinishTap that bumps the frontier and pops the screen.
-class LessonFinishScreen extends StatelessWidget {
+// Count-up sweep used by the stopwatch readout when the finish screen
+// lands. Short and ease-out so the seconds fly past quickly and settle on
+// the final value, the same flourish CCLessonFinishScreen used before.
+const Duration LESSON_FINISH_TIME_COUNTUP_DURATION = Duration(milliseconds: 1200);
+
+class LessonFinishScreen extends StatefulWidget {
   final int elapsedSeconds;
   final Color accentColor;
   final VoidCallback onFinishTap;
@@ -646,15 +653,50 @@ class LessonFinishScreen extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    final String stopwatchReadout = formatBirdUnlockReadout(elapsedSeconds);
+  State<LessonFinishScreen> createState() => LessonFinishScreenState();
+}
 
+class LessonFinishScreenState extends State<LessonFinishScreen>
+    with TickerProviderStateMixin {
+  late AnimationController timeCountUpController;
+  late Animation<int> timeCountUpAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Lesson-done arrival cue. The success chime + a single light haptic
+    // land in the same frame the screen mounts, so the reader hears and
+    // feels the moment the finish surface takes over the swipe.
+    SoundService.playSuccess();
+    HapticsService.lightImpact();
+
+    final int totalSeconds = widget.elapsedSeconds;
+
+    timeCountUpController = AnimationController(
+      vsync: this,
+      duration: LESSON_FINISH_TIME_COUNTUP_DURATION,
+    );
+
+    timeCountUpAnimation = IntTween(begin: 0, end: totalSeconds).animate(
+      CurvedAnimation(parent: timeCountUpController, curve: Curves.easeOut),
+    );
+
+    timeCountUpController.forward();
+  }
+
+  @override
+  void dispose() {
+    timeCountUpController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final Widget profileBird = ValueListenableBuilder<BirdOption>(
       valueListenable: selectedBirdNotifier,
       builder: BirdPreviewBuilder,
     );
-
-    final Widget finishButton = FinishButton();
 
     return Padding(
       padding: const EdgeInsets.symmetric(
@@ -669,10 +711,10 @@ class LessonFinishScreen extends StatelessWidget {
 
           const Spacing.height(RLDS.spacing24),
 
-          RLTypography.headingMedium(
-            RLUIStrings.LESSON_FINISH_TITLE,
-            textAlign: TextAlign.center,
-          ),
+          // "Lesson done" reveals with the same one-shot typewriter the
+          // bottom-nav screen titles use so the finish header reads as
+          // part of the same family of "screen wakes up" headings.
+          LessonDoneTitle(),
 
           const Spacing.height(RLDS.spacing16),
 
@@ -684,11 +726,11 @@ class LessonFinishScreen extends StatelessWidget {
 
           const Spacing.height(RLDS.spacing4),
 
-          RLTypography.headingMedium(stopwatchReadout, textAlign: TextAlign.center),
+          AnimatedStopwatchReadout(),
 
           const Spacing.height(RLDS.spacing32),
 
-          finishButton,
+          FinishButton(),
         ],
       ),
     );
@@ -698,22 +740,36 @@ class LessonFinishScreen extends StatelessWidget {
     return BirdAnimationSprite(bird: bird);
   }
 
-  Widget FinishButton() {
-    const EdgeInsets buttonPadding = EdgeInsets.symmetric(
-      vertical: RLDS.spacing16,
-      horizontal: RLDS.spacing24,
+  Widget LessonDoneTitle() {
+    return RLTypewriterText(
+      text: RLUIStrings.LESSON_FINISH_TITLE,
+      style: RLTypography.headingMediumStyle,
+      textAlign: TextAlign.center,
     );
+  }
 
-    return RLLunarBlur(
-      borderRadius: RLDS.borderRadiusSmall,
-      borderColor: RLDS.transparent,
-      child: Div.row(
-        [RLTypography.bodyLarge(RLUIStrings.LESSON_FINISH_BUTTON_LABEL, color: accentColor)],
-        width: double.infinity,
-        padding: buttonPadding,
-        mainAxisAlignment: MainAxisAlignment.center,
-        onTap: onFinishTap,
-      ),
+  // Re-renders the readout each tick of the count-up so the seconds roll
+  // from 0 up to the lesson's final elapsed value.
+  Widget AnimatedStopwatchReadout() {
+    return AnimatedBuilder(
+      animation: timeCountUpAnimation,
+      builder: StopwatchReadoutBuilder,
+    );
+  }
+
+  Widget StopwatchReadoutBuilder(BuildContext context, Widget? unusedChild) {
+    final String tickReadout = formatBirdUnlockReadout(timeCountUpAnimation.value);
+
+    return RLTypography.headingMedium(tickReadout, textAlign: TextAlign.center);
+  }
+
+  // Finish CTA reuses the shared CC continue button so the verb on the
+  // last page reads with the same calm-text-only design as every other
+  // swipe's continue affordance.
+  Widget FinishButton() {
+    return CCContinueButton(
+      label: RLUIStrings.LESSON_FINISH_BUTTON_LABEL,
+      onTap: widget.onFinishTap,
     );
   }
 }

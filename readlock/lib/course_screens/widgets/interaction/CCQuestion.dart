@@ -9,7 +9,9 @@ import 'package:readlock/design_system/RLLunarBlur.dart';
 import 'package:readlock/design_system/RLUtility.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
+import 'package:readlock/constants/RLReadingJustified.dart';
 import 'package:readlock/constants/RLUIStrings.dart';
+import 'package:readlock/course_screens/widgets/CCContinueButton.dart';
 import 'package:readlock/design_system/RLFeedbackSnackbar.dart';
 import 'package:readlock/services/feedback/HapticsService.dart';
 import 'package:readlock/services/feedback/SoundService.dart';
@@ -38,19 +40,34 @@ class CCQuestionState extends State<CCQuestion> {
 
   @override
   Widget build(BuildContext context) {
-    return Div.column(
-      [
-        QuestionTextSection(),
+    // Live-rebuild on Justify Text toggle so the question and answer text
+    // reflow without leaving the swipe.
+    return ValueListenableBuilder<bool>(
+      valueListenable: justifiedReadingEnabledNotifier,
+      builder: (context, isJustified, _) {
+        final TextAlign paragraphAlignment = isJustified
+            ? TextAlign.justify
+            : TextAlign.left;
 
-        const Spacing.height(RLDS.spacing32),
+        return Div.column(
+          [
+            QuestionTextSection(paragraphAlignment),
 
-        OptionsListSection(),
+            const Spacing.height(RLDS.spacing32),
 
-        const Spacing.height(RLDS.spacing32),
-      ],
-      padding: RLDS.contentPaddingInsets,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisAlignment: MainAxisAlignment.center,
+            OptionsListSection(paragraphAlignment),
+
+            const Spacing.height(RLDS.spacing32),
+
+            // Continue affordance. Appears once a correct answer commits.
+            // Same calm CC continue button design used by every other swipe.
+            CCContinueButton(visible: hasAnsweredQuestion),
+          ],
+          padding: RLDS.contentPaddingInsets,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center,
+        );
+      },
     );
   }
 
@@ -59,28 +76,35 @@ class CCQuestionState extends State<CCQuestion> {
   // as characters type in. Cadence matches text swipes (ProgressiveText's
   // default typewriterCharacterDelay) so the question reads at the same
   // speed as the rest of the course content.
-  Widget QuestionTextSection() {
+  Widget QuestionTextSection(TextAlign paragraphAlignment) {
     return ProgressiveText(
       textSegments: [widget.content.question],
       textStyle: RLTypography.readingMediumStyle,
+      textAlign: paragraphAlignment,
       blurCompletedSentences: false,
       enableTapToReveal: false,
     );
   }
 
-  Widget OptionsListSection() {
-    final List<Widget> optionWidgets = OptionWidgetsList();
+  Widget OptionsListSection(TextAlign paragraphAlignment) {
+    final List<Widget> optionWidgets = OptionWidgetsList(paragraphAlignment);
 
     return Div.column(optionWidgets);
   }
 
-  List<Widget> OptionWidgetsList() {
+  List<Widget> OptionWidgetsList(TextAlign paragraphAlignment) {
     final List<Widget> optionWidgets = [];
 
     for (int optionIndex = 0; optionIndex < widget.content.options.length; optionIndex++) {
       final QuestionOption option = widget.content.options[optionIndex];
 
-      optionWidgets.add(OptionButton(optionIndex: optionIndex, option: option));
+      optionWidgets.add(
+        OptionButton(
+          optionIndex: optionIndex,
+          option: option,
+          paragraphAlignment: paragraphAlignment,
+        ),
+      );
 
       final bool isLastOption = optionIndex == widget.content.options.length - 1;
 
@@ -92,7 +116,11 @@ class CCQuestionState extends State<CCQuestion> {
     return optionWidgets;
   }
 
-  Widget OptionButton({required int optionIndex, required QuestionOption option}) {
+  Widget OptionButton({
+    required int optionIndex,
+    required QuestionOption option,
+    required TextAlign paragraphAlignment,
+  }) {
     final bool isRevealed = revealedAnswers.contains(optionIndex);
     final bool isSelected = selectedAnswerIndex == optionIndex;
     // correctAnswerIndex is 0-based — matches the options list directly,
@@ -116,6 +144,7 @@ class CCQuestionState extends State<CCQuestion> {
       option: option,
       textColor: optionTextColor,
       isRevealed: isRevealed,
+      paragraphAlignment: paragraphAlignment,
       // Flips the ValueKey on the picked correct answer so the
       // ProgressiveText remounts and the typewriter replays alongside
       // the green border reveal.
@@ -218,6 +247,7 @@ class CCQuestionState extends State<CCQuestion> {
     required QuestionOption option,
     required Color textColor,
     required bool isRevealed,
+    required TextAlign paragraphAlignment,
     required bool shouldReplayTypewriter,
   }) {
     if (!isRevealed) {
@@ -234,6 +264,7 @@ class CCQuestionState extends State<CCQuestion> {
       key: ValueKey('option_text_${optionIndex}_$replayPhase'),
       textSegments: [option.text],
       textStyle: RLTypography.readingLargeStyle.copyWith(color: textColor),
+      textAlign: paragraphAlignment,
       blurCompletedSentences: false,
       enableTapToReveal: false,
     );

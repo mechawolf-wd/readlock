@@ -6,19 +6,11 @@ import 'package:readlock/services/feedback/HapticsService.dart';
 import 'package:readlock/models/CourseModel.dart';
 import 'package:readlock/utility_widgets/text_animation/ProgressiveText.dart';
 import 'package:readlock/utility_widgets/text_animation/RSVPText.dart';
-import 'package:readlock/design_system/RLReveal.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/constants/RLReadingJustified.dart';
-import 'package:readlock/constants/RLUIStrings.dart';
 import 'package:readlock/course_screens/CourseContentViewer.dart';
-
-// LunarBlur button geometry — matches RLButton's default padding so the
-// continue pill reads the same size as the primary buttons elsewhere.
-const EdgeInsets CONTINUE_BUTTON_PADDING = EdgeInsets.symmetric(
-  vertical: RLDS.spacing16,
-  horizontal: RLDS.spacing24,
-);
+import 'package:readlock/course_screens/widgets/CCContinueButton.dart';
 
 class CCTextContent extends StatefulWidget {
   // Text content data to display
@@ -109,50 +101,13 @@ class CCTextContentState extends State<CCTextContent> {
     );
   }
 
-  // Container for continue button with visibility control. Routes through
-  // RLReveal so the opacity timing matches every other reveal in the app
-  // (true/false buttons, password field, etc.).
+  // Continue CTA. The shared CCContinueButton owns the geometry, accent
+  // resolution, and page-controller hop, so this swipe just hands it the
+  // "is everyone done reading?" flag.
   Widget ContinueButtonContainer() {
     final bool shouldShowContinueButton = isAllTextRevealed;
 
-    return RLReveal(visible: shouldShowContinueButton, child: ContinueButton());
-  }
-
-  // Continue CTA — no background, just the accent-coloured label centred in
-  // a full-width tap area. Lets the swipe's reading content carry the
-  // visual weight; the button is a calm verb, not a frosted pill.
-  Widget ContinueButton() {
-    final Color accentColor = resolveCourseAccentColor();
-
-    return GestureDetector(
-      behavior: HitTestBehavior.opaque,
-      onTap: handleContinueButtonTap,
-      child: SizedBox(
-        width: double.infinity,
-        child: Padding(
-          padding: CONTINUE_BUTTON_PADDING,
-          child: Center(
-            child: RLTypography.bodyLarge(
-              RLUIStrings.TEXT_CONTENT_CONTINUE_LABEL,
-              color: accentColor,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Color resolveCourseAccentColor() {
-    final CourseDetailScreenState? courseDetailScreen = context
-        .findAncestorStateOfType<CourseDetailScreenState>();
-
-    final bool hasAncestor = courseDetailScreen != null;
-
-    if (!hasAncestor) {
-      return RLDS.markupGreen;
-    }
-
-    return courseDetailScreen.getCourseAccentColor();
+    return CCContinueButton(visible: shouldShowContinueButton);
   }
 
   // Handle when all text segments are revealed
