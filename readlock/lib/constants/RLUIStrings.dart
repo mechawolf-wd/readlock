@@ -37,6 +37,9 @@ class RLUIStrings {
   static const String FEATHERS_SUBTITLE = 'Enjoy the skillbooks you want';
   static const String PRICE_PERIOD = '/month';
   static const String FEATHERS_BOOK_PRICING_NOTE = 'Each skillbook costs 10 feathers';
+  static const String FEATHERS_RESTORE_LABEL = 'Restore purchases';
+  static const String FEATHERS_RESTORE_SUCCESS = 'Purchases restored';
+  static const String FEATHERS_STORE_UNAVAILABLE = 'App Store is not available right now';
 
   // Per-plan copy.
   static const String PLAN_BEGINNER_NAME = 'Beginner';
@@ -335,27 +338,19 @@ class RLUIStrings {
   // * Demo explanations (opened via "What's this?" under each demo box)
   static const String DEMO_EXPLAIN_LABEL = 'What\'s this?';
   static const String DEMO_EXPLAIN_REVEAL =
-      'Text appears one character at a time instead of all at once. '
-      'Slows you down so you read the sentence as it builds, not skim it.';
+      'Text types in one character at a time to slow skimming.';
   static const String DEMO_EXPLAIN_BLUR =
-      'Sentences you\'ve already read get a soft blur. '
-      'Keeps your eyes on the current line instead of drifting back up.';
+      'Already-read sentences blur so your eyes stay on the current line.';
   static const String DEMO_EXPLAIN_COLORED_TEXT =
-      'Key terms and concepts appear in color with bold weight. '
-      'Easier to spot the main idea when scanning a paragraph.';
+      'Key terms appear in color so the main idea stands out.';
   static const String DEMO_EXPLAIN_FONT =
-      'Changes the typeface used for all reading content. '
-      'Tap the preview box above to browse the available fonts.';
+      'Changes the typeface used across all reading content.';
   static const String DEMO_EXPLAIN_COLUMN =
-      'Sets how wide the text runs across the screen. '
-      'Narrower columns shorten each eye sweep, which some readers find easier.';
+      'Controls how wide the text runs across the screen.';
   static const String DEMO_EXPLAIN_JUSTIFIED =
-      'Lines stretch to fill the full column width. '
-      'Gives paragraphs a clean block shape instead of a ragged right edge.';
+      'Stretches lines to fill the column for a clean block shape.';
   static const String DEMO_EXPLAIN_BIONIC =
-      'Bolds the first portion of each word. '
-      'Your eye grabs the bold part and your brain fills in the rest, '
-      'which can speed up reading.';
+      'Bolds the start of each word so your eye moves faster.';
 
   // * Settings Bottom Sheet
   static const String SETTINGS_TITLE = 'Settings';

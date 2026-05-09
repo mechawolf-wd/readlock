@@ -25,6 +25,7 @@ import 'package:readlock/screens/profile/BirdPicker.dart';
 import 'package:readlock/screens/profile/SettingsDemos.dart';
 import 'package:readlock/services/auth/UserService.dart';
 import 'package:readlock/utility_widgets/text_animation/BionicText.dart';
+import 'package:readlock/constants/RLReadingSettings.dart';
 
 const EdgeInsets ONBOARDING_PAGE_PADDING = EdgeInsets.symmetric(horizontal: RLDS.spacing24);
 const EdgeInsets ONBOARDING_FOOTER_PADDING = EdgeInsets.fromLTRB(
@@ -182,16 +183,19 @@ class OnboardingFlowState extends State<OnboardingFlow> {
       revealAllTrueFalse = nextRevealAllTrueFalse;
     });
 
+    revealAllEnabledNotifier.value = nextRevealAllTrueFalse;
     UserService.updateReveal(nextRevealAllTrueFalse);
   }
 
   void handleBlurToggled(bool value) {
     setState(() => blurEnabled = value);
+    blurEnabledNotifier.value = value;
     UserService.updateBlur(value);
   }
 
   void handleColoredTextToggled(bool value) {
     setState(() => coloredTextEnabled = value);
+    coloredTextEnabledNotifier.value = value;
     UserService.updateColoredText(value);
   }
 

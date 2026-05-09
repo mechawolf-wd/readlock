@@ -14,6 +14,7 @@ import 'package:readlock/constants/RLNightShift.dart';
 import 'package:readlock/constants/RLReadingColumn.dart';
 import 'package:readlock/constants/RLReadingFont.dart';
 import 'package:readlock/constants/RLReadingJustified.dart';
+import 'package:readlock/constants/RLReadingSettings.dart';
 import 'package:readlock/models/UserModel.dart';
 import 'package:readlock/screens/profile/BirdPicker.dart';
 import 'package:readlock/services/feedback/HapticsService.dart';
@@ -42,6 +43,10 @@ void hydrateUserPreferenceNotifiersFromUser(UserModel user) {
   bionicEnabledNotifier.value = user.bionic;
 
   rsvpEnabledNotifier.value = user.rsvp;
+
+  revealAllEnabledNotifier.value = user.reveal;
+  blurEnabledNotifier.value = user.blur;
+  coloredTextEnabledNotifier.value = user.coloredText;
 
   lastOpenedCourseIdNotifier.value = user.lastOpenedCourseId;
 
@@ -75,6 +80,10 @@ void resetUserPreferenceNotifiers() {
   bionicEnabledNotifier.value = false;
 
   rsvpEnabledNotifier.value = false;
+
+  revealAllEnabledNotifier.value = false;
+  blurEnabledNotifier.value = true;
+  coloredTextEnabledNotifier.value = true;
 
   lastOpenedCourseIdNotifier.value = null;
 

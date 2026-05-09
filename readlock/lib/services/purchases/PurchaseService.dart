@@ -1,12 +1,9 @@
-// Mock purchase service.
+// Purchase service.
 //
-// Wallet (balance) and library (purchasedCourses) writes still go straight
-// to the user document via UserService, so a brief Future.delayed in front
-// of them simulates the payment round-trip. When a real payment provider
-// lands, the same call signatures stay and the body swaps for an
-// HttpsCallable. The lifetime purchase counter on /courses already runs
-// through the incrementTimesPurchased callable, since direct client writes
-// to /courses are denied by firestore.rules.
+// Feather top-ups (creditFeathers) delegate to StoreKitService for real
+// App Store subscription purchases. Course unlocks (purchaseCourse) and
+// resurrections (resurrectCourse) are internal feather-economy operations
+// that deduct from the user's wallet and persist via UserService.
 //
 // Local notifiers update optimistically before the Firestore write so
 // the UI flips instantly, a failed write rolls them back.
@@ -16,12 +13,14 @@ import 'package:readlock/models/PurchasedCourseModel.dart';
 import 'package:readlock/services/auth/UserService.dart';
 import 'package:readlock/services/purchases/PurchaseConstants.dart';
 import 'package:readlock/services/purchases/PurchaseNotifiers.dart';
+import 'package:readlock/services/purchases/StoreKitService.dart';
 
 enum PurchaseResult {
   success,
   insufficientFeathers,
   alreadyOwned,
   notLoggedIn,
+  cancelled,
   failed,
 }
 
@@ -33,31 +32,34 @@ enum ResurrectResult {
   failed,
 }
 
-// Latency that the mock pretends a real payment round-trip would take.
-// Visible enough that a "purchasing..." state on the button reads, short
-// enough that it doesn't feel sluggish on a fake flow.
-const Duration MOCK_PAYMENT_LATENCY = Duration(milliseconds: 600);
-
 class PurchaseService {
   // * Feather top-up via plan tap in the Feathers sheet.
   //
-  // Adds `feathersGranted` to the user's balance. Always succeeds in the
-  // mock. Optimistic notifier bump first, then the Firestore increment.
+  // Delegates to StoreKitService for a real App Store subscription
+  // purchase. The feather credit and Firestore write happen inside the
+  // StoreKit purchase stream handler (handleSuccessfulPurchase), so this
+  // method is a thin mapping from StoreKit status to PurchaseResult.
 
-  static Future<PurchaseResult> creditFeathers(int feathersGranted) async {
-    await Future.delayed(MOCK_PAYMENT_LATENCY);
+  static Future<PurchaseResult> creditFeathers(String productId) async {
+    final StoreKitPurchaseStatus result = await StoreKitService.buyProduct(productId);
 
-    final int previousBalance = userBalanceNotifier.value;
-    userBalanceNotifier.value = previousBalance + feathersGranted;
-
-    final bool wrote = await UserService.incrementBalance(feathersGranted);
-
-    if (!wrote) {
-      userBalanceNotifier.value = previousBalance;
-      return PurchaseResult.failed;
+    switch (result) {
+      case StoreKitPurchaseStatus.success: {
+        return PurchaseResult.success;
+      }
+      case StoreKitPurchaseStatus.cancelled: {
+        return PurchaseResult.cancelled;
+      }
+      case StoreKitPurchaseStatus.pending: {
+        return PurchaseResult.success;
+      }
+      case StoreKitPurchaseStatus.failed: {
+        return PurchaseResult.failed;
+      }
+      case StoreKitPurchaseStatus.storeUnavailable: {
+        return PurchaseResult.failed;
+      }
     }
-
-    return PurchaseResult.success;
   }
 
   // * Course unlock via roadmap purchase button.
@@ -85,7 +87,6 @@ class PurchaseService {
       return PurchaseResult.insufficientFeathers;
     }
 
-    await Future.delayed(MOCK_PAYMENT_LATENCY);
 
     final DateTime now = DateTime.now();
 
@@ -168,7 +169,6 @@ class PurchaseService {
       return ResurrectResult.insufficientFeathers;
     }
 
-    await Future.delayed(MOCK_PAYMENT_LATENCY);
 
     final PurchasedCourseModel revivedEntry = PurchasedCourseModel(
       courseId: courseId,

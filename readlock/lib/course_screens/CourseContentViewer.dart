@@ -249,6 +249,7 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
     }
 
     HapticsService.lightImpact();
+    SoundService.playRandomTextClick();
 
     setState(() {
       isProgressBarRevealed = true;

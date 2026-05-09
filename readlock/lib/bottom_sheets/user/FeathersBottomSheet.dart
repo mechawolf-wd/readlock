@@ -20,7 +20,10 @@ import 'package:readlock/design_system/RLStarfieldBackground.dart';
 import 'package:readlock/design_system/RLToast.dart';
 import 'package:readlock/design_system/RLUtility.dart';
 import 'package:readlock/screens/profile/BirdPicker.dart';
+import 'package:readlock/services/purchases/PurchaseConstants.dart';
 import 'package:readlock/services/purchases/PurchaseService.dart';
+import 'package:readlock/services/purchases/StoreKitService.dart';
+import 'package:in_app_purchase/in_app_purchase.dart';
 
 // Horizontal inset for every content row inside the sheet. Matches the
 // no-grabber sheet constant so the Feathers sheet breathes the same as
@@ -76,6 +79,8 @@ class FeatherPlan {
   // so the premium card reads as visually distinct at a glance. Defaults
   // off so existing tiers keep the frosted treatment.
   final bool useStarfieldBackground;
+  // App Store product ID for this plan. Maps to PurchaseConstants.
+  final String productId;
 
   const FeatherPlan({
     required this.name,
@@ -85,6 +90,7 @@ class FeatherPlan {
     required this.books,
     required this.bird,
     this.useStarfieldBackground = false,
+    required this.productId,
   });
 }
 
@@ -109,6 +115,7 @@ final List<FeatherPlan> FEATHER_PLANS = [
     feathersValue: PLAN_BEGINNER_FEATHERS_VALUE,
     books: RLUIStrings.PLAN_BEGINNER_BOOKS,
     bird: lookupBirdByName(RLUIStrings.BIRD_KIWI),
+    productId: PurchaseConstants.PRODUCT_ID_BEGINNER,
   ),
 
   FeatherPlan(
@@ -119,6 +126,7 @@ final List<FeatherPlan> FEATHER_PLANS = [
     books: RLUIStrings.PLAN_READER_BOOKS,
     bird: lookupBirdByName(RLUIStrings.BIRD_TOUCAN),
     useStarfieldBackground: true,
+    productId: PurchaseConstants.PRODUCT_ID_READER,
   ),
 ];
 
@@ -168,10 +176,8 @@ class FeathersSheetState extends State<FeathersSheet> {
     });
   }
 
-  // Mock payment trigger fired when the user taps a plan card. Routes
-  // through PurchaseService.creditFeathers, which optimistically bumps
-  // the balance notifier and writes the increment to Firestore. When
-  // the real CF lands, only that service swaps; this caller is unchanged.
+  // Initiates a real App Store subscription purchase via StoreKitService.
+  // On success, feathers are credited by the StoreKit stream handler.
   Future<void> handlePlanPurchase(int planIndex) async {
     if (isPurchasing) {
       return;
@@ -186,7 +192,7 @@ class FeathersSheetState extends State<FeathersSheet> {
     });
 
     final PurchaseResult result = await PurchaseService.creditFeathers(
-      purchasedPlan.feathersValue,
+      purchasedPlan.productId,
     );
 
     if (!mounted) {
@@ -200,6 +206,13 @@ class FeathersSheetState extends State<FeathersSheet> {
     if (result == PurchaseResult.success) {
       RLToast.success(context, '+${purchasedPlan.feathersValue} feathers');
       Navigator.of(context).pop();
+      return;
+    }
+
+    // User dismissed the App Store payment sheet. No toast, no error.
+    final bool wasCancelled = result == PurchaseResult.cancelled;
+
+    if (wasCancelled) {
       return;
     }
 
@@ -235,6 +248,10 @@ class FeathersSheetState extends State<FeathersSheet> {
               const Spacing.height(RLDS.spacing16),
 
               BookPricingNote(),
+
+              const Spacing.height(RLDS.spacing16),
+
+              RestorePurchasesButton(),
 
               const Spacing.height(RLDS.spacing24),
             ],
@@ -279,6 +296,30 @@ class FeathersSheetState extends State<FeathersSheet> {
     void onCardTap() => handlePlanPurchase(planIndex);
 
     return PlanCard(plan: plan, isSelected: isSelected, onTap: onCardTap);
+  }
+
+  Widget RestorePurchasesButton() {
+    void handleRestoreTap() async {
+      HapticsService.lightImpact();
+
+      await StoreKitService.restorePurchases();
+
+      if (!mounted) {
+        return;
+      }
+
+      RLToast.success(context, RLUIStrings.FEATHERS_RESTORE_SUCCESS);
+    }
+
+    return GestureDetector(
+      onTap: handleRestoreTap,
+      behavior: HitTestBehavior.opaque,
+      child: RLTypography.bodyMedium(
+        RLUIStrings.FEATHERS_RESTORE_LABEL,
+        color: RLDS.textSecondary,
+        textAlign: TextAlign.center,
+      ),
+    );
   }
 
   Widget BookPricingNote() {
@@ -393,8 +434,9 @@ class PlanCardBody extends StatelessWidget {
 
         const Spacing.height(RLDS.spacing16),
 
-        // Price + period in a single row, centred.
-        PriceRow(price: plan.price),
+        // Price + period. Shows the real App Store price when products are
+        // loaded, falls back to the hardcoded plan.price otherwise.
+        StorePriceRow(plan: plan),
 
         const Spacing.height(RLDS.spacing20),
 
@@ -458,6 +500,34 @@ class PlanBird extends StatelessWidget {
     return Center(
       child: BirdAnimationSprite(bird: bird, previewSize: previewSize),
     );
+  }
+}
+
+// Shows the real App Store price when the product is loaded, falls back
+// to the hardcoded plan.price when products are not available (e.g.
+// products not yet created in App Store Connect).
+class StorePriceRow extends StatelessWidget {
+  final FeatherPlan plan;
+
+  const StorePriceRow({super.key, required this.plan});
+
+  @override
+  Widget build(BuildContext context) {
+    return ValueListenableBuilder<Map<String, ProductDetails>>(
+      valueListenable: StoreKitService.productsNotifier,
+      builder: StorePriceBuilder,
+    );
+  }
+
+  Widget StorePriceBuilder(
+    BuildContext context,
+    Map<String, ProductDetails> products,
+    Widget? child,
+  ) {
+    final ProductDetails? storeProduct = products[plan.productId];
+    final String displayPrice = storeProduct?.price ?? plan.price;
+
+    return PriceRow(price: displayPrice);
   }
 }
 

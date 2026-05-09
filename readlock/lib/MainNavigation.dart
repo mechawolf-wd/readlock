@@ -302,7 +302,7 @@ class MainNavigationState extends State<MainNavigation> {
             ignoring: !isActive,
             child: AnimatedOpacity(
               duration: RLDS.opacityFadeDurationFast,
-              curve: Curves.easeOut,
+              curve: Curves.easeIn,
               opacity: isActive ? 1.0 : 0.0,
               child: screens[tabIndex],
             ),

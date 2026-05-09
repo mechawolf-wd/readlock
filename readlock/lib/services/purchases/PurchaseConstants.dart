@@ -6,6 +6,23 @@
 // purchase button read from here.
 
 class PurchaseConstants {
+  // App Store Connect product identifiers (iOS auto-renewable subscriptions).
+  // Create these in ASC once the subscription group is set up.
+  static const String PRODUCT_ID_BEGINNER = 'com.readlock.feathers.beginner';
+  static const String PRODUCT_ID_READER = 'com.readlock.feathers.reader';
+
+  // All subscription product IDs queried by StoreKitService on init.
+  static const Set<String> SUBSCRIPTION_PRODUCT_IDS = {
+    PRODUCT_ID_BEGINNER,
+    PRODUCT_ID_READER,
+  };
+
+  // Maps each product ID to the number of feathers credited on purchase.
+  static const Map<String, int> FEATHERS_PER_PRODUCT = {
+    PRODUCT_ID_BEGINNER: 100,
+    PRODUCT_ID_READER: 300,
+  };
+
   static const int COURSE_PURCHASE_COST = 10;
 
   // Rental window granted on every purchase and on every resurrect.

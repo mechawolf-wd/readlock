@@ -20,6 +20,7 @@ import 'package:readlock/services/feedback/SoundService.dart';
 import 'package:readlock/constants/RLReadingJustified.dart';
 import 'package:readlock/utility_widgets/text_animation/BionicText.dart';
 import 'package:readlock/utility_widgets/text_animation/RSVPText.dart';
+import 'package:readlock/constants/RLReadingSettings.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -128,16 +129,19 @@ class ProfileContentState extends State<ProfileContent> {
 
   void handleRevealToggled(bool value) {
     setState(() => revealEnabled = value);
+    revealAllEnabledNotifier.value = value;
     UserService.updateReveal(value);
   }
 
   void handleBlurToggled(bool value) {
     setState(() => blurEnabled = value);
+    blurEnabledNotifier.value = value;
     UserService.updateBlur(value);
   }
 
   void handleColoredTextToggled(bool value) {
     setState(() => coloredTextEnabled = value);
+    coloredTextEnabledNotifier.value = value;
     UserService.updateColoredText(value);
   }
 

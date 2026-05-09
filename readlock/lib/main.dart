@@ -7,6 +7,7 @@ import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/design_system/RLNightShift.dart';
 import 'package:readlock/firebase_options.dart';
 import 'package:readlock/services/ConnectivityService.dart';
+import 'package:readlock/services/purchases/StoreKitService.dart';
 import 'package:readlock/services/NightShiftBrightnessService.dart';
 import 'package:readlock/services/NightShiftScheduleService.dart';
 
@@ -30,6 +31,11 @@ void main() async {
   // on network reachability (CoursesScreen) can flip to an offline state
   // the moment the device drops its transport.
   ConnectivityService.initialize();
+
+  // Connects to the App Store, fetches subscription products, and starts
+  // the purchase stream listener. Gracefully no-ops when products have
+  // not been created in App Store Connect yet.
+  StoreKitService.initialize();
 
   runApp(const ReadlockApp());
 }

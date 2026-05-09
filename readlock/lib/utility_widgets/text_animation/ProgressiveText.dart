@@ -10,6 +10,7 @@ import 'package:readlock/course_screens/CourseAccentScope.dart';
 import 'package:readlock/design_system/RLUtility.dart';
 import 'package:readlock/utility_widgets/text_animation/BionicText.dart';
 import 'package:readlock/utility_widgets/visual_effects/BlurOverlay.dart';
+import 'package:readlock/constants/RLReadingSettings.dart';
 import 'package:readlock/services/feedback/HapticsService.dart';
 import 'package:readlock/services/feedback/SoundService.dart';
 
@@ -34,6 +35,14 @@ const Duration progressiveTextLeadingCharacterFadeDuration = Duration(millisecon
 //   <c:r> — italic + bold, no colour override (inherits from the surrounding
 //           text style).
 TextStyle resolveMarkupStyle(BuildContext context, String colorCode, TextStyle baseStyle) {
+  // When the user disables Accent in Settings, all markup spans render as
+  // plain body text (no colour, no italic/bold override).
+  final bool isColoredTextDisabled = !coloredTextEnabledNotifier.value;
+
+  if (isColoredTextDisabled) {
+    return baseStyle;
+  }
+
   final bool isAccentMarkup = colorCode == 'g';
 
   if (isAccentMarkup) {
@@ -193,6 +202,11 @@ class ProgressiveTextState extends State<ProgressiveText> with TickerProviderSta
     // every visible sentence without remounting.
     bionicEnabledNotifier.addListener(onBionicEnabledChanged);
 
+    // Live reading-setting listeners — blur, accent colour, and reveal-all
+    // repaint every visible sentence when the user flips a toggle in Settings.
+    blurEnabledNotifier.addListener(onReadingSettingChanged);
+    coloredTextEnabledNotifier.addListener(onReadingSettingChanged);
+
     // Check if there's any content to display
     final bool hasSentencesToReveal = textSentences.isNotEmpty;
 
@@ -249,6 +263,17 @@ class ProgressiveTextState extends State<ProgressiveText> with TickerProviderSta
     if (isImageSentence) {
       // Start image reveal animation
       startImageRevealAnimation();
+      return;
+    }
+
+    // When Progressive is OFF (reveal-all), skip the typewriter entirely
+    // and land all characters at once. Fires the completion callback and
+    // auto-advances through remaining sentences so every segment appears
+    // instantly.
+    final bool shouldRevealAllAtOnce = revealAllEnabledNotifier.value;
+
+    if (shouldRevealAllAtOnce) {
+      revealSentenceInstantly();
       return;
     }
 
@@ -317,6 +342,61 @@ class ProgressiveTextState extends State<ProgressiveText> with TickerProviderSta
         }
       }
     }
+  }
+
+  // Instant reveal path for when Progressive is OFF. Lands all characters
+  // at full opacity in a single frame, fires the completion callback, and
+  // chains into the next sentence until every segment is visible.
+  //
+  // The completion callback and auto-advance are deferred to a post-frame
+  // callback because this method can run during initState (which is inside
+  // the build phase). Calling onAllSegmentsRevealed synchronously would
+  // trigger setState on a parent widget (e.g. CCTrueFalseQuestion) while
+  // Flutter is still laying out the tree, which throws a "dirty descendant"
+  // assertion.
+  void revealSentenceInstantly() {
+    if (!mounted) {
+      return;
+    }
+
+    // Fill reveal times so every character renders at full opacity.
+    final Duration fullyFadedTime =
+        currentSentenceStopwatch.elapsed - progressiveTextLeadingCharacterFadeDuration;
+
+    final List<Duration> instantRevealTimes = List<Duration>.filled(
+      currentSentenceText.length,
+      fullyFadedTime,
+    );
+
+    setState(() {
+      currentCharacterPosition = currentSentenceText.length - 1;
+      currentSentenceCharRevealTimes = instantRevealTimes;
+      isRevealingCurrentSentence = false;
+    });
+
+    // Defer callbacks to after the current build frame so parent setState
+    // calls don't collide with the widget tree layout pass.
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) {
+        return;
+      }
+
+      final bool isLastSentence = currentSentenceNumber == textSentences.length - 1;
+
+      final bool shouldTriggerCompletionCallback =
+          isLastSentence && widget.onAllSegmentsRevealed != null;
+
+      if (shouldTriggerCompletionCallback) {
+        widget.onAllSegmentsRevealed!();
+      }
+
+      // Auto-advance through all remaining sentences instantly.
+      final bool hasMoreSentences = currentSentenceNumber < textSentences.length - 1;
+
+      if (hasMoreSentences) {
+        revealNextSentence();
+      }
+    });
   }
 
   // Starts the image reveal animation
@@ -579,6 +659,8 @@ class ProgressiveTextState extends State<ProgressiveText> with TickerProviderSta
     isRevealingCurrentSentence = false;
 
     bionicEnabledNotifier.removeListener(onBionicEnabledChanged);
+    blurEnabledNotifier.removeListener(onReadingSettingChanged);
+    coloredTextEnabledNotifier.removeListener(onReadingSettingChanged);
     leadingCharacterFadeTicker?.dispose();
     currentSentenceStopwatch.stop();
     imageRevealController?.dispose();
@@ -587,6 +669,16 @@ class ProgressiveTextState extends State<ProgressiveText> with TickerProviderSta
 
   // Live bionic toggle — repaint with the updated weight distribution.
   void onBionicEnabledChanged() {
+    if (!mounted) {
+      return;
+    }
+
+    setState(() {});
+  }
+
+  // Live blur / accent toggle — repaint so completed sentences and markup
+  // spans reflect the updated setting immediately.
+  void onReadingSettingChanged() {
     if (!mounted) {
       return;
     }
@@ -1107,6 +1199,14 @@ class ProgressiveTextState extends State<ProgressiveText> with TickerProviderSta
     final bool isBlurFeatureDisabled = !widget.blurCompletedSentences;
 
     if (isBlurFeatureDisabled) {
+      return false;
+    }
+
+    // Global user preference — when the user turns Focus off in Settings,
+    // no sentence blurs regardless of the per-widget flag.
+    final bool isBlurGloballyDisabled = !blurEnabledNotifier.value;
+
+    if (isBlurGloballyDisabled) {
       return false;
     }
 
