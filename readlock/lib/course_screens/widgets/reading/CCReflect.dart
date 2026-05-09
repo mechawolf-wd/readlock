@@ -12,6 +12,7 @@ import 'package:flutter/material.dart' hide Typography;
 import 'package:pixelarticons/pixel.dart';
 import 'package:readlock/models/CourseModel.dart';
 import 'package:readlock/course_screens/CourseAccentScope.dart';
+import 'package:readlock/course_screens/CourseContentViewer.dart';
 import 'package:readlock/course_screens/widgets/CCContinueButton.dart';
 import 'package:readlock/design_system/RLLunarBlur.dart';
 import 'package:readlock/design_system/RLUtility.dart';
@@ -37,6 +38,8 @@ class CCReflect extends StatefulWidget {
 class CCReflectState extends State<CCReflect> {
   // Point indices the reader has already tapped to reveal.
   Set<int> revealedPoints = {};
+
+  bool isContinueVisible = false;
 
   // Per-card "tap me" affordance — open eye centred on every blurred
   // reflect point. Disappears once the card reveals so the typewriter
@@ -73,6 +76,70 @@ class CCReflectState extends State<CCReflect> {
     setState(() {
       revealedPoints.add(pointIndex);
     });
+
+    final bool isLastPoint = revealedPoints.length >= getLimitedPoints().length;
+
+    if (isLastPoint) {
+      showContinueButtonDelayed();
+    }
+  }
+
+  void handleNextSlideTap() {
+    final PageController? pageController = findPageController(context);
+
+    final bool hasValidPageController = pageController != null && pageController.hasClients;
+
+    if (!hasValidPageController) {
+      return;
+    }
+
+    HapticsService.lightImpact();
+    navigateToNextPage(pageController);
+  }
+
+  PageController? findPageController(BuildContext context) {
+    final CourseDetailScreenState? courseDetailScreen =
+        context.findAncestorStateOfType<CourseDetailScreenState>();
+
+    return courseDetailScreen?.pageController;
+  }
+
+  void navigateToNextPage(PageController pageController) {
+    final double? currentPageDouble = pageController.page;
+    final bool hasCurrentPage = currentPageDouble != null;
+
+    if (!hasCurrentPage) {
+      return;
+    }
+
+    final int currentPage = currentPageDouble.round();
+    final int nextPage = currentPage + 1;
+
+    pageController.animateToPage(
+      nextPage,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
+    );
+  }
+
+  void showContinueButtonDelayed() async {
+    final bool canUpdateState = mounted;
+
+    if (!canUpdateState) {
+      return;
+    }
+
+    await Future.delayed(const Duration(milliseconds: 1400));
+
+    final bool stillMounted = mounted;
+
+    if (!stillMounted) {
+      return;
+    }
+
+    setState(() {
+      isContinueVisible = true;
+    });
   }
 
   @override
@@ -86,22 +153,29 @@ class CCReflectState extends State<CCReflect> {
             ? TextAlign.justify
             : TextAlign.center;
 
-        // Continue affordance. Only after every point has been tapped open,
-        // so the reader gets the full set of prompts before moving on.
-        final bool allPointsRevealed =
-            revealedPoints.length >= getLimitedPoints().length;
-
         return Padding(
           padding: RLDS.contentPaddingInsets,
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              ...PointsColumnChildren(paragraphAlignment),
+              // Points centered in the expanded area. Tapping empty space
+              // above or below the cards advances the slide once all points
+              // are revealed (card taps win the arena for their own area).
+              Expanded(
+                child: GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: isContinueVisible ? handleNextSlideTap : null,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: PointsColumnChildren(paragraphAlignment),
+                  ),
+                ),
+              ),
 
-              const Spacing.height(RLDS.spacing24),
-
-              CCContinueButton(visible: allPointsRevealed),
+              // Continue affordance. Delayed 1400ms after the last point
+              // is revealed so the reader has a moment of reflection.
+              CCContinueButton(visible: isContinueVisible),
             ],
           ),
         );

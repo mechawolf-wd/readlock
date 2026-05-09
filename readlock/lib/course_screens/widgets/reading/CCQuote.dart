@@ -7,40 +7,115 @@
 import 'package:flutter/material.dart' hide Typography;
 import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/constants/RLTypography.dart';
+import 'package:readlock/course_screens/CourseContentViewer.dart';
+import 'package:readlock/course_screens/widgets/CCContinueButton.dart';
 import 'package:readlock/design_system/RLUtility.dart';
 import 'package:readlock/models/CourseModel.dart';
 import 'package:readlock/screens/profile/BirdPicker.dart';
+import 'package:readlock/services/feedback/HapticsService.dart';
 import 'package:readlock/utility_widgets/text_animation/ProgressiveText.dart';
 
-class CCQuote extends StatelessWidget {
+class CCQuote extends StatefulWidget {
   final QuoteSwipe content;
 
   const CCQuote({super.key, required this.content});
 
+  @override
+  State<CCQuote> createState() => CCQuoteState();
+}
+
+class CCQuoteState extends State<CCQuote> {
   static const double birdPreviewSize = BIRD_PREVIEW_SIZE_SMALL;
 
-  // Slower than the default 10ms/char — the quote is short, and a default-
-  // speed reveal finishes before the swipe animation does, so the reader
-  // never sees it type in. 40ms/char keeps the reveal in progress while
-  // the user lands on the page. Same pace as CCPause for consistency.
-  static const Duration quoteTypewriterCharacterDelay = Duration(milliseconds: 40);
+  // Flips once the typewriter lands on the last character so the continue
+  // button only appears when the quote is fully readable.
+  bool isQuoteRevealed = false;
+
+  void handleQuoteRevealed() async {
+    final bool canUpdateState = mounted;
+
+    if (!canUpdateState) {
+      return;
+    }
+
+    await Future.delayed(const Duration(milliseconds: 1400));
+
+    final bool stillMounted = mounted;
+
+    if (!stillMounted) {
+      return;
+    }
+
+    setState(() {
+      isQuoteRevealed = true;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    // Italic reading style — same weight and colour as CCPause but tilted
-    // so the line reads as a citation rather than narration.
     final TextStyle quoteTextStyle = RLTypography.readingLargeStyle.copyWith(
       color: RLDS.textPrimary,
       fontStyle: FontStyle.italic,
     );
 
-    return Div.column(
-      [
-        QuoteContent(quoteTextStyle: quoteTextStyle),
-      ],
+    return Padding(
       padding: RLDS.contentPaddingInsets,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisAlignment: MainAxisAlignment.center,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          // Tapping anywhere in the expanded area advances to the next
+          // slide, but only once the continue button is visible.
+          Expanded(
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: isQuoteRevealed ? handleNextSlideTap : null,
+              child: QuoteContent(quoteTextStyle: quoteTextStyle),
+            ),
+          ),
+
+          // Continue affordance. Reveals once the quote has fully typed
+          // out, so the pause moment lands before the verb does.
+          CCContinueButton(visible: isQuoteRevealed),
+        ],
+      ),
+    );
+  }
+
+  void handleNextSlideTap() {
+    final PageController? pageController = findPageController(context);
+
+    final bool hasValidPageController = pageController != null && pageController.hasClients;
+
+    if (!hasValidPageController) {
+      return;
+    }
+
+    HapticsService.lightImpact();
+    navigateToNextPage(pageController);
+  }
+
+  PageController? findPageController(BuildContext context) {
+    final CourseDetailScreenState? courseDetailScreen =
+        context.findAncestorStateOfType<CourseDetailScreenState>();
+
+    return courseDetailScreen?.pageController;
+  }
+
+  void navigateToNextPage(PageController pageController) {
+    final double? currentPageDouble = pageController.page;
+    final bool hasCurrentPage = currentPageDouble != null;
+
+    if (!hasCurrentPage) {
+      return;
+    }
+
+    final int currentPage = currentPageDouble.round();
+    final int nextPage = currentPage + 1;
+
+    pageController.animateToPage(
+      nextPage,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
     );
   }
 
@@ -76,7 +151,7 @@ class CCQuote extends StatelessWidget {
   }
 
   Widget QuoteBody({required TextStyle textStyle}) {
-    final String wrappedQuote = '"${content.quote}"';
+    final String wrappedQuote = '"${widget.content.quote}"';
 
     return ProgressiveText(
       textSegments: [wrappedQuote],
@@ -85,7 +160,7 @@ class CCQuote extends StatelessWidget {
       textAlign: TextAlign.center,
       blurCompletedSentences: false,
       enableTapToReveal: false,
-      typewriterCharacterDelay: quoteTypewriterCharacterDelay,
+      onAllSegmentsRevealed: handleQuoteRevealed,
     );
   }
 
@@ -99,7 +174,7 @@ class CCQuote extends StatelessWidget {
     );
 
     return Text(
-      content.author,
+      widget.content.author,
       style: authorTextStyle,
       textAlign: TextAlign.center,
     );

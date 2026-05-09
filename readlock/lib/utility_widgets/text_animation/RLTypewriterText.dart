@@ -11,13 +11,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
+import 'package:readlock/design_system/RLStaggerReveal.dart';
 import 'package:readlock/utility_widgets/text_animation/ProgressiveText.dart';
-
-// 60ms per character lines up exactly with the per-character fade window,
-// so adjacent characters crossfade cleanly without popping. Short enough
-// that "Bookshelf" lands inside ~600ms — a perceptible flourish, never a
-// stall before the screen is usable.
-const Duration RL_TYPEWRITER_CHARACTER_STEP = Duration(milliseconds: 60);
 
 class RLTypewriterText extends StatefulWidget {
   final String text;
@@ -30,7 +25,7 @@ class RLTypewriterText extends StatefulWidget {
     required this.text,
     required this.style,
     this.textAlign = TextAlign.start,
-    this.characterStep = RL_TYPEWRITER_CHARACTER_STEP,
+    this.characterStep = STAGGER_STEP,
   });
 
   @override

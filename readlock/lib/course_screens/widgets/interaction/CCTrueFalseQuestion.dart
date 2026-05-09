@@ -3,10 +3,12 @@
 
 import 'package:flutter/material.dart' hide Typography;
 import 'package:readlock/models/CourseModel.dart';
+import 'package:readlock/course_screens/CourseContentViewer.dart';
 import 'package:readlock/design_system/RLCard.dart';
 import 'package:readlock/design_system/RLUtility.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
+import 'package:readlock/services/feedback/HapticsService.dart';
 import 'package:readlock/services/feedback/SoundService.dart';
 import 'package:readlock/utility_widgets/text_animation/ProgressiveText.dart';
 import 'package:readlock/utility_widgets/visual_effects/BlurOverlay.dart';
@@ -49,6 +51,7 @@ class CCTrueFalseQuestion extends StatefulWidget {
 class CCTrueFalseQuestionState extends State<CCTrueFalseQuestion> {
   int? selectedAnswerIndex;
   bool hasAnswered = false;
+  bool isContinueVisible = false;
   bool isStatementRevealed = false;
   // Blur stays on both buttons until the reader taps one of them. The first
   // tap only removes the blur (for BOTH buttons together — never one at a
@@ -66,34 +69,37 @@ class CCTrueFalseQuestionState extends State<CCTrueFalseQuestion> {
             ? TextAlign.justify
             : TextAlign.left;
 
-        return Padding(
-          padding: const EdgeInsets.all(RLDS.spacing24),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              // Question text
-              QuestionText(paragraphAlignment),
+        return GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: isContinueVisible ? handleNextSlideTap : null,
+          child: Padding(
+            padding: const EdgeInsets.all(RLDS.spacing24),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                // Question text
+                QuestionText(paragraphAlignment),
 
-              const Spacing.height(RLDS.spacing16),
+                const Spacing.height(RLDS.spacing16),
 
-              // True/False button row
-              ButtonRow(),
+                // True/False button row
+                ButtonRow(),
 
-              const Spacing.height(RLDS.spacing16),
+                const Spacing.height(RLDS.spacing16),
 
-              // Explanation section
-              ExplanationSection(paragraphAlignment),
+                // Explanation section
+                ExplanationSection(paragraphAlignment),
 
-              // Empty space below content also lifts the button blur on first
-              // tap. Lets the reader unblur by tapping anywhere below the
-              // statement, not just on a button.
-              Expanded(child: BottomUnblurTapArea()),
+                // Empty space below content also lifts the button blur on first
+                // tap. Lets the reader unblur by tapping anywhere below the
+                // statement, not just on a button.
+                Expanded(child: BottomUnblurTapArea()),
 
-              // Continue affordance. Only after the question lands on a
-              // correct answer. Uses the shared CC continue button so the
-              // verb reads the same as it does on every text swipe.
-              CCContinueButton(visible: hasAnswered),
-            ],
+                // Continue affordance. Delayed 1400ms after the correct answer
+                // commits so the reader has a moment to absorb the result.
+                CCContinueButton(visible: isContinueVisible),
+              ],
+            ),
           ),
         );
       },
@@ -382,5 +388,65 @@ class CCTrueFalseQuestionState extends State<CCTrueFalseQuestion> {
       selectedAnswerIndex = selectedIndex;
       hasAnswered = true;
     });
+
+    showContinueButtonDelayed();
+  }
+
+  void showContinueButtonDelayed() async {
+    final bool canUpdateState = mounted;
+
+    if (!canUpdateState) {
+      return;
+    }
+
+    await Future.delayed(const Duration(milliseconds: 1400));
+
+    final bool stillMounted = mounted;
+
+    if (!stillMounted) {
+      return;
+    }
+
+    setState(() {
+      isContinueVisible = true;
+    });
+  }
+
+  void handleNextSlideTap() {
+    final PageController? pageController = findPageController(context);
+
+    final bool hasValidPageController = pageController != null && pageController.hasClients;
+
+    if (!hasValidPageController) {
+      return;
+    }
+
+    HapticsService.lightImpact();
+    navigateToNextPage(pageController);
+  }
+
+  PageController? findPageController(BuildContext context) {
+    final CourseDetailScreenState? courseDetailScreen =
+        context.findAncestorStateOfType<CourseDetailScreenState>();
+
+    return courseDetailScreen?.pageController;
+  }
+
+  void navigateToNextPage(PageController pageController) {
+    final double? currentPageDouble = pageController.page;
+    final bool hasCurrentPage = currentPageDouble != null;
+
+    if (!hasCurrentPage) {
+      return;
+    }
+
+    final int currentPage = currentPageDouble.round();
+    final int nextPage = currentPage + 1;
+
+    pageController.animateToPage(
+      nextPage,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
+    );
   }
 }

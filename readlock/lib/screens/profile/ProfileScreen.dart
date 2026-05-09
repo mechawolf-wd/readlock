@@ -58,7 +58,7 @@ class ProfileContentState extends State<ProfileContent> {
   bool blurEnabled = true;
   bool coloredTextEnabled = true;
   bool bionicEnabled = false;
-  bool rsvpEnabled = false;
+  // bool rsvpEnabled = false; // RSVP hidden from settings until ready for release.
   bool justifiedReadingEnabled = true;
   bool isLoggingOut = false;
 
@@ -91,7 +91,6 @@ class ProfileContentState extends State<ProfileContent> {
       blurEnabled = user.blur;
       coloredTextEnabled = user.coloredText;
       bionicEnabled = user.bionic;
-      rsvpEnabled = user.rsvp;
       justifiedReadingEnabled = user.justifiedReading;
     });
 
@@ -148,11 +147,7 @@ class ProfileContentState extends State<ProfileContent> {
     UserService.updateBionic(value);
   }
 
-  void handleRsvpToggled(bool value) {
-    setState(() => rsvpEnabled = value);
-    rsvpEnabledNotifier.value = value;
-    UserService.updateRsvp(value);
-  }
+  // void handleRsvpToggled(bool value) { ... } // RSVP hidden from settings until ready for release.
 
   void handleJustifiedReadingToggled(bool value) {
     setState(() => justifiedReadingEnabled = value);
@@ -245,7 +240,6 @@ class ProfileContentState extends State<ProfileContent> {
       blurEnabled: blurEnabled,
       coloredTextEnabled: coloredTextEnabled,
       bionicEnabled: bionicEnabled,
-      rsvpEnabled: rsvpEnabled,
       justifiedReadingEnabled: justifiedReadingEnabled,
       onTypingSoundToggled: handleTypingSoundToggled,
       onGeneralSoundsToggled: handleGeneralSoundsToggled,
@@ -254,7 +248,6 @@ class ProfileContentState extends State<ProfileContent> {
       onBlurToggled: handleBlurToggled,
       onColoredTextToggled: handleColoredTextToggled,
       onBionicToggled: handleBionicToggled,
-      onRsvpToggled: handleRsvpToggled,
       onJustifiedReadingToggled: handleJustifiedReadingToggled,
       onSupportTap: handleSupportTap,
       onLogoutTap: handleLogoutTap,

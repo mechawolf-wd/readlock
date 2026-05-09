@@ -23,10 +23,7 @@ class FeedbackBottomSheets {
   // match the LoginSupport / Account sheets, so the Why?/Hint/Consequence
   // sheets read as the same frosted pane family as the snackbar that opens
   // them.
-  static void showFeedbackSheet({
-    required BuildContext context,
-    required String content,
-  }) {
+  static void showFeedbackSheet({required BuildContext context, required String content}) {
     RLBottomSheet.show(
       context,
       backgroundColor: RLDS.backgroundLight,
@@ -42,9 +39,11 @@ class FeedbackSheet extends StatelessWidget {
   const FeedbackSheet({super.key, required this.content});
 
   // Style definitions
+  // No top padding: SheetContainer already adds spacing12 above content
+  // when showGrabber is false. Only horizontal and bottom padding needed.
   static const EdgeInsets bodyPadding = EdgeInsets.fromLTRB(
     RLDS.spacing24,
-    RLDS.spacing24,
+    RLDS.spacing12,
     RLDS.spacing24,
     RLDS.spacing24,
   );
@@ -89,10 +88,7 @@ class BionicAwareReadingText extends StatelessWidget {
 
         final List<InlineSpan> spans = bionicSpans(content, baseStyle);
 
-        return Text.rich(
-          TextSpan(children: spans),
-          textAlign: TextAlign.left,
-        );
+        return Text.rich(TextSpan(children: spans), textAlign: TextAlign.left);
       },
     );
   }

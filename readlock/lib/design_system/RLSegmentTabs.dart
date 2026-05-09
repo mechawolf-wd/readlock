@@ -39,12 +39,15 @@ class RLSegmentTabs<T> extends StatelessWidget {
   // palette) can override.
   final Color selectedLabelColor;
 
+  final bool showBorder;
+
   const RLSegmentTabs({
     super.key,
     required this.options,
     required this.selectedValue,
     required this.onChanged,
     this.selectedLabelColor = RLDS.primary,
+    this.showBorder = true,
   });
 
   @override
@@ -74,6 +77,7 @@ class RLSegmentTabs<T> extends StatelessWidget {
             unselectedIcon: option.unselectedIcon,
             isSelected: isSelected,
             selectedLabelColor: selectedLabelColor,
+            showBorder: showBorder,
             onTap: onTabTap,
           ),
         ),
@@ -91,6 +95,8 @@ class RLSegmentTab extends StatelessWidget {
   final Color selectedLabelColor;
   final VoidCallback onTap;
 
+  final bool showBorder;
+
   const RLSegmentTab({
     super.key,
     required this.label,
@@ -98,6 +104,7 @@ class RLSegmentTab extends StatelessWidget {
     required this.selectedLabelColor,
     required this.onTap,
     this.unselectedIcon,
+    this.showBorder = true,
   });
 
   static const EdgeInsets tabPadding = EdgeInsets.symmetric(
@@ -136,8 +143,8 @@ class RLSegmentTab extends StatelessWidget {
         behavior: HitTestBehavior.opaque,
         child: RLLunarBlur(
           borderRadius: RLDS.borderRadiusSmall,
-          borderColor: labelColor,
-          borderWidth: 2.0,
+          borderColor: showBorder ? labelColor : RLDS.transparent,
+          borderWidth: showBorder ? 2.0 : 0.0,
           padding: tabPadding,
           child: selectedContent,
         ),

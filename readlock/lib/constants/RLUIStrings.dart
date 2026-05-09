@@ -16,6 +16,7 @@ class RLUIStrings {
   static const String BOOKSHELF_FILTER_EMPTY_MESSAGE =
       '*chirp* - no skillbooks match that filter';
   static const String BOOKSHELF_LOAD_MORE_LABEL = 'Load more';
+  static const String BOOKSHELF_NEW_BADGE_LABEL = 'NEW';
   static const String LOAD_MORE_NOTHING_LEFT = "*chirp* - that's all of them for now";
 
   // * Empty / loading states
@@ -49,7 +50,7 @@ class RLUIStrings {
   static const String PLAN_READER_BOOKS = '30 skillbooks a month';
 
   // * Feedback Snackbar
-  static const String CORRECT_ANSWER_MESSAGE = 'Correct, you read it';
+  static const String CORRECT_ANSWER_MESSAGE = 'Correct answer';
   static const String WRONG_ANSWER_TITLE = 'Pick again';
 
   // * Login Bottom Sheet
@@ -124,8 +125,8 @@ class RLUIStrings {
   static const String LOADING_LABEL = 'Chirping';
 
   // * Lesson Finish Screen
-  static const String LESSON_FINISH_TITLE = 'Lesson done';
-  static const String LESSON_FINISH_TIME_LABEL = 'Time on this lesson';
+  static const String LESSON_FINISH_TITLE = 'Package read';
+  static const String LESSON_FINISH_TIME_LABEL = 'Time on this package';
   static const String LESSON_FINISH_BUTTON_LABEL = 'Finish';
 
   // * Course Content Viewer
@@ -190,18 +191,18 @@ class RLUIStrings {
   static const String ROADMAP_SUBTITLE = 'Master design psychology fundamentals';
   static const String ROADMAP_CONTINUE_LABEL = 'Continue';
   static const String ROADMAP_DEFAULT_LESSON_LABEL = 'Lesson';
-  static const String ROADMAP_PURCHASE_LABEL = 'Buy for';
+  static const String ROADMAP_PURCHASE_LABEL = 'Purchase:';
   static const String ROADMAP_PURCHASE_LOADING_LABEL = 'Payment in progress...';
   static const String ROADMAP_PURCHASE_SUCCESS = 'Skillbook purchased';
   static const String ROADMAP_PURCHASE_INSUFFICIENT = 'Not enough feathers';
 
-  // Skillbook charge mechanic. Every purchase grants a 17-day rental;
+  // Skillbook charge mechanic. Every purchase grants a 14-day rental;
   // when the timer runs out the book "discharges" and the reader spends
-  // 2 feathers to charge it again for another window.
+  // 3 feathers to charge it again for another window.
   static const String ROADMAP_CHARGED_LABEL = 'Charged';
   static const String ROADMAP_DISCHARGED_LABEL = 'Recharge';
   static const String ROADMAP_DISCHARGED_PERCENT_LABEL = '0%';
-  static const String ROADMAP_CHARGE_LABEL = 'Charge skillbook for';
+  static const String ROADMAP_CHARGE_LABEL = 'Recharge:';
   static const String ROADMAP_CHARGE_LOADING_LABEL = 'Charging...';
   static const String ROADMAP_CHARGE_SUCCESS = 'Skillbook charged';
   static const String ROADMAP_DAYS_LEFT_SUFFIX = 'days of reading';
@@ -330,6 +331,31 @@ class RLUIStrings {
   static const String DEMO_RSVP_TEXT =
       'Lightning hits Earth about a hundred times every second.';
   static const String RSVP_WPM_SUFFIX = ' wpm';
+
+  // * Demo explanations (opened via "What's this?" under each demo box)
+  static const String DEMO_EXPLAIN_LABEL = 'What\'s this?';
+  static const String DEMO_EXPLAIN_REVEAL =
+      'Text appears one character at a time instead of all at once. '
+      'Slows you down so you read the sentence as it builds, not skim it.';
+  static const String DEMO_EXPLAIN_BLUR =
+      'Sentences you\'ve already read get a soft blur. '
+      'Keeps your eyes on the current line instead of drifting back up.';
+  static const String DEMO_EXPLAIN_COLORED_TEXT =
+      'Key terms and concepts appear in color with bold weight. '
+      'Easier to spot the main idea when scanning a paragraph.';
+  static const String DEMO_EXPLAIN_FONT =
+      'Changes the typeface used for all reading content. '
+      'Tap the preview box above to browse the available fonts.';
+  static const String DEMO_EXPLAIN_COLUMN =
+      'Sets how wide the text runs across the screen. '
+      'Narrower columns shorten each eye sweep, which some readers find easier.';
+  static const String DEMO_EXPLAIN_JUSTIFIED =
+      'Lines stretch to fill the full column width. '
+      'Gives paragraphs a clean block shape instead of a ragged right edge.';
+  static const String DEMO_EXPLAIN_BIONIC =
+      'Bolds the first portion of each word. '
+      'Your eye grabs the bold part and your brain fills in the rest, '
+      'which can speed up reading.';
 
   // * Settings Bottom Sheet
   static const String SETTINGS_TITLE = 'Settings';

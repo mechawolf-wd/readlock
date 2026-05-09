@@ -602,6 +602,7 @@ class CoursesScreenState extends State<CoursesScreen> {
         author: courseAuthor,
         courseColor: courseColor,
         coverImagePath: coverImagePath,
+        isOwned: isOwned,
         onTap: () => navigateToCourse(courseId),
         onBuyTap: buyHandler,
       );

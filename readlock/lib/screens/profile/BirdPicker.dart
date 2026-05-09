@@ -33,16 +33,16 @@ const String BIRD_ASSET_PREFIX = 'assets/birds/';
 
 // * Bird unlock economy.
 //
-// One "skillbook" of reading is the unit each unlock threshold is denominated
-// in. Picked at ~30 minutes of focused reading, which lines up with the time
-// a typical reader spends finishing a single Readlock book. Sparrow, Pigeon,
-// and Collared Dove are seeded as free starter birds (unlockSkillbooks = 0)
-// because they're already offered in onboarding; everything else unlocks as
-// the reader's cumulative timeSpentReading clears the bird's threshold.
-const int BIRD_SKILLBOOK_UNIT_SECONDS = 30 * 60;
+// Each bird carries its unlock threshold directly as seconds of cumulative
+// reading time. Skillbook-tier birds use N * BIRD_SKILLBOOK_UNIT_SECONDS so
+// the 30-minute multiplier is preserved as a legible constant at the
+// definition site; Collared Dove is a short introductory gate (7 minutes)
+// that sits between the free starters and the first full skillbook tier.
+// Sparrow and Pigeon are freely available from onboarding (unlockSeconds = 0).
+const int BIRD_SKILLBOOK_UNIT_SECONDS = 45 * 60;
 
 int getBirdUnlockSeconds(BirdOption bird) {
-  return bird.unlockSkillbooks * BIRD_SKILLBOOK_UNIT_SECONDS;
+  return bird.unlockSeconds;
 }
 
 bool isBirdUnlockedAt(BirdOption bird, int totalReadingSeconds) {
@@ -77,9 +77,9 @@ class BirdOption {
   final double contentOffsetY;
   final double contentWidth;
   final double contentHeight;
-  // How many "skillbooks" of reading the user must accumulate before this
-  // bird unlocks. 0 means freely available from onboarding.
-  final int unlockSkillbooks;
+  // Seconds of cumulative reading time required before this bird unlocks.
+  // 0 means freely available from onboarding.
+  final int unlockSeconds;
 
   const BirdOption({
     required this.name,
@@ -92,13 +92,14 @@ class BirdOption {
     this.contentOffsetY = BIRD_COMMON_CONTENT_OFFSET,
     this.contentWidth = BIRD_CONTENT_SIZE,
     this.contentHeight = BIRD_CONTENT_SIZE,
-    this.unlockSkillbooks = 0,
+    this.unlockSeconds = 0,
   });
 }
 
 // * Common birds — Sparrow's Idle tag begins at frame 0, the rest at frame 1.
 // * Exotic birds — dedicated Idle PNGs starting at frame 0; frame size matches
 // * the bird's true bounding box (per Aseprite JSON metadata).
+// * Sorted cheapest to most expensive (unlockSeconds ascending).
 const List<BirdOption> BIRD_OPTIONS = [
   BirdOption(
     name: RLUIStrings.BIRD_SPARROW,
@@ -114,14 +115,16 @@ const List<BirdOption> BIRD_OPTIONS = [
     frameCount: 4,
   ),
 
+  // 7-minute introductory gate, sits between free starters and first skillbook.
   BirdOption(
     name: RLUIStrings.BIRD_COLLARED_DOVE,
     assetFile: 'CollaredDove.png',
     firstFrame: 1,
     frameCount: 4,
+    unlockSeconds: 7 * 60,
   ),
 
-  // Tiers below escalate with the bird's perceived rarity:
+  // Skillbook tiers escalate with the bird's perceived rarity:
   //   Crow      = 1 skillbook (everyday city bird, easy first reward)
   //   Kiwi      = 2 skillbooks (cute novelty)
   //   Flamingo  = 3 skillbooks (distinctive but accessible)
@@ -133,35 +136,7 @@ const List<BirdOption> BIRD_OPTIONS = [
     assetFile: 'Crow.png',
     firstFrame: 1,
     frameCount: 4,
-    unlockSkillbooks: 1,
-  ),
-
-  BirdOption(
-    name: RLUIStrings.BIRD_BLUE_MACAW,
-    assetFile: 'BlueMacaw.png',
-    firstFrame: 0,
-    frameCount: 5,
-    frameWidth: 26,
-    frameHeight: 17,
-    contentOffsetX: 0,
-    contentOffsetY: 0,
-    contentWidth: 26,
-    contentHeight: 17,
-    unlockSkillbooks: 4,
-  ),
-
-  BirdOption(
-    name: RLUIStrings.BIRD_FLAMINGO,
-    assetFile: 'Flamingo.png',
-    firstFrame: 0,
-    frameCount: 4,
-    frameWidth: 35,
-    frameHeight: 33,
-    contentOffsetX: 0,
-    contentOffsetY: 0,
-    contentWidth: 35,
-    contentHeight: 33,
-    unlockSkillbooks: 3,
+    unlockSeconds: 1 * BIRD_SKILLBOOK_UNIT_SECONDS,
   ),
 
   BirdOption(
@@ -175,7 +150,35 @@ const List<BirdOption> BIRD_OPTIONS = [
     contentOffsetY: 0,
     contentWidth: 27,
     contentHeight: 17,
-    unlockSkillbooks: 2,
+    unlockSeconds: 2 * BIRD_SKILLBOOK_UNIT_SECONDS,
+  ),
+
+  BirdOption(
+    name: RLUIStrings.BIRD_FLAMINGO,
+    assetFile: 'Flamingo.png',
+    firstFrame: 0,
+    frameCount: 4,
+    frameWidth: 35,
+    frameHeight: 33,
+    contentOffsetX: 0,
+    contentOffsetY: 0,
+    contentWidth: 35,
+    contentHeight: 33,
+    unlockSeconds: 3 * BIRD_SKILLBOOK_UNIT_SECONDS,
+  ),
+
+  BirdOption(
+    name: RLUIStrings.BIRD_BLUE_MACAW,
+    assetFile: 'BlueMacaw.png',
+    firstFrame: 0,
+    frameCount: 5,
+    frameWidth: 26,
+    frameHeight: 17,
+    contentOffsetX: 0,
+    contentOffsetY: 0,
+    contentWidth: 26,
+    contentHeight: 17,
+    unlockSeconds: 4 * BIRD_SKILLBOOK_UNIT_SECONDS,
   ),
 
   BirdOption(
@@ -189,7 +192,7 @@ const List<BirdOption> BIRD_OPTIONS = [
     contentOffsetY: 0,
     contentWidth: 30,
     contentHeight: 36,
-    unlockSkillbooks: 6,
+    unlockSeconds: 6 * BIRD_SKILLBOOK_UNIT_SECONDS,
   ),
 
   BirdOption(
@@ -202,7 +205,7 @@ const List<BirdOption> BIRD_OPTIONS = [
     contentOffsetX: 0,
     contentOffsetY: 0,
     contentHeight: 18,
-    unlockSkillbooks: 10,
+    unlockSeconds: 10 * BIRD_SKILLBOOK_UNIT_SECONDS,
   ),
 ];
 
@@ -213,7 +216,7 @@ const List<BirdOption> BIRD_OPTIONS = [
 // stay out of onboarding entirely so a brand-new reader isn't asked
 // to choose between three free birds and a row of greyed-out previews.
 final List<BirdOption> ONBOARDING_BIRD_OPTIONS = BIRD_OPTIONS
-    .where((BirdOption bird) => bird.unlockSkillbooks == 0)
+    .where((BirdOption bird) => bird.unlockSeconds == 0)
     .toList(growable: false);
 
 // * Display-name map — purely a UI-layer concern. The canonical
@@ -548,9 +551,7 @@ class BirdCarouselState extends State<BirdCarousel> {
 
     final Widget birdLayer = Opacity(opacity: itemOpacity, child: framedBird);
 
-    final Widget lockBadge = LockedBirdBadge(
-      unlockSeconds: getBirdUnlockSeconds(bird),
-    );
+    final Widget lockBadge = LockedBirdBadge(unlockSeconds: getBirdUnlockSeconds(bird));
 
     return Stack(
       alignment: Alignment.center,
@@ -607,25 +608,18 @@ class LockedBirdBadge extends StatelessWidget {
 
   const LockedBirdBadge({super.key, required this.unlockSeconds});
 
-  static const Widget LockIcon = Icon(
-    Pixel.lock,
-    size: RLDS.iconSmall,
-    color: RLDS.green,
-  );
+  static const Widget LockIcon = Icon(Pixel.lock, size: RLDS.iconSmall, color: RLDS.green);
 
   @override
   Widget build(BuildContext context) {
     final String unlockReadout = formatBirdUnlockReadout(unlockSeconds);
 
-    return Div.row(
-      [
-        LockIcon,
+    return Div.row([
+      LockIcon,
 
-        const Spacing.width(RLDS.spacing4),
+      const Spacing.width(RLDS.spacing4),
 
-        RLTypography.bodyMedium(unlockReadout, color: RLDS.textSecondary),
-      ],
-      mainAxisAlignment: MainAxisAlignment.center,
-    );
+      RLTypography.bodyMedium(unlockReadout, color: RLDS.textSecondary),
+    ], mainAxisAlignment: MainAxisAlignment.center);
   }
 }

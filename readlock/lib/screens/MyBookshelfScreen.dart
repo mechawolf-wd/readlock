@@ -4,7 +4,6 @@
 // of BOOKSHELF_PAGE_SIZE via a Load more button so the shelf doesn't
 // eagerly render every owned course.
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:readlock/design_system/RLCourseBookImage.dart';
 import 'package:readlock/services/feedback/HapticsService.dart';
@@ -30,6 +29,7 @@ import 'package:readlock/screens/profile/BirdPicker.dart';
 import 'package:readlock/services/auth/UserService.dart';
 import 'package:readlock/services/feedback/SoundService.dart';
 import 'package:readlock/services/purchases/PurchaseNotifiers.dart';
+import 'package:readlock/services/purchases/PurchaseService.dart';
 import 'package:readlock/models/UserModel.dart';
 import 'package:readlock/utility_widgets/text_animation/BionicText.dart';
 import 'package:readlock/utility_widgets/text_animation/RLTypewriterText.dart';
@@ -46,6 +46,12 @@ const int BOOKSHELF_PAGE_SIZE = 5;
 // the floating filter pane before bottoming out, mirroring the store's
 // STORE_LIST_FILTER_OVERLAY_INSET.
 const double BOOKSHELF_FILTER_OVERLAY_INSET = 148.0;
+
+// Hours after purchase during which the NEW badge is displayed on the card.
+const int BOOKSHELF_NEW_PURCHASE_WINDOW_HOURS = 24;
+
+// How many pixels the NEW badge protrudes outside the circle corner.
+const double BOOKSHELF_NEW_BADGE_OFFSET = 4.0;
 
 class BookshelfScreen extends StatefulWidget {
   const BookshelfScreen({super.key});
@@ -105,12 +111,14 @@ class BookshelfScreenState extends State<BookshelfScreen> {
     fetchSavedCourses();
     activeTabIndexNotifier.addListener(handleTabActivated);
     purchasedCoursesNotifier.addListener(handlePurchasedCoursesChanged);
+    courseProgressNotifier.addListener(handleCourseProgressChanged);
   }
 
   @override
   void dispose() {
     activeTabIndexNotifier.removeListener(handleTabActivated);
     purchasedCoursesNotifier.removeListener(handlePurchasedCoursesChanged);
+    courseProgressNotifier.removeListener(handleCourseProgressChanged);
     filterSearchController.dispose();
     super.dispose();
   }
@@ -201,14 +209,21 @@ class BookshelfScreenState extends State<BookshelfScreen> {
   }
 
   // Fired by PurchaseService.purchaseCourse the moment a course unlock
-  // succeeds. Refreshes the local list from purchasedCoursesNotifier
-  // (which PurchaseService just flipped optimistically) without re-reading
-  // the user profile. Re-reading the profile here used to race the
-  // in-flight Firestore writes and overwrite the optimistic notifier with
-  // the stale set, which made every screen think the purchase had been
-  // undone.
+  // succeeds. Detects which course is new (so the card can slide in on
+  // the next build) then refreshes the local list from the notifier
+  // without re-reading the user profile. Re-reading the profile here
+  // used to race the in-flight Firestore writes and overwrite the
+  // optimistic notifier with the stale set, which made every screen
+  // think the purchase had been undone.
   void handlePurchasedCoursesChanged() {
     refreshSavedCoursesFromNotifier();
+  }
+
+  // Fires when a lesson is finished and courseProgressNotifier advances.
+  // Rebuilds the card arcs so the reader sees updated rings immediately
+  // when they return to the shelf without waiting for a fresh fetch.
+  void handleCourseProgressChanged() {
+    setState(() {});
   }
 
   Future<void> fetchSavedCourses() async {
@@ -220,10 +235,8 @@ class BookshelfScreenState extends State<BookshelfScreen> {
 
     try {
       final UserModel? user = await UserService.getCurrentUserProfile();
-      final List<String> ownedIds = user?.purchasedCourses
-              .map((entry) => entry.courseId)
-              .toList() ??
-          const <String>[];
+      final List<String> ownedIds =
+          user?.purchasedCourses.map((entry) => entry.courseId).toList() ?? const <String>[];
       final JSONList courses = await CourseDataService.fetchCoursesByIds(ownedIds);
 
       if (user != null) {
@@ -385,11 +398,7 @@ class BookshelfScreenState extends State<BookshelfScreen> {
         selectedFilterGenres.isNotEmpty || filterSearchQuery.trim().isNotEmpty;
     final bool shouldShowFilterEmptyState = hasActiveFilters && filteredCourses.isEmpty;
 
-    final List<Widget> listChildren = [
-      OwnedHeadingRow(),
-
-      const Spacing.height(RLDS.spacing12),
-    ];
+    final List<Widget> listChildren = [];
 
     // When the filter narrows the shelf to nothing, swap the cards + Load
     // more block for the same bird used by the wholly-empty shelf so the
@@ -399,6 +408,8 @@ class BookshelfScreenState extends State<BookshelfScreen> {
     if (shouldShowFilterEmptyState) {
       listChildren.add(FilterEmptyBird());
     } else {
+      listChildren.add(OwnedHeadingRow());
+      listChildren.add(const Spacing.height(RLDS.spacing12));
       listChildren.addAll(SavedCourseCards());
       listChildren.add(LoadMoreSlot());
     }
@@ -628,15 +639,38 @@ class BookshelfScreenState extends State<BookshelfScreen> {
   // circle.
   static const double bookshelfProgressStrokeWidth = 4.0;
 
-  // MOCK — deterministic pseudo-random progress in [0.10, 0.95] keyed
-  // by courseId so each book has a distinct ring without animation.
-  // Replace with real per-course progress (read from
-  // /users/{id}.courseProgress) once that pipeline is wired through.
-  double mockProgressForCourseId(String courseId) {
-    final int hash = courseId.hashCode.abs();
-    final double normalized = (hash % 86) / 100.0;
+  // Sums the lesson count across every segment in the course JSON.
+  // Falls back to 1 so the division below never produces NaN.
+  int computeTotalLessonCount(JSONMap course) {
+    final dynamic rawSegments = course['segments'];
+    final bool hasSegments = rawSegments is List && rawSegments.isNotEmpty;
 
-    return 0.10 + normalized;
+    if (!hasSegments) {
+      return 1;
+    }
+
+    int total = 0;
+
+    for (final dynamic segment in rawSegments) {
+      final dynamic rawLessons = (segment as JSONMap)['lessons'];
+      final bool hasLessons = rawLessons is List;
+
+      if (hasLessons) {
+        total += rawLessons.length;
+      }
+    }
+
+    return total > 0 ? total : 1;
+  }
+
+  // Real progress fraction driven by courseProgressNotifier. Returns 0.0
+  // when the course has not been started yet (fresh purchase, index == 0).
+  double computeProgressForCourse(String courseId, JSONMap course) {
+    final int currentLessonIndex =
+        courseProgressNotifier.value[courseId]?.currentLessonIndex ?? 0;
+    final int totalLessons = computeTotalLessonCount(course);
+
+    return (currentLessonIndex / totalLessons).clamp(0.0, 1.0);
   }
 
   // Each course renders as two side-by-side cards on a tinted surface:
@@ -653,7 +687,8 @@ class BookshelfScreenState extends State<BookshelfScreen> {
     final String courseId = course['course-id'] as String? ?? '';
 
     final Color accentColor = resolveCourseAccentColor(courseColor);
-    final double progress = mockProgressForCourseId(courseId);
+    final double progress = computeProgressForCourse(courseId, course);
+    final bool isNew = isNewlyPurchasedCourse(courseId);
 
     void onCardTap() {
       HapticsService.lightImpact();
@@ -683,6 +718,7 @@ class BookshelfScreenState extends State<BookshelfScreen> {
                   accentColor: accentColor,
                   title: courseTitle,
                   author: courseAuthor,
+                  isNew: isNew,
                 ),
               ),
             ],
@@ -690,6 +726,19 @@ class BookshelfScreenState extends State<BookshelfScreen> {
         ),
       ),
     );
+  }
+
+  bool isNewlyPurchasedCourse(String courseId) {
+    final entry = PurchaseService.findPurchasedEntry(purchasedCoursesNotifier.value, courseId);
+    final bool hasPurchasedAt = entry?.purchasedAt != null;
+
+    if (!hasPurchasedAt) {
+      return false;
+    }
+
+    final Duration elapsed = DateTime.now().difference(entry!.purchasedAt!);
+
+    return elapsed.inHours < BOOKSHELF_NEW_PURCHASE_WINDOW_HOURS;
   }
 
   // Mirrors CourseRoadmapScreen.getCourseAccentColor — normalises the
@@ -710,6 +759,11 @@ class BookshelfScreenState extends State<BookshelfScreen> {
   // The progress arc paints on top of the LunarBlur surface using the
   // same AnimatedProgressArc / ProgressArcPainter the roadmap screen
   // uses, so the visual treatment is consistent across surfaces.
+  static final BoxDecoration newBadgeDecoration = BoxDecoration(
+    color: RLDS.success,
+    borderRadius: BorderRadius.circular(RLDS.spacing4),
+  );
+
   Widget BookCircleCard({
     required Color accentColor,
     required String? courseColor,
@@ -732,9 +786,6 @@ class BookshelfScreenState extends State<BookshelfScreen> {
       child: Center(child: bookImage),
     );
 
-    // AlwaysStoppedAnimation so the painter renders the arc at its
-    // mock value without spinning up an AnimationController per card.
-    // When real progress lands, swap this for the per-course value.
     final Animation<double> staticProgress = AlwaysStoppedAnimation<double>(progress);
 
     return SizedBox(
@@ -756,6 +807,17 @@ class BookshelfScreenState extends State<BookshelfScreen> {
     );
   }
 
+  Widget NewBadge() {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: RLDS.spacing4, vertical: RLDS.spacing4),
+      decoration: newBadgeDecoration,
+      child: RLTypography.pixelLabel(
+        RLUIStrings.BOOKSHELF_NEW_BADGE_LABEL,
+        color: RLDS.white,
+      ),
+    );
+  }
+
   // Rectangular pane on the right — title + author stacked, vertically
   // centered to line up with the circle. Title clamps to one line so a
   // long title doesn't break the row geometry; author wraps freely.
@@ -763,12 +825,11 @@ class BookshelfScreenState extends State<BookshelfScreen> {
     required Color accentColor,
     required String title,
     required String author,
+    required bool isNew,
   }) {
-    return RLLunarBlur(
+    final Widget card = RLLunarBlur(
       borderRadius: RLDS.borderRadiusSmall,
       borderColor: RLDS.transparent,
-      surfaceColor: accentColor,
-      surfaceAlpha: bookshelfCardSurfaceAlpha,
       padding: const EdgeInsets.symmetric(horizontal: RLDS.spacing16, vertical: RLDS.spacing12),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -781,6 +842,20 @@ class BookshelfScreenState extends State<BookshelfScreen> {
           RLTypography.bodyMedium(author, color: RLDS.textSecondary),
         ],
       ),
+    );
+
+    return Stack(
+      clipBehavior: Clip.none,
+      fit: StackFit.expand,
+      children: [
+        card,
+
+        Positioned(
+          top: -BOOKSHELF_NEW_BADGE_OFFSET,
+          right: -BOOKSHELF_NEW_BADGE_OFFSET,
+          child: RenderIf.condition(isNew, NewBadge()),
+        ),
+      ],
     );
   }
 

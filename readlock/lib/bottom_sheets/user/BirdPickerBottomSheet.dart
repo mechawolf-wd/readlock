@@ -58,7 +58,7 @@ class BirdPickerSheet extends StatelessWidget {
       // top padding via its 200pt height; no extra Spacing here. Runs in
       // browse-only mode: the reader can swipe across every bird
       // (locked included) without committing one as their profile bird.
-      const BirdCarousel(persistSelection: false),
+      const BirdCarousel(),
     ], padding: const EdgeInsets.only(bottom: RLDS.spacing24));
   }
 }

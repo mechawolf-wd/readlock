@@ -10,6 +10,7 @@ import 'package:readlock/design_system/RLUtility.dart';
 import 'package:readlock/design_system/RLSwitch.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/bottom_sheets/NightShiftBottomSheet.dart';
+import 'package:readlock/bottom_sheets/course/FeedbackBottomSheet.dart';
 import 'package:readlock/bottom_sheets/user/AccountBottomSheet.dart';
 import 'package:readlock/bottom_sheets/user/BirdPickerBottomSheet.dart';
 import 'package:readlock/bottom_sheets/user/FontPickerBottomSheet.dart';
@@ -36,7 +37,6 @@ class MenuSection extends StatelessWidget {
   final bool blurEnabled;
   final bool coloredTextEnabled;
   final bool bionicEnabled;
-  final bool rsvpEnabled;
   final bool justifiedReadingEnabled;
   final ValueChanged<bool> onTypingSoundToggled;
   final ValueChanged<bool> onGeneralSoundsToggled;
@@ -45,7 +45,6 @@ class MenuSection extends StatelessWidget {
   final ValueChanged<bool> onBlurToggled;
   final ValueChanged<bool> onColoredTextToggled;
   final ValueChanged<bool> onBionicToggled;
-  final ValueChanged<bool> onRsvpToggled;
   final ValueChanged<bool> onJustifiedReadingToggled;
   final VoidCallback onSupportTap;
   final VoidCallback onLogoutTap;
@@ -59,7 +58,6 @@ class MenuSection extends StatelessWidget {
     required this.blurEnabled,
     required this.coloredTextEnabled,
     required this.bionicEnabled,
-    required this.rsvpEnabled,
     required this.justifiedReadingEnabled,
     required this.onTypingSoundToggled,
     required this.onGeneralSoundsToggled,
@@ -68,7 +66,6 @@ class MenuSection extends StatelessWidget {
     required this.onBlurToggled,
     required this.onColoredTextToggled,
     required this.onBionicToggled,
-    required this.onRsvpToggled,
     required this.onJustifiedReadingToggled,
     required this.onSupportTap,
     required this.onLogoutTap,
@@ -205,6 +202,8 @@ class MenuSection extends StatelessWidget {
 
         RevealDemo(isEnabled: revealAllTrueFalse, onTap: onProgressiveDemoTap),
 
+        const DemoExplainLabel(explanation: RLUIStrings.DEMO_EXPLAIN_REVEAL),
+
         SwitchMenuItem(
           icon: Pixel.eye,
           title: RLUIStrings.MENU_BLUR,
@@ -214,6 +213,8 @@ class MenuSection extends StatelessWidget {
 
         BlurDemo(isEnabled: blurEnabled, onTap: onBlurDemoTap),
 
+        const DemoExplainLabel(explanation: RLUIStrings.DEMO_EXPLAIN_BLUR),
+
         SwitchMenuItem(
           icon: Pixel.edit,
           title: RLUIStrings.MENU_COLORED_TEXT,
@@ -222,6 +223,8 @@ class MenuSection extends StatelessWidget {
         ),
 
         ColoredTextDemo(isEnabled: coloredTextEnabled, onTap: onColoredTextDemoTap),
+
+        const DemoExplainLabel(explanation: RLUIStrings.DEMO_EXPLAIN_COLORED_TEXT),
 
         // Font picker + live demo — sits at the end of Reading Settings so
         // it follows the toggles that govern what text looks like.
@@ -233,6 +236,8 @@ class MenuSection extends StatelessWidget {
 
         const ReadingFontDemo(),
 
+        const DemoExplainLabel(explanation: RLUIStrings.DEMO_EXPLAIN_FONT),
+
         // Column width — label row above (chevron-less, no-op tap) matches
         // the other reading-setting rows; the chips inside the demo card
         // below are the actual control.
@@ -243,6 +248,8 @@ class MenuSection extends StatelessWidget {
         ),
 
         const ReadingColumnDemo(),
+
+        const DemoExplainLabel(explanation: RLUIStrings.DEMO_EXPLAIN_COLUMN),
 
         // Justified text — paragraph-shape preference for long-form reading.
         // Off by default (regular/left-aligned); flipping it on retypes every
@@ -256,6 +263,8 @@ class MenuSection extends StatelessWidget {
 
         JustifiedReadingDemo(onToggle: onJustifiedReadingDemoToggle),
 
+        const DemoExplainLabel(explanation: RLUIStrings.DEMO_EXPLAIN_JUSTIFIED),
+
         // Bionic + RSVP sit at the bottom of Reading Settings. They are
         // the most specialised reading modes in the section, so they live
         // below the everyday typography settings rather than in the middle.
@@ -268,15 +277,16 @@ class MenuSection extends StatelessWidget {
 
         BionicDemo(isEnabled: bionicEnabled, onTap: onBionicDemoTap),
 
-        SwitchMenuItem(
-          icon: Pixel.zap,
-          title: RLUIStrings.MENU_RSVP,
-          value: rsvpEnabled,
-          onChanged: onRsvpToggled,
-        ),
+        const DemoExplainLabel(explanation: RLUIStrings.DEMO_EXPLAIN_BIONIC),
 
-        RSVPDemo(isEnabled: rsvpEnabled),
-
+        // RSVP mode hidden from settings until ready for release.
+        // SwitchMenuItem(
+        //   icon: Pixel.zap,
+        //   title: RLUIStrings.MENU_RSVP,
+        //   value: rsvpEnabled,
+        //   onChanged: onRsvpToggled,
+        // ),
+        // RSVPDemo(isEnabled: rsvpEnabled),
         const MenuDivider(label: RLUIStrings.MENU_SECTION_LEGAL),
 
         // Legal (Support listed last, after EULA)
@@ -494,11 +504,48 @@ class ProfileBirdMenuIcon extends StatelessWidget {
     );
   }
 
-  Widget ProfileBirdMenuIconBuilder(BuildContext context, BirdOption bird, Widget? unusedChild) {
+  Widget ProfileBirdMenuIconBuilder(
+    BuildContext context,
+    BirdOption bird,
+    Widget? unusedChild,
+  ) {
     return SizedBox(
       width: RLDS.iconMedium,
       height: RLDS.iconMedium,
       child: BirdAnimationSprite(bird: bird, previewSize: RLDS.iconMedium),
+    );
+  }
+}
+
+// Right-aligned "What's this?" label placed under each settings demo box.
+// Tapping opens a feedback-style bottom sheet with a short explanation
+// of what the feature does.
+class DemoExplainLabel extends StatelessWidget {
+  final String explanation;
+
+  const DemoExplainLabel({super.key, required this.explanation});
+
+  @override
+  Widget build(BuildContext context) {
+    void handleTap() {
+      HapticsService.lightImpact();
+      SoundService.playRandomTextClick();
+      FeedbackBottomSheets.showFeedbackSheet(context: context, content: explanation);
+    }
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: RLDS.spacing8),
+      child: Align(
+        alignment: Alignment.centerRight,
+        child: GestureDetector(
+          onTap: handleTap,
+          behavior: HitTestBehavior.opaque,
+          child: RLTypography.bodySmall(
+            RLUIStrings.DEMO_EXPLAIN_LABEL,
+            color: RLDS.textSecondary,
+          ),
+        ),
+      ),
     );
   }
 }

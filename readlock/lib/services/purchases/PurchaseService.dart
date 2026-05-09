@@ -87,11 +87,12 @@ class PurchaseService {
 
     await Future.delayed(MOCK_PAYMENT_LATENCY);
 
+    final DateTime now = DateTime.now();
+
     final PurchasedCourseModel freshEntry = PurchasedCourseModel(
       courseId: courseId,
-      expires: DateTime.now().add(
-        const Duration(days: PurchaseConstants.COURSE_RENTAL_DAYS),
-      ),
+      expires: now.add(const Duration(days: PurchaseConstants.COURSE_RENTAL_DAYS)),
+      purchasedAt: now,
     );
     final List<PurchasedCourseModel> nextLibrary = [...previousLibrary, freshEntry];
 

@@ -38,7 +38,7 @@ import 'package:readlock/utility_widgets/visual_effects/BlurOverlay.dart';
 // subtle and elevated card presets so the demo panes read as clearly
 // tinted without competing with hero cards.
 const EdgeInsets demoSurfacePadding = EdgeInsets.all(RLDS.spacing12);
-const EdgeInsets demoSurfaceMargin = EdgeInsets.only(bottom: RLDS.spacing16);
+const EdgeInsets demoSurfaceMargin = EdgeInsets.only(bottom: RLDS.spacing4);
 const double demoSurfaceAlpha = 0.28;
 
 class DemoSurface extends StatelessWidget {

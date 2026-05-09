@@ -1,5 +1,6 @@
-// Widget for estimating percentages from studies or statistics
-// Users slide to guess the percentage before revealing the actual answer
+// Estimation slide. Reader drags a slider to guess a percentage from a statistic,
+// then submits to reveal the actual figure alongside an explanation.
+// A close guess (within closeThreshold) is treated as a win.
 
 import 'package:flutter/material.dart' hide Typography;
 import 'package:readlock/models/CourseModel.dart';
@@ -31,7 +32,6 @@ class CCEstimateState extends State<CCEstimate>
   late AnimationController revealController;
   late Animation<double> revealAnimation;
 
-  // Icon and styling definitions
   static final Icon CheckIcon = const Icon(Pixel.check, color: RLDS.success, size: RLDS.iconMedium);
   static const Icon InfoIcon = Icon(Pixel.infobox, size: RLDS.iconMedium);
   static final Icon StarIcon = const Icon(Pixel.moonstars, color: RLDS.white, size: RLDS.iconSmall);
@@ -68,8 +68,6 @@ class CCEstimateState extends State<CCEstimate>
       ),
     );
   }
-
-  // Widget methods
 
   List<Widget> MainContent() {
     return [
@@ -122,14 +120,11 @@ class CCEstimateState extends State<CCEstimate>
     ], mainAxisAlignment: MainAxisAlignment.center);
   }
 
-  // Helper methods
-
   Widget EstimationSlider() {
     final SliderThemeData sliderTheme = Style.getSliderTheme();
 
     return Div.column(
       [
-        // Slider with labels
         SliderTheme(
           data: sliderTheme,
           child: Slider(
@@ -140,7 +135,6 @@ class CCEstimateState extends State<CCEstimate>
           ),
         ),
 
-        // Min/Max labels
         SliderLabelsRow(),
       ],
       padding: const [RLDS.spacing16, RLDS.spacing0],
@@ -208,17 +202,14 @@ class CCEstimateState extends State<CCEstimate>
     return FadeTransition(
       opacity: revealAnimation,
       child: Div.column([
-        // Result feedback card
         Container(
           padding: const EdgeInsets.all(RLDS.spacing16),
           decoration: getResultCardDecoration(isClose),
           child: Div.column([
-            // Result header
             ResultHeader(isClose, difference),
 
             const Spacing.height(RLDS.spacing12),
 
-            // Comparison display
             ComparisonDisplay(difference),
           ]),
         ),
@@ -349,8 +340,6 @@ class CCEstimateState extends State<CCEstimate>
 
     return RLUIStrings.ESTIMATE_CLOSE_HINT;
   }
-
-  // Action methods
 
   void submitEstimate() {
     setState(() {

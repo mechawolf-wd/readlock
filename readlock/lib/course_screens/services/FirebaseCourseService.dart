@@ -1,5 +1,4 @@
 // Firestore service for reading course data from /courses collection
-// Replaces JSONCourseDataService (local asset loading)
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';

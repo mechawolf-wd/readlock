@@ -17,8 +17,11 @@ import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLUIStrings.dart';
 import 'package:readlock/design_system/RLButton.dart';
+import 'package:readlock/design_system/RLReveal.dart';
+import 'package:readlock/services/feedback/HapticsService.dart';
 import 'package:readlock/design_system/RLUtility.dart';
 import 'package:readlock/screens/profile/BirdPicker.dart';
+import 'package:readlock/services/feedback/SoundService.dart';
 
 // One-shot count-up that animates the elapsed time from 0:00 to its
 // final value the moment the screen appears, so the duration reads as
@@ -57,6 +60,8 @@ class CCLessonFinishScreenState extends State<CCLessonFinishScreen>
   late AnimationController timeCountUpController;
   late Animation<int> timeCountUpAnimation;
 
+  bool isFinishButtonVisible = false;
+
   @override
   void initState() {
     super.initState();
@@ -78,11 +83,28 @@ class CCLessonFinishScreenState extends State<CCLessonFinishScreen>
       duration: LESSON_FINISH_TIME_COUNTUP_DURATION,
     );
 
-    timeCountUpAnimation = IntTween(begin: 0, end: totalSeconds).animate(
-      CurvedAnimation(parent: timeCountUpController, curve: Curves.easeOut),
-    );
+    timeCountUpAnimation = IntTween(
+      begin: 0,
+      end: totalSeconds,
+    ).animate(CurvedAnimation(parent: timeCountUpController, curve: Curves.easeOut));
 
     timeCountUpController.forward();
+
+    showFinishButtonDelayed();
+  }
+
+  void showFinishButtonDelayed() async {
+    await Future.delayed(const Duration(milliseconds: 1400));
+
+    final bool stillMounted = mounted;
+
+    if (!stillMounted) {
+      return;
+    }
+
+    setState(() {
+      isFinishButtonVisible = true;
+    });
   }
 
   @override
@@ -114,21 +136,31 @@ class CCLessonFinishScreenState extends State<CCLessonFinishScreen>
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: RLDS.contentPaddingInsets,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          // Hero, feather (if dropped) and the elapsed time, vertically
-          // centred in the available slot above the commit button.
-          Expanded(child: HeroContent()),
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: isFinishButtonVisible ? handleFinishAreaTap : null,
+      child: Padding(
+        padding: RLDS.contentPaddingInsets,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            // Hero, feather (if dropped) and the elapsed time, vertically
+            // centred in the available slot above the commit button.
+            Expanded(child: HeroContent()),
 
-          // Commit button. Tapping it is what writes the elapsed delta
-          // back to the user model via the host's onFinishTap.
-          FinishButton(),
-        ],
+            // Commit button. Tapping it is what writes the elapsed delta
+            // back to the user model via the host's onFinishTap.
+            FinishButton(),
+          ],
+        ),
       ),
     );
+  }
+
+  void handleFinishAreaTap() {
+    HapticsService.lightImpact();
+    SoundService.playSuccess();
+    widget.onFinishTap();
   }
 
   // Branches the hero layout: feather + time when dropped (feather is the
@@ -139,13 +171,7 @@ class CCLessonFinishScreenState extends State<CCLessonFinishScreen>
     if (widget.didEarnFeather) {
       return Column(
         mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          PulsingBird(),
-
-          const Spacing.height(RLDS.spacing16),
-
-          AnimatedTimeSpentRow(),
-        ],
+        children: [PulsingBird(), const Spacing.height(RLDS.spacing16), AnimatedTimeSpentRow()],
       );
     }
 
@@ -210,9 +236,12 @@ class CCLessonFinishScreenState extends State<CCLessonFinishScreen>
   }
 
   Widget FinishButton() {
-    return RLButton.tertiary(
-      label: RLUIStrings.LESSON_FINISH_BUTTON_LABEL,
-      onTap: widget.onFinishTap,
+    return RLReveal(
+      visible: isFinishButtonVisible,
+      child: RLButton.tertiary(
+        label: RLUIStrings.LESSON_FINISH_BUTTON_LABEL,
+        onTap: handleFinishAreaTap,
+      ),
     );
   }
 }

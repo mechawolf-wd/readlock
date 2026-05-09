@@ -20,6 +20,7 @@ import 'package:readlock/services/feedback/HapticsService.dart';
 import 'package:readlock/services/feedback/SoundService.dart';
 import 'package:readlock/services/purchases/PurchaseConstants.dart';
 import 'package:readlock/services/purchases/PurchaseService.dart';
+import 'package:readlock/MainNavigation.dart';
 
 // * Layout — circular book disc sized to feel like the focal point of the
 // sheet without dominating it. 144 = 1.5x of the 96px book asset, leaving
@@ -251,6 +252,8 @@ class CoursePurchaseSheetState extends State<CoursePurchaseSheet> {
     if (result == PurchaseResult.success) {
       SoundService.playPurchase();
       Navigator.of(context).pop();
+      activeTabIndexNotifier.value = TAB_INDEX_BOOKSHELF;
+      // ignore: use_build_context_synchronously
       RLToast.success(context, RLUIStrings.ROADMAP_PURCHASE_SUCCESS, playSound: false);
       return;
     }

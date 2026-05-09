@@ -1,8 +1,7 @@
 // Full-screen loading widget displayed while course content is being prepared.
 // Shows the reader's picked bird as an animated sprite so the loading state
-// reads as part of the reader's profile — the old assets/pigeon.png has been
-// removed, and the bird sprite we already use in Pause slides is the natural
-// source of truth.
+// reads as part of the reader's profile — same bird sprite used on Pause slides,
+// the natural source of truth.
 
 import 'package:flutter/material.dart' hide Typography;
 import 'package:readlock/design_system/RLLunarBlur.dart';

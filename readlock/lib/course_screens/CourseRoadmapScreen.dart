@@ -47,7 +47,6 @@ const double floatingBarBottomClearance = 180.0;
 // current progress on screen open with an ease-out curve so the reveal
 // reads as a single confident gesture rather than a linear fill. Duration
 // pulled from the shared opacity-intro token in RLDS.
-const double roadmapTargetProgress = 0.35;
 
 class CourseRoadmapScreen extends StatefulWidget {
   final String courseId;
@@ -132,9 +131,11 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
       duration: RLDS.opacityFadeDurationIntro,
     );
 
+    // Tween starts at zero; real target is set in fetchCourseData once
+    // the segment list and frontier are known.
     progressRingAnimation = Tween<double>(
       begin: 0.0,
-      end: roadmapTargetProgress,
+      end: 0.0,
     ).animate(CurvedAnimation(parent: progressRingController, curve: Curves.easeOutCubic));
 
     breathingController = AnimationController(
@@ -194,6 +195,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
       return;
     }
 
+    updateProgressRing();
     setState(() {});
   }
 
@@ -279,6 +281,51 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
     return progress.currentLessonIndex;
   }
 
+  // Total lesson count across every segment in the course.
+  int getTotalLessonCount() {
+    int total = 0;
+
+    for (int segmentIdx = 0; segmentIdx < courseSegments.length; segmentIdx++) {
+      final JSONMap segment = courseSegments[segmentIdx];
+      final JSONList segmentLessons = JSONList.from(segment['lessons'] ?? []);
+
+      total += segmentLessons.length;
+    }
+
+    return total;
+  }
+
+  // Fraction of the course the reader has reached (frontier / total).
+  // 0.0 for a fresh start, approaches 1.0 as the reader nears the end.
+  double getProgressFraction() {
+    final int total = getTotalLessonCount();
+    final bool hasNoLessons = total == 0;
+
+    if (hasNoLessons) {
+      return 0.0;
+    }
+
+    final int frontier = getCurrentLessonFrontier();
+    final double fraction = frontier / total;
+
+    return fraction.clamp(0.0, 1.0);
+  }
+
+  // Rebuilds the progress ring tween from the current animation value
+  // to the live progress fraction so the arc animates smoothly to its
+  // new target whenever the frontier advances.
+  void updateProgressRing() {
+    final double currentValue = progressRingAnimation.value;
+    final double targetProgress = getProgressFraction();
+
+    progressRingAnimation = Tween<double>(
+      begin: currentValue,
+      end: targetProgress,
+    ).animate(CurvedAnimation(parent: progressRingController, curve: Curves.easeOutCubic));
+
+    progressRingController.forward(from: 0.0);
+  }
+
   @override
   void dispose() {
     purchasedCoursesNotifier.removeListener(handlePurchasedCoursesChanged);
@@ -306,7 +353,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
       setState(() {
         isCourseDataLoading = false;
       });
-      progressRingController.forward();
+      updateProgressRing();
     }
   }
 
@@ -569,7 +616,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
         RLTypography.bodyLarge(RLUIStrings.ROADMAP_CHARGE_LOADING_LABEL, color: accentColor),
       ];
     } else {
-      // "Charge skillbook for 2 [feather]" — same shape as PurchaseButton
+      // "Recharge: 3 [feather]", same shape as PurchaseButton
       // so the bar reads as one component swapping copy + price.
       final String chargeLabel =
           '${RLUIStrings.ROADMAP_CHARGE_LABEL} '
@@ -724,6 +771,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
           courseTitle: courseTitle,
           courseAuthor: courseAuthor,
           courseDescription: courseDescription,
+          isCoursePurchased: getIsCoursePurchased(),
         ),
       ],
     );
@@ -781,7 +829,10 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
     } else {
       rowChildren.add(
         Div.row([
-          RLTypography.pixelLabel(RLUIStrings.ROADMAP_DISCHARGED_PERCENT_LABEL, color: RLDS.white),
+          RLTypography.pixelLabel(
+            RLUIStrings.ROADMAP_DISCHARGED_PERCENT_LABEL,
+            color: RLDS.white,
+          ),
 
           const Spacing.width(RLDS.spacing4),
 
@@ -935,8 +986,26 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
     required String courseTitle,
     required String courseAuthor,
     required String courseDescription,
+    required bool isCoursePurchased,
   }) {
     final bool hasDescription = courseDescription.isNotEmpty;
+    final bool shouldBlurDescription = !isCoursePurchased;
+
+    final Widget descriptionLabel = RLTypography.bodyMedium(
+      courseDescription,
+      color: RLDS.textMuted,
+      textAlign: TextAlign.center,
+    );
+
+    final Widget descriptionContent = shouldBlurDescription
+        ? ImageFiltered(
+            imageFilter: ui.ImageFilter.blur(
+              sigmaX: RLDS.lockedTextBlurSigma,
+              sigmaY: RLDS.lockedTextBlurSigma,
+            ),
+            child: descriptionLabel,
+          )
+        : descriptionLabel;
 
     return RLLunarBlur(
       borderRadius: BorderRadius.zero,
@@ -959,20 +1028,13 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
 
           // Description — one-line course pitch from the rlockie front
           // matter. Hidden when the course doesn't supply one so the card
-          // doesn't show empty padding under the author line.
+          // doesn't show empty padding under the author line. Blurred
+          // when the course is locked so the text teases without spoiling.
           RenderIf.condition(
             hasDescription,
             Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                const Spacing.height(RLDS.spacing16),
-
-                RLTypography.bodyMedium(
-                  courseDescription,
-                  color: RLDS.textMuted,
-                  textAlign: TextAlign.center,
-                ),
-              ],
+              children: [const Spacing.height(RLDS.spacing16), descriptionContent],
             ),
           ),
         ],
@@ -1013,12 +1075,13 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
         selectedValue: selectedSegmentIndex,
         onChanged: handleSegmentTabTap,
         selectedLabelColor: getCourseAccentColor(),
+        showBorder: false,
       ),
     );
   }
 
   Widget ContinueButton() {
-    final Color accentColor = getCourseAccentColor();
+    // final Color accentColor = getCourseAccentColor();
 
     const EdgeInsets buttonPadding = EdgeInsets.symmetric(
       vertical: RLDS.spacing16,
@@ -1031,7 +1094,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
         borderRadius: RLDS.borderRadiusSmall,
         borderColor: RLDS.transparent,
         child: Div.row(
-          [RLTypography.bodyLarge(RLUIStrings.ROADMAP_CONTINUE_LABEL, color: accentColor)],
+          [RLTypography.bodyLarge(RLUIStrings.ROADMAP_CONTINUE_LABEL, color: RLDS.white)],
           width: double.infinity,
           padding: buttonPadding,
           mainAxisAlignment: MainAxisAlignment.center,
@@ -1221,6 +1284,7 @@ class PathWithNodes extends StatelessWidget {
           lesson: lesson,
           alignment: alignment,
           accentColor: accentColor,
+          isCoursePurchased: isCoursePurchased,
           isLocked: isLocked,
           isDischarged: failsDischargeGate,
           // Title-blur signal: only fire when the course itself is locked
@@ -1276,6 +1340,7 @@ class PathLessonNode extends StatefulWidget {
   final JSONMap lesson;
   final PathNodeAlignment alignment;
   final Color accentColor;
+  final bool isCoursePurchased;
   final bool isLocked;
   // When true the tile shows a battery-empty icon instead of the lock,
   // signalling "owned but rental lapsed" rather than "not purchased".
@@ -1298,6 +1363,7 @@ class PathLessonNode extends StatefulWidget {
     required this.lesson,
     required this.alignment,
     required this.accentColor,
+    required this.isCoursePurchased,
     required this.isLocked,
     required this.isDischarged,
     required this.shouldBlurTitle,
@@ -1549,13 +1615,25 @@ class PathLessonNodeState extends State<PathLessonNode> {
     return Icon(Pixel.play, color: widget.accentColor, size: roadmapTileIconSize);
   }
 
+  Widget CompletedIcon() {
+    return Icon(Pixel.check, color: widget.accentColor, size: roadmapTileIconSize);
+  }
+
   Widget NodeIcon() {
+    if (widget.isLocked) {
+      return LockedIcon;
+    }
+
     if (widget.isDischarged) {
       return DischargedIcon;
     }
 
-    if (widget.isLocked) {
-      return LockedIcon;
+    // Purchased courses: frontier lesson gets play, earlier ones get checkmark.
+    // Unpurchased courses: free preview lessons always get play.
+    final bool isCompletedLesson = widget.isCoursePurchased && !widget.isActiveFrontier;
+
+    if (isCompletedLesson) {
+      return CompletedIcon();
     }
 
     return PlayIcon();

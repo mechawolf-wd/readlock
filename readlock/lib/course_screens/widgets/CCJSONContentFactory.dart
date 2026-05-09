@@ -1,6 +1,7 @@
-// Factory class for creating course content widgets from JSON data
-// Provides wrapper widgets that convert JSON data to proper model objects
-// Supports entity types produced by lockie PackageTextParser
+// Maps raw JSON content items (from the course's `content` array) to their
+// CC widget counterparts. Each entity-type string routes to a thin wrapper
+// that extracts the typed model from the JSON and hands it to the widget.
+// Entity types are produced by the lockie PackageTextParser.
 
 import 'package:flutter/material.dart' hide Typography;
 import 'package:readlock/constants/RLTypography.dart';
@@ -17,11 +18,9 @@ import 'package:readlock/course_screens/widgets/interaction/CCQuestion.dart';
 import 'package:readlock/course_screens/widgets/interaction/CCPause.dart';
 
 class CCJSONContentFactory {
-  // Factory method for creating content widgets from JSON data
   static Widget createContentWidget(JSONMap contentData) {
     final String entityType = contentData['entity-type'] ?? '';
 
-    // Content type switching based on entity type
     switch (entityType) {
       case 'text':
         {
@@ -66,7 +65,9 @@ class CCJSONContentFactory {
   }
 }
 
-// Error widget for unknown content types
+// Fallback widget rendered when the entity-type string is unrecognised.
+// Surfaces the unknown type name so content authors can catch typos
+// during development without a silent blank page.
 class UnknownContentWidget extends StatelessWidget {
   final String entityType;
 
@@ -74,7 +75,6 @@ class UnknownContentWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Error message display
     return Div.column(
       [
         RLTypography.bodyMedium(

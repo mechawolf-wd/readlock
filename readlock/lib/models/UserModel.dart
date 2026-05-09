@@ -30,7 +30,7 @@ class UserModel {
 
   // * Reading preferences — persisted to Firestore.
 
-  @JsonKey(defaultValue: true)
+  @JsonKey(defaultValue: false)
   final bool typingSound;
 
   @JsonKey(defaultValue: true)
@@ -145,7 +145,7 @@ class UserModel {
     required this.createdAt,
     this.hasCompletedOnboarding = false,
     this.hasReaderPass = false,
-    this.typingSound = true,
+    this.typingSound = false,
     this.sounds = true,
     this.haptics = true,
     this.reveal = false,

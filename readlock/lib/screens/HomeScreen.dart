@@ -4,7 +4,9 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:readlock/bottom_sheets/course/CoursePurchaseBottomSheet.dart';
+import 'package:readlock/course_screens/CourseContentViewer.dart';
 import 'package:readlock/course_screens/CourseRoadmapScreen.dart';
+import 'package:readlock/services/purchases/PurchaseService.dart';
 import 'package:readlock/course_screens/data/CourseData.dart';
 import 'package:readlock/constants/RLLatestCourse.dart';
 import 'package:readlock/constants/RLUIStrings.dart';
@@ -341,8 +343,28 @@ class HomeScreenState extends State<HomeScreen> {
 
     void onContinueTap() {
       HapticsService.lightImpact();
+
+      final bool isCourseCharged = PurchaseService.isCourseActive(courseId);
+
+      if (!isCourseCharged) {
+        navigateToCourse(courseId);
+        return;
+      }
+
+      final int frontierLessonIndex =
+          courseProgressNotifier.value[courseId]?.currentLessonIndex ?? 0;
+
       SoundService.playEnter();
-      navigateToCourse(courseId);
+
+      Navigator.push(
+        context,
+        RLDS.slowFadeTransition(
+          CourseDetailScreen(
+            courseId: courseId,
+            initialLessonIndex: frontierLessonIndex,
+          ),
+        ),
+      );
     }
 
     final Widget continueLabel = RLTypography.bodyLarge(

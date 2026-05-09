@@ -26,6 +26,7 @@ class BookListCard extends StatelessWidget {
   // absorbs the tap so the outer card's onTap (typically navigate-to-
   // roadmap) doesn't fire when the user hits the icon.
   final VoidCallback? onBuyTap;
+  final bool isOwned;
   final EdgeInsets margin;
 
   const BookListCard({
@@ -36,6 +37,7 @@ class BookListCard extends StatelessWidget {
     this.coverImagePath,
     this.onTap,
     this.onBuyTap,
+    this.isOwned = false,
     this.margin = const EdgeInsets.only(bottom: RLDS.spacing12),
   });
 
@@ -57,10 +59,15 @@ class BookListCard extends StatelessWidget {
       ),
     ];
 
+    if (isOwned) {
+      rowChildren.add(const Spacing.width(RLDS.spacing12));
+      rowChildren.add(OwnedIcon);
+    }
+
     final VoidCallback? buyHandler = onBuyTap;
     final bool hasBuyHandler = buyHandler != null;
 
-    if (hasBuyHandler) {
+    if (!isOwned && hasBuyHandler) {
       rowChildren.add(const Spacing.width(RLDS.spacing12));
       rowChildren.add(BuyIconButton(onTap: buyHandler));
     }
@@ -73,14 +80,19 @@ class BookListCard extends StatelessWidget {
     );
   }
 
+  static final Widget OwnedIcon = Padding(
+    padding: const EdgeInsets.all(RLDS.spacing4),
+    child: const Icon(Pixel.check, color: RLDS.success, size: RLDS.iconLarge),
+  );
+
   // Trailing cart icon — sits at the right edge of the card with a
   // small padding so the tap target stays comfortable without growing
   // the card's row height. Muted glyph color so the icon reads as a
   // secondary affordance, not a primary CTA.
   Widget BuyIconButton({required VoidCallback onTap}) {
-    final Widget CartIcon = const Icon(
+    const Widget CartIcon = Icon(
       Pixel.cart,
-      color: RLDS.markupGreen,
+      color: RLDS.textSecondary,
       size: RLDS.iconLarge,
     );
 
@@ -92,7 +104,7 @@ class BookListCard extends StatelessWidget {
     return GestureDetector(
       onTap: handleCartTap,
       behavior: HitTestBehavior.opaque,
-      child: Padding(padding: const EdgeInsets.all(RLDS.spacing4), child: CartIcon),
+      child: const Padding(padding: EdgeInsets.all(RLDS.spacing4), child: CartIcon),
     );
   }
 

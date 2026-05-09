@@ -1,5 +1,6 @@
-// Course detail screen displaying individual course content with navigation
-// Supports various content types including text, questions, intro/outro, and design examples
+// Course detail screen — hosts the vertical PageView of CC swipe widgets
+// for a single lesson and owns the reading stopwatch, progress chrome,
+// and navigation back to the roadmap.
 
 import 'dart:ui' as ui;
 
@@ -26,6 +27,7 @@ import 'package:readlock/constants/DartAliases.dart';
 import 'package:readlock/services/ScreenProtectionService.dart';
 import 'package:readlock/screens/profile/BirdPicker.dart';
 import 'package:readlock/services/auth/UserService.dart';
+import 'package:readlock/services/purchases/PurchaseConstants.dart';
 import 'package:readlock/services/feedback/SoundService.dart';
 
 import 'package:pixelarticons/pixel.dart';
@@ -52,18 +54,14 @@ class CourseDetailScreen extends StatefulWidget {
 }
 
 class CourseDetailScreenState extends State<CourseDetailScreen> {
-  // Page navigation controller
   late PageController pageController;
 
-  // Current position tracking
   late int currentContentIndex;
   late int currentLessonIndex;
 
-  // Content data management
   JSONList allContent = [];
   JSONMap? courseData;
 
-  // Loading state
   bool isLoading = true;
 
   // Cumulative reading clock for this course session. Started once the
@@ -99,19 +97,15 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
     size: RLDS.iconLarge,
   );
 
-  // Initializes widget state and loads course data
   @override
   void initState() {
     super.initState();
 
-    // Set initial indices from widget properties
     currentLessonIndex = widget.initialLessonIndex;
     currentContentIndex = widget.initialContentIndex;
 
-    // Initialize page controller with initial page
     pageController = PageController(initialPage: currentContentIndex);
 
-    // Load course data asynchronously
     fetchCourseData();
 
     // Block screenshots while course content is visible
@@ -125,7 +119,6 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
     );
   }
 
-  // Cleanup resources when widget is disposed
   @override
   void dispose() {
     commitReadingTime();
@@ -141,6 +134,9 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
   // already tearing down, and UserService logs any write failure for
   // diagnostics. Skips zero-second exits (e.g. immediate quit during the
   // loading screen) so noise doesn't reach Firestore.
+  // Credited seconds are capped at MAX_SESSION_CREDITED_SECONDS to prevent
+  // idle-tab abuse of the feather economy. The finish screen still shows
+  // the real stopwatch value — only the write is capped.
   void commitReadingTime() {
     readingStopwatch.stop();
 
@@ -151,7 +147,12 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
       return;
     }
 
-    UserService.incrementTimeSpentReading(elapsedSeconds);
+    final int creditedSeconds = elapsedSeconds.clamp(
+      0,
+      PurchaseConstants.MAX_SESSION_CREDITED_SECONDS,
+    );
+
+    UserService.incrementTimeSpentReading(creditedSeconds);
   }
 
   @override
@@ -471,10 +472,8 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
     );
   }
 
-  // Load course data from service
   Future<void> fetchCourseData() async {
     try {
-      // Fetch course data by ID
       courseData = await CourseDataService.fetchCourseById(widget.courseId);
 
       final bool hasCourseData = courseData != null;
@@ -485,7 +484,6 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
     } on Exception catch (error) {
       debugPrint('${RLUIStrings.ERROR_LOADING_COURSE_DATA}: $error');
     } finally {
-      // Update loading state
       if (mounted) {
         setState(() {
           isLoading = false;
@@ -498,7 +496,6 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
     }
   }
 
-  // Extract content items from current lesson only
   Future<JSONList> getAllContent() async {
     final bool hasNoCourseData = courseData == null;
 
@@ -506,15 +503,14 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
       return [];
     }
 
-    // Navigate through segments to find lessons
     final JSONList segments = JSONList.from(courseData!['segments'] ?? []);
 
     return getContentFromCurrentLessonInSegments(segments);
   }
 
-  // Get content from current lesson by navigating through segments
   JSONList getContentFromCurrentLessonInSegments(JSONList segments) {
-    // Flatten all lessons from all segments
+    // Flatten lessons across all segments so currentLessonIndex is a global
+    // flat index matching the CourseProgressModel frontier.
     final JSONList allLessons = [];
 
     for (final segment in segments) {
@@ -522,10 +518,20 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
       allLessons.addAll(segmentLessons);
     }
 
+    // The frontier index can equal allLessons.length when every lesson is
+    // complete (finish on lesson N-1 bumps frontier to N). Clamp to the
+    // last valid index so a fully-completed course reopens its final lesson
+    // rather than showing the empty-content message.
+    final bool isFrontierOutOfBounds =
+        allLessons.isNotEmpty && currentLessonIndex >= allLessons.length;
+
+    if (isFrontierOutOfBounds) {
+      currentLessonIndex = allLessons.length - 1;
+    }
+
     return getContentFromCurrentLesson(allLessons);
   }
 
-  // Get content from the current lesson only
   JSONList getContentFromCurrentLesson(JSONList lessons) {
     final bool hasValidLessonIndex =
         currentLessonIndex >= 0 && currentLessonIndex < lessons.length;
@@ -583,7 +589,6 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
     return completedItems / totalItems;
   }
 
-  // Navigate back to course roadmap
   void navigateBackToRoadmap() {
     // Clear any lingering snackbars before leaving
     FeedbackSnackBar.clearSnackbars();
@@ -596,6 +601,7 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
   // red glyph on the left and Read fills the rest as the primary action.
   void showQuitConfirmationSheet() {
     HapticsService.lightImpact();
+    SoundService.playNegative();
 
     RLConfirmationDialog.show(
       context,
@@ -626,18 +632,16 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
   }
 }
 
-// Lesson finish page rendered as the trailing slot in the content
-// PageView. The reader's profile bird (live from selectedBirdNotifier),
-// a stopwatch readout for the time spent on this lesson, and a Finish
-// CTA that mirrors the roadmap's ContinueButton (RLLunarBlur surface,
-// course accent label) so the two surfaces read as the same family.
+// Lesson finish page rendered as the trailing slot in the content PageView.
+// Shows the reader's profile bird, a count-up stopwatch for the time spent
+// on this lesson, and a Finish CTA using the shared CCContinueButton.
 //
-// This widget is purely presentational — the page-change listener
-// handles the stopwatch stop, and the parent passes a ready-to-fire
-// onFinishTap that bumps the frontier and pops the screen.
-// Count-up sweep used by the stopwatch readout when the finish screen
-// lands. Short and ease-out so the seconds fly past quickly and settle on
-// the final value, the same flourish CCLessonFinishScreen used before.
+// Purely presentational: the page-change listener handles the stopwatch
+// stop, and the parent passes a ready-to-fire onFinishTap that bumps the
+// frontier and pops the screen.
+//
+// Count-up sweep: short and ease-out so the seconds fly past quickly
+// and settle on the final value the moment the page lands.
 const Duration LESSON_FINISH_TIME_COUNTUP_DURATION = Duration(milliseconds: 1200);
 
 class LessonFinishScreen extends StatefulWidget {
@@ -656,8 +660,7 @@ class LessonFinishScreen extends StatefulWidget {
   State<LessonFinishScreen> createState() => LessonFinishScreenState();
 }
 
-class LessonFinishScreenState extends State<LessonFinishScreen>
-    with TickerProviderStateMixin {
+class LessonFinishScreenState extends State<LessonFinishScreen> with TickerProviderStateMixin {
   late AnimationController timeCountUpController;
   late Animation<int> timeCountUpAnimation;
 
@@ -678,9 +681,10 @@ class LessonFinishScreenState extends State<LessonFinishScreen>
       duration: LESSON_FINISH_TIME_COUNTUP_DURATION,
     );
 
-    timeCountUpAnimation = IntTween(begin: 0, end: totalSeconds).animate(
-      CurvedAnimation(parent: timeCountUpController, curve: Curves.easeOut),
-    );
+    timeCountUpAnimation = IntTween(
+      begin: 0,
+      end: totalSeconds,
+    ).animate(CurvedAnimation(parent: timeCountUpController, curve: Curves.easeOut));
 
     timeCountUpController.forward();
   }
@@ -699,10 +703,7 @@ class LessonFinishScreenState extends State<LessonFinishScreen>
     );
 
     return Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: RLDS.spacing24,
-        vertical: RLDS.spacing24,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: RLDS.spacing24, vertical: RLDS.spacing24),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -751,10 +752,7 @@ class LessonFinishScreenState extends State<LessonFinishScreen>
   // Re-renders the readout each tick of the count-up so the seconds roll
   // from 0 up to the lesson's final elapsed value.
   Widget AnimatedStopwatchReadout() {
-    return AnimatedBuilder(
-      animation: timeCountUpAnimation,
-      builder: StopwatchReadoutBuilder,
-    );
+    return AnimatedBuilder(animation: timeCountUpAnimation, builder: StopwatchReadoutBuilder);
   }
 
   Widget StopwatchReadoutBuilder(BuildContext context, Widget? unusedChild) {
@@ -774,4 +772,3 @@ class LessonFinishScreenState extends State<LessonFinishScreen>
   }
 }
 
-// Bottom sheet for quit confirmation

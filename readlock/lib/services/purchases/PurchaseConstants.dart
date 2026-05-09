@@ -14,5 +14,10 @@ class PurchaseConstants {
   // Feathers spent to resurrect an expired course for another rental
   // window. Resurrect is only allowed once the existing entry's expires
   // timestamp has passed.
-  static const int COURSE_RESURRECT_COST = 2;
+  static const int COURSE_RESURRECT_COST = 3;
+
+  // Maximum seconds credited to timeSpentReading per session. Anything
+  // above this is floored to prevent idle-tab cheating of the feather
+  // economy. The display timer still shows the real elapsed time.
+  static const int MAX_SESSION_CREDITED_SECONDS = 10 * 60;
 }

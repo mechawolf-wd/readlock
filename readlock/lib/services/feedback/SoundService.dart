@@ -56,7 +56,7 @@ class SoundService {
   // the reader can mute the typewriter cadence while keeping the rest of the
   // UI sounds intact.
   static final ValueNotifier<bool> soundsEnabledNotifier = ValueNotifier<bool>(true);
-  static final ValueNotifier<bool> typingSoundEnabledNotifier = ValueNotifier<bool>(true);
+  static final ValueNotifier<bool> typingSoundEnabledNotifier = ValueNotifier<bool>(false);
 
   static Future<void> playOneShot(AudioPlayer player, String assetPath, String label) async {
     final bool userMutedSounds = !soundsEnabledNotifier.value;

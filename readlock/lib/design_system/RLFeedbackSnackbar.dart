@@ -223,7 +223,11 @@ class CorrectAnswerContent extends StatelessWidget {
 
   const CorrectAnswerContent({super.key, required this.hasExplanation, this.explanation});
 
-  static final Icon StarIcon = const Icon(Pixel.moonstars, color: RLDS.success, size: RLDS.iconMedium);
+  static final Icon StarIcon = const Icon(
+    Pixel.moonstars,
+    color: RLDS.success,
+    size: RLDS.iconMedium,
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -281,7 +285,11 @@ class WrongAnswerContent extends StatelessWidget {
 
   const WrongAnswerContent({super.key, required this.hasHint, this.hint});
 
-  static final Icon LightbulbIcon = const Icon(Pixel.infobox, color: RLDS.info, size: RLDS.iconMedium);
+  static final Icon LightbulbIcon = const Icon(
+    Pixel.infobox,
+    color: RLDS.info,
+    size: RLDS.iconMedium,
+  );
 
   @override
   Widget build(BuildContext context) {

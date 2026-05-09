@@ -12,6 +12,7 @@ PurchasedCourseModel _$PurchasedCourseModelFromJson(
     PurchasedCourseModel(
       courseId: json['courseId'] as String? ?? '',
       expires: timestampFromJson(json['expires']),
+      purchasedAt: nullableTimestampFromJson(json['purchasedAt']),
     );
 
 Map<String, dynamic> _$PurchasedCourseModelToJson(
@@ -20,4 +21,5 @@ Map<String, dynamic> _$PurchasedCourseModelToJson(
     <String, dynamic>{
       'courseId': instance.courseId,
       'expires': timestampToJson(instance.expires),
+      'purchasedAt': nullableTimestampToJson(instance.purchasedAt),
     };

@@ -11,6 +11,7 @@ import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/constants/RLReadingJustified.dart';
 import 'package:readlock/constants/RLUIStrings.dart';
+import 'package:readlock/course_screens/CourseContentViewer.dart';
 import 'package:readlock/course_screens/widgets/CCContinueButton.dart';
 import 'package:readlock/design_system/RLFeedbackSnackbar.dart';
 import 'package:readlock/services/feedback/HapticsService.dart';
@@ -36,6 +37,7 @@ class CCQuestion extends StatefulWidget {
 class CCQuestionState extends State<CCQuestion> {
   int? selectedAnswerIndex;
   bool hasAnsweredQuestion = false;
+  bool isContinueVisible = false;
   Set<int> revealedAnswers = {};
 
   @override
@@ -49,23 +51,31 @@ class CCQuestionState extends State<CCQuestion> {
             ? TextAlign.justify
             : TextAlign.left;
 
-        return Div.column(
-          [
-            QuestionTextSection(paragraphAlignment),
+        return GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: isContinueVisible ? handleNextSlideTap : null,
+          child: Padding(
+            padding: RLDS.contentPaddingInsets,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Scrollable question and options content, centred when
+                // the content fits and scrollable when it overflows.
+                Expanded(
+                  child: LayoutBuilder(
+                    builder: (context, constraints) => SingleChildScrollView(
+                      child: CenteredQuestionContent(paragraphAlignment, constraints),
+                    ),
+                  ),
+                ),
 
-            const Spacing.height(RLDS.spacing32),
-
-            OptionsListSection(paragraphAlignment),
-
-            const Spacing.height(RLDS.spacing32),
-
-            // Continue affordance. Appears once a correct answer commits.
-            // Same calm CC continue button design used by every other swipe.
-            CCContinueButton(visible: hasAnsweredQuestion),
-          ],
-          padding: RLDS.contentPaddingInsets,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.center,
+                // Continue affordance pinned at the bottom. Delayed 1400ms
+                // after the correct answer commits so the reader has a moment
+                // to absorb the result before advancing.
+                CCContinueButton(visible: isContinueVisible),
+              ],
+            ),
+          ),
         );
       },
     );
@@ -83,6 +93,23 @@ class CCQuestionState extends State<CCQuestion> {
       textAlign: paragraphAlignment,
       blurCompletedSentences: false,
       enableTapToReveal: false,
+    );
+  }
+
+  Widget CenteredQuestionContent(TextAlign paragraphAlignment, BoxConstraints constraints) {
+    return ConstrainedBox(
+      constraints: BoxConstraints(minHeight: constraints.maxHeight),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          QuestionTextSection(paragraphAlignment),
+
+          const Spacing.height(RLDS.spacing32),
+
+          OptionsListSection(paragraphAlignment),
+        ],
+      ),
     );
   }
 
@@ -358,6 +385,67 @@ class CCQuestionState extends State<CCQuestion> {
       selectedAnswerIndex = selectedIndex;
       hasAnsweredQuestion = true;
     });
+
+    showContinueButtonDelayed();
+  }
+
+  void showContinueButtonDelayed() async {
+    final bool canUpdateState = mounted;
+
+    if (!canUpdateState) {
+      return;
+    }
+
+    await Future.delayed(const Duration(milliseconds: 1400));
+
+    final bool stillMounted = mounted;
+
+    if (!stillMounted) {
+      return;
+    }
+
+    setState(() {
+      isContinueVisible = true;
+    });
+  }
+
+  void handleNextSlideTap() {
+    final PageController? pageController = findPageController(context);
+
+    final bool hasValidPageController = pageController != null && pageController.hasClients;
+
+    if (!hasValidPageController) {
+      return;
+    }
+
+    HapticsService.lightImpact();
+    navigateToNextPage(pageController);
+  }
+
+  PageController? findPageController(BuildContext context) {
+    final CourseDetailScreenState? courseDetailScreen =
+        context.findAncestorStateOfType<CourseDetailScreenState>();
+
+    return courseDetailScreen?.pageController;
+  }
+
+  void navigateToNextPage(PageController pageController) {
+    final double? currentPageDouble = pageController.page;
+
+    final bool hasCurrentPage = currentPageDouble != null;
+
+    if (!hasCurrentPage) {
+      return;
+    }
+
+    final int currentPage = currentPageDouble.round();
+    final int nextPage = currentPage + 1;
+
+    pageController.animateToPage(
+      nextPage,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
+    );
   }
 
   Color getOptionTextColor({required bool isMuted}) {

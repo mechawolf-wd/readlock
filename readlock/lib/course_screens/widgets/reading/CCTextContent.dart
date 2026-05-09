@@ -1,5 +1,5 @@
-// Text content widget for course display with progressive text animation
-// Shows a continue button at the bottom when all text segments are fully revealed
+// Reading swipe for prose content. Progressively types out all text segments
+// and pins a continue affordance at the bottom once every segment is revealed.
 
 import 'package:flutter/material.dart' hide Typography;
 import 'package:readlock/services/feedback/HapticsService.dart';
@@ -13,7 +13,6 @@ import 'package:readlock/course_screens/CourseContentViewer.dart';
 import 'package:readlock/course_screens/widgets/CCContinueButton.dart';
 
 class CCTextContent extends StatefulWidget {
-  // Text content data to display
   final TextSwipe content;
 
   const CCTextContent({super.key, required this.content});
@@ -23,7 +22,6 @@ class CCTextContent extends StatefulWidget {
 }
 
 class CCTextContentState extends State<CCTextContent> {
-  // Track whether all text segments have been revealed
   bool isAllTextRevealed = false;
 
   @override
@@ -42,10 +40,8 @@ class CCTextContentState extends State<CCTextContent> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Progressive text content (expands to fill available space)
-          Expanded(child: ProgressiveTextSection()),
+              Expanded(child: ProgressiveTextSection()),
 
-          // Continue button at bottom (shows when text fully revealed)
           ContinueButtonContainer(),
         ],
       ),
@@ -110,8 +106,6 @@ class CCTextContentState extends State<CCTextContent> {
     return CCContinueButton(visible: shouldShowContinueButton);
   }
 
-  // Handle when all text segments are revealed
-  // Adds delay before showing continue button for reading time
   void handleAllSegmentsRevealed() async {
     final bool canUpdateState = mounted;
 
@@ -119,10 +113,8 @@ class CCTextContentState extends State<CCTextContent> {
       return;
     }
 
-    // Wait for user to read the last segment
     await Future.delayed(const Duration(milliseconds: 1400));
 
-    // Check mounted again after delay
     final bool stillMounted = mounted;
 
     if (!stillMounted) {
@@ -134,9 +126,7 @@ class CCTextContentState extends State<CCTextContent> {
     });
   }
 
-  // Handle continue button tap - scroll to next content
   void handleContinueButtonTap() {
-    // Find the PageController from CourseContentViewer
     final PageController? pageController = findPageController(context);
 
     final bool hasValidPageController = pageController != null && pageController.hasClients;
@@ -149,9 +139,7 @@ class CCTextContentState extends State<CCTextContent> {
     navigateToNextPage(pageController);
   }
 
-  // Navigate to the next content page
   void navigateToNextPage(PageController pageController) {
-    // Get current page index
     final double? currentPageDouble = pageController.page;
     final bool hasCurrentPage = currentPageDouble != null;
 
@@ -162,7 +150,6 @@ class CCTextContentState extends State<CCTextContent> {
     final int currentPage = currentPageDouble.round();
     final int nextPage = currentPage + 1;
 
-    // Animate to next page
     pageController.animateToPage(
       nextPage,
       duration: const Duration(milliseconds: 300),
@@ -170,9 +157,7 @@ class CCTextContentState extends State<CCTextContent> {
     );
   }
 
-  // Find the PageController from parent CourseContentViewer
   PageController? findPageController(BuildContext context) {
-    // Look up the widget tree to find CourseDetailScreen
     final CourseDetailScreenState? courseDetailScreen = context
         .findAncestorStateOfType<CourseDetailScreenState>();
 
