@@ -798,7 +798,7 @@ class BookshelfScreenState extends State<BookshelfScreen> {
           Positioned.fill(
             child: AnimatedProgressArc(
               animation: staticProgress,
-              color: RLDS.glass70(accentColor),
+              color: accentColor,
               strokeWidth: bookshelfProgressStrokeWidth,
             ),
           ),
@@ -811,10 +811,7 @@ class BookshelfScreenState extends State<BookshelfScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: RLDS.spacing4, vertical: RLDS.spacing4),
       decoration: newBadgeDecoration,
-      child: RLTypography.pixelLabel(
-        RLUIStrings.BOOKSHELF_NEW_BADGE_LABEL,
-        color: RLDS.white,
-      ),
+      child: RLTypography.pixelLabel(RLUIStrings.BOOKSHELF_NEW_BADGE_LABEL, color: RLDS.white),
     );
   }
 

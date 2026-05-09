@@ -77,8 +77,13 @@ class CCTrueFalseQuestionState extends State<CCTrueFalseQuestion> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                // Question text
-                QuestionText(paragraphAlignment),
+                // Question text blurs once answered so the reader's
+                // focus shifts to the explanation, matching how
+                // ProgressiveText blurs completed sentences.
+                BlurOverlay(
+                  enabled: hasAnswered,
+                  child: QuestionText(paragraphAlignment),
+                ),
 
                 const Spacing.height(RLDS.spacing16),
 

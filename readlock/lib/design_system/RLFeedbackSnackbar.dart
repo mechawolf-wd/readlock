@@ -134,6 +134,10 @@ class AnimatedSnackbarState extends State<AnimatedSnackbar>
   late AnimationController animationController;
   late Animation<Offset> slideAnimation;
 
+  // Tracks how far the user has dragged the snackbar downward.
+  // Positive values push it toward the screen edge.
+  double dragDownOffset = 0.0;
+
   @override
   void initState() {
     super.initState();
@@ -177,6 +181,29 @@ class AnimatedSnackbarState extends State<AnimatedSnackbar>
     return animationController.reverse();
   }
 
+  // Allows only downward movement (positive dy). Clamped at zero so the
+  // snackbar can't be dragged upward past its resting position.
+  void handleDragUpdate(DragUpdateDetails details) {
+    setState(() {
+      dragDownOffset = (dragDownOffset + details.delta.dy).clamp(0.0, double.infinity);
+    });
+  }
+
+  // If the user dragged far enough, dismiss. Otherwise snap back.
+  void handleDragEnd(DragEndDetails details) {
+    const double dismissThreshold = 40.0;
+    final bool shouldDismiss = dragDownOffset > dismissThreshold;
+
+    if (shouldDismiss) {
+      widget.onDismiss();
+      return;
+    }
+
+    setState(() {
+      dragDownOffset = 0.0;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     // Padding extends through the bottom safe-area inset so the solid colour
@@ -197,18 +224,25 @@ class AnimatedSnackbarState extends State<AnimatedSnackbar>
       right: 0,
       child: SlideTransition(
         position: slideAnimation,
-        // Match the LoginSupport / Account bottom sheets — LunarBlur over the
-        // shared `backgroundLight` surface so the snackbar reads as the same
-        // family of frosted pane rising from the bottom edge. The semantic
-        // colour (success / info) moves onto the label + icon instead of the
-        // background. Transparent Material wraps the content so Text widgets
-        // inherit a sane DefaultTextStyle (no debug yellow underlines).
-        child: RLLunarBlur(
-          borderRadius: RLDS.borderRadiusTopLarge,
-          surfaceColor: RLDS.backgroundLight,
-          child: Material(
-            type: MaterialType.transparency,
-            child: Padding(padding: contentPadding, child: widget.content),
+        child: GestureDetector(
+          onVerticalDragUpdate: handleDragUpdate,
+          onVerticalDragEnd: handleDragEnd,
+          // Match the LoginSupport / Account bottom sheets — LunarBlur over the
+          // shared `backgroundLight` surface so the snackbar reads as the same
+          // family of frosted pane rising from the bottom edge. The semantic
+          // colour (success / info) moves onto the label + icon instead of the
+          // background. Transparent Material wraps the content so Text widgets
+          // inherit a sane DefaultTextStyle (no debug yellow underlines).
+          child: Transform.translate(
+            offset: Offset(0, dragDownOffset),
+            child: RLLunarBlur(
+              borderRadius: RLDS.borderRadiusTopLarge,
+              surfaceColor: RLDS.backgroundLight,
+              child: Material(
+                type: MaterialType.transparency,
+                child: Padding(padding: contentPadding, child: widget.content),
+              ),
+            ),
           ),
         ),
       ),

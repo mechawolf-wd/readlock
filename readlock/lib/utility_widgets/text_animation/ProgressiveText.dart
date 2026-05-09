@@ -183,6 +183,10 @@ class ProgressiveTextState extends State<ProgressiveText> with TickerProviderSta
   DateTime? lastTapTime;
   int tapCount = 0;
 
+  // Drives auto-scroll in bounded layouts so newly revealed sentences
+  // stay visible instead of overflowing below the fold.
+  final ScrollController boundedScrollController = ScrollController();
+
   // Initializes the widget state when first created
   // Sets up text data and starts the typewriter animation for the first sentence
   @override
@@ -465,7 +469,34 @@ class ProgressiveTextState extends State<ProgressiveText> with TickerProviderSta
 
       initializeCurrentSentence();
       startCurrentSentenceReveal();
+      scrollToLatestContent();
     }
+  }
+
+  // Auto-scrolls the bounded scroll view so the newly revealed sentence
+  // is visible. Deferred to a post-frame callback so the layout has
+  // already incorporated the new sentence widget before we read
+  // maxScrollExtent.
+  void scrollToLatestContent() {
+    final bool isAttached = boundedScrollController.hasClients;
+
+    if (!isAttached) {
+      return;
+    }
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final bool isStillAttached = boundedScrollController.hasClients && mounted;
+
+      if (!isStillAttached) {
+        return;
+      }
+
+      boundedScrollController.animateTo(
+        boundedScrollController.position.maxScrollExtent,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeOut,
+      );
+    });
   }
 
   // Handles tap interactions on the widget
@@ -664,6 +695,7 @@ class ProgressiveTextState extends State<ProgressiveText> with TickerProviderSta
     leadingCharacterFadeTicker?.dispose();
     currentSentenceStopwatch.stop();
     imageRevealController?.dispose();
+    boundedScrollController.dispose();
     super.dispose();
   }
 
@@ -718,15 +750,19 @@ class ProgressiveTextState extends State<ProgressiveText> with TickerProviderSta
             width: double.infinity,
           );
         } else {
-          // In bounded context, use flexible layout to fill remaining space
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Text content area
-              RevealedTextDisplay(),
+          // In bounded context, CustomScrollView lets the text scroll
+          // when it exceeds the viewport. SliverFillRemaining expands
+          // the tap area to fill remaining viewport below the text,
+          // matching the original full-area "tap to reveal" target.
+          return CustomScrollView(
+            controller: boundedScrollController,
+            slivers: [
+              SliverToBoxAdapter(child: RevealedTextDisplay()),
 
-              // Reveal button fills remaining space
-              Flexible(child: RevealButtonArea(constraints)),
+              SliverFillRemaining(
+                hasScrollBody: false,
+                child: RevealTapArea(),
+              ),
             ],
           );
         }
@@ -734,14 +770,15 @@ class ProgressiveTextState extends State<ProgressiveText> with TickerProviderSta
     );
   }
 
-  // Reveal button area widget (rule #10, #12)
-  Widget RevealButtonArea(BoxConstraints constraints) {
-    // Check if there's more content to reveal or if we should show unblur button
+  // * Tap area that advances the typewriter or toggles sentence blur.
+  // Shared by both the unbounded fixed-height layout (RevealButtonArea)
+  // and the bounded sliver layout (SliverFillRemaining). Returns
+  // SizedBox.shrink when there is nothing left to reveal or toggle.
+  Widget RevealTapArea() {
     final bool isCurrentlyAnimating = isRevealingCurrentSentence;
     final bool hasMoreSentences = currentSentenceNumber < textSentences.length - 1;
     final bool hasRevealableContent = isCurrentlyAnimating || hasMoreSentences;
 
-    // Check if all segments are revealed and we can toggle blur states
     final bool allSegmentsRevealed =
         currentSentenceNumber >= textSentences.length - 1 && !isCurrentlyAnimating;
     final bool hasToggleableSegments = sentenceBlurStates.isNotEmpty;
@@ -759,22 +796,6 @@ class ProgressiveTextState extends State<ProgressiveText> with TickerProviderSta
       return const SizedBox.shrink();
     }
 
-    // Extract style constants above widget (rule #16)
-    const double buttonMarginTop = RLDS.spacing16;
-    const double minButtonHeight = 120.0;
-
-    // Extract margin for clarity
-    final EdgeInsets buttonMargin = const EdgeInsets.only(top: buttonMarginTop);
-
-    // Calculate button height based on constraints
-    final bool hasUnboundedHeight = constraints.maxHeight == double.infinity;
-
-    double buttonHeight = double.infinity;
-
-    if (hasUnboundedHeight) {
-      buttonHeight = minButtonHeight;
-    }
-
     // Reveal fires on the very first touch (onTapDown) so the next segment
     // lands the moment the reader's finger contacts the screen, instead of
     // waiting for finger-up. Reads as immediate, the way a hardware key
@@ -783,17 +804,25 @@ class ProgressiveTextState extends State<ProgressiveText> with TickerProviderSta
       handleRevealOrToggleTap(hasRevealableContent, shouldShowToggleButton);
     }
 
-    return Container(
-      margin: buttonMargin,
-      height: buttonHeight,
-      child: MouseRegion(
-        cursor: SystemMouseCursors.click,
-        child: GestureDetector(
-          behavior: HitTestBehavior.opaque,
-          onTapDown: onAreaTapDown,
-          child: Container(width: double.infinity, color: RLDS.transparent),
-        ),
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTapDown: onAreaTapDown,
+        child: Container(width: double.infinity, color: RLDS.transparent),
       ),
+    );
+  }
+
+  // Fixed-height wrapper around RevealTapArea for the unbounded layout
+  // path, where there is no sliver to fill remaining viewport space.
+  Widget RevealButtonArea(BoxConstraints constraints) {
+    const double minButtonHeight = 120.0;
+
+    return Container(
+      margin: const EdgeInsets.only(top: RLDS.spacing16),
+      height: minButtonHeight,
+      child: RevealTapArea(),
     );
   }
 

@@ -222,6 +222,27 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
       if (isInCurrentSegment) {
         newlyUnlockedLessonIndex = segmentLocalFrontier;
         scheduleUnlockReveal(segmentLocalFrontier);
+      } else {
+        // The frontier crossed into a different segment (typically the
+        // next one after finishing the last lesson of the current segment).
+        // Switch the tab so the reader sees the newly unlocked lesson.
+        final int targetSegment = getSegmentForAbsoluteIndex(currentFrontier);
+        final bool isDifferentSegment = targetSegment != selectedSegmentIndex;
+
+        if (isDifferentSegment) {
+          selectedSegmentIndex = targetSegment;
+          loadSegmentLessons(targetSegment);
+          lastLessonAtThreshold = -1;
+
+          final int newLocalFrontier = computeSegmentLocalFrontier();
+          final bool isValidLocalFrontier =
+              newLocalFrontier >= 0 && newLocalFrontier < courseLessons.length;
+
+          if (isValidLocalFrontier) {
+            newlyUnlockedLessonIndex = newLocalFrontier;
+            scheduleUnlockReveal(newLocalFrontier);
+          }
+        }
       }
     }
 
@@ -572,11 +593,19 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
       return ChargeButton();
     }
 
-    if (isCoursePurchased) {
+    final int currentFrontier = getCurrentLessonFrontier();
+    final bool hasStartedCourse = currentFrontier > 0;
+    final bool shouldShowContinue = isCoursePurchased && hasStartedCourse;
+
+    if (shouldShowContinue) {
       return ContinueButton();
     }
 
-    return PurchaseButton();
+    if (!isCoursePurchased) {
+      return PurchaseButton();
+    }
+
+    return const SizedBox.shrink();
   }
 
   // Feather-priced purchase button. Reads cost from PurchaseConstants so
@@ -1271,6 +1300,31 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
     }
 
     return precedingLessonCount + localLessonIndex;
+  }
+
+  // Finds which segment contains the given absolute (course-wide)
+  // lesson index by walking the segment array and summing lesson
+  // counts. Returns the segment index, clamped to the last segment
+  // when the index sits beyond the final lesson.
+  int getSegmentForAbsoluteIndex(int absoluteIndex) {
+    int cumulativeLessonCount = 0;
+
+    for (int segmentIdx = 0; segmentIdx < courseSegments.length; segmentIdx++) {
+      final JSONMap segment = courseSegments[segmentIdx];
+      final JSONList segmentLessons = JSONList.from(segment['lessons'] ?? []);
+
+      cumulativeLessonCount += segmentLessons.length;
+
+      final bool isInThisSegment = absoluteIndex < cumulativeLessonCount;
+
+      if (isInThisSegment) {
+        return segmentIdx;
+      }
+    }
+
+    final int lastSegmentIndex = (courseSegments.length - 1).clamp(0, courseSegments.length);
+
+    return lastSegmentIndex;
   }
 
   // Inverse of computeAbsoluteLessonIndex: converts the course-wide
