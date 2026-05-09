@@ -6,6 +6,7 @@ import 'dart:ui' as ui;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:readlock/design_system/RLChargeBar.dart';
+import 'package:readlock/design_system/RLStaggerReveal.dart';
 import 'package:readlock/design_system/RLCourseBookImage.dart';
 import 'package:readlock/services/feedback/HapticsService.dart';
 import 'package:readlock/bottom_sheets/NightShiftBottomSheet.dart';
@@ -68,6 +69,14 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
   bool isProgrammaticScroll = false;
   bool isPurchasing = false;
   bool isCharging = false;
+
+  // Absolute frontier before the latest progress notifier fire. -1 until
+  // fetchCourseData sets the initial value (prevents false detection).
+  int previousFrontier = -1;
+
+  // Segment-local index of a lesson held as locked until the scroll and
+  // reveal sequence finishes. Null when no unlock animation is pending.
+  int? newlyUnlockedLessonIndex;
 
   List<GlobalKey> lessonKeys = [];
   late ScrollController scrollController;
@@ -195,8 +204,82 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
       return;
     }
 
+    // Detect whether the lesson frontier just advanced so the roadmap
+    // can scroll to and animate the newly unlocked node.
+    final int currentFrontier = getCurrentLessonFrontier();
+    final bool isInitialized = previousFrontier >= 0;
+    final bool frontierAdvanced = isInitialized && currentFrontier > previousFrontier;
+    final int totalLessons = getTotalLessonCount();
+    final bool hasNextLesson = currentFrontier < totalLessons;
+    final bool isCoursePurchased = getIsCoursePurchased();
+    final bool shouldAnimateUnlock = frontierAdvanced && hasNextLesson && isCoursePurchased;
+
+    if (shouldAnimateUnlock) {
+      final int segmentLocalFrontier = computeSegmentLocalFrontier();
+      final bool isInCurrentSegment =
+          segmentLocalFrontier >= 0 && segmentLocalFrontier < courseLessons.length;
+
+      if (isInCurrentSegment) {
+        newlyUnlockedLessonIndex = segmentLocalFrontier;
+        scheduleUnlockReveal(segmentLocalFrontier);
+      }
+    }
+
+    previousFrontier = currentFrontier;
     updateProgressRing();
     setState(() {});
+  }
+
+  // Waits for the pop transition to settle, scrolls the path so the
+  // newly unlocked node is centred, then clears the lock override so
+  // the node transitions from locked to available.
+  void scheduleUnlockReveal(int segmentLocalIndex) {
+    Future.delayed(const Duration(milliseconds: 600), () {
+      if (!mounted) {
+        return;
+      }
+
+      scrollToLesson(segmentLocalIndex);
+
+      Future.delayed(const Duration(milliseconds: 500), () {
+        if (!mounted) {
+          return;
+        }
+
+        HapticsService.lightImpact();
+
+        setState(() {
+          newlyUnlockedLessonIndex = null;
+        });
+      });
+    });
+  }
+
+  void scrollToLesson(int segmentLocalIndex) {
+    final bool isOutOfBounds =
+        segmentLocalIndex < 0 || segmentLocalIndex >= lessonKeys.length;
+
+    if (isOutOfBounds) {
+      return;
+    }
+
+    final GlobalKey key = lessonKeys[segmentLocalIndex];
+    final BuildContext? keyContext = key.currentContext;
+
+    if (keyContext == null) {
+      return;
+    }
+
+    isProgrammaticScroll = true;
+
+    Scrollable.ensureVisible(
+      keyContext,
+      duration: const Duration(milliseconds: 500),
+      curve: Curves.easeOutCubic,
+      alignment: 0.5,
+    ).then((_) {
+      isProgrammaticScroll = false;
+    });
   }
 
   bool getIsCoursePurchased() {
@@ -354,6 +437,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
         isCourseDataLoading = false;
       });
       updateProgressRing();
+      previousFrontier = getCurrentLessonFrontier();
     }
   }
 
@@ -384,6 +468,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
       selectedSegmentIndex = segmentIndex;
       loadSegmentLessons(segmentIndex);
       lastLessonAtThreshold = -1;
+      newlyUnlockedLessonIndex = null;
     });
   }
 
@@ -434,6 +519,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
             currentLessonFrontier: computeSegmentLocalFrontier(),
             onLessonTap: navigateToLesson,
             breathingAnimation: breathingAnimation,
+            newlyUnlockedLessonIndex: newlyUnlockedLessonIndex,
           ),
         ),
       ),
@@ -1229,9 +1315,13 @@ class PathWithNodes extends StatelessWidget {
   final int currentLessonFrontier;
   final Function(int, int) onLessonTap;
   // Shared with the BookRingPane so every lesson tile breathes in lock-step
-  // with the book disc — one heartbeat across the screen instead of N
+  // with the book disc, one heartbeat across the screen instead of N
   // independently driven controllers.
   final Animation<double> breathingAnimation;
+  // Segment-local index of a lesson whose unlock is being staged. When set,
+  // the node at this index renders as locked until the scroll and reveal
+  // sequence clears it.
+  final int? newlyUnlockedLessonIndex;
 
   const PathWithNodes({
     super.key,
@@ -1243,14 +1333,20 @@ class PathWithNodes extends StatelessWidget {
     required this.currentLessonFrontier,
     required this.onLessonTap,
     required this.breathingAnimation,
+    this.newlyUnlockedLessonIndex,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Column(children: PathNodes());
+    return RLStaggerReveal(
+      itemCount: lessons.length,
+      builder: (BuildContext context, List<double> revealScales) {
+        return Column(children: PathNodes(revealScales: revealScales));
+      },
+    );
   }
 
-  List<Widget> PathNodes() {
+  List<Widget> PathNodes({required List<double> revealScales}) {
     final List<Widget> nodes = [];
 
     for (int lessonIndex = 0; lessonIndex < lessons.length; lessonIndex++) {
@@ -1264,8 +1360,14 @@ class PathWithNodes extends StatelessWidget {
       final bool failsPurchaseGate = !isCoursePurchased && !isFreePreview;
       final bool failsFrontierGate = isCoursePurchased && lessonIndex > currentLessonFrontier;
       final bool failsDischargeGate = isCoursePurchased && !isSkillbookCharged;
-      final bool isLocked = failsPurchaseGate || failsFrontierGate || failsDischargeGate;
-      final bool isActiveFrontier = isCoursePurchased && lessonIndex == currentLessonFrontier;
+
+      // When a lesson is being staged for the unlock reveal, keep it
+      // visually locked until the scroll and animation sequence clears.
+      final bool isHeldForUnlock = lessonIndex == newlyUnlockedLessonIndex;
+      final bool isLocked =
+          failsPurchaseGate || failsFrontierGate || failsDischargeGate || isHeldForUnlock;
+      final bool isActiveFrontier =
+          isCoursePurchased && lessonIndex == currentLessonFrontier && !isHeldForUnlock;
 
       // Determine horizontal alignment (zigzag pattern)
       final PathNodeAlignment alignment = getAlignmentForIndex(lessonIndex);
@@ -1277,23 +1379,26 @@ class PathWithNodes extends StatelessWidget {
         nodes.add(const Spacing.height(roadmapNodeVerticalSpacing));
       }
 
-      // Add the lesson node
+      // Add the lesson node, scaled by the stagger reveal progress
       nodes.add(
-        PathLessonNode(
-          key: lessonKeys[lessonIndex],
-          lesson: lesson,
-          alignment: alignment,
-          accentColor: accentColor,
-          isCoursePurchased: isCoursePurchased,
-          isLocked: isLocked,
-          isDischarged: failsDischargeGate,
-          // Title-blur signal: only fire when the course itself is locked
-          // (purchase gate failed), so a paid-up reader's frontier-gated
-          // lessons keep their titles legible as a "what's next" preview.
-          shouldBlurTitle: failsPurchaseGate,
-          isActiveFrontier: isActiveFrontier,
-          onTap: () => onLessonTap(lessonIndex, 0),
-          breathingAnimation: breathingAnimation,
+        Transform.scale(
+          scale: revealScales[lessonIndex],
+          child: PathLessonNode(
+            key: lessonKeys[lessonIndex],
+            lesson: lesson,
+            alignment: alignment,
+            accentColor: accentColor,
+            isCoursePurchased: isCoursePurchased,
+            isLocked: isLocked,
+            isDischarged: failsDischargeGate,
+            // Title-blur signal: only fire when the course itself is locked
+            // (purchase gate failed), so a paid-up reader's frontier-gated
+            // lessons keep their titles legible as a "what's next" preview.
+            shouldBlurTitle: failsPurchaseGate,
+            isActiveFrontier: isActiveFrontier,
+            onTap: () => onLessonTap(lessonIndex, 0),
+            breathingAnimation: breathingAnimation,
+          ),
         ),
       );
     }
@@ -1376,11 +1481,47 @@ class PathLessonNode extends StatefulWidget {
   State<PathLessonNode> createState() => PathLessonNodeState();
 }
 
-class PathLessonNodeState extends State<PathLessonNode> {
+class PathLessonNodeState extends State<PathLessonNode>
+    with SingleTickerProviderStateMixin {
   static const double roadmapTileShadowOffset = 4.0;
   static const double roadmapTileIconSize = RLDS.iconXLarge;
 
   bool isPressed = false;
+
+  late AnimationController unlockController;
+  late Animation<double> unlockScale;
+
+  @override
+  void initState() {
+    super.initState();
+
+    unlockController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 400),
+      value: 1.0,
+    );
+
+    unlockScale = Tween<double>(begin: 0.7, end: 1.0).animate(
+      CurvedAnimation(parent: unlockController, curve: Curves.easeOutBack),
+    );
+  }
+
+  @override
+  void didUpdateWidget(PathLessonNode oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    final bool justUnlocked = oldWidget.isLocked && !widget.isLocked;
+
+    if (justUnlocked) {
+      unlockController.forward(from: 0.0);
+    }
+  }
+
+  @override
+  void dispose() {
+    unlockController.dispose();
+    super.dispose();
+  }
 
   void handleTapDown(TapDownDetails details) {
     if (widget.isLocked) {
@@ -1438,13 +1579,16 @@ class PathLessonNodeState extends State<PathLessonNode> {
           // with the book disc above it.
           ScaleTransition(
             scale: widget.breathingAnimation,
-            child: GestureDetector(
-              onTapDown: handleTapDown,
-              onTapUp: handleTapUp,
-              onTapCancel: handleTapCancel,
-              onTap: handleTap,
-              behavior: HitTestBehavior.opaque,
-              child: NodeTile(),
+            child: ScaleTransition(
+              scale: unlockScale,
+              child: GestureDetector(
+                onTapDown: handleTapDown,
+                onTapUp: handleTapUp,
+                onTapCancel: handleTapCancel,
+                onTap: handleTap,
+                behavior: HitTestBehavior.opaque,
+                child: NodeTile(),
+              ),
             ),
           ),
 
