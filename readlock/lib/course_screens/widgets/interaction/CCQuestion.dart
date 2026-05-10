@@ -18,6 +18,7 @@ import 'package:readlock/services/feedback/HapticsService.dart';
 import 'package:readlock/services/feedback/SoundService.dart';
 import 'package:readlock/utility_widgets/text_animation/ProgressiveText.dart';
 import 'package:readlock/utility_widgets/visual_effects/BlurOverlay.dart';
+import 'package:readlock/design_system/RLStaggerReveal.dart';
 
 import 'package:pixelarticons/pixel.dart';
 
@@ -47,9 +48,7 @@ class CCQuestionState extends State<CCQuestion> {
     return ValueListenableBuilder<bool>(
       valueListenable: justifiedReadingEnabledNotifier,
       builder: (context, isJustified, _) {
-        final TextAlign paragraphAlignment = isJustified
-            ? TextAlign.justify
-            : TextAlign.left;
+        final TextAlign paragraphAlignment = isJustified ? TextAlign.justify : TextAlign.left;
 
         return GestureDetector(
           behavior: HitTestBehavior.opaque,
@@ -113,23 +112,36 @@ class CCQuestionState extends State<CCQuestion> {
     );
   }
 
+  // Answer options with stagger-reveal: each option fades in 200ms after
+  // the previous one, giving the reader a moment to absorb the question
+  // before the choices cascade into view.
   Widget OptionsListSection(TextAlign paragraphAlignment) {
-    final List<Widget> optionWidgets = OptionWidgetsList(paragraphAlignment);
+    final int optionCount = widget.content.options.length;
 
-    return Div.column(optionWidgets);
+    return RLStaggerReveal(
+      itemCount: optionCount,
+      step: const Duration(milliseconds: 400),
+      builder: (BuildContext context, List<double> opacities) {
+        return StaggeredOptionsList(paragraphAlignment, opacities);
+      },
+    );
   }
 
-  List<Widget> OptionWidgetsList(TextAlign paragraphAlignment) {
+  Widget StaggeredOptionsList(TextAlign paragraphAlignment, List<double> opacities) {
     final List<Widget> optionWidgets = [];
 
     for (int optionIndex = 0; optionIndex < widget.content.options.length; optionIndex++) {
       final QuestionOption option = widget.content.options[optionIndex];
+      final double itemOpacity = opacities[optionIndex];
 
       optionWidgets.add(
-        OptionButton(
-          optionIndex: optionIndex,
-          option: option,
-          paragraphAlignment: paragraphAlignment,
+        Opacity(
+          opacity: itemOpacity,
+          child: OptionButton(
+            optionIndex: optionIndex,
+            option: option,
+            paragraphAlignment: paragraphAlignment,
+          ),
         ),
       );
 
@@ -140,7 +152,7 @@ class CCQuestionState extends State<CCQuestion> {
       }
     }
 
-    return optionWidgets;
+    return Div.column(optionWidgets);
   }
 
   Widget OptionButton({
@@ -235,7 +247,9 @@ class CCQuestionState extends State<CCQuestion> {
       children: [
         blurredOption,
 
-        Positioned.fill(child: IgnorePointer(child: Center(child: RevealEyeIcon()))),
+        Positioned.fill(
+          child: IgnorePointer(child: Center(child: RevealEyeIcon())),
+        ),
       ],
     );
   }
@@ -244,16 +258,9 @@ class CCQuestionState extends State<CCQuestion> {
   // to the muted secondary tone when no CourseAccentScope is in place) so
   // every CCReflect / CCQuestion blurred surface reads as the same family.
   Widget RevealEyeIcon() {
-    final Color iconColor = CourseAccentScope.of(
-      context,
-      fallback: RLDS.textSecondary,
-    );
+    final Color iconColor = CourseAccentScope.of(context, fallback: RLDS.textSecondary);
 
-    return Icon(
-      Pixel.eye,
-      color: iconColor,
-      size: RLDS.iconXXLarge,
-    );
+    return Icon(Pixel.eye, color: iconColor, size: RLDS.iconXXLarge);
   }
 
   // Two-state render:
@@ -423,8 +430,8 @@ class CCQuestionState extends State<CCQuestion> {
   }
 
   PageController? findPageController(BuildContext context) {
-    final CourseDetailScreenState? courseDetailScreen =
-        context.findAncestorStateOfType<CourseDetailScreenState>();
+    final CourseDetailScreenState? courseDetailScreen = context
+        .findAncestorStateOfType<CourseDetailScreenState>();
 
     return courseDetailScreen?.pageController;
   }

@@ -348,10 +348,6 @@ const double BIRD_CAROUSEL_SELECTED_SCALE = 1.0;
 const double BIRD_CAROUSEL_SELECTED_OPACITY = 1.0;
 // Padding between the locked badge and the bottom edge of the carousel cell.
 const double BIRD_CAROUSEL_LOCK_BADGE_BOTTOM_INSET = 8.0;
-// Animation used when the carousel snaps back from a locked bird the user
-// tried to select.
-const Duration BIRD_CAROUSEL_LOCKED_SNAP_DURATION = Duration(milliseconds: 240);
-const Curve BIRD_CAROUSEL_LOCKED_SNAP_CURVE = Curves.easeOut;
 // Locked sprite + caption blur. Aliases the centralised
 // RLDS.lockedTextBlurSigma token so the picker, the roadmap's locked
 // lesson titles, and any future locked-content surface frost to the
@@ -371,12 +367,10 @@ class BirdCarousel extends StatefulWidget {
   // sees only the three free starters.
   final List<BirdOption> birds;
   // When true (the default), landing on an unlocked bird commits it as
-  // the reader's profile bird (selectedBirdNotifier + Firestore write)
-  // and locked birds snap back to the previously committed selection.
-  // When false the carousel runs as a browser only — the reader can
-  // swipe freely across every bird (locked included), feedback still
-  // fires on every page change, but nothing is persisted and no snap-
-  // back interrupts the swipe.
+  // the reader's profile bird (selectedBirdNotifier + Firestore write).
+  // Locked birds can always be browsed but are never committed.
+  // When false the carousel runs as a browser only: nothing is
+  // persisted regardless of lock state.
   final bool persistSelection;
 
   const BirdCarousel({
@@ -443,27 +437,14 @@ class BirdCarouselState extends State<BirdCarousel> {
     final bool isLocked = !isBirdUnlockedAt(nextBird, totalReadingSeconds);
 
     // displayedIndex tracks the currently centered bird (locked or not)
-    // so the name caption updates immediately on landing, before any
-    // snap-back animation.
+    // so the name caption updates immediately on landing.
     setState(() {
       displayedIndex = newIndex;
     });
 
-    // Snap-back only fires when the carousel is in commit mode — in
-    // browse-only mode (persistSelection == false) locked birds are
-    // valid stops since nothing is being saved.
-    final bool shouldSnapBackFromLocked = isLocked && widget.persistSelection;
-
-    if (shouldSnapBackFromLocked) {
-      // The carousel let the user swipe onto a locked bird so they can see
-      // it; selection itself is gated. Snap back to whatever was already
-      // selected without firing the usual feedback. The trailing
-      // onPageChanged from the animation will reset displayedIndex.
-      pageController.animateToPage(
-        selectedIndex,
-        duration: BIRD_CAROUSEL_LOCKED_SNAP_DURATION,
-        curve: BIRD_CAROUSEL_LOCKED_SNAP_CURVE,
-      );
+    // Locked birds can be browsed freely but never committed as the
+    // profile bird. No snap-back, no persistence, no feedback sound.
+    if (isLocked) {
       return;
     }
 

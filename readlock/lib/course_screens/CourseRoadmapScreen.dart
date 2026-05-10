@@ -277,8 +277,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
   }
 
   void scrollToLesson(int segmentLocalIndex) {
-    final bool isOutOfBounds =
-        segmentLocalIndex < 0 || segmentLocalIndex >= lessonKeys.length;
+    final bool isOutOfBounds = segmentLocalIndex < 0 || segmentLocalIndex >= lessonKeys.length;
 
     if (isOutOfBounds) {
       return;
@@ -1360,6 +1359,9 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
 // Both notifiers (purchasedCoursesNotifier, courseProgressNotifier) drive
 // a setState on the parent so the path re-renders the moment either
 // changes.
+
+const nodeStaggerStepDuration = Duration(milliseconds: 200);
+
 class PathWithNodes extends StatelessWidget {
   final List<dynamic> lessons;
   final List<GlobalKey> lessonKeys;
@@ -1393,6 +1395,8 @@ class PathWithNodes extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return RLStaggerReveal(
+      step: nodeStaggerStepDuration,
+      fadeWindow: nodeStaggerStepDuration,
       itemCount: lessons.length,
       builder: (BuildContext context, List<double> revealScales) {
         return Column(children: PathNodes(revealScales: revealScales));
@@ -1535,8 +1539,7 @@ class PathLessonNode extends StatefulWidget {
   State<PathLessonNode> createState() => PathLessonNodeState();
 }
 
-class PathLessonNodeState extends State<PathLessonNode>
-    with SingleTickerProviderStateMixin {
+class PathLessonNodeState extends State<PathLessonNode> with SingleTickerProviderStateMixin {
   static const double roadmapTileShadowOffset = 4.0;
   static const double roadmapTileIconSize = RLDS.iconXLarge;
 
@@ -1555,9 +1558,10 @@ class PathLessonNodeState extends State<PathLessonNode>
       value: 1.0,
     );
 
-    unlockScale = Tween<double>(begin: 0.7, end: 1.0).animate(
-      CurvedAnimation(parent: unlockController, curve: Curves.easeOutBack),
-    );
+    unlockScale = Tween<double>(
+      begin: 0.7,
+      end: 1.0,
+    ).animate(CurvedAnimation(parent: unlockController, curve: Curves.easeOutBack));
   }
 
   @override

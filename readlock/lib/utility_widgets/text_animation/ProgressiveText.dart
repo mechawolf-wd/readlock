@@ -173,6 +173,11 @@ class ProgressiveTextState extends State<ProgressiveText> with TickerProviderSta
   List<Duration> currentSentenceCharRevealTimes = [];
   Ticker? leadingCharacterFadeTicker;
 
+  // When the last character exits its fade window the ticker stops calling
+  // setState, but the previous frame rendered at alpha < 1.0. This flag
+  // ensures one final rebuild flushes every character to full opacity.
+  bool needsFadeSettlingRebuild = false;
+
   // Per-character bionic-bold mask for the current sentence. Computed once
   // in initializeCurrentSentence and gated at render time by
   // bionicEnabledNotifier so the toggle flips live without touching this
@@ -615,15 +620,18 @@ class ProgressiveTextState extends State<ProgressiveText> with TickerProviderSta
       isRevealingCurrentSentence = false;
       currentCharacterPosition = currentSentenceText.length - 1;
 
-      // Fill in any pending char reveal times with a past timestamp so every
-      // character lands at full opacity immediately — instant-complete
-      // shouldn't leave trailing characters stuck at alpha 0.
+      // Backdate every character's reveal time so all alphas resolve to 1.0
+      // in this frame. The while-loop only covered unrevealed characters;
+      // recently revealed ones (still mid-fade) kept their original
+      // timestamps and froze at sub-1.0 opacity because the ticker saw
+      // the backdated last entry and stopped immediately.
       final Duration fullyFadedTime =
           currentSentenceStopwatch.elapsed - progressiveTextLeadingCharacterFadeDuration;
 
-      while (currentSentenceCharRevealTimes.length < currentSentenceText.length) {
-        currentSentenceCharRevealTimes.add(fullyFadedTime);
-      }
+      currentSentenceCharRevealTimes = List<Duration>.filled(
+        currentSentenceText.length,
+        fullyFadedTime,
+      );
     });
 
     // Check if all sentences have been revealed
@@ -1175,16 +1183,25 @@ class ProgressiveTextState extends State<ProgressiveText> with TickerProviderSta
     return progress.clamp(0.0, 1.0);
   }
 
-  // Ticker callback — only triggers a rebuild while at least one character
-  // is still mid-fade, so we don't pulse setState every frame for nothing.
+  // Ticker callback — triggers rebuilds while any character is mid-fade,
+  // plus one final settling rebuild to flush all alphas to 1.0.
   void onLeadingCharacterFadeTick(Duration _) {
-    final bool shouldIgnoreTick = !mounted || !hasAnyAnimatingCharacter();
-
-    if (shouldIgnoreTick) {
+    if (!mounted) {
       return;
     }
 
-    setState(() {});
+    final bool isAnimating = hasAnyAnimatingCharacter();
+
+    if (isAnimating) {
+      needsFadeSettlingRebuild = true;
+      setState(() {});
+      return;
+    }
+
+    if (needsFadeSettlingRebuild) {
+      needsFadeSettlingRebuild = false;
+      setState(() {});
+    }
   }
 
   // True if the most recently revealed character is still inside its fade

@@ -129,7 +129,7 @@ class RLUIStrings {
 
   // * Lesson Finish Screen
   static const String LESSON_FINISH_TITLE = 'Package read';
-  static const String LESSON_FINISH_TIME_LABEL = 'Time on this package';
+  static const String LESSON_FINISH_TIME_LABEL = 'Session Time';
   static const String LESSON_FINISH_BUTTON_LABEL = 'Finish';
 
   // * Course Content Viewer

@@ -15,11 +15,11 @@ import 'package:flutter/material.dart';
 
 // 60ms per item — adjacent items crossfade cleanly without popping.
 // Matches RL_TYPEWRITER_CHARACTER_STEP from RLTypewriterText.
-const Duration STAGGER_STEP = Duration(milliseconds: 60);
+const Duration STAGGER_STEP = Duration(milliseconds: 50);
 
 // Fade window for each individual item. Matches
 // progressiveTextLeadingCharacterFadeDuration from ProgressiveText.
-const Duration STAGGER_FADE_WINDOW = Duration(milliseconds: 60);
+const Duration STAGGER_FADE_WINDOW = Duration(milliseconds: 50);
 
 class RLStaggerReveal extends StatefulWidget {
   final int itemCount;
@@ -39,21 +39,16 @@ class RLStaggerReveal extends StatefulWidget {
   State<RLStaggerReveal> createState() => RLStaggerRevealState();
 }
 
-class RLStaggerRevealState extends State<RLStaggerReveal>
-    with SingleTickerProviderStateMixin {
+class RLStaggerRevealState extends State<RLStaggerReveal> with SingleTickerProviderStateMixin {
   late AnimationController revealController;
 
   @override
   void initState() {
     super.initState();
 
-    final Duration totalDuration =
-        widget.step * widget.itemCount + widget.fadeWindow;
+    final Duration totalDuration = widget.step * widget.itemCount + widget.fadeWindow;
 
-    revealController = AnimationController(
-      vsync: this,
-      duration: totalDuration,
-    )..forward();
+    revealController = AnimationController(vsync: this, duration: totalDuration)..forward();
   }
 
   @override
