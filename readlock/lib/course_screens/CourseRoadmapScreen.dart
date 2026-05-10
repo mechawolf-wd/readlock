@@ -1360,7 +1360,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
 // a setState on the parent so the path re-renders the moment either
 // changes.
 
-const nodeStaggerStepDuration = Duration(milliseconds: 200);
+const nodeStaggerStepDuration = Duration(milliseconds: 100);
 
 class PathWithNodes extends StatelessWidget {
   final List<dynamic> lessons;

@@ -1,47 +1,54 @@
 // Full-screen loading widget displayed while course content is being prepared.
-// Shows the reader's picked bird as an animated sprite so the loading state
-// reads as part of the reader's profile — same bird sprite used on Pause slides,
-// the natural source of truth.
+// Starfield background with a centered "Preparing..." label whose dots build
+// one by one, matching the rhythm of the "Latest read..." heading on Home.
 
 import 'package:flutter/material.dart' hide Typography;
+import 'package:readlock/constants/RLDesignSystem.dart';
+import 'package:readlock/constants/RLTypography.dart';
+import 'package:readlock/constants/RLUIStrings.dart';
+import 'package:readlock/design_system/RLLoadingIndicator.dart';
 import 'package:readlock/design_system/RLLunarBlur.dart';
 import 'package:readlock/design_system/RLStarfieldBackground.dart';
-import 'package:readlock/design_system/RLUtility.dart';
-import 'package:readlock/screens/profile/BirdPicker.dart';
 
-// Larger than the default preview sizes so the loader reads as the hero
-// element on an otherwise empty screen. Integer multiple of the 32×32
-// source frame keeps the pixel art crisp.
-const double COURSE_LOADING_BIRD_SIZE = 192.0;
 
-class CourseLoadingScreen extends StatelessWidget {
+class CourseLoadingScreen extends StatefulWidget {
   const CourseLoadingScreen({super.key});
 
-  Widget BirdLoader() {
-    return ValueListenableBuilder<BirdOption>(
-      valueListenable: selectedBirdNotifier,
-      builder: BirdLoaderBuilder,
+  @override
+  State<CourseLoadingScreen> createState() => CourseLoadingScreenState();
+}
+
+class CourseLoadingScreenState extends State<CourseLoadingScreen>
+    with SingleTickerProviderStateMixin {
+  late AnimationController dotsController;
+
+  @override
+  void initState() {
+    super.initState();
+
+    dotsController = AnimationController(
+      vsync: this,
+      duration: LOADING_DOT_CYCLE_DURATION,
     );
+
+    dotsController.repeat();
   }
 
-  Widget BirdLoaderBuilder(BuildContext context, BirdOption bird, Widget? _) {
-    return BirdAnimationSprite(bird: bird, previewSize: COURSE_LOADING_BIRD_SIZE);
+  @override
+  void dispose() {
+    dotsController.dispose();
+    super.dispose();
   }
 
-  Widget LoadingContent() {
-    return Div.column(
-      [BirdLoader()],
-      crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisAlignment: MainAxisAlignment.center,
-      width: double.infinity,
-    );
+  int getActiveDotsCount() {
+    final int phase = (dotsController.value * LOADING_DOT_COUNT).floor();
+    final int clampedPhase = phase.clamp(0, LOADING_DOT_COUNT - 1);
+
+    return clampedPhase + 1;
   }
 
   @override
   Widget build(BuildContext context) {
-    // Matches CCTextContent's background: drifting starfield with a
-    // full-bleed LunarBlur pane frosting it, so the transition from
-    // loading → reading reads as one continuous surface.
     return Scaffold(
       backgroundColor: STARFIELD_BACKGROUND_COLOR,
       body: Stack(
@@ -55,9 +62,39 @@ class CourseLoadingScreen extends StatelessWidget {
             ),
           ),
 
-          LoadingContent(),
+          Center(
+            child: AnimatedBuilder(
+              animation: dotsController,
+              builder: PreparingLabel,
+            ),
+          ),
         ],
       ),
     );
+  }
+
+  Widget PreparingLabel(BuildContext context, Widget? unusedChild) {
+    final int activeDots = getActiveDotsCount();
+
+    final List<Widget> rowChildren = [
+      RLTypography.headingMedium(
+        RLUIStrings.PREPARING_LABEL,
+        color: RLDS.textSecondary,
+      ),
+    ];
+
+    for (int dotIndex = 0; dotIndex < LOADING_DOT_COUNT; dotIndex++) {
+      final bool isActive = dotIndex < activeDots;
+      final double dotOpacity = isActive ? 1.0 : 0.0;
+
+      rowChildren.add(
+        Opacity(
+          opacity: dotOpacity,
+          child: RLTypography.headingMedium('.', color: RLDS.textSecondary),
+        ),
+      );
+    }
+
+    return Row(mainAxisSize: MainAxisSize.min, children: rowChildren);
   }
 }

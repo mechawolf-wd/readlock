@@ -204,7 +204,7 @@ class FeathersSheetState extends State<FeathersSheet> {
     });
 
     if (result == PurchaseResult.success) {
-      RLToast.success(context, '+${purchasedPlan.feathersValue} feathers');
+      RLToast.success(context, '+${purchasedPlan.feathersValue}${RLUIStrings.FEATHERS_PURCHASE_SUCCESS_SUFFIX}');
       Navigator.of(context).pop();
       return;
     }

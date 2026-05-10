@@ -473,7 +473,13 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
     );
   }
 
+  // Minimum time the "Preparing..." screen stays visible so the
+  // transition never feels like a flash, even on fast connections.
+  static const Duration minimumLoadingDuration = Duration(seconds: 1);
+
   Future<void> fetchCourseData() async {
+    final Future<void> minimumDelay = Future.delayed(minimumLoadingDuration);
+
     try {
       courseData = await CourseDataService.fetchCourseById(widget.courseId);
 
@@ -484,16 +490,19 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
       }
     } on Exception catch (error) {
       debugPrint('${RLUIStrings.ERROR_LOADING_COURSE_DATA}: $error');
-    } finally {
-      if (mounted) {
-        setState(() {
-          isLoading = false;
-        });
+    }
 
-        // Start the reading clock now that the content is actually
-        // visible. Loading-screen seconds are not reading seconds.
-        readingStopwatch.start();
-      }
+    // Wait for the minimum display time before revealing content
+    await minimumDelay;
+
+    if (mounted) {
+      setState(() {
+        isLoading = false;
+      });
+
+      // Start the reading clock now that the content is actually
+      // visible. Loading-screen seconds are not reading seconds.
+      readingStopwatch.start();
     }
   }
 

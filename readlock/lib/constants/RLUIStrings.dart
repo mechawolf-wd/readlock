@@ -25,7 +25,7 @@ class RLUIStrings {
   static const String STORE_OFFLINE_MESSAGE =
       '*chirp* - the store needs a connection. Reconnect to keep browsing.';
 
-  // * Confirmation dialog — shared
+  // * Confirmation dialog (shared)
   static const String CANCEL_LABEL = 'Cancel';
   static const String DIALOG_DEFAULT_ACTION_LABEL = 'OK';
 
@@ -40,6 +40,7 @@ class RLUIStrings {
   static const String FEATHERS_RESTORE_LABEL = 'Restore purchases';
   static const String FEATHERS_RESTORE_SUCCESS = 'Purchases restored';
   static const String FEATHERS_STORE_UNAVAILABLE = 'App Store is not available right now';
+  static const String FEATHERS_PURCHASE_SUCCESS_SUFFIX = ' feathers';
 
   // Per-plan copy.
   static const String PLAN_BEGINNER_NAME = 'Beginner';
@@ -123,6 +124,7 @@ class RLUIStrings {
 
   // * Course Loading Screen
   static const String LOADING_MESSAGE = 'Birds are indexing the skillbook';
+  static const String PREPARING_LABEL = 'Nesting';
 
   // * Shared loading indicator (dots are animated in the widget)
   static const String LOADING_LABEL = 'Chirping';
@@ -134,7 +136,7 @@ class RLUIStrings {
 
   // * Course Content Viewer
   static const String NO_CONTENT_AVAILABLE_MESSAGE =
-      'Pigeons are still gathering content for this lesson. Please check back a bit !';
+      'Pigeons are still gathering content for this package. Check back in a bit.';
   static const String ERROR_LOADING_COURSE_DATA =
       'Couldn\'t load the skillbook. Please try again.';
   static const String QUIT_CONFIRMATION_TITLE = 'Wait';
@@ -160,7 +162,7 @@ class RLUIStrings {
   // * Reflection Question
   static const String REFLECTION_ASPECTS_LABEL = 'Consider these aspects:';
   static const String REFLECTION_SWIPE_HINT = 'Swipe right to confirm';
-  static const String REFLECT_TITLE = 'Take a Moment to Reflect';
+  static const String REFLECT_TITLE = 'Reflect';
 
   // * Text Content
   static const String TEXT_CONTENT_CONTINUE_LABEL = 'Continue';
@@ -189,7 +191,7 @@ class RLUIStrings {
   static const String READING_HISTORY_TITLE = 'Reading history';
 
   // * Course Roadmap
-  static const String ROADMAP_DEFAULT_TITLE = 'Course Roadmap';
+  static const String ROADMAP_DEFAULT_TITLE = 'Roadmap';
   static const String ROADMAP_DEFAULT_AUTHOR = 'Unknown Author';
   static const String ROADMAP_SUBTITLE = 'Master design psychology fundamentals';
   static const String ROADMAP_CONTINUE_LABEL = 'Continue';
@@ -267,7 +269,7 @@ class RLUIStrings {
   static const String MENU_SOUNDS = 'Sounds';
   static const String MENU_HAPTICS = 'Haptics (clicks)';
   // "Progressive" is the user-facing label for what the code still refers
-  // to internally as "reveal" — same bool, inverted meaning. ON = text
+  // to internally as "reveal", same bool, inverted meaning. ON = text
   // types in progressively; OFF = text appears all at once. The switch
   // value is flipped at the menu layer (see SwitchMenuItem usage in
   // MenuWidgets) so the stored preference doesn't need migration.
