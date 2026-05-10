@@ -9,8 +9,8 @@ import 'package:readlock/utility_widgets/text_animation/RSVPText.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/constants/RLReadingJustified.dart';
-import 'package:readlock/course_screens/CourseContentViewer.dart';
 import 'package:readlock/course_screens/widgets/CCContinueButton.dart';
+import 'package:readlock/course_screens/CourseContentViewer.dart';
 
 class CCTextContent extends StatefulWidget {
   final TextSwipe content;
@@ -22,7 +22,14 @@ class CCTextContent extends StatefulWidget {
 }
 
 class CCTextContentState extends State<CCTextContent> {
+  // True once the last segment finishes its typewriter animation.
+  bool isLastSegmentRevealed = false;
+
+  // True after the 1400ms pause that lets the reader absorb the last line
+  // before the button fades in. Controls button visibility only.
   bool isAllTextRevealed = false;
+
+  final GlobalKey<ProgressiveTextState> progressiveTextKey = GlobalKey<ProgressiveTextState>();
 
   @override
   void initState() {
@@ -40,7 +47,7 @@ class CCTextContentState extends State<CCTextContent> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-              Expanded(child: ProgressiveTextSection()),
+          Expanded(child: ProgressiveTextSection()),
 
           ContinueButtonContainer(),
         ],
@@ -75,15 +82,12 @@ class CCTextContentState extends State<CCTextContent> {
         final TextAlign paragraphAlignment = isJustified ? TextAlign.justify : TextAlign.left;
 
         return ProgressiveText(
+          key: progressiveTextKey,
           textSegments: widget.content.textSegments,
           textStyle: RLTypography.readingMediumStyle,
           textAlignment: CrossAxisAlignment.start,
           textAlign: paragraphAlignment,
           onAllSegmentsRevealed: handleAllSegmentsRevealed,
-          // Once every segment has landed, the empty area below the last
-          // line becomes a synonym for the continue button: tapping it
-          // advances to the next slide instead of toggling blur.
-          onTapAfterAllRevealed: handleContinueButtonTap,
         );
       },
     );
@@ -97,13 +101,59 @@ class CCTextContentState extends State<CCTextContent> {
     );
   }
 
-  // Continue CTA. The shared CCContinueButton owns the geometry, accent
-  // resolution, and page-controller hop, so this swipe just hands it the
-  // "is everyone done reading?" flag.
+  // Continue CTA. Invisible until all segments finish, but the tap area is
+  // always active: tapping before reveal triggers the next segment via the
+  // ProgressiveText key; after reveal, advances to the next page.
   Widget ContinueButtonContainer() {
     final bool shouldShowContinueButton = isAllTextRevealed;
 
-    return CCContinueButton(visible: shouldShowContinueButton);
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: handleContinueTap,
+      child: CCContinueButton(visible: shouldShowContinueButton),
+    );
+  }
+
+  void handleContinueTap() {
+    if (isAllTextRevealed) {
+      advanceToNextPage();
+      return;
+    }
+
+    progressiveTextKey.currentState?.handleTap();
+  }
+
+  void advanceToNextPage() {
+    final CourseDetailScreenState? courseDetailScreen =
+        context.findAncestorStateOfType<CourseDetailScreenState>();
+
+    final bool hasNoAncestor = courseDetailScreen == null;
+
+    if (hasNoAncestor) {
+      return;
+    }
+
+    final PageController pageController = courseDetailScreen.pageController;
+    final bool hasNoClients = !pageController.hasClients;
+
+    if (hasNoClients) {
+      return;
+    }
+
+    final double? currentPageDouble = pageController.page;
+    final bool hasNoCurrentPage = currentPageDouble == null;
+
+    if (hasNoCurrentPage) {
+      return;
+    }
+
+    final int nextPage = currentPageDouble.round() + 1;
+
+    pageController.animateToPage(
+      nextPage,
+      duration: CC_CONTINUE_PAGE_TRANSITION_DURATION,
+      curve: CC_CONTINUE_PAGE_TRANSITION_CURVE,
+    );
   }
 
   void handleAllSegmentsRevealed() async {
@@ -126,41 +176,4 @@ class CCTextContentState extends State<CCTextContent> {
     });
   }
 
-  void handleContinueButtonTap() {
-    final PageController? pageController = findPageController(context);
-
-    final bool hasValidPageController = pageController != null && pageController.hasClients;
-
-    if (!hasValidPageController) {
-      return;
-    }
-
-    HapticsService.lightImpact();
-    navigateToNextPage(pageController);
-  }
-
-  void navigateToNextPage(PageController pageController) {
-    final double? currentPageDouble = pageController.page;
-    final bool hasCurrentPage = currentPageDouble != null;
-
-    if (!hasCurrentPage) {
-      return;
-    }
-
-    final int currentPage = currentPageDouble.round();
-    final int nextPage = currentPage + 1;
-
-    pageController.animateToPage(
-      nextPage,
-      duration: const Duration(milliseconds: 300),
-      curve: Curves.easeInOut,
-    );
-  }
-
-  PageController? findPageController(BuildContext context) {
-    final CourseDetailScreenState? courseDetailScreen = context
-        .findAncestorStateOfType<CourseDetailScreenState>();
-
-    return courseDetailScreen?.pageController;
-  }
 }

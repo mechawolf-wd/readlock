@@ -204,9 +204,7 @@ class RLUIStrings {
   // Skillbook charge mechanic. Every purchase grants a 14-day rental;
   // when the timer runs out the book "discharges" and the reader spends
   // 3 feathers to charge it again for another window.
-  static const String ROADMAP_CHARGED_LABEL = 'Charged';
   static const String ROADMAP_DISCHARGED_LABEL = 'Recharge';
-  static const String ROADMAP_DISCHARGED_PERCENT_LABEL = '0%';
   static const String ROADMAP_CHARGE_LABEL = 'Recharge:';
   static const String ROADMAP_CHARGE_LOADING_LABEL = 'Charging...';
   static const String ROADMAP_CHARGE_SUCCESS = 'Skillbook charged';

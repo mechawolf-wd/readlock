@@ -10,7 +10,6 @@ import 'package:readlock/design_system/RLLoadingIndicator.dart';
 import 'package:readlock/design_system/RLLunarBlur.dart';
 import 'package:readlock/design_system/RLStarfieldBackground.dart';
 
-
 class CourseLoadingScreen extends StatefulWidget {
   const CourseLoadingScreen({super.key});
 
@@ -26,10 +25,7 @@ class CourseLoadingScreenState extends State<CourseLoadingScreen>
   void initState() {
     super.initState();
 
-    dotsController = AnimationController(
-      vsync: this,
-      duration: LOADING_DOT_CYCLE_DURATION,
-    );
+    dotsController = AnimationController(vsync: this, duration: LOADING_DOT_CYCLE_DURATION);
 
     dotsController.repeat();
   }
@@ -56,17 +52,11 @@ class CourseLoadingScreenState extends State<CourseLoadingScreen>
           const Positioned.fill(child: RLStarfieldBackground()),
 
           const Positioned.fill(
-            child: RLLunarBlur(
-              borderRadius: BorderRadius.zero,
-              child: SizedBox.expand(),
-            ),
+            child: RLLunarBlur(borderRadius: BorderRadius.zero, child: SizedBox.expand()),
           ),
 
           Center(
-            child: AnimatedBuilder(
-              animation: dotsController,
-              builder: PreparingLabel,
-            ),
+            child: AnimatedBuilder(animation: dotsController, builder: PreparingLabel),
           ),
         ],
       ),
@@ -77,10 +67,7 @@ class CourseLoadingScreenState extends State<CourseLoadingScreen>
     final int activeDots = getActiveDotsCount();
 
     final List<Widget> rowChildren = [
-      RLTypography.headingMedium(
-        RLUIStrings.PREPARING_LABEL,
-        color: RLDS.textSecondary,
-      ),
+      RLTypography.headingMedium(RLUIStrings.PREPARING_LABEL, color: RLDS.white),
     ];
 
     for (int dotIndex = 0; dotIndex < LOADING_DOT_COUNT; dotIndex++) {

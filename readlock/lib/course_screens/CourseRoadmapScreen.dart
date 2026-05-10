@@ -909,16 +909,11 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
 
     final bool isSkillbookCharged = getIsSkillbookCharged();
     final double chargeFraction = getChargeFraction();
-    final Color accentColor = getCourseAccentColor();
-    final String headlineLabel = isSkillbookCharged
-        ? RLUIStrings.ROADMAP_CHARGED_LABEL
-        : RLUIStrings.ROADMAP_DISCHARGED_LABEL;
 
     return Div.column([
       ChargeStatusHeadline(
-        headlineLabel: headlineLabel,
+        chargeFraction: chargeFraction,
         isSkillbookCharged: isSkillbookCharged,
-        accentColor: accentColor,
       ),
 
       const Spacing.height(RLDS.spacing8),
@@ -927,31 +922,49 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
     ], crossAxisAlignment: CrossAxisAlignment.stretch);
   }
 
-  static const double chargeHeadlineBatterySize = RLDS.iconSmall;
+  static const double chargeHeadlineBatterySize = RLDS.iconMedium;
+
+  IconData getBatteryIconForFraction(double fraction) {
+    if (fraction >= 0.75) {
+      return Pixel.batteryfull;
+    }
+
+    if (fraction >= 0.50) {
+      return Pixel.battery2;
+    }
+
+    if (fraction >= 0.25) {
+      return Pixel.battery1;
+    }
+
+    return Pixel.battery;
+  }
 
   Widget ChargeStatusHeadline({
-    required String headlineLabel,
+    required double chargeFraction,
     required bool isSkillbookCharged,
-    required Color accentColor,
   }) {
-    final List<Widget> rowChildren = [
-      RLTypography.pixelLabel(headlineLabel, color: RLDS.white),
-    ];
+    final int chargePercent = (chargeFraction * 100).round();
+    final String chargePercentLabel = '$chargePercent%';
+    final IconData batteryIcon = getBatteryIconForFraction(chargeFraction);
 
+    // Left side: battery icon + percentage
+    final Widget chargeIndicator = Div.row([
+      Icon(batteryIcon, color: RLDS.white, size: chargeHeadlineBatterySize),
+
+      const Spacing.width(RLDS.spacing4),
+
+      RLTypography.pixelLabel(chargePercentLabel, color: RLDS.white),
+    ]);
+
+    final List<Widget> rowChildren = [chargeIndicator];
+
+    // Right side: remaining time when charged, "Recharge" when discharged
     if (isSkillbookCharged) {
       rowChildren.add(RLTypography.pixelLabel(getChargeRemainingLabel(), color: RLDS.white));
     } else {
       rowChildren.add(
-        Div.row([
-          RLTypography.pixelLabel(
-            RLUIStrings.ROADMAP_DISCHARGED_PERCENT_LABEL,
-            color: RLDS.white,
-          ),
-
-          const Spacing.width(RLDS.spacing4),
-
-          const Icon(Pixel.battery, color: RLDS.white, size: chargeHeadlineBatterySize),
-        ]),
+        RLTypography.pixelLabel(RLUIStrings.ROADMAP_DISCHARGED_LABEL, color: RLDS.white),
       );
     }
 
