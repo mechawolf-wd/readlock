@@ -38,7 +38,12 @@ const Duration SEARCH_DEBOUNCE_DURATION = Duration(milliseconds: 350);
 
 // Initial page size and load-more increment for the default course listing.
 const int SEARCH_INITIAL_PAGE_SIZE = 5;
-const int SEARCH_LOAD_MORE_PAGE_SIZE = 2;
+const int SEARCH_LOAD_MORE_PAGE_SIZE = 3;
+
+// Cap for the remote prefix search so the results area stays tight. The
+// local filter already runs over the cached master list, so this only
+// governs the Firestore fallback.
+const int SEARCH_REMOTE_RESULTS_LIMIT = 3;
 
 // Bottom inset for the results scroll view so the last entry can scroll
 // past the floating filter panel before bottoming out. Just enough that
@@ -320,7 +325,10 @@ class CoursesScreenState extends State<CoursesScreen> {
     });
 
     try {
-      final JSONList results = await CourseDataService.searchCoursesByTitle(query);
+      final JSONList results = await CourseDataService.searchCoursesByTitle(
+        query,
+        limit: SEARCH_REMOTE_RESULTS_LIMIT,
+      );
       final bool queryChanged = query != searchQuery.trim();
 
       if (!mounted || queryChanged) {

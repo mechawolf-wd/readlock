@@ -20,8 +20,8 @@ class CourseDataService {
     return FirebaseCourseService.fetchCourseById(courseId);
   }
 
-  static Future<JSONList> searchCoursesByTitle(String titlePrefix) {
-    return FirebaseCourseService.searchCoursesByTitle(titlePrefix);
+  static Future<JSONList> searchCoursesByTitle(String titlePrefix, {int? limit}) {
+    return FirebaseCourseService.searchCoursesByTitle(titlePrefix, limit: limit);
   }
 
   static Future<JSONList> fetchCoursesByIds(List<String> courseIds) {

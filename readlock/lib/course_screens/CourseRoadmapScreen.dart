@@ -944,7 +944,13 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
       return Pixel.battery1;
     }
 
-    return Pixel.battery;
+    final bool isCompletelyEmpty = fraction <= 0;
+
+    if (isCompletelyEmpty) {
+      return Pixel.battery;
+    }
+
+    return Pixel.battery1;
   }
 
   Widget ChargeStatusHeadline({

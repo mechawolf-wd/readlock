@@ -171,7 +171,7 @@ class MainNavigationState extends State<MainNavigation> {
     }
 
     HapticsService.lightImpact();
-    SoundService.playRandomTextClick();
+    SoundService.playUiClick();
 
     setState(() {
       currentIndex = navigationItemIndex;

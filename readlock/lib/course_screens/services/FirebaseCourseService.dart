@@ -81,7 +81,7 @@ class FirebaseCourseService {
   // for the query. Firestore does not support case-insensitive contains out of
   // the box, so this does a prefix range query on the `title` field.
 
-  static Future<JSONList> searchCoursesByTitle(String titlePrefix) async {
+  static Future<JSONList> searchCoursesByTitle(String titlePrefix, {int? limit}) async {
     final String trimmed = titlePrefix.trim();
     final bool hasNoQuery = trimmed.isEmpty;
 
@@ -91,11 +91,18 @@ class FirebaseCourseService {
 
     final String endBoundary = '$trimmed\uf8ff';
 
-    final QuerySnapshot<JSONMap> snapshot = await firestore
+    Query<JSONMap> query = firestore
         .collection(FirebaseConfig.COURSES_COLLECTION)
         .where('title', isGreaterThanOrEqualTo: trimmed)
-        .where('title', isLessThan: endBoundary)
-        .get();
+        .where('title', isLessThan: endBoundary);
+
+    final bool hasLimit = limit != null;
+
+    if (hasLimit) {
+      query = query.limit(limit);
+    }
+
+    final QuerySnapshot<JSONMap> snapshot = await query.get();
 
     return snapshot.docs.map((doc) {
       final JSONMap data = doc.data();
