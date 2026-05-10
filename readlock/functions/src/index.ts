@@ -10,3 +10,5 @@ initializeApp();
 
 export { incrementTimesPurchased } from "./incrementTimesPurchased";
 export { deleteAccount } from "./deleteAccount";
+export { generateReferralCode } from "./generateReferralCode";
+export { redeemReferralCode } from "./redeemReferralCode";

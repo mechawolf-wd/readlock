@@ -117,6 +117,20 @@ service cloud.firestore {
       allow delete: if false;
     }
 
+    // * /referral-codes/{codeId}
+    //
+    // Referral codes are created and redeemed exclusively through Cloud
+    // Functions (Admin SDK). Authenticated users can read only their own
+    // codes (where creatorUid matches their uid) to populate the "Invite
+    // friends" bottom sheet.
+
+    match /referral-codes/{codeId} {
+      allow read: if isSignedIn()
+        && resource.data.creatorUid == request.auth.uid;
+
+      allow write: if false;
+    }
+
     // * Default deny
     //
     // rules_version 2 already denies anything that doesn't match a rule,

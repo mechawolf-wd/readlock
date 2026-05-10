@@ -24,4 +24,10 @@ class FirebaseConfig {
 
   static const String CLOUD_FUNCTION_DELETE_ACCOUNT = 'deleteAccount';
   static const String CLOUD_FUNCTION_INCREMENT_TIMES_PURCHASED = 'incrementTimesPurchased';
+  static const String CLOUD_FUNCTION_GENERATE_REFERRAL_CODE = 'generateReferralCode';
+  static const String CLOUD_FUNCTION_REDEEM_REFERRAL_CODE = 'redeemReferralCode';
+
+  // * Referral codes collection
+
+  static const String REFERRAL_CODES_COLLECTION = 'referral-codes';
 }

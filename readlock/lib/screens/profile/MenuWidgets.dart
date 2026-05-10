@@ -46,6 +46,8 @@ class MenuSection extends StatelessWidget {
   final ValueChanged<bool> onColoredTextToggled;
   final ValueChanged<bool> onBionicToggled;
   final ValueChanged<bool> onJustifiedReadingToggled;
+  final VoidCallback onInviteFriendsTap;
+  final VoidCallback onRedeemCodeTap;
   final VoidCallback onSupportTap;
   final VoidCallback onLogoutTap;
 
@@ -67,6 +69,8 @@ class MenuSection extends StatelessWidget {
     required this.onColoredTextToggled,
     required this.onBionicToggled,
     required this.onJustifiedReadingToggled,
+    required this.onInviteFriendsTap,
+    required this.onRedeemCodeTap,
     required this.onSupportTap,
     required this.onLogoutTap,
   });
@@ -145,6 +149,20 @@ class MenuSection extends StatelessWidget {
           leading: const ProfileBirdMenuIcon(),
           title: RLUIStrings.MENU_PROFILE_BIRD,
           onTap: onBirdPickerTap,
+        ),
+
+        MenuItem(
+          icon: Pixel.mail,
+          title: RLUIStrings.MENU_INVITE_FRIENDS,
+          iconColor: RLDS.markupGreen,
+          onTap: onInviteFriendsTap,
+        ),
+
+        MenuItem(
+          icon: Pixel.gift,
+          title: RLUIStrings.MENU_REDEEM_CODE,
+          iconColor: RLDS.markupGreen,
+          onTap: onRedeemCodeTap,
         ),
 
         const MenuDivider(label: RLUIStrings.MENU_SECTION_SOUND),

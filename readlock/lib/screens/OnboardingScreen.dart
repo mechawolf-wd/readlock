@@ -26,6 +26,7 @@ import 'package:readlock/screens/profile/SettingsDemos.dart';
 import 'package:readlock/services/auth/UserService.dart';
 import 'package:readlock/utility_widgets/text_animation/BionicText.dart';
 import 'package:readlock/constants/RLReadingSettings.dart';
+import 'package:readlock/screens/OnboardingReferralStep.dart';
 
 const EdgeInsets ONBOARDING_PAGE_PADDING = EdgeInsets.symmetric(horizontal: RLDS.spacing24);
 const EdgeInsets ONBOARDING_FOOTER_PADDING = EdgeInsets.fromLTRB(
@@ -169,6 +170,14 @@ class OnboardingFlowState extends State<OnboardingFlow> {
         title: RLUIStrings.MENU_BIONIC,
         toggle: OnboardingToggle(value: bionicEnabled, onChanged: handleBionicToggled),
         body: BionicDemo(isEnabled: bionicEnabled),
+      ),
+
+      // Referral code entry, the final step before the reader lands on
+      // the bookshelf. Skipping is implicit (tap the forward chevron
+      // without entering anything).
+      const OnboardingStepSpec(
+        title: RLUIStrings.REFERRAL_ONBOARDING_TITLE,
+        body: OnboardingReferralStep(),
       ),
     ];
   }

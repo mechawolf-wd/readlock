@@ -483,6 +483,7 @@ class BookshelfScreenState extends State<BookshelfScreen> {
 
     void onReadingTimeTap() {
       HapticsService.lightImpact();
+      SoundService.playRandomTextClick();
       BirdPickerBottomSheet.show(context);
     }
 

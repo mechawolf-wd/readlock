@@ -16,6 +16,8 @@ import 'package:readlock/services/auth/AuthService.dart';
 import 'package:readlock/services/auth/UserPreferencesHydrator.dart';
 import 'package:readlock/services/auth/UserService.dart';
 import 'package:readlock/services/feedback/HapticsService.dart';
+import 'package:readlock/bottom_sheets/user/RedeemCodeBottomSheet.dart';
+import 'package:readlock/bottom_sheets/user/ReferralBottomSheet.dart';
 import 'package:readlock/services/feedback/SoundService.dart';
 import 'package:readlock/constants/RLReadingJustified.dart';
 import 'package:readlock/utility_widgets/text_animation/BionicText.dart';
@@ -253,6 +255,8 @@ class ProfileContentState extends State<ProfileContent> {
       onColoredTextToggled: handleColoredTextToggled,
       onBionicToggled: handleBionicToggled,
       onJustifiedReadingToggled: handleJustifiedReadingToggled,
+      onInviteFriendsTap: () => ReferralBottomSheet.show(context),
+      onRedeemCodeTap: () => RedeemCodeBottomSheet.show(context),
       onSupportTap: handleSupportTap,
       onLogoutTap: handleLogoutTap,
     );

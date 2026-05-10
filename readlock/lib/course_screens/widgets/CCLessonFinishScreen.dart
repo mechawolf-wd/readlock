@@ -22,6 +22,7 @@ import 'package:readlock/services/feedback/HapticsService.dart';
 import 'package:readlock/design_system/RLUtility.dart';
 import 'package:readlock/screens/profile/BirdPicker.dart';
 import 'package:readlock/services/feedback/SoundService.dart';
+import 'package:readlock/bottom_sheets/user/ReferralBottomSheet.dart';
 
 // One-shot count-up that animates the elapsed time from 0:00 to its
 // final value the moment the screen appears, so the duration reads as
@@ -136,9 +137,11 @@ class CCLessonFinishScreenState extends State<CCLessonFinishScreen>
 
   @override
   Widget build(BuildContext context) {
+    final VoidCallback? finishAreaHandler = isFinishButtonVisible ? handleFinishAreaTap : null;
+
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
-      onTap: isFinishButtonVisible ? handleFinishAreaTap : null,
+      onTap: finishAreaHandler,
       child: Padding(
         padding: RLDS.contentPaddingInsets,
         child: Column(
@@ -151,6 +154,11 @@ class CCLessonFinishScreenState extends State<CCLessonFinishScreen>
             // Commit button. Tapping it is what writes the elapsed delta
             // back to the user model via the host's onFinishTap.
             FinishButton(),
+
+            const Spacing.height(RLDS.spacing12),
+
+            // Subtle invite nudge
+            InviteNudge(),
           ],
         ),
       ),
@@ -168,10 +176,18 @@ class CCLessonFinishScreenState extends State<CCLessonFinishScreen>
   // typographic weight on the time in both branches so the no-drop case
   // doesn't read as an error or empty state, just a quiet finish.
   Widget HeroContent() {
-    if (widget.didEarnFeather) {
+    final bool hasEarnedFeather = widget.didEarnFeather;
+
+    if (hasEarnedFeather) {
       return Column(
         mainAxisAlignment: MainAxisAlignment.center,
-        children: [PulsingBird(), const Spacing.height(RLDS.spacing16), AnimatedTimeSpentRow()],
+        children: [
+          PulsingBird(),
+
+          const Spacing.height(RLDS.spacing16),
+
+          AnimatedTimeSpentRow(),
+        ],
       );
     }
 
@@ -241,6 +257,25 @@ class CCLessonFinishScreenState extends State<CCLessonFinishScreen>
       child: RLButton.tertiary(
         label: RLUIStrings.LESSON_FINISH_BUTTON_LABEL,
         onTap: handleFinishAreaTap,
+      ),
+    );
+  }
+
+  void handleInviteNudgeTap() {
+    ReferralBottomSheet.show(context);
+  }
+
+  Widget InviteNudge() {
+    return RLReveal(
+      visible: isFinishButtonVisible,
+      child: GestureDetector(
+        onTap: handleInviteNudgeTap,
+        behavior: HitTestBehavior.opaque,
+        child: RLTypography.bodySmall(
+          RLUIStrings.MENU_INVITE_FRIENDS,
+          color: RLDS.textMuted,
+          textAlign: TextAlign.center,
+        ),
       ),
     );
   }

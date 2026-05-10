@@ -400,4 +400,31 @@ class RLUIStrings {
   static const String ERROR_UNKNOWN = 'Something went wrong on our end.';
   static const String ERROR_NO_USER_LOGGED_IN = 'No one is signed in yet.';
   static const String ERROR_ACCOUNT_DELETION_FAILED = "Couldn't delete the account just now.";
+
+  // * Referral System
+
+  // Bottom sheet
+  static const String REFERRAL_TITLE = 'Invite a reader';
+  static const String REFERRAL_SUBTITLE_THEY_GET = 'They get 10 ';
+  static const String REFERRAL_SUBTITLE_YOU_GET = ', you get 20 ';
+  static const String REFERRAL_GENERATE_LABEL = 'Generate code';
+  static const String REFERRAL_GENERATING_LABEL = 'Generating...';
+  static const String REFERRAL_CODE_LIMIT_REACHED = 'All 3 codes generated';
+  static const String REFERRAL_CODE_COPIED = 'Code copied';
+  static const String REFERRAL_CODE_USED_LABEL = 'Used';
+  static const String REFERRAL_CODE_AVAILABLE_LABEL = 'Available';
+
+  // Onboarding step
+  static const String REFERRAL_ONBOARDING_TITLE = 'Got a referral code?';
+  static const String REFERRAL_ONBOARDING_PLACEHOLDER = 'ROBIN-7K3X';
+  static const String REFERRAL_ONBOARDING_SUBMIT_LABEL = 'Apply';
+  static const String REFERRAL_ONBOARDING_SUBMITTING_LABEL = 'Applying...';
+  static const String REFERRAL_ONBOARDING_SUCCESS = '+10 feathers added';
+  static const String REFERRAL_CODE_INVALID = 'That code is not valid.';
+  static const String REFERRAL_CODE_ALREADY_USED = 'That code has already been used.';
+  static const String REFERRAL_CODE_OWN = 'You cannot use your own code.';
+
+  // Settings menu
+  static const String MENU_INVITE_FRIENDS = 'Invite friends';
+  static const String MENU_REDEEM_CODE = 'Redeem code';
 }

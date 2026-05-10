@@ -37,4 +37,10 @@ class PurchaseConstants {
   // above this is floored to prevent idle-tab cheating of the feather
   // economy. The display timer still shows the real elapsed time.
   static const int MAX_SESSION_CREDITED_SECONDS = 10 * 60;
+
+  // * Referral rewards
+
+  static const int REFERRAL_REDEEMER_REWARD = 10;
+  static const int REFERRAL_CREATOR_REWARD = 20;
+  static const int MAX_REFERRAL_CODES = 3;
 }

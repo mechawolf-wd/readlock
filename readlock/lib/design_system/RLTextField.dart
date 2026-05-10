@@ -67,7 +67,7 @@ class RLTextFieldState extends State<RLTextField> {
   // including taps that just move the caret inside an already-focused
   // field, which matches the "every interaction clicks" feel.
   void handleFieldTap() {
-    SoundService.playRandomTextClick();
+    SoundService.playUiClick();
   }
 
   void handleRevealStart() {
