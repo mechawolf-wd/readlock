@@ -448,7 +448,14 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
 
       if (hasCourseData) {
         courseSegments = JSONList.from(courseData!['segments'] ?? []);
-        loadSegmentLessons(0);
+
+        // Open the segment that contains the reader's frontier so
+        // returning to a mid-course book lands on the right tab.
+        final int frontierIndex = getCurrentLessonFrontier();
+        final int frontierSegment = getSegmentForAbsoluteIndex(frontierIndex);
+
+        selectedSegmentIndex = frontierSegment;
+        loadSegmentLessons(frontierSegment);
       }
     } on Exception {
       // Handle error silently
@@ -1207,24 +1214,24 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
     );
   }
 
+  static const double continueButtonSize = 56.0;
+
+  static final Widget ContinuePlayIcon = const Icon(
+    Pixel.play,
+    color: RLDS.white,
+    size: RLDS.iconLarge,
+  );
+
   Widget ContinueButton() {
-    // final Color accentColor = getCourseAccentColor();
-
-    const EdgeInsets buttonPadding = EdgeInsets.symmetric(
-      vertical: RLDS.spacing16,
-      horizontal: RLDS.spacing24,
-    );
-
-    return GestureDetector(
-      onTap: handleContinueTap,
-      child: RLLunarBlur(
-        borderRadius: RLDS.borderRadiusSmall,
-        borderColor: RLDS.transparent,
-        child: Div.row(
-          [RLTypography.bodyLarge(RLUIStrings.ROADMAP_CONTINUE_LABEL, color: RLDS.white)],
-          width: double.infinity,
-          padding: buttonPadding,
-          mainAxisAlignment: MainAxisAlignment.center,
+    return Align(
+      alignment: Alignment.centerRight,
+      child: GestureDetector(
+        onTap: handleContinueTap,
+        child: RLLunarBlur(
+          borderRadius: RLDS.borderRadiusSmall,
+          borderColor: RLDS.transparent,
+          padding: const EdgeInsets.all(RLDS.spacing16),
+          child: ContinuePlayIcon,
         ),
       ),
     );

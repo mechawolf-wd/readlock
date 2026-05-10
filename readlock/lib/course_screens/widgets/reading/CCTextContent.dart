@@ -88,6 +88,7 @@ class CCTextContentState extends State<CCTextContent> {
           textAlignment: CrossAxisAlignment.start,
           textAlign: paragraphAlignment,
           onAllSegmentsRevealed: handleAllSegmentsRevealed,
+          onTapAfterAllRevealed: advanceToNextPage,
         );
       },
     );
@@ -115,7 +116,9 @@ class CCTextContentState extends State<CCTextContent> {
   }
 
   void handleContinueTap() {
-    if (isAllTextRevealed) {
+    final bool shouldAdvance = isAllTextRevealed || isLastSegmentRevealed;
+
+    if (shouldAdvance) {
       advanceToNextPage();
       return;
     }
@@ -157,6 +160,8 @@ class CCTextContentState extends State<CCTextContent> {
   }
 
   void handleAllSegmentsRevealed() async {
+    isLastSegmentRevealed = true;
+
     final bool canUpdateState = mounted;
 
     if (!canUpdateState) {
