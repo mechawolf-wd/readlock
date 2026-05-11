@@ -7,7 +7,7 @@ But more like (cult like):
 
 - "Chirping..."
 - "Silence..."
-- "Gamification is cringe"
+- "Gamification is embarrassing"
 - "World is on fire..."
 - "You have a friend in me..."
 - "7 day strea... f**\* this sh** 🤮"

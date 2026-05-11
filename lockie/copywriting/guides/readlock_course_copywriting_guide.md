@@ -110,6 +110,12 @@ Both halves of a two-sentence beat must be full sentences. Fragments like _"Not 
 
 When in doubt, split.
 
+**Lines in a `@text` swipe must connect.** Each line is short, but it must lead into the next one. End a line with something unfinished: a cause, a name, a setup. The next line picks it up. Test: shuffle the lines. If the swipe reads the same, the lines are not connected. Fix it.
+
+> **Wrong:** _"Marcus opened the store at 6am every morning. The shelves were sorted by color. He had worked there for 11 years."_ (three separate facts, no thread)
+>
+> **Correct:** _"Marcus opened the store at 6am every morning. By 6:05, before the lights were fully on, his hands were already sorting the shelves by color. He had done it for 11 years, and he had never once thought about why."_ (each line continues the last)
+
 **Merge short sentences that form one thought.** Two choppy sentences that belong together should be written as one. _"Goals end. Identities persist."_ is _"Goals end, but identities persist."_ _"The app fills that pause. It has filled it for two years."_ is _"The app has filled that pause for two years."_ If removing the period and joining with a comma or conjunction makes the line read better, do it. Choppy pairs that could be one sentence are dramatic fragmentation in disguise.
 
 ### Word choice
@@ -460,6 +466,14 @@ Say what actually changes, or end without the flourish.
 _"Let that sink in."_ / _"Think about that for a moment."_ / _"Read that again."_
 Do not tell the reader when to pause or what to feel.
 
+**The meta-commentary preview**
+_"The answer is surprisingly simple."_ / _"What happened next is remarkable."_ / _"The reason is not what you would expect."_
+The narrator tells the reader what to feel about the information before delivering it. If the answer is simple, write it and the reader will see that it is simple. If the result is surprising, state the result and the reader will be surprised. The preview steals the reaction. Cut the preview, keep the fact.
+
+**The passive hedging chain**
+_"It could be argued that this might suggest a possible link."_ / _"There seems to be some evidence that perhaps indicates..."_
+Every hedge weakens the sentence. One hedge per sentence is sometimes needed ("Research suggests..."). Two or more in the same sentence means the writer is afraid to commit. Either state the claim with one hedge, or cut the claim entirely. The reader came for clear information, not for a sentence that refuses to land.
+
 **Rhetorical manipulation:**
 
 **The rhetorical question answered immediately**
@@ -646,6 +660,8 @@ Rules for dialogue:
 3. **No back-and-forth.** A story is not a script. One line, then the story moves on.
 
 > **Correct:** _"He looked at the receipt and said, 'That cannot be right.'"_
+
+**Use more than one sense.** Sight is the default ("the mug was red"), but sound, texture, temperature, and weight make a scene real. _"The mug was warm"_ puts the reader's hand around it. _"The hinge squeaked"_ puts the reader in the room. One non-visual detail per story swipe is enough. Do not stack sensory words for effect; pick the one that carries the most scene.
 
 In all variants: the stories do not arrive at a conclusion. They create a question in the reader's mind.
 
