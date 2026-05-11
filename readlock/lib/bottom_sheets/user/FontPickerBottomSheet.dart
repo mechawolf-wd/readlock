@@ -24,11 +24,10 @@ const EdgeInsets FONT_PICKER_CONTENT_PADDING = EdgeInsets.fromLTRB(
 );
 
 const EdgeInsets FONT_OPTION_ROW_PADDING = EdgeInsets.symmetric(
-  vertical: RLDS.spacing16,
+  vertical: RLDS.spacing8,
 );
 
 const double FONT_OPTION_UNSELECTED_OPACITY = 0.40;
-const Duration FONT_OPTION_OPACITY_FADE = Duration(milliseconds: 200);
 
 class FontPickerBottomSheet {
   static void show(BuildContext context) {
@@ -168,8 +167,7 @@ class FontOptionRow extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       behavior: HitTestBehavior.opaque,
-      child: AnimatedOpacity(
-        duration: FONT_OPTION_OPACITY_FADE,
+      child: Opacity(
         opacity: rowOpacity,
         child: Padding(
           padding: FONT_OPTION_ROW_PADDING,

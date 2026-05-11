@@ -80,9 +80,9 @@ class BookListCard extends StatelessWidget {
     );
   }
 
-  static final Widget OwnedIcon = Padding(
-    padding: const EdgeInsets.all(RLDS.spacing4),
-    child: const Icon(Pixel.check, color: RLDS.success, size: RLDS.iconLarge),
+  static final Widget OwnedIcon = const Padding(
+    padding: EdgeInsets.all(RLDS.spacing4),
+    child: Icon(Pixel.check, color: RLDS.success, size: RLDS.iconLarge),
   );
 
   // Trailing cart icon — sits at the right edge of the card with a
@@ -90,11 +90,7 @@ class BookListCard extends StatelessWidget {
   // the card's row height. Muted glyph color so the icon reads as a
   // secondary affordance, not a primary CTA.
   Widget BuyIconButton({required VoidCallback onTap}) {
-    const Widget CartIcon = Icon(
-      Pixel.cart,
-      color: RLDS.textSecondary,
-      size: RLDS.iconLarge,
-    );
+    const Widget CartIcon = Icon(Pixel.cart, color: RLDS.textSecondary, size: RLDS.iconLarge);
 
     void handleCartTap() {
       HapticsService.lightImpact();

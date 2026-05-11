@@ -354,15 +354,16 @@ class ProgressiveTextState extends State<ProgressiveText> with TickerProviderSta
   }
 
   // Instant reveal path for when Progressive is OFF. Lands all characters
-  // at full opacity in a single frame, fires the completion callback, and
-  // chains into the next sentence until every segment is visible.
+  // of the current segment at full opacity in a single frame (no typewriter),
+  // but does NOT auto-advance to the next segment. The reader still taps to
+  // reveal each subsequent segment, preserving the pacing of the reading
+  // experience. Only the character-by-character animation is skipped.
   //
-  // The completion callback and auto-advance are deferred to a post-frame
-  // callback because this method can run during initState (which is inside
-  // the build phase). Calling onAllSegmentsRevealed synchronously would
-  // trigger setState on a parent widget (e.g. CCTrueFalseQuestion) while
-  // Flutter is still laying out the tree, which throws a "dirty descendant"
-  // assertion.
+  // The completion callback is deferred to a post-frame callback because
+  // this method can run during initState (which is inside the build phase).
+  // Calling onAllSegmentsRevealed synchronously would trigger setState on a
+  // parent widget (e.g. CCTrueFalseQuestion) while Flutter is still laying
+  // out the tree, which throws a "dirty descendant" assertion.
   void revealSentenceInstantly() {
     if (!mounted) {
       return;
@@ -399,10 +400,13 @@ class ProgressiveTextState extends State<ProgressiveText> with TickerProviderSta
         widget.onAllSegmentsRevealed!();
       }
 
-      // Auto-advance through all remaining sentences instantly.
+      // When auto-advance is explicitly requested by the caller, honour it
+      // even in instant-reveal mode (e.g. question answer lists that must
+      // show all options without taps).
+      final bool shouldAutoAdvance = widget.automaticallyRevealNextSentence;
       final bool hasMoreSentences = currentSentenceNumber < textSentences.length - 1;
 
-      if (hasMoreSentences) {
+      if (shouldAutoAdvance && hasMoreSentences) {
         revealNextSentence();
       }
     });

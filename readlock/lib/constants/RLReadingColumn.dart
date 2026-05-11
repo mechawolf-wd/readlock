@@ -1,9 +1,10 @@
 // Reader-selectable column width for every CC widget in the course viewer.
 // Two options:
 //
-//   - narrow       → 320 pt. Newspaper-column tight (45-55 char lines); the default.
-//   - comfortable  → 360 pt. Classic, slightly wider than newspaper.
+//   - narrow       → 65% of screen width. Newspaper-column tight; the default.
+//   - comfortable  → 78% of screen width. Classic, slightly wider than newspaper.
 //
+// Width is fraction-based so the column scales across all device sizes.
 // Held in selectedReadingColumnNotifier and consumed by CourseContentViewer
 // via ValueListenableBuilder so every content swipe picks up a Settings
 // change on the next rebuild.
@@ -15,16 +16,17 @@ enum ReadingColumn { narrow, comfortable }
 class ReadingColumnOption {
   final ReadingColumn column;
   final String displayName;
-  final double maxWidth;
+  // Fraction of screen width (0.0 to 1.0) used to compute the column max width.
+  final double widthFraction;
   // Used only by the Settings demo preview so the option picker stays
-  // visibly different on small phones, where both absolute maxWidth values
+  // visibly different on small phones, where both fraction-derived widths
   // would clamp to the same slot width and produce no perceptible change.
   final double previewWidthFraction;
 
   const ReadingColumnOption({
     required this.column,
     required this.displayName,
-    required this.maxWidth,
+    required this.widthFraction,
     required this.previewWidthFraction,
   });
 }
@@ -33,14 +35,14 @@ const List<ReadingColumnOption> READING_COLUMN_OPTIONS = [
   ReadingColumnOption(
     column: ReadingColumn.narrow,
     displayName: 'Newspaper',
-    maxWidth: 320.0,
+    widthFraction: 0.65,
     previewWidthFraction: 0.7,
   ),
 
   ReadingColumnOption(
     column: ReadingColumn.comfortable,
     displayName: 'Classic',
-    maxWidth: 360.0,
+    widthFraction: 0.78,
     previewWidthFraction: 0.92,
   ),
 ];
@@ -51,16 +53,15 @@ final ValueNotifier<ReadingColumn> selectedReadingColumnNotifier = ValueNotifier
   DEFAULT_READING_COLUMN,
 );
 
-// Resolves the column enum to its max width. Both options are constrained
-// (no unconstrained "wide" anymore), so callers can rely on a finite value.
-double maxWidthFor(ReadingColumn column) {
+// Resolves the column enum to its width fraction (0.0 to 1.0).
+double widthFractionFor(ReadingColumn column) {
   for (final ReadingColumnOption option in READING_COLUMN_OPTIONS) {
     if (option.column == column) {
-      return option.maxWidth;
+      return option.widthFraction;
     }
   }
 
-  return READING_COLUMN_OPTIONS.first.maxWidth;
+  return READING_COLUMN_OPTIONS.first.widthFraction;
 }
 
 // Parses a persisted column name back to a ReadingColumn. Falls back to

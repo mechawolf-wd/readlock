@@ -113,6 +113,15 @@ class StoreKitService {
   // * Purchase flow
 
   static Future<StoreKitPurchaseStatus> buyProduct(String productId) async {
+    // Products may not be loaded yet if initialize() was fire-and-forget.
+    // Retry once before giving up.
+    final bool productsEmpty = productsNotifier.value.isEmpty;
+
+    if (productsEmpty) {
+      logger.info('buyProduct', 'Products not loaded yet, retrying fetch');
+      await fetchProducts();
+    }
+
     final Map<String, ProductDetails> products = productsNotifier.value;
     final ProductDetails? product = products[productId];
     final bool productNotLoaded = product == null;
@@ -126,8 +135,9 @@ class StoreKitService {
 
     final PurchaseParam purchaseParam = PurchaseParam(productDetails: product);
 
-    // iOS auto-renewable subscriptions are treated as non-consumable
-    // by the in_app_purchase plugin.
+    // Auto-renewable subscriptions use buyNonConsumable in the
+    // in_app_purchase plugin. iOS treats them as non-consumable
+    // transactions under the hood.
     final bool initiated = await InAppPurchase.instance.buyNonConsumable(
       purchaseParam: purchaseParam,
     );

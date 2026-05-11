@@ -15,7 +15,6 @@ import 'package:readlock/services/auth/AuthService.dart';
 enum ReferralRedeemResult {
   success,
   notFound,
-  alreadyUsed,
   selfReferral,
   error,
 }
@@ -100,10 +99,6 @@ class ReferralService {
 
       if (error.code == 'not-found') {
         return ReferralRedeemResult.notFound;
-      }
-
-      if (error.code == 'already-exists') {
-        return ReferralRedeemResult.alreadyUsed;
       }
 
       if (error.code == 'failed-precondition') {

@@ -33,13 +33,12 @@ class RLUIStrings {
   // plans (Reader / Insider) shown in a horizontal slider, each giving a
   // fixed monthly feather budget the reader spends on books. Every book
   // costs 10 feathers.
-  static const String FEATHERS_TITLE = 'Feathers Plan';
+  static const String FEATHERS_TITLE = 'Feathers';
   static const String FEATHERS_SUBTITLE = 'Enjoy the skillbooks you want';
   static const String PRICE_PERIOD = '/month';
   static const String FEATHERS_BOOK_PRICING_NOTE = 'Each skillbook costs 10 feathers';
   static const String FEATHERS_RESTORE_LABEL = 'Restore purchases';
   static const String FEATHERS_RESTORE_SUCCESS = 'Purchases restored';
-  static const String FEATHERS_STORE_UNAVAILABLE = 'App Store is not available right now';
   static const String FEATHERS_PURCHASE_SUCCESS_SUFFIX = ' feathers';
 
   // Per-plan copy.
@@ -69,7 +68,6 @@ class RLUIStrings {
   static const String LOGIN_SUPPORT_LABEL = 'Any help?';
   static const String SIGN_IN_LOADING_LABEL = 'Hopping in...';
   static const String SIGN_UP_LOADING_LABEL = 'Creating...';
-  static const String FORGOT_PASSWORD_LABEL = 'Reset password';
   static const String SIGN_UP_LABEL = 'Sign up';
   static const String SWITCH_TO_SIGN_IN_LABEL = 'Login';
   static const String SWITCH_TO_SIGN_UP_LABEL = 'Create account';
@@ -107,8 +105,6 @@ class RLUIStrings {
 
   // * Account Bottom Sheet
   static const String ACCOUNT_TITLE = 'Account';
-  static const String ACCOUNT_DONE_LABEL = 'Done';
-  static const String ACCOUNT_DEACTIVATE_LABEL = 'Deactivate Account';
   static const String ACCOUNT_DELETE_LABEL = 'Delete Account';
 
   // * Logout confirmation
@@ -116,14 +112,8 @@ class RLUIStrings {
   static const String LOGOUT_CONFIRMATION_MESSAGE =
       'You will need to sign back in to continue reading.';
   static const String LOGOUT_CONFIRMATION_CONFIRM = 'Logout';
-  static const String LOGOUT_IN_PROGRESS_LABEL = 'Signing out...';
-
-  // * Feedback Bottom Sheet
-  static const String FEEDBACK_DIALOG_TITLE = 'Explanation';
-  static const String HINT_DIALOG_TITLE = 'Hint';
 
   // * Course Loading Screen
-  static const String LOADING_MESSAGE = 'Birds are indexing the skillbook';
   static const String PREPARING_LABEL = 'Nesting';
 
   // * Shared loading indicator (dots are animated in the widget)
@@ -132,7 +122,7 @@ class RLUIStrings {
   // * Lesson Finish Screen
   static const String LESSON_FINISH_TITLE = 'Package read';
   static const String LESSON_FINISH_TIME_LABEL = 'Session Time';
-  static const String LESSON_FINISH_BUTTON_LABEL = 'Finish';
+  static const String LESSON_FINISH_BUTTON_LABEL = 'Fin';
 
   // * Course Content Viewer
   static const String NO_CONTENT_AVAILABLE_MESSAGE =
@@ -159,47 +149,26 @@ class RLUIStrings {
   // * Progressive Text image fallback
   static const String IMAGE_NOT_FOUND_PREFIX = 'Image not found: ';
 
-  // * Reflection Question
-  static const String REFLECTION_ASPECTS_LABEL = 'Consider these aspects:';
-  static const String REFLECTION_SWIPE_HINT = 'Swipe right to confirm';
-  static const String REFLECT_TITLE = 'Reflect';
-
   // * Text Content
   static const String TEXT_CONTENT_CONTINUE_LABEL = 'Continue';
 
   // * Home Screen Sections
   static const String CONTINUE_READING_TITLE = 'Latest read';
-  static const String CONTINUE_READING_SUBTITLE = 'Continue the latest title';
   static const String CONTINUE_BUTTON_LABEL = 'Continue';
   static const String FOR_YOUR_PERSONALITY_TITLE = 'Top 3 (most purchased)';
-  static const String FOR_YOUR_PERSONALITY_SUBTITLE = 'Read these only if you want';
   static const String SURPRISE_ME_LABEL = 'Try out something new';
   static const String SURPRISE_ME_NO_RESULTS_TOAST = 'No new skillbook to try right now.';
 
   // * Courses Screen
   static const String SEARCH_PLACEHOLDER = 'Title';
-  static const String GENRES_LABEL = 'Genres';
-  static const String OTHERS_READING_TITLE = 'Others are reading';
-  static const String OTHERS_READING_SUBTITLE = 'Popular titles this week';
-  static const String LOAD_NEXT_LABEL = 'Load next';
-  static const String SEARCH_RESULTS_TITLE = 'Search Results';
-
-  // * My Bookshelf Screen Sections
-  static const String BOOKSHELF_SUBTITLE = '12 titles';
-  static const String READING_SECTION_TITLE = 'Reading';
-  static const String TITLES_AND_HISTORY_LABEL = 'Titles and history';
-  static const String READING_HISTORY_TITLE = 'Reading history';
 
   // * Course Roadmap
   static const String ROADMAP_DEFAULT_TITLE = 'Roadmap';
   static const String ROADMAP_DEFAULT_AUTHOR = 'Unknown Author';
-  static const String ROADMAP_SUBTITLE = 'Master design psychology fundamentals';
-  static const String ROADMAP_CONTINUE_LABEL = 'Continue';
   static const String ROADMAP_DEFAULT_LESSON_LABEL = 'Lesson';
   static const String ROADMAP_PURCHASE_LABEL = 'Purchase:';
   static const String ROADMAP_PURCHASE_LOADING_LABEL = 'Payment in progress...';
   static const String ROADMAP_PURCHASE_SUCCESS = 'Skillbook purchased';
-  static const String ROADMAP_PURCHASE_INSUFFICIENT = 'Not enough feathers';
 
   // Skillbook charge mechanic. Every purchase grants a 14-day rental;
   // when the timer runs out the book "discharges" and the reader spends
@@ -224,9 +193,6 @@ class RLUIStrings {
   static const String QUESTION_DEFAULT_WRONG_ANSWER_HINT =
       'Try again and think about the design principle.';
 
-  // * Explanation
-  static const String EXPLANATION_LABEL = 'Explanation';
-
   // * Estimate Percentage Question
   static const String ESTIMATE_YOUR_LABEL = 'Your estimate:';
   static const String ESTIMATE_SUBMIT_LABEL = 'Submit Estimate';
@@ -242,23 +208,6 @@ class RLUIStrings {
   static const String ESTIMATE_MAX_LABEL = '100%';
   static const String ESTIMATE_COMPARISON_YOUR_LABEL = 'YOUR ESTIMATE';
   static const String ESTIMATE_COMPARISON_ACTUAL_LABEL = 'ACTUAL';
-
-  // * Design Examples Showcase
-  static const String DESIGN_EXAMPLES_TITLE = 'Design Examples';
-  static const String DESIGN_EXAMPLES_SUBTITLE =
-      'Tap cards to reveal examples of good and bad design';
-  static const String DESIGN_EXAMPLES_COMPLETE = 'Complete!';
-  static const String DESIGN_EXAMPLES_TAP_REVEAL = 'Tap to reveal';
-
-  // * Course Outro
-  static const String OUTRO_BUTTON_LABEL = 'Fin';
-
-  // * Learning Statistics
-  static const String LEARNING_STATS_TITLE = 'Reading';
-  static const String LEARNING_STATS_DAYS_UNIT = 'days';
-  static const String LEARNING_STATS_DAYS_LABEL = 'at 10 minutes/day';
-  static const String LEARNING_STATS_LESSONS_UNIT = 'lessons';
-  static const String LEARNING_STATS_LESSONS_LABEL = 'completed';
 
   // * Profile / Settings Menu
   static const String MENU_ACCOUNT = 'Account';
@@ -276,7 +225,6 @@ class RLUIStrings {
   static const String MENU_COLORED_TEXT = 'Accent';
   static const String MENU_BIONIC = 'Bionic';
   static const String MENU_RSVP = 'RSVP';
-  static const String MENU_NOTIFICATIONS = 'Notifications';
   static const String MENU_SUPPORT = 'Support';
   static const String MENU_PRIVACY_POLICY = 'Privacy Policy';
   static const String MENU_TERMS_AND_CONDITIONS = 'Terms & Conditions';
@@ -371,15 +319,10 @@ class RLUIStrings {
   static const String VERIFY_EMAIL_NOT_YET_MESSAGE = 'Still not verified. Check your inbox.';
 
   // * Account Dialogs
-  static const String ACCOUNT_DEACTIVATE_MESSAGE =
-      'Your account will be deactivated. You can reactivate it later.';
-  static const String ACCOUNT_DEACTIVATE_CONFIRM = 'Deactivate';
   static const String ACCOUNT_DELETE_MESSAGE =
       'This action is permanent. All your data will be lost.';
-  static const String ACCOUNT_DELETE_CONFIRM = 'Delete';
   static const String ACCOUNT_DELETE_FOREVER_LABEL = 'Delete forever';
   static const String ACCOUNT_DELETE_REAUTH_SUBTITLE = 'Sign in again to confirm.';
-  static const String ACCOUNT_DELETE_IN_PROGRESS_LABEL = 'Removing account...';
 
   // * Auth Error Messages. Loose, dry, never accusatory. The originals
   // were already on tone, so the trim here is mostly cutting "give it
@@ -421,7 +364,6 @@ class RLUIStrings {
   static const String REFERRAL_ONBOARDING_SUBMITTING_LABEL = 'Applying...';
   static const String REFERRAL_ONBOARDING_SUCCESS = '+10 feathers added';
   static const String REFERRAL_CODE_INVALID = 'That code is not valid.';
-  static const String REFERRAL_CODE_ALREADY_USED = 'That code has already been used.';
   static const String REFERRAL_CODE_OWN = 'You cannot use your own code.';
 
   // Settings menu

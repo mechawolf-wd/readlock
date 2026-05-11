@@ -34,7 +34,61 @@
     "_timeRate" : 0
   },
   "subscriptionGroups" : [
-
+    {
+      "id" : "feathers",
+      "localizations" : [
+        {
+          "description" : "Monthly feather budgets for skillbooks.",
+          "displayName" : "Feathers",
+          "locale" : "en_US"
+        }
+      ],
+      "name" : "Feathers",
+      "subscriptions" : [
+        {
+          "adHocOffers" : [],
+          "codeOffers" : [],
+          "displayPrice" : "6.99",
+          "familyShareable" : false,
+          "groupNumber" : 2,
+          "internalID" : "6763101082",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "100 feathers to spend on skillbooks each month.",
+              "displayName" : "Beginner Feathers",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "com.readlock.feathers.beginner",
+          "recurringSubscriptionPeriod" : "P1M",
+          "referenceName" : "Feathers Beginner",
+          "subscriptionGroupID" : "feathers",
+          "type" : "RecurringSubscription"
+        },
+        {
+          "adHocOffers" : [],
+          "codeOffers" : [],
+          "displayPrice" : "12.99",
+          "familyShareable" : false,
+          "groupNumber" : 1,
+          "internalID" : "6763101083",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "300 feathers to spend on skillbooks each month.",
+              "displayName" : "Reader Feathers",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "com.readlock.feathers.reader",
+          "recurringSubscriptionPeriod" : "P1M",
+          "referenceName" : "Feathers Reader",
+          "subscriptionGroupID" : "feathers",
+          "type" : "RecurringSubscription"
+        }
+      ]
+    }
   ],
   "version" : {
     "major" : 4,

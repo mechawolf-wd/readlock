@@ -1,6 +1,7 @@
 // Course roadmap screen with winding path
 // One long scrollable list with sticky segment tiles
 
+import 'dart:async';
 import 'dart:ui' as ui;
 
 import 'package:flutter/cupertino.dart';
@@ -69,6 +70,18 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
   bool isProgrammaticScroll = false;
   bool isPurchasing = false;
   bool isCharging = false;
+
+  // Battery icon animation for the charge button. Cycles through
+  // empty → 1 bar → 2 bars → full on a timer to convey "recharge".
+  static const List<IconData> batteryAnimationFrames = [
+    Pixel.battery,
+    Pixel.battery1,
+    Pixel.battery2,
+    Pixel.batteryfull,
+  ];
+
+  int batteryFrameIndex = 0;
+  Timer? batteryAnimationTimer;
 
   // Absolute frontier before the latest progress notifier fire. -1 until
   // fetchCourseData sets the initial value (prevents false detection).
@@ -431,6 +444,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
 
   @override
   void dispose() {
+    batteryAnimationTimer?.cancel();
     purchasedCoursesNotifier.removeListener(handlePurchasedCoursesChanged);
     courseProgressNotifier.removeListener(handlePurchasedCoursesChanged);
     scrollController.removeListener(handleScrollUpdate);
@@ -438,6 +452,34 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
     progressRingController.dispose();
     breathingController.dispose();
     super.dispose();
+  }
+
+  void startBatteryAnimation() {
+    final bool alreadyRunning = batteryAnimationTimer != null;
+
+    if (alreadyRunning) {
+      return;
+    }
+
+    batteryAnimationTimer = Timer.periodic(
+      const Duration(milliseconds: 500),
+      (Timer timer) {
+        if (!mounted) {
+          timer.cancel();
+          return;
+        }
+
+        setState(() {
+          batteryFrameIndex = (batteryFrameIndex + 1) % batteryAnimationFrames.length;
+        });
+      },
+    );
+  }
+
+  void stopBatteryAnimation() {
+    batteryAnimationTimer?.cancel();
+    batteryAnimationTimer = null;
+    batteryFrameIndex = 0;
   }
 
   Future<void> fetchCourseData() async {
@@ -596,7 +638,10 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
     final bool isOwnedAndDischarged = isCoursePurchased && !isSkillbookCharged;
 
     if (isOwnedAndDischarged) {
+      startBatteryAnimation();
       return ChargeButton();
+    } else {
+      stopBatteryAnimation();
     }
 
     final int currentFrontier = getCurrentLessonFrontier();
@@ -662,20 +707,18 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
 
     final VoidCallback? buttonTap = isPurchasing ? null : onButtonTap;
 
-    // Outer GestureDetector with HitTestBehavior.opaque so the entire
-    // padded surface picks up taps (the inner Div has no fill, so empty
-    // space between the label and the icon would otherwise swallow hits).
-    return GestureDetector(
-      behavior: HitTestBehavior.opaque,
-      onTap: buttonTap,
-      child: RLLunarBlur(
-        borderRadius: RLDS.borderRadiusSmall,
-        borderColor: RLDS.transparent,
-        child: Div.row(
-          labelChildren,
-          width: double.infinity,
-          padding: buttonPadding,
-          mainAxisAlignment: MainAxisAlignment.center,
+    return Align(
+      alignment: Alignment.centerRight,
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: buttonTap,
+        child: RLLunarBlur(
+          borderRadius: RLDS.borderRadiusSmall,
+          borderColor: RLDS.transparent,
+          child: Div.row(
+            labelChildren,
+            padding: buttonPadding,
+          ),
         ),
       ),
     );
@@ -717,36 +760,46 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
   }
 
   // * Skillbook charge button — shown when the course is owned but its
-  // rental has lapsed. Same frosted LunarBlur surface as PurchaseButton
-  // and ContinueButton so all three states feel like the same component
-  // swapping copy. Tapping fires PurchaseService.resurrectCourse which
-  // optimistically extends the entry's expires timestamp; success flips
-  // the bar back to ContinueButton in the next frame.
+  // rental has lapsed. Green animated battery icon cycles from empty to
+  // full on a loop so the button reads as "recharge me". Tapping fires
+  // PurchaseService.resurrectCourse which optimistically extends the
+  // entry's expires timestamp; success flips the bar back to
+  // ContinueButton in the next frame.
   Widget ChargeButton() {
-    final Color accentColor = getCourseAccentColor();
-
     const EdgeInsets buttonPadding = EdgeInsets.symmetric(
-      vertical: RLDS.spacing16,
-      horizontal: RLDS.spacing24,
+      vertical: RLDS.spacing12,
+      horizontal: RLDS.spacing16,
+    );
+
+    final IconData currentBatteryFrame = batteryAnimationFrames[batteryFrameIndex];
+
+    final Widget batteryIcon = Icon(
+      currentBatteryFrame,
+      color: RLDS.green,
+      size: RLDS.iconLarge,
     );
 
     final List<Widget> labelChildren;
 
     if (isCharging) {
       labelChildren = [
-        RLTypography.bodyLarge(RLUIStrings.ROADMAP_CHARGE_LOADING_LABEL, color: accentColor),
-      ];
-    } else {
-      // "Recharge: 3 [feather]", same shape as PurchaseButton
-      // so the bar reads as one component swapping copy + price.
-      final String chargeLabel =
-          '${RLUIStrings.ROADMAP_CHARGE_LABEL} '
-          '${PurchaseConstants.COURSE_RESURRECT_COST}';
-
-      labelChildren = [
-        RLTypography.bodyLarge(chargeLabel, color: accentColor),
+        batteryIcon,
 
         const Spacing.width(RLDS.spacing8),
+
+        RLTypography.bodyLarge(RLUIStrings.ROADMAP_CHARGE_LOADING_LABEL, color: RLDS.green),
+      ];
+    } else {
+      final String costLabel = '${PurchaseConstants.COURSE_RESURRECT_COST}';
+
+      labelChildren = [
+        batteryIcon,
+
+        const Spacing.width(RLDS.spacing8),
+
+        RLTypography.bodyLarge(costLabel, color: RLDS.green),
+
+        const Spacing.width(RLDS.spacing4),
 
         const RLFeatherIcon(size: RLDS.iconSmall),
       ];
@@ -760,17 +813,18 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
 
     final VoidCallback? buttonTap = isCharging ? null : onButtonTap;
 
-    return GestureDetector(
-      behavior: HitTestBehavior.opaque,
-      onTap: buttonTap,
-      child: RLLunarBlur(
-        borderRadius: RLDS.borderRadiusSmall,
-        borderColor: RLDS.transparent,
-        child: Div.row(
-          labelChildren,
-          width: double.infinity,
-          padding: buttonPadding,
-          mainAxisAlignment: MainAxisAlignment.center,
+    return Align(
+      alignment: Alignment.centerRight,
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: buttonTap,
+        child: RLLunarBlur(
+          borderRadius: RLDS.borderRadiusSmall,
+          borderColor: RLDS.transparent,
+          child: Div.row(
+            labelChildren,
+            padding: buttonPadding,
+          ),
         ),
       ),
     );
@@ -1254,11 +1308,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
     Navigator.push(
       context,
       RLDS.slowFadeTransition(
-        CourseDetailScreen(
-          courseId: widget.courseId,
-          initialLessonIndex: frontierLessonIndex,
-          initialContentIndex: 0,
-        ),
+        CourseDetailScreen(courseId: widget.courseId, initialLessonIndex: frontierLessonIndex),
       ),
     );
   }

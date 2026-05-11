@@ -21,11 +21,14 @@ import 'package:readlock/services/feedback/SoundService.dart';
 import 'package:readlock/services/purchases/PurchaseConstants.dart';
 import 'package:readlock/services/referral/ReferralService.dart';
 
-const EdgeInsets REFERRAL_CONTENT_PADDING = EdgeInsets.symmetric(horizontal: RLDS.spacing24);
-
 class ReferralBottomSheet {
   static void show(BuildContext context) {
-    RLBottomSheet.show(context, backgroundColor: RLDS.surface, child: const ReferralSheet());
+    RLBottomSheet.show(
+      context,
+      backgroundColor: RLDS.surface,
+      showGrabber: false,
+      child: const ReferralSheet(),
+    );
   }
 }
 
@@ -110,7 +113,7 @@ class ReferralSheetState extends State<ReferralSheet> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: REFERRAL_CONTENT_PADDING,
+      padding: RL_BOTTOM_SHEET_NO_GRABBER_CONTENT_PADDING.copyWith(bottom: 0),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -118,12 +121,10 @@ class ReferralSheetState extends State<ReferralSheet> {
           // Header
           TitleSection(),
 
-          const Spacing.height(RLDS.spacing24),
+          const Spacing.height(RLDS.sheetSubheadingToContentSpacing),
 
           // Code list or loading state
           SheetBody(),
-
-          const Spacing.height(RLDS.spacing24),
         ],
       ),
     );
@@ -146,20 +147,14 @@ class ReferralSheetState extends State<ReferralSheet> {
         Text.rich(
           TextSpan(
             style: subtitleStyle,
-            children: [
-              const TextSpan(text: RLUIStrings.REFERRAL_SUBTITLE_THEY_GET),
+            children: const [
+              TextSpan(text: RLUIStrings.REFERRAL_SUBTITLE_THEY_GET),
 
-              const WidgetSpan(
-                alignment: PlaceholderAlignment.middle,
-                child: PlumeInline,
-              ),
+              WidgetSpan(alignment: PlaceholderAlignment.middle, child: PlumeInline),
 
-              const TextSpan(text: RLUIStrings.REFERRAL_SUBTITLE_YOU_GET),
+              TextSpan(text: RLUIStrings.REFERRAL_SUBTITLE_YOU_GET),
 
-              const WidgetSpan(
-                alignment: PlaceholderAlignment.middle,
-                child: PlumeInline,
-              ),
+              WidgetSpan(alignment: PlaceholderAlignment.middle, child: PlumeInline),
             ],
           ),
           textAlign: TextAlign.center,
@@ -259,13 +254,13 @@ class ReferralSheetState extends State<ReferralSheet> {
               GestureDetector(
                 onTap: () => handleShareTap(model.code),
                 behavior: HitTestBehavior.opaque,
-                child: Padding(padding: const EdgeInsets.all(RLDS.spacing8), child: ShareIcon),
+                child: const Padding(padding: EdgeInsets.all(RLDS.spacing8), child: ShareIcon),
               ),
 
               GestureDetector(
                 onTap: () => handleCopyTap(model.code),
                 behavior: HitTestBehavior.opaque,
-                child: Padding(padding: const EdgeInsets.all(RLDS.spacing8), child: CopyIcon),
+                child: const Padding(padding: EdgeInsets.all(RLDS.spacing8), child: CopyIcon),
               ),
             ],
           ),
@@ -287,9 +282,7 @@ class ReferralSheetState extends State<ReferralSheet> {
       onTap: buttonTap,
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: RLDS.spacing16),
-        child: Center(
-          child: RLTypography.bodyLarge(buttonLabel, color: labelColor),
-        ),
+        child: Center(child: RLTypography.bodyLarge(buttonLabel, color: labelColor)),
       ),
     );
   }
@@ -301,5 +294,4 @@ class ReferralSheetState extends State<ReferralSheet> {
       textAlign: TextAlign.center,
     );
   }
-
 }

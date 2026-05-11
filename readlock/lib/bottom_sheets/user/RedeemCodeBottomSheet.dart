@@ -16,15 +16,12 @@ import 'package:readlock/services/purchases/PurchaseConstants.dart';
 import 'package:readlock/services/purchases/PurchaseNotifiers.dart';
 import 'package:readlock/services/referral/ReferralService.dart';
 
-const EdgeInsets REDEEM_CONTENT_PADDING = EdgeInsets.symmetric(
-  horizontal: RLDS.spacing24,
-);
-
 class RedeemCodeBottomSheet {
   static void show(BuildContext context) {
     RLBottomSheet.show(
       context,
       backgroundColor: RLDS.surface,
+      showGrabber: false,
       child: const RedeemCodeSheet(),
     );
   }
@@ -117,11 +114,6 @@ class RedeemCodeSheetState extends State<RedeemCodeSheet> {
       return;
     }
 
-    if (result == ReferralRedeemResult.alreadyUsed) {
-      RLToast.error(context, RLUIStrings.REFERRAL_CODE_ALREADY_USED);
-      return;
-    }
-
     if (result == ReferralRedeemResult.selfReferral) {
       RLToast.error(context, RLUIStrings.REFERRAL_CODE_OWN);
       return;
@@ -133,7 +125,7 @@ class RedeemCodeSheetState extends State<RedeemCodeSheet> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: REDEEM_CONTENT_PADDING,
+      padding: RL_BOTTOM_SHEET_NO_GRABBER_CONTENT_PADDING.copyWith(bottom: 0),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -144,12 +136,10 @@ class RedeemCodeSheetState extends State<RedeemCodeSheet> {
             textAlign: TextAlign.center,
           ),
 
-          const Spacing.height(RLDS.spacing24),
+          const Spacing.height(RLDS.sheetSubheadingToContentSpacing),
 
           // Input or success label
           RedeemBody(),
-
-          const Spacing.height(RLDS.spacing24),
         ],
       ),
     );

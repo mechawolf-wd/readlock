@@ -8,10 +8,8 @@ import 'package:flutter/material.dart' hide Typography;
 import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLUIStrings.dart';
-import 'package:readlock/design_system/RLButton.dart';
 import 'package:readlock/design_system/RLTextField.dart';
 import 'package:readlock/design_system/RLToast.dart';
-import 'package:readlock/design_system/RLUtility.dart';
 import 'package:readlock/services/purchases/PurchaseConstants.dart';
 import 'package:readlock/services/purchases/PurchaseNotifiers.dart';
 import 'package:readlock/services/referral/ReferralService.dart';
@@ -74,11 +72,6 @@ class OnboardingReferralStepState extends State<OnboardingReferralStep> {
       return;
     }
 
-    if (result == ReferralRedeemResult.alreadyUsed) {
-      RLToast.error(context, RLUIStrings.REFERRAL_CODE_ALREADY_USED);
-      return;
-    }
-
     if (result == ReferralRedeemResult.selfReferral) {
       RLToast.error(context, RLUIStrings.REFERRAL_CODE_OWN);
       return;
@@ -101,8 +94,6 @@ class OnboardingReferralStepState extends State<OnboardingReferralStep> {
             hintText: RLUIStrings.REFERRAL_ONBOARDING_PLACEHOLDER,
           ),
 
-          const Spacing.height(RLDS.spacing24),
-
           // Apply button
           SubmitButton(),
         ],
@@ -124,10 +115,17 @@ class OnboardingReferralStepState extends State<OnboardingReferralStep> {
         : RLUIStrings.REFERRAL_ONBOARDING_SUBMIT_LABEL;
 
     final VoidCallback? buttonTap = isSubmitting ? null : handleSubmitTap;
+    final Color labelColor = isSubmitting ? RLDS.textMuted : RLDS.markupGreen;
 
-    return RLButton.secondary(
-      label: buttonLabel,
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
       onTap: buttonTap,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: RLDS.spacing16),
+        child: Center(
+          child: RLTypography.bodyLarge(buttonLabel, color: labelColor),
+        ),
+      ),
     );
   }
 }

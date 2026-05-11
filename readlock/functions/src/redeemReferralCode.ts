@@ -1,14 +1,14 @@
 // Redeems a referral code on behalf of the calling user.
 //
-// Guards: authentication required, code must exist, must not be
-// already redeemed, and the caller must not be the code's creator
-// (no self-referral). On success the code is stamped as used and
-// feathers are credited to both parties via FieldValue.increment
-// (atomic, race-safe).
+// Guards: authentication required, code must exist, and the caller
+// must not be the code's creator (no self-referral). On success the
+// code document is deleted from the collection and feathers are
+// credited to both parties via FieldValue.increment (atomic,
+// race-safe). Deletion prevents double-redemption: concurrent
+// calls will hit the not-found guard.
 //
 // Error codes returned to the Flutter client:
-//   not-found          -> code does not exist
-//   already-exists     -> code was already redeemed by someone
+//   not-found           -> code does not exist (or already redeemed)
 //   failed-precondition -> caller is the code's creator (self-referral)
 
 import { getFirestore, FieldValue } from "firebase-admin/firestore";
@@ -63,20 +63,9 @@ export const redeemReferralCode = onCall(async (request) => {
     );
   }
 
-  const alreadyRedeemed = codeData.redeemedByUid !== null;
-
-  if (alreadyRedeemed) {
-    throw new HttpsError(
-      "already-exists",
-      "This referral code has already been used."
-    );
-  }
-
-  // Stamp the code as redeemed first so concurrent calls see it as used.
-  await codeDocumentRef.update({
-    redeemedByUid: redeemerUserId,
-    redeemedAt: FieldValue.serverTimestamp(),
-  });
+  // Delete the code so it cannot be redeemed again. Concurrent calls
+  // will hit the codeNotFound guard above since the document is gone.
+  await codeDocumentRef.delete();
 
   // Credit feathers to both parties. Best-effort after the stamp: if one
   // write fails, the code is already marked used and the credit can be

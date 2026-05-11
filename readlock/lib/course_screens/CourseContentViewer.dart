@@ -461,11 +461,12 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
     );
   }
 
-  // Applies the selected column width as a max constraint. Both options
-  // (narrow / comfortable) are bounded so the child is always centred
-  // inside a ConstrainedBox — no unconstrained branch.
+  // Applies the selected column width as a max constraint. The width is
+  // a fraction of the screen so the column scales across device sizes.
   Widget ColumnFrame(BuildContext context, ReadingColumn column, Widget? child) {
-    final double maxWidth = maxWidthFor(column);
+    final double screenWidth = MediaQuery.of(context).size.width;
+    final double fraction = widthFractionFor(column);
+    final double maxWidth = screenWidth * fraction;
     final BoxConstraints columnConstraints = BoxConstraints(maxWidth: maxWidth);
 
     return Center(

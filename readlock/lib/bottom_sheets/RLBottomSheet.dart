@@ -146,14 +146,22 @@ class SheetContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final Color sheetColor = backgroundColor ?? RLDS.surface;
+    final double keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
 
     // SafeArea lives inside the sheet surface so the surface (LunarBlur or
     // solid tint) paints to the bottom edge of the screen — the home-
     // indicator inset reads the same colour as the sheet itself instead of
     // a bare strip underneath it.
+    //
+    // Keyboard inset: when the software keyboard is open, extra bottom
+    // padding pushes sheet content above it. Works because the parent
+    // showModalBottomSheet uses isScrollControlled: true.
     final Widget sheetContent = SafeArea(
       top: false,
-      child: Column(mainAxisSize: MainAxisSize.min, children: GrabberAndContent()),
+      child: Padding(
+        padding: EdgeInsets.only(bottom: keyboardHeight),
+        child: Column(mainAxisSize: MainAxisSize.min, children: GrabberAndContent()),
+      ),
     );
 
     if (useLunarBlurSurface) {
