@@ -74,7 +74,7 @@ Your job: produce one complete, valid .rlockie file that follows every rule in t
       - How many segments (2 to 3 maximum).
       - How many packages per segment (3 to 5 maximum).
       - What each package will teach (one concept per package).
-      - Which Phase 2 variant (A through G) fits each package best.
+      - Which Phase 2 variant (A through H) fits each package best.
       - For a book-sourced course: also apply the &lt;conditional_rules source="book"&gt; block when deciding per-package whether to use a fresh scene or retell a book example.
       If the user specified the structure, use theirs. If not, decide yourself.
       Do not write yet. Plan first.
@@ -146,9 +146,9 @@ Your job: produce one complete, valid .rlockie file that follows every rule in t
       - **True/False intro**: 1 @true_false swipe. The statement must be visual, must not name the topic, and the package then has zero @true_false swipes in Phase 5 (the intro replaces Phase 5). Once per segment.
       - **Misconception-first intro**: 1 @text swipe stating a wrong belief with the wrong part wrapped in <c:r>...</c:r>. CAN name the everyday term for the topic. Phase 2 must contradict the misconception. Once per segment.
 
-      Phase 2, Stories / Narratives: 2 to 3 @text swipes, 5 to 7 sentences each. Pick the most suitable variant (A through G) for the concept being taught, not a random one. A scientific concept fits Variant E. A personal behavior fits Variant A or B. A pattern across different people fits Variant D. Match the variant to the content. Build toward a pattern the reader can sense before you name it. Stories create a question, not a conclusion. "Suppose" and "Imagine" are optional, scenes can start directly. Stories in variants A, B, C, D, and F can include a short line of dialogue when it brings the scene closer to the reader.
+      Phase 2, Stories / Narratives: 2 to 3 @text swipes, 5 to 7 sentences each. Pick the most suitable variant (A through H) for the concept being taught, not a random one. A scientific concept fits Variant E. A personal behavior fits Variant A or B. A pattern across different people fits Variant D. Match the variant to the content. Build toward a pattern the reader can sense before you name it. Stories create a question, not a conclusion. "Suppose" and "Imagine" are optional, scenes can start directly. Stories in variants A, B, C, D, F, and H can include a short line of dialogue when it brings the scene closer to the reader. Variant H (first-person testimony) uses "I" throughout Phase 2: the protagonist narrates their own experience. The rest of the package stays in the normal narrator voice.
 
-      Story protagonists must have NAMES, not "user", "person", "individual", or other generic placeholders. "User" is a system-design abstraction, in a narrative scene it kills the immediacy and reads like a UX case study. Use distinctive international names that vary across packages: Mira, Tomas, Hassan, Linnea, Akira, Sofia, Ravi, Marek, Yuki, Iris, Esra, Saoirse, Jun, Lena. Name the protagonist on first mention, then use pronouns or the name as needed. One named actor per story is enough. Roles like "the cook", "the driver", "the traveler" are acceptable when the role is the point of the scene, but a name is preferred. Variant A reader-immersion scenes are the only exception, no pronoun and no name (use a gerund or imperative as defined in rule 4). Outside Phase 2, the generic "user" is fine in question consequences, explanations, hints, and the Phase 4 reveal where the concept is discussed in the abstract.
+      Story protagonists must have NAMES, not "user", "person", "individual", or other generic placeholders. "User" is a system-design abstraction, in a narrative scene it kills the immediacy and reads like a UX case study. Use distinctive international names that vary across packages: Mira, Tomas, Hassan, Linnea, Akira, Sofia, Ravi, Marek, Yuki, Iris, Esra, Saoirse, Jun, Lena. Name the protagonist on first mention, then use pronouns or the name as needed. One named actor per story is enough. Roles like "the cook", "the driver", "the traveler" are acceptable when the role is the point of the scene, but a name is preferred. Variant A reader-immersion scenes are one exception: no pronoun and no name (use a gerund or imperative as defined in rule 4). Variant H (first-person testimony) is the other exception: the protagonist speaks as "I" and does not need a name in the text, though the package comment should note who is speaking if it matters. Outside Phase 2, the generic "user" is fine in question consequences, explanations, hints, and the Phase 4 reveal where the concept is discussed in the abstract.
 
       Phase 3, Questions: 1 to 2 swipes using @question or @true_false, rarely 3. Questions test understanding, not recall. Answerable from what came before. **Phase 3 can be skipped entirely** when the story phase already brings the reader to the realisation on its own. When skipped, the package goes from Phase 2 directly to Phase 4. Use the skip rarely, at most once per segment.
 
@@ -175,7 +175,7 @@ Your job: produce one complete, valid .rlockie file that follows every rule in t
       - Phase 3 alternates between @question and @true_false across packages, or skips Phase 3 in one package.
       - @reflect appears in some packages and is skipped in others. Default is to include it only when the topic has a personal application.
       - @pause appears in 1 or 2 packages of a 5-package segment, not in every one and not in zero.
-      - Phase 2 variants (A through G) are different across packages. The same variant should not appear twice in a row.
+      - Phase 2 variants (A through H) are different across packages. The same variant should not appear twice in a row.
 
       If you find yourself writing the same swipe sequence for the third package in a row, stop and ask which phase the package can drop, or which variant can replace the current one.
     </step>
@@ -203,7 +203,7 @@ Your job: produce one complete, valid .rlockie file that follows every rule in t
 
       LINE 2: the package summary.
       A single line beginning with "#" with three comma-separated fields in this exact order:
-      1. Phase 2 variant letter + content descriptor in parentheses. The descriptor MUST match what Phase 2 actually contains, not always "stories". Use: Variant A = "N scenes", Variant B = "single narrative" or "N beats", Variant C = "N stories", Variant D = "N stories", Variant E = "N steps" or "mechanism walkthrough", Variant F = "historical arc", Variant G = "thought experiment". A package that does not literally contain stories must not say "stories".
+      1. Phase 2 variant letter + content descriptor in parentheses. The descriptor MUST match what Phase 2 actually contains, not always "stories". Use: Variant A = "N scenes", Variant B = "single narrative" or "N beats", Variant C = "N stories", Variant D = "N stories", Variant E = "N steps" or "mechanism walkthrough", Variant F = "historical arc", Variant G = "thought experiment", Variant H = "first-person testimony" or "N beats (first person)". A package that does not literally contain stories must not say "stories".
       2. Intro type: "default intro", "quote intro", "true/false intro", "misconception intro", or "skip intro".
       3. "teaching: " followed by the concept name (the term that will carry the green &lt;c:g&gt; highlight in Phase 4).
 
@@ -231,6 +231,9 @@ Your job: produce one complete, valid .rlockie file that follows every rule in t
       - Default intro, Variant F:
         # @text, @text, @text, @text, @question, @text, @true_false, @text
         # Variant F (historical arc), default intro, teaching: the flywheel
+      - Default intro, Variant H:
+        # @text, @text, @text, @text, @question, @text, @true_false, @text
+        # Variant H (first-person testimony), default intro, teaching: the sunk cost trap
 
       Both comment lines are stripped by the parser before any other parsing, so they never reach the reader. They are a writer-facing index that makes the package shape AND the package's creative choices visible at a glance. Both lines are required. A package missing either line is an error.
     </step>
@@ -272,7 +275,7 @@ Your job: produce one complete, valid .rlockie file that follows every rule in t
   <rule id="1" name="Sentence length">Target ~14 words per sentence. Can go to 17-18 occasionally. Not on every other line. 14 is the default.</rule>
   <rule id="2" name="Line length">Each line in @text is at most ~16 words total, whether it holds one or two sentences.</rule>
   <rule id="3" name="Sentences per line">One sentence per line is the default. Two allowed only when they read as one beat. Three on one line: never.</rule>
-  <rule id="4" name="We vs you">Use "we" only for humanity-wide observations ("we have always trusted what we can see"). Never use "you" to address the reader anywhere in course text. For Variant A reader-immersion scenes, use a gerund or imperative ("Imagine standing in a kitchen..."), not "we" and not "you."</rule>
+  <rule id="4" name="We vs you">Use "we" only for humanity-wide observations ("we have always trusted what we can see"). Never use "you" to address the reader anywhere in course text. For Variant A reader-immersion scenes, use a gerund or imperative ("Imagine standing in a kitchen..."), not "we" and not "you." Variant H uses "I" in Phase 2 only (the protagonist speaks as themselves).</rule>
   <rule id="5" name="No book or author names">No book titles or author names in @text, consequences, explanations, or hints. They go only in @course metadata.</rule>
   <rule id="6" name="Color highlights">Green marks the topic name. Red marks a wrong thing stated in the text. Both only inside @text. 1 to 2 highlights per package maximum. At most 1 highlight per @text swipe.</rule>
   <rule id="7" name="Consequences" rlockie_field="consequence:">1 sentence is the default, 2 occasional, 3 rare. Should not exceed ~20 words total. No verdict language ("Wrong.", "Incorrect."). Vary the approach across answers.</rule>
@@ -333,7 +336,7 @@ Your job: produce one complete, valid .rlockie file that follows every rule in t
   <rule id="15">Merge choppy pairs: "Goals end. Identities persist." should be one sentence, not two.</rule>
 
   <!-- Content rules -->
-  <rule id="16">Never use "you" to address the reader anywhere in course text. "We" is only for humanity-wide observations ("we figure out most objects without reading the manual"). Variant A scenes use a gerund or imperative ("Imagine standing..."), not "we" or "you." This rule has no exceptions inside @text, @question, @true_false, @reflect, or any other course-facing block.</rule>
+  <rule id="16">Never use "you" to address the reader anywhere in course text. "We" is only for humanity-wide observations ("we figure out most objects without reading the manual"). Variant A scenes use a gerund or imperative ("Imagine standing..."), not "we" or "you." Variant H uses "I" in Phase 2 only. This rule has no exceptions inside @text, @question, @true_false, @reflect, or any other course-facing block (except the Variant H first-person "I" in Phase 2).</rule>
   <rule id="17">No book or author names in the course text. Only in @course metadata.</rule>
   <rule id="18">Every number has something the reader can picture next to it.</rule>
   <rule id="18b">Every abstract concept has an everyday anchor next to it (snowflake-and-avalanche for compound effects, parking meter for anchoring bias, kitchen drawer for the behavioral level). One anchor per concept. If no anchor comes to mind, the package is not ready.</rule>
@@ -366,7 +369,7 @@ Your job: produce one complete, valid .rlockie file that follows every rule in t
       - No subtitles, no colons, no banned words.
       - No two titles in a segment start with the same word (including "The", "What", "Why", "When", "How").
       - Numbers in titles always use digits, not words, for both segment and package titles ("3 Layers of Feeling", not "Three Layers of Feeling"). This overrides the small-number-as-word default from the number-format rules, in titles, digits pop visually and read faster in the menu UI.</rule>
-  <rule id="24" critical="true">Structural variation across packages is mandatory. The default phase spine (intro → 3 stories → @question → reveal → @true_false → @reflect → outro) must NOT repeat in every package of a segment. At least one package per segment uses an intro variant (skip, quote, true/false, or misconception-first). At least one package skips @reflect. Phase 2 variants (A through G) differ across consecutive packages. A 5-package segment with five identical phase spines is wrong, even if every package passes the line-level rules.</rule>
+  <rule id="24" critical="true">Structural variation across packages is mandatory. The default phase spine (intro → 3 stories → @question → reveal → @true_false → @reflect → outro) must NOT repeat in every package of a segment. At least one package per segment uses an intro variant (skip, quote, true/false, or misconception-first). At least one package skips @reflect. Phase 2 variants (A through H) differ across consecutive packages. A 5-package segment with five identical phase spines is wrong, even if every package passes the line-level rules.</rule>
   <rule id="25">No em dashes anywhere in course text. The em dash is banned in @text, @question, @true_false, @reflect, @pause, @quote, and every property field. Use a comma, period, colon, or parentheses instead.</rule>
   <rule id="26">A true/false intro replaces Phase 5. If the package opens with a @true_false intro, Phase 5 is empty for that package. The package never has two @true_false swipes when one of them is the intro.</rule>
   <rule id="26b" critical="true" name="True/False options are the literal single words">In @true_false blocks, the `true:` line is ALWAYS exactly `true: True`. The `false:` line is ALWAYS exactly `false: False`. Nothing else on those lines, no comma, no restatement, no brief, no trailing text. All content lives on the `consequence:` line directly underneath. Both the `true:` + `consequence:` pair and the `false:` + `consequence:` pair are required. Correct: `true: True` then `consequence: Running the slow mind all day would be exhausting. The fast mind handles most of it without help.` Wrong: `true: True, the slow mind runs daily life.` Wrong: dropping the `consequence:` line.</rule>
