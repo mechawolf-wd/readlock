@@ -22,6 +22,14 @@ Readlock is a mobile app where readers swipe through educational content one scr
   <file priority="3" name="blacklist/ReadlockBlacklist.xml" load_order="THIRD, non-negotiable">
     Every banned word, phrase, opener, closer, and sentence structure. After writing, search the entire draft against every section. Any match means the sentence is rewritten from scratch, not patched.
   </file>
+
+  <file priority="4" name="guides/readlock_course_categories.md" load_order="reference">
+    Canonical list of all closed-list tags: 15 genres, 10 audience tags, 7 entity types. Consult when filling @course metadata fields (genres, relevant_for). If a tag is not in this file, it cannot be used.
+  </file>
+
+  <file priority="5" name="guides/readlock_course_colors.md" load_order="reference">
+    Canonical list of the 12 course theme hex colours. Consult when picking a course colour. If a hex value is not in this file, it cannot be assigned to a course.
+  </file>
 </reference_files>
 
 <task>

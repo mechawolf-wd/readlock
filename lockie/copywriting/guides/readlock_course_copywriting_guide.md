@@ -4,6 +4,8 @@
 
 - `RlockieFormatGuide.xml`, defines how `.rlockie` files are structured: what blocks exist (`@course`, `@segment`, `@package`, `@text`, `@question`, `@true_false`, `@estimate`, `@quote`, `@pause`, `@reflect`), what fields each block needs, and how to format them. This guide tells you what to write. The format guide tells you how to structure the file.
 - `ReadlockBlacklist.xml`, a flat list of banned AI words, phrases, and sentence patterns. It covers the same ground as Sections 2 and 4 of this guide but in a searchable format.
+- `readlock_course_categories.md`, canonical list of all closed-list tags: 15 genres, 10 audience tags, and 7 entity types. If a tag is not in this file, it cannot be used.
+- `readlock_course_colors.md`, canonical list of the 12 course theme colours (hex values), editor entity-type colours, and charge bar colours. If a hex value is not in this file, it cannot be assigned to a course.
 
 ---
 
@@ -288,7 +290,6 @@ These make text sound like a blog post, a podcast, or a LinkedIn influencer:
 | **Forced familiarity**     | "you guys," "folks," "friends," "we" (when there is no "we"), "right?" (mid-sentence), "let's be real," "here's the thing," "spoiler alert"                         |
 | **Internet-speak**         | "hot take," "fun fact," "pro tip," "next-level," "deep dive," "low-key," "high-key," "vibe," "energy" (metaphorical)                                                |
 | **Inflated informality**   | "a ton of," "a bunch of," "super" as intensifier, "kind of" / "sort of" (hedging), "pretty much"                                                                    |
-| **Em dashes**              | Never use em dashes. Rewrite as two sentences, or use a comma, period, or colon.                                                                                    |
 | **Dramatic fragmentation** | "Sixty. Thousand." / "Let. That. Sink. In." / "One word. Design." Fragmenting sentences for emphasis is performative.                                               |
 
 ### Tone pitfalls to avoid
@@ -357,19 +358,19 @@ These are AI-writing fingerprints. If any appear in a draft, rewrite the whole s
 
 **Inflated nouns and adjectives:**
 
-| Banned word              | Use instead                           |
-| ------------------------ | ------------------------------------- |
-| synergy                  | describe the relationship             |
-| paradigm                 | approach, model                       |
-| holistic                 | complete, whole, or be specific       |
-| pivotal                  | important, or say why it matters      |
-| multifaceted             | complex, or describe the actual parts |
-| game-changer             | describe why it matters               |
-| tapestry                 | (never needed)                        |
-| realm                    | area, field, or drop it               |
-| landscape (metaphorical) | ("the design landscape" is filler)    |
-| arguably                 | (either argue it or do not)           |
-| better                   | say what is better and why (faster, cheaper, easier to read, longer-lasting). Never write "better" alone, the reader has no idea what changed. |
+| Banned word                                                                                                | Use instead                                                                                                                                                                                                          |
+| ---------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| synergy                                                                                                    | describe the relationship                                                                                                                                                                                            |
+| paradigm                                                                                                   | approach, model                                                                                                                                                                                                      |
+| holistic                                                                                                   | complete, whole, or be specific                                                                                                                                                                                      |
+| pivotal                                                                                                    | important, or say why it matters                                                                                                                                                                                     |
+| multifaceted                                                                                               | complex, or describe the actual parts                                                                                                                                                                                |
+| game-changer                                                                                               | describe why it matters                                                                                                                                                                                              |
+| tapestry                                                                                                   | (never needed)                                                                                                                                                                                                       |
+| realm                                                                                                      | area, field, or drop it                                                                                                                                                                                              |
+| landscape (metaphorical)                                                                                   | ("the design landscape" is filler)                                                                                                                                                                                   |
+| arguably                                                                                                   | (either argue it or do not)                                                                                                                                                                                          |
+| better                                                                                                     | say what is better and why (faster, cheaper, easier to read, longer-lasting). Never write "better" alone, the reader has no idea what changed.                                                                       |
 | good, bad, great, nice, amazing, interesting, useful, easy, simple, effective, meaningful, special, unique | same rule as "better". These are vague judgments. Name the specific quality (faster, smaller, fewer steps, fewer errors, lasts longer, costs less). If you cannot say what makes it good, the sentence is not ready. |
 
 **Empty filler phrases:**
@@ -551,8 +552,6 @@ The intro is short: 2 to 4 sentences. It should feel like the first paragraph of
 
 #### How to make the reader curious
 
-The intro has one job, said again: **make the reader curious.** Everything below is about how to do that.
-
 **The main technique is visualisation.** Every sentence should put a picture in the reader's head. If the reader can see what you are describing, they are inside the scene. If they cannot see it, they are outside reading words. The rules below are all ways to do this.
 
 **Use words you can picture.** Words like _"coffee cup," "stuck door," "light switch," "manual"_ become images instantly. Words like _"system," "process," "concept," "context," "framework"_ are invisible. Cut them or replace them with something the reader can see. Specific beats general. _"A coffee cup"_ paints something. _"A cup"_ paints almost nothing. Add detail only if the picture needs it.
@@ -623,15 +622,15 @@ After any of these intro variants, the package continues normally into Phase 2.
 
 Build the case through stories, examples, and scenarios, not statements. Let the reader see a pattern before you name it.
 
-| Variant                          | Description                                                                                                                                                                                                                                                                                | Swipe structure example                                                                                                                                |
-| -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **A, Reader-immersion scenario** | _"Imagine standing in a supermarket aisle..."_ The reader is invited into the scene through a gerund or imperative, not a pronoun. Each swipe pulls them deeper into one situation until they feel the question form on their own. Never use "you" or "we" inside the scene.               | `@text` (place reader in scene) → `@text` (develop the scene) → `@text` (moment of recognition)                                                        |
-| **B, Single person narrative**   | One person's experience, told with enough detail to feel real. Each swipe is the next beat in their story. The lesson is in what happens to them, not in commentary.                                                                                                                       | `@text` (beat 1, same person) → `@text` (beat 2, same person) → `@text` (beat 3, same person)                                                          |
-| **C, Two people contrast**       | Two people (or more) in situations that are similar in what they ask of the topic, but different in specifics. The situations do not need to be the same scene. They need to speak to the same idea. The contrast is the question. The reader compares without being told what to compare. | `@text` (first situation) → `@text` (a different situation, same topic) → `@text` (a third situation, or the moment the common thread becomes visible) |
-| **D, Diverse multiple stories**  | 3 short stories about 3 different people or situations, spanning different eras, cultures, or contexts. Same principle, different angles. The reader sees the pattern repeat in places that should not match.                                                                              | `@text` (one person) → `@text` (a different person, different context) → `@text` (a third person, different context)                                   |
-| **E, Scientific walkthrough**    | Build the case from observation, experiment, and mechanism rather than anecdote. Think Veritasium explaining why something works. Each swipe traces a step in the reasoning.                                                                                                               | `@text` (observation) → `@text` (experiment or mechanism) → `@text` (result the reader can now see)                                                    |
-| **F, Historical arc**            | One long story told across centuries or eras. How something emerged, changed, and ended up where it is today. The lesson is in the trajectory.                                                                                                                                             | `@text` (earliest era) → `@text` (later era) → `@text` (present day or ending point)                                                                   |
-| **G, Thought experiment**        | A hypothetical stated openly as one. _"Suppose every person in a city woke up one morning and..."_ Used to isolate a variable or stress-test an intuition. The reader follows logic, not a character.                                                                                      | `@text` (state the premise) → `@text` (add a condition or follow one step) → `@text` (land on the consequence)                                         |
+| Variant                          | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                        | Swipe structure example                                                                                                                                |
+| -------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **A, Reader-immersion scenario** | _"Imagine standing in a supermarket aisle..."_ The reader is invited into the scene through a gerund or imperative, not a pronoun. Each swipe pulls them deeper into one situation until they feel the question form on their own. Never use "you" or "we" inside the scene.                                                                                                                                                                                                       | `@text` (place reader in scene) → `@text` (develop the scene) → `@text` (moment of recognition)                                                        |
+| **B, Single person narrative**   | One person's experience, told with enough detail to feel real. Each swipe is the next beat in their story. The lesson is in what happens to them, not in commentary.                                                                                                                                                                                                                                                                                                               | `@text` (beat 1, same person) → `@text` (beat 2, same person) → `@text` (beat 3, same person)                                                          |
+| **C, Two people contrast**       | Two people (or more) in situations that are similar in what they ask of the topic, but different in specifics. The situations do not need to be the same scene. They need to speak to the same idea. The contrast is the question. The reader compares without being told what to compare.                                                                                                                                                                                         | `@text` (first situation) → `@text` (a different situation, same topic) → `@text` (a third situation, or the moment the common thread becomes visible) |
+| **D, Diverse multiple stories**  | 3 short stories about 3 different people or situations, spanning different eras, cultures, or contexts. Same principle, different angles. The reader sees the pattern repeat in places that should not match.                                                                                                                                                                                                                                                                      | `@text` (one person) → `@text` (a different person, different context) → `@text` (a third person, different context)                                   |
+| **E, Scientific walkthrough**    | Build the case from observation, experiment, and mechanism rather than anecdote. Think Veritasium explaining why something works. Each swipe traces a step in the reasoning.                                                                                                                                                                                                                                                                                                       | `@text` (observation) → `@text` (experiment or mechanism) → `@text` (result the reader can now see)                                                    |
+| **F, Historical arc**            | One long story told across centuries or eras. How something emerged, changed, and ended up where it is today. The lesson is in the trajectory.                                                                                                                                                                                                                                                                                                                                     | `@text` (earliest era) → `@text` (later era) → `@text` (present day or ending point)                                                                   |
+| **G, Thought experiment**        | A hypothetical stated openly as one. _"Suppose every person in a city woke up one morning and..."_ Used to isolate a variable or stress-test an intuition. The reader follows logic, not a character.                                                                                                                                                                                                                                                                              | `@text` (state the premise) → `@text` (add a condition or follow one step) → `@text` (land on the consequence)                                         |
 | **H, First-person testimony**    | The story is told by someone living through it, in their own voice. _"I have always sorted my mornings the same way..."_ Each swipe is the next beat in their personal account. The narrator is the protagonist. The lesson lives in what they notice, not in what a third-person narrator points out. Uses "I" throughout. The protagonist does not need a name in the text (they are speaking as themselves), but the package comment should note who is speaking if it matters. | `@text` (beat 1, first person) → `@text` (beat 2, first person) → `@text` (beat 3, first person)                                                       |
 
 These are starting points, not rigid templates. Variants can be mixed. The principle is the same: build toward a pattern the reader can sense before you name it.
@@ -658,9 +657,7 @@ The reader is forming their own theory. Ask them to commit to an answer before t
 - _"What do you think happened next?"_
 - _"Which of these explanations do you think is correct?"_
 
-These test understanding, not recall. They work because the reader has been thinking since Phase 2.
-
-**Questions should feel curious, not like a test.** The reader should feel safe. Every question should be answerable from what came before. Do not require knowledge the course has not provided.
+**Questions should feel curious, not like a test.** The reader should feel safe. Every question should be answerable from what came before, not obvious, and should not require knowledge the course has not provided.
 
 Do not write questions that punish the reader. The tone is collaborative. The narrator and the reader are thinking together. The narrator just happens to already know the answer.
 
@@ -832,7 +829,7 @@ A statement that tests whether the reader understood the concept. Often a common
 
 **The statement should feel semi-obvious.** The reader should be able to catch a plausible-sounding mistake after a moment of thought. Not too easy, not a trap. The satisfaction is spotting the flaw in something that sounded fine at first.
 
-**Phase 5 is skipped if the package opens with a true/false intro.** A package can have one `@true_false` swipe total. If that swipe is the intro (see "Other ways to start a package" in Phase 1), Phase 5 is empty for this package and the package goes from Phase 4 directly to Phase 6 or the outro.
+**Phase 5 is skipped if the package opens with a true/false intro** (see Phase 1, "True/False intro" for the full rule).
 
 ### Phase 6, Reflect (optional)
 
@@ -869,8 +866,6 @@ Every package ends with a `@text` swipe as its last element. This is the outro. 
 > **Wrong:** _"In the next package you will learn about..."_ (syllabus)
 
 **For the last package of the course:** the outro names the thread that ran through every package without listing them, and ends on an open question or alternative angle. No recap, no resolution.
-
-**Length.** 2 to 3 sentences. Never longer.
 
 **Tone.** Quiet and slightly open-ended. The narrator pauses one last time to reflect on what the course was really about. Not listing what was taught.
 
