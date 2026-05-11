@@ -415,7 +415,7 @@ class RLUIStrings {
   static const String REFERRAL_CODE_AVAILABLE_LABEL = 'Available';
 
   // Onboarding step
-  static const String REFERRAL_ONBOARDING_TITLE = 'Got a referral code?';
+  static const String REFERRAL_ONBOARDING_TITLE = 'Redeem code';
   static const String REFERRAL_ONBOARDING_PLACEHOLDER = 'ROBIN-7K3X';
   static const String REFERRAL_ONBOARDING_SUBMIT_LABEL = 'Apply';
   static const String REFERRAL_ONBOARDING_SUBMITTING_LABEL = 'Applying...';

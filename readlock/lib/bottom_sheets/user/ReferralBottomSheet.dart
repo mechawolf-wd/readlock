@@ -11,7 +11,6 @@ import 'package:readlock/bottom_sheets/RLBottomSheet.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLUIStrings.dart';
-import 'package:readlock/design_system/RLButton.dart';
 import 'package:readlock/design_system/RLFeatherIcon.dart';
 import 'package:readlock/design_system/RLLoadingIndicator.dart';
 import 'package:readlock/design_system/RLToast.dart';
@@ -281,8 +280,18 @@ class ReferralSheetState extends State<ReferralSheet> {
         : RLUIStrings.REFERRAL_GENERATE_LABEL;
 
     final VoidCallback? buttonTap = isGeneratingCode ? null : handleGenerateCodeTap;
+    final Color labelColor = isGeneratingCode ? RLDS.textMuted : RLDS.markupGreen;
 
-    return RLButton.primary(label: buttonLabel, onTap: buttonTap);
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: buttonTap,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: RLDS.spacing16),
+        child: Center(
+          child: RLTypography.bodyLarge(buttonLabel, color: labelColor),
+        ),
+      ),
+    );
   }
 
   Widget LimitReachedLabel() {

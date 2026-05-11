@@ -8,7 +8,6 @@ import 'package:readlock/bottom_sheets/RLBottomSheet.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLUIStrings.dart';
-import 'package:readlock/design_system/RLButton.dart';
 import 'package:readlock/design_system/RLTextField.dart';
 import 'package:readlock/design_system/RLToast.dart';
 import 'package:readlock/design_system/RLUtility.dart';
@@ -170,6 +169,7 @@ class RedeemCodeSheetState extends State<RedeemCodeSheet> {
         : RLUIStrings.REFERRAL_ONBOARDING_SUBMIT_LABEL;
 
     final VoidCallback? buttonTap = isSubmitting ? null : handleSubmitTap;
+    final Color labelColor = isSubmitting ? RLDS.textMuted : RLDS.markupGreen;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -179,11 +179,17 @@ class RedeemCodeSheetState extends State<RedeemCodeSheet> {
           hintText: RLUIStrings.REFERRAL_ONBOARDING_PLACEHOLDER,
         ),
 
-        const Spacing.height(RLDS.spacing16),
+        const Spacing.height(RLDS.spacing24),
 
-        RLButton.primary(
-          label: buttonLabel,
+        GestureDetector(
+          behavior: HitTestBehavior.opaque,
           onTap: buttonTap,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: RLDS.spacing16),
+            child: Center(
+              child: RLTypography.bodyLarge(buttonLabel, color: labelColor),
+            ),
+          ),
         ),
       ],
     );
