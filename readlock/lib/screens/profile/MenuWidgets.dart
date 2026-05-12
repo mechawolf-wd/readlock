@@ -18,6 +18,8 @@ import 'package:readlock/bottom_sheets/user/FeathersBottomSheet.dart';
 import 'package:readlock/screens/profile/BirdPicker.dart';
 import 'package:readlock/screens/profile/SettingsDemos.dart';
 import 'package:readlock/services/feedback/SoundService.dart';
+import 'package:readlock/services/LinkService.dart';
+import 'package:readlock/constants/RLLinks.dart';
 
 import 'package:pixelarticons/pixel.dart';
 
@@ -90,6 +92,9 @@ class MenuSection extends StatelessWidget {
     void onFontPickerTap() => FontPickerBottomSheet.show(context);
     void onFeathersTap() => FeathersBottomSheet.show(context);
     void onNightShiftTap() => NightShiftBottomSheet.show(context);
+    void onPrivacyPolicyTap() => LinkService.openUrl(RLLinks.PRIVACY_POLICY_URL);
+    void onTermsTap() => LinkService.openUrl(RLLinks.TERMS_OF_SERVICE_URL);
+    void onEulaTap() => LinkService.openUrl(RLLinks.EULA_URL);
     // Column width row has its control (chips) inside the demo card below,
     // so the row itself is a label — tap is a no-op.
     void onColumnWidthRowTap() {}
@@ -308,15 +313,15 @@ class MenuSection extends StatelessWidget {
         const MenuDivider(label: RLUIStrings.MENU_SECTION_LEGAL),
 
         // Legal (Support listed last, after EULA)
-        MenuItem(icon: Pixel.shield, title: RLUIStrings.MENU_PRIVACY_POLICY, onTap: () {}),
+        MenuItem(icon: Pixel.shield, title: RLUIStrings.MENU_PRIVACY_POLICY, onTap: onPrivacyPolicyTap),
 
         MenuItem(
           icon: Pixel.article,
           title: RLUIStrings.MENU_TERMS_AND_CONDITIONS,
-          onTap: () {},
+          onTap: onTermsTap,
         ),
 
-        MenuItem(icon: Pixel.scale, title: RLUIStrings.MENU_EULA, onTap: () {}),
+        MenuItem(icon: Pixel.scale, title: RLUIStrings.MENU_EULA, onTap: onEulaTap),
 
         MenuItem(icon: Pixel.message, title: RLUIStrings.MENU_SUPPORT, onTap: onSupportTap),
 

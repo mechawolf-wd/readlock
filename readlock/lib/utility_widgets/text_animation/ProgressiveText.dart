@@ -771,10 +771,7 @@ class ProgressiveTextState extends State<ProgressiveText> with TickerProviderSta
             slivers: [
               SliverToBoxAdapter(child: RevealedTextDisplay()),
 
-              SliverFillRemaining(
-                hasScrollBody: false,
-                child: RevealTapArea(),
-              ),
+              SliverFillRemaining(hasScrollBody: false, child: RevealTapArea()),
             ],
           );
         }
@@ -931,7 +928,7 @@ class ProgressiveTextState extends State<ProgressiveText> with TickerProviderSta
     const double errorImageHeight = 100.0;
     const double imageSpacing = RLDS.spacing16;
 
-    final BorderRadius imageBorderRadius = RLDS.borderRadiusXSmall;
+    final BorderRadius imageBorderRadius = RLDS.borderRadiusSmall;
 
     final BoxDecoration errorContainerDecoration = BoxDecoration(
       color: RLDS.backgroundLight,
@@ -1365,7 +1362,7 @@ class CompletedSentenceWidget extends StatelessWidget {
     const double errorImageHeight = 100.0;
     const double imageSpacing = RLDS.spacing16;
 
-    final BorderRadius imageBorderRadius = RLDS.borderRadiusXSmall;
+    final BorderRadius imageBorderRadius = RLDS.borderRadiusSmall;
 
     final BoxDecoration errorContainerDecoration = BoxDecoration(
       color: RLDS.backgroundLight,

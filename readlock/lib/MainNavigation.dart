@@ -20,6 +20,7 @@ import 'package:readlock/services/auth/AuthService.dart';
 import 'package:readlock/services/auth/UserPreferencesHydrator.dart';
 import 'package:readlock/services/auth/UserService.dart';
 import 'package:readlock/services/feedback/SoundService.dart';
+import 'package:readlock/services/AppConfigService.dart';
 import 'package:readlock/services/purchases/PurchaseNotifiers.dart';
 
 import 'package:pixelarticons/pixel.dart';
@@ -46,7 +47,7 @@ class MainNavigation extends StatefulWidget {
   State<MainNavigation> createState() => MainNavigationState();
 }
 
-class MainNavigationState extends State<MainNavigation> {
+class MainNavigationState extends State<MainNavigation> with WidgetsBindingObserver {
   late int currentIndex;
   late List<Widget> screens;
 
@@ -57,6 +58,8 @@ class MainNavigationState extends State<MainNavigation> {
     super.initState();
     currentIndex = widget.initialTabIndex;
     activeTabIndexNotifier.value = currentIndex;
+
+    WidgetsBinding.instance.addObserver(this);
 
     screens = [const HomeScreen(), const CoursesScreen(), const BookshelfScreen()];
 
@@ -71,9 +74,19 @@ class MainNavigationState extends State<MainNavigation> {
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     authStateSubscription?.cancel();
     activeTabIndexNotifier.removeListener(handleActiveTabIndexNotifierChange);
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    final bool isResumed = state == AppLifecycleState.resumed;
+
+    if (isResumed) {
+      AppConfigService.fetchConfigIfStale();
+    }
   }
 
   void handleActiveTabIndexNotifierChange() {
@@ -148,6 +161,10 @@ class MainNavigationState extends State<MainNavigation> {
   }
 
   Future<void> hydratePurchaseStateForCurrentUser() async {
+    // Fetch remote config now that we have an authenticated session.
+    // Stored globally in AppConfigService.cachedConfig for all screens.
+    await AppConfigService.fetchConfig();
+
     final UserModel? user = await UserService.getCurrentUserProfile();
 
     if (user == null) {

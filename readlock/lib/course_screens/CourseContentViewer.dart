@@ -24,7 +24,6 @@ import 'package:readlock/design_system/RLFeedbackSnackbar.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/design_system/RLConfirmationDialog.dart';
 import 'package:readlock/constants/DartAliases.dart';
-import 'package:readlock/services/ScreenProtectionService.dart';
 import 'package:readlock/screens/profile/BirdPicker.dart';
 import 'package:readlock/services/auth/UserService.dart';
 import 'package:readlock/services/purchases/PurchaseConstants.dart';
@@ -88,14 +87,18 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
   static const Icon BackNavigationIcon = Icon(
     Pixel.close,
     color: progressChromeColor,
-    size: RLDS.iconMedium,
+    size: RLDS.iconLarge,
   );
 
   static const Icon NightShiftIcon = Icon(
     Pixel.moon,
     color: RLDS.warning,
-    size: RLDS.iconLarge,
+    size: RLDS.iconXLarge,
   );
+
+  // Per-icon tap-highlight state for the top chrome buttons
+  bool isBackButtonHighlighted = false;
+  bool isNightShiftButtonHighlighted = false;
 
   @override
   void initState() {
@@ -241,6 +244,18 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
     });
   }
 
+  void setBackButtonHighlight(bool highlighted) {
+    setState(() {
+      isBackButtonHighlighted = highlighted;
+    });
+  }
+
+  void setNightShiftButtonHighlight(bool highlighted) {
+    setState(() {
+      isNightShiftButtonHighlighted = highlighted;
+    });
+  }
+
   void handleProgressBarTap() {
     final bool isAlreadyRevealed = isProgressBarRevealed;
 
@@ -363,7 +378,7 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
           NightShiftButton(),
         ],
         key: topChromeKey,
-        padding: RLDS.spacing16,
+        padding: const [RLDS.spacing12, RLDS.spacing24],
       ),
     );
   }
@@ -377,7 +392,13 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
 
     return GestureDetector(
       onTap: backTapHandler,
-      child: ChromeBlur(child: BackNavigationIcon),
+      onTapDown: (_) => setBackButtonHighlight(true),
+      onTapUp: (_) => setBackButtonHighlight(false),
+      onTapCancel: () => setBackButtonHighlight(false),
+      child: ChromeIconHighlight(
+        isHighlighted: isBackButtonHighlighted,
+        child: ChromeBlur(child: BackNavigationIcon),
+      ),
     );
   }
 
@@ -388,7 +409,13 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
 
     return GestureDetector(
       onTap: nightShiftTapHandler,
-      child: ChromeBlur(child: NightShiftIcon),
+      onTapDown: (_) => setNightShiftButtonHighlight(true),
+      onTapUp: (_) => setNightShiftButtonHighlight(false),
+      onTapCancel: () => setNightShiftButtonHighlight(false),
+      child: ChromeIconHighlight(
+        isHighlighted: isNightShiftButtonHighlighted,
+        child: ChromeBlur(child: NightShiftIcon),
+      ),
     );
   }
 
@@ -421,6 +448,19 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
     );
   }
 
+  // Tap-highlight container for chrome icon buttons. Fades a glass10 white
+  // rectangle in on press and out on release using the standard fast duration.
+  Widget ChromeIconHighlight({required bool isHighlighted, required Widget child}) {
+    final Color backgroundColor = isHighlighted ? RLDS.glass10(Colors.white) : RLDS.transparent;
+
+    return AnimatedContainer(
+      duration: RLDS.opacityFadeDurationFast,
+      padding: const EdgeInsets.all(RLDS.spacing4),
+      decoration: BoxDecoration(color: backgroundColor, borderRadius: RLDS.borderRadiusSmall),
+      child: child,
+    );
+  }
+
   // Progress indicator for course content — blurred and dimmed until tapped
   Widget ProgressIndicator() {
     final double progressValue = calculateProgress();
@@ -430,7 +470,7 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
       key: progressBarKey,
       height: 12.0,
       child: ClipRRect(
-        borderRadius: RLDS.borderRadiusXSmall,
+        borderRadius: RLDS.borderRadiusXXSmall,
         child: LinearProgressIndicator(
           value: progressValue,
           backgroundColor: RLDS.backgroundLight,
@@ -782,4 +822,3 @@ class LessonFinishScreenState extends State<LessonFinishScreen> with TickerProvi
     );
   }
 }
-

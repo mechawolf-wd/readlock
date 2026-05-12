@@ -117,6 +117,16 @@ service cloud.firestore {
       allow delete: if false;
     }
 
+    // * /config/{document}
+    //
+    // Remote app configuration (URLs, pricing, feature flags). Any signed-in
+    // client can read; all writes are admin-only (Firebase Console or Admin SDK).
+
+    match /config/{document} {
+      allow read: if isSignedIn();
+      allow write: if false;
+    }
+
     // * /referral-codes/{codeId}
     //
     // Referral codes are created and redeemed exclusively through Cloud

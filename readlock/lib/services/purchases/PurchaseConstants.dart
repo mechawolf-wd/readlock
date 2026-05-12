@@ -1,9 +1,10 @@
 // Centralised purchase constants.
 //
-// Course price is a flat 10 feathers for now. When pricing per-course
-// lands, swap this for a lookup keyed by courseId (or a field on the
-// course document). All call-sites in PurchaseService and the roadmap
-// purchase button read from here.
+// COURSE_PURCHASE_COST is sourced from the remote AppConfig so pricing
+// can be adjusted without a client release. All other constants here are
+// static and stay hardcoded until a similar remote-config need arises.
+
+import 'package:readlock/services/AppConfigService.dart';
 
 class PurchaseConstants {
   // App Store Connect product identifiers (iOS auto-renewable subscriptions).
@@ -23,7 +24,7 @@ class PurchaseConstants {
     PRODUCT_ID_READER: 300,
   };
 
-  static const int COURSE_PURCHASE_COST = 10;
+  static int get COURSE_PURCHASE_COST => AppConfigService.config.bookFeatherPrice;
 
   // Rental window granted on every purchase and on every resurrect.
   static const int COURSE_RENTAL_DAYS = 14;

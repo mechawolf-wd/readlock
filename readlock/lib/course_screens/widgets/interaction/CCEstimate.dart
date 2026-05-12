@@ -11,30 +11,34 @@ import 'package:readlock/utility_widgets/text_animation/ProgressiveText.dart';
 import 'package:readlock/constants/RLUIStrings.dart';
 
 import 'package:pixelarticons/pixel.dart';
+
 class CCEstimate extends StatefulWidget {
   final EstimateSwipe content;
   final void Function(int selectedIndex, bool isCorrect) onAnswerSelected;
 
-  const CCEstimate({
-    super.key,
-    required this.content,
-    required this.onAnswerSelected,
-  });
+  const CCEstimate({super.key, required this.content, required this.onAnswerSelected});
 
   @override
   State<CCEstimate> createState() => CCEstimateState();
 }
 
-class CCEstimateState extends State<CCEstimate>
-    with SingleTickerProviderStateMixin {
+class CCEstimateState extends State<CCEstimate> with SingleTickerProviderStateMixin {
   double currentEstimate = 50;
   bool hasSubmittedEstimate = false;
   late AnimationController revealController;
   late Animation<double> revealAnimation;
 
-  static final Icon CheckIcon = const Icon(Pixel.check, color: RLDS.success, size: RLDS.iconMedium);
+  static final Icon CheckIcon = const Icon(
+    Pixel.check,
+    color: RLDS.success,
+    size: RLDS.iconMedium,
+  );
   static const Icon InfoIcon = Icon(Pixel.infobox, size: RLDS.iconMedium);
-  static final Icon StarIcon = const Icon(Pixel.moonstars, color: RLDS.white, size: RLDS.iconSmall);
+  static final Icon StarIcon = const Icon(
+    Pixel.moonstars,
+    color: RLDS.white,
+    size: RLDS.iconSmall,
+  );
 
   int getCorrectPercentage() {
     return widget.content.correctPercentage;
@@ -273,7 +277,11 @@ class CCEstimateState extends State<CCEstimate>
       // Your estimate
       Expanded(
         child: Div.column([
-          Text(RLUIStrings.ESTIMATE_COMPARISON_YOUR_LABEL, style: comparisonLabelStyle, textAlign: TextAlign.center),
+          Text(
+            RLUIStrings.ESTIMATE_COMPARISON_YOUR_LABEL,
+            style: comparisonLabelStyle,
+            textAlign: TextAlign.center,
+          ),
           const Spacing.height(RLDS.spacing4),
           RLTypography.headingMedium(
             '${currentEstimate.round()}%',
@@ -289,7 +297,11 @@ class CCEstimateState extends State<CCEstimate>
       // Actual answer
       Expanded(
         child: Div.column([
-          Text(RLUIStrings.ESTIMATE_COMPARISON_ACTUAL_LABEL, style: comparisonLabelStyle, textAlign: TextAlign.center),
+          Text(
+            RLUIStrings.ESTIMATE_COMPARISON_ACTUAL_LABEL,
+            style: comparisonLabelStyle,
+            textAlign: TextAlign.center,
+          ),
           const Spacing.height(RLDS.spacing4),
           RLTypography.headingMedium(
             '${getCorrectPercentage()}%',
@@ -375,7 +387,7 @@ class CCEstimateState extends State<CCEstimate>
           backgroundColor: RLDS.success,
           duration: const Duration(seconds: 2),
           behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(borderRadius: RLDS.borderRadiusXSmall),
+          shape: RoundedRectangleBorder(borderRadius: RLDS.borderRadiusSmall),
           margin: const EdgeInsets.all(RLDS.spacing16),
         ),
       );

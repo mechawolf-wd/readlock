@@ -10,6 +10,7 @@ import 'package:readlock/services/ConnectivityService.dart';
 import 'package:readlock/services/purchases/StoreKitService.dart';
 import 'package:readlock/services/NightShiftBrightnessService.dart';
 import 'package:readlock/services/NightShiftScheduleService.dart';
+import 'package:readlock/services/ScreenProtectionService.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -36,6 +37,10 @@ void main() async {
   // the purchase stream listener. Gracefully no-ops when products have
   // not been created in App Store Connect yet.
   StoreKitService.initialize();
+
+  // Block screenshots and blur the app in the iOS switcher for the entire
+  // session, not just during course reading.
+  await ScreenProtectionService.enableProtection();
 
   runApp(const ReadlockApp());
 }

@@ -19,6 +19,8 @@ class FirebaseConfig {
 
   static const String COURSES_COLLECTION = 'courses';
   static const String USERS_COLLECTION = 'users';
+  static const String CONFIG_COLLECTION = 'config';
+  static const String CONFIG_APP_DOCUMENT = 'app';
 
   // * Cloud Function names
 
