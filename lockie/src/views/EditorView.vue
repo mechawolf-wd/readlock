@@ -476,6 +476,22 @@ const courseColor = computed(
   () => store.activeCourse?.color ?? "var(--primary)",
 );
 
+// * Book preview image based on selected course color
+
+const bookPreviewSrc = computed(() => {
+  const raw = store.activeCourse?.color ?? ''
+  const hex = raw.replace('#', '').toUpperCase()
+  const hasMatchingAsset = COURSE_COLORS.some(
+    (c) => c.replace('#', '').toUpperCase() === hex,
+  )
+
+  if (hasMatchingAsset) {
+    return `/books/${hex}.png`
+  }
+
+  return '/books/FALLBACK.png'
+})
+
 // * Course theme color picker, restricted to the closed COURSE_COLORS palette
 
 function isSelectedCourseColor(swatch: string): boolean {
@@ -1315,17 +1331,29 @@ function getCourseStatsLine(): string {
                 <div class="flex flex-col gap-2">
                   <label class="text-sm text-muted-foreground">Theme Color</label>
                   <p class="text-xs text-muted-foreground">Pick the swatch that best matches the book's original cover.</p>
-                  <div class="flex flex-wrap gap-2">
-                    <button
-                      v-for="swatch in COURSE_COLORS"
-                      :key="swatch"
-                      type="button"
-                      class="w-8 h-8 rounded-md border-2 transition-transform hover:scale-110"
-                      :class="getColorSwatchClass(swatch)"
-                      :style="{ backgroundColor: swatch }"
-                      :title="swatch"
-                      @click="handlePickCourseColor(swatch)"
+
+                  <div class="flex items-center gap-4">
+                    <!-- Book Preview -->
+                    <img
+                      :src="bookPreviewSrc"
+                      alt="Book preview"
+                      class="w-16 h-16"
+                      style="image-rendering: pixelated;"
                     />
+
+                    <!-- Color Swatches -->
+                    <div class="flex flex-wrap gap-2">
+                      <button
+                        v-for="swatch in COURSE_COLORS"
+                        :key="swatch"
+                        type="button"
+                        class="w-8 h-8 rounded-md border-2 transition-transform hover:scale-110"
+                        :class="getColorSwatchClass(swatch)"
+                        :style="{ backgroundColor: swatch }"
+                        :title="swatch"
+                        @click="handlePickCourseColor(swatch)"
+                      />
+                    </div>
                   </div>
                 </div>
 

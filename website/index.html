@@ -1,36 +1,87 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Readlock — no-bs app for microlearning</title>
+    <title>Readlock — microlearning, no nonsense</title>
     <meta
       name="description"
-      content="No-bs app for microlearning. Read f**cking lock. Readlock."
+      content="A no-nonsense microlearning app. Read it. Lock it. Move on."
     />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Press+Start+2P&display=swap"
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=Press+Start+2P&display=swap"
       rel="stylesheet"
     />
     <style>
+      /* ============================================================
+         DESIGN SYSTEM
+         Ported from lib/constants/RLDesignSystem.dart
+         and lib/constants/RLTypography.dart
+         ============================================================ */
       :root {
-        /* Pulled from lib/constants/RLDesignSystem.dart */
+        /* Palette */
         --bg: #000000;
         --surface: #1c1c1e;
-        --surface-elev: #2c2c2e;
-        --fg: #e5e5e5;
-        --muted: #a0a0a0;
-        --textMuted: #5a5a5a;
+        --surface-elevated: #2c2c2e;
+        --on-surface: #e5e5e5;
+        --text-primary: #e5e5e5;
+        --text-secondary: #a0a0a0;
+        --text-muted: #5a5a5a;
         --line: #2c2c2e;
-        --red: #ee4654;
-        --green: #4ade80;
+        --brand-red: #ee4654;
+        --success: #4ade80;
         --info: #29b1f4;
         --warning: #f9b42c;
+        --error: #f65562;
+        --markup-green: #4ade80;
+        --markup-red: #f87171;
+
+        /* Spacing (4px grid) */
+        --sp-4: 4px;
+        --sp-8: 8px;
+        --sp-12: 12px;
+        --sp-16: 16px;
+        --sp-20: 20px;
+        --sp-24: 24px;
+        --sp-32: 32px;
+        --sp-40: 40px;
+        --sp-48: 48px;
+
+        /* Border Radius */
+        --radius-xs: 8px;
+        --radius-sm: 12px;
+        --radius-md: 16px;
+        --radius-lg: 24px;
+        --radius-circle: 100px;
+
+        /* Typography */
+        --font-pixel: "Press Start 2P", ui-monospace, monospace;
+        --font-ui: "JetBrains Mono", monospace;
+        --font-reading: "Lora", Georgia, serif;
+
+        /* Glass / Blur (LunarBlur) */
+        --blur-lunar: 4px;
+        --blur-backdrop: 20px;
+        --glass-surface: rgba(28, 28, 30, 0.35);
+        --glass-border: rgba(255, 255, 255, 0.06);
+
+        /* Animation */
+        --fade-fast: 200ms;
+        --fade-standard: 300ms;
+        --fade-intro: 1200ms;
+
+        /* Course demo accent */
+        --demo-accent: #72acad;
       }
 
-      * {
+      /* ============================================================
+         RESET & BASE
+         ============================================================ */
+      *,
+      *::before,
+      *::after {
         margin: 0;
         padding: 0;
         box-sizing: border-box;
@@ -39,10 +90,8 @@
       html,
       body {
         background: var(--bg);
-        color: var(--fg);
-        font-family: "Inter", -apple-system, BlinkMacSystemFont, "Helvetica Neue",
-          Arial, sans-serif;
-        font-feature-settings: "ss01", "cv11";
+        color: var(--on-surface);
+        font-family: var(--font-ui);
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
         scroll-behavior: smooth;
@@ -58,214 +107,69 @@
         text-decoration: none;
       }
 
+      button {
+        font-family: inherit;
+        border: none;
+        background: none;
+        color: inherit;
+        cursor: pointer;
+      }
+
+      /* ============================================================
+         LAYOUT
+         ============================================================ */
       .container {
         width: 100%;
-        max-width: 1200px;
+        max-width: 1120px;
         margin: 0 auto;
-        padding: 0 32px;
+        padding: 0 var(--sp-24);
       }
 
-      /* Nav */
-      nav {
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        z-index: 10;
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-        background: rgba(0, 0, 0, 0.6);
-        border-bottom: 1px solid var(--line);
+      /* ============================================================
+         GLASS COMPONENTS (LunarBlur port)
+         ============================================================ */
+      .glass {
+        background: var(--glass-surface);
+        backdrop-filter: blur(var(--blur-lunar));
+        -webkit-backdrop-filter: blur(var(--blur-lunar));
+        border: 1px solid var(--glass-border);
+        border-radius: var(--radius-sm);
       }
 
-      nav .container {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        height: 64px;
+      .glass-lg {
+        border-radius: var(--radius-lg);
       }
 
-      .brand {
-        font-weight: 800;
-        font-size: 18px;
-        letter-spacing: -0.02em;
+      .glass-subtle {
+        background: rgba(28, 28, 30, 0.2);
+        backdrop-filter: blur(2px);
+        -webkit-backdrop-filter: blur(2px);
+        border: 1px solid var(--glass-border);
+        border-radius: var(--radius-sm);
       }
 
-      .brand-dot {
-        color: var(--red);
-      }
-
-      .nav-links {
-        display: flex;
-        gap: 32px;
-        font-size: 14px;
-        color: var(--muted);
-        font-weight: 500;
-      }
-
-      .nav-links a {
-        transition: color 0.2s ease;
-      }
-
-      .nav-links a:hover {
-        color: var(--fg);
-      }
-
-      .nav-cta {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        background: var(--fg);
-        color: var(--bg);
-        padding: 10px 18px;
-        border-radius: 100px;
-        font-size: 14px;
-        font-weight: 600;
-        transition: transform 0.15s ease, background 0.2s ease;
-      }
-
-      .nav-cta:hover {
-        transform: translateY(-1px);
-      }
-
-      /* Hero */
-      .hero {
-        min-height: 100vh;
-        display: flex;
-        align-items: center;
-        padding: 120px 0 80px;
-        position: relative;
-        overflow: hidden;
-      }
-
-      .hero::before {
-        content: "";
-        position: absolute;
-        inset: 0;
-        background: radial-gradient(
-          ellipse 45% 55% at 75% 50%,
-          rgba(238, 70, 84, 0.18),
-          transparent 70%
-        );
-        pointer-events: none;
-        z-index: 1;
-      }
-
-      .hero-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 48px;
-        align-items: center;
-        width: 100%;
-        position: relative;
-        z-index: 2;
-      }
-
-      .hero-text {
-        text-align: left;
-      }
-
-      .hero-visual {
-        position: relative;
-        aspect-ratio: 1 / 1;
-        min-height: 480px;
-      }
-
-      .hero-canvas {
-        position: absolute;
-        inset: 0;
-        width: 100%;
-        height: 100%;
-        pointer-events: none;
-      }
-
-      .eyebrow {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        padding: 8px 16px;
-        border: 1px solid var(--line);
-        border-radius: 100px;
-        font-size: 13px;
-        font-weight: 500;
-        color: var(--muted);
-        margin-bottom: 32px;
-      }
-
-      .eyebrow .dot {
-        width: 6px;
-        height: 6px;
-        border-radius: 50%;
-        background: var(--red);
-        box-shadow: 0 0 12px var(--red);
-      }
-
-      h1 {
-        font-size: clamp(44px, 8vw, 112px);
-        font-weight: 900;
-        line-height: 0.92;
-        letter-spacing: -0.04em;
-        max-width: 14ch;
-        margin: 0;
-      }
-
-      h1 .accent {
-        color: var(--red);
-      }
-
-      .hero-cite {
-        margin-top: 24px;
-        font-size: clamp(14px, 1vw, 16px);
-        font-weight: 600;
-        color: var(--muted);
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
-      }
-
-      .hero-prelude {
-        max-width: 48ch;
-        margin: 0 auto 32px;
-        font-size: 14px;
-        font-weight: 500;
-        color: var(--muted);
-        line-height: 1.55;
-        letter-spacing: 0.01em;
-      }
-
-      .hero-sub {
-        margin-top: 32px;
-        margin-left: 0;
-        margin-right: 0;
-        font-size: clamp(16px, 1.4vw, 20px);
-        color: var(--muted);
-        max-width: 40ch;
-        line-height: 1.5;
-      }
-
-      .hero-cta {
-        margin-top: 48px;
-        display: flex;
-        gap: 16px;
-        justify-content: flex-start;
-        flex-wrap: wrap;
-      }
-
+      /* ============================================================
+         BUTTONS (matches app CTA styling)
+         ============================================================ */
       .btn {
         display: inline-flex;
         align-items: center;
-        gap: 10px;
-        padding: 16px 28px;
-        border-radius: 100px;
-        font-size: 15px;
+        justify-content: center;
+        gap: var(--sp-8);
+        padding: var(--sp-16) var(--sp-24);
+        border-radius: var(--radius-circle);
+        font-family: var(--font-ui);
+        font-size: 13px;
         font-weight: 600;
-        transition: transform 0.15s ease, background 0.2s ease,
-          border-color 0.2s ease;
+        letter-spacing: 0.02em;
         cursor: pointer;
-        border: 1px solid transparent;
+        border: none;
+        transition: transform 0.15s ease, opacity 0.2s ease;
+        white-space: nowrap;
       }
 
       .btn-primary {
-        background: var(--fg);
+        background: var(--on-surface);
         color: var(--bg);
       }
 
@@ -273,171 +177,747 @@
         transform: translateY(-2px);
       }
 
-      .btn-ghost {
-        border-color: var(--line);
-        color: var(--fg);
+      .btn-glass {
+        background: var(--glass-surface);
+        color: var(--on-surface);
+        backdrop-filter: blur(var(--blur-lunar));
+        -webkit-backdrop-filter: blur(var(--blur-lunar));
+        border: 1px solid var(--glass-border);
       }
 
-      .btn-ghost:hover {
-        border-color: #333;
-        background: rgba(255, 255, 255, 0.03);
+      .btn-glass:hover {
+        border-color: rgba(255, 255, 255, 0.12);
+        transform: translateY(-1px);
       }
 
-      /* Interrupt */
-      .interrupt {
-        padding: 100px 0;
-        border-top: 1px solid var(--line);
-        text-align: center;
-      }
-
-      .interrupt-text {
-        font-size: clamp(32px, 5vw, 72px);
-        font-weight: 900;
-        line-height: 1.05;
-        letter-spacing: -0.03em;
-        max-width: 24ch;
-        margin: 0 auto;
-      }
-
-      .interrupt-text .cliche {
-        color: var(--muted);
-        font-style: italic;
+      /* ============================================================
+         SECTION HEADERS
+         ============================================================ */
+      .section-label {
+        font-family: var(--font-pixel);
+        font-size: 9px;
         font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--brand-red);
+        margin-bottom: var(--sp-16);
       }
 
-      .interrupt-text .reply {
-        color: var(--red);
+      .section-title {
+        font-family: var(--font-pixel);
+        font-size: clamp(14px, 2.2vw, 22px);
+        font-weight: 700;
+        line-height: 1.5;
+        letter-spacing: 0;
+        color: var(--on-surface);
       }
 
-      /* Image showcase */
-      .showcase {
-        padding: 40px 0 80px;
+      .section-header {
+        text-align: center;
+        margin-bottom: var(--sp-48);
       }
 
-      .showcase-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 24px;
-      }
-
-      .showcase-card {
-        display: flex;
-        flex-direction: column;
-        gap: 16px;
-      }
-
-      .showcase-frame {
-        position: relative;
-        border: 1px solid var(--line);
-        border-radius: 28px;
-        overflow: hidden;
-        background: linear-gradient(180deg, #0a0a0a, #000);
-        aspect-ratio: 4 / 3;
-      }
-
-      .showcase-frame img {
-        display: block;
+      /* ============================================================
+         STARFIELD CANVAS (full-page background)
+         ============================================================ */
+      #starfield {
+        position: fixed;
+        inset: 0;
         width: 100%;
         height: 100%;
-        object-fit: cover;
+        z-index: 0;
+        pointer-events: none;
       }
 
-      .showcase-caption {
-        font-size: 14px;
-        color: var(--muted);
-        line-height: 1.5;
-        padding: 0 8px;
+      /* Frost overlay that sits above the starfield, below all content.
+         Gives the page a calm, frosted depth without killing star visibility. */
+      .page-frost {
+        position: fixed;
+        inset: 0;
+        z-index: 1;
+        pointer-events: none;
+        background: rgba(0, 0, 0, 0.4);
       }
 
-      .showcase-caption strong {
-        color: var(--fg);
-        font-weight: 600;
+      /* All page content lives above the starfield + frost */
+      .page-content {
+        position: relative;
+        z-index: 2;
       }
 
-      @media (max-width: 720px) {
-        .showcase-grid {
-          grid-template-columns: 1fr;
-        }
+      /* ============================================================
+         NAV (glassmorphism bar)
+         ============================================================ */
+      nav {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 100;
+        background: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(var(--blur-backdrop));
+        -webkit-backdrop-filter: blur(var(--blur-backdrop));
+        border-bottom: 1px solid var(--line);
       }
 
-      /* Bird picker — sprite sheets from /assets/birds copied verbatim
-         from the Flutter app. Animation runs at the same 200ms step time
-         (BIRD_ANIMATION_STEP_TIME) as in BirdPicker.dart. */
-      .picker {
-        padding: 100px 0;
-        border-top: 1px solid var(--line);
+      nav .container {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        height: 56px;
       }
 
-      .picker-header {
-        text-align: center;
-        margin-bottom: 56px;
+      .brand {
+        font-family: var(--font-pixel);
+        font-weight: 800;
+        font-size: 12px;
+        letter-spacing: 0;
       }
 
-      .bird-stage {
+      .brand-dot {
+        color: var(--brand-red);
+      }
+
+      .nav-cta {
+        font-family: var(--font-pixel);
+        font-size: 9px;
+        letter-spacing: 0.04em;
+        padding: var(--sp-12) var(--sp-16);
+        background: var(--on-surface);
+        color: var(--bg);
+        border-radius: var(--radius-circle);
+        transition: transform 0.15s ease;
+      }
+
+      .nav-cta:hover {
+        transform: translateY(-1px);
+      }
+
+      /* ============================================================
+         HERO
+         ============================================================ */
+      .hero {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        padding: 100px 0 80px;
+      }
+
+      .hero-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: var(--sp-48);
+        align-items: center;
+        width: 100%;
+      }
+
+      .hero-text {
+        text-align: left;
+      }
+
+      .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--sp-8);
+        padding: var(--sp-8) var(--sp-16);
+        border: 1px solid var(--line);
+        border-radius: var(--radius-circle);
+        font-family: var(--font-pixel);
+        font-size: 8px;
+        letter-spacing: 0.06em;
+        color: var(--text-secondary);
+        margin-bottom: var(--sp-32);
+      }
+
+      .eyebrow-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--brand-red);
+        box-shadow: 0 0 12px var(--brand-red);
+      }
+
+      h1 {
+        font-family: var(--font-pixel);
+        font-size: clamp(20px, 3.8vw, 44px);
+        font-weight: 700;
+        line-height: 1.3;
+        letter-spacing: 0;
+        max-width: 18ch;
+      }
+
+      h1 .accent {
+        color: var(--brand-red);
+      }
+
+      .hero-sub {
+        margin-top: var(--sp-24);
+        font-family: var(--font-reading);
+        font-size: clamp(16px, 1.4vw, 20px);
+        color: var(--text-secondary);
+        max-width: 36ch;
+        line-height: 1.6;
+      }
+
+      .hero-cta {
+        margin-top: var(--sp-40);
+        display: flex;
+        gap: var(--sp-16);
+        flex-wrap: wrap;
+      }
+
+      /* ============================================================
+         PHONE MOCKUP
+         ============================================================ */
+      .hero-phone {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .phone {
+        position: relative;
+        width: 280px;
+        height: 580px;
+        border-radius: 44px;
+        border: 2px solid rgba(255, 255, 255, 0.12);
+        overflow: hidden;
+        background: var(--bg);
+        box-shadow:
+          0 0 0 1px rgba(0, 0, 0, 0.5),
+          0 24px 64px -12px rgba(0, 0, 0, 0.6),
+          0 0 120px -20px rgba(114, 172, 173, 0.12);
+        flex-shrink: 0;
+      }
+
+      .phone-island {
+        position: absolute;
+        top: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 84px;
+        height: 24px;
+        background: #000;
+        border-radius: 12px;
+        z-index: 20;
+      }
+
+      .phone-home-bar {
+        position: absolute;
+        bottom: 8px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 96px;
+        height: 4px;
+        background: rgba(255, 255, 255, 0.25);
+        border-radius: 2px;
+        z-index: 20;
+      }
+
+      .phone-starfield {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 1;
+      }
+
+      .phone-frost {
+        position: absolute;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.35);
+        backdrop-filter: blur(var(--blur-lunar));
+        -webkit-backdrop-filter: blur(var(--blur-lunar));
+        z-index: 2;
+      }
+
+      .phone-ui {
+        position: relative;
+        z-index: 5;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        padding: 40px 0 20px;
+        overflow: hidden;
+      }
+
+      /* ---- Chrome bar (TopProgressBar port) ----
+         Row: [X close] [12px] [progress bar] [12px] [moon]
+         All children blurred at opacity 0.25 + blur(6px) until tapped.
+         Matches ChromeBlur widget: AnimatedOpacity + ImageFiltered. */
+      .phone-chrome {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 12px;
+        flex-shrink: 0;
+        cursor: pointer;
+      }
+
+      .phone-chrome > * {
+        transition: opacity 200ms ease, filter 200ms ease;
+        opacity: 0.25;
+        filter: blur(6px);
+      }
+
+      .phone-chrome.is-revealed > * {
+        opacity: 1;
+        filter: blur(0);
+      }
+
+      /* Close icon: Pixel.close, 20px, color #9D9D9D (progressChromeColor) */
+      .chrome-close {
+        flex-shrink: 0;
+        width: 16px;
+        height: 16px;
+        position: relative;
+      }
+
+      .chrome-close::before,
+      .chrome-close::after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 12px;
+        height: 2px;
+        background: #9d9d9d;
+        border-radius: 1px;
+      }
+
+      .chrome-close::before {
+        transform: translate(-50%, -50%) rotate(45deg);
+      }
+
+      .chrome-close::after {
+        transform: translate(-50%, -50%) rotate(-45deg);
+      }
+
+      /* Progress bar: 12px height, 8px radius (RLDS.borderRadiusXSmall),
+         bg: #2C2C2E (backgroundLight), fill: accent color */
+      .chrome-progress {
+        flex: 1;
+        height: 8px;
+        background: var(--surface-elevated);
+        border-radius: 6px;
+        overflow: hidden;
+      }
+
+      .chrome-progress-fill {
+        height: 100%;
+        width: 25%;
+        background: var(--demo-accent);
+        border-radius: 6px;
+        transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      /* Moon icon: Pixel.moon, 24px, color #F9B42C (RLDS.warning) */
+      .chrome-moon {
+        flex-shrink: 0;
+        width: 16px;
+        height: 16px;
+        position: relative;
+      }
+
+      .chrome-moon::before {
+        content: "";
+        position: absolute;
+        top: 1px;
+        left: 3px;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        box-shadow: -4px 0 0 0 #f9b42c;
+      }
+
+      /* ---- Slide viewport ---- */
+      .demo-viewport {
+        flex: 1;
+        overflow: hidden;
+        position: relative;
+        touch-action: pan-y;
+      }
+
+      .demo-track {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .demo-track.is-dragging {
+        transition: none;
+      }
+
+      /* Each slide matches the full viewport height of the phone content area.
+         Padding mirrors contentPaddingInsets (24px) scaled for phone width. */
+      .demo-slide {
+        display: flex;
+        flex-direction: column;
+        padding: 12px 18px 8px;
+        position: relative;
+      }
+
+      .demo-slide-content {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: stretch;
+      }
+
+      /* ---- CCTextContent: reading text with typewriter ---- */
+      .demo-reading-text {
+        font-family: var(--font-reading);
+        font-size: 13px;
+        line-height: 1.6;
+        color: var(--on-surface);
+        letter-spacing: 0.01em;
+        text-align: left;
+        width: 100%;
+      }
+
+      .demo-reading-text .char {
+        opacity: 0;
+        transition: opacity 50ms linear;
+      }
+
+      .demo-reading-text .char.visible {
+        opacity: 1;
+      }
+
+      /* ---- CCQuote: bird + italic quote + author ---- */
+      .demo-quote-wrap {
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        gap: 24px;
-        padding: 56px 24px;
-        border: 1px solid var(--line);
-        border-radius: 28px;
-        background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent);
-        margin-bottom: 24px;
-        min-height: 320px;
-      }
-
-      .bird-preview {
-        width: 256px;
-        height: 192px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
-
-      .bird-preview .sprite {
-        transform: scale(5);
-        transform-origin: center;
-      }
-
-      .bird-name {
-        font-family: "Press Start 2P", ui-monospace, monospace;
-        font-size: 14px;
-        letter-spacing: 0;
-        color: var(--red);
-      }
-
-      .bird-grid {
-        display: grid;
-        grid-template-columns: repeat(5, 1fr);
+        flex: 1;
         gap: 12px;
       }
 
-      .bird-tile {
-        aspect-ratio: 1 / 1;
-        border: 1px solid var(--line);
-        border-radius: 16px;
-        background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent);
+      .demo-quote-text {
+        font-family: var(--font-reading);
+        font-size: 13px;
+        font-style: italic;
+        line-height: 1.6;
+        color: var(--on-surface);
+        letter-spacing: 0.01em;
+        text-align: center;
+        width: 100%;
+      }
+
+      .demo-quote-text .char {
+        opacity: 0;
+        transition: opacity 50ms linear;
+      }
+
+      .demo-quote-text .char.visible {
+        opacity: 1;
+      }
+
+      .demo-quote-author {
+        font-family: var(--font-ui);
+        font-size: 10px;
+        color: var(--text-muted);
+        text-align: center;
+        letter-spacing: 0.01em;
+      }
+
+      /* ---- CCTrueFalseQuestion: statement + two glass buttons ---- */
+      .demo-statement {
+        font-family: var(--font-reading);
+        font-size: 13px;
+        line-height: 1.6;
+        color: var(--on-surface);
+        letter-spacing: 0.01em;
+        text-align: left;
+        width: 100%;
+      }
+
+      .demo-statement .char {
+        opacity: 0;
+        transition: opacity 50ms linear;
+      }
+
+      .demo-statement .char.visible {
+        opacity: 1;
+      }
+
+      .demo-tf-row {
+        display: flex;
+        gap: 12px;
+        width: 100%;
+        margin-top: 12px;
+      }
+
+      /* RLCard.subtle: glass surface, 2px border, 12px radius.
+         Each button shows an icon character + label.
+         True = info (#29B1F4), False = error (#F65562). */
+      .demo-tf-btn {
+        flex: 1;
         display: flex;
         align-items: center;
         justify-content: center;
-        cursor: pointer;
-        transition: border-color 0.15s ease, transform 0.15s ease, background 0.2s ease;
+        gap: 6px;
+        padding: 12px 8px;
+        border-radius: var(--radius-sm);
+        background: var(--surface-elevated);
+        border: 2px solid rgba(229, 229, 229, 0.15);
+        color: var(--on-surface);
+        font-family: var(--font-ui);
+        font-size: 10px;
+        font-weight: 600;
+        text-align: center;
+        transition: border-color 0.4s ease, background 0.4s ease,
+          color 0.4s ease, opacity 0.4s ease;
       }
 
-      .bird-tile:hover {
-        border-color: #3a3a3a;
-        transform: translateY(-2px);
+      .demo-tf-icon {
+        font-size: 14px;
+        line-height: 1;
+        opacity: 0.7;
+        transition: opacity 0.4s ease, color 0.4s ease;
       }
 
-      .bird-tile.is-selected {
-        border-color: var(--red);
-        background: rgba(238, 70, 84, 0.08);
+      /* True button selected preview: info blue */
+      .demo-tf-btn.is-true-preview {
+        border-color: var(--info);
+        background: rgba(41, 177, 244, 0.1);
+        color: var(--info);
       }
 
-      .bird-tile .sprite {
-        transform: scale(2);
+      .demo-tf-btn.is-true-preview .demo-tf-icon {
+        opacity: 1;
+        color: var(--info);
+      }
+
+      /* False button selected preview: error red */
+      .demo-tf-btn.is-false-preview {
+        border-color: var(--markup-red);
+        background: rgba(248, 113, 113, 0.1);
+        color: var(--markup-red);
+      }
+
+      .demo-tf-btn.is-false-preview .demo-tf-icon {
+        opacity: 1;
+        color: var(--markup-red);
+      }
+
+      /* Correct answer: success green border + bg */
+      .demo-tf-btn.is-correct {
+        border-color: var(--success);
+        background: rgba(74, 222, 128, 0.1);
+        color: var(--success);
+      }
+
+      .demo-tf-btn.is-correct .demo-tf-icon {
+        opacity: 1;
+        color: var(--success);
+      }
+
+      /* Wrong / muted: reduced opacity */
+      .demo-tf-btn.is-muted {
+        opacity: 0.4;
+        border-color: rgba(229, 229, 229, 0.1);
+      }
+
+      /* ---- LessonFinishScreen: bird + title + clock row + Fin ---- */
+      .demo-finish {
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        flex: 1;
+      }
+
+      .demo-finish-title {
+        font-family: var(--font-pixel);
+        font-size: 10px;
+        color: var(--on-surface);
+        line-height: 1.25;
+        letter-spacing: 0;
+      }
+
+      /* Time row: clock icon + MM:SS, matching TimeSpentRow */
+      .demo-time-row {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        margin-top: 4px;
+      }
+
+      .demo-time-clock {
+        width: 12px;
+        height: 12px;
+        border: 1.5px solid var(--text-secondary);
+        border-radius: 50%;
+        position: relative;
+      }
+
+      .demo-time-clock::before {
+        content: "";
+        position: absolute;
+        top: 2px;
+        left: 50%;
+        width: 1.5px;
+        height: 4px;
+        background: var(--text-secondary);
+        transform-origin: bottom center;
+        transform: translateX(-50%) rotate(0deg);
+      }
+
+      .demo-time-clock::after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 3px;
+        height: 1.5px;
+        background: var(--text-secondary);
+        transform-origin: left center;
+        transform: translateY(-50%);
+      }
+
+      .demo-time-value {
+        font-family: var(--font-ui);
+        font-size: 12px;
+        font-weight: 500;
+        color: var(--text-secondary);
+        line-height: 1.4;
+        letter-spacing: 0.01em;
+      }
+
+      /* ---- CCContinueButton: text-only, accent color, full width ----
+         Matches: JetBrains Mono 16px (bodyLarge), weight 500,
+         color = course accent, padding 16v 24h, centered.
+         Scaled for phone: 12px font, 10px/16px padding. */
+      .demo-continue {
+        font-family: var(--font-ui);
+        font-size: 12px;
+        font-weight: 500;
+        color: var(--demo-accent);
+        text-align: center;
+        padding: 10px 16px 4px;
+        letter-spacing: 0.01em;
+        opacity: 0;
+        transition: opacity 200ms ease;
+        flex-shrink: 0;
+        width: 100%;
+      }
+
+      .demo-continue.visible {
+        opacity: 1;
+      }
+
+      /* Fin button: RLButton.tertiary, markup green, full width */
+      .demo-continue.is-fin {
+        color: var(--markup-green);
+      }
+
+      /* ---- Bird sprite inside phone ---- */
+      .demo-bird-sprite {
+        display: block;
+        image-rendering: pixelated;
+        image-rendering: crisp-edges;
+        background-repeat: no-repeat;
+      }
+
+      /* ---- Swipe hint ---- */
+      .phone-hint {
+        margin-top: var(--sp-16);
+        text-align: center;
+        font-family: var(--font-ui);
+        font-size: 11px;
+        color: var(--text-muted);
+        animation: hintPulse 2s ease-in-out infinite;
+      }
+
+      @keyframes hintPulse {
+        0%, 100% { opacity: 0.4; }
+        50% { opacity: 0.8; }
+      }
+
+      /* ============================================================
+         BIRD PICKER (vertical slider)
+         ============================================================ */
+      .birds {
+        padding: 120px 0;
+        border-top: 1px solid var(--line);
+      }
+
+      .bird-slider-wrapper {
+        max-width: 400px;
+        margin: 0 auto;
+      }
+
+      .bird-slider {
+        padding: var(--sp-32);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: var(--sp-24);
+        position: relative;
+      }
+
+      .bird-slider-viewport {
+        width: 100%;
+        height: 200px;
+        overflow: hidden;
+        position: relative;
+      }
+
+      .bird-slider-track {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .bird-slider-track.is-dragging {
+        transition: none;
+      }
+
+      .bird-slide {
+        height: 200px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: var(--sp-16);
+      }
+
+      .bird-slide-preview {
+        width: 160px;
+        height: 120px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .bird-slide-preview .sprite {
+        transform: scale(4);
         transform-origin: center;
+      }
+
+      .bird-slide-name {
+        font-family: var(--font-pixel);
+        font-size: 11px;
+        color: var(--brand-red);
+        letter-spacing: 0;
+        text-align: center;
+      }
+
+      .bird-slide-origin {
+        font-family: var(--font-ui);
+        font-size: 11px;
+        color: var(--text-muted);
+        text-align: center;
+        margin-top: -8px;
       }
 
       .sprite {
@@ -447,387 +927,139 @@
         image-rendering: crisp-edges;
       }
 
-      @media (max-width: 720px) {
-        .bird-grid {
-          grid-template-columns: repeat(3, 1fr);
-        }
-        .bird-preview .sprite {
-          transform: scale(4);
-        }
-      }
-
-      /* Reading configurator — mirrors lib/screens/profile/SettingsDemos.dart.
-         Each card pairs a tap target (toggle or sample) with a live preview
-         that re-renders on change. */
-      .reader {
-        padding: 100px 0 140px;
-        border-top: 1px solid var(--line);
-      }
-
-      .reader-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 16px;
-        margin-top: 56px;
-      }
-
-      .reader-card {
-        border: 1px solid var(--line);
-        border-radius: 24px;
-        padding: 28px;
-        background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent);
+      /* Navigation arrows */
+      .bird-nav {
         display: flex;
-        flex-direction: column;
-        gap: 18px;
-        transition: border-color 0.2s ease;
+        gap: var(--sp-12);
       }
 
-      .reader-card:hover {
-        border-color: #3a3a3a;
-      }
-
-      .reader-card-head {
+      .bird-nav-btn {
+        width: 44px;
+        height: 44px;
+        border-radius: var(--radius-sm);
+        background: var(--glass-surface);
+        backdrop-filter: blur(var(--blur-lunar));
+        -webkit-backdrop-filter: blur(var(--blur-lunar));
+        border: 1px solid var(--glass-border);
+        color: var(--text-secondary);
+        font-size: 14px;
         display: flex;
         align-items: center;
-        justify-content: space-between;
-        gap: 16px;
+        justify-content: center;
+        transition: border-color 0.2s ease, transform 0.15s ease;
       }
 
-      .reader-card-title {
-        font-family: "Press Start 2P", ui-monospace, monospace;
-        font-size: 11px;
-        letter-spacing: 0;
-        color: var(--fg);
-        line-height: 1.5;
+      .bird-nav-btn:hover {
+        border-color: rgba(255, 255, 255, 0.12);
+        transform: translateY(-1px);
       }
 
-      .reader-card-sub {
-        font-family: "Playfair Display", Georgia, serif;
-        font-size: 14px;
-        line-height: 1.5;
-        color: var(--muted);
-        letter-spacing: normal;
+      .bird-nav-btn:disabled {
+        opacity: 0.25;
+        cursor: default;
+        transform: none;
       }
 
-      .reader-card-body {
-        font-family: "Playfair Display", Georgia, serif;
-        font-size: 17px;
-        line-height: 1.65;
-        color: var(--fg);
-        letter-spacing: normal;
-        min-height: 5.5em;
+      /* Dots indicator */
+      .bird-dots {
+        display: flex;
+        gap: 6px;
       }
 
-      /* Blur preview — same lyrics-blur params as RLDS.lyricsBlurSigma /
-         RLDS.lyricsBlurOpacity (3px, 0.5). */
-      .blur-prev {
-        color: var(--fg);
-      }
-
-      .blur-prev.is-blurred {
-        filter: blur(3px);
-        opacity: 0.5;
-      }
-
-      .blur-current {
-        color: var(--fg);
-      }
-
-      /* Colored text — markupGreen + bold matches ProgressiveText's
-         <c:g> rendering. */
-      .colored-key {
-        color: var(--fg);
-        font-weight: 400;
-      }
-
-      .colored-key.is-on {
-        color: var(--green);
-        font-weight: 700;
-      }
-
-      /* Bionic — bold first ~40% of each word. */
-      .bionic-word b {
-        font-weight: 800;
-      }
-
-      /* Justified text. */
-      .justified-body.is-on {
-        text-align: justify;
-      }
-
-      /* Reveal — character-by-character fade in, layout reserved by hidden tail. */
-      .reveal-body .ch {
-        opacity: 0;
-        transition: opacity 200ms linear;
-      }
-
-      .reveal-body.is-instant .ch {
-        opacity: 1;
-        transition: none;
-      }
-
-      /* iOS-style toggle. */
-      .toggle {
-        flex-shrink: 0;
-        width: 48px;
-        height: 28px;
-        border-radius: 100px;
-        background: var(--surface-elev);
-        position: relative;
-        cursor: pointer;
-        border: none;
-        padding: 0;
-        transition: background 0.2s ease;
-      }
-
-      .toggle::after {
-        content: "";
-        position: absolute;
-        top: 2px;
-        left: 2px;
-        width: 24px;
-        height: 24px;
+      .bird-dot {
+        width: 6px;
+        height: 6px;
         border-radius: 50%;
-        background: #fff;
-        transition: transform 0.2s ease;
+        background: var(--surface-elevated);
+        transition: background 0.3s ease, transform 0.2s ease;
       }
 
-      .toggle.is-on {
-        background: var(--green);
+      .bird-dot.is-active {
+        background: var(--brand-red);
+        transform: scale(1.3);
       }
 
-      .toggle.is-on::after {
-        transform: translateX(20px);
-      }
-
-      @media (max-width: 720px) {
-        .reader-grid {
-          grid-template-columns: 1fr;
-        }
-      }
-
-      /* Manifesto section */
-      .manifesto {
+      /* ============================================================
+         HOW IT WORKS (3 glass cards)
+         ============================================================ */
+      .how {
         padding: 120px 0;
         border-top: 1px solid var(--line);
       }
 
-      .manifesto-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 80px;
-        align-items: start;
-      }
-
-      .section-label {
-        font-size: 13px;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 0.12em;
-        color: var(--red);
-        margin-bottom: 24px;
-      }
-
-      .section-title {
-        font-size: clamp(32px, 4vw, 56px);
-        font-weight: 800;
-        line-height: 1;
-        letter-spacing: -0.03em;
-      }
-
-      .manifesto-body {
-        font-size: 18px;
-        line-height: 1.6;
-        color: var(--muted);
-      }
-
-      .manifesto-body p + p {
-        margin-top: 20px;
-      }
-
-      .manifesto-body strong {
-        color: var(--fg);
-        font-weight: 600;
-      }
-
-      /* Pillars */
-      .pillars {
-        padding: 120px 0;
-        border-top: 1px solid var(--line);
-      }
-
-      .pillars-header {
-        text-align: center;
-        margin-bottom: 80px;
-      }
-
-      .pillars-grid {
+      .how-grid {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
-        gap: 24px;
+        gap: var(--sp-20);
       }
 
-      .pillar {
-        padding: 40px;
-        border: 1px solid var(--line);
-        border-radius: 24px;
-        background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent);
+      .how-card {
+        padding: var(--sp-32);
         transition: border-color 0.2s ease, transform 0.2s ease;
       }
 
-      .pillar:hover {
-        border-color: #2a2a2a;
+      .how-card:hover {
+        border-color: rgba(255, 255, 255, 0.1);
         transform: translateY(-4px);
       }
 
-      .pillar-num {
-        font-size: 13px;
+      .how-num {
+        font-family: var(--font-pixel);
+        font-size: 9px;
         font-weight: 600;
-        color: var(--red);
-        margin-bottom: 24px;
+        color: var(--brand-red);
         letter-spacing: 0.08em;
+        margin-bottom: var(--sp-20);
       }
 
-      .pillar-title {
-        font-size: 22px;
+      .how-title {
+        font-family: var(--font-pixel);
+        font-size: 12px;
         font-weight: 700;
-        letter-spacing: -0.02em;
-        margin-bottom: 12px;
+        letter-spacing: 0;
+        line-height: 1.5;
+        margin-bottom: var(--sp-12);
       }
 
-      .pillar-body {
+      .how-body {
+        font-family: var(--font-reading);
         font-size: 15px;
-        line-height: 1.55;
-        color: var(--muted);
+        line-height: 1.65;
+        color: var(--text-secondary);
       }
 
-      /* Love list */
-      .love-list {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-      }
-
-      .love-list li {
-        padding: 20px 0;
-        border-bottom: 1px solid var(--line);
-        display: flex;
-        gap: 24px;
-        align-items: baseline;
-      }
-
-      .love-list li:first-child {
-        padding-top: 0;
-      }
-
-      .love-list li:last-child {
-        border-bottom: none;
-        padding-bottom: 0;
-      }
-
-      .love-list .name {
-        font-size: 18px;
-        font-weight: 700;
-        color: var(--fg);
-        flex-shrink: 0;
-        min-width: 160px;
-        letter-spacing: -0.01em;
-      }
-
-      .love-list .why {
-        font-size: 16px;
-        color: var(--muted);
-        line-height: 1.55;
-      }
-
-      @media (max-width: 600px) {
-        .love-list li {
-          flex-direction: column;
-          gap: 6px;
-        }
-        .love-list .name {
-          min-width: 0;
-        }
-      }
-
-      /* Creed */
-      .creed {
-        padding: 140px 0;
-        border-top: 1px solid var(--line);
-        text-align: center;
-      }
-
-      .creed-text {
-        font-size: clamp(36px, 5.5vw, 80px);
-        font-weight: 900;
-        line-height: 1;
-        letter-spacing: -0.04em;
-        max-width: 22ch;
-        margin: 0 auto;
-      }
-
-      .creed-text .accent {
-        color: var(--red);
-      }
-
-      /* Big claim */
-      .claim {
-        padding: 160px 0;
-        text-align: center;
-        border-top: 1px solid var(--line);
-      }
-
-      .claim-text {
-        font-size: clamp(36px, 6vw, 88px);
-        font-weight: 900;
-        line-height: 0.95;
-        letter-spacing: -0.04em;
-        max-width: 18ch;
-        margin: 0 auto;
-      }
-
-      .claim-text .strike {
-        position: relative;
-        color: var(--muted);
-        white-space: nowrap;
-      }
-
-      .claim-text .strike::after {
-        content: "";
-        position: absolute;
-        left: -4%;
-        right: -4%;
-        top: 52%;
-        height: 6px;
-        background: var(--red);
-        transform: rotate(-3deg);
-      }
-
-      /* CTA */
+      /* ============================================================
+         CTA
+         ============================================================ */
       .cta {
-        padding: 120px 0 160px;
+        padding: 120px 0 140px;
         border-top: 1px solid var(--line);
         text-align: center;
       }
 
       .cta h2 {
-        font-size: clamp(40px, 6vw, 80px);
-        font-weight: 900;
-        letter-spacing: -0.04em;
-        line-height: 1;
-        margin-bottom: 24px;
+        font-family: var(--font-pixel);
+        font-size: clamp(18px, 3vw, 32px);
+        font-weight: 700;
+        letter-spacing: 0;
+        line-height: 1.3;
+        margin-bottom: var(--sp-16);
       }
 
       .cta p {
+        font-family: var(--font-reading);
         font-size: 18px;
-        color: var(--muted);
-        margin-bottom: 40px;
+        color: var(--text-secondary);
+        line-height: 1.6;
+        margin-bottom: var(--sp-32);
       }
 
-      /* Footer */
+      /* ============================================================
+         FOOTER
+         ============================================================ */
       footer {
         border-top: 1px solid var(--line);
-        padding: 48px 0;
+        padding: var(--sp-40) 0;
       }
 
       footer .container {
@@ -835,915 +1067,954 @@
         align-items: center;
         justify-content: space-between;
         flex-wrap: wrap;
-        gap: 16px;
+        gap: var(--sp-16);
       }
 
       .footer-meta {
-        font-size: 13px;
-        color: var(--muted);
+        font-family: var(--font-pixel);
+        font-size: 8px;
+        color: var(--text-muted);
+        letter-spacing: 0.04em;
       }
 
       .footer-links {
         display: flex;
-        gap: 24px;
-        font-size: 13px;
-        color: var(--muted);
+        gap: var(--sp-24);
+        font-family: var(--font-ui);
+        font-size: 12px;
+        color: var(--text-muted);
       }
 
-      /* === Font pairing: Press Start 2P + Playfair Display ===
-         Default is pixel font for identity/impact text; Playfair Display
-         takes over any long-form paragraph. Override block placed late in
-         the cascade so it wins over the earlier Inter-era rules. */
-
-      html,
-      body {
-        font-family: "Press Start 2P", ui-monospace, "Courier New", monospace;
-        font-feature-settings: normal;
+      .footer-links a:hover {
+        color: var(--on-surface);
       }
 
-      /* Playfair Display only where people actually read multiple lines */
-      .hero-prelude,
-      .hero-sub,
-      .manifesto-body,
-      .manifesto-body p,
-      .pillar-body,
-      .showcase-caption,
-      .love-list .why,
-      .cta p {
-        font-family: "Playfair Display", Georgia, "Times New Roman", serif;
-        letter-spacing: normal;
-      }
-
-      /* Pixel-font size recalibration — Press Start 2P reads ~1.6–2x larger
-         than a sans-serif at the same pt, and negative letter-spacing crunches
-         pixel glyphs into mush. Scale impact text down and neutralise spacing. */
-      h1,
-      .section-title,
-      .interrupt-text,
-      .creed-text,
-      .claim-text,
-      .cta h2 {
-        letter-spacing: 0;
-        line-height: 1.25;
-      }
-
-      h1 {
-        font-size: clamp(22px, 4.2vw, 52px);
-        max-width: 22ch;
-        line-height: 1.2;
-      }
-
-      .section-title {
-        font-size: clamp(16px, 2.4vw, 30px);
-        line-height: 1.35;
-      }
-
-      .interrupt-text {
-        font-size: clamp(16px, 2.8vw, 36px);
-        line-height: 1.45;
-        max-width: 28ch;
-      }
-
-      .creed-text {
-        font-size: clamp(18px, 3.2vw, 42px);
-        max-width: 28ch;
-        line-height: 1.35;
-      }
-
-      .claim-text {
-        font-size: clamp(18px, 3.2vw, 42px);
-        max-width: 26ch;
-        line-height: 1.3;
-      }
-
-      .cta h2 {
-        font-size: clamp(20px, 3.2vw, 40px);
-        line-height: 1.25;
-      }
-
-      .brand {
-        font-size: 13px;
-        letter-spacing: 0;
-      }
-
-      .nav-links {
-        font-size: 9px;
-        letter-spacing: 0.04em;
-        gap: 24px;
-      }
-
-      .nav-cta {
-        font-size: 10px;
-        letter-spacing: 0.04em;
-        padding: 12px 18px;
-      }
-
-      .eyebrow,
-      .section-label,
-      .pillar-num,
-      .hero-cite,
-      .footer-meta,
-      .footer-links {
-        font-size: 9px;
-        letter-spacing: 0.08em;
-      }
-
-      .pillar-title {
-        font-size: 13px;
-        letter-spacing: 0;
-        line-height: 1.5;
-      }
-
-      .love-list .name {
-        font-size: 11px;
-        letter-spacing: 0;
-        min-width: 140px;
-        line-height: 1.5;
-      }
-
-      .btn {
-        font-size: 10px;
-        letter-spacing: 0.04em;
-        padding: 18px 24px;
-      }
-
-      /* Long-form sizing — Playfair Display handles these, so restore
-         comfortable reading sizes and line-heights. */
-      .manifesto-body,
-      .manifesto-body p {
-        font-size: 19px;
-        line-height: 1.7;
-        letter-spacing: normal;
-      }
-
-      .pillar-body {
-        font-size: 16px;
-        line-height: 1.7;
-      }
-
-      .hero-prelude {
-        font-size: 15px;
-        line-height: 1.7;
-      }
-
-      .hero-sub {
-        font-size: clamp(16px, 1.4vw, 20px);
-        line-height: 1.65;
-      }
-
-      .showcase-caption {
-        font-size: 15px;
-        line-height: 1.65;
-      }
-
-      .love-list .why {
-        font-size: 17px;
-        line-height: 1.6;
-      }
-
-      .cta p {
-        font-size: 19px;
-        line-height: 1.6;
-      }
-
-      /* Strike marker in .claim-text needs to clear the taller pixel glyphs */
-      .claim-text .strike::after {
-        top: 58%;
-        height: 4px;
-      }
-
-      /* Responsive */
-      @media (max-width: 880px) {
-        .nav-links {
-          display: none;
-        }
-        .manifesto-grid {
-          grid-template-columns: 1fr;
-          gap: 32px;
-        }
-        .pillars-grid {
-          grid-template-columns: 1fr;
-        }
+      /* ============================================================
+         RESPONSIVE
+         ============================================================ */
+      @media (max-width: 900px) {
         .hero {
           padding: 100px 0 60px;
         }
+
         .hero-grid {
           grid-template-columns: 1fr;
-          gap: 32px;
+          gap: var(--sp-48);
         }
+
         .hero-text {
           text-align: center;
         }
-        .hero-text .hero-sub {
+
+        .hero-text h1 {
+          max-width: none;
+          margin: 0 auto;
+        }
+
+        .hero-sub {
           margin-left: auto;
           margin-right: auto;
         }
-        .hero-text .hero-cta {
+
+        .hero-cta {
           justify-content: center;
         }
-        .hero-visual {
-          min-height: 320px;
-          max-height: 60vh;
+
+        .how-grid {
+          grid-template-columns: 1fr;
         }
-        .manifesto,
-        .pillars {
-          padding: 80px 0;
+      }
+
+      @media (max-width: 600px) {
+        .container {
+          padding: 0 var(--sp-16);
         }
-        .claim {
-          padding: 100px 0;
+
+        .phone {
+          width: 240px;
+          height: 500px;
+          border-radius: 36px;
         }
+
+        .phone-island {
+          width: 72px;
+          height: 20px;
+          top: 8px;
+          border-radius: 10px;
+        }
+
+        .demo-slide {
+          padding: 8px 14px 6px;
+        }
+
+        .demo-reading-text,
+        .demo-quote-text,
+        .demo-statement {
+          font-size: 11px;
+        }
+
+        .bird-slide-preview .sprite {
+          transform: scale(3);
+        }
+
+        .birds,
+        .how,
         .cta {
-          padding: 80px 0 100px;
+          padding: 80px 0;
         }
       }
     </style>
   </head>
   <body>
-    <nav>
-      <div class="container">
-        <a href="#" class="brand">READLOCK<span class="brand-dot">.</span></a>
-        <div class="nav-links">
-          <a href="#manifesto">Manifesto</a>
-          <a href="#pillars">How</a>
-          <a href="#download">Download</a>
+    <!-- Full-page starfield (port of RLStarfieldBackground.dart) -->
+    <canvas id="starfield"></canvas>
+
+    <!-- Frost layer -->
+    <div class="page-frost"></div>
+
+    <!-- All visible content -->
+    <div class="page-content">
+      <!-- Nav -->
+      <nav>
+        <div class="container">
+          <a href="#" class="brand">READLOCK<span class="brand-dot">.</span></a>
+          <a href="#download" class="nav-cta">Download</a>
         </div>
-        <a href="#download" class="nav-cta">Download →</a>
-      </div>
-    </nav>
+      </nav>
 
-    <section class="hero">
-      <div class="container">
-        <div class="hero-grid">
-          <div class="hero-text">
-            <h1>
-              No <span class="accent">cringefest</span> microlearning APP
-            </h1>
-            <p class="hero-cite">Readlock</p>
-            <p class="hero-sub">
-              If the mascots and confetti stopped working on you, you're in the right place.
-            </p>
-            <div class="hero-cta">
-              <a href="#download" class="btn btn-primary">Start reading →</a>
-              <a href="#manifesto" class="btn btn-ghost">Read the manifesto</a>
+      <!-- Hero -->
+      <section class="hero">
+        <div class="container">
+          <div class="hero-grid">
+            <div class="hero-text">
+              <div class="eyebrow">
+                <span class="eyebrow-dot"></span>
+                Microlearning
+              </div>
+              <h1>
+                Read it.<br />
+                <span class="accent">Lock it in.</span>
+              </h1>
+              <p class="hero-sub">
+                If the mascots and confetti stopped working on you,
+                you are in the right place.
+              </p>
+              <div class="hero-cta">
+                <a href="#download" class="btn btn-primary">Start reading</a>
+                <a href="#how" class="btn btn-glass">How it works</a>
+              </div>
             </div>
-          </div>
-          <div class="hero-visual">
-            <canvas class="hero-canvas" aria-hidden="true"></canvas>
-          </div>
-        </div>
-      </div>
-    </section>
 
-    <section class="interrupt">
-      <div class="container">
-        <p class="interrupt-text">
-          <span class="cliche">"TikTok for smart peop-"</span><br />
-          <span class="reply">Shut the f**k up.</span>
-        </p>
-      </div>
-    </section>
-
-    <section class="picker" id="birds">
-      <div class="container">
-        <div class="picker-header">
-          <div class="section-label">Pick your bird</div>
-          <h2 class="section-title">Ten hand-pixelled birds.<br />One lives on your bookshelf.</h2>
-        </div>
-        <div class="bird-stage">
-          <div class="bird-preview" id="birdPreview"></div>
-          <div class="bird-name" id="birdName">Sparrow</div>
-        </div>
-        <div class="bird-grid" id="birdGrid"></div>
-      </div>
-    </section>
-
-    <section class="manifesto" id="manifesto">
-      <div class="container manifesto-grid">
-        <div>
-          <div class="section-label">Manifesto</div>
-          <h2 class="section-title">What microlearning became.<br />And what it should be.</h2>
-        </div>
-        <div class="manifesto-body">
-          <p>
-            The current shape of microlearning is some f**cking corporate
-            Memphis illustration, a smiling mascot, and a weekly streak that
-            turns a missed day into guilt. The whole loop is a slot machine
-            wearing a smile.
-          </p>
-          <p>
-            <strong>People once had a clay tablet and a sharp stick.</strong>
-            From those, they worked out arithmetic, written law, the calendar,
-            and the first stories that outlived their authors. The tools were
-            almost nothing, and the attention was everything.
-          </p>
-          <p>
-            Real learning is slow on purpose. It asks the reader to sit with
-            one idea long enough that the idea has somewhere to live. Readlock
-            is built for that, and nothing else.
-          </p>
-        </div>
-      </div>
-    </section>
-
-    <section class="pillars" id="pillars">
-      <div class="container">
-        <div class="pillars-header">
-          <div class="section-label">How it works</div>
-          <h2 class="section-title">Three rules, and nothing else.</h2>
-        </div>
-        <div class="pillars-grid">
-          <div class="pillar">
-            <div class="pillar-num">01 / READ</div>
-            <h3 class="pillar-title">Ideas worth the read</h3>
-            <p class="pillar-body">
-              Each lesson is built on something a careful reader would
-              underline. We cut the throat-clearing and keep the part that
-              actually changes how a subject is understood.
-            </p>
-          </div>
-          <div class="pillar">
-            <div class="pillar-num">02 / LOCK</div>
-            <h3 class="pillar-title">Built so it stays</h3>
-            <p class="pillar-body">
-              Every package ends with a small check: a question, a true or
-              false, a moment to reflect. Not a test. A second pass through
-              memory before the app closes.
-            </p>
-          </div>
-          <div class="pillar">
-            <div class="pillar-num">03 / GO</div>
-            <h3 class="pillar-title">No streaks, no guilt</h3>
-            <p class="pillar-body">
-              Skip a day, or skip a month. The lessons wait. There are no
-              streaks to defend, and nothing to feel bad about when life
-              gets in the way.
-            </p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="reader" id="reader">
-      <div class="container">
-        <div class="picker-header">
-          <div class="section-label">Reading configurator</div>
-          <h2 class="section-title">Tune the reader.<br />The way it sits in the app.</h2>
-        </div>
-        <div class="reader-grid">
-          <!-- Blur -->
-          <div class="reader-card" data-card="blur">
-            <div class="reader-card-head">
-              <div class="reader-card-title">Apple-Music blur</div>
-              <button class="toggle is-on" data-toggle="blur" aria-label="Toggle blur"></button>
-            </div>
-            <div class="reader-card-body">
-              <span class="blur-prev is-blurred">The sentence you just finished softly steps back.</span><br />
-              <span class="blur-current">This one is what you are reading now.</span>
-            </div>
-          </div>
-
-          <!-- Coloured key terms -->
-          <div class="reader-card" data-card="colored">
-            <div class="reader-card-head">
-              <div class="reader-card-title">Coloured key terms</div>
-              <button class="toggle is-on" data-toggle="colored" aria-label="Toggle coloured terms"></button>
-            </div>
-            <div class="reader-card-body">
-              The idea worth holding is <span class="colored-key is-on">cognitive load</span>, and the rest of the sentence carries it.
-            </div>
-          </div>
-
-          <!-- Bionic -->
-          <div class="reader-card" data-card="bionic">
-            <div class="reader-card-head">
-              <div class="reader-card-title">Bionic reading</div>
-              <button class="toggle" data-toggle="bionic" aria-label="Toggle bionic"></button>
-            </div>
-            <div class="reader-card-body bionic-body">
-              The eye lands on the bold part of each word and the rest fills itself in without effort.
-            </div>
-          </div>
-
-          <!-- Justified -->
-          <div class="reader-card" data-card="justified">
-            <div class="reader-card-head">
-              <div class="reader-card-title">Justified text</div>
-              <button class="toggle" data-toggle="justified" aria-label="Toggle justified"></button>
-            </div>
-            <div class="reader-card-body justified-body">
-              Either edge of the column locks straight, the way a printed page reads, with the spaces between words doing the small work of keeping the line tidy.
-            </div>
-          </div>
-
-          <!-- Reveal -->
-          <div class="reader-card" data-card="reveal">
-            <div class="reader-card-head">
-              <div class="reader-card-title">Character reveal</div>
-              <button class="toggle is-on" data-toggle="reveal" aria-label="Toggle reveal"></button>
-            </div>
-            <div class="reader-card-body reveal-body" id="revealBody">Each character fades in at its own moment, the way a thought arrives.</div>
-          </div>
-
-          <!-- Colour preview of the markup palette -->
-          <div class="reader-card" data-card="palette">
-            <div class="reader-card-head">
-              <div class="reader-card-title">Markup palette</div>
-              <span class="reader-card-sub">RLDS values</span>
-            </div>
-            <div class="reader-card-body">
-              A <span style="color: var(--green); font-weight: 700">good thing</span> stays green.
-              A <span style="color: var(--red); font-weight: 700">bad thing</span> stays warm red.
-              The rest of the line stays calm.
+            <div class="hero-phone">
+              <div>
+                <div class="phone" id="phone">
+                  <div class="phone-island"></div>
+                  <canvas class="phone-starfield" id="phoneStarfield"></canvas>
+                  <div class="phone-frost"></div>
+                  <div class="phone-ui">
+                    <!-- Chrome bar: [X] [progress] [moon], all blurred until tapped -->
+                    <div class="phone-chrome" id="phoneChrome">
+                      <div class="chrome-close"></div>
+                      <div class="chrome-progress">
+                        <div class="chrome-progress-fill" id="demoProgressFill"></div>
+                      </div>
+                      <div class="chrome-moon"></div>
+                    </div>
+                    <div class="demo-viewport" id="demoViewport">
+                      <div class="demo-track" id="demoTrack"></div>
+                    </div>
+                  </div>
+                  <div class="phone-home-bar"></div>
+                </div>
+                <p class="phone-hint">Swipe to explore</p>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <section class="manifesto" id="investors">
-      <div class="container manifesto-grid">
-        <div>
-          <div class="section-label">Investors we said no to</div>
-          <h2 class="section-title">All of them,<br />so far.</h2>
+      <!-- Bird Picker -->
+      <section class="birds" id="birds">
+        <div class="container">
+          <div class="section-header">
+            <div class="section-label">Pick your bird</div>
+            <h2 class="section-title">
+              Ten hand-pixelled birds.<br />One lives on your bookshelf.
+            </h2>
+          </div>
+          <div class="bird-slider-wrapper">
+            <div class="bird-slider glass glass-lg">
+              <div class="bird-slider-viewport" id="birdViewport">
+                <div class="bird-slider-track" id="birdTrack"></div>
+              </div>
+              <div class="bird-dots" id="birdDots"></div>
+              <div class="bird-nav">
+                <button class="bird-nav-btn" id="birdPrev" aria-label="Previous bird">&#9650;</button>
+                <button class="bird-nav-btn" id="birdNext" aria-label="Next bird">&#9660;</button>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="manifesto-body">
-          <p>
-            We said no to investors trying to make our app into another crappy
-            f**kfest. Every pitch deck asked for the same three things: a
-            brighter mascot, a longer streak, and a louder daily push to drag
-            the user back into the app.
-          </p>
-          <p>
-            That is the part of microlearning we are leaving behind. The only
-            deal we would take is the one that lets the app stay calm, slow,
-            and worth a careful reader's time.
-          </p>
-        </div>
-      </div>
-    </section>
+      </section>
 
-    <section class="manifesto" id="love">
-      <div class="container manifesto-grid">
-        <div>
-          <div class="section-label">Companies we love</div>
-          <h2 class="section-title">The ones quietly<br />doing it right.</h2>
+      <!-- How It Works -->
+      <section class="how" id="how">
+        <div class="container">
+          <div class="section-header">
+            <div class="section-label">How it works</div>
+            <h2 class="section-title">Three rules, nothing else.</h2>
+          </div>
+          <div class="how-grid">
+            <div class="how-card glass">
+              <div class="how-num">01 / READ</div>
+              <h3 class="how-title">Ideas worth the read</h3>
+              <p class="how-body">
+                Each lesson is built on something a careful reader would
+                underline. We cut the throat-clearing and keep the part
+                that actually changes how a subject is understood.
+              </p>
+            </div>
+            <div class="how-card glass">
+              <div class="how-num">02 / LOCK</div>
+              <h3 class="how-title">Built so it stays</h3>
+              <p class="how-body">
+                Every package ends with a small check: a question, a
+                true or false, a moment to reflect. Not a test. A second
+                pass through memory before the app closes.
+              </p>
+            </div>
+            <div class="how-card glass">
+              <div class="how-num">03 / GO</div>
+              <h3 class="how-title">No streaks, no guilt</h3>
+              <p class="how-body">
+                Skip a day, or skip a month. The lessons wait. There
+                are no streaks to defend, and nothing to feel bad about
+                when life gets in the way.
+              </p>
+            </div>
+          </div>
         </div>
-        <div>
-          <ul class="love-list">
-            <li>
-              <span class="name">Veritasium</span>
-              <span class="why">Long videos that respect the viewer enough to slow down.</span>
-            </li>
-            <li>
-              <span class="name">Kurzgesagt</span>
-              <span class="why">A studio that explains hard things without performing wonder.</span>
-            </li>
-            <li>
-              <span class="name">Wikipedia</span>
-              <span class="why">Still the best paragraph on the internet, written by people who care.</span>
-            </li>
-            <li>
-              <span class="name">Are.na</span>
-              <span class="why">A calm corner of the web where attention is the whole point.</span>
-            </li>
-            <li>
-              <span class="name">Linear</span>
-              <span class="why">Software with opinions, built for people who actually do the work.</span>
-            </li>
-            <li>
-              <span class="name">iA Writer</span>
-              <span class="why">A writing tool that disappears so the writing can show up.</span>
-            </li>
-            <li>
-              <span class="name">Cultured Code</span>
-              <span class="why">Things 3. No streaks, no badges, and nothing shouting at the user.</span>
-            </li>
-            <li>
-              <span class="name">Panic</span>
-              <span class="why">Mac software with care in every pixel and every release note.</span>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </section>
+      </section>
 
-    <section class="manifesto" id="copycats">
-      <div class="container manifesto-grid">
-        <div>
-          <div class="section-label">The imbeciles that tried to copy us</div>
-          <h2 class="section-title">A small graveyard,<br />five entries deep.</h2>
+      <!-- CTA -->
+      <section class="cta" id="download">
+        <div class="container">
+          <h2>Start reading.</h2>
+          <p>Coming to iOS and Android. The list is open.</p>
+          <a href="#" class="btn btn-primary">Join the waitlist</a>
         </div>
-        <div>
-          <ul class="love-list">
-            <li>
-              <span class="name">Lockify</span>
-              <span class="why">Stole our name, slapped a smiling padlock mascot on it, and pitched the result on Product Hunt as "the Duolingo of microlearning." The team was three twenty-two-year-olds and an uncle in finance. Dead in five months, which is the only thing they got right.</span>
-            </li>
-            <li>
-              <span class="name">Skimrr</span>
-              <span class="why">Ripped off the one-idea-per-swipe structure and immediately ruined it with a streak counter, a mascot named Skimi, and a 6am push that reads "don't break the chain." Their CEO posts daily on LinkedIn about discipline, to an audience of 11 followers and a beige headshot.</span>
-            </li>
-            <li>
-              <span class="name">Brainjar</span>
-              <span class="why">Squatted on the URL three days after our launch post. The site is one page with an animated brain in a jar and an email field. Two years later the brain is still rotating, and there is still no f**king app.</span>
-            </li>
-            <li>
-              <span class="name">Microwise</span>
-              <span class="why">Cloned our manifesto, ran it through a thesaurus, and shipped it on a Squarespace template. The result reads like a fortune cookie that swallowed a TED talk and threw it back up at a brunch.</span>
-            </li>
-            <li>
-              <span class="name">Bytemind</span>
-              <span class="why">Tried to hire our second-favourite copywriter the week after she turned us down. They paid her in equity, which is now worth a sandwich. Her first draft for them was about confirmation bias, which is the only lesson their founders should be reading.</span>
-            </li>
-          </ul>
+      </section>
+
+      <!-- Footer -->
+      <footer>
+        <div class="container">
+          <div class="footer-meta">&copy; Readlock 2026</div>
+          <div class="footer-links">
+            <a href="#">Privacy</a>
+            <a href="#">Terms</a>
+            <a href="mailto:support@readlock.org">Contact</a>
+          </div>
         </div>
-      </div>
-    </section>
-
-    <section class="creed">
-      <div class="container">
-        <p class="creed-text">
-          F**k you, motherf**kers.<br />
-          We are doing this the <span class="accent">cool f**cking way</span>.
-        </p>
-      </div>
-    </section>
-
-    <section class="claim">
-      <div class="container">
-        <p class="claim-text">
-          <span class="strike">Streaks, mascots, or confetti.</span><br />
-          Just&nbsp;<span class="accent" style="color: var(--red)">learning</span>.
-        </p>
-      </div>
-    </section>
-
-    <section class="manifesto" id="careers">
-      <div class="container manifesto-grid">
-        <div>
-          <div class="section-label">Careers</div>
-          <h2 class="section-title">Wanted: people who hate<br />the same things we do.</h2>
-        </div>
-        <div class="manifesto-body">
-          <p>
-            We are hiring slowly, the way the rest of the app was built. If
-            you write, design, or code with care, and the current state of
-            edtech makes you tired, we want to hear from you.
-          </p>
-          <p>
-            Email <strong>support@readlock.org</strong> with one paragraph about
-            what bothers you about the apps you use today, and one thing you
-            have made that you are still proud of.
-          </p>
-        </div>
-      </div>
-    </section>
-
-    <section class="cta" id="download">
-      <div class="container">
-        <h2>Join the cult.</h2>
-        <p>Coming to iOS and Android. The list is open.</p>
-        <a href="#" class="btn btn-primary">Join the cult →</a>
-      </div>
-    </section>
-
-    <footer>
-      <div class="container">
-        <div class="footer-meta">© Readlock 2026. No-bs microlearning.</div>
-        <div class="footer-links">
-          <a href="#careers">Careers</a>
-          <a href="#">Privacy</a>
-          <a href="#">Terms</a>
-          <a href="#">Contact</a>
-        </div>
-      </div>
-    </footer>
+      </footer>
+    </div>
 
     <script>
-      // === Hero background: rotating T(3,2) trefoil knot ===
-      // Parametric torus knot sampled as points, rotated in 3D each frame,
-      // projected with simple perspective, rendered as depth-shaded pixels.
-      // No WebGL dependency — the canvas 2D context is enough.
-      (function () {
-        const canvas = document.querySelector(".hero-canvas");
+      /* ============================================================
+         1. STARFIELD (port of RLStarfieldBackground.dart)
+         ============================================================
+         Same parameters as the Flutter widget:
+           starCount  = 80
+           starSize   = 2.0
+           driftSpeed = 8.0 px/s
+           seed       = 42
+           opacity    = 0.35..1.0
+           size jitter= 0.8..2.0x
+           parallax   = 0.4..1.4x speed
+         Stars drift downward and wrap around the canvas height. */
+
+      function createStarfield(canvas, opts) {
         if (!canvas) return;
+        var ctx = canvas.getContext("2d", { alpha: true });
+        var count = opts.count || 80;
+        var baseSize = opts.size || 2.0;
+        var speed = opts.speed || 8.0;
+        var seed = opts.seed || 42;
+        var color = opts.color || [229, 229, 229];
 
-        const ctx = canvas.getContext("2d", { alpha: true });
-        const prefersReducedMotion = window.matchMedia(
-          "(prefers-reduced-motion: reduce)"
-        ).matches;
-
-        let cssWidth = 0;
-        let cssHeight = 0;
-        let devicePixelRatioCached = 1;
-
-        function resizeCanvas() {
-          devicePixelRatioCached = window.devicePixelRatio || 1;
-          cssWidth = canvas.clientWidth;
-          cssHeight = canvas.clientHeight;
-          canvas.width = Math.floor(cssWidth * devicePixelRatioCached);
-          canvas.height = Math.floor(cssHeight * devicePixelRatioCached);
-          ctx.setTransform(
-            devicePixelRatioCached,
-            0,
-            0,
-            devicePixelRatioCached,
-            0,
-            0
-          );
+        // Seeded PRNG (simple LCG)
+        var s = seed;
+        function rand() {
+          s = (s * 1664525 + 1013904223) & 0xffffffff;
+          return (s >>> 0) / 0xffffffff;
         }
 
-        resizeCanvas();
-        window.addEventListener("resize", resizeCanvas);
-
-        // Torus knot T(p, q) — (3, 2) is the trefoil
-        const TOROIDAL_WINDINGS = 3;
-        const POLOIDAL_WINDINGS = 2;
-        const MAJOR_RADIUS = 1;
-        const MINOR_RADIUS = 0.42;
-        const SAMPLE_COUNT = 520;
-        const CAMERA_DISTANCE = 2.8;
-
-        // Precompute the knot in model space
-        const knotPoints = [];
-        for (let sampleIndex = 0; sampleIndex < SAMPLE_COUNT; sampleIndex++) {
-          const t = (sampleIndex / SAMPLE_COUNT) * Math.PI * 2;
-          const poloidal = MINOR_RADIUS * Math.cos(POLOIDAL_WINDINGS * t);
-          const radial = MAJOR_RADIUS + poloidal;
-          knotPoints.push({
-            x: radial * Math.cos(TOROIDAL_WINDINGS * t),
-            y: radial * Math.sin(TOROIDAL_WINDINGS * t),
-            z: MINOR_RADIUS * Math.sin(POLOIDAL_WINDINGS * t),
+        var stars = [];
+        for (var i = 0; i < count; i++) {
+          stars.push({
+            x: rand(),
+            y: rand(),
+            sz: baseSize * (0.8 + rand() * 1.2),
+            op: 0.35 + rand() * 0.65,
+            sp: 0.4 + rand() * 1.0,
           });
         }
 
-        let angleX = 0.3;
-        let angleY = 0;
-        let lastFrameTime = performance.now();
-
-        function renderFrame(now) {
-          const deltaSeconds = Math.min((now - lastFrameTime) / 1000, 0.05);
-          lastFrameTime = now;
-
-          ctx.clearRect(0, 0, cssWidth, cssHeight);
-
-          const centerX = cssWidth / 2;
-          const centerY = cssHeight / 2;
-          const baseScale = Math.min(cssWidth, cssHeight) * 0.42;
-
-          const cosX = Math.cos(angleX);
-          const sinX = Math.sin(angleX);
-          const cosY = Math.cos(angleY);
-          const sinY = Math.sin(angleY);
-
-          for (let i = 0; i < knotPoints.length; i++) {
-            const point = knotPoints[i];
-
-            // Rotate around X axis
-            const xAfterX = point.x;
-            const yAfterX = point.y * cosX - point.z * sinX;
-            const zAfterX = point.y * sinX + point.z * cosX;
-
-            // Rotate around Y axis
-            const xAfterY = xAfterX * cosY + zAfterX * sinY;
-            const zAfterY = -xAfterX * sinY + zAfterX * cosY;
-
-            // Perspective projection
-            const zShifted = zAfterY + CAMERA_DISTANCE;
-            const perspectiveScale = baseScale / zShifted;
-            const screenX = xAfterY * perspectiveScale + centerX;
-            const screenY = yAfterX * perspectiveScale + centerY;
-
-            // Depth-shaded opacity — far points fade into the black
-            const depthFactor = Math.max(
-              0.12,
-              Math.min(1, 2.2 / zShifted)
-            );
-
-            // Accent every 20th point in red — brand pulse
-            const isAccentPoint = i % 20 === 0;
-            const pixelSize = isAccentPoint ? 3 : 2;
-
-            if (isAccentPoint) {
-              ctx.fillStyle =
-                "rgba(238, 70, 84, " + depthFactor.toFixed(3) + ")";
-            } else {
-              ctx.fillStyle =
-                "rgba(255, 255, 255, " +
-                (depthFactor * 0.85).toFixed(3) +
-                ")";
-            }
-
-            ctx.fillRect(
-              Math.round(screenX),
-              Math.round(screenY),
-              pixelSize,
-              pixelSize
-            );
-          }
-
-          // Two-axis rotation at incommensurable rates so the silhouette never repeats.
-          // Reduced-motion users get a gentler rotation instead of a full freeze —
-          // the animation is subtle enough that total stasis would just look broken.
-          const rotationBoost = prefersReducedMotion ? 0.25 : 1;
-          angleY += deltaSeconds * 0.22 * rotationBoost;
-          angleX += deltaSeconds * 0.09 * rotationBoost;
-
-          requestAnimationFrame(renderFrame);
+        var w = 0, h = 0, dpr = 1;
+        function resize() {
+          dpr = window.devicePixelRatio || 1;
+          w = canvas.clientWidth;
+          h = canvas.clientHeight;
+          canvas.width = Math.floor(w * dpr);
+          canvas.height = Math.floor(h * dpr);
+          ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
         }
+        resize();
+        window.addEventListener("resize", resize);
 
-        requestAnimationFrame(renderFrame);
-      })();
+        var elapsed = 0;
+        var last = performance.now();
 
-      // === Bird picker ===
-      // Mirrors lib/screens/profile/BirdPicker.dart — same per-bird sprite
-      // metadata (frameCount, frameWidth/Height, content offsets), same
-      // 200ms step time. Each tile is one DOM node whose background-position
-      // is advanced on a shared 200ms tick.
+        function frame(now) {
+          var dt = Math.min((now - last) / 1000, 0.05);
+          last = now;
+          elapsed += dt;
+          ctx.clearRect(0, 0, w, h);
+
+          for (var i = 0; i < stars.length; i++) {
+            var st = stars[i];
+            var x = st.x * w;
+            var y = (st.y * h + elapsed * speed * st.sp) % h;
+            ctx.fillStyle =
+              "rgba(" + color[0] + "," + color[1] + "," + color[2] + "," + st.op.toFixed(3) + ")";
+            ctx.fillRect(Math.round(x), Math.round(y), st.sz, st.sz);
+          }
+          requestAnimationFrame(frame);
+        }
+        requestAnimationFrame(frame);
+      }
+
+      // Full-page background starfield
+      createStarfield(document.getElementById("starfield"), {
+        count: 80,
+        size: 2.0,
+        speed: 8.0,
+        seed: 42,
+      });
+
+      // Phone mini-starfield (same algorithm, different seed for variety)
+      createStarfield(document.getElementById("phoneStarfield"), {
+        count: 40,
+        size: 1.5,
+        speed: 6.0,
+        seed: 77,
+      });
+
+      /* ============================================================
+         2. PHONE DEMO (auto-cycling CourseContentViewer simulation)
+         ============================================================
+         Four slides matching the app's content types exactly:
+           0 = CCTextContent (typewriter reveal, Lora reading font)
+           1 = CCQuote (bird sprite + italic text + author)
+           2 = CCTrueFalseQuestion (glass buttons with icons, two-phase answer)
+           3 = LessonFinishScreen (bird + title + TimeSpentRow + Fin)
+         Chrome bar (TopProgressBar) has blur/reveal on click.
+         Auto-advances every ~5.5s. Touch/drag to swipe manually. */
+
       (function () {
-        const BIRDS = [
-          { name: "Sparrow",       file: "Sparrow.png",      firstFrame: 0, frameCount: 4, frameW: 64, frameH: 64, offX: 16, offY: 16, contentW: 32, contentH: 32 },
-          { name: "Pigeon",        file: "Pigeon.png",       firstFrame: 1, frameCount: 4, frameW: 64, frameH: 64, offX: 16, offY: 16, contentW: 32, contentH: 32 },
-          { name: "Collared Dove", file: "CollaredDove.png", firstFrame: 1, frameCount: 4, frameW: 64, frameH: 64, offX: 16, offY: 16, contentW: 32, contentH: 32 },
-          { name: "Crow",          file: "Crow.png",         firstFrame: 1, frameCount: 4, frameW: 64, frameH: 64, offX: 16, offY: 16, contentW: 32, contentH: 32 },
-          { name: "Blue Macaw",    file: "BlueMacaw.png",    firstFrame: 0, frameCount: 5, frameW: 26, frameH: 17, offX: 0,  offY: 0,  contentW: 26, contentH: 17 },
-          { name: "Flamingo",      file: "Flamingo.png",     firstFrame: 0, frameCount: 4, frameW: 35, frameH: 33, offX: 0,  offY: 0,  contentW: 35, contentH: 33 },
-          { name: "Kiwi",          file: "Kiwi.png",         firstFrame: 0, frameCount: 4, frameW: 27, frameH: 17, offX: 0,  offY: 0,  contentW: 27, contentH: 17 },
-          { name: "Shoebill",      file: "Shoebill.png",     firstFrame: 0, frameCount: 4, frameW: 30, frameH: 36, offX: 0,  offY: 0,  contentW: 30, contentH: 36 },
-          { name: "Toucan",        file: "Toucan.png",       firstFrame: 0, frameCount: 5, frameW: 32, frameH: 18, offX: 0,  offY: 0,  contentW: 32, contentH: 18 },
-          { name: "Peacock",       file: "Peacock.png",      firstFrame: 0, frameCount: 4, frameW: 128, frameH: 128, offX: 0, offY: 0, contentW: 128, contentH: 128 },
+        // Bird sprite config (Sparrow for demo)
+        var BIRD = {
+          file: "Sparrow.png",
+          firstFrame: 0,
+          frameCount: 4,
+          frameW: 64,
+          frameH: 64,
+          offX: 16,
+          offY: 16,
+          cW: 32,
+          cH: 32,
+        };
+        var STEP_MS = 200;
+
+        // Slide definitions: 7 text segments (CCTextContent) + finish screen
+        var SLIDES = [
+          {
+            type: "text",
+            text: "In 1956, a cognitive psychologist named George Miller published a paper that would quietly reshape how we think about thinking. He called it \"The Magical Number Seven.\"",
+            continueLabel: "Continue",
+          },
+          {
+            type: "text",
+            text: "Miller found that human working memory can hold roughly seven items at once. Not twenty. Not fifty. Seven, give or take two. After that, new information pushes the old out.",
+            continueLabel: "Continue",
+          },
+          {
+            type: "text",
+            text: "This is why phone numbers were seven digits. It is why most people can repeat a sentence back to you, but stumble on a paragraph. The bottleneck is not intelligence. It is architecture.",
+            continueLabel: "Continue",
+          },
+          {
+            type: "text",
+            text: "But Miller also discovered something stranger. Experts did not seem bound by the same limit. A chess grandmaster could glance at a board and recall every piece. A musician could hear a melody once and play it back perfectly.",
+            continueLabel: "Continue",
+          },
+          {
+            type: "text",
+            text: "The trick was not a bigger memory. It was chunking. Experts compress raw data into meaningful patterns, and each pattern occupies just one slot. Where a novice sees 24 pieces, the grandmaster sees 5 formations.",
+            continueLabel: "Continue",
+          },
+          {
+            type: "text",
+            text: "This is what real learning looks like. Not memorising more facts, but building better chunks. Every concept you truly understand becomes a single unit, freeing space for the next one.",
+            continueLabel: "Continue",
+          },
+          {
+            type: "text",
+            text: "So the ceiling is real. But it is not fixed. The reader who learns to chunk well does not need more memory. They need better compression. And that is something you can practise.",
+            continueLabel: "Continue",
+          },
+          {
+            type: "finish",
+            title: "Package read",
+            seconds: 217,
+            continueLabel: "Fin",
+          },
         ];
 
-        const STEP_MS = 200;
-        const grid = document.getElementById("birdGrid");
-        const preview = document.getElementById("birdPreview");
-        const nameEl = document.getElementById("birdName");
-        if (!grid || !preview || !nameEl) return;
+        // DOM refs
+        var track = document.getElementById("demoTrack");
+        var viewport = document.getElementById("demoViewport");
+        var progressFill = document.getElementById("demoProgressFill");
+        var chromeBar = document.getElementById("phoneChrome");
+        if (!track || !viewport) return;
 
-        const animatedSprites = [];
-        let selectedIndex = 0;
+        var currentSlide = 0;
+        var slideCount = SLIDES.length;
+        var slideHeight = 0;
+        var autoTimer = null;
+        var typewriterTimer = null;
+        var AUTO_DELAY = 7000;
 
-        function makeSprite(bird) {
-          const sprite = document.createElement("div");
-          sprite.className = "sprite";
-          sprite.style.width = bird.contentW + "px";
-          sprite.style.height = bird.contentH + "px";
-          sprite.style.backgroundImage = "url('birds/" + bird.file + "')";
-          sprite.style.backgroundPositionY = (-bird.offY) + "px";
-          sprite._bird = bird;
-          sprite._frame = 0;
-          animatedSprites.push(sprite);
-          updateSpriteFrame(sprite);
-          return sprite;
+        // * Bird sprite animation
+        var demoSprites = [];
+        var birdFrame = 0;
+
+        function makeDemoSprite() {
+          var el = document.createElement("div");
+          el.className = "demo-bird-sprite";
+          el.style.width = BIRD.cW + "px";
+          el.style.height = BIRD.cH + "px";
+          el.style.backgroundImage = "url('birds/" + BIRD.file + "')";
+          el.style.backgroundPositionY = -BIRD.offY + "px";
+          el.style.transform = "scale(3)";
+          el.style.transformOrigin = "center";
+          demoSprites.push(el);
+          updateDemoSprite(el, 0);
+          return el;
         }
 
-        function updateSpriteFrame(sprite) {
-          const bird = sprite._bird;
-          const cellOriginX = (bird.firstFrame + sprite._frame) * bird.frameW;
-          sprite.style.backgroundPositionX = (-(cellOriginX + bird.offX)) + "px";
+        function updateDemoSprite(el, frame) {
+          var cellX = (BIRD.firstFrame + frame) * BIRD.frameW;
+          el.style.backgroundPositionX = -(cellX + BIRD.offX) + "px";
         }
 
-        function tick() {
-          for (let i = 0; i < animatedSprites.length; i++) {
-            const sprite = animatedSprites[i];
-            sprite._frame = (sprite._frame + 1) % sprite._bird.frameCount;
-            updateSpriteFrame(sprite);
+        setInterval(function () {
+          birdFrame = (birdFrame + 1) % BIRD.frameCount;
+          for (var i = 0; i < demoSprites.length; i++) {
+            updateDemoSprite(demoSprites[i], birdFrame);
           }
-        }
+        }, STEP_MS);
 
-        function renderPreview() {
-          preview.innerHTML = "";
-          const bird = BIRDS[selectedIndex];
-          // Remove the previous preview from animation pool by walking from end
-          for (let i = animatedSprites.length - 1; i >= 0; i--) {
-            if (animatedSprites[i]._isPreview) animatedSprites.splice(i, 1);
-          }
-          const sprite = makeSprite(bird);
-          sprite._isPreview = true;
-          preview.appendChild(sprite);
-          nameEl.textContent = bird.name;
-        }
-
-        function selectBird(newIndex) {
-          if (newIndex === selectedIndex) return;
-          selectedIndex = newIndex;
-          const tiles = grid.querySelectorAll(".bird-tile");
-          tiles.forEach((tile, i) => {
-            tile.classList.toggle("is-selected", i === newIndex);
+        // * Chrome bar interaction (ChromeBlur: blur/reveal on click)
+        if (chromeBar) {
+          chromeBar.addEventListener("click", function (e) {
+            e.stopPropagation();
+            chromeBar.classList.toggle("is-revealed");
           });
-          renderPreview();
+
+          viewport.addEventListener("click", function () {
+            chromeBar.classList.remove("is-revealed");
+          });
         }
 
-        // Build tiles
-        BIRDS.forEach((bird, index) => {
-          const tile = document.createElement("button");
-          tile.type = "button";
-          tile.className = "bird-tile" + (index === 0 ? " is-selected" : "");
-          tile.setAttribute("aria-label", bird.name);
-          tile.addEventListener("click", () => selectBird(index));
-          tile.appendChild(makeSprite(bird));
-          grid.appendChild(tile);
+        // * Build slides
+        function buildSlides() {
+          track.innerHTML = "";
+          demoSprites = [];
+
+          for (var i = 0; i < slideCount; i++) {
+            var s = SLIDES[i];
+            var slide = document.createElement("div");
+            slide.className = "demo-slide";
+
+            var content = document.createElement("div");
+            content.className = "demo-slide-content";
+
+            // Continue button (bottom of every slide)
+            var cont = document.createElement("div");
+            cont.className = "demo-continue";
+            cont.id = "demoCont" + i;
+            cont.textContent = s.continueLabel;
+
+            // CCTextContent: reading text with typewriter
+            if (s.type === "text") {
+              var p = document.createElement("div");
+              p.className = "demo-reading-text";
+              p.id = "demoText" + i;
+              content.style.justifyContent = "flex-start";
+              content.style.paddingTop = "24px";
+              content.appendChild(p);
+            }
+
+            // LessonFinishScreen: bird + title + TimeSpentRow + Fin
+            if (s.type === "finish") {
+              content.className += " demo-finish";
+
+              var fBird = makeDemoSprite();
+              var fBirdWrap = document.createElement("div");
+              fBirdWrap.style.marginBottom = "16px";
+              fBirdWrap.appendChild(fBird);
+              content.appendChild(fBirdWrap);
+
+              var ft = document.createElement("div");
+              ft.className = "demo-finish-title";
+              ft.id = "demoText" + i;
+              content.appendChild(ft);
+
+              // TimeSpentRow: clock icon + time value
+              var timeRow = document.createElement("div");
+              timeRow.className = "demo-time-row";
+              timeRow.id = "demoTimeRow" + i;
+              timeRow.style.opacity = "0";
+
+              var clockIcon = document.createElement("div");
+              clockIcon.className = "demo-time-clock";
+              timeRow.appendChild(clockIcon);
+
+              var timeVal = document.createElement("div");
+              timeVal.className = "demo-time-value";
+              timeVal.id = "demoTimer" + i;
+              timeVal.textContent = "0:00";
+              timeRow.appendChild(timeVal);
+
+              content.appendChild(timeRow);
+
+              // Fin button uses markup green
+              cont.classList.add("is-fin");
+            }
+
+            slide.appendChild(content);
+            slide.appendChild(cont);
+            track.appendChild(slide);
+          }
+        }
+
+        function measureSlideHeight() {
+          var firstSlide = track.querySelector(".demo-slide");
+          if (firstSlide) {
+            slideHeight = firstSlide.offsetHeight;
+          }
+        }
+
+        function updateProgress() {
+          var pct = ((currentSlide + 1) / slideCount) * 100;
+          if (progressFill) {
+            progressFill.style.width = pct + "%";
+          }
+        }
+
+        function goToSlide(index, animate) {
+          if (index < 0) index = 0;
+          if (index >= slideCount) index = 0;
+
+          currentSlide = index;
+
+          if (animate === false) {
+            track.classList.add("is-dragging");
+          } else {
+            track.classList.remove("is-dragging");
+          }
+
+          track.style.transform = "translateY(-" + currentSlide * slideHeight + "px)";
+          updateProgress();
+
+          if (animate !== false) {
+            track.classList.remove("is-dragging");
+          }
+
+          animateSlideContent(currentSlide);
+        }
+
+        // * Typewriter effect (char-by-char reveal)
+        function typewrite(el, text, speed, callback) {
+          el.innerHTML = "";
+          var chars = [];
+
+          for (var i = 0; i < text.length; i++) {
+            var span = document.createElement("span");
+            span.className = "char";
+            span.textContent = text[i];
+            el.appendChild(span);
+            chars.push(span);
+          }
+
+          var idx = 0;
+
+          if (typewriterTimer) {
+            clearInterval(typewriterTimer);
+          }
+
+          typewriterTimer = setInterval(function () {
+            if (idx < chars.length) {
+              chars[idx].classList.add("visible");
+              idx++;
+            } else {
+              clearInterval(typewriterTimer);
+              typewriterTimer = null;
+              if (callback) callback();
+            }
+          }, speed);
+        }
+
+        // * Slide content animation
+        function animateSlideContent(index) {
+          var s = SLIDES[index];
+          var textEl = document.getElementById("demoText" + index);
+          var contEl = document.getElementById("demoCont" + index);
+
+          if (contEl) {
+            contEl.classList.remove("visible");
+          }
+
+          var textToType = "";
+          if (s.type === "text") textToType = s.text;
+          if (s.type === "finish") textToType = s.title;
+
+          if (textEl && textToType) {
+            typewrite(textEl, textToType, s.type === "finish" ? 60 : 25, function () {
+              // Show continue button after typing (1400ms delay matching RLReveal)
+              if (contEl) {
+                setTimeout(function () {
+                  contEl.classList.add("visible");
+                }, 400);
+              }
+
+              // Finish: show time row with count-up animation
+              if (s.type === "finish") {
+                var timeRowEl = document.getElementById("demoTimeRow" + index);
+                var timerEl = document.getElementById("demoTimer" + index);
+
+                if (timeRowEl) {
+                  timeRowEl.style.transition = "opacity 0.3s ease";
+                  timeRowEl.style.opacity = "1";
+                }
+
+                if (timerEl) {
+                  // Count-up from 0 to target (easeOut curve, 1200ms)
+                  var target = s.seconds;
+                  var startTime = performance.now();
+                  var duration = 1200;
+
+                  function formatTime(totalSec) {
+                    var m = Math.floor(totalSec / 60);
+                    var sec = totalSec % 60;
+                    return m + ":" + (sec < 10 ? "0" : "") + sec;
+                  }
+
+                  function animateCount(now) {
+                    var elapsed = now - startTime;
+                    var progress = Math.min(elapsed / duration, 1);
+
+                    // EaseOut curve (matching Curves.easeOut)
+                    var eased = 1 - Math.pow(1 - progress, 3);
+                    var current = Math.round(eased * target);
+
+                    timerEl.textContent = formatTime(current);
+
+                    if (progress < 1) {
+                      requestAnimationFrame(animateCount);
+                    }
+                  }
+
+                  requestAnimationFrame(animateCount);
+                }
+              }
+            });
+          }
+        }
+
+        // * Reset slide to initial state
+        function resetSlideContent(index) {
+          var textEl = document.getElementById("demoText" + index);
+          var contEl = document.getElementById("demoCont" + index);
+
+          if (textEl) textEl.innerHTML = "";
+          if (contEl) contEl.classList.remove("visible");
+
+          if (SLIDES[index].type === "finish") {
+            var timeRowEl = document.getElementById("demoTimeRow" + index);
+            var timerEl = document.getElementById("demoTimer" + index);
+
+            if (timeRowEl) timeRowEl.style.opacity = "0";
+
+            if (timerEl) {
+              timerEl.textContent = "0:00";
+            }
+          }
+        }
+
+        // * Auto-play
+        function startAutoPlay() {
+          stopAutoPlay();
+
+          autoTimer = setInterval(function () {
+            var next = (currentSlide + 1) % slideCount;
+
+            for (var i = 0; i < slideCount; i++) {
+              resetSlideContent(i);
+            }
+
+            goToSlide(next);
+          }, AUTO_DELAY);
+        }
+
+        function stopAutoPlay() {
+          if (autoTimer) {
+            clearInterval(autoTimer);
+            autoTimer = null;
+          }
+        }
+
+        // * Touch/drag handling
+        var isDragging = false;
+        var startY = 0;
+        var deltaY = 0;
+        var autoResumeTimer = null;
+
+        function onPointerDown(e) {
+          isDragging = true;
+          startY = e.touches ? e.touches[0].clientY : e.clientY;
+          deltaY = 0;
+          track.classList.add("is-dragging");
+          stopAutoPlay();
+        }
+
+        function onPointerMove(e) {
+          if (!isDragging) return;
+
+          var y = e.touches ? e.touches[0].clientY : e.clientY;
+          deltaY = y - startY;
+          var offset = -(currentSlide * slideHeight) + deltaY;
+          track.style.transform = "translateY(" + offset + "px)";
+        }
+
+        function onPointerUp() {
+          if (!isDragging) return;
+          isDragging = false;
+          track.classList.remove("is-dragging");
+
+          var threshold = slideHeight * 0.2;
+
+          if (Math.abs(deltaY) > threshold) {
+            if (deltaY < 0 && currentSlide < slideCount - 1) {
+              for (var i = 0; i < slideCount; i++) resetSlideContent(i);
+              goToSlide(currentSlide + 1);
+            } else if (deltaY > 0 && currentSlide > 0) {
+              for (var i = 0; i < slideCount; i++) resetSlideContent(i);
+              goToSlide(currentSlide - 1);
+            } else {
+              goToSlide(currentSlide);
+            }
+          } else {
+            goToSlide(currentSlide);
+          }
+
+          // Resume auto-play after 8s of inactivity
+          if (autoResumeTimer) clearTimeout(autoResumeTimer);
+          autoResumeTimer = setTimeout(startAutoPlay, 8000);
+        }
+
+        viewport.addEventListener("touchstart", onPointerDown, { passive: true });
+        viewport.addEventListener("touchmove", onPointerMove, { passive: true });
+        viewport.addEventListener("touchend", onPointerUp);
+        viewport.addEventListener("mousedown", onPointerDown);
+        window.addEventListener("mousemove", onPointerMove);
+        window.addEventListener("mouseup", onPointerUp);
+
+        // * Init
+        buildSlides();
+
+        requestAnimationFrame(function () {
+          measureSlideHeight();
+          goToSlide(0, false);
+
+          setTimeout(function () {
+            goToSlide(0);
+          }, 300);
+
+          startAutoPlay();
         });
 
-        renderPreview();
-        setInterval(tick, STEP_MS);
+        window.addEventListener("resize", function () {
+          measureSlideHeight();
+          goToSlide(currentSlide, false);
+        });
       })();
 
-      // === Reading configurator ===
-      // One-to-one with the demos in lib/screens/profile/SettingsDemos.dart:
-      // toggle flips a class on the preview body, which carries the same
-      // visual transformation as the in-app demo.
+      /* ============================================================
+         3. BIRD PICKER (vertical slider with animated sprites)
+         ============================================================
+         Vertical carousel showing one bird at a time with navigation
+         arrows and dot indicators. Sprite animation at 200ms per frame
+         (matching BIRD_ANIMATION_STEP_TIME in BirdPicker.dart). */
+
       (function () {
-        const REVEAL_TEXT = "Each character fades in at its own moment, the way a thought arrives.";
-        const revealBody = document.getElementById("revealBody");
-        let revealTimer = null;
+        var BIRDS = [
+          { name: "Sparrow", origin: "Passero", file: "Sparrow.png", firstFrame: 0, frameCount: 4, frameW: 64, frameH: 64, offX: 16, offY: 16, cW: 32, cH: 32 },
+          { name: "Pigeon", origin: "Piccione", file: "Pigeon.png", firstFrame: 1, frameCount: 4, frameW: 64, frameH: 64, offX: 16, offY: 16, cW: 32, cH: 32 },
+          { name: "Collared Dove", origin: "Kumru", file: "CollaredDove.png", firstFrame: 1, frameCount: 4, frameW: 64, frameH: 64, offX: 16, offY: 16, cW: 32, cH: 32 },
+          { name: "Crow", origin: "Karasu", file: "Crow.png", firstFrame: 1, frameCount: 4, frameW: 64, frameH: 64, offX: 16, offY: 16, cW: 32, cH: 32 },
+          { name: "Blue Macaw", origin: "Arara-azul", file: "BlueMacaw.png", firstFrame: 0, frameCount: 5, frameW: 26, frameH: 17, offX: 0, offY: 0, cW: 26, cH: 17 },
+          { name: "Flamingo", origin: "Flamenco", file: "Flamingo.png", firstFrame: 0, frameCount: 4, frameW: 35, frameH: 33, offX: 0, offY: 0, cW: 35, cH: 33 },
+          { name: "Kiwi", origin: "Kiwi", file: "Kiwi.png", firstFrame: 0, frameCount: 4, frameW: 27, frameH: 17, offX: 0, offY: 0, cW: 27, cH: 17 },
+          { name: "Shoebill", origin: "Abu Markub", file: "Shoebill.png", firstFrame: 0, frameCount: 4, frameW: 30, frameH: 36, offX: 0, offY: 0, cW: 30, cH: 36 },
+          { name: "Toucan", origin: "Tucano", file: "Toucan.png", firstFrame: 0, frameCount: 5, frameW: 32, frameH: 18, offX: 0, offY: 0, cW: 32, cH: 18 },
+          { name: "Peacock", origin: "Peacock", file: "Peacock.png", firstFrame: 0, frameCount: 4, frameW: 128, frameH: 128, offX: 0, offY: 0, cW: 128, cH: 128 },
+        ];
 
-        function buildRevealSpans() {
-          revealBody.innerHTML = "";
-          for (let i = 0; i < REVEAL_TEXT.length; i++) {
-            const ch = document.createElement("span");
-            ch.className = "ch";
-            ch.textContent = REVEAL_TEXT[i];
-            revealBody.appendChild(ch);
+        var STEP_MS = 200;
+        var SLIDE_HEIGHT = 200;
+        var trackEl = document.getElementById("birdTrack");
+        var dotsEl = document.getElementById("birdDots");
+        var prevBtn = document.getElementById("birdPrev");
+        var nextBtn = document.getElementById("birdNext");
+        var viewportEl = document.getElementById("birdViewport");
+        if (!trackEl || !dotsEl) return;
+
+        var currentBird = 0;
+        var allSprites = [];
+
+        function makeSprite(bird) {
+          var el = document.createElement("div");
+          el.className = "sprite";
+          el.style.width = bird.cW + "px";
+          el.style.height = bird.cH + "px";
+          el.style.backgroundImage = "url('birds/" + bird.file + "')";
+          el.style.backgroundPositionY = -bird.offY + "px";
+          el._bird = bird;
+          el._frame = 0;
+          allSprites.push(el);
+          updateSpriteFrame(el);
+          return el;
+        }
+
+        function updateSpriteFrame(el) {
+          var b = el._bird;
+          var cx = (b.firstFrame + el._frame) * b.frameW;
+          el.style.backgroundPositionX = -(cx + b.offX) + "px";
+        }
+
+        // Animate all sprites at 200ms
+        setInterval(function () {
+          for (var i = 0; i < allSprites.length; i++) {
+            allSprites[i]._frame = (allSprites[i]._frame + 1) % allSprites[i]._bird.frameCount;
+            updateSpriteFrame(allSprites[i]);
           }
-        }
+        }, STEP_MS);
 
-        function runRevealLoop() {
-          if (revealTimer) clearInterval(revealTimer);
-          buildRevealSpans();
-          const spans = revealBody.querySelectorAll(".ch");
-          let i = 0;
-          revealTimer = setInterval(() => {
-            if (revealBody.classList.contains("is-instant")) return;
-            if (i >= spans.length) {
-              setTimeout(() => {
-                spans.forEach((s) => (s.style.opacity = 0));
-                i = 0;
-              }, 1200);
-              i++;
-              return;
-            }
-            spans[i].style.opacity = 1;
-            i++;
-          }, 35);
-        }
+        // Build slides
+        BIRDS.forEach(function (bird, i) {
+          var slide = document.createElement("div");
+          slide.className = "bird-slide";
 
-        function applyBionic(enabled) {
-          const card = document.querySelector('[data-card="bionic"] .bionic-body');
-          if (!card) return;
-          if (!card.dataset.original) card.dataset.original = card.textContent;
-          const text = card.dataset.original;
-          if (!enabled) {
-            card.textContent = text;
-            return;
-          }
-          // Bold first ~40% of each word, mirroring bionicSpans in app.
-          const html = text.split(/(\s+)/).map((part) => {
-            if (/^\s+$/.test(part)) return part;
-            const cut = Math.max(1, Math.ceil(part.length * 0.4));
-            return "<b>" + part.slice(0, cut) + "</b>" + part.slice(cut);
-          }).join("");
-          card.innerHTML = html;
-        }
+          var preview = document.createElement("div");
+          preview.className = "bird-slide-preview";
+          preview.appendChild(makeSprite(bird));
 
-        const handlers = {
-          blur: (on) => {
-            const el = document.querySelector('[data-card="blur"] .blur-prev');
-            el.classList.toggle("is-blurred", on);
-          },
-          colored: (on) => {
-            const el = document.querySelector('[data-card="colored"] .colored-key');
-            el.classList.toggle("is-on", on);
-          },
-          bionic: (on) => applyBionic(on),
-          justified: (on) => {
-            const el = document.querySelector('[data-card="justified"] .justified-body');
-            el.classList.toggle("is-on", on);
-          },
-          reveal: (on) => {
-            revealBody.classList.toggle("is-instant", !on);
-            if (on) {
-              runRevealLoop();
-            } else {
-              if (revealTimer) clearInterval(revealTimer);
-              revealTimer = null;
-              revealBody.querySelectorAll(".ch").forEach((s) => (s.style.opacity = 1));
-            }
-          },
-        };
+          var name = document.createElement("div");
+          name.className = "bird-slide-name";
+          name.textContent = bird.name;
 
-        document.querySelectorAll(".toggle[data-toggle]").forEach((btn) => {
-          btn.addEventListener("click", () => {
-            btn.classList.toggle("is-on");
-            const isOn = btn.classList.contains("is-on");
-            const key = btn.getAttribute("data-toggle");
-            const handler = handlers[key];
-            if (handler) handler(isOn);
-          });
+          var origin = document.createElement("div");
+          origin.className = "bird-slide-origin";
+          origin.textContent = bird.origin;
+
+          slide.appendChild(preview);
+          slide.appendChild(name);
+          slide.appendChild(origin);
+          trackEl.appendChild(slide);
         });
 
-        // Initial state: reveal animation runs, bionic off, others on as marked.
-        runRevealLoop();
+        // Build dots
+        BIRDS.forEach(function (_, i) {
+          var dot = document.createElement("div");
+          dot.className = "bird-dot" + (i === 0 ? " is-active" : "");
+          dot.addEventListener("click", function () {
+            selectBird(i);
+          });
+          dotsEl.appendChild(dot);
+        });
+
+        function selectBird(index) {
+          if (index < 0 || index >= BIRDS.length) return;
+          currentBird = index;
+          trackEl.classList.remove("is-dragging");
+          trackEl.style.transform = "translateY(-" + index * SLIDE_HEIGHT + "px)";
+
+          // Update dots
+          var dots = dotsEl.querySelectorAll(".bird-dot");
+          dots.forEach(function (d, i) {
+            d.classList.toggle("is-active", i === index);
+          });
+
+          // Update buttons
+          prevBtn.disabled = index === 0;
+          nextBtn.disabled = index === BIRDS.length - 1;
+        }
+
+        prevBtn.addEventListener("click", function () {
+          selectBird(currentBird - 1);
+        });
+
+        nextBtn.addEventListener("click", function () {
+          selectBird(currentBird + 1);
+        });
+
+        // Touch/drag on bird slider
+        var isDragging = false;
+        var startY = 0;
+        var deltaY = 0;
+
+        viewportEl.addEventListener("touchstart", function (e) {
+          isDragging = true;
+          startY = e.touches[0].clientY;
+          deltaY = 0;
+          trackEl.classList.add("is-dragging");
+        }, { passive: true });
+
+        viewportEl.addEventListener("touchmove", function (e) {
+          if (!isDragging) return;
+          deltaY = e.touches[0].clientY - startY;
+          var offset = -(currentBird * SLIDE_HEIGHT) + deltaY;
+          trackEl.style.transform = "translateY(" + offset + "px)";
+        }, { passive: true });
+
+        viewportEl.addEventListener("touchend", function () {
+          if (!isDragging) return;
+          isDragging = false;
+          trackEl.classList.remove("is-dragging");
+
+          var threshold = SLIDE_HEIGHT * 0.25;
+          if (deltaY < -threshold && currentBird < BIRDS.length - 1) {
+            selectBird(currentBird + 1);
+          } else if (deltaY > threshold && currentBird > 0) {
+            selectBird(currentBird - 1);
+          } else {
+            selectBird(currentBird);
+          }
+        });
+
+        // Init
+        selectBird(0);
       })();
     </script>
   </body>
