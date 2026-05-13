@@ -11,7 +11,6 @@ Accelerator _$AcceleratorFromJson(Map<String, dynamic> json) => Accelerator(
   title: json['title'] as String,
   author: json['author'] as String,
   description: json['description'] as String,
-  coverImagePath: json['cover-image-path'] as String,
   color: json['color'] as String,
   relevantFor: (json['relevant-for'] as List<dynamic>)
       .map((e) => e as String)
@@ -34,7 +33,6 @@ Map<String, dynamic> _$AcceleratorToJson(Accelerator instance) =>
       'title': instance.title,
       'author': instance.author,
       'description': instance.description,
-      'cover-image-path': instance.coverImagePath,
       'color': instance.color,
       'relevant-for': instance.relevantFor,
       'genres': instance.genres,

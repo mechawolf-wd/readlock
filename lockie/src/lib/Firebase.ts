@@ -1,7 +1,8 @@
-// Firebase initialization, shared config for Firestore access
+// Firebase initialization, shared config for Firestore and Auth access
 // Uses the same credentials as the Readlock Flutter app
 
 import { initializeApp } from 'firebase/app'
+import { getAuth } from 'firebase/auth'
 import { getFirestore } from 'firebase/firestore'
 import { getStorage } from 'firebase/storage'
 
@@ -15,5 +16,6 @@ const FIREBASE_CONFIG = {
 }
 
 const app = initializeApp(FIREBASE_CONFIG)
+export const firebaseAuth = getAuth(app)
 export const firestore = getFirestore(app)
 export const storage = getStorage(app)

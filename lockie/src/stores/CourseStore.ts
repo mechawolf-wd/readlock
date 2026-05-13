@@ -64,7 +64,7 @@ function ensureSwipeUids(data: CourseData) {
   }
 }
 
-// Derives every segment-id and lesson-id in a course from the course id + 1-based
+// Derives every segment-id and lesson-id in a course from the course id + 0-based
 // position. Call after any mutation that changes course-id, segment order,
 // or package order, so in-memory ids always match what exportJSON would produce.
 function rebuildCourseIds(course: Accelerator) {
@@ -72,15 +72,13 @@ function rebuildCourseIds(course: Accelerator) {
 
   for (let segmentIndex = 0; segmentIndex < course.segments.length; segmentIndex++) {
     const segment = course.segments[segmentIndex]
-    const segmentNumber = segmentIndex + 1
 
-    segment['segment-id'] = `${courseId};segment:${segmentNumber}`
+    segment['segment-id'] = `${courseId};segment:${segmentIndex}`
 
     for (let lessonIndex = 0; lessonIndex < segment.lessons.length; lessonIndex++) {
       const lesson = segment.lessons[lessonIndex]
-      const lessonNumber = lessonIndex + 1
 
-      lesson['lesson-id'] = `${courseId};segment:${segmentNumber};lesson:${lessonNumber}`
+      lesson['lesson-id'] = `${courseId};segment:${segmentIndex};lesson:${lessonIndex}`
     }
   }
 }
@@ -500,22 +498,20 @@ export const useCourseStore = defineStore('course', () => {
 
   function exportJSON(): string {
     // Build a deep copy with propagated IDs before serialising
-    const exportData = structuredClone(courseData.value)
+    const exportData = JSON.parse(JSON.stringify(courseData.value)) as CourseData
 
     for (const course of exportData.courses) {
       const courseId = course['course-id']
 
       for (let segmentIndex = 0; segmentIndex < course.segments.length; segmentIndex++) {
         const segment = course.segments[segmentIndex]
-        const segmentNumber = segmentIndex + 1
 
-        segment['segment-id'] = `${courseId};segment:${segmentNumber}`
+        segment['segment-id'] = `${courseId};segment:${segmentIndex}`
 
         for (let lessonIndex = 0; lessonIndex < segment.lessons.length; lessonIndex++) {
           const lesson = segment.lessons[lessonIndex]
-          const lessonNumber = lessonIndex + 1
 
-          lesson['lesson-id'] = `${courseId};segment:${segmentNumber};lesson:${lessonNumber}`
+          lesson['lesson-id'] = `${courseId};segment:${segmentIndex};lesson:${lessonIndex}`
         }
       }
     }
@@ -541,20 +537,18 @@ export const useCourseStore = defineStore('course', () => {
       return ''
     }
 
-    const courseCopy = structuredClone(activeCourse.value!)
+    const courseCopy = JSON.parse(JSON.stringify(activeCourse.value!)) as Accelerator
     const courseId = courseCopy['course-id']
 
     for (let segmentIndex = 0; segmentIndex < courseCopy.segments.length; segmentIndex++) {
       const segment = courseCopy.segments[segmentIndex]
-      const segmentNumber = segmentIndex + 1
 
-      segment['segment-id'] = `${courseId};segment:${segmentNumber}`
+      segment['segment-id'] = `${courseId};segment:${segmentIndex}`
 
       for (let lessonIndex = 0; lessonIndex < segment.lessons.length; lessonIndex++) {
         const lesson = segment.lessons[lessonIndex]
-        const lessonNumber = lessonIndex + 1
 
-        lesson['lesson-id'] = `${courseId};segment:${segmentNumber};lesson:${lessonNumber}`
+        lesson['lesson-id'] = `${courseId};segment:${segmentIndex};lesson:${lessonIndex}`
       }
     }
 

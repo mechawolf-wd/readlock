@@ -15,7 +15,6 @@ export interface Accelerator {
   title: string
   author: string
   description: string
-  'cover-image-path': string
   color: string
   'relevant-for': string[]
   genres: string[]

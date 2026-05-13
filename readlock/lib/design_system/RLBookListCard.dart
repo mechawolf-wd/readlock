@@ -8,10 +8,9 @@ import 'package:readlock/design_system/RLCard.dart';
 import 'package:readlock/design_system/RLCourseBookImage.dart';
 import 'package:readlock/design_system/RLUtility.dart';
 import 'package:readlock/services/feedback/HapticsService.dart';
-
 import 'package:pixelarticons/pixel.dart';
 
-// List-card book thumbnail size. 48 = 0.75x of the 64-px source — a
+// List-card book thumbnail size. 48 = 0.75x of the 64-px source, a
 // nearest-neighbour downscale that keeps the pixel art readable.
 const double LIST_CARD_BOOK_SIZE = 48.0;
 
@@ -19,7 +18,6 @@ class BookListCard extends StatelessWidget {
   final String title;
   final String author;
   final String? courseColor;
-  final String? coverImagePath;
   final VoidCallback? onTap;
   // Optional trailing buy affordance — renders a cart icon at the right
   // edge of the card with its own tap target. Inner GestureDetector
@@ -34,7 +32,6 @@ class BookListCard extends StatelessWidget {
     required this.title,
     required this.author,
     this.courseColor,
-    this.coverImagePath,
     this.onTap,
     this.onBuyTap,
     this.isOwned = false,
@@ -104,79 +101,7 @@ class BookListCard extends StatelessWidget {
     );
   }
 
-  // Prefer the palette book (matching hex PNG) when a course color is given.
-  // Fall back to the legacy cover-image path / placeholder for unknown data.
   Widget ListCardBook() {
-    final bool hasCourseColor = courseColor != null && courseColor!.isNotEmpty;
-
-    if (hasCourseColor) {
-      return RLSkillBookImage(courseColor: courseColor, size: LIST_CARD_BOOK_SIZE);
-    }
-
-    return BookCoverThumbnail(coverImagePath: coverImagePath);
-  }
-}
-
-class BookCoverThumbnail extends StatelessWidget {
-  final String? coverImagePath;
-  final double width;
-  final double height;
-
-  const BookCoverThumbnail({
-    super.key,
-    required this.coverImagePath,
-    this.width = 40,
-    this.height = 60,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final String? resolvedPath = coverImagePath;
-    final bool hasCover = resolvedPath != null && resolvedPath.isNotEmpty;
-    final bool isNetworkCover = hasCover && resolvedPath.startsWith('http');
-    final bool isAssetCover = hasCover && resolvedPath.startsWith('assets/');
-
-    if (isNetworkCover) {
-      return ClipRRect(
-        borderRadius: RLDS.borderRadiusSmall,
-        child: Image.network(
-          resolvedPath,
-          width: width,
-          height: height,
-          fit: BoxFit.cover,
-          errorBuilder: CoverErrorFallback,
-        ),
-      );
-    }
-
-    if (isAssetCover) {
-      return ClipRRect(
-        borderRadius: RLDS.borderRadiusSmall,
-        child: Image.asset(resolvedPath, width: width, height: height, fit: BoxFit.cover),
-      );
-    }
-
-    return CoverPlaceholder();
-  }
-
-  Widget CoverErrorFallback(BuildContext context, Object error, StackTrace? stackTrace) {
-    return CoverPlaceholder();
-  }
-
-  Widget CoverPlaceholder() {
-    final BoxDecoration placeholderDecoration = BoxDecoration(
-      color: RLDS.glass10(RLDS.info),
-      borderRadius: RLDS.borderRadiusSmall,
-      border: Border.all(color: RLDS.glass15(RLDS.info)),
-    );
-
-    final Widget BookIcon = const Icon(Pixel.book, color: RLDS.info, size: RLDS.iconMedium);
-
-    return Container(
-      width: width,
-      height: height,
-      decoration: placeholderDecoration,
-      child: BookIcon,
-    );
+    return RLSkillBookImage(courseColor: courseColor, size: LIST_CARD_BOOK_SIZE);
   }
 }

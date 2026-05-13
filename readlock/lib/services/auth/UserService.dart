@@ -139,7 +139,6 @@ class UserService {
         'email': email,
         'language': language,
         'hasCompletedOnboarding': false,
-        'hasReaderPass': false,
         'createdAt': FieldValue.serverTimestamp(),
         // Preference defaults — mirror UserModel constructor defaults.
         UserPreferenceField.TYPING_SOUND: true,
@@ -278,10 +277,6 @@ class UserService {
 
   static Future<bool> markOnboardingComplete() async {
     return updateField('hasCompletedOnboarding', true, 'markOnboardingComplete');
-  }
-
-  static Future<bool> updateReaderPass(bool hasReaderPass) async {
-    return updateField('hasReaderPass', hasReaderPass, 'updateReaderPass');
   }
 
   // * Latest opened course — set every time the reader taps a roadmap

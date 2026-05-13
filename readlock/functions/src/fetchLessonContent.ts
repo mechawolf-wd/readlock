@@ -1,7 +1,7 @@
 // Serves a single lesson's content array from the lessons subcollection.
 //
-// Lesson content lives in /courses/{courseId}/lessons/{lessonIndex},
-// separate from the main course document which only holds metadata.
+// Lesson content lives in /courses/{courseId}/lessons/{lessonId},
+// keyed by compound lesson-id (e.g. "book:X;segment:0;lesson:1").
 // Lockie writes content to the subcollection on publish; the Flutter
 // client never reads it directly (Firestore rules deny client reads
 // on the subcollection). This function is the only path to content.
@@ -58,6 +58,32 @@ function flattenLessons(segments: JSONArray): JSONArray {
   }
 
   return lessons;
+}
+
+// Maps a flat lesson index to the compound lesson-id used as the
+// subcollection document ID (e.g. "book:X;segment:0;lesson:1").
+function resolveLessonDocId(
+  courseId: string,
+  segments: JSONArray,
+  flatIndex: number,
+): string {
+  let remaining = flatIndex;
+
+  for (let segmentIndex = 0; segmentIndex < segments.length; segmentIndex++) {
+    const segment = segments[segmentIndex]!;
+    const rawLessons = segment["lessons"] as JSONArray | undefined;
+    const lessons = rawLessons ?? [];
+
+    const isInThisSegment = remaining < lessons.length;
+
+    if (isInThisSegment) {
+      return `${courseId};segment:${segmentIndex};lesson:${remaining}`;
+    }
+
+    remaining -= lessons.length;
+  }
+
+  return String(flatIndex);
 }
 
 export const fetchLessonContent = onCall<FetchLessonContentData>(
@@ -205,14 +231,25 @@ export const fetchLessonContent = onCall<FetchLessonContentData>(
     }
 
     // * 10. All gates passed. Read content from the subcollection.
+    //
+    // Try the compound lesson-id first (new format). If the document
+    // does not exist, fall back to the flat numeric index for courses
+    // that have not been re-saved from Lockie yet.
 
-    const lessonDocumentRef = db
+    const compoundDocId = resolveLessonDocId(courseId, segments, lessonIndex);
+
+    const subcollectionRef = db
       .collection(COURSES_COLLECTION)
       .doc(courseId)
-      .collection(LESSONS_SUBCOLLECTION)
-      .doc(String(lessonIndex));
+      .collection(LESSONS_SUBCOLLECTION);
 
-    const lessonDocument = await lessonDocumentRef.get();
+    let lessonDocument = await subcollectionRef.doc(compoundDocId).get();
+
+    const compoundNotFound = !lessonDocument.exists;
+
+    if (compoundNotFound) {
+      lessonDocument = await subcollectionRef.doc(String(lessonIndex)).get();
+    }
 
     const lessonNotFound = !lessonDocument.exists;
 

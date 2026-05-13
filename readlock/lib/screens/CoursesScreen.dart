@@ -590,7 +590,6 @@ class CoursesScreenState extends State<CoursesScreen> {
     return courses.map((course) {
       final String courseTitle = course['title'] as String? ?? '';
       final String courseAuthor = course['author'] as String? ?? '';
-      final String? coverImagePath = course['cover-image-path'] as String?;
       final String? courseColor = course['color'] as String?;
       final String courseId = course['course-id'] as String? ?? '';
 
@@ -609,7 +608,6 @@ class CoursesScreenState extends State<CoursesScreen> {
         title: courseTitle,
         author: courseAuthor,
         courseColor: courseColor,
-        coverImagePath: coverImagePath,
         isOwned: isOwned,
         onTap: () => navigateToCourse(courseId),
         onBuyTap: buyHandler,

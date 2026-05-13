@@ -13,8 +13,8 @@ CourseProgressModel _$CourseProgressModelFromJson(Map<String, dynamic> json) =>
     );
 
 Map<String, dynamic> _$CourseProgressModelToJson(
-        CourseProgressModel instance) =>
-    <String, dynamic>{
-      'courseId': instance.courseId,
-      'currentLessonIndex': instance.currentLessonIndex,
-    };
+  CourseProgressModel instance,
+) => <String, dynamic>{
+  'courseId': instance.courseId,
+  'currentLessonIndex': instance.currentLessonIndex,
+};

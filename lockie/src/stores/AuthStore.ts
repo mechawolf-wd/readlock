@@ -1,10 +1,13 @@
-// Auth store, hardcoded credential check
+// Auth store, Firebase email/password authentication
 
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-
-const ADMIN_USERNAME = 'admin'
-const ADMIN_PASSWORD = 'admin'
+import {
+  signInWithEmailAndPassword,
+  signOut,
+  onAuthStateChanged,
+} from 'firebase/auth'
+import { firebaseAuth } from '@/lib/Firebase'
 
 export const useAuthStore = defineStore('auth', () => {
   // * State
@@ -12,29 +15,45 @@ export const useAuthStore = defineStore('auth', () => {
   const isAuthenticated = ref(false)
   const username = ref('')
   const loginError = ref('')
+  const isAuthReady = ref(false)
+
+  // * Auth state listener
+  // Fires once on init (restores session), then on every sign-in/sign-out.
+
+  const authReadyPromise = new Promise<void>((resolve) => {
+    onAuthStateChanged(firebaseAuth, (user) => {
+      isAuthenticated.value = user !== null
+      username.value = user?.email ?? ''
+
+      if (!isAuthReady.value) {
+        isAuthReady.value = true
+        resolve()
+      }
+    })
+  })
 
   // * Actions
 
-  function login(user: string, password: string): boolean {
-    const isValidCredentials = user === ADMIN_USERNAME && password === ADMIN_PASSWORD
+  async function login(email: string, password: string): Promise<boolean> {
+    loginError.value = ''
 
-    if (!isValidCredentials) {
-      loginError.value = 'Invalid credentials'
+    try {
+      await signInWithEmailAndPassword(firebaseAuth, email, password)
+      return true
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'Login failed'
+      loginError.value = message
       return false
     }
-
-    username.value = user
-    isAuthenticated.value = true
-    loginError.value = ''
-
-    return true
   }
 
-  function logout() {
-    username.value = ''
-    isAuthenticated.value = false
-    loginError.value = ''
+  async function logout() {
+    await signOut(firebaseAuth)
   }
 
-  return { isAuthenticated, username, loginError, login, logout }
+  async function waitUntilReady() {
+    await authReadyPromise
+  }
+
+  return { isAuthenticated, username, loginError, isAuthReady, login, logout, waitUntilReady }
 })

@@ -25,9 +25,6 @@ class UserModel {
   @JsonKey(defaultValue: false)
   final bool hasCompletedOnboarding;
 
-  @JsonKey(defaultValue: false)
-  final bool hasReaderPass;
-
   // * Reading preferences — persisted to Firestore.
 
   @JsonKey(defaultValue: false)
@@ -144,7 +141,6 @@ class UserModel {
     this.fcmToken,
     required this.createdAt,
     this.hasCompletedOnboarding = false,
-    this.hasReaderPass = false,
     this.typingSound = false,
     this.sounds = true,
     this.haptics = true,
@@ -193,7 +189,6 @@ class UserModel {
     String? language,
     String? fcmToken,
     bool? hasCompletedOnboarding,
-    bool? hasReaderPass,
     bool? typingSound,
     bool? sounds,
     bool? haptics,
@@ -224,7 +219,6 @@ class UserModel {
       fcmToken: fcmToken ?? this.fcmToken,
       createdAt: createdAt,
       hasCompletedOnboarding: hasCompletedOnboarding ?? this.hasCompletedOnboarding,
-      hasReaderPass: hasReaderPass ?? this.hasReaderPass,
       typingSound: typingSound ?? this.typingSound,
       sounds: sounds ?? this.sounds,
       haptics: haptics ?? this.haptics,

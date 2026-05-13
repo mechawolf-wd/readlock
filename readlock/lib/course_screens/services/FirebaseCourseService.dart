@@ -229,7 +229,10 @@ class FirebaseCourseService {
     });
 
     final JSONMap data = JSONMap.from(result.data as Map);
-    final JSONList content = JSONList.from(data['content'] as List);
+    final List<dynamic> rawContent = data['content'] as List;
+    final JSONList content = rawContent
+        .map((item) => JSONMap.from(item as Map))
+        .toList();
 
     return content;
   }

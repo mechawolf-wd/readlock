@@ -817,18 +817,6 @@ async function handleCoverImageUpload(event: Event) {
   }
 
   isUploadingCoverImage.value = true;
-  coverImageUploadError.value = "";
-
-  try {
-    const downloadUrl = await uploadCourseCoverImage(courseId, file!);
-
-    store.activeCourse!["cover-image-path"] = downloadUrl;
-  } catch (error) {
-    coverImageUploadError.value = String(error);
-  } finally {
-    isUploadingCoverImage.value = false;
-    input.value = "";
-  }
 }
 
 function handleCourseFileUpload(event: Event) {
@@ -1275,18 +1263,6 @@ function getCourseStatsLine(): string {
                   <label class="text-sm text-muted-foreground">Cover Image</label>
 
                   <div class="flex gap-3">
-                    <!-- Preview -->
-                    <div
-                      class="w-20 h-20 rounded-md border border-border bg-muted/40 shrink-0 overflow-hidden flex items-center justify-center"
-                    >
-                      <img
-                        v-if="store.activeCourse!['cover-image-path']"
-                        :src="store.activeCourse!['cover-image-path']"
-                        class="w-full h-full object-cover"
-                      />
-                      <ImageIcon v-else class="h-6 w-6 text-muted-foreground" />
-                    </div>
-
                     <!-- Upload + url -->
                     <div class="flex flex-col gap-2 flex-1 min-w-0">
                       <Button
@@ -1299,13 +1275,6 @@ function getCourseStatsLine(): string {
                         <Upload class="h-3.5 w-3.5" />
                         {{ coverImageUploadLabel }}
                       </Button>
-
-                      <Input
-                        v-model="store.activeCourse!['cover-image-path']"
-                        variant="subtle"
-                        placeholder="https://..."
-                        class="font-mono text-xs"
-                      />
 
                       <p
                         v-if="coverImageUploadError"

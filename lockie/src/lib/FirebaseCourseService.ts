@@ -1,13 +1,12 @@
 // Firestore service for reading and writing courses to /courses collection.
 //
-// Lesson content lives in a subcollection (/courses/{id}/lessons/{index})
-// so the main course document only carries metadata (titles, segment
-// structure, isFree flags, etc.). This keeps content out of direct
-// client reads on the Readlock web app, where Firestore responses are
-// visible in DevTools. The fetchLessonContent Cloud Function reads the
-// subcollection server-side with full access-gate enforcement.
+// Lesson content lives in a subcollection (/courses/{id}/lessons/{lessonId})
+// keyed by compound lesson-id (e.g. "book:X;segment:0;lesson:1").
+// The main course document only carries metadata (titles, segment
+// structure, isFree flags). The fetchLessonContent Cloud Function reads
+// the subcollection server-side with full access-gate enforcement.
 
-import { doc, getDoc, collection, getDocs, writeBatch, query, orderBy } from 'firebase/firestore'
+import { doc, getDoc, collection, getDocs, writeBatch } from 'firebase/firestore'
 import { firestore } from '@/lib/Firebase'
 import type { Accelerator, Segment, Package, Swipe } from '@/types/Course'
 
@@ -36,23 +35,32 @@ function ensureHashPrefix(hex: string): string {
   return `#${hex}`
 }
 
-// Flattens segments[].lessons[] into a single ordered array of content
-// arrays, one per lesson. The flat index matches the Flutter client's
-// currentLessonIndex and the Cloud Function's lessonIndex parameter.
-function flattenLessonContent(segments: Segment[]): Swipe[][] {
-  const allContent: Swipe[][] = []
+// Flattens segments[].lessons[] into an ordered array pairing each
+// lesson's compound ID with its content array. The compound ID
+// (e.g. "book:X;segment:0;lesson:1") is used as the subcollection
+// document ID in Firestore.
+interface LessonEntry {
+  lessonId: string
+  content: Swipe[]
+}
 
-  for (const segment of segments) {
+function flattenLessonContent(courseId: string, segments: Segment[]): LessonEntry[] {
+  const entries: LessonEntry[] = []
+
+  for (let segmentIndex = 0; segmentIndex < segments.length; segmentIndex++) {
+    const segment = segments[segmentIndex]!
     const segmentLessons = segment.lessons ?? []
 
-    for (const lesson of segmentLessons) {
+    for (let lessonIndex = 0; lessonIndex < segmentLessons.length; lessonIndex++) {
+      const lesson = segmentLessons[lessonIndex]!
       const lessonContent = lesson.content ?? []
+      const lessonId = `${courseId};segment:${segmentIndex};lesson:${lessonIndex}`
 
-      allContent.push(lessonContent)
+      entries.push({ lessonId, content: lessonContent })
     }
   }
 
-  return allContent
+  return entries
 }
 
 // Returns a deep copy of the course with content arrays removed from
@@ -66,7 +74,7 @@ function stripContentFromCourse(course: Accelerator): Accelerator {
     const segmentLessons = segment.lessons ?? []
 
     for (const lesson of segmentLessons) {
-      lesson.content = []
+      delete (lesson as any).content
     }
   }
 
@@ -114,37 +122,34 @@ export async function fetchCourseById(courseId: string): Promise<Accelerator | n
     }
 
     // Read lesson content from the subcollection and stitch it back
-    // into the course structure. Documents are named by flat index
-    // ("0", "1", "2", ...) and ordered numerically so they map 1:1
-    // to the flattened segments[].lessons[] array.
+    // into the course structure. Documents are keyed by compound
+    // lesson-id (e.g. "book:X;segment:0;lesson:1"), matched against
+    // each lesson's lesson-id field in the metadata.
     const lessonsRef = collection(firestore, COURSES_COLLECTION, courseId, LESSONS_SUBCOLLECTION)
-    const lessonsQuery = query(lessonsRef, orderBy('__name__'))
-    const lessonsSnapshot = await getDocs(lessonsQuery)
+    const lessonsSnapshot = await getDocs(lessonsRef)
 
-    const contentByIndex: Map<number, Swipe[]> = new Map()
+    const contentByLessonId: Map<string, Swipe[]> = new Map()
 
     for (const lessonDocument of lessonsSnapshot.docs) {
-      const lessonIndex = Number(lessonDocument.id)
       const lessonData = lessonDocument.data() as { content: Swipe[] }
-
       const contentArray = lessonData.content ?? []
 
-      contentByIndex.set(lessonIndex, contentArray)
+      contentByLessonId.set(lessonDocument.id, contentArray)
     }
 
-    // Walk the segments in order and assign content back by flat index.
-    let flatIndex = 0
-
+    // Walk the segments in order and assign content by lesson-id.
     const dataSegments = data.segments ?? []
 
-    for (const segment of dataSegments) {
+    for (let segmentIndex = 0; segmentIndex < dataSegments.length; segmentIndex++) {
+      const segment = dataSegments[segmentIndex]!
       const segmentLessons = segment.lessons ?? []
 
-      for (const lesson of segmentLessons) {
-        const restoredContent = contentByIndex.get(flatIndex) ?? []
+      for (let lessonIndex = 0; lessonIndex < segmentLessons.length; lessonIndex++) {
+        const lesson = segmentLessons[lessonIndex]!
+        const lessonId = `${courseId};segment:${segmentIndex};lesson:${lessonIndex}`
+        const restoredContent = contentByLessonId.get(lessonId) ?? []
 
         lesson.content = restoredContent
-        flatIndex++
       }
     }
 
@@ -197,12 +202,12 @@ export async function saveCourse(course: Accelerator): Promise<void> {
   cleanCourse.timesPurchased = previousTimesPurchased
 
   // Extract lesson content before stripping it from the main document.
-  const allLessonContent = flattenLessonContent(cleanCourse)
+  const lessonEntries = flattenLessonContent(courseId, cleanCourse.segments ?? [])
   const metadataOnly = stripContentFromCourse(cleanCourse)
 
   const rawSegmentCount = metadataOnly.segments?.length
   const segmentCount = rawSegmentCount ?? 0
-  const lessonCount = allLessonContent.length
+  const lessonCount = lessonEntries.length
   const metadataSizeKb = (JSON.stringify(metadataOnly).length / 1024).toFixed(1)
 
   try {
@@ -216,17 +221,17 @@ export async function saveCourse(course: Accelerator): Promise<void> {
     batch.set(courseRef, metadataOnly)
 
     // Write each lesson's content to the subcollection.
-    // Document ID = flat lesson index ("0", "1", "2", ...).
-    for (let lessonIndex = 0; lessonIndex < allLessonContent.length; lessonIndex++) {
+    // Document ID = compound lesson-id (e.g. "book:X;segment:0;lesson:1").
+    for (const entry of lessonEntries) {
       const lessonRef = doc(
         firestore,
         COURSES_COLLECTION,
         courseId,
         LESSONS_SUBCOLLECTION,
-        String(lessonIndex),
+        entry.lessonId,
       )
 
-      batch.set(lessonRef, { content: allLessonContent[lessonIndex] })
+      batch.set(lessonRef, { content: entry.content })
     }
 
     await batch.commit()

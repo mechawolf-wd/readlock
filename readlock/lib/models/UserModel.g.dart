@@ -13,8 +13,7 @@ UserModel _$UserModelFromJson(Map<String, dynamic> json) => UserModel(
   fcmToken: json['fcmToken'] as String?,
   createdAt: timestampFromJson(json['createdAt']),
   hasCompletedOnboarding: json['hasCompletedOnboarding'] as bool? ?? false,
-  hasReaderPass: json['hasReaderPass'] as bool? ?? false,
-  typingSound: json['typingSound'] as bool? ?? true,
+  typingSound: json['typingSound'] as bool? ?? false,
   sounds: json['sounds'] as bool? ?? true,
   haptics: json['haptics'] as bool? ?? true,
   reveal: json['reveal'] as bool? ?? false,
@@ -34,17 +33,19 @@ UserModel _$UserModelFromJson(Map<String, dynamic> json) => UserModel(
       (json['nightShiftScheduleToMinutes'] as num?)?.toInt() ?? 360,
   birdName: json['birdName'] as String? ?? 'Sparrow',
   lastOpenedCourseId: json['lastOpenedCourseId'] as String?,
-  purchasedCourses: purchasedCoursesFromJson(json['purchasedCourses']),
+  purchasedCourses: json['purchasedCourses'] == null
+      ? const <PurchasedCourseModel>[]
+      : purchasedCoursesFromJson(json['purchasedCourses']),
   balance: (json['balance'] as num?)?.toInt() ?? 0,
   timeSpentReading: (json['timeSpentReading'] as num?)?.toInt() ?? 0,
   courseProgress:
       (json['courseProgress'] as Map<String, dynamic>?)?.map(
-            (key, value) => MapEntry(
-              key,
-              CourseProgressModel.fromJson(value as Map<String, dynamic>),
-            ),
-          ) ??
-      <String, CourseProgressModel>{},
+        (k, e) => MapEntry(
+          k,
+          CourseProgressModel.fromJson(e as Map<String, dynamic>),
+        ),
+      ) ??
+      {},
 );
 
 Map<String, dynamic> _$UserModelToJson(UserModel instance) => <String, dynamic>{
@@ -53,7 +54,6 @@ Map<String, dynamic> _$UserModelToJson(UserModel instance) => <String, dynamic>{
   'fcmToken': instance.fcmToken,
   'createdAt': timestampToJson(instance.createdAt),
   'hasCompletedOnboarding': instance.hasCompletedOnboarding,
-  'hasReaderPass': instance.hasReaderPass,
   'typingSound': instance.typingSound,
   'sounds': instance.sounds,
   'haptics': instance.haptics,
@@ -76,6 +76,6 @@ Map<String, dynamic> _$UserModelToJson(UserModel instance) => <String, dynamic>{
   'balance': instance.balance,
   'timeSpentReading': instance.timeSpentReading,
   'courseProgress': instance.courseProgress.map(
-    (key, value) => MapEntry(key, value.toJson()),
+    (k, e) => MapEntry(k, e.toJson()),
   ),
 };

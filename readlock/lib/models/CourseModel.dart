@@ -20,9 +20,6 @@ class Accelerator {
 
   final String description;
 
-  @JsonKey(name: 'cover-image-path')
-  final String coverImagePath;
-
   final String color;
 
   @JsonKey(name: 'relevant-for')
@@ -49,7 +46,6 @@ class Accelerator {
     required this.title,
     required this.author,
     required this.description,
-    required this.coverImagePath,
     required this.color,
     required this.relevantFor,
     required this.genres,

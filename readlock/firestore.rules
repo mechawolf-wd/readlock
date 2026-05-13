@@ -13,8 +13,7 @@ rules_version = '2';
 //     bionic, rsvp, justifiedReading, readingFont, readingColumn,
 //     rsvpWordsPerMinute, nightShiftLevel, nightShiftScheduleEnabled,
 //     nightShiftScheduleFromMinutes, nightShiftScheduleToMinutes,
-//     birdName, lastOpenedCourseId, hasCompletedOnboarding, hasReaderPass,
-//     language, fcmToken
+//     birdName, lastOpenedCourseId, hasCompletedOnboarding, language, fcmToken
 //   Wallet: balance (via FieldValue.increment)
 //   Library: purchasedCourses (array of {courseId, expires} records)
 //   Progress: timeSpentReading (via FieldValue.increment),
@@ -83,12 +82,11 @@ service cloud.firestore {
       allow read: if isOwner(userId);
 
       // New profile: pin email + createdAt to auth values so a client can't
-      // forge identity or backdate. Starter balance capped at 10 (NEW_USER_STARTING_BALANCE).
+      // forge identity or backdate. Starter feather balance capped at 10.
       allow create: if isOwner(userId)
         && request.resource.data.email is string
         && request.resource.data.email == request.auth.token.email
         && request.resource.data.createdAt == request.time
-        && request.resource.data.get('hasReaderPass', false) == false
         && request.resource.data.get('balance', 0) <= 10;
 
       // Owner updates only. email + createdAt frozen.

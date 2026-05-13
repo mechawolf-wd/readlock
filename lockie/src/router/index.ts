@@ -15,14 +15,22 @@ const router = createRouter({
 
 // * Auth guard
 
-router.beforeEach((to) => {
+router.beforeEach(async (to) => {
   const auth = useAuthStore()
+
+  await auth.waitUntilReady()
 
   const isProtectedRoute = to.path !== '/'
   const isNotAuthenticated = !auth.isAuthenticated
+  const isLoginRoute = to.path === '/'
+  const isAlreadyAuthenticated = auth.isAuthenticated
 
   if (isProtectedRoute && isNotAuthenticated) {
     return '/'
+  }
+
+  if (isLoginRoute && isAlreadyAuthenticated) {
+    return '/editor'
   }
 })
 

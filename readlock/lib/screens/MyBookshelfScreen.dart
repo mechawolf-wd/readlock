@@ -683,7 +683,6 @@ class BookshelfScreenState extends State<BookshelfScreen> {
   Widget CourseCard(JSONMap course) {
     final String courseTitle = course['title'] as String? ?? '';
     final String courseAuthor = course['author'] as String? ?? '';
-    final String? coverImagePath = course['cover-image-path'] as String?;
     final String? courseColor = course['color'] as String?;
     final String courseId = course['course-id'] as String? ?? '';
 
@@ -708,7 +707,6 @@ class BookshelfScreenState extends State<BookshelfScreen> {
               BookCircleCard(
                 accentColor: accentColor,
                 courseColor: courseColor,
-                coverImagePath: coverImagePath,
                 progress: progress,
               ),
 
@@ -768,15 +766,11 @@ class BookshelfScreenState extends State<BookshelfScreen> {
   Widget BookCircleCard({
     required Color accentColor,
     required String? courseColor,
-    required String? coverImagePath,
     required double progress,
   }) {
     final BorderRadius circleRadius = BorderRadius.circular(bookshelfCircleDiameter / 2);
-    final bool hasCourseColor = courseColor != null && courseColor.isNotEmpty;
 
-    final Widget bookImage = hasCourseColor
-        ? RLSkillBookImage(courseColor: courseColor, size: bookshelfBookSize)
-        : BookCoverThumbnail(coverImagePath: coverImagePath);
+    final Widget bookImage = RLSkillBookImage(courseColor: courseColor, size: bookshelfBookSize);
 
     final Widget bookSurface = RLLunarBlur(
       borderRadius: circleRadius,

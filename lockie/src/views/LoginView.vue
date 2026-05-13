@@ -23,18 +23,18 @@ const router = useRouter()
 
 // * State
 
-const username = ref('')
+const email = ref('')
 const password = ref('')
 const isSubmitting = ref(false)
 
-const submitButtonLabel = computed(() => isSubmitting.value ? 'Signing...' : 'Login')
+const submitButtonLabel = computed(() => isSubmitting.value ? 'Signing in...' : 'Login')
 
 // * Methods
 
 async function handleLogin() {
   isSubmitting.value = true
 
-  const isSuccess = auth.login(username.value, password.value)
+  const isSuccess = await auth.login(email.value, password.value)
 
   if (isSuccess) {
     router.push('/editor')
@@ -62,16 +62,16 @@ async function handleLogin() {
 
       <CardContent>
         <form class="flex flex-col gap-5" @submit.prevent="handleLogin">
-          <!-- Username -->
+          <!-- Email -->
           <div class="flex flex-col gap-2">
-            <label for="login-username" class="text-sm font-medium">Username</label>
+            <label for="login-email" class="text-sm font-medium">Email</label>
             <Input
-              id="login-username"
-              v-model="username"
-              type="text"
-              autocomplete="username"
+              id="login-email"
+              v-model="email"
+              type="email"
+              autocomplete="email"
               autofocus
-              placeholder="admin"
+              placeholder="you@email.com"
               class="h-10"
             />
           </div>

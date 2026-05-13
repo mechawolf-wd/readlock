@@ -350,18 +350,18 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
           // Back navigation button
           BackNavigationButton(),
 
-          const Spacing.width(RLDS.spacing12),
+          const Spacing.width(RLDS.spacing20),
 
           // Course progress indicator
           Expanded(child: ProgressIndicator()),
 
-          const Spacing.width(RLDS.spacing12),
+          const Spacing.width(RLDS.spacing20),
 
           // Night Shift toggle (eye-strain overlay)
           NightShiftButton(),
         ],
         key: topChromeKey,
-        padding: const [RLDS.spacing24, RLDS.spacing24],
+        padding: const [RLDS.spacing16, RLDS.spacing16],
       ),
     );
   }
@@ -372,7 +372,9 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
   // bar's reveal-on-first-tap behaviour).
   Widget BackNavigationButton() {
     final bool hasNoContent = allContent.isEmpty;
-    final VoidCallback backAction = hasNoContent ? navigateBackToRoadmap : showQuitConfirmationSheet;
+    final VoidCallback backAction = hasNoContent
+        ? navigateBackToRoadmap
+        : showQuitConfirmationSheet;
     final VoidCallback backTapHandler = getChromeTapHandler(backAction);
 
     return GestureDetector(
