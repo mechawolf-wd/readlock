@@ -686,15 +686,12 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
     } else {
       // Same "Buy for 10 <plume>" shape as the CoursePurchaseBottomSheet
       // button so both surfaces read as the same family.
-      final String labelWithCost =
-          '${RLUIStrings.ROADMAP_PURCHASE_LABEL} '
+      final String labelWithCost = '${RLUIStrings.ROADMAP_PURCHASE_LABEL} '
           '${PurchaseConstants.COURSE_PURCHASE_COST}';
 
       labelChildren = [
         RLTypography.bodyLarge(labelWithCost, color: accentColor),
-
         const Spacing.width(RLDS.spacing8),
-
         const RLFeatherIcon(size: RLDS.iconSmall),
       ];
     }
@@ -784,9 +781,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
     if (isCharging) {
       labelChildren = [
         batteryIcon,
-
         const Spacing.width(RLDS.spacing8),
-
         RLTypography.bodyLarge(RLUIStrings.ROADMAP_CHARGE_LOADING_LABEL, color: RLDS.green),
       ];
     } else {
@@ -794,7 +789,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
 
       labelChildren = [
         batteryIcon,
-
+        
         const Spacing.width(RLDS.spacing8),
 
         RLTypography.bodyLarge(costLabel, color: RLDS.green),
@@ -976,9 +971,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
         chargeFraction: chargeFraction,
         isSkillbookCharged: isSkillbookCharged,
       ),
-
       const Spacing.height(RLDS.spacing8),
-
       RLChargeBar(fraction: chargeFraction),
     ], crossAxisAlignment: CrossAxisAlignment.stretch);
   }
@@ -1018,9 +1011,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
     // Left side: battery icon + percentage
     final Widget chargeIndicator = Div.row([
       Icon(batteryIcon, color: RLDS.white, size: chargeHeadlineBatterySize),
-
       const Spacing.width(RLDS.spacing4),
-
       RLTypography.pixelLabel(chargePercentLabel, color: RLDS.white),
     ]);
 
@@ -1308,7 +1299,11 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
     Navigator.push(
       context,
       RLDS.slowFadeTransition(
-        CourseDetailScreen(courseId: widget.courseId, initialLessonIndex: frontierLessonIndex),
+        CourseDetailScreen(
+          courseId: widget.courseId,
+          initialLessonIndex: frontierLessonIndex,
+          accentColor: getCourseAccentColor(),
+        ),
       ),
     );
   }
@@ -1356,6 +1351,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
           courseId: widget.courseId,
           initialLessonIndex: absoluteLessonIndex,
           initialContentIndex: contentIndex,
+          accentColor: getCourseAccentColor(),
         ),
       ),
     );

@@ -33,7 +33,8 @@ export async function uploadCourseCoverImage(courseId: string, file: File): Prom
 }
 
 function extractExtension(file: File): string {
-  const fromName = file.name.split('.').pop()?.toLowerCase() ?? ''
+  const rawExtension = file.name.split('.').pop()?.toLowerCase()
+  const fromName = rawExtension ?? ''
   const hasExtension = fromName !== '' && fromName !== file.name
 
   if (hasExtension) {
@@ -41,7 +42,8 @@ function extractExtension(file: File): string {
   }
 
   // Fallback to MIME subtype when filename has no extension (e.g., pasted blobs).
-  const fromMime = file.type.split('/').pop()?.toLowerCase() ?? ''
+  const rawMimeSubtype = file.type.split('/').pop()?.toLowerCase()
+  const fromMime = rawMimeSubtype ?? ''
   const hasMimeSubtype = fromMime !== ''
 
   if (hasMimeSubtype) {

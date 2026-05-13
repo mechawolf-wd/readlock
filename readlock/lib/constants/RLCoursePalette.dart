@@ -53,7 +53,8 @@ const Set<String> KNOWN_COURSE_COLORS = {
   'FFC1E2',
 };
 
-const String COURSE_FALLBACK_COLOR_HEX = '9E7071';
+const String COURSE_FALLBACK_COLOR_HEX = '7D5465';
+const Color COURSE_FALLBACK_COLOR = Color(0xFF7D5465);
 
 // * Charge bar tile colors, ordered from critical (red) to fully charged (green).
 // 7 tiles map to the rental window so the bar reads like a game health meter.

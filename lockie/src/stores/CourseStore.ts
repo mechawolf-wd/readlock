@@ -500,7 +500,7 @@ export const useCourseStore = defineStore('course', () => {
 
   function exportJSON(): string {
     // Build a deep copy with propagated IDs before serialising
-    const exportData = JSON.parse(JSON.stringify(courseData.value)) as CourseData
+    const exportData = structuredClone(courseData.value)
 
     for (const course of exportData.courses) {
       const courseId = course['course-id']
@@ -541,7 +541,7 @@ export const useCourseStore = defineStore('course', () => {
       return ''
     }
 
-    const courseCopy = JSON.parse(JSON.stringify(activeCourse.value)) as Accelerator
+    const courseCopy = structuredClone(activeCourse.value!)
     const courseId = courseCopy['course-id']
 
     for (let segmentIndex = 0; segmentIndex < courseCopy.segments.length; segmentIndex++) {

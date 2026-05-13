@@ -23,6 +23,7 @@ import 'package:readlock/design_system/RLToast.dart';
 import 'package:readlock/design_system/RLUtility.dart';
 import 'package:readlock/models/PurchasedCourseModel.dart';
 import 'package:readlock/constants/RLTypography.dart';
+import 'package:readlock/constants/RLCoursePalette.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/MainNavigation.dart';
 import 'package:readlock/services/feedback/SoundService.dart';
@@ -356,12 +357,16 @@ class HomeScreenState extends State<HomeScreen> {
 
       SoundService.playEnter();
 
+      final Color? parsedColor = RLDS.parseHexColor(course['color'] as String?);
+      final Color courseAccentColor = parsedColor ?? COURSE_FALLBACK_COLOR;
+
       Navigator.push(
         context,
         RLDS.slowFadeTransition(
           CourseDetailScreen(
             courseId: courseId,
             initialLessonIndex: frontierLessonIndex,
+            accentColor: courseAccentColor,
           ),
         ),
       );

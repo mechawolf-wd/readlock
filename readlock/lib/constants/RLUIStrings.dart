@@ -126,7 +126,7 @@ class RLUIStrings {
 
   // * Course Content Viewer
   static const String NO_CONTENT_AVAILABLE_MESSAGE =
-      'Pigeons are still gathering content for this package. Check back in a bit.';
+      'We\'re very sorry.\nThe lesson didn\'t load.\nTry again now or in a bit.';
   static const String ERROR_LOADING_COURSE_DATA =
       'Couldn\'t load the skillbook. Please try again.';
   static const String QUIT_CONFIRMATION_TITLE = 'Wait';

@@ -31,4 +31,14 @@ class CourseDataService {
   static Future<JSONList> fetchMostPurchasedCourses({required int limit}) {
     return FirebaseCourseService.fetchMostPurchasedCourses(limit: limit);
   }
+
+  static Future<JSONList> fetchLessonContent({
+    required String courseId,
+    required int lessonIndex,
+  }) {
+    return FirebaseCourseService.fetchLessonContent(
+      courseId: courseId,
+      lessonIndex: lessonIndex,
+    );
+  }
 }

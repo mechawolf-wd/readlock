@@ -23,11 +23,15 @@ class FirebaseCourseService {
   static final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
   // * Fetch all courses from the /courses collection
+  //
+  // Course documents only hold metadata (titles, segment structure,
+  // isFree flags). Lesson content lives in a denied subcollection
+  // (/courses/{id}/lessons/{index}) and is served by the
+  // fetchLessonContent Cloud Function.
 
   static Future<JSONList> fetchCourses() async {
-    final QuerySnapshot<JSONMap> snapshot = await firestore
-        .collection(FirebaseConfig.COURSES_COLLECTION)
-        .get();
+    final QuerySnapshot<JSONMap> snapshot =
+        await firestore.collection(FirebaseConfig.COURSES_COLLECTION).get();
 
     return snapshot.docs.map((doc) {
       final JSONMap data = doc.data();
@@ -48,9 +52,8 @@ class FirebaseCourseService {
     required int pageSize,
     Object? cursor,
   }) async {
-    Query<JSONMap> query = firestore
-        .collection(FirebaseConfig.COURSES_COLLECTION)
-        .limit(pageSize);
+    Query<JSONMap> query =
+        firestore.collection(FirebaseConfig.COURSES_COLLECTION).limit(pageSize);
 
     final bool hasCursor = cursor is QueryDocumentSnapshot<JSONMap>;
 
@@ -152,10 +155,8 @@ class FirebaseCourseService {
   // * Fetch a single course by its course ID
 
   static Future<JSONMap?> fetchCourseById(String courseId) async {
-    final DocumentSnapshot<JSONMap> document = await firestore
-        .collection(FirebaseConfig.COURSES_COLLECTION)
-        .doc(courseId)
-        .get();
+    final DocumentSnapshot<JSONMap> document =
+        await firestore.collection(FirebaseConfig.COURSES_COLLECTION).doc(courseId).get();
 
     final bool hasNoDocument = !document.exists;
 
@@ -207,5 +208,29 @@ class FirebaseCourseService {
     );
 
     await callable.call({'courseId': courseId});
+  }
+
+  // * Fetches a single lesson's content array via the fetchLessonContent
+  // Cloud Function. The function enforces auth, purchase, frontier, and
+  // discharge gates server-side, so the raw content never travels to the
+  // client unless the reader is allowed to view it.
+
+  static Future<JSONList> fetchLessonContent({
+    required String courseId,
+    required int lessonIndex,
+  }) async {
+    final HttpsCallable callable = FirebaseFunctions.instance.httpsCallable(
+      FirebaseConfig.CLOUD_FUNCTION_FETCH_LESSON_CONTENT,
+    );
+
+    final HttpsCallableResult result = await callable.call({
+      'courseId': courseId,
+      'lessonIndex': lessonIndex,
+    });
+
+    final JSONMap data = JSONMap.from(result.data as Map);
+    final JSONList content = JSONList.from(data['content'] as List);
+
+    return content;
   }
 }

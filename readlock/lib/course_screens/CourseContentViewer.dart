@@ -13,6 +13,7 @@ import 'package:readlock/course_screens/widgets/CCContinueButton.dart';
 import 'package:readlock/course_screens/widgets/CCJSONContentFactory.dart';
 import 'package:readlock/utility_widgets/text_animation/RLTypewriterText.dart';
 import 'package:readlock/course_screens/data/CourseData.dart';
+import 'package:readlock/constants/RLCoursePalette.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/constants/RLReadingColumn.dart';
 import 'package:readlock/constants/RLUIStrings.dart';
@@ -41,11 +42,16 @@ class CourseDetailScreen extends StatefulWidget {
   // Initial content item within the lesson (0-based index)
   final int initialContentIndex;
 
+  // Accent color for the course (passed from the roadmap or home screen
+  // so the viewer does not need to fetch the full course document)
+  final Color accentColor;
+
   const CourseDetailScreen({
     super.key,
     required this.courseId,
     this.initialLessonIndex = 0,
     this.initialContentIndex = 0,
+    this.accentColor = COURSE_FALLBACK_COLOR,
   });
 
   @override
@@ -59,7 +65,6 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
   late int currentLessonIndex;
 
   JSONList allContent = [];
-  JSONMap? courseData;
 
   bool isLoading = true;
 
@@ -73,13 +78,6 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
   bool isProgressBarRevealed = false;
   final GlobalKey progressBarKey = GlobalKey();
   final GlobalKey topChromeKey = GlobalKey();
-
-  Color getCourseAccentColor() {
-    final String? hex = courseData?['color'] as String?;
-    final Color? parsed = RLDS.parseHexColor(hex);
-
-    return parsed ?? RLDS.success;
-  }
 
   // Icon definitions — share the muted grey used across the progress chrome
   static const Color progressChromeColor = Color.fromARGB(255, 157, 157, 157);
@@ -96,10 +94,6 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
     size: RLDS.iconXLarge,
   );
 
-  // Per-icon tap-highlight state for the top chrome buttons
-  bool isBackButtonHighlighted = false;
-  bool isNightShiftButtonHighlighted = false;
-
   @override
   void initState() {
     super.initState();
@@ -109,10 +103,7 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
 
     pageController = PageController(initialPage: currentContentIndex);
 
-    fetchCourseData();
-
-    // Block screenshots while course content is visible
-    ScreenProtectionService.enableProtection();
+    fetchLessonContent();
 
     // Hide the status bar clock/indicators while reading so the swipe
     // takes the full screen. Only the home-indicator bar is kept.
@@ -126,7 +117,6 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
   void dispose() {
     commitReadingTime();
 
-    ScreenProtectionService.disableProtection();
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
     pageController.dispose();
     super.dispose();
@@ -166,7 +156,7 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
       return LoadingScreen();
     }
 
-    final Color courseAccentColor = getCourseAccentColor();
+    final Color courseAccentColor = widget.accentColor;
 
     return CourseAccentScope(
       accentColor: courseAccentColor,
@@ -244,18 +234,6 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
     });
   }
 
-  void setBackButtonHighlight(bool highlighted) {
-    setState(() {
-      isBackButtonHighlighted = highlighted;
-    });
-  }
-
-  void setNightShiftButtonHighlight(bool highlighted) {
-    setState(() {
-      isNightShiftButtonHighlighted = highlighted;
-    });
-  }
-
   void handleProgressBarTap() {
     final bool isAlreadyRevealed = isProgressBarRevealed;
 
@@ -320,7 +298,7 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
   // still commits the elapsed seconds to /users/{id}.timeSpentReading.
   Widget FinishPage() {
     final int elapsedSeconds = readingStopwatch.elapsed.inSeconds;
-    final Color accentColor = getCourseAccentColor();
+    final Color accentColor = widget.accentColor;
 
     return LessonFinishScreen(
       elapsedSeconds: elapsedSeconds,
@@ -347,7 +325,12 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
 
   // Empty state message when no content available
   Widget EmptyContentMessage() {
-    return Center(child: RLTypography.bodyMedium(RLUIStrings.NO_CONTENT_AVAILABLE_MESSAGE));
+    return Center(
+      child: RLTypography.bodyLarge(
+        RLUIStrings.NO_CONTENT_AVAILABLE_MESSAGE,
+        textAlign: TextAlign.center,
+      ),
+    );
   }
 
   // Top navigation bar with progress indicator.
@@ -378,7 +361,7 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
           NightShiftButton(),
         ],
         key: topChromeKey,
-        padding: const [RLDS.spacing12, RLDS.spacing24],
+        padding: const [RLDS.spacing24, RLDS.spacing24],
       ),
     );
   }
@@ -388,17 +371,13 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
   // bar is still blurred, the first tap just reveals it (mirrors the progress
   // bar's reveal-on-first-tap behaviour).
   Widget BackNavigationButton() {
-    final VoidCallback backTapHandler = getChromeTapHandler(showQuitConfirmationSheet);
+    final bool hasNoContent = allContent.isEmpty;
+    final VoidCallback backAction = hasNoContent ? navigateBackToRoadmap : showQuitConfirmationSheet;
+    final VoidCallback backTapHandler = getChromeTapHandler(backAction);
 
     return GestureDetector(
       onTap: backTapHandler,
-      onTapDown: (_) => setBackButtonHighlight(true),
-      onTapUp: (_) => setBackButtonHighlight(false),
-      onTapCancel: () => setBackButtonHighlight(false),
-      child: ChromeIconHighlight(
-        isHighlighted: isBackButtonHighlighted,
-        child: ChromeBlur(child: BackNavigationIcon),
-      ),
+      child: ChromeBlur(child: BackNavigationIcon),
     );
   }
 
@@ -409,13 +388,7 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
 
     return GestureDetector(
       onTap: nightShiftTapHandler,
-      onTapDown: (_) => setNightShiftButtonHighlight(true),
-      onTapUp: (_) => setNightShiftButtonHighlight(false),
-      onTapCancel: () => setNightShiftButtonHighlight(false),
-      child: ChromeIconHighlight(
-        isHighlighted: isNightShiftButtonHighlighted,
-        child: ChromeBlur(child: NightShiftIcon),
-      ),
+      child: ChromeBlur(child: NightShiftIcon),
     );
   }
 
@@ -450,27 +423,17 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
 
   // Tap-highlight container for chrome icon buttons. Fades a glass10 white
   // rectangle in on press and out on release using the standard fast duration.
-  Widget ChromeIconHighlight({required bool isHighlighted, required Widget child}) {
-    final Color backgroundColor = isHighlighted ? RLDS.glass10(Colors.white) : RLDS.transparent;
-
-    return AnimatedContainer(
-      duration: RLDS.opacityFadeDurationFast,
-      padding: const EdgeInsets.all(RLDS.spacing4),
-      decoration: BoxDecoration(color: backgroundColor, borderRadius: RLDS.borderRadiusSmall),
-      child: child,
-    );
-  }
 
   // Progress indicator for course content — blurred and dimmed until tapped
   Widget ProgressIndicator() {
     final double progressValue = calculateProgress();
-    final Color accentColor = getCourseAccentColor();
+    final Color accentColor = widget.accentColor;
 
     final Widget progressBar = SizedBox(
       key: progressBarKey,
-      height: 12.0,
+      height: RLDS.spacing16,
       child: ClipRRect(
-        borderRadius: RLDS.borderRadiusXXSmall,
+        borderRadius: RLDS.borderRadiusLarge,
         child: LinearProgressIndicator(
           value: progressValue,
           backgroundColor: RLDS.backgroundLight,
@@ -518,17 +481,18 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
   // transition never feels like a flash, even on fast connections.
   static const Duration minimumLoadingDuration = Duration(seconds: 1);
 
-  Future<void> fetchCourseData() async {
+  // Fetches the current lesson's content via the fetchLessonContent
+  // Cloud Function. The function enforces auth, purchase, frontier, and
+  // discharge gates server-side, so raw content only arrives when the
+  // reader is allowed to view it.
+  Future<void> fetchLessonContent() async {
     final Future<void> minimumDelay = Future.delayed(minimumLoadingDuration);
 
     try {
-      courseData = await CourseDataService.fetchCourseById(widget.courseId);
-
-      final bool hasCourseData = courseData != null;
-
-      if (hasCourseData) {
-        allContent = await getAllContent();
-      }
+      allContent = await CourseDataService.fetchLessonContent(
+        courseId: widget.courseId,
+        lessonIndex: currentLessonIndex,
+      );
     } on Exception catch (error) {
       debugPrint('${RLUIStrings.ERROR_LOADING_COURSE_DATA}: $error');
     }
@@ -545,56 +509,6 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
       // visible. Loading-screen seconds are not reading seconds.
       readingStopwatch.start();
     }
-  }
-
-  Future<JSONList> getAllContent() async {
-    final bool hasNoCourseData = courseData == null;
-
-    if (hasNoCourseData) {
-      return [];
-    }
-
-    final JSONList segments = JSONList.from(courseData!['segments'] ?? []);
-
-    return getContentFromCurrentLessonInSegments(segments);
-  }
-
-  JSONList getContentFromCurrentLessonInSegments(JSONList segments) {
-    // Flatten lessons across all segments so currentLessonIndex is a global
-    // flat index matching the CourseProgressModel frontier.
-    final JSONList allLessons = [];
-
-    for (final segment in segments) {
-      final JSONList segmentLessons = JSONList.from(segment['lessons'] ?? []);
-      allLessons.addAll(segmentLessons);
-    }
-
-    // The frontier index can equal allLessons.length when every lesson is
-    // complete (finish on lesson N-1 bumps frontier to N). Clamp to the
-    // last valid index so a fully-completed course reopens its final lesson
-    // rather than showing the empty-content message.
-    final bool isFrontierOutOfBounds =
-        allLessons.isNotEmpty && currentLessonIndex >= allLessons.length;
-
-    if (isFrontierOutOfBounds) {
-      currentLessonIndex = allLessons.length - 1;
-    }
-
-    return getContentFromCurrentLesson(allLessons);
-  }
-
-  JSONList getContentFromCurrentLesson(JSONList lessons) {
-    final bool hasValidLessonIndex =
-        currentLessonIndex >= 0 && currentLessonIndex < lessons.length;
-
-    if (!hasValidLessonIndex) {
-      return [];
-    }
-
-    final JSONMap currentLesson = lessons[currentLessonIndex];
-    final JSONList lessonContent = JSONList.from(currentLesson['content'] ?? []);
-
-    return lessonContent;
   }
 
   // Handle page change events. Stops the in-session stopwatch when the

@@ -162,8 +162,8 @@ function parseQuestionBlock(lines: string[]): Swipe {
         .slice("correct_answers:".length)
         .trim()
         .split(",")
-        .map((s) => parseInt(s.trim(), 10) - 1)
-        .filter((n) => !isNaN(n));
+        .map((indexString) => Number.parseInt(indexString.trim(), 10) - 1)
+        .filter((parsedIndex) => !Number.isNaN(parsedIndex));
     } else if (trimmed.startsWith("explanation:")) {
       explanation = trimmed.slice("explanation:".length).trim();
     } else if (trimmed.startsWith("hint:")) {
@@ -180,9 +180,9 @@ function parseQuestionBlock(lines: string[]): Swipe {
     question,
     explanation,
     hint,
-    options: options.map((opt) => ({
-      text: opt.text,
-      "consequence-message": opt.consequenceMessage,
+    options: options.map((option) => ({
+      text: option.text,
+      "consequence-message": option.consequenceMessage,
     })),
     "correct-answer-indices": correctIndices.length > 0 ? correctIndices : [0],
   };
@@ -223,8 +223,8 @@ function parseTrueFalseBlock(lines: string[]): Swipe {
         .slice("correct_answers:".length)
         .trim()
         .split(",")
-        .map((s) => parseInt(s.trim(), 10) - 1)
-        .filter((n) => !isNaN(n));
+        .map((indexString) => Number.parseInt(indexString.trim(), 10) - 1)
+        .filter((parsedIndex) => !Number.isNaN(parsedIndex));
     } else if (trimmed.startsWith("explanation:")) {
       explanation = trimmed.slice("explanation:".length).trim();
     } else if (trimmed.startsWith("hint:")) {
@@ -241,9 +241,9 @@ function parseTrueFalseBlock(lines: string[]): Swipe {
     question,
     explanation,
     hint,
-    options: options.map((opt) => ({
-      text: opt.text,
-      "consequence-message": opt.consequenceMessage,
+    options: options.map((option) => ({
+      text: option.text,
+      "consequence-message": option.consequenceMessage,
     })),
     "correct-answer-indices": correctIndices.length > 0 ? correctIndices : [0],
   };
@@ -261,8 +261,8 @@ function parseEstimateBlock(lines: string[]): Swipe {
     const trimmed = line.trim();
 
     if (trimmed.startsWith("answer:")) {
-      const parsed = parseInt(trimmed.slice("answer:".length).trim(), 10);
-      const isValidNumber = !isNaN(parsed);
+      const parsed = Number.parseInt(trimmed.slice("answer:".length).trim(), 10);
+      const isValidNumber = !Number.isNaN(parsed);
 
       if (isValidNumber) {
         answer = parsed;
@@ -290,7 +290,7 @@ function parseEstimateBlock(lines: string[]): Swipe {
 
 function parsePauseBlock(lines: string[]): Swipe {
   const contentLines = lines.filter((line) => line.trim() !== "");
-  const text = contentLines.map((l) => l.trim()).join(" ");
+  const text = contentLines.map((line) => line.trim()).join(" ");
 
   return { "entity-type": "pause", text, icon: "check" };
 }
@@ -298,8 +298,10 @@ function parsePauseBlock(lines: string[]): Swipe {
 function parseQuoteBlock(lines: string[]): Swipe {
   const contentLines = lines.filter((line) => line.trim() !== "");
 
-  const quote = contentLines.length > 0 ? contentLines[0].trim() : "";
-  const author = contentLines.length > 1 ? contentLines[1].trim() : "";
+  const hasQuoteLine = contentLines.length > 0;
+  const hasAuthorLine = contentLines.length > 1;
+  const quote = hasQuoteLine ? contentLines[0].trim() : "";
+  const author = hasAuthorLine ? contentLines[1].trim() : "";
 
   return { "entity-type": "quote", quote, author };
 }
@@ -437,7 +439,10 @@ function parseCourseInfoSection(text: string): ParsedCourseInfo {
     if (trimmed.startsWith("id:")) {
       info.id = trimmed.slice("id:".length).trim();
     } else if (trimmed.startsWith("language:")) {
-      info.language = trimmed.slice("language:".length).trim() || "EN";
+      const parsedLanguage = trimmed.slice("language:".length).trim();
+      const hasLanguageValue = parsedLanguage !== "";
+
+      info.language = hasLanguageValue ? parsedLanguage : "EN";
     } else if (trimmed.startsWith("title:")) {
       info.title = trimmed.slice("title:".length).trim();
     } else if (trimmed.startsWith("author:")) {
@@ -448,21 +453,25 @@ function parseCourseInfoSection(text: string): ParsedCourseInfo {
       // .rlockie files are authored without a leading "#" (it would be parsed as a comment marker).
       // Internally we keep the "#" so the value can flow directly into CSS backgroundColor bindings.
       const rawColor = trimmed.slice("color:".length).trim().replace(/^#/, "");
-      info.color = rawColor === "" ? info.color : `#${rawColor}`;
+      const hasColorValue = rawColor !== "";
+
+      if (hasColorValue) {
+        info.color = `#${rawColor}`;
+      }
     } else if (trimmed.startsWith("genres:")) {
       info.genres = trimmed
         .slice("genres:".length)
         .trim()
         .split(",")
-        .map((g) => g.trim())
-        .filter((g) => g !== "");
+        .map((genre) => genre.trim())
+        .filter((genre) => genre !== "");
     } else if (trimmed.startsWith("relevant_for:")) {
       info.relevantFor = trimmed
         .slice("relevant_for:".length)
         .trim()
         .split(",")
-        .map((r) => r.trim())
-        .filter((r) => r !== "");
+        .map((item) => item.trim())
+        .filter((item) => item !== "");
     }
   }
 
@@ -474,9 +483,10 @@ function parseCourseInfoSection(text: string): ParsedCourseInfo {
 function parseSegmentBlock(text: string, segmentNumber: number, courseId: string): Segment {
   const lines = text.split("\n").filter((line) => line.trim() !== "");
 
-  const title = lines.length > 0 ? lines[0].trim() : `Segment ${segmentNumber}`;
-  const symbol =
-    lines.length > 1 ? lines[1].trim() : title.charAt(0).toUpperCase();
+  const hasTitleLine = lines.length > 0;
+  const hasSymbolLine = lines.length > 1;
+  const title = hasTitleLine ? lines[0].trim() : `Segment ${segmentNumber}`;
+  const symbol = hasSymbolLine ? lines[1].trim() : title.charAt(0).toUpperCase();
 
   return {
     "segment-id": `${courseId};segment:${segmentNumber}`,

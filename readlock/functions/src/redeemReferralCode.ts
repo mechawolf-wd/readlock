@@ -1,15 +1,18 @@
 // Redeems a referral code on behalf of the calling user.
 //
-// Guards: authentication required, code must exist, and the caller
-// must not be the code's creator (no self-referral). On success the
-// code document is deleted from the collection and feathers are
-// credited to both parties via FieldValue.increment (atomic,
-// race-safe). Deletion prevents double-redemption: concurrent
-// calls will hit the not-found guard.
+// The entire read-validate-delete-credit flow runs inside a Firestore
+// transaction so two concurrent calls cannot both succeed (the second
+// caller's transaction aborts because the document was modified).
+//
+// Guards: authentication required, code must exist, code must not
+// already be redeemed, and the caller must not be the code's creator
+// (no self-referral). On success, feathers are credited to both
+// parties (if the creator's account still exists).
 //
 // Error codes returned to the Flutter client:
 //   not-found           -> code does not exist (or already redeemed)
 //   failed-precondition -> caller is the code's creator (self-referral)
+//   failed-precondition -> code was already redeemed
 
 import { getFirestore, FieldValue } from "firebase-admin/firestore";
 import { HttpsError, onCall } from "firebase-functions/v2/https";
@@ -43,55 +46,73 @@ export const redeemReferralCode = onCall(async (request) => {
   const code = (rawCode as string).trim().toUpperCase();
   const redeemerUserId = request.auth!.uid;
 
-  const firestore =getFirestore();
+  const firestore = getFirestore();
   const codeDocumentRef = firestore.collection(REFERRAL_CODES_COLLECTION).doc(code);
-  const codeSnapshot = await codeDocumentRef.get();
-  const codeNotFound = !codeSnapshot.exists;
-
-  if (codeNotFound) {
-    throw new HttpsError("not-found", "Referral code not found.");
-  }
-
-  const codeData = codeSnapshot.data()!;
-  const creatorUserId = codeData.creatorUid as string;
-  const isSelfReferral = creatorUserId === redeemerUserId;
-
-  if (isSelfReferral) {
-    throw new HttpsError(
-      "failed-precondition",
-      "Cannot redeem your own referral code."
-    );
-  }
-
-  // Delete the code so it cannot be redeemed again. Concurrent calls
-  // will hit the codeNotFound guard above since the document is gone.
-  await codeDocumentRef.delete();
-
-  // Credit feathers to both parties. Best-effort after the stamp: if one
-  // write fails, the code is already marked used and the credit can be
-  // recovered manually via the Admin SDK.
   const redeemerDocumentRef = firestore.collection(USERS_COLLECTION).doc(redeemerUserId);
-  const creatorDocumentRef = firestore.collection(USERS_COLLECTION).doc(creatorUserId);
 
-  try {
-    await Promise.all([
-      redeemerDocumentRef.update({ balance: FieldValue.increment(REDEEMER_FEATHER_REWARD) }),
-      creatorDocumentRef.update({ balance: FieldValue.increment(CREATOR_FEATHER_REWARD) }),
-    ]);
-  } catch (error) {
-    logger.error("redeemReferralCode: feather credit failed", {
-      redeemerUserId,
-      creatorUserId,
-      error,
+  // * Transaction: atomic read-validate-delete-credit
+
+  await firestore.runTransaction(async (transaction) => {
+    const codeSnapshot = await transaction.get(codeDocumentRef);
+
+    const codeNotFound = !codeSnapshot.exists;
+
+    if (codeNotFound) {
+      throw new HttpsError("not-found", "Referral code not found.");
+    }
+
+    const codeData = codeSnapshot.data()!;
+    const creatorUserId = codeData.creatorUid as string;
+
+    const alreadyRedeemed = codeData.redeemedByUid !== null;
+
+    if (alreadyRedeemed) {
+      throw new HttpsError(
+        "failed-precondition",
+        "Referral code has already been redeemed."
+      );
+    }
+
+    const isSelfReferral = creatorUserId === redeemerUserId;
+
+    if (isSelfReferral) {
+      throw new HttpsError(
+        "failed-precondition",
+        "Cannot redeem your own referral code."
+      );
+    }
+
+    // Mark the code as redeemed (instead of deleting, so the creator
+    // can see their codes' history and the lifetime cap stays accurate).
+    transaction.update(codeDocumentRef, {
+      redeemedByUid: redeemerUserId,
+      redeemedAt: FieldValue.serverTimestamp(),
     });
 
-    throw new HttpsError(
-      "internal",
-      "Code redeemed but feather credit failed."
-    );
-  }
+    // Credit feathers to the redeemer.
+    transaction.update(redeemerDocumentRef, {
+      balance: FieldValue.increment(REDEEMER_FEATHER_REWARD),
+    });
 
-  logger.info("redeemReferralCode", { code, redeemerUserId, creatorUserId });
+    // Credit feathers to the creator only if their account still exists.
+    const creatorDocumentRef = firestore.collection(USERS_COLLECTION).doc(creatorUserId);
+    const creatorSnapshot = await transaction.get(creatorDocumentRef);
+
+    const creatorExists = creatorSnapshot.exists;
+
+    if (creatorExists) {
+      transaction.update(creatorDocumentRef, {
+        balance: FieldValue.increment(CREATOR_FEATHER_REWARD),
+      });
+    } else {
+      logger.warn("redeemReferralCode: creator account no longer exists, skipping creator reward", {
+        code,
+        creatorUserId,
+      });
+    }
+  });
+
+  logger.info("redeemReferralCode", { code, redeemerUserId });
 
   return { ok: true };
 });

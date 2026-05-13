@@ -1,25 +1,14 @@
 rules_version = '2';
 
-// Firestore security rules for the Readlock app.
+// Firestore security rules for Readlock.
 //
-// Schema overview (gathered from the Flutter app + the Lockie publishing tool):
+// /courses/{courseId}        Signed-in reads. Admin (Lockie) writes.
+// /courses/.../lessons/{}    No client reads. Admin writes. Cloud Function reads.
+// /users/{userId}            Owner only. email + createdAt frozen after creation.
+// /config/{document}         Signed-in reads. No client writes.
+// /referral-codes/{codeId}   Creator reads own codes. Cloud Functions write.
 //
-//   /courses/{courseId}
-//     Catalog. Any signed-in client can read; anonymous reads are denied
-//     so the full skillbook list isn't exposed to scrapers. Every write
-//     (course creation / edit / delete and the `timesPurchased` counter
-//     bump) is server-side only: Lockie publishes through the Admin SDK,
-//     and the purchase callable cloud function bumps the counter. Both
-//     bypass these rules, so direct client writes stay denied.
-//
-//   /users/{userId}
-//     Strictly self-owned profile + preferences + feather wallet + FCM token.
-//     Owner-only read/write. `email` and `createdAt` are frozen after
-//     creation so a hijacked client can't rewrite identity. Account
-//     deletion goes through the `deleteAccount` callable cloud function
-//     (Admin SDK), which bypasses these rules.
-//
-// Client-side mutable fields (UserService):
+// Client-writable user fields (UserService):
 //   Preferences: typingSound, sounds, haptics, reveal, blur, coloredText,
 //     bionic, rsvp, justifiedReading, readingFont, readingColumn,
 //     rsvpWordsPerMinute, nightShiftLevel, nightShiftScheduleEnabled,
@@ -31,9 +20,8 @@ rules_version = '2';
 //   Progress: timeSpentReading (via FieldValue.increment),
 //     courseProgress (map of per-course {courseId, currentLessonIndex})
 //
-// NOTE: `balance` and `purchasedCourses` are still mutated client-side
-// today (PurchaseService). When those move to a callable cloud function,
-// tighten the user-update rule to forbid direct writes to those fields.
+// NOTE: balance and purchasedCourses are still client-writable.
+// Move them to a callable to tighten the user-update rule.
 
 service cloud.firestore {
   match /databases/{database}/documents {
@@ -48,8 +36,12 @@ service cloud.firestore {
       return isSignedIn() && request.auth.uid == uid;
     }
 
-    // Set of fields whose value differs between the existing doc and the
-    // proposed write. Used to enforce field-level immutability.
+    function isAdmin() {
+      return isSignedIn() && request.auth.token.email == 'support@readlock.org';
+    }
+
+    // Fields that differ between existing doc and proposed write.
+    // Used to enforce field-level immutability (email, createdAt).
     function changedFields() {
       return request.resource.data.diff(resource.data).affectedKeys();
     }
@@ -62,35 +54,36 @@ service cloud.firestore {
 
     match /courses/{courseId} {
 
-      // Catalog is gated behind sign-in so anonymous scrapers can't pull
-      // the entire skillbook list. Every authenticated reader still gets
-      // the full catalog regardless of purchase state.
+      // Metadata only (titles, segments, isFree flags). Content is in /lessons.
+      // Gated behind sign-in so anonymous scrapers can't pull the full catalog.
+      // All authenticated users see the full catalog regardless of purchase state.
       allow read: if isSignedIn();
 
-      // Every write to /courses (create, edit, delete, and the
-      // timesPurchased counter bump) goes through server-side code with
-      // the Admin SDK: Lockie for authoring, the purchase callable
-      // cloud function for the counter increment. Blocking every direct
-      // client write here means a stolen session can neither publish
-      // courses nor inflate the popularity counter.
-      allow create, update, delete: if false;
+      // Only admin (Lockie) can publish. Counter bumps go through Cloud Functions.
+      allow create, update, delete: if isAdmin();
+
+      // * /courses/{courseId}/lessons/{lessonIndex}
+      //
+      // Lesson content. Docs keyed by flat index ("0", "1", "2", ...).
+      // Client reads denied so content stays hidden from DevTools.
+      // fetchLessonContent Cloud Function reads server-side (Admin SDK).
+      // Lockie writes as admin via client SDK.
+
+      match /lessons/{lessonIndex} {
+        allow read: if false;
+        allow write: if isAdmin();
+      }
     }
 
     // * /users/{userId}
 
     match /users/{userId} {
 
-      // Owner reads their own profile. No cross-user reads; any support /
-      // debugging access goes through the Admin SDK server-side, which
-      // bypasses these rules.
+      // Owner only. No cross-user reads. Admin/support access via Admin SDK.
       allow read: if isOwner(userId);
 
-      // Profile creation: owner only, with the doc's identity fields
-      // pinned to the authenticated request so a client can't forge a
-      // foreign email or backdate the createdAt timestamp. The starter
-      // feather balance is capped at the value the app seeds new users
-      // with (NEW_USER_STARTING_BALANCE = 10) so a fresh sign-up can't
-      // mint extra feathers on the first write.
+      // New profile: pin email + createdAt to auth values so a client can't
+      // forge identity or backdate. Starter balance capped at 10 (NEW_USER_STARTING_BALANCE).
       allow create: if isOwner(userId)
         && request.resource.data.email is string
         && request.resource.data.email == request.auth.token.email
@@ -98,29 +91,22 @@ service cloud.firestore {
         && request.resource.data.get('hasReaderPass', false) == false
         && request.resource.data.get('balance', 0) <= 10;
 
-      // Profile updates: owner only. Identity fields (email, createdAt)
-      // are frozen so the owner can't rewrite their identity after the
-      // fact. The balance field can only decrease or stay the same on a
-      // direct client write (purchases deduct feathers); top-ups that
-      // increase balance should eventually move to a callable, but the
-      // increment guard is relaxed here because the mock purchase flow
-      // and the creditFeathers path both write via FieldValue.increment
-      // through the same update call.
+      // Owner updates only. email + createdAt frozen.
+      // Balance guard is relaxed because PurchaseService and creditFeathers
+      // both write via FieldValue.increment through the same update call.
       allow update: if isOwner(userId)
         && fieldUnchanged('email')
         && fieldUnchanged('createdAt');
 
-      // Account deletion is the deleteAccount callable cloud function's
-      // job (it uses the Admin SDK and tears down related data). Block
-      // direct client deletes so a stolen session can't nuke a profile
-      // without going through the verified flow.
+      // Deletion goes through deleteAccount Cloud Function.
+      // Blocked here so a stolen session can't nuke a profile directly.
       allow delete: if false;
     }
 
     // * /config/{document}
     //
-    // Remote app configuration (URLs, pricing, feature flags). Any signed-in
-    // client can read; all writes are admin-only (Firebase Console or Admin SDK).
+    // Remote app config (URLs, pricing, feature flags).
+    // Writes are admin-only (Firebase Console or Admin SDK).
 
     match /config/{document} {
       allow read: if isSignedIn();
@@ -129,10 +115,8 @@ service cloud.firestore {
 
     // * /referral-codes/{codeId}
     //
-    // Referral codes are created and redeemed exclusively through Cloud
-    // Functions (Admin SDK). Authenticated users can read only their own
-    // codes (where creatorUid matches their uid) to populate the "Invite
-    // friends" bottom sheet.
+    // Created and redeemed via Cloud Functions.
+    // Users read only their own codes (populates "Invite friends" sheet).
 
     match /referral-codes/{codeId} {
       allow read: if isSignedIn()
@@ -143,9 +127,8 @@ service cloud.firestore {
 
     // * Default deny
     //
-    // rules_version 2 already denies anything that doesn't match a rule,
-    // but the explicit catch-all below keeps the intent obvious to anyone
-    // reading the file later.
+    // rules_version 2 already denies unmatched paths.
+    // Explicit catch-all keeps the intent obvious.
 
     match /{document=**} {
       allow read, write: if false;
