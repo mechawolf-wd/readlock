@@ -19,10 +19,42 @@
 //  10. Read content from the lessons subcollection and return it.
 //
 // Input:  { courseId: string, lessonIndex: number }
-// Output: { content: Array<object> }
+// Output: { payload: string }  (AES-256-CBC encrypted JSON)
 
+import * as crypto from "crypto";
 import { getFirestore, Timestamp } from "firebase-admin/firestore";
 import { HttpsError, onCall } from "firebase-functions/v2/https";
+
+// * AES-256-CBC content encryption
+//
+// Content is encrypted before leaving the function so it is opaque
+// in transit even to proxy tools. The Flutter client holds the same
+// key and decrypts on arrival. The key is derived from three seed
+// strings via SHA-256 (seeds are scattered across the Flutter client
+// to avoid a single grep-able constant).
+
+const SEED_A = "rl-9762-prod";
+const SEED_B = "accelerator-content-v2";
+const SEED_C = "sowa-narrative-engine";
+
+const CONTENT_ENCRYPTION_KEY = crypto
+  .createHash("sha256")
+  .update(SEED_A + SEED_B + SEED_C)
+  .digest("hex");
+
+const AES_ALGORITHM = "aes-256-cbc";
+
+function encryptContent(content: JSONArray): string {
+  const plaintext = JSON.stringify(content);
+  const iv = crypto.randomBytes(16);
+  const keyBuffer = Buffer.from(CONTENT_ENCRYPTION_KEY, "hex");
+  const cipher = crypto.createCipheriv(AES_ALGORITHM, keyBuffer, iv);
+
+  let encrypted = cipher.update(plaintext, "utf8", "hex");
+  encrypted += cipher.final("hex");
+
+  return iv.toString("hex") + ":" + encrypted;
+}
 
 const COURSES_COLLECTION = "courses";
 const LESSONS_SUBCOLLECTION = "lessons";
@@ -264,6 +296,8 @@ export const fetchLessonContent = onCall<FetchLessonContentData>(
     const rawContent = lessonData["content"] as JSONArray | undefined;
     const content = rawContent ?? [];
 
-    return { content };
+    const payload = encryptContent(content);
+
+    return { payload };
   }
 );

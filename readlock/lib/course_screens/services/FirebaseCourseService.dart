@@ -2,6 +2,7 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
+import 'package:readlock/constants/ContentEncryption.dart';
 import 'package:readlock/constants/DartAliases.dart';
 import 'package:readlock/constants/FirebaseConfig.dart';
 
@@ -229,10 +230,8 @@ class FirebaseCourseService {
     });
 
     final JSONMap data = JSONMap.from(result.data as Map);
-    final List<dynamic> rawContent = data['content'] as List;
-    final JSONList content = rawContent
-        .map((item) => JSONMap.from(item as Map))
-        .toList();
+    final String payload = data['payload'] as String;
+    final JSONList content = decryptLessonPayload(payload);
 
     return content;
   }

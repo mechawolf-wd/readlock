@@ -165,17 +165,23 @@ class JsonQuoteWidget extends StatelessWidget {
 
 // * Question wrapper widgets
 
-// Shared helper for parsing question options from JSON
+// Shared helper for parsing question options from JSON.
+// Cloud Function responses return nested maps as Map<Object?, Object?>,
+// so each option must be deep-cast to Map<String, dynamic>.
 List<QuestionOption> parseQuestionOptions(JSONMap contentData) {
-  final JSONList optionsData = JSONList.from(contentData['options'] ?? []);
+  final List<dynamic> rawOptions = contentData['options'] as List<dynamic>? ?? [];
 
-  return optionsData
+  return rawOptions
       .map(
-        (option) => QuestionOption(
-          text: option['text'] ?? '',
-          hint: option['hint'],
-          consequenceMessage: option['consequence-message'],
-        ),
+        (raw) {
+          final JSONMap option = JSONMap.from(raw as Map);
+
+          return QuestionOption(
+            text: option['text'] ?? '',
+            hint: option['hint'],
+            consequenceMessage: option['consequence-message'],
+          );
+        },
       )
       .toList();
 }

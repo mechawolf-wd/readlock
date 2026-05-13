@@ -33,4 +33,8 @@ class FirebaseConfig {
   // * Referral codes collection
 
   static const String REFERRAL_CODES_COLLECTION = 'referral-codes';
+
+  // * Platform signature (used for content integrity checks)
+
+  static const String PLATFORM_SIGNATURE = 'rl-9762-prod';
 }

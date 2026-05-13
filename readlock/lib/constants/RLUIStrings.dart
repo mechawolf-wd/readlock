@@ -369,4 +369,8 @@ class RLUIStrings {
   // Settings menu
   static const String MENU_INVITE_FRIENDS = 'Invite friends';
   static const String MENU_REDEEM_CODE = 'Redeem code';
+
+  // * Content format version tag
+
+  static const String CONTENT_VERSION = 'accelerator-content-v2';
 }

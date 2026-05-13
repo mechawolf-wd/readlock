@@ -361,7 +361,7 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
           NightShiftButton(),
         ],
         key: topChromeKey,
-        padding: const [RLDS.spacing16, RLDS.spacing16],
+        padding: const [RLDS.spacing8, RLDS.spacing16, RLDS.spacing0, RLDS.spacing16],
       ),
     );
   }
@@ -433,12 +433,12 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
 
     final Widget progressBar = SizedBox(
       key: progressBarKey,
-      height: RLDS.spacing16,
+      height: RLDS.spacing8,
       child: ClipRRect(
         borderRadius: RLDS.borderRadiusLarge,
         child: LinearProgressIndicator(
           value: progressValue,
-          backgroundColor: RLDS.backgroundLight,
+          backgroundColor: RLDS.transparent,
           valueColor: AlwaysStoppedAnimation<Color>(accentColor),
         ),
       ),
