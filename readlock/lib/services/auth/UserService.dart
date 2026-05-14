@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:readlock/constants/DartAliases.dart';
 import 'package:readlock/constants/FirebaseConfig.dart';
 import 'package:readlock/models/CourseProgressModel.dart';
-import 'package:readlock/models/PurchasedCourseModel.dart';
 import 'package:readlock/models/UserModel.dart';
 import 'package:readlock/services/LoggingService.dart';
 import 'package:readlock/services/auth/AuthService.dart';
@@ -289,14 +288,12 @@ class UserService {
     );
   }
 
-  // * Feather wallet (balance) and course purchases.
+  // * Feather wallet (balance).
   //
   // Balance uses FieldValue.increment so concurrent ticks add up cleanly.
-  // purchasedCourses is a flat array of {courseId, expires} records,
-  // so writes rewrite the whole field with the caller's already-
-  // reconciled list (a fresh purchase appends; a resurrect replaces
-  // the matching element in place). Callers (PurchaseService) still
-  // update the local notifiers optimistically for instant UI feedback.
+  // StoreKitService credits feathers here after a successful App Store
+  // purchase. Course purchases and resurrections are handled server-side
+  // by the purchaseCourse and resurrectCourse Cloud Functions.
 
   static Future<bool> incrementBalance(int delta) async {
     final String? userId = AuthService.currentUserId;
@@ -372,40 +369,6 @@ class UserService {
   // frame the writer fires; a Firestore failure is logged but not rolled
   // back since the user can retry the action and the field is monotonic.
 
-  // Seeds a fresh CourseProgressModel for a course the reader has just
-  // bought. currentLessonIndex starts at 0 (lesson 0 tappable, rest
-  // locked); subsequent advances ride the Finish button.
-  static Future<bool> initializeCourseProgress(String courseId) async {
-    final String? userId = AuthService.currentUserId;
-    final bool hasNoUser = userId == null;
-
-    if (hasNoUser) {
-      logger.info('initializeCourseProgress', 'No user logged in');
-      return false;
-    }
-
-    final CourseProgressModel seed = CourseProgressModel(courseId: courseId);
-    final Map<String, CourseProgressModel> nextProgress = {
-      ...courseProgressNotifier.value,
-      courseId: seed,
-    };
-
-    courseProgressNotifier.value = nextProgress;
-
-    try {
-      await userDoc(userId).update({
-        '${UserPreferenceField.COURSE_PROGRESS}.$courseId': seed.toJson(),
-      });
-
-      logger.success('initializeCourseProgress', 'courseId=$courseId');
-
-      return true;
-    } on Exception catch (error) {
-      logger.failure('initializeCourseProgress', '$error');
-      return false;
-    }
-  }
-
   // Bumps `currentLessonIndex` if the supplied next-frontier value beats
   // what's already stored. The max() guard makes the writer idempotent
   // and monotonic — finishing an old lesson can't roll the frontier
@@ -453,40 +416,6 @@ class UserService {
       return true;
     } on Exception catch (error) {
       logger.failure('advanceCourseProgress', '$error');
-      return false;
-    }
-  }
-
-  // Rewrites the entire purchasedCourses array. Used by both the
-  // initial purchase (caller appends a fresh entry to the in-memory
-  // notifier and hands the whole list off) and the resurrect flow
-  // (caller swaps the matching element in place). Idempotent — a
-  // re-run with the same list just writes the same array.
-  static Future<bool> savePurchasedCourses(
-    List<PurchasedCourseModel> entries,
-  ) async {
-    final String? userId = AuthService.currentUserId;
-    final bool hasNoUser = userId == null;
-
-    if (hasNoUser) {
-      logger.info('savePurchasedCourses', 'No user logged in');
-      return false;
-    }
-
-    final List<JSONMap> serialized = entries
-        .map((PurchasedCourseModel entry) => entry.toJson())
-        .toList();
-
-    try {
-      await userDoc(userId).update({
-        UserPreferenceField.PURCHASED_COURSES: serialized,
-      });
-
-      logger.success('savePurchasedCourses', 'count=${entries.length}');
-
-      return true;
-    } on Exception catch (error) {
-      logger.failure('savePurchasedCourses', '$error');
       return false;
     }
   }

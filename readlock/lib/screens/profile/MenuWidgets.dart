@@ -159,14 +159,14 @@ class MenuSection extends StatelessWidget {
         MenuItem(
           icon: Pixel.mail,
           title: RLUIStrings.MENU_INVITE_FRIENDS,
-          iconColor: RLDS.markupGreen,
+          iconColor: RLDS.success,
           onTap: onInviteFriendsTap,
         ),
 
         MenuItem(
           icon: Pixel.gift,
           title: RLUIStrings.MENU_REDEEM_CODE,
-          iconColor: RLDS.markupGreen,
+          iconColor: RLDS.success,
           onTap: onRedeemCodeTap,
         ),
 
@@ -313,7 +313,11 @@ class MenuSection extends StatelessWidget {
         const MenuDivider(label: RLUIStrings.MENU_SECTION_LEGAL),
 
         // Legal (Support listed last, after EULA)
-        MenuItem(icon: Pixel.shield, title: RLUIStrings.MENU_PRIVACY_POLICY, onTap: onPrivacyPolicyTap),
+        MenuItem(
+          icon: Pixel.shield,
+          title: RLUIStrings.MENU_PRIVACY_POLICY,
+          onTap: onPrivacyPolicyTap,
+        ),
 
         MenuItem(
           icon: Pixel.article,

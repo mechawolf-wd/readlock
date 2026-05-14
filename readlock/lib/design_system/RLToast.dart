@@ -130,7 +130,7 @@ class RLToastVariantStyle {
         }
       case RLToastVariant.success:
         {
-          return const RLToastVariantStyle(icon: Pixel.check, color: RLDS.markupGreen);
+          return const RLToastVariantStyle(icon: Pixel.check, color: RLDS.success);
         }
     }
   }

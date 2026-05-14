@@ -25,7 +25,10 @@ interface PurchasedCourseEntry {
   courseId: string;
 }
 
+const IS_EMULATOR = process.env.FUNCTIONS_EMULATOR === "true";
+
 export const incrementTimesPurchased = onCall<IncrementTimesPurchasedData>(
+  { enforceAppCheck: !IS_EMULATOR, maxInstances: 50 },
   async (request) => {
     const callerNotSignedIn = !request.auth;
 

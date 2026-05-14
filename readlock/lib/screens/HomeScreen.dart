@@ -374,14 +374,14 @@ class HomeScreenState extends State<HomeScreen> {
 
     final Widget continueLabel = RLTypography.bodyLarge(
       RLUIStrings.CONTINUE_BUTTON_LABEL,
-      color: RLDS.markupGreen,
+      color: RLDS.success,
     );
 
     return GestureDetector(
       onTap: onContinueTap,
       behavior: HitTestBehavior.opaque,
       child: RLLunarBlur(
-        surfaceColor: RLDS.markupGreen,
+        surfaceColor: RLDS.success,
         surfaceAlpha: 0.05,
         padding: const EdgeInsets.symmetric(
           vertical: RLDS.spacing16,
@@ -469,10 +469,7 @@ class HomeScreenState extends State<HomeScreen> {
   // tap navigates straight into the course. The cart icon is wired only
   // for courses the reader does NOT already own; tapping it opens the
   // purchase sheet without firing the row's navigate-to-roadmap onTap.
-  Widget PopularCourseCard(
-    JSONMap course,
-    List<PurchasedCourseModel> purchasedCourses,
-  ) {
+  Widget PopularCourseCard(JSONMap course, List<PurchasedCourseModel> purchasedCourses) {
     final String courseTitle = course['title'] as String? ?? '';
     final String courseAuthor = course['author'] as String? ?? '';
     final String? courseColor = course['color'] as String?;

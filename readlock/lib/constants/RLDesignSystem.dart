@@ -9,42 +9,11 @@ class RLDS {
 
   static const Color primary = Color.fromARGB(255, 238, 70, 84); // warm vivid red
   static const Color info = Color.fromARGB(255, 41, 177, 244); // bright blue
-  static const Color frostBlue = Color(
-    0xFFD8E8FF,
-  ); // pale blueish-white, used by the skillbook charge indicator
-  static const Color green = markupGreen; // fresh green
-  static const Color success = markupGreen; // success uses the fresh green, not the primary red
+  static const Color success = Color(
+    0xFF4ADE80,
+  ); // success uses the fresh green, not the primary red
   static const Color warning = Color.fromARGB(255, 249, 180, 44); // amber
   static const Color error = Color.fromARGB(255, 246, 85, 98); // shares the primary red
-
-  // * Text-markup accents
-  //
-  // Used by <c:g>…</c:g> and <c:r>…</c:r> spans inside course text (text swipes,
-  // question bodies, explanations). Distinct from the brand semantic palette
-  // above (success/error/primary all share the same warm red and would blur
-  // into the background when used for mid-sentence highlights). Values tuned
-  // for readability on the dark surface: bright enough to stand out, soft
-  // enough to avoid shouting at the reader.
-
-  static const Color markupGreen = Color(0xFF4ADE80); // bright green accent
-  static const Color markupRed = Color(0xFFF87171); // warm red accent
-
-  static Color getMarkupColor(String code) {
-    switch (code) {
-      case 'g':
-        {
-          return markupGreen;
-        }
-      case 'r':
-        {
-          return markupRed;
-        }
-      default:
-        {
-          return markupGreen;
-        }
-    }
-  }
 
   // * Neutrals
 
@@ -80,18 +49,18 @@ class RLDS {
 
   // * Border radius
 
-  static const double radiusXXSmall = 4.0;
-  // static const double radiusXSmall = 8.0;
+  static const double radiusXSmall = 4.0;
   static const double radiusSmall = 12.0;
   static const double radiusMedium = 16.0;
   static const double radiusLarge = 24.0;
+
   static const double radiusCircle = 100.0;
 
-  static final BorderRadius borderRadiusXXSmall = BorderRadius.circular(radiusXXSmall);
-  // static final BorderRadius borderRadiusXSmall = BorderRadius.circular(radiusXSmall);
+  static final BorderRadius borderradiusXSmall = BorderRadius.circular(radiusXSmall);
   static final BorderRadius borderRadiusSmall = BorderRadius.circular(radiusSmall);
   static final BorderRadius borderRadiusMedium = BorderRadius.circular(radiusMedium);
   static final BorderRadius borderRadiusLarge = BorderRadius.circular(radiusLarge);
+
   static final BorderRadius borderRadiusCircle = BorderRadius.circular(radiusCircle);
 
   static const BorderRadius borderRadiusTopLarge = BorderRadius.only(
@@ -105,8 +74,7 @@ class RLDS {
   // (borderRadiusModal); both pull from the same underlying value so the
   // two surfaces always match. Change `modalCornerRadius` here and every
   // modal in the app moves in lock-step.
-  static const double modalCornerRadius = radiusLarge;
-  static final BorderRadius borderRadiusModal = BorderRadius.circular(modalCornerRadius);
+  static final BorderRadius borderRadiusModal = BorderRadius.circular(radiusLarge);
   static const BorderRadius borderRadiusModalTop = borderRadiusTopLarge;
 
   // * Font weights
@@ -195,7 +163,6 @@ class RLDS {
   //   standard: feedback toasts, sheet content swaps
   //   intro:    hero intros (roadmap progress ring, onboarding)
   static const Duration opacityFadeDurationFast = Duration(milliseconds: 200);
-  static const Duration opacityFadeDurationStandard = Duration(milliseconds: 300);
   static const Duration opacityFadeDurationIntro = Duration(milliseconds: 1200);
 
   // * Lyrics-style completed-text blur (Apple Music cadence).
@@ -215,12 +182,10 @@ class RLDS {
   // letterforms aren't readable. Shared by the bird picker's locked-name
   // caption and the roadmap's locked-lesson titles so both surfaces frost
   // text to the exact same degree.
-  static const double lockedTextBlurSigma = 6.0;
+  static const double lockedTextBlurSigma = 3.0 * 2;
 
   // * Sheet standardized spacing
 
-  static const double sheetTopPadding = spacing12;
-  static const double sheetGrabberToHeadingSpacing = spacing24;
   static const double sheetHeadingToSubheadingSpacing = spacing4;
   static const double sheetSubheadingToContentSpacing = spacing16;
 
@@ -312,20 +277,6 @@ class RLDS {
         ).animate(CurvedAnimation(parent: animation, curve: transitionCurve));
 
         return FadeTransition(opacity: fadeAnimation, child: child);
-      },
-    );
-  }
-
-  static PageRouteBuilder<T> slideUpTransition<T>(Widget page) {
-    return PageRouteBuilder<T>(
-      pageBuilder: (context, animation, secondaryAnimation) => page,
-      transitionsBuilder: (context, animation, secondaryAnimation, child) {
-        final Animation<Offset> slideAnimation = Tween<Offset>(
-          begin: const Offset(0.0, 1.0),
-          end: Offset.zero,
-        ).animate(CurvedAnimation(parent: animation, curve: transitionCurve));
-
-        return SlideTransition(position: slideAnimation, child: child);
       },
     );
   }

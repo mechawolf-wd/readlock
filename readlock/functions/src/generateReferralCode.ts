@@ -40,7 +40,11 @@ function generateCodeString(): string {
   return `${prefix}-${suffix}`;
 }
 
-export const generateReferralCode = onCall(async (request) => {
+const IS_EMULATOR = process.env.FUNCTIONS_EMULATOR === "true";
+
+export const generateReferralCode = onCall(
+  { enforceAppCheck: !IS_EMULATOR, maxInstances: 25 },
+  async (request) => {
   const callerNotSignedIn = !request.auth;
 
   if (callerNotSignedIn) {

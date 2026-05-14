@@ -236,7 +236,7 @@ class OnboardingFlowState extends State<OnboardingFlow> {
     }
 
     pageController.nextPage(
-      duration: RLDS.opacityFadeDurationStandard,
+      duration: RLDS.opacityFadeDurationFast,
       curve: RLDS.transitionCurve,
     );
   }
@@ -246,7 +246,7 @@ class OnboardingFlowState extends State<OnboardingFlow> {
   // never needs to guard the first step here.
   void handlePreviousTap() {
     pageController.previousPage(
-      duration: RLDS.opacityFadeDurationStandard,
+      duration: RLDS.opacityFadeDurationFast,
       curve: RLDS.transitionCurve,
     );
   }
@@ -429,4 +429,3 @@ class OnboardingArrowButton extends StatelessWidget {
     };
   }
 }
-

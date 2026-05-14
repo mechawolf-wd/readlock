@@ -115,16 +115,14 @@ class OnboardingReferralStepState extends State<OnboardingReferralStep> {
         : RLUIStrings.REFERRAL_ONBOARDING_SUBMIT_LABEL;
 
     final VoidCallback? buttonTap = isSubmitting ? null : handleSubmitTap;
-    final Color labelColor = isSubmitting ? RLDS.textMuted : RLDS.markupGreen;
+    final Color labelColor = isSubmitting ? RLDS.textMuted : RLDS.success;
 
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: buttonTap,
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: RLDS.spacing16),
-        child: Center(
-          child: RLTypography.bodyLarge(buttonLabel, color: labelColor),
-        ),
+        child: Center(child: RLTypography.bodyLarge(buttonLabel, color: labelColor)),
       ),
     );
   }

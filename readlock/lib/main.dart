@@ -1,4 +1,6 @@
+import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -18,6 +20,15 @@ void main() async {
   silenceEngineWindowAssertionSpam();
 
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
+  // Registers this app instance with Firebase App Check so Cloud Functions
+  // can verify that requests originate from a genuine iOS install, not a
+  // script or emulator. Uses DeviceCheck in production (hardware attestation)
+  // and the debug provider during development.
+  final AppleProvider appCheckProvider =
+      kDebugMode ? AppleProvider.debug : AppleProvider.deviceCheck;
+
+  await FirebaseAppCheck.instance.activate(appleProvider: appCheckProvider);
 
   // Drives the panel brightness from the Night Shift slider so the dim
   // step actually lowers the screen below the OS minimum.

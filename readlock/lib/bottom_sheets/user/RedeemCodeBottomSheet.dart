@@ -74,9 +74,7 @@ class RedeemCodeSheetState extends State<RedeemCodeSheet> {
 
     // Check locally first: if the code matches one of the user's own
     // codes, skip the network call entirely.
-    final bool isOwnCode = ownCodes.any(
-      (ReferralModel code) => code.code == rawCode,
-    );
+    final bool isOwnCode = ownCodes.any((ReferralModel code) => code.code == rawCode);
 
     if (isOwnCode) {
       RLToast.error(context, RLUIStrings.REFERRAL_CODE_OWN);
@@ -159,7 +157,7 @@ class RedeemCodeSheetState extends State<RedeemCodeSheet> {
         : RLUIStrings.REFERRAL_ONBOARDING_SUBMIT_LABEL;
 
     final VoidCallback? buttonTap = isSubmitting ? null : handleSubmitTap;
-    final Color labelColor = isSubmitting ? RLDS.textMuted : RLDS.markupGreen;
+    final Color labelColor = isSubmitting ? RLDS.textMuted : RLDS.success;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -176,9 +174,7 @@ class RedeemCodeSheetState extends State<RedeemCodeSheet> {
           onTap: buttonTap,
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: RLDS.spacing16),
-            child: Center(
-              child: RLTypography.bodyLarge(buttonLabel, color: labelColor),
-            ),
+            child: Center(child: RLTypography.bodyLarge(buttonLabel, color: labelColor)),
           ),
         ),
       ],

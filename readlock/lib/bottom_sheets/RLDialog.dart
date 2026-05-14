@@ -91,7 +91,7 @@ class DialogContainer extends StatelessWidget {
           // (top-only variant). Single radius across every top-level
           // modal surface so a dialog and a sheet read as the same
           // rounded family.
-          borderRadius: RLDS.borderRadiusModal,
+          borderRadius: RLDS.borderRadiusModalTop,
           surfaceColor: dialogColor,
           borderColor: RLDS.transparent,
           child: Material(color: RLDS.transparent, child: child),

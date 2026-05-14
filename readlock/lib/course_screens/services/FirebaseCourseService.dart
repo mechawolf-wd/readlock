@@ -211,6 +211,47 @@ class FirebaseCourseService {
     await callable.call({'courseId': courseId});
   }
 
+  // * Purchases a course via the purchaseCourse Cloud Function.
+  //
+  // The function atomically deducts feathers, appends the library entry,
+  // seeds course progress, and bumps the course's purchase counter
+  // server-side. Returns the post-deduction balance on success.
+
+  static Future<int> purchaseCourse(String courseId) async {
+    final HttpsCallable callable = FirebaseFunctions.instance.httpsCallable(
+      FirebaseConfig.CLOUD_FUNCTION_PURCHASE_COURSE,
+    );
+
+    final HttpsCallableResult result = await callable.call({
+      'courseId': courseId,
+    });
+
+    final JSONMap data = JSONMap.from(result.data as Map);
+    final int balance = data['balance'] as int;
+
+    return balance;
+  }
+
+  // * Resurrects an expired course via the resurrectCourse Cloud Function.
+  //
+  // The function atomically deducts the resurrect cost and extends the
+  // rental window server-side. Returns the post-deduction balance.
+
+  static Future<int> resurrectCourse(String courseId) async {
+    final HttpsCallable callable = FirebaseFunctions.instance.httpsCallable(
+      FirebaseConfig.CLOUD_FUNCTION_RESURRECT_COURSE,
+    );
+
+    final HttpsCallableResult result = await callable.call({
+      'courseId': courseId,
+    });
+
+    final JSONMap data = JSONMap.from(result.data as Map);
+    final int balance = data['balance'] as int;
+
+    return balance;
+  }
+
   // * Fetches a single lesson's content array via the fetchLessonContent
   // Cloud Function. The function enforces auth, purchase, frontier, and
   // discharge gates server-side, so the raw content never travels to the

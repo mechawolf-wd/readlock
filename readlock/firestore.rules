@@ -15,12 +15,11 @@ rules_version = '2';
 //     nightShiftScheduleFromMinutes, nightShiftScheduleToMinutes,
 //     birdName, lastOpenedCourseId, hasCompletedOnboarding, language, fcmToken
 //   Wallet: balance (via FieldValue.increment)
-//   Library: purchasedCourses (array of {courseId, expires} records)
 //   Progress: timeSpentReading (via FieldValue.increment),
 //     courseProgress (map of per-course {courseId, currentLessonIndex})
 //
-// NOTE: balance and purchasedCourses are still client-writable.
-// Move them to a callable to tighten the user-update rule.
+// Server-managed fields (Cloud Functions, Admin SDK bypasses rules):
+//   purchasedCourses: written by purchaseCourse / resurrectCourse callables
 
 service cloud.firestore {
   match /databases/{database}/documents {
@@ -89,12 +88,13 @@ service cloud.firestore {
         && request.resource.data.createdAt == request.time
         && request.resource.data.get('balance', 0) <= 10;
 
-      // Owner updates only. email + createdAt frozen.
-      // Balance guard is relaxed because PurchaseService and creditFeathers
-      // both write via FieldValue.increment through the same update call.
+      // Owner updates only. email, createdAt, purchasedCourses frozen.
+      // purchasedCourses is managed server-side by the purchaseCourse and
+      // resurrectCourse Cloud Functions (Admin SDK bypasses rules).
       allow update: if isOwner(userId)
         && fieldUnchanged('email')
-        && fieldUnchanged('createdAt');
+        && fieldUnchanged('createdAt')
+        && fieldUnchanged('purchasedCourses');
 
       // Deletion goes through deleteAccount Cloud Function.
       // Blocked here so a stolen session can't nuke a profile directly.

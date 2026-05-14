@@ -17,7 +17,11 @@ import { logger } from "firebase-functions/v2";
 
 const USERS_COLLECTION = "users";
 
-export const deleteAccount = onCall(async (request) => {
+const IS_EMULATOR = process.env.FUNCTIONS_EMULATOR === "true";
+
+export const deleteAccount = onCall(
+  { enforceAppCheck: !IS_EMULATOR, maxInstances: 10 },
+  async (request) => {
   const callerNotSignedIn = !request.auth;
 
   if (callerNotSignedIn) {

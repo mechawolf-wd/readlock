@@ -275,7 +275,7 @@ class ReferralSheetState extends State<ReferralSheet> {
         : RLUIStrings.REFERRAL_GENERATE_LABEL;
 
     final VoidCallback? buttonTap = isGeneratingCode ? null : handleGenerateCodeTap;
-    final Color labelColor = isGeneratingCode ? RLDS.textMuted : RLDS.markupGreen;
+    final Color labelColor = isGeneratingCode ? RLDS.textMuted : RLDS.success;
 
     return GestureDetector(
       behavior: HitTestBehavior.opaque,

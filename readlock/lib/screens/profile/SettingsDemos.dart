@@ -9,7 +9,7 @@
 //     The hidden tail is rendered transparent so layout never reflows.
 //   - Blur: sigma 4 / opacity 0.2 on completed sentences (the ProgressiveText
 //     / BlurOverlay defaults)
-//   - Colored text: RLDS.markupGreen + FontWeight.bold (the exact style
+//   - Colored text: RLDS.success + FontWeight.bold (the exact style
 //     ProgressiveText applies to <c:g>…</c:g> markup)
 
 import 'dart:async';
@@ -103,7 +103,7 @@ Widget DemoFontListener(WidgetBuilder builder) {
 // Matches ProgressiveText's inline-highlight render for <c:g>…</c:g> markup.
 // Both colour and weight need to match or the demo understates the visual
 // weight of a highlighted key term in the real swipe.
-final Color demoHighlightColor = RLDS.markupGreen;
+final Color demoHighlightColor = RLDS.success;
 const FontWeight demoHighlightWeight = FontWeight.bold;
 
 // Demo widget for Reveal setting
@@ -177,7 +177,9 @@ class RevealDemoState extends State<RevealDemo> with SingleTickerProviderStateMi
     // measure baselines slightly differently and the demo would visibly
     // nudge on toggle. Keeping the root identical pins the layout.
     if (widget.isEnabled) {
-      return RichText(text: TextSpan(style: demoReadingStyle, text: demoText));
+      return RichText(
+        text: TextSpan(style: demoReadingStyle, text: demoText),
+      );
     }
 
     return AnimatedBuilder(animation: animationController, builder: TypewriterFrame);
@@ -201,12 +203,11 @@ class RevealDemoState extends State<RevealDemo> with SingleTickerProviderStateMi
   // getCharacterFadeAlpha so the demo is a truthful preview of the swipe.
   List<TextSpan> buildFadingCharacterSpans() {
     final int textLength = demoText.length;
-    final double totalAnimationMs =
-        animationController.duration!.inMilliseconds.toDouble();
+    final double totalAnimationMs = animationController.duration!.inMilliseconds.toDouble();
     final double currentMs = animationController.value * totalAnimationMs;
     final double charStepMs = totalAnimationMs / textLength;
-    final double fadeWindowMs =
-        progressiveTextLeadingCharacterFadeDuration.inMilliseconds.toDouble();
+    final double fadeWindowMs = progressiveTextLeadingCharacterFadeDuration.inMilliseconds
+        .toDouble();
     final Color baseColor = demoReadingStyle.color ?? RLDS.textPrimary;
 
     TextSpan buildCharacterSpan(int characterIndex) {
@@ -405,11 +406,7 @@ class ReadingColumnDemo extends StatelessWidget {
     );
   }
 
-  Widget ColumnContentBuilder(
-    BuildContext context,
-    ReadingColumn column,
-    Widget? unusedChild,
-  ) {
+  Widget ColumnContentBuilder(BuildContext context, ReadingColumn column, Widget? unusedChild) {
     return Container(
       margin: demoSurfaceMargin,
       child: Column(
@@ -462,11 +459,7 @@ class SampleSurface extends StatelessWidget {
       child: RLLunarBlur(
         surfaceAlpha: demoSurfaceAlpha,
         padding: innerPadding,
-        child: SizedBox(
-          key: fontKey,
-          width: double.infinity,
-          child: const SampleParagraph(),
-        ),
+        child: SizedBox(key: fontKey, width: double.infinity, child: const SampleParagraph()),
       ),
     );
   }
@@ -516,10 +509,7 @@ class SampleParagraph extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(
-      RLUIStrings.DEMO_READING_COLUMN_TEXT,
-      style: demoReadingStyle,
-    );
+    return Text(RLUIStrings.DEMO_READING_COLUMN_TEXT, style: demoReadingStyle);
   }
 }
 

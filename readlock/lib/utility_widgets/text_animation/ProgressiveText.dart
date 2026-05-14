@@ -46,7 +46,7 @@ TextStyle resolveMarkupStyle(BuildContext context, String colorCode, TextStyle b
   final bool isAccentMarkup = colorCode == 'g';
 
   if (isAccentMarkup) {
-    final Color accentColor = CourseAccentScope.of(context, fallback: RLDS.markupGreen);
+    final Color accentColor = CourseAccentScope.of(context, fallback: RLDS.success);
 
     return baseStyle.copyWith(color: accentColor, fontStyle: FontStyle.italic);
   }

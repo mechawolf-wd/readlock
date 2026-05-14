@@ -29,6 +29,8 @@ class FirebaseConfig {
   static const String CLOUD_FUNCTION_GENERATE_REFERRAL_CODE = 'generateReferralCode';
   static const String CLOUD_FUNCTION_REDEEM_REFERRAL_CODE = 'redeemReferralCode';
   static const String CLOUD_FUNCTION_FETCH_LESSON_CONTENT = 'fetchLessonContent';
+  static const String CLOUD_FUNCTION_PURCHASE_COURSE = 'purchaseCourse';
+  static const String CLOUD_FUNCTION_RESURRECT_COURSE = 'resurrectCourse';
 
   // * Referral codes collection
 

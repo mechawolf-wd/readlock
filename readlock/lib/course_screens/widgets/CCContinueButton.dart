@@ -40,12 +40,7 @@ class CCContinueButton extends StatelessWidget {
   // speaks with the same word.
   final String? label;
 
-  const CCContinueButton({
-    super.key,
-    this.visible = true,
-    this.onTap,
-    this.label,
-  });
+  const CCContinueButton({super.key, this.visible = true, this.onTap, this.label});
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +48,7 @@ class CCContinueButton extends StatelessWidget {
   }
 
   Widget ButtonBody(BuildContext context) {
-    final Color accentColor = CourseAccentScope.of(context, fallback: RLDS.markupGreen);
+    final Color accentColor = CourseAccentScope.of(context, fallback: RLDS.success);
     final String displayLabel = label ?? RLUIStrings.TEXT_CONTENT_CONTINUE_LABEL;
 
     void onButtonTap() {
@@ -67,9 +62,7 @@ class CCContinueButton extends StatelessWidget {
         width: double.infinity,
         child: Padding(
           padding: CC_CONTINUE_BUTTON_PADDING,
-          child: Center(
-            child: RLTypography.bodyLarge(displayLabel, color: accentColor),
-          ),
+          child: Center(child: RLTypography.bodyLarge(displayLabel, color: accentColor)),
         ),
       ),
     );

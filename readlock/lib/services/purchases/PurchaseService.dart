@@ -2,15 +2,18 @@
 //
 // Feather top-ups (creditFeathers) delegate to StoreKitService for real
 // App Store subscription purchases. Course unlocks (purchaseCourse) and
-// resurrections (resurrectCourse) are internal feather-economy operations
-// that deduct from the user's wallet and persist via UserService.
+// resurrections (resurrectCourse) run server-side via Cloud Functions
+// that atomically validate balance, deduct feathers, and write the
+// library entry. This prevents client-side tampering of purchasedCourses
+// or balance.
 //
-// Local notifiers update optimistically before the Firestore write so
-// the UI flips instantly, a failed write rolls them back.
+// Local notifiers update optimistically before the callable fires so
+// the UI flips instantly; a server failure rolls them back.
 
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:readlock/course_screens/services/FirebaseCourseService.dart';
+import 'package:readlock/models/CourseProgressModel.dart';
 import 'package:readlock/models/PurchasedCourseModel.dart';
-import 'package:readlock/services/auth/UserService.dart';
 import 'package:readlock/services/purchases/PurchaseConstants.dart';
 import 'package:readlock/services/purchases/PurchaseNotifiers.dart';
 import 'package:readlock/services/purchases/StoreKitService.dart';
@@ -64,12 +67,12 @@ class PurchaseService {
 
   // * Course unlock via roadmap purchase button.
   //
-  // Deducts COURSE_PURCHASE_COST feathers and writes a fresh
-  // PurchasedCourseModel (expires = now + COURSE_RENTAL_DAYS) under the
-  // course's slot in the user's purchasedCourses map. Guards against
-  // double-buy and insufficient balance. Optimistic notifier swap first,
-  // then both Firestore writes; a write failure rolls back the local
-  // state.
+  // The purchaseCourse Cloud Function atomically validates balance,
+  // deducts feathers, appends the library entry, seeds course progress,
+  // and bumps the course's purchase counter. Client-side guards for
+  // double-buy and insufficient balance are kept as fast-path rejections
+  // so the UI never waits on a network call for obvious failures.
+  // Optimistic notifier swap first, callable second, rollback on failure.
 
   static Future<PurchaseResult> purchaseCourse(String courseId) async {
     final List<PurchasedCourseModel> previousLibrary = purchasedCoursesNotifier.value;
@@ -87,6 +90,7 @@ class PurchaseService {
       return PurchaseResult.insufficientFeathers;
     }
 
+    // * Optimistic UI update
 
     final DateTime now = DateTime.now();
 
@@ -100,50 +104,63 @@ class PurchaseService {
     userBalanceNotifier.value = currentBalance - courseCost;
     purchasedCoursesNotifier.value = nextLibrary;
 
-    final bool balanceWrote = await UserService.incrementBalance(-courseCost);
-    final bool listWrote = await UserService.savePurchasedCourses(nextLibrary);
+    // * Server-side purchase (atomic transaction)
 
-    final bool eitherFailed = !balanceWrote || !listWrote;
+    try {
+      final int serverBalance = await FirebaseCourseService.purchaseCourse(courseId);
 
-    if (eitherFailed) {
+      // Reconcile balance from server (authoritative source of truth)
+      userBalanceNotifier.value = serverBalance;
+
+      // Seed local course progress (server already wrote it to Firestore)
+      final Map<String, CourseProgressModel> nextProgress = {
+        ...courseProgressNotifier.value,
+        courseId: CourseProgressModel(courseId: courseId),
+      };
+
+      courseProgressNotifier.value = nextProgress;
+
+      // Surface the bookshelf-tab red dot
+      bookshelfHasUnseenPurchaseNotifier.value = true;
+
+      return PurchaseResult.success;
+    } on FirebaseFunctionsException catch (error) {
+      userBalanceNotifier.value = currentBalance;
+      purchasedCoursesNotifier.value = previousLibrary;
+
+      final String errorCode = error.code;
+      final String errorMessage = error.message ?? '';
+
+      final bool isAlreadyPurchased =
+          errorCode == 'failed-precondition' && errorMessage.contains('already purchased');
+
+      if (isAlreadyPurchased) {
+        return PurchaseResult.alreadyOwned;
+      }
+
+      final bool isInsufficientBalance =
+          errorCode == 'failed-precondition' && errorMessage.contains('Insufficient');
+
+      if (isInsufficientBalance) {
+        return PurchaseResult.insufficientFeathers;
+      }
+
+      return PurchaseResult.failed;
+    } on Exception {
       userBalanceNotifier.value = currentBalance;
       purchasedCoursesNotifier.value = previousLibrary;
 
       return PurchaseResult.failed;
     }
-
-    // Seed the per-course progress record so the roadmap unlocks lesson 0
-    // immediately. Fire-and-forget — a transient failure doesn't block
-    // the user-visible success path, and the writer is idempotent
-    // (initializeCourseProgress overwrites with a fresh seed, then the
-    // first Finish-tap advances the index). The local notifier is bumped
-    // synchronously inside the call so the roadmap reads the new entry
-    // on its next rebuild.
-    UserService.initializeCourseProgress(courseId);
-
-    // Lifetime purchase counter on the course doc, fire-and-forget so a
-    // slow callable write doesn't gate the user-visible success path. The
-    // bump runs server-side via FieldValue.increment in the cloud function,
-    // so a missed write here only loses one tally, never the wallet or
-    // library mutations above.
-    FirebaseCourseService.incrementTimesPurchased(courseId);
-
-    // Surface the bookshelf-tab red dot until the reader actually opens the
-    // bookshelf. MainNavigation clears this flag on tab activation.
-    bookshelfHasUnseenPurchaseNotifier.value = true;
-
-    return PurchaseResult.success;
   }
 
   // * Resurrect an expired course rental.
   //
-  // Charges COURSE_RESURRECT_COST feathers and pushes the entry's
-  // expires forward by COURSE_RENTAL_DAYS from now. Only allowed when
-  // the course is owned and its existing expires timestamp has already
-  // passed: in-window rentals can't be top-up extended (would let
-  // readers stockpile time), and unowned courses must go through
-  // purchaseCourse first. Optimistic notifier swap, rollback on write
-  // failure — matches purchaseCourse.
+  // The resurrectCourse Cloud Function atomically validates expiry,
+  // deducts COURSE_RESURRECT_COST feathers, and extends the rental
+  // window by COURSE_RENTAL_DAYS. Client-side guards for ownership,
+  // expiry, and balance are fast-path rejections only. Optimistic
+  // notifier swap, callable second, rollback on failure.
 
   static Future<ResurrectResult> resurrectCourse(String courseId) async {
     final List<PurchasedCourseModel> currentLibrary = purchasedCoursesNotifier.value;
@@ -169,6 +186,7 @@ class PurchaseService {
       return ResurrectResult.insufficientFeathers;
     }
 
+    // * Optimistic UI update
 
     final PurchasedCourseModel revivedEntry = PurchasedCourseModel(
       courseId: courseId,
@@ -184,19 +202,26 @@ class PurchaseService {
     userBalanceNotifier.value = currentBalance - resurrectCost;
     purchasedCoursesNotifier.value = nextLibrary;
 
-    final bool balanceWrote = await UserService.incrementBalance(-resurrectCost);
-    final bool entryWrote = await UserService.savePurchasedCourses(nextLibrary);
+    // * Server-side resurrect (atomic transaction)
 
-    final bool eitherFailed = !balanceWrote || !entryWrote;
+    try {
+      final int serverBalance = await FirebaseCourseService.resurrectCourse(courseId);
 
-    if (eitherFailed) {
+      // Reconcile balance from server
+      userBalanceNotifier.value = serverBalance;
+
+      return ResurrectResult.success;
+    } on FirebaseFunctionsException {
+      userBalanceNotifier.value = currentBalance;
+      purchasedCoursesNotifier.value = currentLibrary;
+
+      return ResurrectResult.failed;
+    } on Exception {
       userBalanceNotifier.value = currentBalance;
       purchasedCoursesNotifier.value = currentLibrary;
 
       return ResurrectResult.failed;
     }
-
-    return ResurrectResult.success;
   }
 
   // Convenience read used by the roadmap tile-lock + button-swap logic.

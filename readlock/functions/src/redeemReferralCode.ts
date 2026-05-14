@@ -23,7 +23,11 @@ const USERS_COLLECTION = "users";
 const REDEEMER_FEATHER_REWARD = 10;
 const CREATOR_FEATHER_REWARD = 20;
 
-export const redeemReferralCode = onCall(async (request) => {
+const IS_EMULATOR = process.env.FUNCTIONS_EMULATOR === "true";
+
+export const redeemReferralCode = onCall(
+  { enforceAppCheck: !IS_EMULATOR, maxInstances: 25 },
+  async (request) => {
   const callerNotSignedIn = !request.auth;
 
   if (callerNotSignedIn) {

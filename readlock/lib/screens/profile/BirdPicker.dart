@@ -589,7 +589,7 @@ class LockedBirdBadge extends StatelessWidget {
 
   const LockedBirdBadge({super.key, required this.unlockSeconds});
 
-  static const Widget LockIcon = Icon(Pixel.lock, size: RLDS.iconSmall, color: RLDS.green);
+  static const Widget LockIcon = Icon(Pixel.lock, size: RLDS.iconSmall, color: RLDS.success);
 
   @override
   Widget build(BuildContext context) {

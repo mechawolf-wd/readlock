@@ -118,7 +118,10 @@ function resolveLessonDocId(
   return String(flatIndex);
 }
 
+const IS_EMULATOR = process.env.FUNCTIONS_EMULATOR === "true";
+
 export const fetchLessonContent = onCall<FetchLessonContentData>(
+  { enforceAppCheck: !IS_EMULATOR, maxInstances: 100 },
   async (request) => {
     // * 1. Authentication gate
 

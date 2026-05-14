@@ -461,19 +461,16 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
       return;
     }
 
-    batteryAnimationTimer = Timer.periodic(
-      const Duration(milliseconds: 500),
-      (Timer timer) {
-        if (!mounted) {
-          timer.cancel();
-          return;
-        }
+    batteryAnimationTimer = Timer.periodic(const Duration(milliseconds: 500), (Timer timer) {
+      if (!mounted) {
+        timer.cancel();
+        return;
+      }
 
-        setState(() {
-          batteryFrameIndex = (batteryFrameIndex + 1) % batteryAnimationFrames.length;
-        });
-      },
-    );
+      setState(() {
+        batteryFrameIndex = (batteryFrameIndex + 1) % batteryAnimationFrames.length;
+      });
+    });
   }
 
   void stopBatteryAnimation() {
@@ -686,7 +683,8 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
     } else {
       // Same "Buy for 10 <plume>" shape as the CoursePurchaseBottomSheet
       // button so both surfaces read as the same family.
-      final String labelWithCost = '${RLUIStrings.ROADMAP_PURCHASE_LABEL} '
+      final String labelWithCost =
+          '${RLUIStrings.ROADMAP_PURCHASE_LABEL} '
           '${PurchaseConstants.COURSE_PURCHASE_COST}';
 
       labelChildren = [
@@ -712,10 +710,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
         child: RLLunarBlur(
           borderRadius: RLDS.borderRadiusSmall,
           borderColor: RLDS.transparent,
-          child: Div.row(
-            labelChildren,
-            padding: buttonPadding,
-          ),
+          child: Div.row(labelChildren, padding: buttonPadding),
         ),
       ),
     );
@@ -772,7 +767,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
 
     final Widget batteryIcon = Icon(
       currentBatteryFrame,
-      color: RLDS.green,
+      color: RLDS.success,
       size: RLDS.iconLarge,
     );
 
@@ -782,17 +777,17 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
       labelChildren = [
         batteryIcon,
         const Spacing.width(RLDS.spacing8),
-        RLTypography.bodyLarge(RLUIStrings.ROADMAP_CHARGE_LOADING_LABEL, color: RLDS.green),
+        RLTypography.bodyLarge(RLUIStrings.ROADMAP_CHARGE_LOADING_LABEL, color: RLDS.success),
       ];
     } else {
       final String costLabel = '${PurchaseConstants.COURSE_RESURRECT_COST}';
 
       labelChildren = [
         batteryIcon,
-        
+
         const Spacing.width(RLDS.spacing8),
 
-        RLTypography.bodyLarge(costLabel, color: RLDS.green),
+        RLTypography.bodyLarge(costLabel, color: RLDS.success),
 
         const Spacing.width(RLDS.spacing4),
 
@@ -816,10 +811,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
         child: RLLunarBlur(
           borderRadius: RLDS.borderRadiusSmall,
           borderColor: RLDS.transparent,
-          child: Div.row(
-            labelChildren,
-            padding: buttonPadding,
-          ),
+          child: Div.row(labelChildren, padding: buttonPadding),
         ),
       ),
     );
@@ -861,7 +853,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
   static final Widget BackChevronIcon = const Icon(
     Pixel.chevrondown,
     color: RLDS.textPrimary,
-    size: RLDS.iconLarge,
+    size: RLDS.iconXLarge,
   );
 
   // Warm amber moon — same accent the Settings, Night Session row uses,
@@ -869,7 +861,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
   static final Widget NightShiftHeaderIcon = const Icon(
     Pixel.moon,
     color: NIGHT_SHIFT_WARM_COLOR,
-    size: RLDS.iconLarge,
+    size: RLDS.iconXLarge,
   );
 
   // Padding applied to each non-card sibling in the header. The HeroCard
@@ -1270,7 +1262,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
   static final Widget ContinuePlayIcon = const Icon(
     Pixel.play,
     color: RLDS.white,
-    size: RLDS.iconLarge,
+    size: RLDS.iconXLarge,
   );
 
   Widget ContinueButton() {

@@ -438,17 +438,7 @@ class NightShiftSheetState extends State<NightShiftSheet> {
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        FromRow(),
-
-        FromPicker(),
-
-        RowDivider,
-
-        ToRow(),
-
-        ToPicker(),
-      ],
+      children: [FromRow(), FromPicker(), RowDivider, ToRow(), ToPicker()],
     );
   }
 
