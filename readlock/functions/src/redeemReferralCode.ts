@@ -23,10 +23,11 @@ const USERS_COLLECTION = "users";
 const REDEEMER_FEATHER_REWARD = 10;
 const CREATOR_FEATHER_REWARD = 20;
 
-const IS_EMULATOR = process.env.FUNCTIONS_EMULATOR === "true";
+// TODO: Re-enable when App Check is configured in Firebase Console.
+// const IS_EMULATOR = process.env.FUNCTIONS_EMULATOR === "true";
 
 export const redeemReferralCode = onCall(
-  { enforceAppCheck: !IS_EMULATOR, maxInstances: 25 },
+  { enforceAppCheck: false, maxInstances: 25 },
   async (request) => {
   const callerNotSignedIn = !request.auth;
 

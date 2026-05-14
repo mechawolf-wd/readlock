@@ -333,13 +333,13 @@ class MainNavigationState extends State<MainNavigation> with WidgetsBindingObser
 
   List<BottomNavigationBarItem> NavigationItems() {
     return [
-      const BottomNavigationBarItem(
+      BottomNavigationBarItem(
         icon: HomeIcon,
         activeIcon: HomeActiveIcon,
         label: RLUIStrings.HOME_TAB_LABEL,
       ),
 
-      const BottomNavigationBarItem(
+      BottomNavigationBarItem(
         icon: ExploreIcon,
         activeIcon: ExploreActiveIcon,
         label: RLUIStrings.SEARCH_TAB_LABEL,

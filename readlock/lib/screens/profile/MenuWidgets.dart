@@ -14,6 +14,7 @@ import 'package:readlock/bottom_sheets/course/FeedbackBottomSheet.dart';
 import 'package:readlock/bottom_sheets/user/AccountBottomSheet.dart';
 import 'package:readlock/bottom_sheets/user/BirdPickerBottomSheet.dart';
 import 'package:readlock/bottom_sheets/user/FontPickerBottomSheet.dart';
+import 'package:readlock/bottom_sheets/user/LanguagePickerBottomSheet.dart';
 import 'package:readlock/bottom_sheets/user/FeathersBottomSheet.dart';
 import 'package:readlock/screens/profile/BirdPicker.dart';
 import 'package:readlock/screens/profile/SettingsDemos.dart';
@@ -91,6 +92,7 @@ class MenuSection extends StatelessWidget {
     void onBirdPickerTap() => BirdPickerBottomSheet.show(context);
     void onFontPickerTap() => FontPickerBottomSheet.show(context);
     void onFeathersTap() => FeathersBottomSheet.show(context);
+    void onLanguageTap() => LanguagePickerBottomSheet.show(context);
     void onNightShiftTap() => NightShiftBottomSheet.show(context);
     void onPrivacyPolicyTap() => LinkService.openUrl(RLLinks.PRIVACY_POLICY_URL);
     void onTermsTap() => LinkService.openUrl(RLLinks.TERMS_OF_SERVICE_URL);
@@ -170,7 +172,13 @@ class MenuSection extends StatelessWidget {
           onTap: onRedeemCodeTap,
         ),
 
-        const MenuDivider(label: RLUIStrings.MENU_SECTION_SOUND),
+        MenuItem(
+          icon: Pixel.arttext,
+          title: RLUIStrings.MENU_LANGUAGE,
+          onTap: onLanguageTap,
+        ),
+
+        MenuDivider(label: RLUIStrings.MENU_SECTION_SOUND),
 
         // Sound & Haptics
         SwitchMenuItem(
@@ -194,7 +202,7 @@ class MenuSection extends StatelessWidget {
           onChanged: onHapticsToggled,
         ),
 
-        const MenuDivider(label: RLUIStrings.MENU_SECTION_READING),
+        MenuDivider(label: RLUIStrings.MENU_SECTION_READING),
 
         // Reading Settings.
         //
@@ -225,7 +233,7 @@ class MenuSection extends StatelessWidget {
 
         RevealDemo(isEnabled: revealAllTrueFalse, onTap: onProgressiveDemoTap),
 
-        const DemoExplainLabel(explanation: RLUIStrings.DEMO_EXPLAIN_REVEAL),
+        DemoExplainLabel(explanation: RLUIStrings.DEMO_EXPLAIN_REVEAL),
 
         SwitchMenuItem(
           icon: Pixel.eye,
@@ -236,7 +244,7 @@ class MenuSection extends StatelessWidget {
 
         BlurDemo(isEnabled: blurEnabled, onTap: onBlurDemoTap),
 
-        const DemoExplainLabel(explanation: RLUIStrings.DEMO_EXPLAIN_BLUR),
+        DemoExplainLabel(explanation: RLUIStrings.DEMO_EXPLAIN_BLUR),
 
         SwitchMenuItem(
           icon: Pixel.edit,
@@ -247,7 +255,7 @@ class MenuSection extends StatelessWidget {
 
         ColoredTextDemo(isEnabled: coloredTextEnabled, onTap: onColoredTextDemoTap),
 
-        const DemoExplainLabel(explanation: RLUIStrings.DEMO_EXPLAIN_COLORED_TEXT),
+        DemoExplainLabel(explanation: RLUIStrings.DEMO_EXPLAIN_COLORED_TEXT),
 
         // Font picker + live demo — sits at the end of Reading Settings so
         // it follows the toggles that govern what text looks like.
@@ -259,7 +267,7 @@ class MenuSection extends StatelessWidget {
 
         const ReadingFontDemo(),
 
-        const DemoExplainLabel(explanation: RLUIStrings.DEMO_EXPLAIN_FONT),
+        DemoExplainLabel(explanation: RLUIStrings.DEMO_EXPLAIN_FONT),
 
         // Column width — label row above (chevron-less, no-op tap) matches
         // the other reading-setting rows; the chips inside the demo card
@@ -272,7 +280,7 @@ class MenuSection extends StatelessWidget {
 
         const ReadingColumnDemo(),
 
-        const DemoExplainLabel(explanation: RLUIStrings.DEMO_EXPLAIN_COLUMN),
+        DemoExplainLabel(explanation: RLUIStrings.DEMO_EXPLAIN_COLUMN),
 
         // Justified text — paragraph-shape preference for long-form reading.
         // Off by default (regular/left-aligned); flipping it on retypes every
@@ -286,7 +294,7 @@ class MenuSection extends StatelessWidget {
 
         JustifiedReadingDemo(onToggle: onJustifiedReadingDemoToggle),
 
-        const DemoExplainLabel(explanation: RLUIStrings.DEMO_EXPLAIN_JUSTIFIED),
+        DemoExplainLabel(explanation: RLUIStrings.DEMO_EXPLAIN_JUSTIFIED),
 
         // Bionic + RSVP sit at the bottom of Reading Settings. They are
         // the most specialised reading modes in the section, so they live
@@ -300,7 +308,7 @@ class MenuSection extends StatelessWidget {
 
         BionicDemo(isEnabled: bionicEnabled, onTap: onBionicDemoTap),
 
-        const DemoExplainLabel(explanation: RLUIStrings.DEMO_EXPLAIN_BIONIC),
+        DemoExplainLabel(explanation: RLUIStrings.DEMO_EXPLAIN_BIONIC),
 
         // RSVP mode hidden from settings until ready for release.
         // SwitchMenuItem(
@@ -310,7 +318,7 @@ class MenuSection extends StatelessWidget {
         //   onChanged: onRsvpToggled,
         // ),
         // RSVPDemo(isEnabled: rsvpEnabled),
-        const MenuDivider(label: RLUIStrings.MENU_SECTION_LEGAL),
+        MenuDivider(label: RLUIStrings.MENU_SECTION_LEGAL),
 
         // Legal (Support listed last, after EULA)
         MenuItem(
@@ -329,7 +337,7 @@ class MenuSection extends StatelessWidget {
 
         MenuItem(icon: Pixel.message, title: RLUIStrings.MENU_SUPPORT, onTap: onSupportTap),
 
-        const MenuDivider(label: RLUIStrings.MENU_SECTION_SESSION),
+        MenuDivider(label: RLUIStrings.MENU_SECTION_SESSION),
 
         // Log out
         MenuItem(icon: Pixel.logout, title: RLUIStrings.MENU_LOG_OUT, onTap: onLogoutTap),

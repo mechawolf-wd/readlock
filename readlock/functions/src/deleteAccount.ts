@@ -17,10 +17,11 @@ import { logger } from "firebase-functions/v2";
 
 const USERS_COLLECTION = "users";
 
-const IS_EMULATOR = process.env.FUNCTIONS_EMULATOR === "true";
+// TODO: Re-enable when App Check is configured in Firebase Console.
+// const IS_EMULATOR = process.env.FUNCTIONS_EMULATOR === "true";
 
 export const deleteAccount = onCall(
-  { enforceAppCheck: !IS_EMULATOR, maxInstances: 10 },
+  { enforceAppCheck: false, maxInstances: 10 },
   async (request) => {
   const callerNotSignedIn = !request.auth;
 

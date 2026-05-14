@@ -32,26 +32,28 @@ class RLTextField extends StatefulWidget {
     this.leadingIcon,
   });
 
-  const RLTextField.email({
+  RLTextField.email({
     super.key,
     this.controller,
     this.focusNode,
-    this.hintText = RLUIStrings.EMAIL_PLACEHOLDER,
+    String? hintText,
     this.onChanged,
     this.onEditingComplete,
     this.leadingIcon,
-  }) : obscureText = false,
+  }) : hintText = hintText ?? RLUIStrings.EMAIL_PLACEHOLDER,
+       obscureText = false,
        keyboardType = TextInputType.emailAddress;
 
-  const RLTextField.password({
+  RLTextField.password({
     super.key,
     this.controller,
     this.focusNode,
-    this.hintText = RLUIStrings.PASSWORD_PLACEHOLDER,
+    String? hintText,
     this.onChanged,
     this.onEditingComplete,
     this.leadingIcon,
-  }) : obscureText = true,
+  }) : hintText = hintText ?? RLUIStrings.PASSWORD_PLACEHOLDER,
+       obscureText = true,
        keyboardType = TextInputType.visiblePassword;
 
   @override

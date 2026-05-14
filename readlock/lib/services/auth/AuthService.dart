@@ -137,7 +137,7 @@ class AuthService {
     } on Exception catch (error) {
       logger.failure('Registration', error.toString());
 
-      return const AuthResult(errorMessage: RLUIStrings.ERROR_UNKNOWN);
+      return AuthResult(errorMessage: RLUIStrings.ERROR_UNKNOWN);
     }
   }
 
@@ -165,7 +165,7 @@ class AuthService {
     } on Exception catch (error) {
       logger.failure('Login', error.toString());
 
-      return const AuthResult(errorMessage: RLUIStrings.ERROR_UNKNOWN);
+      return AuthResult(errorMessage: RLUIStrings.ERROR_UNKNOWN);
     }
   }
 
@@ -460,7 +460,7 @@ class AuthService {
 
       logger.failure('Apple Login', '$error');
 
-      return const AuthResult(errorMessage: RLUIStrings.ERROR_UNKNOWN);
+      return AuthResult(errorMessage: RLUIStrings.ERROR_UNKNOWN);
     } on FirebaseAuthException catch (error) {
       final bool userCancelledPopup =
           error.code == 'popup-closed-by-user' || error.code == 'cancelled-popup-request';
@@ -479,13 +479,13 @@ class AuthService {
     } on Exception catch (error) {
       logger.failure('Apple Login', '$error');
 
-      return const AuthResult(errorMessage: RLUIStrings.ERROR_UNKNOWN);
+      return AuthResult(errorMessage: RLUIStrings.ERROR_UNKNOWN);
     } on Object catch (error) {
       // Catch-all so unexpected non-Exception errors (TypeError from JS
       // interop, etc.) still resolve the future and unfreeze the sheet.
       logger.failure('Apple Login', '$error');
 
-      return const AuthResult(errorMessage: RLUIStrings.ERROR_UNKNOWN);
+      return AuthResult(errorMessage: RLUIStrings.ERROR_UNKNOWN);
     }
   }
 
@@ -530,7 +530,7 @@ class AuthService {
     } on Exception catch (error) {
       logger.failure('Google Login', error.toString());
 
-      return const AuthResult(errorMessage: RLUIStrings.ERROR_UNKNOWN);
+      return AuthResult(errorMessage: RLUIStrings.ERROR_UNKNOWN);
     }
   }
 

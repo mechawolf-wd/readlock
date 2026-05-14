@@ -271,7 +271,7 @@ class ResetPasswordSupportContentState extends State<ResetPasswordSupportContent
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          const SheetHeader(
+          SheetHeader(
             title: RLUIStrings.SUPPORT_RESET_PASSWORD_LABEL,
             description: RLUIStrings.SUPPORT_RESET_PASSWORD_DESCRIPTION,
           ),
@@ -440,7 +440,7 @@ class ResendVerificationSupportContentState extends State<ResendVerificationSupp
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          const SheetHeader(
+          SheetHeader(
             title: RLUIStrings.SUPPORT_RESEND_VERIFICATION_LABEL,
             description: RLUIStrings.SUPPORT_RESEND_VERIFICATION_DESCRIPTION,
           ),
@@ -505,7 +505,7 @@ class EmailSupportContentState extends State<EmailSupportContent> {
       isBusy = true;
     });
 
-    await Clipboard.setData(const ClipboardData(text: RLUIStrings.SUPPORT_EMAIL_ADDRESS));
+    await Clipboard.setData(ClipboardData(text: RLUIStrings.SUPPORT_EMAIL_ADDRESS));
 
     if (!mounted) {
       return;

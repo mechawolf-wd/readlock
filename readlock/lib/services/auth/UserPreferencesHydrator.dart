@@ -10,6 +10,7 @@
 // reads them directly into setState when the sheet opens.
 
 import 'package:readlock/constants/RLLatestCourse.dart';
+import 'package:readlock/services/TranslationService.dart';
 import 'package:readlock/constants/RLNightShift.dart';
 import 'package:readlock/constants/RLReadingColumn.dart';
 import 'package:readlock/constants/RLReadingFont.dart';
@@ -49,6 +50,10 @@ void hydrateUserPreferenceNotifiersFromUser(UserModel user) {
   coloredTextEnabledNotifier.value = user.coloredText;
 
   lastOpenedCourseIdNotifier.value = user.lastOpenedCourseId;
+
+  // Load translations for the user's preferred language (fire-and-forget).
+  // English is instant (no fetch needed), other locales load from Firestore.
+  TranslationService.fetchTranslations(user.language);
 
   // Feedback master switches — drive every UI sound and haptic in the app.
   SoundService.soundsEnabledNotifier.value = user.sounds;
@@ -111,4 +116,5 @@ void resetUserPreferenceNotifiers() {
 void wipeLocalUserSessionState() {
   resetPurchaseState();
   resetUserPreferenceNotifiers();
+  TranslationService.reset();
 }

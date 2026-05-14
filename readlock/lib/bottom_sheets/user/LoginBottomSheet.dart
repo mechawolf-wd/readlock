@@ -65,16 +65,17 @@ class LoginSheetConfig {
   // ancestor context.
   final void Function(BuildContext context)? onAuthenticated;
 
-  const LoginSheetConfig({
-    this.title = RLUIStrings.LOGIN_TITLE,
-    this.subtitle = RLUIStrings.LOGIN_SUBTITLE,
+  LoginSheetConfig({
+    String? title,
+    String? subtitle,
     this.allowSignUp = true,
     this.allowSupport = true,
     this.showDevSkip = true,
     this.isReauthMode = false,
     this.reauthActionLabel,
     this.onAuthenticated,
-  });
+  })  : title = title ?? RLUIStrings.LOGIN_TITLE,
+        subtitle = subtitle ?? RLUIStrings.LOGIN_SUBTITLE;
 }
 
 class LoginBottomSheet {
@@ -95,8 +96,9 @@ class LoginBottomSheet {
   // main navigation needs to know when it can show the sheet again).
   static Future<void> show(
     BuildContext context, {
-    LoginSheetConfig config = const LoginSheetConfig(),
+    LoginSheetConfig? config,
   }) async {
+    config ??= LoginSheetConfig();
     final bool alreadyOnScreen = isCurrentlyVisible;
 
     if (alreadyOnScreen) {
@@ -126,7 +128,8 @@ const double SOCIAL_LOGIN_BUTTON_HEIGHT = 48.0;
 class LoginSheet extends StatefulWidget {
   final LoginSheetConfig config;
 
-  const LoginSheet({super.key, this.config = const LoginSheetConfig()});
+  LoginSheet({super.key, LoginSheetConfig? config})
+      : config = config ?? LoginSheetConfig();
 
   @override
   State<LoginSheet> createState() => LoginSheetState();

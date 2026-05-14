@@ -193,7 +193,7 @@ class ProfileContentState extends State<ProfileContent> {
         variant: RLConfirmationVariant.destructive,
         onTap: handleLogoutConfirmed,
       ),
-      cancel: const RLConfirmationAction(
+      cancel: RLConfirmationAction(
         label: RLUIStrings.CANCEL_LABEL,
         variant: RLConfirmationVariant.neutral,
       ),

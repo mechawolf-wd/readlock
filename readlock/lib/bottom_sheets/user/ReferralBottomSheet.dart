@@ -147,14 +147,14 @@ class ReferralSheetState extends State<ReferralSheet> {
         Text.rich(
           TextSpan(
             style: subtitleStyle,
-            children: const [
+            children: [
               TextSpan(text: RLUIStrings.REFERRAL_SUBTITLE_THEY_GET),
 
-              WidgetSpan(alignment: PlaceholderAlignment.middle, child: PlumeInline),
+              const WidgetSpan(alignment: PlaceholderAlignment.middle, child: PlumeInline),
 
               TextSpan(text: RLUIStrings.REFERRAL_SUBTITLE_YOU_GET),
 
-              WidgetSpan(alignment: PlaceholderAlignment.middle, child: PlumeInline),
+              const WidgetSpan(alignment: PlaceholderAlignment.middle, child: PlumeInline),
             ],
           ),
           textAlign: TextAlign.center,

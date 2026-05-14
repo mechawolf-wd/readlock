@@ -380,7 +380,7 @@ class ConfirmationDialogContent extends StatelessWidget {
 // Keeps the common case short at the call site.
 
 RLConfirmationAction rlDismissCancelAction() {
-  return const RLConfirmationAction(
+  return RLConfirmationAction(
     label: RLUIStrings.CANCEL_LABEL,
     variant: RLConfirmationVariant.neutral,
   );

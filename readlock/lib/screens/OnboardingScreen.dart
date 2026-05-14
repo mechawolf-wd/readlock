@@ -135,11 +135,11 @@ class OnboardingFlowState extends State<OnboardingFlow> {
       // badges.
       OnboardingStepSpec(body: BirdCarousel(birds: ONBOARDING_BIRD_OPTIONS)),
 
-      const OnboardingStepSpec(title: RLUIStrings.MENU_READING_FONT, body: ReadingFontDemo()),
+      OnboardingStepSpec(title: RLUIStrings.MENU_READING_FONT, body: ReadingFontDemo()),
 
-      const OnboardingStepSpec(
+      OnboardingStepSpec(
         title: RLUIStrings.MENU_READING_COLUMN,
-        body: ReadingColumnDemo(),
+        body: const ReadingColumnDemo(),
       ),
 
       OnboardingStepSpec(
@@ -175,9 +175,9 @@ class OnboardingFlowState extends State<OnboardingFlow> {
       // Referral code entry, the final step before the reader lands on
       // the bookshelf. Skipping is implicit (tap the forward chevron
       // without entering anything).
-      const OnboardingStepSpec(
+      OnboardingStepSpec(
         title: RLUIStrings.REFERRAL_ONBOARDING_TITLE,
-        body: OnboardingReferralStep(),
+        body: const OnboardingReferralStep(),
       ),
     ];
   }

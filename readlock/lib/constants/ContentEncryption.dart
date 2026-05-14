@@ -12,13 +12,11 @@ import 'package:readlock/constants/DartAliases.dart';
 import 'package:readlock/constants/FirebaseConfig.dart';
 import 'package:readlock/constants/RLUIStrings.dart';
 
-const String _CONTENT_SEED = 'sowa-narrative-engine';
+const String CONTENT_SEED = 'sowa-narrative-engine';
 
-String _deriveEncryptionKey() {
+String deriveEncryptionKey() {
   final String combined =
-      FirebaseConfig.PLATFORM_SIGNATURE +
-      RLUIStrings.CONTENT_VERSION +
-      _CONTENT_SEED;
+      FirebaseConfig.PLATFORM_SIGNATURE + RLUIStrings.CONTENT_VERSION + CONTENT_SEED;
 
   final List<int> bytes = utf8.encode(combined);
   final Digest hash = sha256.convert(bytes);
@@ -31,12 +29,25 @@ JSONList decryptLessonPayload(String payload) {
   final String ivHex = parts[0];
   final String ciphertextHex = parts[1];
 
-  final String keyHex = _deriveEncryptionKey();
+  final String keyHex = deriveEncryptionKey();
   final aes.Key key = aes.Key.fromBase16(keyHex);
   final aes.IV iv = aes.IV.fromBase16(ivHex);
-  final aes.Encrypter encrypter = aes.Encrypter(aes.AES(key, mode: aes.AESMode.cbc));
 
-  final String decrypted = encrypter.decrypt(aes.Encrypted.fromBase16(ciphertextHex), iv: iv);
+  // * Bypass pointycastle PKCS7 validation (broken in encrypt 5.x
+  // with pointycastle 3.9+), strip padding manually instead.
+  final aes.Encrypter encrypter = aes.Encrypter(
+    aes.AES(key, mode: aes.AESMode.cbc, padding: null),
+  );
+
+  final List<int> decryptedBytes = encrypter.decryptBytes(
+    aes.Encrypted.fromBase16(ciphertextHex),
+    iv: iv,
+  );
+
+  final int padLength = decryptedBytes.last;
+  final List<int> unpaddedBytes = decryptedBytes.sublist(0, decryptedBytes.length - padLength);
+
+  final String decrypted = utf8.decode(unpaddedBytes);
 
   final List<dynamic> decoded = jsonDecode(decrypted) as List<dynamic>;
   final JSONList content = decoded.map((item) => JSONMap.from(item as Map)).toList();

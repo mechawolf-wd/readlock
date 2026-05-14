@@ -79,12 +79,9 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
   final GlobalKey progressBarKey = GlobalKey();
   final GlobalKey topChromeKey = GlobalKey();
 
-  // Icon definitions — share the muted grey used across the progress chrome
-  static const Color progressChromeColor = Color.fromARGB(255, 157, 157, 157);
-
   static const Icon BackNavigationIcon = Icon(
     Pixel.close,
-    color: progressChromeColor,
+    color: RLDS.white,
     size: RLDS.iconLarge,
   );
 
@@ -176,15 +173,20 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
   // than competing with the text, and the safe-area content (top chrome +
   // PageView) painted on top.
   Widget MainCourseScreen() {
+    final bool hasNoContent = allContent.isEmpty;
+
     return Scaffold(
       backgroundColor: STARFIELD_BACKGROUND_COLOR,
       body: Stack(
         children: [
           const Positioned.fill(child: RLStarfieldBackground()),
 
-          const Positioned.fill(
-            child: RLLunarBlur(borderRadius: BorderRadius.zero, child: SizedBox.expand()),
-          ),
+          // Skip the frosted overlay on the error state so the starfield
+          // shows through cleanly instead of a grey fog.
+          if (!hasNoContent)
+            const Positioned.fill(
+              child: RLLunarBlur(borderRadius: BorderRadius.zero, child: SizedBox.expand()),
+            ),
 
           SafeArea(
             child: Listener(
@@ -210,7 +212,9 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
   // close/night-shift would re-blur first, then the rebuilt GestureDetector
   // would route the tap back to reveal instead of firing the intended action.
   void handleGlobalPointerDown(PointerDownEvent event) {
-    if (!isProgressBarRevealed) {
+    final bool hasNoContent = allContent.isEmpty;
+
+    if (!isProgressBarRevealed || hasNoContent) {
       return;
     }
 
@@ -323,12 +327,15 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
     navigateBackToRoadmap();
   }
 
-  // Empty state message when no content available
+  // Empty state message when no content available (tapping exits the course)
   Widget EmptyContentMessage() {
-    return Center(
-      child: RLTypography.bodyLarge(
-        RLUIStrings.NO_CONTENT_AVAILABLE_MESSAGE,
-        textAlign: TextAlign.center,
+    return GestureDetector(
+      onTap: handleEmptyStateTap,
+      child: Center(
+        child: RLTypography.headingMedium(
+          RLUIStrings.NO_CONTENT_AVAILABLE_MESSAGE,
+          textAlign: TextAlign.center,
+        ),
       ),
     );
   }
@@ -361,7 +368,7 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
           NightShiftButton(),
         ],
         key: topChromeKey,
-        padding: const [RLDS.spacing8, RLDS.spacing16, RLDS.spacing0, RLDS.spacing16],
+        padding: const [RLDS.spacing16, RLDS.spacing24, RLDS.spacing24, RLDS.spacing24],
       ),
     );
   }
@@ -373,7 +380,7 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
   Widget BackNavigationButton() {
     final bool hasNoContent = allContent.isEmpty;
     final VoidCallback backAction = hasNoContent
-        ? navigateBackToRoadmap
+        ? handleEmptyStateTap
         : showQuitConfirmationSheet;
     final VoidCallback backTapHandler = getChromeTapHandler(backAction);
 
@@ -398,7 +405,8 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
   // the whole top bar; only once revealed does the tap propagate to the real
   // action. Keeps the close and night-shift icons from firing through the blur.
   VoidCallback getChromeTapHandler(VoidCallback action) {
-    final bool isRevealed = isProgressBarRevealed;
+    final bool hasNoContent = allContent.isEmpty;
+    final bool isRevealed = isProgressBarRevealed || hasNoContent;
 
     if (isRevealed) {
       return action;
@@ -407,9 +415,11 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
     return handleProgressBarTap;
   }
 
-  // Shared blur + dim treatment for the top chrome (close, progress, night-shift)
+  // Shared blur + dim treatment for the top chrome (close, progress, night-shift).
+  // When there is no content (error state), skip the blur so the X is visible.
   Widget ChromeBlur({required Widget child}) {
-    final bool isRevealed = isProgressBarRevealed;
+    final bool hasNoContent = allContent.isEmpty;
+    final bool isRevealed = isProgressBarRevealed || hasNoContent;
     final double targetOpacity = isRevealed ? 1.0 : 0.25;
     final double blurSigma = isRevealed ? 0.0 : 6.0;
 
@@ -554,6 +564,13 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
     final int completedItems = currentContentIndex + 1;
 
     return completedItems / totalItems;
+  }
+
+  void handleEmptyStateTap() {
+    HapticsService.lightImpact();
+    SoundService.playRandomTextClick();
+
+    navigateBackToRoadmap();
   }
 
   void navigateBackToRoadmap() {

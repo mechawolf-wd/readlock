@@ -7,7 +7,6 @@ import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/constants/RLUIStrings.dart';
 import 'package:readlock/design_system/RLLoadingIndicator.dart';
-import 'package:readlock/design_system/RLLunarBlur.dart';
 import 'package:readlock/design_system/RLStarfieldBackground.dart';
 
 class CourseLoadingScreen extends StatefulWidget {
@@ -51,10 +50,6 @@ class CourseLoadingScreenState extends State<CourseLoadingScreen>
         children: [
           const Positioned.fill(child: RLStarfieldBackground()),
 
-          const Positioned.fill(
-            child: RLLunarBlur(borderRadius: BorderRadius.zero, child: SizedBox.expand()),
-          ),
-
           Center(
             child: AnimatedBuilder(animation: dotsController, builder: PreparingLabel),
           ),
@@ -77,7 +72,7 @@ class CourseLoadingScreenState extends State<CourseLoadingScreen>
       rowChildren.add(
         Opacity(
           opacity: dotOpacity,
-          child: RLTypography.headingMedium('.', color: RLDS.textSecondary),
+          child: RLTypography.headingMedium('.', color: RLDS.white),
         ),
       );
     }

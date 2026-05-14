@@ -40,10 +40,11 @@ function generateCodeString(): string {
   return `${prefix}-${suffix}`;
 }
 
-const IS_EMULATOR = process.env.FUNCTIONS_EMULATOR === "true";
+// TODO: Re-enable when App Check is configured in Firebase Console.
+// const IS_EMULATOR = process.env.FUNCTIONS_EMULATOR === "true";
 
 export const generateReferralCode = onCall(
-  { enforceAppCheck: !IS_EMULATOR, maxInstances: 25 },
+  { enforceAppCheck: false, maxInstances: 25 },
   async (request) => {
   const callerNotSignedIn = !request.auth;
 

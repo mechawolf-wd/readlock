@@ -44,17 +44,18 @@ class RLDialog {
     BuildContext context, {
     required String title,
     required String message,
-    String buttonLabel = RLUIStrings.DIALOG_DEFAULT_ACTION_LABEL,
+    String? buttonLabel,
     Color? buttonColor,
   }) {
     final Color actionColor = buttonColor ?? RLDS.info;
+    final String actionLabel = buttonLabel ?? RLUIStrings.DIALOG_DEFAULT_ACTION_LABEL;
 
     show(
       context,
       child: AlertDialogContent(
         title: title,
         message: message,
-        buttonLabel: buttonLabel,
+        buttonLabel: actionLabel,
         buttonColor: actionColor,
         onTap: () => Navigator.of(context).pop(),
       ),

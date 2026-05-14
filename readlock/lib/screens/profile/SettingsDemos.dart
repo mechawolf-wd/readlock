@@ -120,7 +120,7 @@ class RevealDemo extends StatefulWidget {
 
 class RevealDemoState extends State<RevealDemo> with SingleTickerProviderStateMixin {
   late AnimationController animationController;
-  static const String demoText = RLUIStrings.DEMO_REVEAL_TEXT;
+  static String get demoText => RLUIStrings.DEMO_REVEAL_TEXT;
   bool isPaused = false;
 
   @override
@@ -306,7 +306,7 @@ class ColoredTextDemo extends StatelessWidget {
             children: [
               TextSpan(text: RLUIStrings.DEMO_COLORED_HIGHLIGHT, style: highlightStyle),
 
-              const TextSpan(text: RLUIStrings.DEMO_COLORED_SUFFIX),
+              TextSpan(text: RLUIStrings.DEMO_COLORED_SUFFIX),
             ],
           ),
         ),

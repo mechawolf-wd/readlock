@@ -15,10 +15,7 @@ import 'package:pixelarticons/pixel.dart';
 
 class BirdPickerBottomSheet {
   static void show(BuildContext context) {
-    RLBottomSheet.show(
-      context,
-      child: const BirdPickerSheet(),
-    );
+    RLBottomSheet.show(context, child: const BirdPickerSheet());
   }
 }
 
@@ -45,20 +42,24 @@ class BirdPickerSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     return Div.column([
       // Heading
-      Div.row([
-        HeaderIcon,
+      Div.row(
+        [
+          HeaderIcon,
 
-        const Spacing.width(RLDS.spacing12),
+          const Spacing.width(RLDS.spacing12),
 
-        RLTypography.headingMedium(RLUIStrings.BIRD_PICKER_TITLE),
-      ], padding: headerPadding, mainAxisAlignment: MainAxisAlignment.start),
+          RLTypography.headingMedium(RLUIStrings.BIRD_PICKER_TITLE),
+        ],
+        padding: headerPadding,
+        mainAxisAlignment: MainAxisAlignment.start,
+      ),
 
       // Carousel + selected name — sits flush below the header so the
       // bird sprite reads as the immediate subject. Carousel owns its own
       // top padding via its 200pt height; no extra Spacing here. Runs in
       // browse-only mode: the reader can swipe across every bird
       // (locked included) without committing one as their profile bird.
-      const BirdCarousel(),
+      BirdCarousel(),
     ], padding: const EdgeInsets.only(bottom: RLDS.spacing24));
   }
 }

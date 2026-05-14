@@ -100,7 +100,7 @@ class BirdOption {
 // * Exotic birds — dedicated Idle PNGs starting at frame 0; frame size matches
 // * the bird's true bounding box (per Aseprite JSON metadata).
 // * Sorted cheapest to most expensive (unlockSeconds ascending).
-const List<BirdOption> BIRD_OPTIONS = [
+final List<BirdOption> BIRD_OPTIONS = [
   BirdOption(
     name: RLUIStrings.BIRD_SPARROW,
     assetFile: 'Sparrow.png',
@@ -373,12 +373,12 @@ class BirdCarousel extends StatefulWidget {
   // persisted regardless of lock state.
   final bool persistSelection;
 
-  const BirdCarousel({
+  BirdCarousel({
     super.key,
     this.height = BIRD_CAROUSEL_HEIGHT,
-    this.birds = BIRD_OPTIONS,
+    List<BirdOption>? birds,
     this.persistSelection = true,
-  });
+  }) : birds = birds ?? BIRD_OPTIONS;
 
   @override
   State<BirdCarousel> createState() => BirdCarouselState();

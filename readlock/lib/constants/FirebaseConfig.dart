@@ -31,6 +31,12 @@ class FirebaseConfig {
   static const String CLOUD_FUNCTION_FETCH_LESSON_CONTENT = 'fetchLessonContent';
   static const String CLOUD_FUNCTION_PURCHASE_COURSE = 'purchaseCourse';
   static const String CLOUD_FUNCTION_RESURRECT_COURSE = 'resurrectCourse';
+  static const String CLOUD_FUNCTION_UPLOAD_TRANSLATIONS = 'uploadTranslations';
+
+  // * Translations collection
+
+  static const String TRANSLATIONS_COLLECTION = 'translations';
+  static const String CONFIG_LOCALES_DOCUMENT = 'locales';
 
   // * Referral codes collection
 

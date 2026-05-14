@@ -16,3 +16,4 @@ export { deleteAccount } from "./deleteAccount";
 export { generateReferralCode } from "./generateReferralCode";
 export { redeemReferralCode } from "./redeemReferralCode";
 export { fetchLessonContent } from "./fetchLessonContent";
+export { uploadTranslations } from "./uploadTranslations";

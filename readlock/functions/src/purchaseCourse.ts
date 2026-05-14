@@ -35,10 +35,11 @@ interface PurchasedCourseEntry {
   purchasedAt?: Timestamp;
 }
 
-const IS_EMULATOR = process.env.FUNCTIONS_EMULATOR === "true";
+// TODO: Re-enable when App Check is configured in Firebase Console.
+// const IS_EMULATOR = process.env.FUNCTIONS_EMULATOR === "true";
 
 export const purchaseCourse = onCall<PurchaseCourseData>(
-  { enforceAppCheck: !IS_EMULATOR, maxInstances: 50 },
+  { enforceAppCheck: false, maxInstances: 50 },
   async (request) => {
     // * 1. Authentication gate
 

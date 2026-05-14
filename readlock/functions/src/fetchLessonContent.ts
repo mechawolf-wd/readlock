@@ -118,10 +118,11 @@ function resolveLessonDocId(
   return String(flatIndex);
 }
 
-const IS_EMULATOR = process.env.FUNCTIONS_EMULATOR === "true";
+// TODO: Re-enable when App Check is configured in Firebase Console.
+// const IS_EMULATOR = process.env.FUNCTIONS_EMULATOR === "true";
 
 export const fetchLessonContent = onCall<FetchLessonContentData>(
-  { enforceAppCheck: !IS_EMULATOR, maxInstances: 100 },
+  { enforceAppCheck: false, maxInstances: 100 },
   async (request) => {
     // * 1. Authentication gate
 

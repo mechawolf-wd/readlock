@@ -112,7 +112,7 @@ class RLSegmentTab extends StatelessWidget {
     vertical: RLDS.spacing8,
   );
 
-  static const double tabIconSize = RLDS.iconLarge;
+  static const double tabIconSize = RLDS.iconXLarge;
 
   @override
   Widget build(BuildContext context) {

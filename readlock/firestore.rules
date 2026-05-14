@@ -111,6 +111,17 @@ service cloud.firestore {
       allow write: if false;
     }
 
+    // * /translations/{locale}
+    //
+    // UI string translations per locale. Uploaded by Lockie (admin)
+    // via the uploadTranslations Cloud Function. All signed-in users
+    // can read so the app can load translations on language switch.
+
+    match /translations/{locale} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin();
+    }
+
     // * /referral-codes/{codeId}
     //
     // Created and redeemed via Cloud Functions.
