@@ -70,7 +70,7 @@ class VerifyEmailScreenState extends State<VerifyEmailScreen> {
   }
 
   // Re-sends the verification link. Surfaces success or failure as a
-  // toast — the action is intentionally lightweight and stays on-screen.
+  // toast, the action is intentionally lightweight and stays on-screen.
   Future<void> handleResendTap() async {
     if (isResending) {
       return;

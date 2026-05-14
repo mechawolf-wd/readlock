@@ -1,4 +1,4 @@
-// Bookshelf screen — shows the courses the reader owns. A course
+// Bookshelf screen, shows the courses the reader owns. A course
 // becomes owned the moment PurchaseService.purchaseCourse succeeds
 // (writes /users/{id}.purchasedCourses). The list paginates in pages
 // of BOOKSHELF_PAGE_SIZE via a Load more button so the shelf doesn't
@@ -71,7 +71,7 @@ class BookshelfScreenState extends State<BookshelfScreen> {
   bool isBookshelfLoading = true;
   int visibleCoursesCount = BOOKSHELF_PAGE_SIZE;
 
-  // Local filter state — same shape as CoursesScreen's. Genre chips +
+  // Local filter state, same shape as CoursesScreen's. Genre chips +
   // title query are layered over the savedCourses list at render time.
   // Hidden behind the filter affordance so the shelf stays calm by
   // default and only reveals the filter pane when the reader asks.
@@ -123,7 +123,7 @@ class BookshelfScreenState extends State<BookshelfScreen> {
     super.dispose();
   }
 
-  // * Filter handlers — local state only, no Firestore round-trip. The
+  // * Filter handlers, local state only, no Firestore round-trip. The
   // saved-courses list is rendered through getFilteredSavedCourses() so
   // a chip toggle or query change just rebuilds with a fresh slice.
 
@@ -548,7 +548,7 @@ class BookshelfScreenState extends State<BookshelfScreen> {
   }
 
   // Section heading. The filter affordance moved out of this row when the
-  // panel switched to the floating bottom layout — the panel itself is
+  // panel switched to the floating bottom layout, the panel itself is
   // always visible above the nav, so the heading is just a label now.
   Widget OwnedHeadingRow() {
     return Div.row([
@@ -600,7 +600,7 @@ class BookshelfScreenState extends State<BookshelfScreen> {
     );
   }
 
-  // Diameter of the reset chip — matches CoursesScreen so the affordance
+  // Diameter of the reset chip, matches CoursesScreen so the affordance
   // reads identically across both surfaces.
   static const double clearFiltersChipDiameter = 40.0;
 
@@ -625,7 +625,7 @@ class BookshelfScreenState extends State<BookshelfScreen> {
     return visibleCourses.map<Widget>(CourseCard).toList();
   }
 
-  // * Course row geometry — circle diameter mirrors BookListCard's
+  // * Course row geometry, circle diameter mirrors BookListCard's
   // 48px book + 12px padding so the bookshelf book sits at the same
   // scale as the search/home cards. Both halves of the row are
   // pinned to the same height via the SizedBox so the title/author
@@ -636,7 +636,7 @@ class BookshelfScreenState extends State<BookshelfScreen> {
 
   // Stroke width for the per-book progress arc. Scaled down from the
   // roadmap's 6.0 because the bookshelf disc is roughly 0.4× the size
-  // of the roadmap one — keeps the same visual weight on the smaller
+  // of the roadmap one, keeps the same visual weight on the smaller
   // circle.
   static const double bookshelfProgressStrokeWidth = 4.0;
 
@@ -740,7 +740,7 @@ class BookshelfScreenState extends State<BookshelfScreen> {
     return elapsed.inHours < BOOKSHELF_NEW_PURCHASE_WINDOW_HOURS;
   }
 
-  // Mirrors CourseRoadmapScreen.getCourseAccentColor — normalises the
+  // Mirrors CourseRoadmapScreen.getCourseAccentColor, normalises the
   // hex, falls back to the palette default for unknown values, and to
   // RLDS.success if parsing fails. Kept local so the bookshelf doesn't
   // depend on the roadmap's State for a pure colour decision.
@@ -753,7 +753,7 @@ class BookshelfScreenState extends State<BookshelfScreen> {
     return parsed ?? RLDS.success;
   }
 
-  // Circular pane on the left — holds the book PNG at the standard
+  // Circular pane on the left, holds the book PNG at the standard
   // list-card size, sized so the circle diameter matches the row.
   // The progress arc paints on top of the LunarBlur surface using the
   // same AnimatedProgressArc / ProgressArcPainter the roadmap screen
@@ -770,7 +770,10 @@ class BookshelfScreenState extends State<BookshelfScreen> {
   }) {
     final BorderRadius circleRadius = BorderRadius.circular(bookshelfCircleDiameter / 2);
 
-    final Widget bookImage = RLSkillBookImage(courseColor: courseColor, size: bookshelfBookSize);
+    final Widget bookImage = RLSkillBookImage(
+      courseColor: courseColor,
+      size: bookshelfBookSize,
+    );
 
     final Widget bookSurface = RLLunarBlur(
       borderRadius: circleRadius,
@@ -810,7 +813,7 @@ class BookshelfScreenState extends State<BookshelfScreen> {
     );
   }
 
-  // Rectangular pane on the right — title + author stacked, vertically
+  // Rectangular pane on the right, title + author stacked, vertically
   // centered to line up with the circle. Title clamps to one line so a
   // long title doesn't break the row geometry; author wraps freely.
   Widget TitleAuthorCard({

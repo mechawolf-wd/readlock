@@ -1,10 +1,10 @@
-// Reflective prompt swipe — renders thinking points as plain coloured text,
+// Reflective prompt swipe, renders thinking points as plain coloured text,
 // centred on the screen, revealed one-by-one with the exact same blur +
 // progressive-text reveal rhythm as CCQuestion answer options.
 //
 // Each point sits blurred until tapped; the first tap kicks off the
 // typewriter reveal (same cadence / same blur token / same once-completed
-// pinning as the question options). No card chrome — just coloured text,
+// pinning as the question options). No card chrome, just coloured text,
 // so the reflect page reads as a moment of quiet thinking instead of
 // a dashboard.
 
@@ -41,7 +41,7 @@ class CCReflectState extends State<CCReflect> {
 
   bool isContinueVisible = false;
 
-  // Per-card "tap me" affordance — open eye centred on every blurred
+  // Per-card "tap me" affordance, open eye centred on every blurred
   // reflect point. Disappears once the card reveals so the typewriter
   // takes the centre uncluttered. Tinted with the active course's accent
   // colour so the hint reads as part of the course's voice; falls back to
@@ -223,7 +223,7 @@ class CCReflectState extends State<CCReflect> {
     );
 
     // Same frosted LunarBlur surface the continue button in CCTextContent
-    // uses — each thinking point reads as a card on the same pane. The
+    // uses, each thinking point reads as a card on the same pane. The
     // BlurOverlay still gates the tap-to-reveal typewriter until the reader
     // taps, matching the question's covered-answer rhythm.
     final Widget pointSurface = RLLunarBlur(
@@ -256,7 +256,7 @@ class CCReflectState extends State<CCReflect> {
   //      target height doesn't shift when the reveal kicks off).
   //   2. revealed → ProgressiveText mounted with a stable ValueKey. State
   //      persists across later parent rebuilds, so the reveal plays
-  //      exactly once and never swaps to a different widget — the snap
+  //      exactly once and never swaps to a different widget, the snap
   //      at completion is what that swap was causing.
   Widget PointText({
     required int pointIndex,

@@ -51,7 +51,7 @@ class CCPauseState extends State<CCPause> {
 
   @override
   Widget build(BuildContext context) {
-    // Reads as part of the same reading voice as CCTextContent — shared
+    // Reads as part of the same reading voice as CCTextContent, shared
     // reading weight, full textPrimary colour. Bold is reserved for bionic
     // fixation prefixes and colour-markup spans (see RLTypography note),
     // so no weight override here.

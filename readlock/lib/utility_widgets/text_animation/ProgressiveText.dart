@@ -21,7 +21,7 @@ const Duration progressiveTextDoubleTapTimeout = Duration(milliseconds: 500);
 // Each character fades in from alpha 0 → 1 over this window from the moment
 // it is revealed. Kept short so the effect reads as a soft settle, not a
 // visible animation. Multiple characters can be in flight at once when the
-// typewriter is faster than this window — each gets its own timeline, so
+// typewriter is faster than this window, each gets its own timeline, so
 // adjacent characters crossfade smoothly without popping.
 const Duration progressiveTextLeadingCharacterFadeDuration = Duration(milliseconds: 60);
 
@@ -29,10 +29,10 @@ const Duration progressiveTextLeadingCharacterFadeDuration = Duration(millisecon
 // paths (live typewriter + settled CompletedSentenceWidget) route through
 // here so the rule lives in one place.
 //
-//   <c:g> — italic, painted in the active course's accent colour. Falls back
+//   <c:g>, italic, painted in the active course's accent colour. Falls back
 //           to the legacy markup palette when no CourseAccentScope is in
 //           place (eg. settings preview).
-//   <c:r> — italic + bold, no colour override (inherits from the surrounding
+//   <c:r>, italic + bold, no colour override (inherits from the surrounding
 //           text style).
 TextStyle resolveMarkupStyle(BuildContext context, String colorCode, TextStyle baseStyle) {
   // When the user disables Accent in Settings, all markup spans render as
@@ -124,7 +124,7 @@ class ProgressiveText extends StatefulWidget {
     this.textAlign = TextAlign.left,
     this.blurCompletedSentences = true,
     // Completed-sentence blur defaults inherited from the centralised
-    // Apple-Music-style lyrics blur token — keeps every reading surface
+    // Apple-Music-style lyrics blur token, keeps every reading surface
     // (text swipes, question answers, true/false buttons, Settings demo)
     // aligned by default.
     this.completedSentenceBlurIntensity = RLDS.lyricsBlurSigma,
@@ -207,11 +207,11 @@ class ProgressiveTextState extends State<ProgressiveText> with TickerProviderSta
     leadingCharacterFadeTicker = createTicker(onLeadingCharacterFadeTick);
     leadingCharacterFadeTicker!.start();
 
-    // Live bionic-toggle listener — flipping the switch in Settings re-paints
+    // Live bionic-toggle listener, flipping the switch in Settings re-paints
     // every visible sentence without remounting.
     bionicEnabledNotifier.addListener(onBionicEnabledChanged);
 
-    // Live reading-setting listeners — blur, accent colour, and reveal-all
+    // Live reading-setting listeners, blur, accent colour, and reveal-all
     // repaint every visible sentence when the user flips a toggle in Settings.
     blurEnabledNotifier.addListener(onReadingSettingChanged);
     coloredTextEnabledNotifier.addListener(onReadingSettingChanged);
@@ -294,7 +294,7 @@ class ProgressiveTextState extends State<ProgressiveText> with TickerProviderSta
         currentCharacterPosition = -1; // Start with no characters revealed
       });
 
-      // One random click per new sentence reveal — replaces the looped
+      // One random click per new sentence reveal, replaces the looped
       // typewriter clip so the cadence is one tick per beat instead of a
       // continuous keyboard chatter. Routed through the typing-specific
       // method so the Typing Sound switch can mute it without silencing
@@ -711,7 +711,7 @@ class ProgressiveTextState extends State<ProgressiveText> with TickerProviderSta
     super.dispose();
   }
 
-  // Live bionic toggle — repaint with the updated weight distribution.
+  // Live bionic toggle, repaint with the updated weight distribution.
   void onBionicEnabledChanged() {
     if (!mounted) {
       return;
@@ -720,7 +720,7 @@ class ProgressiveTextState extends State<ProgressiveText> with TickerProviderSta
     setState(() {});
   }
 
-  // Live blur / accent toggle — repaint so completed sentences and markup
+  // Live blur / accent toggle, repaint so completed sentences and markup
   // spans reflect the updated setting immediately.
   void onReadingSettingChanged() {
     if (!mounted) {
@@ -1060,7 +1060,7 @@ class ProgressiveTextState extends State<ProgressiveText> with TickerProviderSta
   }
 
   // Create text span with color transition based on reveal position. Thin
-  // wrapper over createRevealSpans — highlighted text (bold + colour) routes
+  // wrapper over createRevealSpans, highlighted text (bold + colour) routes
   // through the same per-character fade-in as plain text.
   TextSpan createSpanWithColorTransition(
     String text,
@@ -1078,7 +1078,7 @@ class ProgressiveTextState extends State<ProgressiveText> with TickerProviderSta
   // stripped) sentence; `revealedLength` is how many characters of the full
   // sentence have been revealed so far. The result groups contiguous
   // fully-opaque runs into a single span and gives each still-fading
-  // character its own span with computed alpha — so the number of spans per
+  // character its own span with computed alpha, so the number of spans per
   // render stays bounded by the fade window size, not the sentence length.
   List<TextSpan> createRevealSpans(
     String text,
@@ -1101,7 +1101,7 @@ class ProgressiveTextState extends State<ProgressiveText> with TickerProviderSta
       final bool isRevealed = globalIndex < revealedLength;
 
       if (!isRevealed) {
-        // Everything from here to the end of this chunk is unrevealed — one
+        // Everything from here to the end of this chunk is unrevealed, one
         // transparent span covers it.
         spans.add(TextSpan(text: text.substring(cursor), style: transparentStyle));
         break;
@@ -1139,7 +1139,7 @@ class ProgressiveTextState extends State<ProgressiveText> with TickerProviderSta
         continue;
       }
 
-      // Character still fading in — its own span with reduced alpha, bold
+      // Character still fading in, its own span with reduced alpha, bold
       // weight applied if the fixation mask says so.
       final TextStyle fadingStyle = settledStyle.copyWith(
         color: baseColor.withValues(alpha: alpha),
@@ -1184,7 +1184,7 @@ class ProgressiveTextState extends State<ProgressiveText> with TickerProviderSta
     return progress.clamp(0.0, 1.0);
   }
 
-  // Ticker callback — triggers rebuilds while any character is mid-fade,
+  // Ticker callback, triggers rebuilds while any character is mid-fade,
   // plus one final settling rebuild to flush all alphas to 1.0.
   void onLeadingCharacterFadeTick(Duration _) {
     if (!mounted) {
@@ -1249,7 +1249,7 @@ class ProgressiveTextState extends State<ProgressiveText> with TickerProviderSta
       return false;
     }
 
-    // Global user preference — when the user turns Focus off in Settings,
+    // Global user preference, when the user turns Focus off in Settings,
     // no sentence blurs regardless of the per-widget flag.
     final bool isBlurGloballyDisabled = !blurEnabledNotifier.value;
 

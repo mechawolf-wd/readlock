@@ -1,5 +1,5 @@
 // Bottom sheet for account settings and management. Rendered as a LunarBlur
-// surface without a grabber — content padding is the shared
+// surface without a grabber, content padding is the shared
 // RL_BOTTOM_SHEET_NO_GRABBER_CONTENT_PADDING from RLBottomSheet, so the
 // layout rhythm matches Support / Font picker / any other no-grabber sheet.
 
@@ -135,7 +135,7 @@ class AccountSheet extends StatelessWidget {
       // AuthService.deleteAccount signs the user out as its final step.
       // The app no longer auto-presents the login sheet on sign-out, so we
       // pop the modal stack and explicitly mount the login sheet on the
-      // root navigator — otherwise the reader would be stranded on Home
+      // root navigator, otherwise the reader would be stranded on Home
       // with no obvious way to sign back in.
       if (!context.mounted) {
         return;

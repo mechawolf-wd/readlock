@@ -45,7 +45,7 @@ const double roadmapTileBorderWidth = 3.0;
 const double lessonTitleWidth = 128.0;
 const double floatingBarBottomClearance = 180.0;
 
-// * Progress ring intro animation — the arc sweeps from 0 to the reader's
+// * Progress ring intro animation, the arc sweeps from 0 to the reader's
 // current progress on screen open with an ease-out curve so the reveal
 // reads as a single confident gesture rather than a linear fill. Duration
 // pulled from the shared opacity-intro token in RLDS.
@@ -104,7 +104,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
 
   double? screenHeight;
 
-  // Normalised course color — bare uppercase hex, empty string if missing.
+  // Normalised course color, bare uppercase hex, empty string if missing.
   String getNormalizedCourseColor() {
     final String? raw = courseData?['color'] as String?;
     final bool hasNoColor = raw == null || raw.isEmpty;
@@ -385,7 +385,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
   // The highest lesson index the reader has reached on this course. Used
   // by the path to gate which tiles are tappable (i <= frontier) and to
   // mark the active node. Returns 0 for a fresh purchase (lesson 0
-  // tappable, rest locked) and stays 0 for unpurchased courses too —
+  // tappable, rest locked) and stays 0 for unpurchased courses too.
   // the purchase gate already overrides everything in that case.
   int getCurrentLessonFrontier() {
     final CourseProgressModel? progress = courseProgressNotifier.value[widget.courseId];
@@ -528,7 +528,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
       return;
     }
 
-    // Haptic is fired by RLSegmentTab's tap — no need for a second one here.
+    // Haptic is fired by RLSegmentTab's tap, no need for a second one here.
 
     setState(() {
       selectedSegmentIndex = segmentIndex;
@@ -567,7 +567,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
 
     // Lessons from selected segment. Tile-lock state combines the
     // per-lesson `isFree` flag with the course-wide purchase gate, so
-    // every tile reads as locked until the reader buys the course —
+    // every tile reads as locked until the reader buys the course,
     // except lessons explicitly marked free in the JSON, which stay
     // unlocked as previews.
     final bool isCoursePurchased = getIsCoursePurchased();
@@ -598,7 +598,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
       color: RLDS.surface,
       child: Stack(
         children: [
-          // Slow drifting pixel-star background behind everything — sits
+          // Slow drifting pixel-star background behind everything, sits
           // outside SafeArea so the stars paint under the status bar too.
           const Positioned.fill(child: RLStarfieldBackground()),
 
@@ -608,7 +608,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
                 // Scrollable content with sticky headers
                 CustomScrollView(controller: scrollController, slivers: slivers),
 
-                // Continue / purchase CTA pinned to the bottom — always
+                // Continue / purchase CTA pinned to the bottom, always
                 // visible, painted as a standalone surface-coloured pill
                 // (no card chrome behind it).
                 Positioned(
@@ -625,7 +625,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
     );
   }
 
-  // Floating bottom bar — bare button, no RLCard chrome. The button
+  // Floating bottom bar, bare button, no RLCard chrome. The button
   // itself owns its full surface treatment (RLDS.surface fill + white
   // label), so the bar reads as a single floating pill rather than a
   // tinted button nested inside a card.
@@ -742,7 +742,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
     }
 
     if (result == PurchaseResult.insufficientFeathers) {
-      // Out of feathers — push them straight to the Feathers Plan sheet
+      // Out of feathers, push them straight to the Feathers Plan sheet
       // so they can top up without leaving the roadmap.
       FeathersBottomSheet.show(context);
       return;
@@ -751,7 +751,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
     RLToast.error(context, RLUIStrings.ERROR_UNKNOWN);
   }
 
-  // * Skillbook charge button — shown when the course is owned but its
+  // * Skillbook charge button, shown when the course is owned but its
   // rental has lapsed. Green animated battery icon cycles from empty to
   // full on a loop so the button reads as "recharge me". Tapping fires
   // PurchaseService.resurrectCourse which optimistically extends the
@@ -856,7 +856,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
     size: RLDS.iconXLarge,
   );
 
-  // Warm amber moon — same accent the Settings, Night Session row uses,
+  // Warm amber moon, same accent the Settings, Night Session row uses,
   // sourced from NightShiftBottomSheet so all three surfaces stay in sync.
   static final Widget NightShiftHeaderIcon = const Icon(
     Pixel.moon,
@@ -865,7 +865,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
   );
 
   // Padding applied to each non-card sibling in the header. The HeroCard
-  // deliberately does NOT get this inset — it spans the full screen width,
+  // deliberately does NOT get this inset, it spans the full screen width,
   // violating the page margin, so the info panel reads as a banner strip
   // anchored to both screen edges.
   static const EdgeInsets roadmapHeaderSidePadding = EdgeInsets.symmetric(
@@ -918,7 +918,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
 
         const Spacing.height(RLDS.spacing16),
 
-        // Charge meter — sits directly under the book disc so the
+        // Charge meter, sits directly under the book disc so the
         // skillbook's rental state reads as an attribute of the cover
         // itself. Hidden for unowned courses; the lock-disc overlay
         // already telegraphs the purchase gate up there.
@@ -926,7 +926,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
 
         const Spacing.height(RLDS.spacing16),
 
-        // Hero card — full-bleed, no side padding, so it stretches the
+        // Hero card, full-bleed, no side padding, so it stretches the
         // full width of the screen. Intentional violation of the page
         // padding.
         HeroCard(
@@ -939,7 +939,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
     );
   }
 
-  // * Charge meter — pixel-font label over a thin progress bar, both
+  // * Charge meter, pixel-font label over a thin progress bar, both
   // tinted with the course's own accent. The bar wears a soft halo
   // mirroring the surprise-me button on HomeScreen (RLDS.glowDecoration
   // with glass40-tinted brand color, blurRadius 12, spreadRadius 1) so
@@ -1022,11 +1022,11 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
   }
 
   // Circular frosted disc that hosts the progress ring + book. Uses the
-  // same RLLunarBlur surface as the HeroCard underneath — surface defaults
-  // to RLDS.surface at the standard alpha — so the book pane and the info
+  // same RLLunarBlur surface as the HeroCard underneath, surface defaults
+  // to RLDS.surface at the standard alpha, so the book pane and the info
   // card read as the same frosted family. Wrapped in a ScaleTransition
   // driven by breathingAnimation so the whole assembly subtly breathes
-  // (0.97 ↔ 1.03) — gives the otherwise static token a heartbeat without
+  // (0.97 ↔ 1.03), gives the otherwise static token a heartbeat without
   // competing with page content for attention.
   static final BorderRadius bookRingPaneRadius = BorderRadius.circular(progressRingSize / 2);
 
@@ -1047,7 +1047,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
 
   static const double progressRingStrokeWidth = 6.0;
   static const double progressRingSize = 176.0;
-  // Book assets are square (64x64). 96 = 1.5x the source — a clean nearest-
+  // Book assets are square (64x64). 96 = 1.5x the source, a clean nearest-
   // neighbour scale (handled inside RLSkillBookImage) that keeps the
   // pixel-art edges crisp without swallowing the progress ring around it.
   static const double skillBookSize = 96.0;
@@ -1057,10 +1057,10 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
   }
 
   // While the course is locked the entire frosted disc gets a darkening
-  // film + a centred lock glyph stacked on top — sized and shaped to
+  // film + a centred lock glyph stacked on top, sized and shaped to
   // match the book-ring pane (a circle at progressRingSize) so the gate
   // reads as "the whole disc is locked" instead of "a square box
-  // pasted on the book". Plain Stack, no blur — the book cover and the
+  // pasted on the book". Plain Stack, no blur, the book cover and the
   // progress arc still show through the dim. Drops the moment a
   // purchase flips purchasedCoursesNotifier and the parent rebuilds.
   static const double discLockOverlayAlpha = 0.55;
@@ -1122,7 +1122,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
     final bool isCoursePurchased = getIsCoursePurchased();
 
     final List<Widget> ringLayers = [
-      // Progress arc — the unfilled portion is left transparent so the
+      // Progress arc, the unfilled portion is left transparent so the
       // frosted-dark disc underneath shows through instead of a ghost
       // ring. Painted in the course's full accent so it reads as a
       // confident pour of color. Driven off progressRingAnimation so
@@ -1138,7 +1138,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
         ),
       ),
 
-      // Book cover in centre — always rendered; the locked-disc overlay
+      // Book cover in centre, always rendered; the locked-disc overlay
       // sits on top so the cover art still reads through the dim.
       CourseBookImage(),
     ];
@@ -1155,7 +1155,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
   }
 
   // Hero card is a text-only info panel that sits underneath the circular
-  // book-ring pane. Renders as a full-bleed strip — no border radius, since
+  // book-ring pane. Renders as a full-bleed strip, no border radius, since
   // it touches the screen edges on both sides. Uses RLLunarBlur directly
   // (RLCard.elevated always rounds) with RL_CARD_ALPHA so the
   // frosted-dark tint still matches the BottomFloatingBar and the book disc.
@@ -1203,7 +1203,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
             textAlign: TextAlign.center,
           ),
 
-          // Description — one-line course pitch from the rlockie front
+          // Description, one-line course pitch from the rlockie front
           // matter. Hidden when the course doesn't supply one so the card
           // doesn't show empty padding under the author line. Blurred
           // when the course is locked so the text teases without spoiling.
@@ -1219,7 +1219,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
     );
   }
 
-  // Full-width segment tab row — routes through the shared RLSegmentTabs
+  // Full-width segment tab row, routes through the shared RLSegmentTabs
   // component so the selected tab gets the same frosted LunarBlur pill
   // treatment as the column-width picker in Settings. Accent colour is the
   // course's own accent so the selected label adopts its palette.
@@ -1320,7 +1320,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
   // `lessonIndex` is segment-local (the index inside the path the reader
   // is looking at). CourseDetailScreen indexes into the FLATTENED list
   // of every segment's lessons, so we add the cumulative length of every
-  // earlier segment before pushing — otherwise tapping lesson 0 in any
+  // earlier segment before pushing, otherwise tapping lesson 0 in any
   // segment past the first would always open the course's very first
   // lesson.
   void navigateToLesson(int lessonIndex, int contentIndex) {
@@ -1413,10 +1413,10 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
 }
 
 // Path with connected lesson nodes. Two locks gate each tile:
-//   1. Course purchase gate — every tile is locked until the course is
+//   1. Course purchase gate, every tile is locked until the course is
 //      bought, except lessons flagged `isFree: true` in the course JSON
 //      which stay tappable as previews.
-//   2. Frontier gate — once purchased, only tiles up to and including
+//   2. Frontier gate, once purchased, only tiles up to and including
 //      `currentLessonFrontier` are tappable, so the reader has to finish
 //      the active lesson (which then bumps the frontier) before the
 //      next one unlocks.
@@ -1559,7 +1559,7 @@ class PathWithNodes extends StatelessWidget {
 enum PathNodeAlignment { left, center, right }
 
 // Individual lesson node on the path. Stateful so it can track the
-// press-and-release window — when held, the foreground tile shifts to
+// press-and-release window, when held, the foreground tile shifts to
 // where the shadow sits (right + down by roadmapTileShadowOffset) so the
 // node visibly "settles" into the shadow on press, then springs back on
 // release. Haptic fires once on tap-down.
@@ -1695,7 +1695,7 @@ class PathLessonNodeState extends State<PathLessonNode> with SingleTickerProvide
       offset: Offset(offsetX, 0),
       child: Column(
         children: [
-          // Pixel-style square tile — opaque hit-test so the entire box
+          // Pixel-style square tile, opaque hit-test so the entire box
           // (including the shadow inset) registers presses. Wrapped in the
           // shared breathing animation so the tile pulses in lock-step
           // with the book disc above it.
@@ -1789,7 +1789,7 @@ class PathLessonNodeState extends State<PathLessonNode> with SingleTickerProvide
     );
 
     // Circular drop shadow offset down+right. Same color for locked
-    // and unlocked tiles — only the foreground fill changes — so the
+    // and unlocked tiles, only the foreground fill changes, so the
     // shadow reads as a consistent grounding mark across the path.
     final BoxDecoration shadowDecoration = BoxDecoration(
       color: RLDS.glass50(RLDS.black),
@@ -1797,7 +1797,7 @@ class PathLessonNodeState extends State<PathLessonNode> with SingleTickerProvide
     );
 
     // When pressed, the foreground tile slides into the shadow's slot
-    // and the shadow itself fades out — the result reads as the tile
+    // and the shadow itself fades out, the result reads as the tile
     // being physically pushed down and to the right by the shadow
     // distance. Locked tiles never receive taps, so isPressed stays
     // false and the rig sits at rest for them.
@@ -1829,7 +1829,7 @@ class PathLessonNodeState extends State<PathLessonNode> with SingleTickerProvide
       height: roadmapNodeSize + roadmapTileShadowOffset,
       child: Stack(
         children: [
-          // Offset drop shadow — hidden while pressed so the foreground
+          // Offset drop shadow, hidden while pressed so the foreground
           // tile reads as having "landed" on top of it.
           Positioned(
             left: roadmapTileShadowOffset,
@@ -1844,7 +1844,7 @@ class PathLessonNodeState extends State<PathLessonNode> with SingleTickerProvide
             ),
           ),
 
-          // Foreground tile — animates between resting (top-left) and
+          // Foreground tile, animates between resting (top-left) and
           // pressed (shadow slot) over a single short window so the
           // press feels tactile rather than instantaneous.
           AnimatedPositioned(
@@ -1863,7 +1863,7 @@ class PathLessonNodeState extends State<PathLessonNode> with SingleTickerProvide
     return RLDS.glass15(widget.accentColor);
   }
 
-  // * Tile glyphs — 32px so they land on pixelarticons' 16×16 grid (2x).
+  // * Tile glyphs, 32px so they land on pixelarticons' 16×16 grid (2x).
 
   static final Widget LockedIcon = Icon(
     Pixel.lock,
@@ -1908,7 +1908,7 @@ class PathLessonNodeState extends State<PathLessonNode> with SingleTickerProvide
 
 // Thin CustomPaint wrapper that listens to the screen's intro animation and
 // hands its eased value to ProgressArcPainter via the painter's `repaint`
-// listenable — only the canvas repaints, the widget tree stays still.
+// listenable, only the canvas repaints, the widget tree stays still.
 class AnimatedProgressArc extends StatelessWidget {
   final Animation<double> animation;
   final Color color;

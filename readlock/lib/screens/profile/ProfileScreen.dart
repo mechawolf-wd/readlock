@@ -107,7 +107,7 @@ class ProfileContentState extends State<ProfileContent> {
     hydrateUserPreferenceNotifiersFromUser(user);
   }
 
-  // * Individual preference handlers — optimistic setState + fire-and-forget
+  // * Individual preference handlers, optimistic setState + fire-and-forget
   // persistence to Firestore. Intentionally not awaited so the UI stays
   // snappy; UserService logs any write failures for diagnostics.
 
@@ -226,7 +226,7 @@ class ProfileContentState extends State<ProfileContent> {
     }
 
     // Switch the bottom-nav to the Search tab so the courses screen sits
-    // behind the login sheet — gives the signed-out reader something
+    // behind the login sheet, gives the signed-out reader something
     // browseable to peek at instead of whatever screen happened to host the
     // settings sheet.
     activeTabIndexNotifier.value = TAB_INDEX_SEARCH;

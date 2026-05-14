@@ -1,4 +1,4 @@
-// Course detail screen — hosts the vertical PageView of CC swipe widgets
+// Course detail screen, hosts the vertical PageView of CC swipe widgets
 // for a single lesson and owns the reading stopwatch, progress chrome,
 // and navigation back to the roadmap.
 
@@ -126,7 +126,7 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
   // loading screen) so noise doesn't reach Firestore.
   // Credited seconds are capped at MAX_SESSION_CREDITED_SECONDS to prevent
   // idle-tab abuse of the feather economy. The finish screen still shows
-  // the real stopwatch value — only the write is capped.
+  // the real stopwatch value, only the write is capped.
   void commitReadingTime() {
     readingStopwatch.stop();
 
@@ -161,13 +161,13 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
     );
   }
 
-  // Loading screen widget — shares CourseLoadingScreen so the picked bird
+  // Loading screen widget, shares CourseLoadingScreen so the picked bird
   // (not a stale pigeon image or a raw spinner) greets the reader here too.
   Widget LoadingScreen() {
     return const CourseLoadingScreen();
   }
 
-  // Main course content screen — Scaffold hosts a three-layer stack: the
+  // Main course content screen, Scaffold hosts a three-layer stack: the
   // drifting pixel starfield at the bottom, a full-bleed LunarBlur pane that
   // frosts the stars so they read as a calm atmospheric background rather
   // than competing with the text, and the safe-area content (top chrome +
@@ -185,7 +185,11 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
           // shows through cleanly instead of a grey fog.
           if (!hasNoContent)
             const Positioned.fill(
-              child: RLLunarBlur(borderRadius: BorderRadius.zero, child: SizedBox.expand()),
+              child: RLLunarBlur(
+                borderRadius: BorderRadius.zero,
+                child: SizedBox.expand(),
+                surfaceAlpha: 0,
+              ),
             ),
 
           SafeArea(
@@ -373,7 +377,7 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
     );
   }
 
-  // Back button for navigation — matches the blurred progress chrome.
+  // Back button for navigation, matches the blurred progress chrome.
   // Only fires the quit-confirmation action when the chrome is revealed; if the
   // bar is still blurred, the first tap just reveals it (mirrors the progress
   // bar's reveal-on-first-tap behaviour).
@@ -436,7 +440,7 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
   // Tap-highlight container for chrome icon buttons. Fades a glass10 white
   // rectangle in on press and out on release using the standard fast duration.
 
-  // Progress indicator for course content — blurred and dimmed until tapped
+  // Progress indicator for course content, blurred and dimmed until tapped
   Widget ProgressIndicator() {
     final double progressValue = calculateProgress();
     final Color accentColor = widget.accentColor;
@@ -462,8 +466,8 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
 
   // Build content item widget for specific index. Every CC widget is wrapped
   // in a centered column whose max width is driven by the reader's choice in
-  // Settings (selectedReadingColumnNotifier) — Newspaper (narrow) or
-  // Classic (comfortable) — both cap line-length so the reading surface
+  // Settings (selectedReadingColumnNotifier), Newspaper (narrow) or
+  // Classic (comfortable), both cap line-length so the reading surface
   // stays within the 45–75 character target on wider phones.
   Widget ContentItem(BuildContext context, int contentItemIndex) {
     final JSONMap content = allContent[contentItemIndex];
@@ -580,7 +584,7 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
     Navigator.of(context).pop();
   }
 
-  // Show quit confirmation dialog — frosted LunarBlur surface (matches the
+  // Show quit confirmation dialog, frosted LunarBlur surface (matches the
   // Support bottom sheet), icon-cancel layout so Pause reads as a compact
   // red glyph on the left and Read fills the rest as the primary action.
   void showQuitConfirmationSheet() {

@@ -41,7 +41,7 @@ class RLStarfieldButton extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: ClipRRect(
-        borderRadius: RLDS.borderRadiusSmall,
+        borderRadius: RLDS.borderRadiusLarge,
         child: Stack(
           children: [
             const Positioned.fill(child: RLStarfieldBackground()),

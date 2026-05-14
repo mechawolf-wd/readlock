@@ -1,11 +1,11 @@
-// Live feather-balance pill — plume sprite + count, subscribes to
+// Live feather-balance pill, plume sprite + count, subscribes to
 // userBalanceNotifier so a top-up from any surface reflects here without
 // a refetch. Tap opens FeathersBottomSheet so the indicator doubles as
 // the affordance for topping up. Shared by every header that surfaces
 // the wallet (bookshelf, search) so the wallet feel is consistent and a
 // future restyle only edits this file.
 //
-// Always rendered — even at a zero balance — so the top-up affordance is
+// Always rendered, even at a zero balance, so the top-up affordance is
 // always visible. Callers control surrounding spacing themselves.
 
 import 'package:flutter/material.dart';
@@ -44,7 +44,7 @@ class RLBalancePill extends StatelessWidget {
 
           const Spacing.width(RLDS.spacing4),
 
-          RLTypography.bodyLarge('$balance', color: RLDS.primary),
+          RLTypography.bodyLarge('$balance', color: RLDS.textPrimary),
         ],
       ),
     );

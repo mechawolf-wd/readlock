@@ -43,7 +43,7 @@ class SelectableFilterChips extends StatelessWidget {
 }
 
 // Multi-select sibling of SelectableFilterChips. Same chip widget, same
-// styling — only the selection model differs: callers hold a Set of active
+// styling, only the selection model differs: callers hold a Set of active
 // labels and `onToggled` fires the tapped label so the parent can flip its
 // membership in/out of that Set. Used by the search screen's genre row.
 class SelectableFilterChipsMulti extends StatelessWidget {
@@ -99,7 +99,7 @@ class SelectableFilterChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Color chipTextColor = isSelected ? RLDS.white : RLDS.textMuted;
+    final Color chipTextColor = isSelected ? RLDS.white : RLDS.textSecondary;
 
     void handleTapWithFeedback() {
       HapticsService.selectionClick();
@@ -119,7 +119,7 @@ class SelectableFilterChip extends StatelessWidget {
   // Selected chip sits on the shared LunarBlur surface tinted with the
   // primary accent so the active state keeps the red fill, just on the
   // frosted-pane family used everywhere else. Unselected chips render
-  // as plain padded text — no decoration, no border — so the row stays
+  // as plain padded text, no decoration, no border, so the row stays
   // quiet and the active selection carries all the visual weight.
   Widget ChipBody({required Widget label}) {
     if (isSelected) {

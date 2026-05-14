@@ -1,4 +1,4 @@
-// Centralised opacity reveal — single source of truth for every "fade in /
+// Centralised opacity reveal, single source of truth for every "fade in /
 // fade out based on a bool" surface in the app (continue button, true/false
 // blur, password field, etc.). Keep all opacity reveals routed through this
 // so the timing never drifts.

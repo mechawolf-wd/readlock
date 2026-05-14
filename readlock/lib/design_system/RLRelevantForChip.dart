@@ -1,4 +1,4 @@
-// Relevant-for chip — renders one audience tag from a course's
+// Relevant-for chip, renders one audience tag from a course's
 // "relevant-for" list (designers, investors, anyone, …) as a small 8-bit
 // label on a backgroundLight pill. Label is always white.
 
@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/constants/RLTypography.dart';
 
-// * Display names — machine key → label shown to the user.
+// * Display names, machine key → label shown to the user.
 const Map<String, String> RELEVANT_FOR_DISPLAY_NAMES = {
   'designers': 'Designers',
   'product-managers': 'Product Managers',

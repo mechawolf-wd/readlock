@@ -1,4 +1,4 @@
-// Centralised top-screen toast — four semantic variants (info, warning,
+// Centralised top-screen toast, four semantic variants (info, warning,
 // error, success). Card-styled, tap to dismiss, quick opacity animation.
 // Sits at the top of the overlay with the same outer margin as page content.
 
@@ -11,19 +11,19 @@ import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/design_system/RLLunarBlur.dart';
 import 'package:readlock/services/feedback/SoundService.dart';
 
-// * Tuning — fade timing pulled from RLDS so every opacity transition in
+// * Tuning, fade timing pulled from RLDS so every opacity transition in
 // the app (reveal, fade switcher, toast) shares one token.
 const Duration TOAST_VISIBLE_DURATION = Duration(seconds: 3);
 const double TOAST_ICON_SIZE = RLDS.iconMedium;
 
-// 2px variant-coloured border on a neutral surface — the variant identity
+// 2px variant-coloured border on a neutral surface, the variant identity
 // rides on the icon and the edge, the body stays the standard surface so
 // the toast reads consistently regardless of severity.
 const double RL_TOAST_BORDER_WIDTH = 2.0;
 
 enum RLToastVariant { info, warning, error, success }
 
-// * Controller — owns the active overlay entry so consecutive calls replace
+// * Controller, owns the active overlay entry so consecutive calls replace
 // the previous toast instantly instead of stacking.
 class RLToastController {
   OverlayEntry? overlayEntry;
@@ -136,7 +136,7 @@ class RLToastVariantStyle {
   }
 }
 
-// * Overlay view — positions the card at the top of the screen with the same
+// * Overlay view, positions the card at the top of the screen with the same
 // outer margin as the page content, fades in, auto-dismisses, fades out on tap.
 class RLToastView extends StatefulWidget {
   final String message;
@@ -246,7 +246,7 @@ class RLToastViewState extends State<RLToastView> with SingleTickerProviderState
 
   // Frosted variant-bordered surface. Built inline rather than via
   // RLLunarBlur because the toast animates its blur sigma alongside its
-  // tint and content opacity — wrapping a BackdropFilter in a FadeTransition
+  // tint and content opacity, wrapping a BackdropFilter in a FadeTransition
   // (the obvious approach) produces a "blur snaps in at the end" pop, since
   // Opacity around BackdropFilter doesn't blend the blur kernel smoothly.
   // Growing sigma from 0 to full instead lets the frosted effect bloom in.

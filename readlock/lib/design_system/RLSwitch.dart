@@ -17,7 +17,7 @@ class RLSwitch extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final Color resolvedActiveColor = activeColor ?? RLDS.primary;
-    // null when no caller handler — keeps the switch disabled (Cupertino
+    // null when no caller handler, keeps the switch disabled (Cupertino
     // gates interaction on a non-null onChanged) instead of letting it
     // look tappable but only emit a sound.
     final ValueChanged<bool>? wrappedOnChanged = buildSoundedOnChanged();

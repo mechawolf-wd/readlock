@@ -1,7 +1,7 @@
-// 8-bit starfield background — a field of square pixel "stars" that drift
+// 8-bit starfield background, a field of square pixel "stars" that drift
 // slowly (parallax-layered). Designed to sit behind the course roadmap.
 //
-// Sharp rectangular dots, no anti-aliasing, no twinkling — just a calm
+// Sharp rectangular dots, no anti-aliasing, no twinkling, just a calm
 // slow scroll to give the screen a tiny bit of life.
 //
 // The drift clock is shared across every mounted RLStarfieldBackground via
@@ -28,7 +28,7 @@ const int STARFIELD_RANDOM_SEED = 42;
 // is visually indistinguishable from per-frame updates but cuts paint
 // work by 3-6x on high-refresh displays and on the web canvas.
 const double STARFIELD_TICK_INTERVAL_SECONDS = 0.05;
-// Pitch-black background — RLDS.black is a near-black grey, we want the
+// Pitch-black background, RLDS.black is a near-black grey, we want the
 // actual void behind the pixel stars.
 const Color STARFIELD_BACKGROUND_COLOR = Color(0xFF000000);
 
@@ -92,7 +92,7 @@ class StarfieldClock {
   }
 }
 
-// * One star's immutable spec — position is a 0..1 normalised coordinate so
+// * One star's immutable spec, position is a 0..1 normalised coordinate so
 // the painter can map it to whatever size the widget resolves to.
 class StarSpec {
   final double normalizedX;

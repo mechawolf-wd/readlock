@@ -139,7 +139,7 @@ class UserService {
         'language': language,
         'hasCompletedOnboarding': false,
         'createdAt': FieldValue.serverTimestamp(),
-        // Preference defaults — mirror UserModel constructor defaults.
+        // Preference defaults, mirror UserModel constructor defaults.
         UserPreferenceField.TYPING_SOUND: true,
         UserPreferenceField.SOUNDS: true,
         UserPreferenceField.HAPTICS: true,
@@ -174,7 +174,7 @@ class UserService {
     }
   }
 
-  // * Preference updates — one field per call, cheap and round-trippable.
+  // * Preference updates, one field per call, cheap and round-trippable.
 
   static Future<bool> updateTypingSound(bool enabled) {
     return updateField(UserPreferenceField.TYPING_SOUND, enabled, 'updateTypingSound');
@@ -278,7 +278,7 @@ class UserService {
     return updateField('hasCompletedOnboarding', true, 'markOnboardingComplete');
   }
 
-  // * Latest opened course — set every time the reader taps a roadmap
+  // * Latest opened course, set every time the reader taps a roadmap
   // node. Drives the home screen's "Reading now…" card.
   static Future<bool> updateLastOpenedCourseId(String courseId) {
     return updateField(
@@ -371,7 +371,7 @@ class UserService {
 
   // Bumps `currentLessonIndex` if the supplied next-frontier value beats
   // what's already stored. The max() guard makes the writer idempotent
-  // and monotonic — finishing an old lesson can't roll the frontier
+  // and monotonic, finishing an old lesson can't roll the frontier
   // backwards, so the call site doesn't have to check first.
   static Future<bool> advanceCourseProgress({
     required String courseId,

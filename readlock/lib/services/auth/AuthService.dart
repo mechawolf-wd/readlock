@@ -491,7 +491,7 @@ class AuthService {
 
   // * Google sign in
   // Uses FirebaseAuth's built-in provider flow (popup on web, OAuth redirect on mobile).
-  // No google_sign_in package required — fewer moving parts.
+  // No google_sign_in package required, fewer moving parts.
 
   static Future<AuthResult> signInWithGoogle() async {
     logger.info('Google Login', 'Starting...');
@@ -598,7 +598,7 @@ class AuthService {
     }
   }
 
-  // Returns true when a new profile document was created during this call —
+  // Returns true when a new profile document was created during this call ,
   // the caller uses that signal to route fresh sign-ups through onboarding
   // instead of dropping them straight onto the home screen.
   static Future<bool> createUserProfileIfNeeded(User user) async {

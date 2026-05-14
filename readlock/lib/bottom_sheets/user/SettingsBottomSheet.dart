@@ -20,7 +20,7 @@ class SettingsBottomSheet {
 class SettingsContent extends StatelessWidget {
   const SettingsContent({super.key});
 
-  // * Heading icon — matches the Account sheet's icon-beside-title pattern.
+  // * Heading icon, matches the Account sheet's icon-beside-title pattern.
   static final Widget SettingsIcon = const Icon(
     Pixel.menu,
     color: RLDS.info,
@@ -31,7 +31,7 @@ class SettingsContent extends StatelessWidget {
   Widget build(BuildContext context) {
     final double bottomSafeArea = MediaQuery.of(context).padding.bottom;
 
-    // Tapping the same icon that opened this sheet pops it back closed —
+    // Tapping the same icon that opened this sheet pops it back closed ,
     // the menu glyph reads as a toggle, mirroring how the bookshelf
     // settings entry treats it.
     void onSettingsIconTap() {
@@ -46,7 +46,7 @@ class SettingsContent extends StatelessWidget {
     );
 
     return Div.column([
-      // Heading — icon + title
+      // Heading, icon + title
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: RLDS.spacing24),
         child: Div.row([

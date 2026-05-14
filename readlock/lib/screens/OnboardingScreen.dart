@@ -1,4 +1,4 @@
-// Onboarding screen — runs after registration to set the reader's profile
+// Onboarding screen, runs after registration to set the reader's profile
 // bird and reading preferences before they reach the bookshelf.
 //
 // One step per page: bird, typeface, column width, then the toggle-driven
@@ -9,7 +9,7 @@
 //
 // Chrome: full-screen route, starfield painted edge-to-edge, lunar-blur
 // cards floating on top for every step except the bird picker, which sits
-// directly on the starfield. The page view doesn't scroll by hand —
+// directly on the starfield. The page view doesn't scroll by hand ,
 // navigation is exclusively the chevron buttons in the footer.
 
 import 'package:flutter/material.dart';
@@ -35,7 +35,7 @@ const EdgeInsets ONBOARDING_FOOTER_PADDING = EdgeInsets.fromLTRB(
   RLDS.spacing24,
   RLDS.spacing24,
 );
-// Tap-area padding around each chevron — RLDS.spacing12 gives a 44pt tap
+// Tap-area padding around each chevron, RLDS.spacing12 gives a 44pt tap
 // target with the iconXLarge glyph at its centre, matching Apple's HIG
 // minimum without growing the footer past the safe area gap below.
 const EdgeInsets ONBOARDING_ARROW_BUTTON_PADDING = EdgeInsets.all(RLDS.spacing12);
@@ -58,7 +58,7 @@ class OnboardingScreen extends StatelessWidget {
       backgroundColor: STARFIELD_BACKGROUND_COLOR,
       body: Stack(
         children: [
-          // Starfield paints first — fills the screen behind every card.
+          // Starfield paints first, fills the screen behind every card.
           Positioned.fill(child: RLStarfieldBackground()),
 
           // Step pager + footer sit on top of the starfield.
@@ -80,7 +80,7 @@ class OnboardingFlowState extends State<OnboardingFlow> {
   late final PageController pageController;
   int currentStepIndex = 0;
 
-  // * Reading-preference state — mirrors ProfileContent. Loaded once from
+  // * Reading-preference state, mirrors ProfileContent. Loaded once from
   // /users/{id} on mount so the onboarding starts from the user's saved
   // values; every toggle persists fire-and-forget so closing mid-flow
   // doesn't drop a choice.
@@ -119,14 +119,14 @@ class OnboardingFlowState extends State<OnboardingFlow> {
     });
   }
 
-  // * Step list — built lazily so each step can read live state via the
+  // * Step list, built lazily so each step can read live state via the
   // closure rather than each step holding a local copy of the toggle
   // values. Order is fixed: identity → reading basics → toggles → modes.
   List<OnboardingStepSpec> getStepSpecs() {
     final bool progressiveEnabled = !revealAllTrueFalse;
 
     return [
-      // Bird step — no header, no card. The carousel floats directly on
+      // Bird step, no header, no card. The carousel floats directly on
       // the starfield so the chosen bird reads as the screen's hero.
       // Restricted to ONBOARDING_BIRD_OPTIONS so a brand-new reader is
       // offered only the three free starter birds (sparrow, pigeon,
@@ -182,7 +182,7 @@ class OnboardingFlowState extends State<OnboardingFlow> {
     ];
   }
 
-  // * Toggle handlers — same fire-and-forget persistence pattern as
+  // * Toggle handlers, same fire-and-forget persistence pattern as
   // ProfileContent so onboarding writes round-trip with Settings writes.
 
   void handleProgressiveToggled(bool progressiveEnabled) {
@@ -223,7 +223,7 @@ class OnboardingFlowState extends State<OnboardingFlow> {
   }
 
   // Next: scrolls the page view one step to the right. On the final step
-  // there's nowhere else to scroll, so it pops the screen — the same
+  // there's nowhere else to scroll, so it pops the screen, the same
   // forward action the reader's been tapping the whole time.
   void handleNextTap() {
     final List<OnboardingStepSpec> stepSpecs = getStepSpecs();
@@ -257,7 +257,7 @@ class OnboardingFlowState extends State<OnboardingFlow> {
     final bool canGoBack = currentStepIndex > 0;
     // Next is always live: it advances on intermediate steps and pops the
     // screen on the last step (see handleNextTap), so there's no "disabled
-    // forward" state — only Previous goes inert at the start.
+    // forward" state, only Previous goes inert at the start.
     final VoidCallback? previousHandler = canGoBack ? handlePreviousTap : null;
 
     return SafeArea(
@@ -268,7 +268,7 @@ class OnboardingFlowState extends State<OnboardingFlow> {
           Expanded(
             child: PageView.builder(
               controller: pageController,
-              // No hand-scrolling — only the chevron buttons advance the
+              // No hand-scrolling, only the chevron buttons advance the
               // page view, so the flow can't be skipped by mistake.
               physics: const NeverScrollableScrollPhysics(),
               onPageChanged: handleStepChanged,
@@ -306,7 +306,7 @@ class OnboardingToggle {
   const OnboardingToggle({required this.value, required this.onChanged});
 }
 
-// Single-step page — header (title + optional switch) over the body
+// Single-step page, header (title + optional switch) over the body
 // widget. No card frame: every step floats directly on the starfield, so
 // the demos read as the hero of each step. The header collapses entirely
 // when the spec's title is null.
@@ -340,7 +340,7 @@ class OnboardingStepPage extends StatelessWidget {
   }
 }
 
-// Shared header — heading title with an optional switch trailing. No
+// Shared header, heading title with an optional switch trailing. No
 // icon: the title carries the entire visual weight of the row, in the
 // app's reading-style heading. The switch slot collapses when the spec
 // doesn't supply a toggle, so picker-driven steps render the same chrome
@@ -367,7 +367,7 @@ class StepHeader extends StatelessWidget {
   }
 }
 
-// Footer — two chevron icons sitting at the edges of the screen. No
+// Footer, two chevron icons sitting at the edges of the screen. No
 // labels: the arrows alone say "go back" / "go forward". A null handler
 // renders the chevron in the muted text colour and ignores taps, so the
 // first step's Previous and the last step's Next read as inert.
@@ -395,7 +395,7 @@ class OnboardingFooter extends StatelessWidget {
 
 // A chevron rendered as a tap target with the same haptic + sizing
 // treatment every primary action in the app gets. Disabled state is
-// signalled by a muted icon colour and a null tap handler — no separate
+// signalled by a muted icon colour and a null tap handler, no separate
 // chrome, since the icon is the entire button.
 class OnboardingArrowButton extends StatelessWidget {
   final IconData icon;

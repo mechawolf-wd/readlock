@@ -1,9 +1,9 @@
-// Login support flow — four coordinated bottom sheets:
+// Login support flow, four coordinated bottom sheets:
 //
-//   1. LoginSupportPicker              — entry point, lists three options
-//   2. ResetPasswordSupportSheet       — email input + red "Send reset link"
-//   3. ResendVerificationSupportSheet  — single red "Resend verification" button
-//   4. EmailSupportSheet               — address display + red "Copy email"
+//   1. LoginSupportPicker             , entry point, lists three options
+//   2. ResetPasswordSupportSheet      , email input + red "Send reset link"
+//   3. ResendVerificationSupportSheet , single red "Resend verification" button
+//   4. EmailSupportSheet              , address display + red "Copy email"
 //
 // Each action sheet is self-contained (its own state, its own inputs, its
 // own status line). The picker closes itself before pushing the selected
@@ -342,7 +342,7 @@ class ResendVerificationSupportContentState extends State<ResendVerificationSupp
     super.dispose();
   }
 
-  // Prefer the signed-in user's email when available — that's where the
+  // Prefer the signed-in user's email when available, that's where the
   // verification mail actually goes. Fall back to whatever was typed on the
   // login form so the field is never blank for users arriving mid-flow.
   String? resolveInitialEmail() {
@@ -374,7 +374,7 @@ class ResendVerificationSupportContentState extends State<ResendVerificationSupp
     }
 
     // The Firebase client SDK can only resend verification to the currently
-    // signed-in user — there is no "resend by email" endpoint. If we hit
+    // signed-in user, there is no "resend by email" endpoint. If we hit
     // this sheet while signed out, calling sendEmailVerification just fails
     // silently, so we surface the requirement explicitly instead.
     final bool isSignedOut = !AuthService.isSignedIn;

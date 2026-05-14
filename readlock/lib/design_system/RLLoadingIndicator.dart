@@ -1,8 +1,8 @@
 // Centralised loading indicator.
 //
 // Two variants:
-//   RLLoadingIndicator.text() — "Loading" with 0 → 3 animated dots, looping.
-//   RLLoadingIndicator.bird() — same dots under the user's chosen bird sprite.
+//   RLLoadingIndicator.text(), "Loading" with 0 → 3 animated dots, looping.
+//   RLLoadingIndicator.bird(), same dots under the user's chosen bird sprite.
 
 import 'package:flutter/material.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
@@ -18,7 +18,7 @@ const int LOADING_DOT_PHASE_COUNT = 4;
 const double LOADING_DOT_INACTIVE_OPACITY = 0.2;
 
 // Loading bird uses BirdAnimationSprite's BIRD_PREVIEW_SIZE_LARGE default
-// (128px) — same size as the empty-state bookshelf bird, so the "Chirping"
+// (128px), same size as the empty-state bookshelf bird, so the "Chirping"
 // loader and the "Read something to see it here" illustration read as the
 // same creature at the same scale.
 

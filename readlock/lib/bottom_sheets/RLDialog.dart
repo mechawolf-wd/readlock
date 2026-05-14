@@ -39,7 +39,7 @@ class RLDialog {
     );
   }
 
-  // * Alert dialog — title, message, single dismiss button
+  // * Alert dialog, title, message, single dismiss button
   static void showAlert(
     BuildContext context, {
     required String title,
@@ -92,7 +92,7 @@ class DialogContainer extends StatelessWidget {
           // (top-only variant). Single radius across every top-level
           // modal surface so a dialog and a sheet read as the same
           // rounded family.
-          borderRadius: RLDS.borderRadiusModalTop,
+          borderRadius: RLDS.borderRadiusLarge,
           surfaceColor: dialogColor,
           borderColor: RLDS.transparent,
           child: Material(color: RLDS.transparent, child: child),
@@ -102,7 +102,7 @@ class DialogContainer extends StatelessWidget {
   }
 }
 
-// * Alert dialog content — single-action layout
+// * Alert dialog content, single-action layout
 class AlertDialogContent extends StatelessWidget {
   final String title;
   final String message;

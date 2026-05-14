@@ -1,4 +1,4 @@
-// Shared "filter a list of courses" pane — frosted LunarBlur surface
+// Shared "filter a list of courses" pane, frosted LunarBlur surface
 // hosting a horizontally-scrollable genre chip ribbon stacked above a
 // title search field. The visual was originally inlined in CoursesScreen
 // (Search) and is now lifted here so MyBookshelf can mount the same UI

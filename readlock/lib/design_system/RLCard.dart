@@ -1,4 +1,4 @@
-// Reusable card component — a frosted LunarBlur pane. The elevated/subtle
+// Reusable card component, a frosted LunarBlur pane. The elevated/subtle
 // factories are kept as call-site affordances but share a single tint
 // opacity so the app's cards all read as the same surface.
 
@@ -67,7 +67,7 @@ class RLCard extends StatelessWidget {
   }
 }
 
-// * Frosted card body — delegates the blur + tint + rounded clip to the
+// * Frosted card body, delegates the blur + tint + rounded clip to the
 // shared RLLunarBlur. The variant's alpha controls how opaque the dark
 // tint is, so elevated hero cards feel solid and subtle list rows recede.
 class FrostedCardBody extends StatelessWidget {

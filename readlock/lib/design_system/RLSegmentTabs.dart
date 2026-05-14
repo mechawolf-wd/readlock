@@ -1,4 +1,4 @@
-// Shared segmented-tab row used across the app — the CourseRoadmapScreen
+// Shared segmented-tab row used across the app, the CourseRoadmapScreen
 // segment picker, the column-width picker in Settings, and any future place
 // that wants the same visual language. Selected tab renders as a frosted
 // RLLunarBlur pill matching RLCard's alpha; the rest render as flat labels.
@@ -32,8 +32,8 @@ class RLSegmentTabs<T> extends StatelessWidget {
   final T selectedValue;
   final ValueChanged<T> onChanged;
 
-  // Colour of the selected tab's label. Defaults to RLDS.primary — the
-  // same warm red used on active switches in Settings — so segmented
+  // Colour of the selected tab's label. Defaults to RLDS.primary, the
+  // same warm red used on active switches in Settings, so segmented
   // pickers read as part of the app's active-state family. Callers that
   // need a different accent (e.g. the roadmap uses the current course's
   // palette) can override.
@@ -152,7 +152,7 @@ class RLSegmentTab extends StatelessWidget {
     }
 
     // Wrap the unselected tab in an opaque GestureDetector so the entire
-    // padded slot registers taps — clicking the empty space around the
+    // padded slot registers taps, clicking the empty space around the
     // glyph still flips the selection. Haptic is fired here directly
     // (the inner Container has no onTap, so there's no double-fire risk).
     return GestureDetector(

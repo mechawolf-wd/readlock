@@ -1,4 +1,4 @@
-// Course purchase prompt — opens from the cart icon on a Search/Bookshelf
+// Course purchase prompt, opens from the cart icon on a Search/Bookshelf
 // list card. Frosted circular book disc, title + author + description, and
 // a feather-priced purchase button that mirrors CourseRoadmapScreen's
 // PurchaseButton so the two surfaces read as the same family.
@@ -22,7 +22,7 @@ import 'package:readlock/services/purchases/PurchaseConstants.dart';
 import 'package:readlock/services/purchases/PurchaseService.dart';
 import 'package:readlock/MainNavigation.dart';
 
-// * Layout — circular book disc sized to feel like the focal point of the
+// * Layout, circular book disc sized to feel like the focal point of the
 // sheet without dominating it. 144 = 1.5x of the 96px book asset, leaving
 // breathing room around the cover inside the frosted circle.
 const double PURCHASE_SHEET_BOOK_DISC_SIZE = 144.0;
@@ -116,7 +116,7 @@ class CoursePurchaseSheetState extends State<CoursePurchaseSheet> {
         // Author
         RLTypography.bodyMedium(author, color: RLDS.textSecondary, textAlign: TextAlign.center),
 
-        // Description (optional — hidden when the course doesn't supply one)
+        // Description (optional, hidden when the course doesn't supply one)
         RenderIf.condition(
           hasDescription,
           Column(
@@ -140,7 +140,7 @@ class CoursePurchaseSheetState extends State<CoursePurchaseSheet> {
     );
   }
 
-  // Circular LunarBlur disc — same surface family as the roadmap book ring,
+  // Circular LunarBlur disc, same surface family as the roadmap book ring,
   // sized to host the 96px book cover with breathing room.
   Widget BookDisc() {
     final BorderRadius discRadius = BorderRadius.circular(PURCHASE_SHEET_BOOK_DISC_SIZE / 2);
@@ -161,7 +161,7 @@ class CoursePurchaseSheetState extends State<CoursePurchaseSheet> {
     );
   }
 
-  // Mirrors CourseRoadmapScreen.PurchaseButton — frosted LunarBlur surface,
+  // Mirrors CourseRoadmapScreen.PurchaseButton, frosted LunarBlur surface,
   // accent-coloured label, same price string built from PurchaseConstants.
   Widget PurchaseButton() {
     final Color accentColor = getCourseAccentColor();
@@ -178,7 +178,7 @@ class CoursePurchaseSheetState extends State<CoursePurchaseSheet> {
         RLTypography.bodyLarge(RLUIStrings.ROADMAP_PURCHASE_LOADING_LABEL, color: accentColor),
       ];
     } else {
-      // "Buy for 10 <plume>" — same shape as the roadmap purchase
+      // "Buy for 10 <plume>", same shape as the roadmap purchase
       // button so both surfaces read as the same family.
       final String labelWithCost =
           '${RLUIStrings.ROADMAP_PURCHASE_LABEL} '
@@ -227,7 +227,7 @@ class CoursePurchaseSheetState extends State<CoursePurchaseSheet> {
     }
 
     // Capture the root navigator before the async gap so we can mount the
-    // Feathers sheet on it after popping this one — the sheet's own
+    // Feathers sheet on it after popping this one, the sheet's own
     // context is invalidated by the pop, but the root navigator's
     // context survives.
     final NavigatorState innerNavigator = Navigator.of(context);
@@ -259,7 +259,7 @@ class CoursePurchaseSheetState extends State<CoursePurchaseSheet> {
     }
 
     if (result == PurchaseResult.insufficientFeathers) {
-      // Reader doesn't have enough feathers — close this purchase sheet
+      // Reader doesn't have enough feathers, close this purchase sheet
       // and surface the Feathers Plan sheet so they can top up directly
       // instead of bouncing through a toast and finding their own way to
       // the wallet. rootContext was captured before the await and points

@@ -1,4 +1,4 @@
-// Courses screen — fetches /courses from Firestore and lists every course.
+// Courses screen, fetches /courses from Firestore and lists every course.
 // A search bar on top filters the fetched list by title. When the local filter
 // returns nothing, falls back to a prefix search against Firestore.
 
@@ -33,7 +33,7 @@ import 'package:readlock/utility_widgets/text_animation/RLTypewriterText.dart';
 
 import 'package:pixelarticons/pixel.dart';
 
-// * Search tuning — debounce keeps us from hitting Firestore on every keystroke.
+// * Search tuning, debounce keeps us from hitting Firestore on every keystroke.
 const Duration SEARCH_DEBOUNCE_DURATION = Duration(milliseconds: 350);
 
 // Initial page size and load-more increment for the default course listing.
@@ -72,7 +72,7 @@ class CoursesScreenState extends State<CoursesScreen> {
   Timer? searchDebounce;
 
   // Active genre filters layered on top of the title search. Empty means
-  // "no genre constraint" — every course passes the genre check.
+  // "no genre constraint", every course passes the genre check.
   Set<String> selectedGenres = <String>{};
 
   // Bumped every time this tab becomes active. Used as the typewriter
@@ -227,7 +227,7 @@ class CoursesScreenState extends State<CoursesScreen> {
   // chip row paints every possible filter even before any course tagged
   // with that genre has loaded, so the reader sees the full vocabulary
   // up-front instead of a partial set that fills in as more courses
-  // arrive. The list is mirrored in rlockie's content rules — courses
+  // arrive. The list is mirrored in rlockie's content rules, courses
   // can only tag with these entries.
   List<String> getAvailableGenres() {
     return COURSE_GENRES;
@@ -301,7 +301,7 @@ class CoursesScreenState extends State<CoursesScreen> {
   }
 
   // Only hit Firestore when the local list misses. Keeps the common case free.
-  // Also skipped while a genre filter is active — the remote prefix search
+  // Also skipped while a genre filter is active, the remote prefix search
   // doesn't honour genre constraints, so falling back to it would surface
   // results the user explicitly filtered out.
   Future<void> triggerRemoteSearchIfNeeded() async {
@@ -388,7 +388,7 @@ class CoursesScreenState extends State<CoursesScreen> {
     // SafeArea(bottom: false) on the screen lets the starfield paint under
     // the nav, but the bottom-pinned search bar would sit under it too.
     // MainNavigation's Scaffold uses extendBody: true, so MediaQuery's
-    // bottom padding here = device safe area + nav-bar height — adding it
+    // bottom padding here = device safe area + nav-bar height, adding it
     // as the parent's bottom inset puts the search bar exactly above the
     // nav with no overlap.
     final double bottomInset = MediaQuery.of(context).padding.bottom;
@@ -425,7 +425,7 @@ class CoursesScreenState extends State<CoursesScreen> {
     );
   }
 
-  // Page header — title on the left, live feather wallet on the right so
+  // Page header, title on the left, live feather wallet on the right so
   // the reader can see their balance without leaving Search and tap straight
   // into the Feathers sheet to top up.
   Widget SearchHeaderRow() {
@@ -491,7 +491,7 @@ class CoursesScreenState extends State<CoursesScreen> {
     );
   }
 
-  // Diameter of the floating reset chip — matches a 4-pixel-rule tap
+  // Diameter of the floating reset chip, matches a 4-pixel-rule tap
   // target while staying small enough to read as an affordance, not a
   // button.
   static const double clearFiltersChipDiameter = 40.0;

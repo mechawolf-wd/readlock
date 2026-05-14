@@ -33,7 +33,7 @@ final ValueNotifier<Map<String, CourseProgressModel>> courseProgressNotifier =
 // Firestore round-trip.
 final ValueNotifier<int> timeSpentReadingNotifier = ValueNotifier<int>(0);
 
-// Library entries — a flat array of {courseId, expires} records.
+// Library entries, a flat array of {courseId, expires} records.
 // The roadmap purchase gate, the bookshelf shelf and the home/store
 // cart icons all read this list so a fresh purchase or a resurrect
 // (writes a new expires) flips ownership state app-wide in the same

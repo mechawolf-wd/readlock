@@ -121,7 +121,7 @@ class Package {
   }
 }
 
-// * Content type identifiers — matches lockie PackageTextParser entity types
+// * Content type identifiers, matches lockie PackageTextParser entity types
 
 enum LessonContentType {
   text,
@@ -189,7 +189,7 @@ class QuestionOption {
   const QuestionOption({required this.text, this.emoji, this.hint, this.consequenceMessage});
 }
 
-// * Question content entities — one per question type
+// * Question content entities, one per question type
 
 class QuestionSwipe extends Swipe {
   final String question;

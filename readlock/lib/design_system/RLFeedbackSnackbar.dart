@@ -207,7 +207,7 @@ class AnimatedSnackbarState extends State<AnimatedSnackbar>
   @override
   Widget build(BuildContext context) {
     // Padding extends through the bottom safe-area inset so the solid colour
-    // fill paints under the home-indicator — no bare strip between the
+    // fill paints under the home-indicator, no bare strip between the
     // snackbar and the screen edge.
     final double bottomSafeArea = MediaQuery.of(context).padding.bottom;
 
@@ -227,7 +227,7 @@ class AnimatedSnackbarState extends State<AnimatedSnackbar>
         child: GestureDetector(
           onVerticalDragUpdate: handleDragUpdate,
           onVerticalDragEnd: handleDragEnd,
-          // Match the LoginSupport / Account bottom sheets — LunarBlur over the
+          // Match the LoginSupport / Account bottom sheets, LunarBlur over the
           // shared `backgroundLight` surface so the snackbar reads as the same
           // family of frosted pane rising from the bottom edge. The semantic
           // colour (success / info) moves onto the label + icon instead of the

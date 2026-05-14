@@ -192,7 +192,7 @@ class RLSwipeButtonState extends State<RLSwipeButton>
     // it leaves behind, instead of reading as a separate slider puck.
     final Color trackFillColor = widget.color;
 
-    // Sharp corners are intentional on this surface — see the file
+    // Sharp corners are intentional on this surface, see the file
     // header. Border outlines the empty track; the fill and thumb live
     // inside the symmetric padding so they share the same vertical
     // inset.

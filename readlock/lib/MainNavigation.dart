@@ -12,6 +12,7 @@ import 'package:readlock/constants/RLUIStrings.dart';
 import 'package:readlock/design_system/RLLunarBlur.dart';
 import 'package:readlock/design_system/RLStarfieldBackground.dart';
 import 'package:readlock/design_system/RLUtility.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:readlock/screens/CoursesScreen.dart';
 import 'package:readlock/screens/HomeScreen.dart';
 import 'package:readlock/screens/MyBookshelfScreen.dart';
@@ -34,7 +35,7 @@ const int TAB_INDEX_BOOKSHELF = 2;
 
 // Live index of the currently-active bottom-nav tab. Each tab screen
 // subscribes so it can re-trigger its heading typewriter every time its
-// tab becomes active again — tabs are kept mounted, so without this signal
+// tab becomes active again, tabs are kept mounted, so without this signal
 // the header would only animate once per app launch.
 final ValueNotifier<int> activeTabIndexNotifier = ValueNotifier<int>(TAB_INDEX_HOME);
 
@@ -175,7 +176,7 @@ class MainNavigationState extends State<MainNavigation> with WidgetsBindingObser
 
     // Same one-shot hydration for the reading-preference notifiers (font,
     // column, RSVP wpm, night-shift, bird) so a fresh launch picks up the
-    // values the reader last set on any device — without each surface
+    // values the reader last set on any device, without each surface
     // having to refetch the user profile.
     hydrateUserPreferenceNotifiersFromUser(user);
   }
@@ -199,7 +200,11 @@ class MainNavigationState extends State<MainNavigation> with WidgetsBindingObser
 
   // * Nav chrome sizing
   static const double navIconSize = RLDS.iconXLarge;
-  static const double navLabelFontSize = 12.0;
+  static const double navLabelFontSize = 10;
+  static final TextStyle navLabelStyle = GoogleFonts.pressStart2p(
+    fontSize: navLabelFontSize,
+    fontWeight: FontWeight.w100,
+  );
 
   // Icon definitions for navigation items
   static const Icon HomeIcon = Icon(Pixel.home, size: navIconSize);
@@ -274,7 +279,7 @@ class MainNavigationState extends State<MainNavigation> with WidgetsBindingObser
         ],
       ),
       bottomNavigationBar: RLLunarBlur(
-        borderRadius: RLDS.borderRadiusTopLarge,
+        borderRadius: RLDS.borderRadiusModalTop,
         borderColor: RLDS.transparent,
         padding: const EdgeInsets.symmetric(vertical: RLDS.spacing12),
         child: Theme(
@@ -285,17 +290,11 @@ class MainNavigationState extends State<MainNavigation> with WidgetsBindingObser
             backgroundColor: RLDS.transparent,
             elevation: 0,
             selectedItemColor: RLDS.primary,
-            unselectedItemColor: RLDS.textSecondary,
+            unselectedItemColor: RLDS.textMuted,
             type: BottomNavigationBarType.fixed,
             iconSize: navIconSize,
-            // Labels hidden for now — icons-only nav. Keeping the style props
-            // commented so re-enabling is a single uncomment.
             showSelectedLabels: false,
             showUnselectedLabels: false,
-            // selectedLabelStyle: pixelNavLabelStyle,
-            // unselectedLabelStyle: pixelNavLabelStyle,
-            // selectedFontSize: navLabelFontSize,
-            // unselectedFontSize: navLabelFontSize,
             items: NavigationItems(),
           ),
         ),
@@ -305,7 +304,7 @@ class MainNavigationState extends State<MainNavigation> with WidgetsBindingObser
 
   // Each tab is kept mounted in its own layer so switching back doesn't
   // re-trigger its loader. The active tab fades to opacity 1, the others
-  // fade out to 0 — gives the small fade swap without the loading flash
+  // fade out to 0, gives the small fade swap without the loading flash
   // that AnimatedSwitcher's mount/unmount cycle used to cause.
   List<Widget> TabLayers() {
     final List<Widget> layers = [];
@@ -318,7 +317,7 @@ class MainNavigationState extends State<MainNavigation> with WidgetsBindingObser
           child: IgnorePointer(
             ignoring: !isActive,
             child: AnimatedOpacity(
-              duration: RLDS.opacityFadeDurationFast,
+              duration: const Duration(milliseconds: 100),
               curve: Curves.easeIn,
               opacity: isActive ? 1.0 : 0.0,
               child: screens[tabIndex],

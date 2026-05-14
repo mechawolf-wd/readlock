@@ -1,4 +1,4 @@
-// Home screen — a single "Surprise me" entry point that opens a random course.
+// Home screen, a single "Surprise me" entry point that opens a random course.
 
 import 'dart:math';
 
@@ -122,7 +122,7 @@ class HomeScreenState extends State<HomeScreen> {
   // shelf, so we filter the catalogue against purchasedCoursesNotifier
   // before drawing. When every course is owned (or the catalogue is
   // empty) we surface an info toast so the tap doesn't read as a dead
-  // button. The toast is the only feedback in that case — the success
+  // button. The toast is the only feedback in that case, the success
   // chime only plays when a fresh course is actually picked.
   void handleRandomBookTap() {
     HapticsService.lightImpact();
@@ -465,7 +465,7 @@ class HomeScreenState extends State<HomeScreen> {
   }
 
   // Single popular course rendered as the shared horizontal book row,
-  // identical to the search screen's listing — cover + title + author,
+  // identical to the search screen's listing, cover + title + author,
   // tap navigates straight into the course. The cart icon is wired only
   // for courses the reader does NOT already own; tapping it opens the
   // purchase sheet without firing the row's navigate-to-roadmap onTap.
@@ -528,7 +528,7 @@ class LatestCourseDotsHeadingState extends State<LatestCourseDotsHeading>
   }
 
   // Three discrete steps: ".", "..", "...", then loop back to ".".
-  // No empty phase — the reader never sees the heading without dots.
+  // No empty phase, the reader never sees the heading without dots.
   int getActiveDotsCount() {
     final int phase = (dotsController.value * LOADING_DOT_COUNT).floor();
     final int clampedPhase = phase.clamp(0, LOADING_DOT_COUNT - 1);

@@ -19,7 +19,7 @@ class FeedbackBottomSheets {
     showFeedbackSheet(context: context, content: hint);
   }
 
-  // Generic bottom sheet implementation — LunarBlur over `backgroundLight` to
+  // Generic bottom sheet implementation, LunarBlur over `backgroundLight` to
   // match the LoginSupport / Account sheets, so the Why?/Hint/Consequence
   // sheets read as the same frosted pane family as the snackbar that opens
   // them.
@@ -69,7 +69,7 @@ class FeedbackSheet extends StatelessWidget {
 // Reading body that mirrors RLTypography.readingLarge but flips into
 // bionic-bold spans when the global bionic toggle is on. Listens to the
 // notifier so the sheet repaints live if the user flips the setting while
-// the sheet is open — matches the ProgressiveText contract used in CC content.
+// the sheet is open, matches the ProgressiveText contract used in CC content.
 class BionicAwareReadingText extends StatelessWidget {
   final String content;
 

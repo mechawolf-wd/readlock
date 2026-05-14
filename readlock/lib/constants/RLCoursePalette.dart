@@ -1,4 +1,4 @@
-// The course colour palette — single source of truth shared by:
+// The course colour palette, single source of truth shared by:
 //   - the roadmap hero (course color → matching book asset + accent)
 //   - the relevant-for chips on the hero card
 //
@@ -71,7 +71,7 @@ const List<Color> CHARGE_BAR_TILE_COLORS = [
   Color(0xFF21983D),
 ];
 
-// Asset paths — shared so the roadmap hero and every list card that renders
+// Asset paths, shared so the roadmap hero and every list card that renders
 // a course book pull from the same place.
 const String COURSE_BOOKS_ASSET_PREFIX = 'assets/books/';
 const String COURSE_FALLBACK_ASSET = 'assets/books/FALLBACK.png';

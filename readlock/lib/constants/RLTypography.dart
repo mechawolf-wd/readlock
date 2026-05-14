@@ -1,10 +1,10 @@
 // Readlock Typography System
 // Three font families: display (8-bit), UI (clean), reading (reader-picked)
 //
-// Display — Press Start 2P: headings, author names, standout elements
-// UI — JetBrains MONO: buttons, labels, menus, general interface text
-// Reading — reader picks one of three (Lora / Lexend / JetBrains Mono) in
-// Settings. See RLReadingFont for the selection plumbing — readingLargeStyle
+// Display, Press Start 2P: headings, author names, standout elements
+// UI, JetBrains MONO: buttons, labels, menus, general interface text
+// Reading, reader picks one of three (Lora / Lexend / JetBrains Mono) in
+// Settings. See RLReadingFont for the selection plumbing, readingLargeStyle
 // and readingMediumStyle are getters that consult selectedReadingFontNotifier
 // at read time, so a Settings change flows into every rebuild of reading
 // content.
@@ -15,7 +15,7 @@ import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/constants/RLReadingFont.dart';
 
 class RLTypography {
-  // * Display font — Press Start 2P (8-bit, for headings and standout elements)
+  // * Display font, Press Start 2P (8-bit, for headings and standout elements)
 
   // Pixel display fonts read better with tight leading (1.1–1.3); 1.5 felt
   // like body copy and diluted the 8-bit punch. Keeping the gap tight makes
@@ -54,9 +54,9 @@ class RLTypography {
     letterSpacing: 0,
   );
 
-  // * UI font — JetBrains MONO (clean, for buttons, labels, menus)
+  // * UI font, JetBrains MONO (clean, for buttons, labels, menus)
 
-  // UI body — used for menu rows, buttons, and most labels. Mostly renders
+  // UI body, used for menu rows, buttons, and most labels. Mostly renders
   // on a single line, so 1.4 (Material's lower bound) reclaims vertical
   // density in long settings lists without making multi-line UI feel cramped.
   static final TextStyle bodyLargeStyle = GoogleFonts.jetBrainsMono(
@@ -75,7 +75,7 @@ class RLTypography {
     letterSpacing: 0.15,
   );
 
-  // Captions / fine print — small glyphs need proportionally MORE leading,
+  // Captions / fine print, small glyphs need proportionally MORE leading,
   // not less. 1.6 keeps 12pt text breathable on mobile.
   static final TextStyle bodySmallStyle = GoogleFonts.jetBrainsMono(
     fontSize: 12,
@@ -85,7 +85,7 @@ class RLTypography {
     letterSpacing: 0.2,
   );
 
-  // * Reading font — selectable (Lora / Lexend / JetBrains Mono).
+  // * Reading font, selectable (Lora / Lexend / JetBrains Mono).
   //
   // The size/weight/colour/height attributes are fixed on the app side; only
   // the font family switches with the reader's preference. `readingStyleFor`
@@ -93,7 +93,7 @@ class RLTypography {
 
   // Reading weight is shared across readingLarge / readingMedium so every CC
   // reading surface (text content, reflect points, question answers, quote
-  // body, feedback sheets) renders at the same density — only size differs.
+  // body, feedback sheets) renders at the same density, only size differs.
   // Markup-highlighted spans (<c:g>…</c:g>) and the bionic-fixation prefix
   // are the two sanctioned bold exceptions; both are applied locally at
   // render time, not on the base style.
@@ -113,7 +113,7 @@ class RLTypography {
     letterSpacing: 0.15,
   );
 
-  // Per-font builders — useful when a caller needs to preview a specific
+  // Per-font builders, useful when a caller needs to preview a specific
   // font (e.g. the font-picker demo) without switching the global selection.
   static TextStyle readingLargeStyleFor(ReadingFont font) {
     return readingStyleFor(font, readingLargeBase);

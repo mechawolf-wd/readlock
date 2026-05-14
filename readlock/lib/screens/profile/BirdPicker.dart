@@ -96,8 +96,8 @@ class BirdOption {
   });
 }
 
-// * Common birds — Sparrow's Idle tag begins at frame 0, the rest at frame 1.
-// * Exotic birds — dedicated Idle PNGs starting at frame 0; frame size matches
+// * Common birds, Sparrow's Idle tag begins at frame 0, the rest at frame 1.
+// * Exotic birds, dedicated Idle PNGs starting at frame 0; frame size matches
 // * the bird's true bounding box (per Aseprite JSON metadata).
 // * Sorted cheapest to most expensive (unlockSeconds ascending).
 final List<BirdOption> BIRD_OPTIONS = [
@@ -212,14 +212,14 @@ final List<BirdOption> BIRD_OPTIONS = [
 // Onboarding only offers the unlocked starter birds (sparrow, pigeon,
 // collared dove). Derived from BIRD_OPTIONS so the moment a bird's
 // unlockSkillbooks flips to 0 in the master list it surfaces in
-// onboarding too — no second list to keep in lock-step. Locked birds
+// onboarding too, no second list to keep in lock-step. Locked birds
 // stay out of onboarding entirely so a brand-new reader isn't asked
 // to choose between three free birds and a row of greyed-out previews.
 final List<BirdOption> ONBOARDING_BIRD_OPTIONS = BIRD_OPTIONS
     .where((BirdOption bird) => bird.unlockSeconds == 0)
     .toList(growable: false);
 
-// * Display-name map — purely a UI-layer concern. The canonical
+// * Display-name map, purely a UI-layer concern. The canonical
 // `BirdOption.name` (Sparrow, Pigeon, ...) is what's persisted to
 // Firestore as the user's chosen bird, never replaced by these labels.
 // Each bird's display name reaches for the language native to where
@@ -265,7 +265,7 @@ String getBirdDisplayName(BirdOption bird) {
 // Shared Images cache so Flame.images doesn't need reconfiguring globally
 final Images birdImageCache = Images(prefix: BIRD_ASSET_PREFIX);
 
-// * Shared selection — the source of truth read by the bottom sheet and any
+// * Shared selection, the source of truth read by the bottom sheet and any
 // * surface that wants to display the user's chosen bird (eg. bookshelf title).
 final ValueNotifier<BirdOption> selectedBirdNotifier = ValueNotifier(BIRD_OPTIONS.first);
 
@@ -336,7 +336,7 @@ class BirdAnimationSprite extends StatelessWidget {
   }
 }
 
-// * Bird-carousel geometry — values shared by every surface that uses the
+// * Bird-carousel geometry, values shared by every surface that uses the
 // horizontal snap-slider (the dedicated picker sheet and the onboarding
 // step). Tuning lives here so a future change to the slider feel ripples
 // through both call sites without divergence.
@@ -354,7 +354,7 @@ const double BIRD_CAROUSEL_LOCK_BADGE_BOTTOM_INSET = 8.0;
 // exact same degree.
 const double BIRD_CAROUSEL_LOCKED_BLUR_SIGMA = RLDS.lockedTextBlurSigma;
 
-// Reusable bird snap-slider — owns its own PageController and selection
+// Reusable bird snap-slider, owns its own PageController and selection
 // state, syncs with selectedBirdNotifier on every page change. Renders the
 // slider stacked above the selected bird's name so callers don't have to
 // stitch the label themselves. Ships with the BirdPickerBottomSheet (the
@@ -519,8 +519,8 @@ class BirdCarouselState extends State<BirdCarousel> {
     );
 
     // Locked birds wear the exact same frosted treatment as the bird-
-    // name label below them — single shared blur sigma, no extra opacity
-    // dim — so the silhouette and the caption read as one preview.
+    // name label below them, single shared blur sigma, no extra opacity
+    // dim, so the silhouette and the caption read as one preview.
     final ui.ImageFilter lockedBlurFilter = ui.ImageFilter.blur(
       sigmaX: BIRD_CAROUSEL_LOCKED_BLUR_SIGMA,
       sigmaY: BIRD_CAROUSEL_LOCKED_BLUR_SIGMA,

@@ -1,4 +1,4 @@
-// LunarBlur — the app's shared frosted-glass treatment. Clips its area to a
+// LunarBlur, the app's shared frosted-glass treatment. Clips its area to a
 // rounded rect, blurs whatever is painted behind it, and lays a semi-
 // transparent dark tint on top so content inside stays readable. One widget
 // = one source of truth for every "floaty pane over the starfield" surface
@@ -9,7 +9,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 
-// Default tuning — gentler than the modal backdrop blur so surfaces don't
+// Default tuning, gentler than the modal backdrop blur so surfaces don't
 // completely hide the stars behind them.
 const double RL_LUNAR_BLUR_DEFAULT_SIGMA = 4.0;
 const double RL_LUNAR_BLUR_DEFAULT_SURFACE_ALPHA = 0.35;
@@ -45,7 +45,7 @@ class RLLunarBlur extends StatelessWidget {
     final Color baseSurface = surfaceColor ?? RLDS.surface;
     final Color resolvedBorder = borderColor ?? RLDS.transparent;
 
-    // Border follows the same radius as the outer ClipRRect — otherwise the
+    // Border follows the same radius as the outer ClipRRect, otherwise the
     // border paints as a rectangle and the clip slices its corners off.
     final BoxDecoration tintDecoration = BoxDecoration(
       color: baseSurface.withValues(alpha: surfaceAlpha),

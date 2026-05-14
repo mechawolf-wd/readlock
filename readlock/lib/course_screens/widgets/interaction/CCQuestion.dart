@@ -1,6 +1,6 @@
 // Single-choice question where the reader picks exactly one answer.
 // Question reveals character-by-character (ProgressiveText).
-// Each answer sits blurred until tapped — first tap unblurs, second tap commits.
+// Each answer sits blurred until tapped, first tap unblurs, second tap commits.
 
 import 'package:flutter/material.dart' hide Typography;
 import 'package:readlock/models/CourseModel.dart';
@@ -23,7 +23,7 @@ import 'package:readlock/design_system/RLStaggerReveal.dart';
 import 'package:pixelarticons/pixel.dart';
 
 // Covered-answer blur comes directly from BlurOverlay's defaults, which
-// consume RLDS.lyricsBlur*. No per-file constants — one token, one place.
+// consume RLDS.lyricsBlur*. No per-file constants, one token, one place.
 
 class CCQuestion extends StatefulWidget {
   final QuestionSwipe content;
@@ -80,7 +80,7 @@ class CCQuestionState extends State<CCQuestion> {
     );
   }
 
-  // Single-segment reveal — ProgressiveText lays the full text out via a
+  // Single-segment reveal, ProgressiveText lays the full text out via a
   // transparent tail from the first frame, so the answers below never shift
   // as characters type in. Cadence matches text swipes (ProgressiveText's
   // default typewriterCharacterDelay) so the question reads at the same
@@ -162,7 +162,7 @@ class CCQuestionState extends State<CCQuestion> {
   }) {
     final bool isRevealed = revealedAnswers.contains(optionIndex);
     final bool isSelected = selectedAnswerIndex == optionIndex;
-    // correctAnswerIndex is 0-based — matches the options list directly,
+    // correctAnswerIndex is 0-based, matches the options list directly,
     // same as CCTrueFalseQuestion. lockie's exporter already converts the
     // 1-based source value to 0-based when writing the JSON.
     final bool isCorrectAnswer = widget.content.correctAnswerIndex == optionIndex;
@@ -198,7 +198,7 @@ class CCQuestionState extends State<CCQuestion> {
       ],
     );
 
-    // LunarBlur surface — matches the continue button in CCTextContent so
+    // LunarBlur surface, matches the continue button in CCTextContent so
     // every interactive pane on a swipe reads as the same frosted glass.
     // The correct-answer state wraps the pane in a 2px green border; the
     // text colour itself stays unchanged (white) so the border carries
@@ -267,7 +267,7 @@ class CCQuestionState extends State<CCQuestion> {
   //
   //   1. not revealed → transparent label wrapped in a Div.column with the
   //      same width:infinity that ProgressiveText wraps its own content
-  //      in — reserves the final card height from the first frame.
+  //      in, reserves the final card height from the first frame.
   //   2. revealed → ProgressiveText mounted with a ValueKey. The key is
   //      stable across rebuilds while the option is in its idle revealed
   //      state, so the typewriter plays exactly once. When the option is
@@ -336,7 +336,7 @@ class CCQuestionState extends State<CCQuestion> {
 
     HapticsService.lightImpact();
 
-    // correctAnswerIndex is 0-based — matches the options list directly.
+    // correctAnswerIndex is 0-based, matches the options list directly.
     final bool isCorrectAnswer = widget.content.correctAnswerIndex == optionIndex;
 
     if (!isCorrectAnswer) {

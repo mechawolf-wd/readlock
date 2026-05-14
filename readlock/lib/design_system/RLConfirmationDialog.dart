@@ -21,29 +21,19 @@ import 'package:readlock/design_system/RLUtility.dart';
 
 // * Button colour roles.
 
-enum RLConfirmationVariant {
-  primary,
-  success,
-  destructive,
-  warning,
-  neutral,
-}
+enum RLConfirmationVariant { primary, success, destructive, warning, neutral }
 
 // * Supported button arrangements.
 //
-//   vertical    — filled primary on top, tertiary text below.
-//   horizontal  — cancel (if any) left, cta right. Both filled.
-//   iconCancel  — cancel renders as a compact square icon-only button on
+//   vertical   , filled primary on top, tertiary text below.
+//   horizontal , cancel (if any) left, cta right. Both filled.
+//   iconCancel , cancel renders as a compact square icon-only button on
 //                 the left (tinted with its variant colour), cta fills the
 //                 rest of the row as the filled primary. Use when the
 //                 escape action is better read as a glyph than a word
 //                 (e.g. Pause ⏸ next to a big "Read" continue button).
 
-enum RLConfirmationLayout {
-  vertical,
-  horizontal,
-  iconCancel,
-}
+enum RLConfirmationLayout { vertical, horizontal, iconCancel }
 
 // * One action shown inside a confirmation dialog.
 
@@ -52,7 +42,7 @@ class RLConfirmationAction {
   final VoidCallback? onTap;
   final RLConfirmationVariant variant;
 
-  // Optional glyph. Only consumed by the iconCancel layout today — the
+  // Optional glyph. Only consumed by the iconCancel layout today, the
   // icon-only cancel button renders this icon tinted with the action's
   // variant colour.
   final IconData? icon;
@@ -125,7 +115,7 @@ class RLConfirmationDialog {
   }
 }
 
-// * Dialog shell — card container + title + message + action row/stack.
+// * Dialog shell, card container + title + message + action row/stack.
 
 class ConfirmationDialogContent extends StatelessWidget {
   final String title;
@@ -210,7 +200,7 @@ class ConfirmationDialogContent extends StatelessWidget {
 
   // Vertical: cta renders as the filled primary on top, cancel as the
   // tertiary text button below. Each action's variant only controls its
-  // colour — the call site decides which role carries the visual weight
+  // colour, the call site decides which role carries the visual weight
   // by choosing what to put in `cta` vs `cancel`.
   Widget VerticalButtons() {
     final RLConfirmationAction? cancelAction = cancel;
@@ -258,7 +248,7 @@ class ConfirmationDialogContent extends StatelessWidget {
 
   // Square icon-only button matching the primary button's vertical footprint
   // so the row reads as one aligned block. Glyph paints in textPrimary
-  // (white) with no background — the frosted dialog surface is the only
+  // (white) with no background, the frosted dialog surface is the only
   // card behind it, keeping the row visually calm so the filled CTA on
   // the right carries all the visual weight.
   Widget IconCancelButton({required RLConfirmationAction action}) {
@@ -328,7 +318,7 @@ class ConfirmationDialogContent extends StatelessWidget {
     required IconData glyph,
     required VoidCallback onTap,
   }) {
-    final Color dimmedBackground = RLDS.glass15(buttonColor);
+    final Color dimmedBackground = RLDS.glass70(buttonColor);
     final BoxDecoration buttonDecoration = BoxDecoration(
       color: dimmedBackground,
       borderRadius: RLDS.borderRadiusSmall,

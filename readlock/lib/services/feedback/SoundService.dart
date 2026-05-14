@@ -41,7 +41,7 @@ class SoundService {
 
   static final Random random = Random();
 
-  // Latched off once a play call throws — avoids hammering the log on
+  // Latched off once a play call throws, avoids hammering the log on
   // a system without working audio (eg. simulator misconfig).
   static bool isAudioEnabled = true;
 
@@ -49,7 +49,7 @@ class SoundService {
   //
   // soundsEnabledNotifier gates every UI sound the service plays, so flipping
   // the Sounds toggle in Settings silences click feedback, success/negative
-  // chimes, switch ticks, etc. — there is no other path to the audio players.
+  // chimes, switch ticks, etc., there is no other path to the audio players.
   //
   // typingSoundEnabledNotifier is a narrower switch dedicated to the
   // progressive-text reveal tick. It only affects playProgressiveTextTick, so

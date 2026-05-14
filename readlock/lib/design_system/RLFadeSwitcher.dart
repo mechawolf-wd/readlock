@@ -1,4 +1,4 @@
-// Centralised quick fade swap — same timing/curve as RLToast. Use wherever
+// Centralised quick fade swap, same timing/curve as RLToast. Use wherever
 // a screen or section swaps its child (tab changes, loader → content, etc.)
 // so transitions read as opacity fades instead of hard flashes.
 //

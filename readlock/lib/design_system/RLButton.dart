@@ -93,7 +93,7 @@ class RLButton extends StatelessWidget {
   }) {
     final BoxDecoration decoration = BoxDecoration(
       color: style.backgroundColor,
-      borderRadius: RLDS.borderRadiusSmall,
+      borderRadius: RLDS.borderRadiusLarge,
       border: style.borderColor != null
           ? Border.all(color: style.borderColor!, width: RLDS.borderWidth)
           : null,

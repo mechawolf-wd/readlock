@@ -2,7 +2,7 @@
 //
 // Flashes one word at a time at the same X position so the reader's eyes
 // stay still. Red letter is the Optimal Recognition Point (Spritz
-// technique) — pinned to the column centre so every word aligns. Meant as
+// technique), pinned to the column centre so every word aligns. Meant as
 // a drop-in alternative to ProgressiveText's typewriter: CCTextContent
 // picks between the two based on rsvpEnabledNotifier.
 //
@@ -37,7 +37,7 @@ const Duration RSVP_COMPLETION_SETTLE_DELAY = Duration(milliseconds: 300);
 // stall the tap-to-advance flow.
 const Duration RSVP_SETTLE_FADE_DURATION = Duration(milliseconds: 280);
 
-// Global toggle — ProfileScreen flips this, CCTextContent listens via
+// Global toggle, ProfileScreen flips this, CCTextContent listens via
 // ValueListenableBuilder so the mode swap is live. Kept in-memory only
 // (matches the existing ProfileScreen contract for RSVP).
 final ValueNotifier<bool> rsvpEnabledNotifier = ValueNotifier<bool>(false);
@@ -45,14 +45,14 @@ final ValueNotifier<bool> rsvpEnabledNotifier = ValueNotifier<bool>(false);
 // Reading speed for the RSVP stream. The Settings demo's WPM slider writes
 // here so a course read picks up whatever pace the reader last set, and
 // scheduleNextWord reads `.value` on every tick so a mid-stream change
-// (theoretical — Settings can't be opened during a course right now) would
+// (theoretical, Settings can't be opened during a course right now) would
 // take effect at the next word boundary.
 final ValueNotifier<int> rsvpWordsPerMinuteNotifier = ValueNotifier<int>(
   RSVP_DEFAULT_WORDS_PER_MINUTE,
 );
 
 // Optimal Recognition Point offset for a given word. Buckets lifted from
-// the Spritz paper — longer words shift the pivot right of position 1 so
+// the Spritz paper, longer words shift the pivot right of position 1 so
 // most readers land on it without thinking.
 int getRsvpOrpIndex(String word) {
   final int length = word.length;
@@ -260,7 +260,7 @@ class RSVPTextState extends State<RSVPText> {
   // Mirrors ProgressiveText's getConsistentTextStyle: forces fontSize 18 /
   // height 1.6 on top of whatever the caller passed (CCTextContent passes
   // readingMediumStyle = 16). Keeps the rendered reading size identical
-  // between the typewriter and RSVP modes — switching the toggle in
+  // between the typewriter and RSVP modes, switching the toggle in
   // Settings doesn't change how big the text looks.
   TextStyle getBaseTextStyle() {
     final TextStyle baseStyle = widget.textStyle ?? RLTypography.readingMediumStyle;
@@ -273,7 +273,7 @@ class RSVPTextState extends State<RSVPText> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Previously-revealed segments — each owns its own tap so a tap
+        // Previously-revealed segments, each owns its own tap so a tap
         // there toggles the segment's blur (mirrors ProgressiveText) and
         // does NOT bubble up to the advance handler below.
         PreviousSegmentsList(),
@@ -301,7 +301,7 @@ class RSVPTextState extends State<RSVPText> {
 
   // Vertical list of every segment behind the current one. Each entry is
   // its own tappable BlurredSegment so the tap toggles that specific
-  // segment's blur — mirroring ProgressiveText's per-sentence unblur.
+  // segment's blur, mirroring ProgressiveText's per-sentence unblur.
   Widget PreviousSegmentsList() {
     final List<Widget> children = PreviousSegmentChildren();
 
@@ -331,7 +331,7 @@ class RSVPTextState extends State<RSVPText> {
   }
 
   // Crossfade between the live word stream and the settled segment text.
-  // AnimatedSwitcher's default builder is FadeTransition — exactly the
+  // AnimatedSwitcher's default builder is FadeTransition, exactly the
   // gentle opacity fade the user asked for when a segment finishes.
   Widget CurrentSegmentArea() {
     final TextStyle staticStyle = getBaseTextStyle();

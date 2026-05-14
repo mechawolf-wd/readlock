@@ -13,7 +13,7 @@
 
 import 'package:flutter/material.dart';
 
-// 60ms per item — adjacent items crossfade cleanly without popping.
+// 60ms per item, adjacent items crossfade cleanly without popping.
 // Matches RL_TYPEWRITER_CHARACTER_STEP from RLTypewriterText.
 const Duration STAGGER_STEP = Duration(milliseconds: 50);
 

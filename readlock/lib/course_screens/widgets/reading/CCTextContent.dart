@@ -55,7 +55,7 @@ class CCTextContentState extends State<CCTextContent> {
     );
   }
 
-  // Main text display — picks between typewriter reveal (default) and the
+  // Main text display, picks between typewriter reveal (default) and the
   // RSVP word-flash reader based on the global rsvpEnabledNotifier. The
   // ValueListenableBuilder means flipping the switch in Settings swaps
   // the reading surface live without leaving the swipe.

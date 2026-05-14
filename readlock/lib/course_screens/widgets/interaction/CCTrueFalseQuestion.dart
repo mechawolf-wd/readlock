@@ -22,7 +22,7 @@ import 'package:pixelarticons/pixel.dart';
 enum TrueFalseButtonState { normal, selected, correctAndAnswered, incorrectAndMuted }
 
 // Covered-button blur comes directly from BlurOverlay's defaults, which
-// consume RLDS.lyricsBlur*. No per-file constants — one token, one place.
+// consume RLDS.lyricsBlur*. No per-file constants, one token, one place.
 
 class ButtonColors {
   final Color backgroundColor;
@@ -54,7 +54,7 @@ class CCTrueFalseQuestionState extends State<CCTrueFalseQuestion> {
   bool isContinueVisible = false;
   bool isStatementRevealed = false;
   // Blur stays on both buttons until the reader taps one of them. The first
-  // tap only removes the blur (for BOTH buttons together — never one at a
+  // tap only removes the blur (for BOTH buttons together, never one at a
   // time). A second tap on either button commits the answer.
   bool areButtonsUnblurred = false;
 
@@ -159,7 +159,7 @@ class CCTrueFalseQuestionState extends State<CCTrueFalseQuestion> {
   }
 
   // Both buttons share a single BlurOverlay so the blur removal is always
-  // synchronised — the reader never sees one button clear up before the
+  // synchronised, the reader never sees one button clear up before the
   // other. The blur lifts on the first tap on either button (see
   // getAnswerTapHandler), not when the statement finishes revealing.
   Widget ButtonRow() {
@@ -202,7 +202,7 @@ class CCTrueFalseQuestionState extends State<CCTrueFalseQuestion> {
     required IconData icon,
   }) {
     final bool isSelected = selectedAnswerIndex == answerIndex;
-    // correctAnswerIndex is 0-based — it's the index into content.options as
+    // correctAnswerIndex is 0-based, it's the index into content.options as
     // stored in the course JSON (`correct-answer-indices`). 0 = True, 1 = False.
     final bool isCorrect = widget.content.correctAnswerIndex == answerIndex;
     final bool shouldShowCorrect = hasAnswered && isCorrect;
@@ -242,7 +242,7 @@ class CCTrueFalseQuestionState extends State<CCTrueFalseQuestion> {
       return null;
     }
 
-    // While the statement is still typing, taps are ignored — reader must
+    // While the statement is still typing, taps are ignored, reader must
     // read the claim before interacting.
     if (!isStatementRevealed) {
       return null;
@@ -339,7 +339,7 @@ class CCTrueFalseQuestionState extends State<CCTrueFalseQuestion> {
       return;
     }
 
-    // correctAnswerIndex is 0-based — matches the options list directly.
+    // correctAnswerIndex is 0-based, matches the options list directly.
     final bool isCorrect = widget.content.correctAnswerIndex == answerIndex;
 
     if (!isCorrect) {

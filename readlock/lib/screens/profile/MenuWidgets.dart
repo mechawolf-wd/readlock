@@ -98,10 +98,10 @@ class MenuSection extends StatelessWidget {
     void onTermsTap() => LinkService.openUrl(RLLinks.TERMS_OF_SERVICE_URL);
     void onEulaTap() => LinkService.openUrl(RLLinks.EULA_URL);
     // Column width row has its control (chips) inside the demo card below,
-    // so the row itself is a label — tap is a no-op.
+    // so the row itself is a label, tap is a no-op.
     void onColumnWidthRowTap() {}
 
-    // Tapping a demo card flips the matching switch — same effect as
+    // Tapping a demo card flips the matching switch, same effect as
     // clicking the switch itself, so the preview doubles as the control
     // and gets the same switch click sound. The user-supplied toggle
     // handlers are also called from RLSwitch directly, so we play the
@@ -127,7 +127,7 @@ class MenuSection extends StatelessWidget {
       onBionicToggled(!bionicEnabled);
     }
 
-    // Same wrapping for JustifiedReadingDemo's onToggle — its tap also
+    // Same wrapping for JustifiedReadingDemo's onToggle, its tap also
     // commits a boolean swap, just via a different prop name. Wrapping
     // here keeps the un-wrapped onJustifiedReadingToggled intact for the
     // SwitchMenuItem above (which routes through RLSwitch's own click).
@@ -257,7 +257,7 @@ class MenuSection extends StatelessWidget {
 
         DemoExplainLabel(explanation: RLUIStrings.DEMO_EXPLAIN_COLORED_TEXT),
 
-        // Font picker + live demo — sits at the end of Reading Settings so
+        // Font picker + live demo, sits at the end of Reading Settings so
         // it follows the toggles that govern what text looks like.
         MenuItem(
           icon: Pixel.book,
@@ -269,7 +269,7 @@ class MenuSection extends StatelessWidget {
 
         DemoExplainLabel(explanation: RLUIStrings.DEMO_EXPLAIN_FONT),
 
-        // Column width — label row above (chevron-less, no-op tap) matches
+        // Column width, label row above (chevron-less, no-op tap) matches
         // the other reading-setting rows; the chips inside the demo card
         // below are the actual control.
         MenuItem(
@@ -282,7 +282,7 @@ class MenuSection extends StatelessWidget {
 
         DemoExplainLabel(explanation: RLUIStrings.DEMO_EXPLAIN_COLUMN),
 
-        // Justified text — paragraph-shape preference for long-form reading.
+        // Justified text, paragraph-shape preference for long-form reading.
         // Off by default (regular/left-aligned); flipping it on retypes every
         // ProgressiveText surface that opts in (CCTextContent) as justified.
         SwitchMenuItem(

@@ -55,7 +55,7 @@ const List<ReadingFontOption> READING_FONT_OPTIONS = [
 
 const ReadingFont DEFAULT_READING_FONT = ReadingFont.serif;
 
-// Shared selection — read by RLTypography when it computes reading styles,
+// Shared selection, read by RLTypography when it computes reading styles,
 // and watched by the settings demo via ValueListenableBuilder.
 final ValueNotifier<ReadingFont> selectedReadingFontNotifier = ValueNotifier<ReadingFont>(
   DEFAULT_READING_FONT,

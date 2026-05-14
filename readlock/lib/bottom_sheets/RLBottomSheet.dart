@@ -22,7 +22,7 @@ const EdgeInsets RL_BOTTOM_SHEET_FOOTER_BUTTON_MARGIN = EdgeInsets.fromLTRB(
 // * Fraction of the screen used by every "tall" bottom sheet that needs to
 // dominate the view but still leave a peek of the page behind it. Used by
 // FullHeightSheetContainer (the existing 90% sheet) and by the onboarding
-// sheet container — change here once and every "tall sheet" in the app
+// sheet container, change here once and every "tall sheet" in the app
 // follows.
 const double RL_FULL_HEIGHT_SHEET_FRACTION = 0.9;
 
@@ -39,7 +39,7 @@ const EdgeInsets RL_BOTTOM_SHEET_NO_GRABBER_CONTENT_PADDING = EdgeInsets.fromLTR
 );
 
 class RLBottomSheet {
-  // * Standard show — wraps content with grabber, safe area, and rounded top corners.
+  // * Standard show, wraps content with grabber, safe area, and rounded top corners.
   // Returns the sheet's dismissal future so callers can await it.
   static Future<void> show(
     BuildContext context, {
@@ -87,7 +87,7 @@ class RLBottomSheet {
     );
   }
 
-  // * Full-height show — takes 90% of screen, uses ClipRRect for crisp corners
+  // * Full-height show, takes 90% of screen, uses ClipRRect for crisp corners
   static void showFullHeight(
     BuildContext context, {
     required Widget child,
@@ -149,7 +149,7 @@ class SheetContainer extends StatelessWidget {
     final double keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
 
     // SafeArea lives inside the sheet surface so the surface (LunarBlur or
-    // solid tint) paints to the bottom edge of the screen — the home-
+    // solid tint) paints to the bottom edge of the screen, the home-
     // indicator inset reads the same colour as the sheet itself instead of
     // a bare strip underneath it.
     //
@@ -181,7 +181,7 @@ class SheetContainer extends StatelessWidget {
     return Container(decoration: solidDecoration, child: sheetContent);
   }
 
-  // Grabber owns its own RLDS.spacing16 above and below — so the child
+  // Grabber owns its own RLDS.spacing16 above and below, so the child
   // content below NEVER needs to add its own top padding for the grabber.
   // Single source of truth: change this block and every sheet lines up.
   // (!showGrabber sheets own their top chrome, so we still add a spacing24

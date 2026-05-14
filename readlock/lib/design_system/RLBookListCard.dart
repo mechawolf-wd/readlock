@@ -19,7 +19,7 @@ class BookListCard extends StatelessWidget {
   final String author;
   final String? courseColor;
   final VoidCallback? onTap;
-  // Optional trailing buy affordance — renders a cart icon at the right
+  // Optional trailing buy affordance, renders a cart icon at the right
   // edge of the card with its own tap target. Inner GestureDetector
   // absorbs the tap so the outer card's onTap (typically navigate-to-
   // roadmap) doesn't fire when the user hits the icon.
@@ -82,7 +82,7 @@ class BookListCard extends StatelessWidget {
     child: Icon(Pixel.check, color: RLDS.success, size: RLDS.iconLarge),
   );
 
-  // Trailing cart icon — sits at the right edge of the card with a
+  // Trailing cart icon, sits at the right edge of the card with a
   // small padding so the tap target stays comfortable without growing
   // the card's row height. Muted glyph color so the icon reads as a
   // secondary affordance, not a primary CTA.

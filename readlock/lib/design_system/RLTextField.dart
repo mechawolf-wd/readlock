@@ -113,7 +113,7 @@ class RLTextFieldState extends State<RLTextField> {
       contentPadding: const EdgeInsets.symmetric(vertical: RLDS.spacing16),
     );
 
-    // Frosted surface — same configuration as the login bottom sheet's
+    // Frosted surface, same configuration as the login bottom sheet's
     // container (LunarBlur over `backgroundLight` with a transparent
     // border). Default sigma + alpha mean the field reads as the same
     // family of surface as every other LunarBlur pane in the app.

@@ -1,4 +1,4 @@
-// Course data facade — abstracts the data source for course loading.
+// Course data facade, abstracts the data source for course loading.
 // Reads from Firestore /courses collection via FirebaseCourseService.
 
 import 'package:readlock/course_screens/services/FirebaseCourseService.dart';

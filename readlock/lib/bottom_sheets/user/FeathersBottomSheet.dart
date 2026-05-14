@@ -1,10 +1,10 @@
-// Feathers subscription bottom sheet — feather-based monthly subscription
+// Feathers subscription bottom sheet, feather-based monthly subscription
 // with two plan tiers (Beginner / Reader). Plans are presented in a
 // horizontal slider so the reader swipes through them one at a time;
-// tapping a card is the purchase action — there is no separate CTA
+// tapping a card is the purchase action, there is no separate CTA
 // button, the card itself is the affordance.
 //
-// No icons in the plan cards on purpose — the numbers (feathers, books,
+// No icons in the plan cards on purpose, the numbers (feathers, books,
 // price) carry the meaning, the user's profile bird sits below the copy
 // as a small companion accent.
 
@@ -30,7 +30,7 @@ import 'package:in_app_purchase/in_app_purchase.dart';
 // Account / Support at the left/right edges.
 const EdgeInsets FEATHERS_CONTENT_PADDING = EdgeInsets.symmetric(horizontal: RLDS.spacing24);
 
-// * Plan slider tuning — horizontal PageView. Each card takes most of the
+// * Plan slider tuning, horizontal PageView. Each card takes most of the
 // viewport but leaves a small peek of the next card on either side so the
 // horizontal-swipe affordance is obvious. Card height is sized to fit the
 // content (heading, price, feathers, books, bird) with no trailing slack.
@@ -40,8 +40,8 @@ const double PLAN_CARD_VIEWPORT_FRACTION = 0.78;
 // fits the sprite into a square `previewSize × previewSize` box, so a
 // wider sprite (Toucan 32×18) at the same preview size ends up shorter on
 // screen than a narrower one (Kiwi 27×17). Driving the card sprite by
-// rendered height instead — and computing the matching square box size
-// per bird — keeps every plan card's bird at the same on-screen height.
+// rendered height instead, and computing the matching square box size
+// per bird, keeps every plan card's bird at the same on-screen height.
 const double PLAN_CARD_BIRD_VISUAL_HEIGHT = 70.0;
 
 // Returns the square previewSize that, fed into BirdAnimationSprite,
@@ -130,7 +130,7 @@ final List<FeatherPlan> FEATHER_PLANS = [
   ),
 ];
 
-const int DEFAULT_PLAN_INDEX = 0; // Beginner — the default tier on open.
+const int DEFAULT_PLAN_INDEX = 0; // Beginner, the default tier on open.
 
 class FeathersBottomSheet {
   static void show(BuildContext context) {
@@ -236,7 +236,7 @@ class FeathersSheetState extends State<FeathersSheet> {
 
         // Horizontal slider of plan cards. Sits flush to screen edges so the
         // peeking neighbours read past the page padding. Tapping a card is
-        // the purchase action — no separate CTA button.
+        // the purchase action, no separate CTA button.
         PlanSlider(),
 
         Padding(
@@ -331,7 +331,7 @@ class FeathersSheetState extends State<FeathersSheet> {
   }
 }
 
-// Single plan card — frosted LunarBlur pane that fills its PageView slot.
+// Single plan card, frosted LunarBlur pane that fills its PageView slot.
 // The selected (centred) card paints at full opacity; off-centre cards
 // fade to the secondary alpha so the eye lands on the active tier without
 // hiding the others. Surface colour and tint come from RLLunarBlur's
@@ -348,7 +348,7 @@ class PlanCard extends StatelessWidget {
     required this.onTap,
   });
 
-  // Symmetric horizontal inset, tighter bottom — the bird sprite already
+  // Symmetric horizontal inset, tighter bottom, the bird sprite already
   // brings its own visual weight at the base of the card so a full
   // spacing24 below would read as dead space.
   static const EdgeInsets cardPadding = EdgeInsets.fromLTRB(
@@ -429,7 +429,7 @@ class PlanCardBody extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        // Plan name — the marketing handle (Reader / Insider).
+        // Plan name, the marketing handle (Reader / Insider).
         RLTypography.headingMedium(plan.name, textAlign: TextAlign.center),
 
         const Spacing.height(RLDS.spacing16),
@@ -440,13 +440,13 @@ class PlanCardBody extends StatelessWidget {
 
         const Spacing.height(RLDS.spacing20),
 
-        // Feather allotment — plume sprite + the unit string so the count
+        // Feather allotment, plume sprite + the unit string so the count
         // reads visually as the currency, not just a number.
         FeatherAllotmentRow(feathersText: plan.feathers),
 
         const Spacing.height(RLDS.spacing4),
 
-        // Estimated books per month — an approximate, easier-to-grasp
+        // Estimated books per month, an approximate, easier-to-grasp
         // reframing of the token count.
         RLTypography.bodyMedium(
           plan.books,
@@ -456,7 +456,7 @@ class PlanCardBody extends StatelessWidget {
 
         const Spacing.height(RLDS.spacing12),
 
-        // Plan companion bird — fixed per tier (Blue Macaw / Toucan), so
+        // Plan companion bird, fixed per tier (Blue Macaw / Toucan), so
         // the card reads as visually distinct independent of the user's
         // own bird-picker choice.
         PlanBird(bird: plan.bird),
@@ -465,7 +465,7 @@ class PlanCardBody extends StatelessWidget {
   }
 }
 
-// Feather count row — plume sprite + the existing "N feathers" copy. Image
+// Feather count row, plume sprite + the existing "N feathers" copy. Image
 // is small (RLDS.iconSmall, native 16x16) so it pairs as an inline glyph
 // next to the count rather than competing with the larger numbers above.
 class FeatherAllotmentRow extends StatelessWidget {

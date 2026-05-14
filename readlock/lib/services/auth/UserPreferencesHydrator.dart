@@ -55,7 +55,7 @@ void hydrateUserPreferenceNotifiersFromUser(UserModel user) {
   // English is instant (no fetch needed), other locales load from Firestore.
   TranslationService.fetchTranslations(user.language);
 
-  // Feedback master switches — drive every UI sound and haptic in the app.
+  // Feedback master switches, drive every UI sound and haptic in the app.
   SoundService.soundsEnabledNotifier.value = user.sounds;
   SoundService.typingSoundEnabledNotifier.value = user.typingSound;
   HapticsService.userHapticsEnabledNotifier.value = user.haptics;

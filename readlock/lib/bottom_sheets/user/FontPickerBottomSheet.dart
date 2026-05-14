@@ -76,7 +76,7 @@ class FontPickerSheetState extends State<FontPickerSheet> {
 
     selectedReadingFontNotifier.value = nextFont;
 
-    // Optimistic persistence — the notifier update above already drove the UI,
+    // Optimistic persistence, the notifier update above already drove the UI,
     // and the Firestore write is fire-and-forget so the sheet never stalls
     // on a network round-trip. UserService logs failures.
     UserService.updateReadingFont(nextFont.name);

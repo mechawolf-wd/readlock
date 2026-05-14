@@ -5,7 +5,7 @@
 // (progressiveTextLeadingCharacterFadeDuration), so the look matches the
 // in-course typewriter without re-implementing the engine.
 //
-// Designed for short labels — does not support sentence segmentation,
+// Designed for short labels, does not support sentence segmentation,
 // blur, tap-to-reveal, or sound. Reach for ProgressiveText when those
 // features are needed.
 

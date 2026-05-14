@@ -20,7 +20,7 @@ class RLFeatherIcon extends StatelessWidget {
       width: size,
       height: size,
       // Without an explicit fit, Image.asset draws the 16x16 source at its
-      // intrinsic pixel size centred inside the requested box — so passing
+      // intrinsic pixel size centred inside the requested box, so passing
       // size: 320 produces a 320 box with a 16px plume floating in it.
       // BoxFit.contain scales the sprite up to fill the box while keeping
       // its aspect ratio crisp under FilterQuality.none.

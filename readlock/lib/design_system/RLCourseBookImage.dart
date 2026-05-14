@@ -1,4 +1,4 @@
-// Course book image — resolves a course color (hex, with or without '#') to
+// Course book image, resolves a course color (hex, with or without '#') to
 // the matching assets/books/{HEX}.png pixel-art cover. When the color isn't
 // in the palette, renders the shared FALLBACK.png instead.
 //

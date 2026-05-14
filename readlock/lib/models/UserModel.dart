@@ -25,7 +25,7 @@ class UserModel {
   @JsonKey(defaultValue: false)
   final bool hasCompletedOnboarding;
 
-  // * Reading preferences — persisted to Firestore.
+  // * Reading preferences, persisted to Firestore.
 
   @JsonKey(defaultValue: false)
   final bool typingSound;
@@ -54,7 +54,7 @@ class UserModel {
   @JsonKey(defaultValue: true)
   final bool justifiedReading;
 
-  // * Reader-pickable enums and tunables — persisted as primitives so the
+  // * Reader-pickable enums and tunables, persisted as primitives so the
   // generated json_serializable round-trips without custom converters.
   // Each consumer parses its own enum from the stored name (eg.
   // readingFontFromName), with a sensible fallback for unknown values.
@@ -88,12 +88,12 @@ class UserModel {
   @JsonKey(defaultValue: 'Sparrow')
   final String birdName;
 
-  // * Most recently opened course — set whenever the reader taps a node
+  // * Most recently opened course, set whenever the reader taps a node
   // (package) on a course's roadmap. Drives the "Reading now…" card on
   // the home screen. Null until the reader taps their first node.
   final String? lastOpenedCourseId;
 
-  // * Library entries — a flat array of {courseId, expires} records.
+  // * Library entries, a flat array of {courseId, expires} records.
   // Each entry carries the rental's expiry: a fresh purchase grants
   // COURSE_RENTAL_DAYS, the resurrect flow (COURSE_RESURRECT_COST
   // feathers, only after expiry) extends it by another window. The
@@ -265,12 +265,12 @@ dynamic timestampToJson(DateTime value) => Timestamp.fromDate(value);
 
 // purchasedCourses converters. Tolerant of three Firestore shapes:
 //
-//   1. List<Map>     — current shape, an array of {courseId, expires}
+//   1. List<Map>    , current shape, an array of {courseId, expires}
 //                      records, parsed straight through PurchasedCourseModel.
-//   2. List<String>  — legacy shape from before the expiry mechanic;
+//   2. List<String> , legacy shape from before the expiry mechanic;
 //                      migrated by granting each id a fresh
 //                      COURSE_RENTAL_DAYS window from now.
-//   3. Map<String,_> — transient shape from the brief keyed-map
+//   3. Map<String,_>, transient shape from the brief keyed-map
 //                      iteration; the map key is folded into the new
 //                      record as the courseId.
 //
@@ -288,7 +288,7 @@ List<PurchasedCourseModel> purchasedCoursesFromJson(dynamic value) {
         final JSONMap entryMap = JSONMap.from(entry);
         final PurchasedCourseModel parsed = PurchasedCourseModel.fromJson(entryMap);
 
-        // Defensive — earlier shape iterations of this field could have
+        // Defensive, earlier shape iterations of this field could have
         // landed Map entries in a list that didn't carry courseId
         // alongside expires. PurchasedCourseModel falls back to an
         // empty courseId rather than crashing, so we filter the

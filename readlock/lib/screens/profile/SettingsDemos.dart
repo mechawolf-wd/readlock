@@ -73,7 +73,7 @@ class DemoSurface extends StatelessWidget {
   }
 }
 
-// Mirrors ProgressiveText.getConsistentTextStyle — every swipe renders at
+// Mirrors ProgressiveText.getConsistentTextStyle, every swipe renders at
 // fontSize 18 / height 1.6 regardless of the caller's passed style. The
 // demos must use the same style or the preview won't match the swipe.
 //
@@ -173,7 +173,7 @@ class RevealDemoState extends State<RevealDemo> with SingleTickerProviderStateMi
 
   Widget AnimatedTextDisplay() {
     // Both branches render the same RichText shape so toggling Progressive
-    // doesn't swap widget types under the same slot — Text vs RichText
+    // doesn't swap widget types under the same slot, Text vs RichText
     // measure baselines slightly differently and the demo would visibly
     // nudge on toggle. Keeping the root identical pins the layout.
     if (widget.isEnabled) {
@@ -185,7 +185,7 @@ class RevealDemoState extends State<RevealDemo> with SingleTickerProviderStateMi
     return AnimatedBuilder(animation: animationController, builder: TypewriterFrame);
   }
 
-  // Renders the current typewriter frame — each revealed character carries
+  // Renders the current typewriter frame, each revealed character carries
   // its own alpha so it crossfades in from 0 → 1 over the same window
   // ProgressiveText uses (progressiveTextLeadingCharacterFadeDuration).
   // Unrevealed characters render transparent so the layout stays reserved
@@ -280,7 +280,7 @@ class ColoredTextDemo extends StatelessWidget {
 
   Widget DemoBody(BuildContext context) {
     // When disabled, the highlight matches the surrounding text (no colour,
-    // normal weight) — same as ProgressiveText would render raw text without
+    // normal weight), same as ProgressiveText would render raw text without
     // <c:g> markup. When enabled, matches the markupGreen + bold style
     // ProgressiveText applies via RLDS.getMarkupColor('g').
     Color highlightColor = RLDS.textPrimary;
@@ -350,7 +350,7 @@ class BionicDemo extends StatelessWidget {
 
 // Live preview of the currently-selected reading font. Subscribes to
 // selectedReadingFontNotifier so flipping the font in the picker updates
-// this demo in place — same reactive pattern as the profile bird.
+// this demo in place, same reactive pattern as the profile bird.
 // Tapping the box opens the FontPickerBottomSheet so the preview doubles
 // as the affordance for changing the font.
 class ReadingFontDemo extends StatelessWidget {
@@ -373,8 +373,8 @@ class ReadingFontDemo extends StatelessWidget {
   }
 
   Widget FontSampleBuilder(BuildContext context, ReadingFont font, Widget? unusedChild) {
-    // Matches ProgressiveText.getConsistentTextStyle — every swipe renders
-    // readingMedium promoted to fontSize 18 / height 1.6 — so the preview
+    // Matches ProgressiveText.getConsistentTextStyle, every swipe renders
+    // readingMedium promoted to fontSize 18 / height 1.6, so the preview
     // is a truthful render of what the reader will see in CCTextContent.
     final TextStyle sampleStyle = RLTypography.readingMediumStyleFor(
       font,
@@ -389,7 +389,7 @@ class ReadingFontDemo extends StatelessWidget {
 
 // Live preview + picker for the reading column width. The tab row sits
 // above the sample card at full width so the picker reads as a header for
-// the preview below — change the tab, the paragraph below rewraps to match.
+// the preview below, change the tab, the paragraph below rewraps to match.
 // Subscribes to selectedReadingColumnNotifier so the sample rewraps live.
 class ReadingColumnDemo extends StatelessWidget {
   const ReadingColumnDemo({super.key});
@@ -425,8 +425,8 @@ class ReadingColumnDemo extends StatelessWidget {
 }
 
 // Wraps the sample paragraph in the shared frosted demo surface. The
-// surface itself spans the full available width — same outer footprint
-// regardless of the picked column — and the column choice only changes
+// surface itself spans the full available width, same outer footprint
+// regardless of the picked column, and the column choice only changes
 // the horizontal padding inside, so the text wraps shorter for Newspaper
 // and longer for Classic without the box itself resizing. LayoutBuilder
 // gives us the slot width so we can compute "how much extra inset do we
@@ -513,7 +513,7 @@ class SampleParagraph extends StatelessWidget {
   }
 }
 
-// Adapter — maps the reading-column options to the shared RLSegmentTabs
+// Adapter, maps the reading-column options to the shared RLSegmentTabs
 // component and routes selection to the notifier.
 class ColumnOptionTabs extends StatelessWidget {
   final ReadingColumn column;
@@ -547,7 +547,7 @@ class ColumnOptionTabs extends StatelessWidget {
 
 // RSVP (Rapid Serial Visual Presentation): flashes words one at a time in a
 // fixed position so the reader's eyes stay still. The red letter is the
-// Optimal Recognition Point — pinned to the column centre so every word
+// Optimal Recognition Point, pinned to the column centre so every word
 // lines up on the same X axis (the Spritz / Spreeder technique). Range
 // 150–800 wpm covers the full usable span (average silent reading sits
 // near 250; comprehension plateaus around 400–600 with practice). Default
@@ -656,7 +656,7 @@ class RSVPDemoState extends State<RSVPDemo> {
       currentWpm = roundedWpm;
     });
 
-    // Tick haptic on every notch change — same selectionClick the bird
+    // Tick haptic on every notch change, same selectionClick the bird
     // carousel uses, so dragging the slider feels physically detented
     // instead of silent.
     if (hasWpmChanged) {
@@ -679,13 +679,13 @@ class RSVPDemoState extends State<RSVPDemo> {
     }
 
     // Reschedule with the new interval only if the demo is currently
-    // running — otherwise the new pace just waits for the toggle to flip.
+    // running, otherwise the new pace just waits for the toggle to flip.
     if (widget.isEnabled) {
       scheduleNextWord();
     }
   }
 
-  // Optimal Recognition Point position — the letter the eye anchors on.
+  // Optimal Recognition Point position, the letter the eye anchors on.
   // Buckets lifted from the Spritz paper: longer words shift the pivot
   // slightly right of position 1 so most readers land it without thinking.
   int getOrpIndex(String word) {
@@ -773,7 +773,7 @@ class RSVPDemoState extends State<RSVPDemo> {
       mainAxisSize: MainAxisSize.min,
       children: [
         // Larger than bodyMedium so the live counter reads as the headline
-        // value of the card — you're adjusting this number, it should look
+        // value of the card, you're adjusting this number, it should look
         // like the thing you're adjusting.
         Text(wpmLabel, style: wpmLabelStyle),
 
@@ -794,7 +794,7 @@ class RSVPDemoState extends State<RSVPDemo> {
 // Live preview of the Justified text toggle. Renders the same sample
 // paragraph in either justified or default (left-aligned) mode based on
 // justifiedReadingEnabledNotifier, and tapping the surface flips the
-// setting through the same handler the SwitchMenuItem uses — so the box
+// setting through the same handler the SwitchMenuItem uses, so the box
 // doubles as a tap-target for the toggle.
 class JustifiedReadingDemo extends StatelessWidget {
   // Same callback shape as the SwitchMenuItem onChanged: receives the

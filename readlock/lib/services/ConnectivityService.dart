@@ -5,8 +5,8 @@
 // Firestore) listen so they can swap to an offline state instead of
 // hanging on a network call that will never resolve.
 //
-// Treats every non-`none` result as online — including `vpn` and `bluetooth`
-// — because the only state we care about is "is there a transport at all".
+// Treats every non-`none` result as online, including `vpn` and `bluetooth`
+//, because the only state we care about is "is there a transport at all".
 // Firebase / HTTP failures still get caught at the call site; this notifier
 // is just the up-front "don't even try" signal.
 
@@ -24,7 +24,7 @@ class ConnectivityService {
   static StreamSubscription<List<ConnectivityResult>>? subscription;
 
   // Wires the connectivity_plus stream + a one-shot probe so the notifier
-  // is correct from the first frame. Safe to call more than once — the
+  // is correct from the first frame. Safe to call more than once, the
   // existing subscription is reused.
   static Future<void> initialize() async {
     final bool isAlreadyInitialised = subscription != null;

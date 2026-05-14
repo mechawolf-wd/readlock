@@ -122,7 +122,7 @@ class LoginBottomSheet {
   }
 }
 
-// * Social login button sizing — matches the Apple and Google buttons.
+// * Social login button sizing, matches the Apple and Google buttons.
 const double SOCIAL_LOGIN_BUTTON_HEIGHT = 48.0;
 
 class LoginSheet extends StatefulWidget {
@@ -314,7 +314,7 @@ class LoginSheetState extends State<LoginSheet> {
     }
   }
 
-  // * Shared result handling — creates the profile doc when needed, then
+  // * Shared result handling, creates the profile doc when needed, then
   // either routes fresh sign-ups through onboarding or just closes the sheet.
 
   Future<void> finaliseAuthResult(AuthResult result) async {
@@ -472,7 +472,7 @@ class LoginSheetState extends State<LoginSheet> {
     RLToast.success(context, RLUIStrings.RESET_PASSWORD_SENT_MESSAGE);
   }
 
-  // * Support — opens a dedicated bottom sheet with inputs + buttons for
+  // * Support, opens a dedicated bottom sheet with inputs + buttons for
   // reset password / resend verification / email support. The sheet owns
   // its own state and status line, so this handler is just a launcher.
 
@@ -484,7 +484,7 @@ class LoginSheetState extends State<LoginSheet> {
     LoginSupportPicker.show(context, prefillEmail: emailController.text.trim());
   }
 
-  // * Dev bypass — for testing only. Sets the static flag so MainNavigation
+  // * Dev bypass, for testing only. Sets the static flag so MainNavigation
   // won't immediately re-present the sheet, then closes it.
 
   void handleDevSkipTap() {
@@ -493,7 +493,7 @@ class LoginSheetState extends State<LoginSheet> {
     Navigator.of(context).pop();
   }
 
-  // * Dev-only — dismisses the login sheet. Mirrors handleDevSkipTap so
+  // * Dev-only, dismisses the login sheet. Mirrors handleDevSkipTap so
   // tapping the link gets you past the gate without going through real
   // auth. Real onboarding wiring will live in finaliseAuthResult later.
   void handleTriggerOnboardingTap() {
@@ -507,7 +507,7 @@ class LoginSheetState extends State<LoginSheet> {
     // Stack with Clip.none lets the perched sparrow overflow above the
     // sheet's rounded top edge so the bird visually sits ON the sheet
     // rather than inside it. Re-auth flows (account deletion) hide the
-    // mascot entirely — the moment is destructive, not friendly.
+    // mascot entirely, the moment is destructive, not friendly.
     final bool showPerchedSparrow = !config.isReauthMode;
 
     final List<Widget> stackChildren = [ModalContent()];
@@ -519,12 +519,12 @@ class LoginSheetState extends State<LoginSheet> {
     return Stack(clipBehavior: Clip.none, children: stackChildren);
   }
 
-  // * Sparrow perched fully above the sheet's top rim — body sits above
+  // * Sparrow perched fully above the sheet's top rim, body sits above
   // the rounded edge with a small gap so the bird reads as standing on
   // top of the sheet rather than crashing into it. Hardcoded to
   // BIRD_OPTIONS first entry (Sparrow) so the login screen always shows
   // the same mascot regardless of the reader's saved bird choice.
-  // IgnorePointer keeps it decorative — taps pass through to the scrim.
+  // IgnorePointer keeps it decorative, taps pass through to the scrim.
   //
   // The Stack origin is the SheetContainer's child slot, which itself
   // sits RLDS.spacing12 below the sheet's actual top edge (the no-grabber
@@ -636,7 +636,7 @@ class LoginSheetState extends State<LoginSheet> {
 
     // Keying the typewriter on the title text remounts it whenever the
     // sign-in / sign-up toggle flips the heading, so each new heading
-    // re-runs the character-by-character reveal — same pattern as the
+    // re-runs the character-by-character reveal, same pattern as the
     // bottom-nav screen titles (CoursesScreen, MyBookshelfScreen).
     return Div.column(
       [
@@ -755,7 +755,7 @@ class LoginSheetState extends State<LoginSheet> {
   }
 
   Widget PasswordFieldAnimated() {
-    // Reveal the password field only once the email looks like an address —
+    // Reveal the password field only once the email looks like an address ,
     // the presence of '@' is the cheapest correctness heuristic and avoids
     // showing the password slot while the user is still typing the local
     // part of their email.
@@ -780,7 +780,7 @@ class LoginSheetState extends State<LoginSheet> {
     ]);
   }
 
-  // * Primary action row — full-width filled CTA, nothing beside it.
+  // * Primary action row, full-width filled CTA, nothing beside it.
 
   Widget ActionRow() {
     final String label = getActionButtonLabel();
@@ -838,7 +838,7 @@ class LoginSheetState extends State<LoginSheet> {
     return RLUIStrings.SIGN_IN_BUTTON_LABEL;
   }
 
-  // * Secondary links — mode-switch text + Support clickable text, inline.
+  // * Secondary links, mode-switch text + Support clickable text, inline.
   //
   // Both are clickable text (no button chrome), sitting side-by-side with a
   // middle-dot separator. In sign-in mode reads: "New account · Support".

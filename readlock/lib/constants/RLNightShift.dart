@@ -71,7 +71,7 @@ const List<NightShiftLevel> NIGHT_SHIFT_LEVELS = [
 
 // Per-step app screen-brightness target (0.0 = blackest the panel can go,
 // 1.0 = brightest). Applied via screen_brightness so the panel is actually
-// dimmed below the OS slider rather than overlay-painted — that's the real
+// dimmed below the OS slider rather than overlay-painted, that's the real
 // lever for eye-strain relief in low-light rooms. Sentinel -1 means
 // "don't override" so the device follows the user's own slider. List is
 // indexed by the same level int as NIGHT_SHIFT_LEVELS so a single slider

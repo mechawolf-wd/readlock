@@ -1,7 +1,7 @@
 // App-wide colour-temperature shift. Mounted once at the root via
 // MaterialApp's builder so the warm cast lands on every screen, including
 // modals and bottom sheets. Replaces the previous orange-overlay approach
-// with a per-channel ColorFiltered matrix — the same technique Apple's
+// with a per-channel ColorFiltered matrix, the same technique Apple's
 // Night Shift uses, so whites become genuinely warm instead of being
 // masked under a tinted scrim.
 //
@@ -11,7 +11,7 @@
 // a sunset rather than a step change.
 //
 // Panel-brightness dimming is a separate axis driven by
-// NightShiftBrightnessService — temperature shift and brightness both come
+// NightShiftBrightnessService, temperature shift and brightness both come
 // off the same notifier but are applied independently.
 
 import 'package:flutter/material.dart';
