@@ -321,7 +321,7 @@ class ConfirmationDialogContent extends StatelessWidget {
     final Color dimmedBackground = RLDS.glass70(buttonColor);
     final BoxDecoration buttonDecoration = BoxDecoration(
       color: dimmedBackground,
-      borderRadius: RLDS.borderRadiusSmall,
+      borderRadius: RLDS.borderRadiusLarge,
     );
 
     const EdgeInsets roadmapStyleButtonPadding = EdgeInsets.symmetric(

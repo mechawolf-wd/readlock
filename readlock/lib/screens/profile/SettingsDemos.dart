@@ -395,9 +395,7 @@ class ReadingFontDemo extends StatelessWidget {
 // the preview below, change the tab, the paragraph below rewraps to match.
 // Subscribes to selectedReadingColumnNotifier so the sample rewraps live.
 class ReadingColumnDemo extends StatelessWidget {
-  final ValueChanged<ReadingColumn> onColumnChanged;
-
-  const ReadingColumnDemo({super.key, required this.onColumnChanged});
+  const ReadingColumnDemo({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -418,11 +416,11 @@ class ReadingColumnDemo extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          ColumnOptionTabs(column: column, onColumnChanged: onColumnChanged),
+          ColumnOptionTabs(column: column),
 
           const Spacing.height(RLDS.spacing12),
 
-          SampleSurface(column: column, onColumnChanged: onColumnChanged),
+          SampleSurface(column: column),
         ],
       ),
     );
@@ -438,9 +436,8 @@ class ReadingColumnDemo extends StatelessWidget {
 // need to squeeze the line down to the column's maxWidth".
 class SampleSurface extends StatelessWidget {
   final ReadingColumn column;
-  final ValueChanged<ReadingColumn> onColumnChanged;
 
-  const SampleSurface({super.key, required this.column, required this.onColumnChanged});
+  const SampleSurface({super.key, required this.column});
 
   @override
   Widget build(BuildContext context) {
@@ -483,7 +480,7 @@ class SampleSurface extends StatelessWidget {
 
     selectedReadingColumnNotifier.value = nextColumn;
 
-    onColumnChanged(nextColumn);
+    UserService.updateReadingColumn(nextColumn.name);
   }
 
   // Holds the base demo padding (top/bottom + a minimum horizontal inset)

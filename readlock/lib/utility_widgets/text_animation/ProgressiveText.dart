@@ -826,7 +826,7 @@ class ProgressiveTextState extends State<ProgressiveText> with TickerProviderSta
   // Fixed-height wrapper around RevealTapArea for the unbounded layout
   // path, where there is no sliver to fill remaining viewport space.
   Widget RevealButtonArea(BoxConstraints constraints) {
-    const double minButtonHeight = 120.0; 
+    const double minButtonHeight = 120.0;
 
     return Container(
       margin: const EdgeInsets.only(top: RLDS.spacing16),
@@ -1227,6 +1227,7 @@ class ProgressiveTextState extends State<ProgressiveText> with TickerProviderSta
   // Called once during initState to set up the initial data
   void initializeTextState() {
     textSentences = widget.textSegments;
+
     sentenceBlurStates = List.filled(textSentences.length, true);
 
     // Initialize no-blur flags based on modifiers in text
@@ -1357,22 +1358,22 @@ class CompletedSentenceWidget extends StatelessWidget {
       return HighlightedTextDisplay(context);
     }
 
+    return PlainOrBionicText(sentenceText);
+  }
+
+  Widget PlainOrBionicText(String text) {
     final bool isBionicEnabled = bionicEnabledNotifier.value;
 
     if (isBionicEnabled) {
-      return BionicTextDisplay();
+      final List<InlineSpan> spans = bionicSpans(text, textStyle);
+
+      return RichText(
+        text: TextSpan(children: spans),
+        textAlign: textAlign,
+      );
     }
 
-    return Text(sentenceText, style: textStyle, textAlign: textAlign);
-  }
-
-  Widget BionicTextDisplay() {
-    final List<InlineSpan> spans = bionicSpans(sentenceText, textStyle);
-
-    return RichText(
-      text: TextSpan(children: spans),
-      textAlign: textAlign,
-    );
+    return Text(text, style: textStyle, textAlign: textAlign);
   }
 
   Widget ImageDisplay() {

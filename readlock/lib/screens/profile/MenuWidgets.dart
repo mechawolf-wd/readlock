@@ -277,7 +277,7 @@ class MenuSection extends StatelessWidget {
           onTap: onColumnWidthRowTap,
         ),
 
-        ReadingColumnDemo(onColumnChanged: onColumnChanged),
+        const ReadingColumnDemo(),
 
         DemoExplainLabel(explanation: RLUIStrings.DEMO_EXPLAIN_COLUMN),
 
