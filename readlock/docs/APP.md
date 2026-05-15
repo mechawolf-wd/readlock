@@ -42,8 +42,8 @@ lib/
 | Screen              | Path                                          | Tab                    |
 | ------------------- | --------------------------------------------- | ---------------------- |
 | HomeScreen          | `lib/screens/HomeScreen.dart`                 | Tab 0                  |
-| CoursesScreen       | `lib/screens/CoursesScreen.dart`              | Tab 1                  |
-| MyBookshelfScreen   | `lib/screens/MyBookshelfScreen.dart`          | Tab 2                  |
+| StoreScreen         | `lib/screens/StoreScreen.dart`                | Tab 1                  |
+| BookshelfScreen     | `lib/screens/BookshelfScreen.dart`            | Tab 2                  |
 | ProfileScreen       | `lib/screens/profile/ProfileScreen.dart`      | Push from Home         |
 | OnboardingScreen    | `lib/screens/OnboardingScreen.dart`           | Post-registration      |
 | VerifyEmailScreen   | `lib/screens/VerifyEmailScreen.dart`          | Post-signup            |
@@ -257,43 +257,43 @@ Design tokens, typography, layout primitives, and reusable components. For exact
 
 ### Tokens & Constants
 
-| File | What it contains |
-|------|-----------------|
-| `lib/constants/RLDesignSystem.dart` | Colors, spacing (multiples of 4), border radii, icon sizes, animation durations, glass/blur helpers, sheet/dialog/content padding |
-| `lib/constants/RLTypography.dart` | Three font families: Display (Press Start 2P), UI (JetBrains Mono), Reading (user-selectable). All text styles |
-| `lib/constants/RLReadingFont.dart` | Reading font selection (serif, dyslexic, monospace) driven by `selectedReadingFontNotifier` |
-| `lib/constants/RLCoursePalette.dart` | 12 course palette colors (hex in Firestore), book cover asset lookup |
-| `lib/constants/RLNightShift.dart` | 5 warmth levels (0=off to 4=warmest), schedule config |
+| File                                 | What it contains                                                                                                                  |
+| ------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------- |
+| `lib/constants/RLDesignSystem.dart`  | Colors, spacing (multiples of 4), border radii, icon sizes, animation durations, glass/blur helpers, sheet/dialog/content padding |
+| `lib/constants/RLTypography.dart`    | Three font families: Display (Press Start 2P), UI (JetBrains Mono), Reading (user-selectable). All text styles                    |
+| `lib/constants/RLReadingFont.dart`   | Reading font selection (serif, dyslexic, monospace) driven by `selectedReadingFontNotifier`                                       |
+| `lib/constants/RLCoursePalette.dart` | 12 course palette colors (hex in Firestore), book cover asset lookup                                                              |
+| `lib/constants/RLNightShift.dart`    | 5 warmth levels (0=off to 4=warmest), schedule config                                                                             |
 
 ### Layout Primitives
 
-| File | What it provides |
-|------|-----------------|
+| File                               | What it provides                                                                                                                                      |
+| ---------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `lib/design_system/RLUtility.dart` | `Div.row`/`Div.column` (Container replacement), `Spacing.height`/`Spacing.width` (SizedBox replacement), `RenderIf.condition` (conditional rendering) |
 
 ### Components
 
-| File | Component |
-|------|-----------|
-| `lib/design_system/RLButton.dart` | `RLButton.primary` / `.secondary` / `.tertiary` (tap triggers haptic + sound) |
-| `lib/design_system/RLCard.dart` | `RLCard.elevated` / `.subtle` (frosted glass cards) |
-| `lib/design_system/RLLunarBlur.dart` | Frosted glass blur overlay used on cards, nav bar, sheets, buttons |
-| `lib/design_system/RLNightShift.dart` | Night shift warmth filter widget (ColorFiltered RGB matrix at root) |
-| `lib/design_system/RLFeedbackSnackbar.dart` | Slide-up correct/wrong answer snackbars |
-| `lib/bottom_sheets/RLBottomSheet.dart` | `.show` / `.showFullHeight` modal bottom sheets with grabber and backdrop blur |
+| File                                        | Component                                                                      |
+| ------------------------------------------- | ------------------------------------------------------------------------------ |
+| `lib/design_system/RLButton.dart`           | `RLButton.primary` / `.secondary` / `.tertiary` (tap triggers haptic + sound)  |
+| `lib/design_system/RLCard.dart`             | `RLCard.elevated` / `.subtle` (frosted glass cards)                            |
+| `lib/design_system/RLLunarBlur.dart`        | Frosted glass blur overlay used on cards, nav bar, sheets, buttons             |
+| `lib/design_system/RLNightShift.dart`       | Night shift warmth filter widget (ColorFiltered RGB matrix at root)            |
+| `lib/design_system/RLFeedbackSnackbar.dart` | Slide-up correct/wrong answer snackbars                                        |
+| `lib/bottom_sheets/RLBottomSheet.dart`      | `.show` / `.showFullHeight` modal bottom sheets with grabber and backdrop blur |
 
 ### Navigation
 
-| File | What it does |
-|------|-------------|
+| File                      | What it does                                                                                                                                                                    |
+| ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `lib/MainNavigation.dart` | 3 bottom tabs (Home, Search, Bookshelf). Tabs stay mounted via AnimatedOpacity. Badge dot driven by `bookshelfHasUnseenPurchaseNotifier`. Nav bar uses LunarBlur over starfield |
 
 ### Feedback
 
-| File | What it does |
-|------|-------------|
-| `lib/services/feedback/HapticsService.dart` | Light/medium/heavy impact, selection click. Gated by user preference |
-| `lib/services/feedback/SoundService.dart` | Pooled audio players, text-click variants, master + typing sound toggles |
+| File                                        | What it does                                                             |
+| ------------------------------------------- | ------------------------------------------------------------------------ |
+| `lib/services/feedback/HapticsService.dart` | Light/medium/heavy impact, selection click. Gated by user preference     |
+| `lib/services/feedback/SoundService.dart`   | Pooled audio players, text-click variants, master + typing sound toggles |
 
 ---
 
@@ -303,36 +303,36 @@ Firestore data model, Cloud Functions, security rules, and data flow. For exact 
 
 ### Firestore Collections
 
-| Collection | Constants in | What it stores |
-|-----------|-------------|---------------|
-| `courses` | `lib/constants/FirebaseConfig.dart` | Course metadata (titles, segments, isFree flags) |
-| `courses/{id}/lessons/{docId}` | same | Encrypted lesson content (client reads denied, served by Cloud Function) |
-| `users` | same | User profiles, preferences, wallet, library, progress |
-| `config` | same | Remote app config (pricing, feature flags, URLs) |
-| `referral-codes` | same | Referral codes and redemption tracking |
+| Collection                     | Constants in                        | What it stores                                                           |
+| ------------------------------ | ----------------------------------- | ------------------------------------------------------------------------ |
+| `courses`                      | `lib/constants/FirebaseConfig.dart` | Course metadata (titles, segments, isFree flags)                         |
+| `courses/{id}/lessons/{docId}` | same                                | Encrypted lesson content (client reads denied, served by Cloud Function) |
+| `users`                        | same                                | User profiles, preferences, wallet, library, progress                    |
+| `config`                       | same                                | Remote app config (pricing, feature flags, URLs)                         |
+| `referral-codes`               | same                                | Referral codes and redemption tracking                                   |
 
 ### Models
 
-| File | What it models |
-|------|---------------|
-| `lib/models/UserModel.dart` | User profile: email, preferences, wallet (balance, timeSpentReading), library (purchasedCourses), progress |
-| `lib/models/CourseProgressModel.dart` | Per-course lesson frontier |
-| `lib/models/PurchasedCourseModel.dart` | Library entry with courseId, expires (14-day rental), purchasedAt |
-| `lib/models/AppConfig.dart` | Remote config: feather price, legal URLs, feature flags |
+| File                                   | What it models                                                                                             |
+| -------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| `lib/models/UserModel.dart`            | User profile: email, preferences, wallet (balance, timeSpentReading), library (purchasedCourses), progress |
+| `lib/models/CourseProgressModel.dart`  | Per-course lesson frontier                                                                                 |
+| `lib/models/PurchasedCourseModel.dart` | Library entry with courseId, expires (14-day rental), purchasedAt                                          |
+| `lib/models/AppConfig.dart`            | Remote config: feather price, legal URLs, feature flags                                                    |
 
 ### Cloud Functions (7 total)
 
 All in `functions/src/`. All use AppCheck enforcement and maxInstances caps.
 
-| Function | File | What it does |
-|----------|------|-------------|
-| `purchaseCourse` | `functions/src/purchaseCourse.ts` | Atomic purchase: check balance, deduct feathers, append 14-day rental, seed progress |
-| `resurrectCourse` | `functions/src/resurrectCourse.ts` | Re-rent expired course for 3 feathers, extend by 14 days |
-| `fetchLessonContent` | `functions/src/fetchLessonContent.ts` | Gate checks (auth, purchase, expiry, frontier), encrypt + return lesson content |
-| `incrementTimesPurchased` | `functions/src/incrementTimesPurchased.ts` | Bump course purchase counter |
-| `deleteAccount` | `functions/src/deleteAccount.ts` | Delete auth record then Firestore user doc |
-| `generateReferralCode` | `functions/src/generateReferralCode.ts` | Create BIRD-XXXX code (3 per user lifetime) |
-| `redeemReferralCode` | `functions/src/redeemReferralCode.ts` | Validate + credit redeemer 10, creator 20 feathers |
+| Function                  | File                                       | What it does                                                                         |
+| ------------------------- | ------------------------------------------ | ------------------------------------------------------------------------------------ |
+| `purchaseCourse`          | `functions/src/purchaseCourse.ts`          | Atomic purchase: check balance, deduct feathers, append 14-day rental, seed progress |
+| `resurrectCourse`         | `functions/src/resurrectCourse.ts`         | Re-rent expired course for 3 feathers, extend by 14 days                             |
+| `fetchLessonContent`      | `functions/src/fetchLessonContent.ts`      | Gate checks (auth, purchase, expiry, frontier), encrypt + return lesson content      |
+| `incrementTimesPurchased` | `functions/src/incrementTimesPurchased.ts` | Bump course purchase counter                                                         |
+| `deleteAccount`           | `functions/src/deleteAccount.ts`           | Delete auth record then Firestore user doc                                           |
+| `generateReferralCode`    | `functions/src/generateReferralCode.ts`    | Create BIRD-XXXX code (3 per user lifetime)                                          |
+| `redeemReferralCode`      | `functions/src/redeemReferralCode.ts`      | Validate + credit redeemer 10, creator 20 feathers                                   |
 
 ### Security Rules
 
@@ -342,19 +342,19 @@ Courses readable by signed-in users, lessons denied to client. Users readable/wr
 
 ### Services
 
-| File | What it does |
-|------|-------------|
-| `lib/services/auth/UserService.dart` | Read/write user profiles, advance progress, update preferences |
-| `lib/services/auth/AuthService.dart` | Apple sign-in, email/password, auth state routing |
-| `lib/services/purchases/PurchaseService.dart` | Purchase and resurrect courses via Cloud Functions |
-| `lib/services/purchases/PurchaseNotifiers.dart` | Global ValueNotifiers for balance, library, progress, reading time |
-| `lib/services/purchases/PurchaseConstants.dart` | Rental days, resurrect cost, session cap, referral rewards |
-| `lib/services/purchases/StoreKitService.dart` | App Store IAP products and purchase stream |
-| `lib/services/AppConfigService.dart` | Fetch remote config with 30-min TTL cache |
-| `lib/services/ConnectivityService.dart` | Network reachability monitor (`isOnlineNotifier`) |
-| `lib/services/NotificationService.dart` | FCM push notifications |
-| `lib/constants/ContentEncryption.dart` | AES-256-CBC decrypt for lesson payloads |
-| `lib/services/auth/UserPreferencesHydrator.dart` | Hydrate global notifiers from user profile after login |
+| File                                             | What it does                                                       |
+| ------------------------------------------------ | ------------------------------------------------------------------ |
+| `lib/services/auth/UserService.dart`             | Read/write user profiles, advance progress, update preferences     |
+| `lib/services/auth/AuthService.dart`             | Apple sign-in, email/password, auth state routing                  |
+| `lib/services/purchases/PurchaseService.dart`    | Purchase and resurrect courses via Cloud Functions                 |
+| `lib/services/purchases/PurchaseNotifiers.dart`  | Global ValueNotifiers for balance, library, progress, reading time |
+| `lib/services/purchases/PurchaseConstants.dart`  | Rental days, resurrect cost, session cap, referral rewards         |
+| `lib/services/purchases/StoreKitService.dart`    | App Store IAP products and purchase stream                         |
+| `lib/services/AppConfigService.dart`             | Fetch remote config with 30-min TTL cache                          |
+| `lib/services/ConnectivityService.dart`          | Network reachability monitor (`isOnlineNotifier`)                  |
+| `lib/services/NotificationService.dart`          | FCM push notifications                                             |
+| `lib/constants/ContentEncryption.dart`           | AES-256-CBC decrypt for lesson payloads                            |
+| `lib/services/auth/UserPreferencesHydrator.dart` | Hydrate global notifiers from user profile after login             |
 
 ### State Hydration (post-login)
 

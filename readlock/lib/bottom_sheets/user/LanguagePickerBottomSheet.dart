@@ -45,7 +45,7 @@ class LanguagePickerSheetState extends State<LanguagePickerSheet> {
   static const Icon HeaderIcon = Icon(
     Pixel.arttext,
     color: RLDS.info,
-    size: RLDS.iconMedium,
+    size: RLDS.iconLarge,
   );
 
   List<LocaleOption> locales = TranslationService.localeOptions;

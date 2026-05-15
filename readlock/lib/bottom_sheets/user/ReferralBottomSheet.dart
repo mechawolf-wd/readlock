@@ -23,12 +23,7 @@ import 'package:readlock/services/referral/ReferralService.dart';
 
 class ReferralBottomSheet {
   static void show(BuildContext context) {
-    RLBottomSheet.show(
-      context,
-      backgroundColor: RLDS.surface,
-      showGrabber: false,
-      child: const ReferralSheet(),
-    );
+    RLBottomSheet.show(context, showGrabber: false, child: const ReferralSheet());
   }
 }
 
@@ -82,9 +77,11 @@ class ReferralSheetState extends State<ReferralSheet> {
     });
 
     if (newCode == null) {
-      RLToast.error(context, RLUIStrings.ERROR_UNKNOWN);
+      RLToast.error(context, RLUIStrings.REFERRAL_CODE_GENERATE_FAILED);
       return;
     }
+
+    RLToast.success(context, RLUIStrings.REFERRAL_CODE_GENERATED);
 
     fetchCodes();
   }

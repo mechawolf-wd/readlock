@@ -6,7 +6,7 @@
 // the user profile from Firestore.
 //
 // Hydrate these notifiers from a freshly-loaded UserModel in any screen
-// that fetches the profile (eg. MyBookshelfScreen.fetchSavedCourses).
+// that fetches the profile (eg. BookshelfScreen.fetchSavedCourses).
 // PurchaseService keeps them in sync after every write.
 
 import 'package:flutter/foundation.dart';
@@ -22,9 +22,7 @@ final ValueNotifier<int> userBalanceNotifier = ValueNotifier<int>(0);
 // in the same frame the writer fires. Empty until the reader has bought
 // at least one course.
 final ValueNotifier<Map<String, CourseProgressModel>> courseProgressNotifier =
-    ValueNotifier<Map<String, CourseProgressModel>>(
-  const <String, CourseProgressModel>{},
-);
+    ValueNotifier<Map<String, CourseProgressModel>>(const <String, CourseProgressModel>{});
 
 // Cumulative seconds the reader has spent inside the course content viewer.
 // Hydrated from /users/{id}.timeSpentReading on profile load and bumped
@@ -39,9 +37,7 @@ final ValueNotifier<int> timeSpentReadingNotifier = ValueNotifier<int>(0);
 // (writes a new expires) flips ownership state app-wide in the same
 // frame.
 final ValueNotifier<List<PurchasedCourseModel>> purchasedCoursesNotifier =
-    ValueNotifier<List<PurchasedCourseModel>>(
-  const <PurchasedCourseModel>[],
-);
+    ValueNotifier<List<PurchasedCourseModel>>(const <PurchasedCourseModel>[]);
 
 // Flips true on a successful course purchase and back to false the moment
 // the reader lands on the bookshelf tab. Drives the red dot on the
@@ -51,8 +47,7 @@ final ValueNotifier<bool> bookshelfHasUnseenPurchaseNotifier = ValueNotifier<boo
 
 void hydratePurchaseStateFromUser(UserModel user) {
   userBalanceNotifier.value = user.balance;
-  purchasedCoursesNotifier.value =
-      List<PurchasedCourseModel>.from(user.purchasedCourses);
+  purchasedCoursesNotifier.value = List<PurchasedCourseModel>.from(user.purchasedCourses);
   timeSpentReadingNotifier.value = user.timeSpentReading;
   courseProgressNotifier.value = Map<String, CourseProgressModel>.from(user.courseProgress);
 }

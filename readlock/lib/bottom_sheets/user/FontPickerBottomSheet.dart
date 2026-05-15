@@ -46,7 +46,7 @@ class FontPickerSheetState extends State<FontPickerSheet> {
   static const Icon HeaderIcon = Icon(
     Pixel.edit,
     color: RLDS.info,
-    size: RLDS.iconMedium,
+    size: RLDS.iconLarge,
   );
 
   late ReadingFont selectedFont;

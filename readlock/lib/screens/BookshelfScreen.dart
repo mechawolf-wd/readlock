@@ -71,7 +71,7 @@ class BookshelfScreenState extends State<BookshelfScreen> {
   bool isBookshelfLoading = true;
   int visibleCoursesCount = BOOKSHELF_PAGE_SIZE;
 
-  // Local filter state, same shape as CoursesScreen's. Genre chips +
+  // Local filter state, same shape as StoreScreen's. Genre chips +
   // title query are layered over the savedCourses list at render time.
   // Hidden behind the filter affordance so the shelf stays calm by
   // default and only reveals the filter pane when the reader asks.
@@ -149,7 +149,7 @@ class BookshelfScreenState extends State<BookshelfScreen> {
   }
 
   // Title-then-genre filter applied at render time over savedCourses.
-  // Mirrors CoursesScreen.getLocallyFilteredCourses so both surfaces
+  // Mirrors StoreScreen.getLocallyFilteredCourses so both surfaces
   // behave the same: an empty filter passes the full list through, a
   // selected chip narrows by genre tag, a typed query narrows by title.
   JSONList getFilteredSavedCourses() {
@@ -340,7 +340,7 @@ class BookshelfScreenState extends State<BookshelfScreen> {
 
     // SafeArea(bottom: false) lets the starfield paint under the nav, but
     // the bottom-pinned filter pane would sit under it too. Mirror the
-    // CoursesScreen formula: device safe-area + nav-bar height becomes
+    // StoreScreen formula: device safe-area + nav-bar height becomes
     // MediaQuery's bottom padding here, and adding it as the parent's
     // bottom inset puts the floating panel exactly above the nav.
     final double bottomInset = MediaQuery.of(context).padding.bottom;
@@ -374,7 +374,7 @@ class BookshelfScreenState extends State<BookshelfScreen> {
 
   // The empty shelf collapses to just the bird greeting; the populated
   // shelf renders the list with the same floating filter + reset chip
-  // CoursesScreen uses, so paging through your books and the store feels
+  // StoreScreen uses, so paging through your books and the store feels
   // like one surface.
   Widget BookshelfBodyArea() {
     final bool hasNoSavedCourses = savedCourses.isEmpty;
@@ -557,7 +557,7 @@ class BookshelfScreenState extends State<BookshelfScreen> {
   }
 
   // Floating filter pane hovering above the bottom nav. Same shape as
-  // CoursesScreen.FilterPanelWithReset: an optional LunarBlur X chip
+  // StoreScreen.FilterPanelWithReset: an optional LunarBlur X chip
   // anchored to the panel's top-right corner, mounted only when at least
   // one filter is active.
   Widget FilterPanelWithReset() {
@@ -585,7 +585,7 @@ class BookshelfScreenState extends State<BookshelfScreen> {
   }
 
   // Frosted X chip that wipes the active filters in one tap. Mirrors
-  // CoursesScreen.ClearFiltersChip so the two surfaces share one
+  // StoreScreen.ClearFiltersChip so the two surfaces share one
   // affordance for "reset what's narrowing this list", just docked into
   // the heading row here instead of floating above the panel.
   Widget ClearFiltersChip() {
@@ -600,7 +600,7 @@ class BookshelfScreenState extends State<BookshelfScreen> {
     );
   }
 
-  // Diameter of the reset chip, matches CoursesScreen so the affordance
+  // Diameter of the reset chip, matches StoreScreen so the affordance
   // reads identically across both surfaces.
   static const double clearFiltersChipDiameter = 40.0;
 

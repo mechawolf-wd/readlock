@@ -80,18 +80,16 @@ class HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> fetchAvailableCourses() async {
-    try {
-      // Two parallel fetches: the catalogue (drives Surprise Me + Reading
-      // Now lookup) and the top-N by lifetime purchases (drives the new
-      // "How about these?" row). The Future.wait unblocks the build the
-      // moment both land instead of serialising two round-trips.
-      final List<dynamic> results = await Future.wait([
-        CourseDataService.fetchAvailableCourses(),
-        CourseDataService.fetchMostPurchasedCourses(limit: POPULAR_COURSES_COUNT),
-      ]);
+    // Two independent fetches: the catalogue (Surprise Me + Reading Now)
+    // and top-N by lifetime purchases ("How about these?" row). Decoupled
+    // so a failure in one does not block the other.
+    final Future<JSONList> catalogueFuture = CourseDataService.fetchAvailableCourses();
+    final Future<JSONList> popularFuture = CourseDataService.fetchMostPurchasedCourses(
+      limit: POPULAR_COURSES_COUNT,
+    );
 
-      final JSONList catalogueCourses = results[0] as JSONList;
-      final JSONList mostPurchasedCourses = results[1] as JSONList;
+    try {
+      final JSONList catalogueCourses = await catalogueFuture;
 
       if (!mounted) {
         return;
@@ -99,18 +97,32 @@ class HomeScreenState extends State<HomeScreen> {
 
       setState(() {
         availableCourses = catalogueCourses;
-        popularCourses = mostPurchasedCourses;
-        isCoursesLoading = false;
       });
     } on Exception {
+      // Catalogue fetch failed, leave availableCourses empty.
+    }
+
+    try {
+      final JSONList mostPurchasedCourses = await popularFuture;
+
       if (!mounted) {
         return;
       }
 
       setState(() {
-        isCoursesLoading = false;
+        popularCourses = mostPurchasedCourses;
       });
+    } on Exception {
+      // Popular courses fetch failed, leave popularCourses empty.
     }
+
+    if (!mounted) {
+      return;
+    }
+
+    setState(() {
+      isCoursesLoading = false;
+    });
   }
 
   void navigateToCourse(String courseId) {
@@ -382,6 +394,7 @@ class HomeScreenState extends State<HomeScreen> {
       behavior: HitTestBehavior.opaque,
       child: RLLunarBlur(
         surfaceColor: RLDS.success,
+        borderRadius: RLDS.borderRadiusLarge,
         surfaceAlpha: 0.05,
         padding: const EdgeInsets.symmetric(
           vertical: RLDS.spacing16,
@@ -425,9 +438,9 @@ class HomeScreenState extends State<HomeScreen> {
   // catalogue is sparse (<POPULAR_COURSES_COUNT results from the
   // orderBy query) so we never render a broken half-list.
   Widget PopularCoursesSection() {
-    final bool hasEnoughForList = popularCourses.length >= POPULAR_COURSES_COUNT;
+    final bool hasPopularCourses = popularCourses.isNotEmpty;
 
-    if (!hasEnoughForList) {
+    if (!hasPopularCourses) {
       return const SizedBox.shrink();
     }
 

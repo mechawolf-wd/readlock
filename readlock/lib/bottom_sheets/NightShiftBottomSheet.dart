@@ -86,7 +86,7 @@ class NightShiftSheetState extends State<NightShiftSheet> {
   static final Widget HeaderIcon = const Icon(
     Pixel.moon,
     color: NIGHT_SHIFT_WARM_COLOR,
-    size: RLDS.iconMedium,
+    size: RLDS.iconLarge,
   );
 
   static const Widget RowDivider = SizedBox(

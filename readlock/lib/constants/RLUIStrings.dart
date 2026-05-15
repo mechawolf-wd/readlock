@@ -509,6 +509,10 @@ class RLUIStrings {
   static String get REFERRAL_CODE_LIMIT_REACHED =>
       translated('REFERRAL_CODE_LIMIT_REACHED', 'All 3 codes generated');
   static String get REFERRAL_CODE_COPIED => translated('REFERRAL_CODE_COPIED', 'Code copied');
+  static String get REFERRAL_CODE_GENERATED =>
+      translated('REFERRAL_CODE_GENERATED', 'New code created');
+  static String get REFERRAL_CODE_GENERATE_FAILED =>
+      translated('REFERRAL_CODE_GENERATE_FAILED', 'Could not generate code. Try again.');
   static String get REFERRAL_CODE_USED_LABEL => translated('REFERRAL_CODE_USED_LABEL', 'Used');
   static String get REFERRAL_CODE_AVAILABLE_LABEL =>
       translated('REFERRAL_CODE_AVAILABLE_LABEL', 'Available');
@@ -526,6 +530,8 @@ class RLUIStrings {
       translated('REFERRAL_ONBOARDING_SUCCESS', '+10 feathers added');
   static String get REFERRAL_CODE_INVALID =>
       translated('REFERRAL_CODE_INVALID', 'That code is not valid.');
+  static String get REFERRAL_CODE_REDEEM_FAILED =>
+      translated('REFERRAL_CODE_REDEEM_FAILED', 'Could not redeem code. Try again.');
   static String get REFERRAL_CODE_OWN =>
       translated('REFERRAL_CODE_OWN', 'You cannot use your own code.');
 

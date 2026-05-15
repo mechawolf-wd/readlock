@@ -25,8 +25,9 @@ void main() async {
   // can verify that requests originate from a genuine iOS install, not a
   // script or emulator. Uses DeviceCheck in production (hardware attestation)
   // and the debug provider during development.
-  final AppleProvider appCheckProvider =
-      kDebugMode ? AppleProvider.debug : AppleProvider.deviceCheck;
+  final AppleProvider appCheckProvider = kDebugMode
+      ? AppleProvider.debug
+      : AppleProvider.deviceCheck;
 
   await FirebaseAppCheck.instance.activate(appleProvider: appCheckProvider);
 
@@ -40,7 +41,7 @@ void main() async {
   NightShiftScheduleService.initialize();
 
   // Subscribes to platform connectivity changes so any screen that depends
-  // on network reachability (CoursesScreen) can flip to an offline state
+  // on network reachability (StoreScreen) can flip to an offline state
   // the moment the device drops its transport.
   ConnectivityService.initialize();
 

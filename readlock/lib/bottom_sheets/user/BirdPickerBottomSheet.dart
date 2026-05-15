@@ -35,7 +35,7 @@ class BirdPickerSheet extends StatelessWidget {
   static final Widget HeaderIcon = const Icon(
     Pixel.shuffle,
     color: RLDS.primary,
-    size: RLDS.iconMedium,
+    size: RLDS.iconLarge,
   );
 
   @override

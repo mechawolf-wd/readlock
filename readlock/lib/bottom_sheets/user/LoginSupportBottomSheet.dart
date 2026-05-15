@@ -62,7 +62,7 @@ class LoginSupportPickerContentState extends State<LoginSupportPickerContent> {
   static final Widget HeaderIcon = const Icon(
     Pixel.message,
     color: RLDS.info,
-    size: RLDS.iconMedium,
+    size: RLDS.iconLarge,
   );
 
   @override
@@ -489,7 +489,7 @@ class EmailSupportContentState extends State<EmailSupportContent> {
   static final Widget HeaderIcon = const Icon(
     Pixel.message,
     color: RLDS.primary,
-    size: RLDS.iconMedium,
+    size: RLDS.iconLarge,
   );
 
   VoidCallback? getSubmitHandler() {

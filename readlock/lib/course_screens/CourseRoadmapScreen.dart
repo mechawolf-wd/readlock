@@ -1271,7 +1271,7 @@ class CourseRoadmapScreenState extends State<CourseRoadmapScreen>
       child: GestureDetector(
         onTap: handleContinueTap,
         child: RLLunarBlur(
-          borderRadius: RLDS.borderRadiusSmall,
+          borderRadius: RLDS.borderRadiusLarge,
           borderColor: RLDS.transparent,
           padding: const EdgeInsets.all(RLDS.spacing16),
           child: ContinuePlayIcon,

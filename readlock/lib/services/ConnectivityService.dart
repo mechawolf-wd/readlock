@@ -1,7 +1,7 @@
 // Centralised online/offline tracker. Wraps connectivity_plus's stream of
 // transport types (wifi, mobile, ethernet, vpn, none, ...) into a single
 // boolean notifier any surface can subscribe to. Surfaces that need data
-// from the network (eg. CoursesScreen, which fetches course pages from
+// from the network (eg. StoreScreen, which fetches course pages from
 // Firestore) listen so they can swap to an offline state instead of
 // hanging on a network call that will never resolve.
 //

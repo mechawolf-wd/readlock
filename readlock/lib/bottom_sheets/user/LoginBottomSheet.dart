@@ -74,8 +74,8 @@ class LoginSheetConfig {
     this.isReauthMode = false,
     this.reauthActionLabel,
     this.onAuthenticated,
-  })  : title = title ?? RLUIStrings.LOGIN_TITLE,
-        subtitle = subtitle ?? RLUIStrings.LOGIN_SUBTITLE;
+  }) : title = title ?? RLUIStrings.LOGIN_TITLE,
+       subtitle = subtitle ?? RLUIStrings.LOGIN_SUBTITLE;
 }
 
 class LoginBottomSheet {
@@ -94,10 +94,7 @@ class LoginBottomSheet {
 
   // Returns the bottom-sheet future so callers can await dismissal (e.g. the
   // main navigation needs to know when it can show the sheet again).
-  static Future<void> show(
-    BuildContext context, {
-    LoginSheetConfig? config,
-  }) async {
+  static Future<void> show(BuildContext context, {LoginSheetConfig? config}) async {
     config ??= LoginSheetConfig();
     final bool alreadyOnScreen = isCurrentlyVisible;
 
@@ -128,8 +125,7 @@ const double SOCIAL_LOGIN_BUTTON_HEIGHT = 48.0;
 class LoginSheet extends StatefulWidget {
   final LoginSheetConfig config;
 
-  LoginSheet({super.key, LoginSheetConfig? config})
-      : config = config ?? LoginSheetConfig();
+  LoginSheet({super.key, LoginSheetConfig? config}) : config = config ?? LoginSheetConfig();
 
   @override
   State<LoginSheet> createState() => LoginSheetState();
@@ -637,7 +633,7 @@ class LoginSheetState extends State<LoginSheet> {
     // Keying the typewriter on the title text remounts it whenever the
     // sign-in / sign-up toggle flips the heading, so each new heading
     // re-runs the character-by-character reveal, same pattern as the
-    // bottom-nav screen titles (CoursesScreen, MyBookshelfScreen).
+    // bottom-nav screen titles (StoreScreen, BookshelfScreen).
     return Div.column(
       [
         RLTypewriterText(
@@ -907,4 +903,3 @@ class LoginSheetState extends State<LoginSheet> {
     );
   }
 }
-

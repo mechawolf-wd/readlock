@@ -49,7 +49,7 @@ bool isBirdUnlockedAt(BirdOption bird, int totalReadingSeconds) {
   return totalReadingSeconds >= getBirdUnlockSeconds(bird);
 }
 
-// Mirrors MyBookshelfScreen.formatStopwatchReadout so the lock caption under
+// Mirrors BookshelfScreen.formatStopwatchReadout so the lock caption under
 // each bird speaks the same digital-stopwatch vocabulary the bookshelf
 // reading-time tile uses. Kept as a pure helper here so the picker doesn't
 // have to import the bookshelf.

@@ -36,7 +36,7 @@ class AccountSheet extends StatelessWidget {
   static final Widget HeaderIcon = const Icon(
     Pixel.user,
     color: RLDS.info,
-    size: RLDS.iconMedium,
+    size: RLDS.iconLarge,
   );
 
   @override

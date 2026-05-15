@@ -1,6 +1,6 @@
 // Shared "filter a list of courses" pane, frosted LunarBlur surface
 // hosting a horizontally-scrollable genre chip ribbon stacked above a
-// title search field. The visual was originally inlined in CoursesScreen
+// title search field. The visual was originally inlined in StoreScreen
 // (Search) and is now lifted here so MyBookshelf can mount the same UI
 // when the reader taps its filter affordance.
 //
@@ -77,11 +77,7 @@ class RLCourseFilterPanel extends StatelessWidget {
       void onChipTap() => onGenreToggled(genre);
 
       children.add(
-        SelectableFilterChip(
-          label: genre,
-          isSelected: isSelected,
-          onTap: onChipTap,
-        ),
+        SelectableFilterChip(label: genre, isSelected: isSelected, onTap: onChipTap),
       );
     }
 

@@ -117,7 +117,7 @@ class RedeemCodeSheetState extends State<RedeemCodeSheet> {
       return;
     }
 
-    RLToast.error(context, RLUIStrings.ERROR_UNKNOWN);
+    RLToast.error(context, RLUIStrings.REFERRAL_CODE_REDEEM_FAILED);
   }
 
   @override

@@ -6,6 +6,7 @@ import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:readlock/bottom_sheets/user/LoginBottomSheet.dart';
+import 'package:readlock/screens/StoreScreen.dart';
 import 'package:readlock/services/feedback/HapticsService.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/constants/RLUIStrings.dart';
@@ -13,9 +14,8 @@ import 'package:readlock/design_system/RLLunarBlur.dart';
 import 'package:readlock/design_system/RLStarfieldBackground.dart';
 import 'package:readlock/design_system/RLUtility.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:readlock/screens/CoursesScreen.dart';
 import 'package:readlock/screens/HomeScreen.dart';
-import 'package:readlock/screens/MyBookshelfScreen.dart';
+import 'package:readlock/screens/BookshelfScreen.dart';
 import 'package:readlock/models/UserModel.dart';
 import 'package:readlock/services/auth/AuthService.dart';
 import 'package:readlock/services/auth/UserPreferencesHydrator.dart';
@@ -27,7 +27,7 @@ import 'package:readlock/services/purchases/PurchaseNotifiers.dart';
 import 'package:pixelarticons/pixel.dart';
 
 // Bottom-nav tab indices, kept here so screen-level subscribers
-// (HomeScreen / CoursesScreen / MyBookshelfScreen) reference one source
+// (HomeScreen / StoreScreen / BookshelfScreen) reference one source
 // of truth instead of scattering magic numbers.
 const int TAB_INDEX_HOME = 0;
 const int TAB_INDEX_SEARCH = 1;
@@ -62,7 +62,7 @@ class MainNavigationState extends State<MainNavigation> with WidgetsBindingObser
 
     WidgetsBinding.instance.addObserver(this);
 
-    screens = [const HomeScreen(), const CoursesScreen(), const BookshelfScreen()];
+    screens = [const HomeScreen(), const StoreScreen(), const BookshelfScreen()];
 
     authStateSubscription = AuthService.authStateChanges.listen(handleAuthStateChange);
 

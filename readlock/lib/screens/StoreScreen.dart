@@ -51,14 +51,14 @@ const int SEARCH_REMOTE_RESULTS_LIMIT = 3;
 // dead zone underneath the Load more button.
 const double STORE_LIST_FILTER_OVERLAY_INSET = 148.0;
 
-class CoursesScreen extends StatefulWidget {
-  const CoursesScreen({super.key});
+class StoreScreen extends StatefulWidget {
+  const StoreScreen({super.key});
 
   @override
-  State<CoursesScreen> createState() => CoursesScreenState();
+  State<StoreScreen> createState() => StoreScreenState();
 }
 
-class CoursesScreenState extends State<CoursesScreen> {
+class StoreScreenState extends State<StoreScreen> {
   JSONList availableCourses = [];
   JSONList remoteSearchResults = [];
   bool isCoursesLoading = true;
@@ -535,11 +535,7 @@ class CoursesScreenState extends State<CoursesScreen> {
   Widget CoursesScrollList(JSONList courses, {required bool showLoadMore}) {
     return ValueListenableBuilder<List<PurchasedCourseModel>>(
       valueListenable: purchasedCoursesNotifier,
-      builder: (
-        BuildContext context,
-        List<PurchasedCourseModel> purchasedCourses,
-        Widget? _,
-      ) {
+      builder: (BuildContext context, List<PurchasedCourseModel> purchasedCourses, Widget? _) {
         final List<Widget> listChildren = List<Widget>.from(
           CourseCards(courses, purchasedCourses),
         );
@@ -583,10 +579,7 @@ class CoursesScreenState extends State<CoursesScreen> {
   // courses read as "in your collection" without a redundant buy
   // affordance. Tapping the cart opens the purchase sheet without
   // triggering the row's navigate-to-roadmap onTap.
-  List<Widget> CourseCards(
-    JSONList courses,
-    List<PurchasedCourseModel> purchasedCourses,
-  ) {
+  List<Widget> CourseCards(JSONList courses, List<PurchasedCourseModel> purchasedCourses) {
     return courses.map((course) {
       final String courseTitle = course['title'] as String? ?? '';
       final String courseAuthor = course['author'] as String? ?? '';
