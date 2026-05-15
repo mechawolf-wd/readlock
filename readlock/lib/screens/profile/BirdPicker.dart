@@ -2,6 +2,7 @@
 // The selected bird is held in a top-level ValueNotifier so any screen
 // (menu, bookshelf header, etc.) can observe and react via ValueListenableBuilder.
 
+import 'dart:async';
 import 'dart:ui' as ui;
 
 import 'package:flame/cache.dart';
@@ -353,6 +354,7 @@ const double BIRD_CAROUSEL_LOCK_BADGE_BOTTOM_INSET = 8.0;
 // lesson titles, and any future locked-content surface frost to the
 // exact same degree.
 const double BIRD_CAROUSEL_LOCKED_BLUR_SIGMA = RLDS.lockedTextBlurSigma;
+const Duration BIRD_SELECTION_PERSIST_DEBOUNCE = Duration(milliseconds: 400);
 
 // Reusable bird snap-slider, owns its own PageController and selection
 // state, syncs with selectedBirdNotifier on every page change. Renders the
@@ -391,6 +393,8 @@ class BirdCarouselState extends State<BirdCarousel> {
   // page (including locked previews) so a locked bird the user is hovering
   // on shows its own name rather than the previously-selected one.
   late int displayedIndex;
+  late int lastPersistedIndex;
+  Timer? persistDebounce;
 
   @override
   void initState() {
@@ -403,6 +407,7 @@ class BirdCarouselState extends State<BirdCarousel> {
 
     selectedIndex = hasNoMatch ? 0 : initialIndex;
     displayedIndex = selectedIndex;
+    lastPersistedIndex = selectedIndex;
 
     pageController = PageController(
       initialPage: selectedIndex,
@@ -416,9 +421,22 @@ class BirdCarouselState extends State<BirdCarousel> {
 
   @override
   void dispose() {
+    flushPendingBirdWrite();
     timeSpentReadingNotifier.removeListener(handleReadingTimeChanged);
     pageController.dispose();
     super.dispose();
+  }
+
+  void flushPendingBirdWrite() {
+    final Timer? pending = persistDebounce;
+    final bool hasPendingWrite = pending != null && pending.isActive;
+
+    if (!hasPendingWrite) {
+      return;
+    }
+
+    pending.cancel();
+    persistBirdSelection(selectedIndex);
   }
 
   void handleReadingTimeChanged() {
@@ -461,7 +479,29 @@ class BirdCarouselState extends State<BirdCarousel> {
 
     selectedBirdNotifier.value = nextBird;
 
-    UserService.updateBirdName(nextBird.name);
+    scheduleBirdPersist(newIndex);
+  }
+
+  void scheduleBirdPersist(int birdIndex) {
+    persistDebounce?.cancel();
+
+    persistDebounce = Timer(BIRD_SELECTION_PERSIST_DEBOUNCE, () {
+      persistBirdSelection(birdIndex);
+    });
+  }
+
+  void persistBirdSelection(int birdIndex) {
+    final bool isAlreadyPersisted = birdIndex == lastPersistedIndex;
+
+    if (isAlreadyPersisted) {
+      return;
+    }
+
+    lastPersistedIndex = birdIndex;
+
+    final BirdOption bird = widget.birds[birdIndex];
+
+    UserService.updateBirdName(bird.name);
   }
 
   @override

@@ -26,6 +26,7 @@ import 'package:readlock/design_system/RLLunarBlur.dart';
 import 'package:readlock/design_system/RLSegmentTabs.dart';
 import 'package:readlock/design_system/RLUtility.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
+import 'package:readlock/services/feedback/SoundService.dart';
 import 'package:readlock/utility_widgets/text_animation/BionicText.dart';
 import 'package:readlock/services/auth/UserService.dart';
 import 'package:readlock/utility_widgets/text_animation/ProgressiveText.dart';
@@ -360,6 +361,8 @@ class ReadingFontDemo extends StatelessWidget {
   Widget build(BuildContext context) {
     void onDemoTap() {
       HapticsService.selectionClick();
+      SoundService.playSwitch();
+
       FontPickerBottomSheet.show(context);
     }
 

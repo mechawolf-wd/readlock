@@ -54,8 +54,7 @@ class RLUIStrings {
   // horizontal slider, each giving a fixed monthly feather budget the
   // reader spends on books. Every book costs 10 feathers.
   static String get FEATHERS_TITLE => translated('FEATHERS_TITLE', 'Feathers');
-  static String get FEATHERS_SUBTITLE =>
-      translated('FEATHERS_SUBTITLE', 'Enjoy the skillbooks you want');
+  static String get FEATHERS_SUBTITLE => translated('FEATHERS_SUBTITLE', 'Own the skillbooks');
   static String get PRICE_PERIOD => translated('PRICE_PERIOD', '/month');
   static String get FEATHERS_BOOK_PRICING_NOTE =>
       translated('FEATHERS_BOOK_PRICING_NOTE', 'Each skillbook costs 10 feathers');
@@ -459,7 +458,7 @@ class RLUIStrings {
     'This action is permanent. All your data will be lost.',
   );
   static String get ACCOUNT_DELETE_FOREVER_LABEL =>
-      translated('ACCOUNT_DELETE_FOREVER_LABEL', 'Delete forever');
+      translated('ACCOUNT_DELETE_FOREVER_LABEL', 'Delete forever :(');
   static String get ACCOUNT_DELETE_REAUTH_SUBTITLE =>
       translated('ACCOUNT_DELETE_REAUTH_SUBTITLE', 'Sign in again to confirm.');
 

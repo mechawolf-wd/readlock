@@ -26,6 +26,16 @@ const EdgeInsets RL_BOTTOM_SHEET_FOOTER_BUTTON_MARGIN = EdgeInsets.fromLTRB(
 // follows.
 const double RL_FULL_HEIGHT_SHEET_FRACTION = 0.9;
 
+// * Standardised content padding for bottom sheets that render with a
+// grabber. Top is 0 because SheetContainer's grabber block already
+// reserves spacing above the content.
+const EdgeInsets RL_BOTTOM_SHEET_CONTENT_PADDING = EdgeInsets.fromLTRB(
+  RLDS.spacing24,
+  RLDS.spacing0,
+  RLDS.spacing24,
+  RLDS.spacing24,
+);
+
 // * Standardised content padding for bottom sheets that render without a
 // grabber (Account, Font picker, Support, etc.). These sheets own their
 // own top chrome, so this constant is the single source of truth for

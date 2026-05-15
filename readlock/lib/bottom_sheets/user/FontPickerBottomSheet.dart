@@ -15,17 +15,9 @@ import 'package:readlock/design_system/RLUtility.dart';
 import 'package:readlock/services/auth/UserService.dart';
 
 import 'package:pixelarticons/pixel.dart';
+import 'package:readlock/services/feedback/SoundService.dart';
 
-const EdgeInsets FONT_PICKER_CONTENT_PADDING = EdgeInsets.fromLTRB(
-  RLDS.spacing24,
-  RLDS.spacing0,
-  RLDS.spacing24,
-  RLDS.spacing24,
-);
-
-const EdgeInsets FONT_OPTION_ROW_PADDING = EdgeInsets.symmetric(
-  vertical: RLDS.spacing8,
-);
+const EdgeInsets FONT_OPTION_ROW_PADDING = EdgeInsets.symmetric(vertical: RLDS.spacing8);
 
 const double FONT_OPTION_UNSELECTED_OPACITY = 0.40;
 
@@ -43,11 +35,7 @@ class FontPickerSheet extends StatefulWidget {
 }
 
 class FontPickerSheetState extends State<FontPickerSheet> {
-  static const Icon HeaderIcon = Icon(
-    Pixel.edit,
-    color: RLDS.info,
-    size: RLDS.iconLarge,
-  );
+  static const Icon HeaderIcon = Icon(Pixel.edit, color: RLDS.info, size: RLDS.iconLarge);
 
   late ReadingFont selectedFont;
 
@@ -63,6 +51,9 @@ class FontPickerSheetState extends State<FontPickerSheet> {
   // Firestore on a redundant tap.
   void handleOptionTap(ReadingFont nextFont) {
     final bool isAlreadySelected = nextFont == selectedFont;
+
+    SoundService.playSwitch();
+    HapticsService.mediumImpact();
 
     if (isAlreadySelected) {
       return;
@@ -85,7 +76,7 @@ class FontPickerSheetState extends State<FontPickerSheet> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: FONT_PICKER_CONTENT_PADDING,
+      padding: RL_BOTTOM_SHEET_CONTENT_PADDING,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -113,10 +104,7 @@ class FontPickerSheetState extends State<FontPickerSheet> {
   }
 
   Widget FontOptionList() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: FontOptionRows(),
-    );
+    return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: FontOptionRows());
   }
 
   List<Widget> FontOptionRows() {
@@ -152,11 +140,9 @@ class FontOptionRow extends StatelessWidget {
   });
 
   TextStyle getSampleStyle() {
-    return RLTypography.readingMediumStyleFor(option.font).copyWith(
-      fontSize: 18,
-      height: 1.6,
-      color: RLDS.textPrimary,
-    );
+    return RLTypography.readingMediumStyleFor(
+      option.font,
+    ).copyWith(fontSize: 18, height: 1.6, color: RLDS.textPrimary);
   }
 
   @override

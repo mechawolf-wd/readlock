@@ -37,13 +37,6 @@ const Duration NIGHT_SHIFT_PERSIST_DEBOUNCE = Duration(milliseconds: 400);
 // settle so the user can land on a minute without a write per click.
 const Duration NIGHT_SHIFT_SCHEDULE_PERSIST_DEBOUNCE = Duration(milliseconds: 600);
 
-const EdgeInsets NIGHT_SHIFT_SHEET_PADDING = EdgeInsets.fromLTRB(
-  RLDS.spacing24,
-  RLDS.spacing0,
-  RLDS.spacing24,
-  RLDS.spacing24,
-);
-
 // Warm amber the slider tint mirrors at max warmth, same hue family as
 // the moon icon in the sheet header so the slider track reads as part of
 // the same accent.
@@ -332,7 +325,7 @@ class NightShiftSheetState extends State<NightShiftSheet> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: NIGHT_SHIFT_SHEET_PADDING,
+      padding: RL_BOTTOM_SHEET_CONTENT_PADDING,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,

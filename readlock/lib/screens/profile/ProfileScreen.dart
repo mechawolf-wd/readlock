@@ -2,6 +2,8 @@
 // Loads preferences from /users/{id} on mount, persists every toggle/segment
 // change back to Firestore so state survives across devices and sessions.
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/MainNavigation.dart';
@@ -53,6 +55,8 @@ class ProfileContent extends StatefulWidget {
   State<ProfileContent> createState() => ProfileContentState();
 }
 
+const Duration PREFERENCE_PERSIST_DEBOUNCE = Duration(milliseconds: 400);
+
 class ProfileContentState extends State<ProfileContent> {
   bool typingSoundEnabled = true;
   bool generalSoundsEnabled = true;
@@ -65,10 +69,45 @@ class ProfileContentState extends State<ProfileContent> {
   bool justifiedReadingEnabled = true;
   bool isLoggingOut = false;
 
+  Timer? preferencePersistDebounce;
+  Map<String, VoidCallback> pendingWrites = {};
+
   @override
   void initState() {
     super.initState();
     fetchUserPreferences();
+  }
+
+  @override
+  void dispose() {
+    flushPendingPreferenceWrites();
+    super.dispose();
+  }
+
+  void schedulePreferencePersist(String key, VoidCallback write) {
+    pendingWrites[key] = write;
+
+    preferencePersistDebounce?.cancel();
+
+    preferencePersistDebounce = Timer(PREFERENCE_PERSIST_DEBOUNCE, () {
+      flushPendingPreferenceWrites();
+    });
+  }
+
+  void flushPendingPreferenceWrites() {
+    final bool hasNoPendingWrites = pendingWrites.isEmpty;
+
+    if (hasNoPendingWrites) {
+      return;
+    }
+
+    preferencePersistDebounce?.cancel();
+
+    for (final VoidCallback write in pendingWrites.values) {
+      write();
+    }
+
+    pendingWrites.clear();
   }
 
   // * Load preferences from /users/{id}.
@@ -114,43 +153,43 @@ class ProfileContentState extends State<ProfileContent> {
   void handleTypingSoundToggled(bool value) {
     setState(() => typingSoundEnabled = value);
     SoundService.typingSoundEnabledNotifier.value = value;
-    UserService.updateTypingSound(value);
+    schedulePreferencePersist('typingSound', () => UserService.updateTypingSound(value));
   }
 
   void handleGeneralSoundsToggled(bool value) {
     setState(() => generalSoundsEnabled = value);
     SoundService.soundsEnabledNotifier.value = value;
-    UserService.updateSounds(value);
+    schedulePreferencePersist('sounds', () => UserService.updateSounds(value));
   }
 
   void handleHapticsToggled(bool value) {
     setState(() => hapticsEnabled = value);
     HapticsService.userHapticsEnabledNotifier.value = value;
-    UserService.updateHaptics(value);
+    schedulePreferencePersist('haptics', () => UserService.updateHaptics(value));
   }
 
   void handleRevealToggled(bool value) {
     setState(() => revealEnabled = value);
     revealAllEnabledNotifier.value = value;
-    UserService.updateReveal(value);
+    schedulePreferencePersist('reveal', () => UserService.updateReveal(value));
   }
 
   void handleBlurToggled(bool value) {
     setState(() => blurEnabled = value);
     blurEnabledNotifier.value = value;
-    UserService.updateBlur(value);
+    schedulePreferencePersist('blur', () => UserService.updateBlur(value));
   }
 
   void handleColoredTextToggled(bool value) {
     setState(() => coloredTextEnabled = value);
     coloredTextEnabledNotifier.value = value;
-    UserService.updateColoredText(value);
+    schedulePreferencePersist('coloredText', () => UserService.updateColoredText(value));
   }
 
   void handleBionicToggled(bool value) {
     setState(() => bionicEnabled = value);
     bionicEnabledNotifier.value = value;
-    UserService.updateBionic(value);
+    schedulePreferencePersist('bionic', () => UserService.updateBionic(value));
   }
 
   // void handleRsvpToggled(bool value) { ... } // RSVP hidden from settings until ready for release.
@@ -158,7 +197,7 @@ class ProfileContentState extends State<ProfileContent> {
   void handleJustifiedReadingToggled(bool value) {
     setState(() => justifiedReadingEnabled = value);
     justifiedReadingEnabledNotifier.value = value;
-    UserService.updateJustifiedReading(value);
+    schedulePreferencePersist('justifiedReading', () => UserService.updateJustifiedReading(value));
   }
 
   // A signed-in user already has password reset / resend verification in

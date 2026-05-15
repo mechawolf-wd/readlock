@@ -15,13 +15,6 @@ import 'package:readlock/services/feedback/HapticsService.dart';
 
 import 'package:pixelarticons/pixel.dart';
 
-const EdgeInsets LANGUAGE_PICKER_CONTENT_PADDING = EdgeInsets.fromLTRB(
-  RLDS.spacing24,
-  RLDS.spacing0,
-  RLDS.spacing24,
-  RLDS.spacing24,
-);
-
 const EdgeInsets LANGUAGE_OPTION_ROW_PADDING = EdgeInsets.symmetric(
   vertical: RLDS.spacing12,
 );
@@ -119,7 +112,7 @@ class LanguagePickerSheetState extends State<LanguagePickerSheet> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: LANGUAGE_PICKER_CONTENT_PADDING,
+      padding: RL_BOTTOM_SHEET_CONTENT_PADDING,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,

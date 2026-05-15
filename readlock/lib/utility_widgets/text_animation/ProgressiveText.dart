@@ -1351,7 +1351,22 @@ class CompletedSentenceWidget extends StatelessWidget {
       return HighlightedTextDisplay(context);
     }
 
+    final bool isBionicEnabled = bionicEnabledNotifier.value;
+
+    if (isBionicEnabled) {
+      return BionicTextDisplay();
+    }
+
     return Text(sentenceText, style: textStyle, textAlign: textAlign);
+  }
+
+  Widget BionicTextDisplay() {
+    final List<InlineSpan> spans = bionicSpans(sentenceText, textStyle);
+
+    return RichText(
+      text: TextSpan(children: spans),
+      textAlign: textAlign,
+    );
   }
 
   Widget ImageDisplay() {
@@ -1477,7 +1492,7 @@ class CompletedSentenceWidget extends StatelessWidget {
     final bool hasRemainingText = remainingText.isNotEmpty;
 
     if (hasRemainingText) {
-      spans.add(TextSpan(text: remainingText, style: textStyle));
+      addPlainOrBionicSpans(spans, remainingText);
     }
   }
 
@@ -1486,8 +1501,24 @@ class CompletedSentenceWidget extends StatelessWidget {
 
     if (hasTextBeforeMatch) {
       final String beforeText = text.substring(0, match.start);
-      spans.add(TextSpan(text: beforeText, style: textStyle));
+      addPlainOrBionicSpans(spans, beforeText);
     }
+  }
+
+  void addPlainOrBionicSpans(List<TextSpan> spans, String text) {
+    final bool isBionicEnabled = bionicEnabledNotifier.value;
+
+    if (isBionicEnabled) {
+      final List<InlineSpan> bionicInlineSpans = bionicSpans(text, textStyle);
+
+      for (final InlineSpan span in bionicInlineSpans) {
+        spans.add(span as TextSpan);
+      }
+
+      return;
+    }
+
+    spans.add(TextSpan(text: text, style: textStyle));
   }
 
   void addHighlightedTextSpan(BuildContext context, List<TextSpan> spans, RegExpMatch match) {

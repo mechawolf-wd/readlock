@@ -172,11 +172,7 @@ class MenuSection extends StatelessWidget {
           onTap: onRedeemCodeTap,
         ),
 
-        MenuItem(
-          icon: Pixel.arttext,
-          title: RLUIStrings.MENU_LANGUAGE,
-          onTap: onLanguageTap,
-        ),
+        MenuItem(icon: Pixel.arttext, title: RLUIStrings.MENU_LANGUAGE, onTap: onLanguageTap),
 
         MenuDivider(label: RLUIStrings.MENU_SECTION_SOUND),
 
