@@ -6,6 +6,7 @@ import 'package:readlock/services/feedback/HapticsService.dart';
 import 'package:readlock/constants/RLUIStrings.dart';
 import 'package:readlock/constants/RLTypography.dart';
 import 'package:readlock/design_system/RLFeatherIcon.dart';
+import 'package:readlock/constants/RLReadingColumn.dart';
 import 'package:readlock/design_system/RLUtility.dart';
 import 'package:readlock/design_system/RLSwitch.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
@@ -49,6 +50,7 @@ class MenuSection extends StatelessWidget {
   final ValueChanged<bool> onColoredTextToggled;
   final ValueChanged<bool> onBionicToggled;
   final ValueChanged<bool> onJustifiedReadingToggled;
+  final ValueChanged<ReadingColumn> onColumnChanged;
   final VoidCallback onInviteFriendsTap;
   final VoidCallback onRedeemCodeTap;
   final VoidCallback onSupportTap;
@@ -72,6 +74,7 @@ class MenuSection extends StatelessWidget {
     required this.onColoredTextToggled,
     required this.onBionicToggled,
     required this.onJustifiedReadingToggled,
+    required this.onColumnChanged,
     required this.onInviteFriendsTap,
     required this.onRedeemCodeTap,
     required this.onSupportTap,
@@ -274,7 +277,7 @@ class MenuSection extends StatelessWidget {
           onTap: onColumnWidthRowTap,
         ),
 
-        const ReadingColumnDemo(),
+        ReadingColumnDemo(onColumnChanged: onColumnChanged),
 
         DemoExplainLabel(explanation: RLUIStrings.DEMO_EXPLAIN_COLUMN),
 

@@ -826,7 +826,7 @@ class ProgressiveTextState extends State<ProgressiveText> with TickerProviderSta
   // Fixed-height wrapper around RevealTapArea for the unbounded layout
   // path, where there is no sliver to fill remaining viewport space.
   Widget RevealButtonArea(BoxConstraints constraints) {
-    const double minButtonHeight = 120.0;
+    const double minButtonHeight = 120.0; 
 
     return Container(
       margin: const EdgeInsets.only(top: RLDS.spacing16),
@@ -1289,7 +1289,13 @@ class ProgressiveTextState extends State<ProgressiveText> with TickerProviderSta
       baseStyle = widget.textStyle!;
     }
 
-    return baseStyle.copyWith(fontSize: 18, height: 1.6);
+    // Slightly negative word spacing tightens the inter-word gaps that
+    // TextAlign.justify creates on short lines. The value is subtle enough
+    // that non-justified last lines still read naturally.
+    final bool isJustified = widget.textAlign == TextAlign.justify;
+    final double? justifiedWordSpacing = isJustified ? -1 : null;
+
+    return baseStyle.copyWith(fontSize: 18, height: 1.6, wordSpacing: justifiedWordSpacing);
   }
 }
 

@@ -21,6 +21,7 @@ import 'package:readlock/services/feedback/HapticsService.dart';
 import 'package:readlock/bottom_sheets/user/RedeemCodeBottomSheet.dart';
 import 'package:readlock/bottom_sheets/user/ReferralBottomSheet.dart';
 import 'package:readlock/services/feedback/SoundService.dart';
+import 'package:readlock/constants/RLReadingColumn.dart';
 import 'package:readlock/constants/RLReadingJustified.dart';
 import 'package:readlock/utility_widgets/text_animation/BionicText.dart';
 import 'package:readlock/utility_widgets/text_animation/RSVPText.dart';
@@ -200,6 +201,10 @@ class ProfileContentState extends State<ProfileContent> {
     schedulePreferencePersist('justifiedReading', () => UserService.updateJustifiedReading(value));
   }
 
+  void handleColumnChanged(ReadingColumn column) {
+    schedulePreferencePersist('readingColumn', () => UserService.updateReadingColumn(column.name));
+  }
+
   // A signed-in user already has password reset / resend verification in
   // their account flow, so the settings entry skips the picker and goes
   // straight to the email-support sheet.
@@ -294,6 +299,7 @@ class ProfileContentState extends State<ProfileContent> {
       onColoredTextToggled: handleColoredTextToggled,
       onBionicToggled: handleBionicToggled,
       onJustifiedReadingToggled: handleJustifiedReadingToggled,
+      onColumnChanged: handleColumnChanged,
       onInviteFriendsTap: () => ReferralBottomSheet.show(context),
       onRedeemCodeTap: () => RedeemCodeBottomSheet.show(context),
       onSupportTap: handleSupportTap,
