@@ -216,10 +216,6 @@ class RLUIStrings {
   static String get UNKNOWN_CONTENT_TYPE_MESSAGE =>
       translated('UNKNOWN_CONTENT_TYPE_MESSAGE', 'Unknown content type: ');
 
-  // * Progressive Text image fallback
-  static String get IMAGE_NOT_FOUND_PREFIX =>
-      translated('IMAGE_NOT_FOUND_PREFIX', 'Image not found: ');
-
   // * Text Content
   static String get TEXT_CONTENT_CONTINUE_LABEL =>
       translated('TEXT_CONTENT_CONTINUE_LABEL', 'Continue');

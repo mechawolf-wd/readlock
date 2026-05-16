@@ -41,10 +41,7 @@ class RLLoadingIndicatorState extends State<RLLoadingIndicator>
   void initState() {
     super.initState();
 
-    dotsController = AnimationController(
-      vsync: this,
-      duration: LOADING_DOT_CYCLE_DURATION,
-    );
+    dotsController = AnimationController(vsync: this, duration: LOADING_DOT_CYCLE_DURATION);
 
     dotsController.repeat();
   }
@@ -72,11 +69,7 @@ class RLLoadingIndicatorState extends State<RLLoadingIndicator>
     final bool shouldShowBird = widget.showBird;
 
     return Center(
-      child: RenderIf.condition(
-        shouldShowBird,
-        BirdWithDots(dotsText: dotsText),
-        dotsText,
-      ),
+      child: RenderIf.condition(shouldShowBird, BirdWithDots(dotsText: dotsText), dotsText),
     );
   }
 
@@ -87,13 +80,7 @@ class RLLoadingIndicatorState extends State<RLLoadingIndicator>
         final Widget birdSprite = BirdAnimationSprite(bird: bird);
 
         return Div.column(
-          [
-            birdSprite,
-
-            const Spacing.height(RLDS.spacing16),
-
-            dotsText,
-          ],
+          [birdSprite, const Spacing.height(RLDS.spacing16), dotsText],
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
         );
@@ -109,20 +96,16 @@ class LoadingDotsRow extends StatelessWidget {
 
   List<Widget> RowChildren() {
     final List<Widget> children = [
-      RLTypography.headingMedium(
-        RLUIStrings.LOADING_LABEL,
-        color: RLDS.textSecondary,
-      ),
+      RLTypography.headingMedium(RLUIStrings.LOADING_LABEL, color: RLDS.white),
     ];
 
     for (int dotIndex = 0; dotIndex < LOADING_DOT_COUNT; dotIndex++) {
       final bool isActive = dotIndex < activeDots;
-      final double dotOpacity =
-          isActive ? 1.0 : LOADING_DOT_INACTIVE_OPACITY;
+      final double dotOpacity = isActive ? 1.0 : LOADING_DOT_INACTIVE_OPACITY;
 
       final Widget dot = Opacity(
         opacity: dotOpacity,
-        child: RLTypography.headingMedium('.', color: RLDS.textSecondary),
+        child: RLTypography.headingMedium('.', color: RLDS.textPrimary),
       );
 
       children.add(dot);

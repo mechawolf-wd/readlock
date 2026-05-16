@@ -61,6 +61,7 @@ class RLDS {
   static final BorderRadius borderRadiusSmall = BorderRadius.circular(radiusSmall);
   static final BorderRadius borderRadiusMedium = BorderRadius.circular(radiusMedium);
   static final BorderRadius borderRadiusLarge = BorderRadius.circular(radiusLarge);
+  static final BorderRadius borderRadiusSpecial = BorderRadius.circular(radiusSpecial);
 
   static final BorderRadius borderRadiusCircle = BorderRadius.circular(radiusCircle);
 

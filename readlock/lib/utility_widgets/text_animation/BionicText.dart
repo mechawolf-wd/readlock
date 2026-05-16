@@ -6,6 +6,7 @@
 // InlineSpans that render the text with the fixation emphasis applied.
 
 import 'package:flutter/material.dart';
+import 'package:readlock/utility_widgets/text_animation/HyphenatedText.dart';
 
 // Global toggle. ProfileScreen flips this when the user taps the Bionic
 // switch; ProgressiveText listens and rebuilds so the fixation emphasis
@@ -35,21 +36,35 @@ int bionicBoldCount(int wordLength) {
 
 // Returns a per-character mask for `text` where `true` marks positions that
 // belong to the bionic-bold prefix of a word (non-word runs, punctuation,
-// whitespace, are always `false`). Callers render bold where `mask[i]` is
-// true. This is the character-level counterpart to `bionicSpans`; it's the
-// shape ProgressiveText needs because its span builder already operates on
-// per-character indices for the typewriter / fade-in pipeline.
+// whitespace, soft hyphens are always `false`). Callers render bold where
+// `mask[i]` is true. This is the character-level counterpart to
+// `bionicSpans`; it's the shape ProgressiveText needs because its span
+// builder already operates on per-character indices for the typewriter /
+// fade-in pipeline.
+//
+// Soft hyphens (\u00AD) are treated as part of a word run so they don't
+// break word boundaries, but they are skipped when counting letters for
+// the bold ratio.
 List<bool> bionicBoldMask(String text) {
   final List<bool> mask = List<bool>.filled(text.length, false);
-  final RegExp wordPattern = RegExp(r'\w+');
+  final RegExp wordPattern = RegExp(r'[\w\u00AD]+');
   final Iterable<RegExpMatch> matches = wordPattern.allMatches(text);
 
   for (final RegExpMatch match in matches) {
-    final int wordLength = match.end - match.start;
-    final int boldCount = bionicBoldCount(wordLength);
+    final String word = text.substring(match.start, match.end);
+    final int realLetterCount = word.replaceAll(softHyphen, '').length;
+    final int boldCount = bionicBoldCount(realLetterCount);
 
-    for (int localIndex = 0; localIndex < boldCount; localIndex++) {
-      mask[match.start + localIndex] = true;
+    // Walk characters, only marking real letters (skip soft hyphens).
+    int lettersMarked = 0;
+
+    for (int i = match.start; i < match.end && lettersMarked < boldCount; i++) {
+      final bool isSoftHyphen = text[i] == softHyphen;
+
+      if (!isSoftHyphen) {
+        mask[i] = true;
+        lettersMarked++;
+      }
     }
   }
 
@@ -59,10 +74,14 @@ List<bool> bionicBoldMask(String text) {
 // Splits `text` into word / non-word runs and returns InlineSpans where
 // each word's first `bionicBoldCount` letters are bolded on top of the
 // passed base style, and the remainder stays at the base weight. Preserves
-// punctuation and whitespace verbatim.
+// punctuation, whitespace, and soft hyphens verbatim.
+//
+// Soft hyphens inside words are kept in the output but do not count toward
+// the bold ratio, so "sub\u00ADdi\u00ADvi\u00ADsion" bolds the first ~40%
+// of real letters only.
 List<InlineSpan> bionicSpans(String text, TextStyle baseStyle) {
   final List<InlineSpan> spans = [];
-  final RegExp tokenPattern = RegExp(r'(\w+)|(\W+)');
+  final RegExp tokenPattern = RegExp(r'([\w\u00AD]+)|([^\w\u00AD]+)');
   final Iterable<RegExpMatch> matches = tokenPattern.allMatches(text);
 
   for (final RegExpMatch match in matches) {
@@ -70,9 +89,25 @@ List<InlineSpan> bionicSpans(String text, TextStyle baseStyle) {
     final String? nonWord = match.group(2);
 
     if (word != null) {
-      final int boldCount = bionicBoldCount(word.length);
-      final String boldPart = word.substring(0, boldCount);
-      final String restPart = word.substring(boldCount);
+      final int realLetterCount = word.replaceAll(softHyphen, '').length;
+      final int boldCount = bionicBoldCount(realLetterCount);
+
+      // Find the split index by counting real letters, skipping soft hyphens.
+      int splitIndex = 0;
+      int lettersFound = 0;
+
+      for (int i = 0; i < word.length && lettersFound < boldCount; i++) {
+        final bool isSoftHyphen = word[i] == softHyphen;
+
+        if (!isSoftHyphen) {
+          lettersFound++;
+        }
+
+        splitIndex = i + 1;
+      }
+
+      final String boldPart = word.substring(0, splitIndex);
+      final String restPart = word.substring(splitIndex);
 
       spans.add(
         TextSpan(

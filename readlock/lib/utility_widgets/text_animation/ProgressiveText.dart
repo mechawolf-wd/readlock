@@ -5,10 +5,10 @@ import 'package:flutter/material.dart' hide Typography;
 import 'package:flutter/scheduler.dart';
 import 'package:readlock/constants/RLDesignSystem.dart';
 import 'package:readlock/constants/RLTypography.dart';
-import 'package:readlock/constants/RLUIStrings.dart';
 import 'package:readlock/course_screens/CourseAccentScope.dart';
 import 'package:readlock/design_system/RLUtility.dart';
 import 'package:readlock/utility_widgets/text_animation/BionicText.dart';
+import 'package:readlock/utility_widgets/text_animation/HyphenatedText.dart';
 import 'package:readlock/utility_widgets/visual_effects/BlurOverlay.dart';
 import 'package:readlock/constants/RLReadingSettings.dart';
 import 'package:readlock/services/feedback/HapticsService.dart';
@@ -160,10 +160,6 @@ class ProgressiveTextState extends State<ProgressiveText> with TickerProviderSta
   // Current character index in the typewriter animation (used for color transition)
   int currentCharacterPosition = 0;
 
-  // Image reveal animation controller
-  AnimationController? imageRevealController;
-  Animation<double>? imageRevealAnimation;
-
   // Per-character fade-in timeline for the current sentence. Index i stores
   // the stopwatch elapsed at which character i was revealed; the span
   // builder turns that into an alpha based on elapsed-since-reveal / fade
@@ -183,6 +179,14 @@ class ProgressiveTextState extends State<ProgressiveText> with TickerProviderSta
   // bionicEnabledNotifier so the toggle flips live without touching this
   // cache.
   List<bool> currentSentenceBoldMask = const [];
+
+  // * Hyphenation resolution state. When text is justified, soft hyphens
+  // are inserted at syllable boundaries. On the first layout pass the
+  // available width is captured and resolveVisibleHyphens converts the
+  // relevant soft hyphens to real dashes. The typewriter starts only after
+  // resolution so the dash glyphs are part of the pre-laid-out text.
+  bool needsHyphenResolution = false;
+  bool isResolutionScheduled = false;
 
   // Double tap tracking for unblur all functionality
   DateTime? lastTapTime;
@@ -219,13 +223,42 @@ class ProgressiveTextState extends State<ProgressiveText> with TickerProviderSta
     // Check if there's any content to display
     final bool hasSentencesToReveal = textSentences.isNotEmpty;
 
-    if (hasSentencesToReveal) {
+    // When justified, the typewriter starts after the first layout pass
+    // resolves soft hyphens into real dashes (see maybeResolveHyphens).
+    final bool shouldDeferStart = needsHyphenResolution;
+
+    if (hasSentencesToReveal && !shouldDeferStart) {
       // Prepare the first sentence for display
       initializeCurrentSentence();
 
       // Start the typewriter animation for the first sentence
       startCurrentSentenceReveal();
     }
+  }
+
+  @override
+  void didUpdateWidget(covariant ProgressiveText oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    final bool textAlignChanged = widget.textAlign != oldWidget.textAlign;
+
+    if (textAlignChanged) {
+      rehydrateTextSentences();
+    }
+  }
+
+  // Re-hyphenates (or un-hyphenates) all sentences when the textAlign
+  // changes at runtime (e.g. user toggles justified in Settings). Justified
+  // text gets soft hyphens inserted; non-justified text reverts to the raw
+  // segments.
+  void rehydrateTextSentences() {
+    final bool isJustified = widget.textAlign == TextAlign.justify;
+
+    textSentences = isJustified
+        ? widget.textSegments.map(hyphenateSentence).toList()
+        : widget.textSegments;
+
+    needsHyphenResolution = isJustified;
   }
 
   // Resets the current sentence state to prepare for revealing a new sentence
@@ -262,16 +295,6 @@ class ProgressiveTextState extends State<ProgressiveText> with TickerProviderSta
     final bool canStartRevealAnimation = !isAlreadyRevealing && hasTextToReveal;
 
     if (!canStartRevealAnimation) {
-      return;
-    }
-
-    // Check if current sentence is an image
-    final String originalSentence = textSentences[currentSentenceNumber];
-    final bool isImageSentence = originalSentence.startsWith('image-link');
-
-    if (isImageSentence) {
-      // Start image reveal animation
-      startImageRevealAnimation();
       return;
     }
 
@@ -410,58 +433,6 @@ class ProgressiveTextState extends State<ProgressiveText> with TickerProviderSta
         revealNextSentence();
       }
     });
-  }
-
-  // Starts the image reveal animation
-  void startImageRevealAnimation() async {
-    if (!mounted) {
-      return;
-    }
-
-    setState(() {
-      isRevealingCurrentSentence = true;
-    });
-
-    // Create animation controller for image reveal
-    imageRevealController?.dispose();
-    imageRevealController = AnimationController(
-      duration: const Duration(milliseconds: 500),
-      vsync: this,
-    );
-
-    imageRevealAnimation = CurvedAnimation(
-      parent: imageRevealController!,
-      curve: Curves.linear,
-    );
-
-    await imageRevealController!.forward();
-
-    if (mounted) {
-      setState(() {
-        isRevealingCurrentSentence = false;
-      });
-
-      // Check if all sentences have been revealed
-      final bool isLastSentence = currentSentenceNumber == textSentences.length - 1;
-
-      final bool shouldTriggerCompletionCallback =
-          isLastSentence && widget.onAllSegmentsRevealed != null;
-
-      if (shouldTriggerCompletionCallback) {
-        widget.onAllSegmentsRevealed!();
-      }
-
-      final bool shouldAutoAdvanceToNextSentence = widget.automaticallyRevealNextSentence;
-
-      if (shouldAutoAdvanceToNextSentence) {
-        final bool hasMoreSentencesToReveal = currentSentenceNumber < textSentences.length - 1;
-
-        if (hasMoreSentencesToReveal) {
-          await Future.delayed(progressiveTextAutoRevealDelay);
-          revealNextSentence();
-        }
-      }
-    }
   }
 
   // Advances to the next sentence in the sequence
@@ -706,7 +677,6 @@ class ProgressiveTextState extends State<ProgressiveText> with TickerProviderSta
     coloredTextEnabledNotifier.removeListener(onReadingSettingChanged);
     leadingCharacterFadeTicker?.dispose();
     currentSentenceStopwatch.stop();
-    imageRevealController?.dispose();
     boundedScrollController.dispose();
     super.dispose();
   }
@@ -736,16 +706,33 @@ class ProgressiveTextState extends State<ProgressiveText> with TickerProviderSta
     final bool shouldDisableTapInteraction = !widget.enableTapToReveal;
 
     if (shouldDisableTapInteraction) {
-      return Div.column(
+      final Widget content = Div.column(
         [RevealedTextDisplay()],
         crossAxisAlignment: CrossAxisAlignment.start,
         width: double.infinity,
       );
+
+      // Justified text needs a LayoutBuilder to capture the available
+      // width for hyphen resolution, even when tap interaction is off.
+      final bool isJustified = widget.textAlign == TextAlign.justify;
+
+      if (isJustified) {
+        return LayoutBuilder(
+          builder: (context, constraints) {
+            maybeResolveHyphens(constraints.maxWidth);
+            return content;
+          },
+        );
+      }
+
+      return content;
     }
 
     // Main layout with text content and reveal button area
     return LayoutBuilder(
       builder: (context, constraints) {
+        maybeResolveHyphens(constraints.maxWidth);
+
         final bool hasUnboundedHeight = constraints.maxHeight == double.infinity;
 
         if (hasUnboundedHeight) {
@@ -868,14 +855,7 @@ class ProgressiveTextState extends State<ProgressiveText> with TickerProviderSta
 
   // Display widget for currently revealing sentence
   Widget CurrentSentenceDisplay() {
-    // Check if we should display anything
     final String originalText = textSentences[currentSentenceNumber];
-    final bool isImageLinkSegment = originalText.startsWith('image-link');
-
-    if (isImageLinkSegment) {
-      return CurrentImageDisplay(originalText);
-    }
-
     final bool containsHighlightingMarkup = originalText.contains('<c:');
 
     if (containsHighlightingMarkup) {
@@ -885,7 +865,6 @@ class ProgressiveTextState extends State<ProgressiveText> with TickerProviderSta
       );
     }
 
-    // Render full text with color transition for revealed characters
     return TextWithColorTransition(currentSentenceText, currentCharacterPosition);
   }
 
@@ -908,83 +887,6 @@ class ProgressiveTextState extends State<ProgressiveText> with TickerProviderSta
     return RichText(
       text: TextSpan(children: spans),
       textAlign: widget.textAlign,
-    );
-  }
-
-  // Display widget for current image segment
-  Widget CurrentImageDisplay(String imageSegmentText) {
-    final bool hasNoBlurModifier = imageSegmentText.contains('[no-blur]');
-
-    // Extract the path after removing modifiers
-    String cleanImageText = imageSegmentText;
-    if (hasNoBlurModifier) {
-      cleanImageText = cleanImageText.replaceAll('[no-blur]', '');
-    }
-
-    final String imageAssetPath = cleanImageText.substring('image-link:'.length);
-
-    // Extract styling above method
-    const double maxImageHeight = 200.0;
-    const double errorImageHeight = 100.0;
-    const double imageSpacing = RLDS.spacing16;
-
-    final BorderRadius imageBorderRadius = RLDS.borderRadiusSmall;
-
-    final BoxDecoration errorContainerDecoration = BoxDecoration(
-      color: RLDS.backgroundLight,
-      borderRadius: imageBorderRadius,
-    );
-
-    final TextStyle errorTextStyle = getConsistentTextStyle().copyWith(
-      color: RLDS.textSecondary,
-      fontSize: 12,
-    );
-
-    // Create animated builder for reveal effect
-    final bool hasAnimation = imageRevealAnimation != null;
-
-    if (!hasAnimation) {
-      return const SizedBox.shrink();
-    }
-
-    return AnimatedBuilder(
-      animation: imageRevealAnimation!,
-      builder: (context, child) {
-        final double revealProgress = imageRevealAnimation!.value;
-
-        return Center(
-          child: Div.column([
-            // Image with curtain reveal effect
-            ClipRect(
-              child: Align(
-                alignment: Alignment.topCenter,
-                heightFactor: revealProgress,
-                child: ClipRRect(
-                  borderRadius: imageBorderRadius,
-                  child: Image.asset(
-                    imageAssetPath,
-                    fit: BoxFit.contain,
-                    height: maxImageHeight,
-                    errorBuilder: (context, error, stackTrace) => Container(
-                      height: errorImageHeight,
-                      decoration: errorContainerDecoration,
-                      child: Center(
-                        child: Text(
-                          '${RLUIStrings.IMAGE_NOT_FOUND_PREFIX}$imageAssetPath',
-                          style: errorTextStyle,
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-
-            const Spacing.height(imageSpacing),
-          ]),
-        );
-      },
     );
   }
 
@@ -1226,7 +1128,13 @@ class ProgressiveTextState extends State<ProgressiveText> with TickerProviderSta
   // Initializes the text sentences and blur states from widget properties
   // Called once during initState to set up the initial data
   void initializeTextState() {
-    textSentences = widget.textSegments;
+    final bool isJustified = widget.textAlign == TextAlign.justify;
+
+    textSentences = isJustified
+        ? widget.textSegments.map(hyphenateSentence).toList()
+        : widget.textSegments;
+
+    needsHyphenResolution = isJustified;
 
     sentenceBlurStates = List.filled(textSentences.length, true);
 
@@ -1234,6 +1142,58 @@ class ProgressiveTextState extends State<ProgressiveText> with TickerProviderSta
     sentenceNoBlurFlags = textSentences.map((sentence) {
       return sentence.contains('[no-blur]');
     }).toList();
+  }
+
+  // * Hyphen resolution pipeline. Called from the LayoutBuilder on the
+  // first frame. Resolves soft hyphens into real dashes once, then never
+  // runs again (device width is constant).
+  void maybeResolveHyphens(double width) {
+    final bool isJustified = widget.textAlign == TextAlign.justify;
+    final bool shouldSkip = !isJustified || isResolutionScheduled || !needsHyphenResolution;
+
+    if (shouldSkip) {
+      return;
+    }
+
+    isResolutionScheduled = true;
+
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) {
+        return;
+      }
+
+      isResolutionScheduled = false;
+      needsHyphenResolution = false;
+      resolveAllSentences(width);
+      initializeCurrentSentence();
+      startCurrentSentenceReveal();
+
+      setState(() {});
+    });
+  }
+
+  // Walks every sentence and replaces soft hyphens that caused a line break
+  // with a real dash. Non-break soft hyphens are stripped so the resolved
+  // text is ready to render as-is.
+  void resolveAllSentences(double maxWidth) {
+    final TextStyle style = getConsistentTextStyle();
+
+    for (int i = 0; i < textSentences.length; i++) {
+      final String sentence = textSentences[i];
+      final bool hasSoftHyphen = sentence.contains(softHyphen);
+
+      if (!hasSoftHyphen) {
+        continue;
+      }
+
+      final bool hasMarkup = sentence.contains('<c:');
+
+      if (hasMarkup) {
+        textSentences[i] = resolveVisibleHyphensForMarkup(sentence, style, maxWidth, widget.textAlign);
+      } else {
+        textSentences[i] = resolveVisibleHyphens(sentence, style, maxWidth, widget.textAlign);
+      }
+    }
   }
 
   // Remove highlight markers and return clean text for animation
@@ -1346,13 +1306,7 @@ class CompletedSentenceWidget extends StatelessWidget {
   }
 
   Widget SentenceText(BuildContext context) {
-    // Extract conditions above widget logic
-    final bool isImageLinkSegment = sentenceText.startsWith('image-link');
     final bool containsHighlighting = sentenceText.contains('<c:');
-
-    if (isImageLinkSegment) {
-      return ImageDisplay();
-    }
 
     if (containsHighlighting) {
       return HighlightedTextDisplay(context);
@@ -1373,97 +1327,9 @@ class CompletedSentenceWidget extends StatelessWidget {
       );
     }
 
-    return Text(text, style: textStyle, textAlign: textAlign);
-  }
-
-  Widget ImageDisplay() {
-    final String imageAssetPath = extractImagePath();
-
-    // Extract styling above method
-    const double maxImageHeight = 200.0;
-    const double errorImageHeight = 100.0;
-    const double imageSpacing = RLDS.spacing16;
-
-    final BorderRadius imageBorderRadius = RLDS.borderRadiusSmall;
-
-    final BoxDecoration errorContainerDecoration = BoxDecoration(
-      color: RLDS.backgroundLight,
-      borderRadius: imageBorderRadius,
-    );
-
-    final TextStyle errorTextStyle = textStyle.copyWith(
-      color: RLDS.textSecondary,
-      fontSize: 12,
-    );
-
-    return Center(
-      child: Div.column([
-        // Course image display
-        CourseImageDisplay(
-          imageBorderRadius: imageBorderRadius,
-          imageAssetPath: imageAssetPath,
-          maxImageHeight: maxImageHeight,
-          errorContainerDecoration: errorContainerDecoration,
-          errorTextStyle: errorTextStyle,
-          errorImageHeight: errorImageHeight,
-        ),
-
-        const Spacing.height(imageSpacing),
-      ]),
-    );
-  }
-
-  String extractImagePath() {
-    // Remove modifiers if present
-    String cleanText = sentenceText;
-    if (cleanText.contains('[no-blur]')) {
-      cleanText = cleanText.replaceAll('[no-blur]', '');
-    }
-
-    const String imageLinkPrefix = 'image-link:';
-    return cleanText.substring(imageLinkPrefix.length);
-  }
-
-  Widget CourseImageDisplay({
-    required BorderRadius imageBorderRadius,
-    required String imageAssetPath,
-    required double maxImageHeight,
-    required BoxDecoration errorContainerDecoration,
-    required TextStyle errorTextStyle,
-    required double errorImageHeight,
-  }) {
-    return ClipRRect(
-      borderRadius: imageBorderRadius,
-      child: Image.asset(
-        imageAssetPath,
-        fit: BoxFit.contain,
-        height: maxImageHeight,
-        errorBuilder: (context, error, stackTrace) => ImageErrorFallback(
-          errorContainerDecoration: errorContainerDecoration,
-          errorTextStyle: errorTextStyle,
-          errorImageHeight: errorImageHeight,
-          imageAssetPath: imageAssetPath,
-        ),
-      ),
-    );
-  }
-
-  Widget ImageErrorFallback({
-    required BoxDecoration errorContainerDecoration,
-    required TextStyle errorTextStyle,
-    required double errorImageHeight,
-    required String imageAssetPath,
-  }) {
-    return Container(
-      height: errorImageHeight,
-      decoration: errorContainerDecoration,
-      child: Center(
-        child: Text(
-          '${RLUIStrings.IMAGE_NOT_FOUND_PREFIX}$imageAssetPath',
-          style: errorTextStyle,
-          textAlign: TextAlign.center,
-        ),
-      ),
+    return RichText(
+      text: TextSpan(text: text, style: textStyle),
+      textAlign: textAlign,
     );
   }
 
@@ -1532,6 +1398,21 @@ class CompletedSentenceWidget extends StatelessWidget {
     final String colorCode = match.group(1)!;
     final String highlightedText = match.group(2)!;
     final TextStyle highlightedTextStyle = resolveMarkupStyle(context, colorCode, textStyle);
+
+    final bool isBionicEnabled = bionicEnabledNotifier.value;
+
+    if (isBionicEnabled) {
+      final List<InlineSpan> bionicInlineSpans = bionicSpans(
+        highlightedText,
+        highlightedTextStyle,
+      );
+
+      for (final InlineSpan span in bionicInlineSpans) {
+        spans.add(span as TextSpan);
+      }
+
+      return;
+    }
 
     spans.add(TextSpan(text: highlightedText, style: highlightedTextStyle));
   }

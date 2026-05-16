@@ -129,10 +129,12 @@ class AnimatedSnackbar extends StatefulWidget {
   State<AnimatedSnackbar> createState() => AnimatedSnackbarState();
 }
 
-class AnimatedSnackbarState extends State<AnimatedSnackbar>
-    with SingleTickerProviderStateMixin {
-  late AnimationController animationController;
+class AnimatedSnackbarState extends State<AnimatedSnackbar> with TickerProviderStateMixin {
+  late AnimationController slideController;
   late Animation<Offset> slideAnimation;
+
+  late AnimationController fadeController;
+  late Animation<double> fadeAnimation;
 
   // Tracks how far the user has dragged the snackbar downward.
   // Positive values push it toward the screen edge.
@@ -144,20 +146,27 @@ class AnimatedSnackbarState extends State<AnimatedSnackbar>
 
     widget.onStateCreated(this);
 
-    animationController = AnimationController(
+    // Slide-in on entry
+    slideController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 250),
     );
 
-    slideAnimation = Tween<Offset>(begin: const Offset(0, 1), end: Offset.zero).animate(
-      CurvedAnimation(
-        parent: animationController,
-        curve: Curves.easeOutCubic,
-        reverseCurve: Curves.easeInCubic,
-      ),
+    slideAnimation = Tween<Offset>(
+      begin: const Offset(0, 1),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(parent: slideController, curve: Curves.easeOutCubic));
+
+    // Opacity fade for dismiss
+    fadeController = AnimationController(
+      vsync: this,
+      value: 1.0,
+      duration: RLDS.opacityFadeDurationFast,
     );
 
-    animationController.forward();
+    fadeAnimation = CurvedAnimation(parent: fadeController, curve: Curves.easeOut);
+
+    slideController.forward();
 
     // Auto-dismiss if duration is set
     final bool shouldAutoDismiss = widget.duration != null;
@@ -173,12 +182,13 @@ class AnimatedSnackbarState extends State<AnimatedSnackbar>
 
   @override
   void dispose() {
-    animationController.dispose();
+    slideController.dispose();
+    fadeController.dispose();
     super.dispose();
   }
 
   Future<void> animateOut() {
-    return animationController.reverse();
+    return fadeController.reverse();
   }
 
   // Allows only downward movement (positive dy). Clamped at zero so the
@@ -206,41 +216,35 @@ class AnimatedSnackbarState extends State<AnimatedSnackbar>
 
   @override
   Widget build(BuildContext context) {
-    // Padding extends through the bottom safe-area inset so the solid colour
-    // fill paints under the home-indicator, no bare strip between the
-    // snackbar and the screen edge.
     final double bottomSafeArea = MediaQuery.of(context).padding.bottom;
 
-    final EdgeInsets contentPadding = EdgeInsets.fromLTRB(
-      RLDS.spacing20,
-      RLDS.spacing16,
-      RLDS.spacing20,
-      RLDS.spacing16 + bottomSafeArea + RLDS.spacing8,
+    final EdgeInsets contentPadding = const EdgeInsets.symmetric(
+      horizontal: RLDS.spacing20,
+      vertical: RLDS.spacing8,
     );
 
     return Positioned(
-      bottom: 0,
-      left: 0,
-      right: 0,
+      bottom: bottomSafeArea + RLDS.spacing12,
+      left: RLDS.spacing12,
+      right: RLDS.spacing12,
       child: SlideTransition(
         position: slideAnimation,
-        child: GestureDetector(
-          onVerticalDragUpdate: handleDragUpdate,
-          onVerticalDragEnd: handleDragEnd,
-          // Match the LoginSupport / Account bottom sheets, LunarBlur over the
-          // shared `backgroundLight` surface so the snackbar reads as the same
-          // family of frosted pane rising from the bottom edge. The semantic
-          // colour (success / info) moves onto the label + icon instead of the
-          // background. Transparent Material wraps the content so Text widgets
-          // inherit a sane DefaultTextStyle (no debug yellow underlines).
-          child: Transform.translate(
-            offset: Offset(0, dragDownOffset),
-            child: RLLunarBlur(
-              borderRadius: RLDS.borderRadiusTopLarge,
-              surfaceColor: RLDS.backgroundLight,
-              child: Material(
-                type: MaterialType.transparency,
-                child: Padding(padding: contentPadding, child: widget.content),
+        child: FadeTransition(
+          opacity: fadeAnimation,
+          child: GestureDetector(
+            onVerticalDragUpdate: handleDragUpdate,
+            onVerticalDragEnd: handleDragEnd,
+            // Floating frosted pane with fully rounded corners. Transparent
+            // Material wraps the content so Text widgets inherit a sane
+            // DefaultTextStyle (no debug yellow underlines).
+            child: Transform.translate(
+              offset: Offset(0, dragDownOffset),
+              child: RLLunarBlur(
+                borderRadius: RLDS.borderRadiusSpecial,
+                child: Material(
+                  type: MaterialType.transparency,
+                  child: Padding(padding: contentPadding, child: widget.content),
+                ),
               ),
             ),
           ),

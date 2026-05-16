@@ -187,8 +187,8 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
             const Positioned.fill(
               child: RLLunarBlur(
                 borderRadius: BorderRadius.zero,
-                child: SizedBox.expand(),
                 surfaceAlpha: 0,
+                child: SizedBox.expand(),
               ),
             ),
 
@@ -449,7 +449,6 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
       key: progressBarKey,
       height: RLDS.spacing8,
       child: ClipRRect(
-        borderRadius: RLDS.borderRadiusMedium,
         child: LinearProgressIndicator(
           value: progressValue,
           backgroundColor: RLDS.transparent,
